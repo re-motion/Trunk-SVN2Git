@@ -50,7 +50,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void GetRequiredMethodPermissionsMethodWithoutAttributes ()
     {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Save"));
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Save"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.IsNotNull (requiredAccessTypes);
@@ -60,7 +60,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void GetRequiredMethodPermissionsCacheForMethodWithoutAttributes ()
     {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Save"));
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Save"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation));
@@ -69,7 +69,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void GetRequiredMethodPermissionsMethodWithOneAttribute ()
     {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Record"));
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Record"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.AreEqual (1, requiredAccessTypes.Length);
@@ -79,7 +79,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void GetRequiredMethodPermissionsMethodWithTwoPermissions ()
     {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Show"));
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Show"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.AreEqual (2, requiredAccessTypes.Length);
@@ -90,7 +90,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void GetRequiredMethodPermissionsCacheForMethodWithOneAttribute ()
     {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Record"));
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Record"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation));
@@ -99,7 +99,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void GetRequiredMethodPermissionsOverriddenMethodWithPermissionFromBaseMethod ()
     {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (DerivedSecurableObject).GetMethod ("Record"));
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (DerivedSecurableObject).GetMethod ("Record"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), methodInformation);
 
       Assert.AreEqual (1, requiredAccessTypes.Length);
@@ -109,7 +109,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void FilterMultipleAccessTypes ()
     {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Close"));
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Close"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.AreEqual (2, requiredAccessTypes.Length);
@@ -120,7 +120,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void GetRequiredMethodPermissionsStaticMethod ()
     {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.AreEqual (1, requiredAccessTypes.Length);

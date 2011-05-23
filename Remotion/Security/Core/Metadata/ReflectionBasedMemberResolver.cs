@@ -126,7 +126,7 @@ namespace Remotion.Security.Metadata
             "methodName");
       }
 
-      return new MethodInfoAdapter (foundMethodInfo);
+      return MethodInfoAdapter.Create(foundMethodInfo);
     }
 
     private bool TypeHasMember (Type type, string methodName, BindingFlags bindingFlags)

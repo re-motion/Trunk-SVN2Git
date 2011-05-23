@@ -68,7 +68,7 @@ namespace Remotion.Reflection
         throw new NotSupportedException (message);
       }
 
-      return new PropertyInfoAdapter (propertyInfo);
+      return PropertyInfoAdapter.Create(propertyInfo);
     }
 
     /// <summary>

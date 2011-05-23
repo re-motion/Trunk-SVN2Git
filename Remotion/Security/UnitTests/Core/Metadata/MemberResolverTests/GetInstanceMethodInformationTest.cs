@@ -53,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_MethodWithOneAttribute ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Load", MemberAffiliation.Instance);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Load",new Type[] {}));
+      var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Load",new Type[] {}));
 
       Assert.IsNotNull (methodInformation);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
@@ -71,7 +71,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_OverloadedMethodWithOneAttribute ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Delete", MemberAffiliation.Instance);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Delete", new [] {typeof(int)}));
+      var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Delete", new [] {typeof(int)}));
 
       Assert.IsNotNull (methodInformation);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
@@ -81,7 +81,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_MethodOfDerivedClass ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Show", MemberAffiliation.Instance);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Show"));
+      var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Show"));
 
       Assert.IsNotNull (methodInformation);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
@@ -91,7 +91,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_OverriddenMethodFromBaseMethod ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Record", MemberAffiliation.Instance);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Record"));
+      var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Record"));
 
       Assert.IsNotNull (methodInformation);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));

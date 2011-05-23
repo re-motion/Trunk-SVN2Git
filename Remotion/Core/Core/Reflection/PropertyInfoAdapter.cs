@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -26,15 +27,21 @@ namespace Remotion.Reflection
   /// Implements the <see cref="IPropertyInformation"/> interface to wrap a <see cref="PropertyInfo"/> instance.
   /// </summary>
   [TypeConverter (typeof (PropertyInfoAdapterConverter))]
-  public class PropertyInfoAdapter : IPropertyInformation
+  public sealed class PropertyInfoAdapter : IPropertyInformation
   {
-    private readonly PropertyInfo _propertyInfo;
-    private readonly DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
-    
-    public PropertyInfoAdapter (PropertyInfo propertyInfo)
+    private static readonly InterlockedCache<PropertyInfo, PropertyInfoAdapter> s_cache = new InterlockedCache<PropertyInfo, PropertyInfoAdapter>();
+
+    public static PropertyInfoAdapter Create (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      return s_cache.GetOrCreateValue (propertyInfo, pi => new PropertyInfoAdapter (pi));
+    }
 
+    private readonly PropertyInfo _propertyInfo;
+    private readonly DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
+
+    private PropertyInfoAdapter (PropertyInfo propertyInfo)
+    {
       _propertyInfo = propertyInfo;
       _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_propertyInfo));
     }
@@ -100,12 +107,12 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_propertyInfo.GetGetMethod (nonPublic)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
+      return Maybe.ForValue (_propertyInfo.GetGetMethod (nonPublic)).Select (mi => MethodInfoAdapter.Create(mi)).ValueOrDefault();
     }
 
     public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_propertyInfo.GetSetMethod (nonPublic)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault ();
+      return Maybe.ForValue (_propertyInfo.GetSetMethod (nonPublic)).Select (mi => MethodInfoAdapter.Create(mi)).ValueOrDefault ();
     }
 
     public ParameterInfo[] GetIndexParameters ()
@@ -115,7 +122,7 @@ namespace Remotion.Reflection
 
     public IMethodInformation[] GetAccessors (bool nonPublic)
     {
-      return Array.ConvertAll (_propertyInfo.GetAccessors (nonPublic), mi => (IMethodInformation) new MethodInfoAdapter (mi));
+      return Array.ConvertAll (_propertyInfo.GetAccessors (nonPublic), mi => (IMethodInformation) MethodInfoAdapter.Create(mi));
     }
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)

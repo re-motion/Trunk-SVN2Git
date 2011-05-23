@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithVirtualRelationEndPoints, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne");
-      var propertyInfo = new PropertyInfoAdapter (typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToOne"));
+      var propertyInfo = PropertyInfoAdapter.Create(typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToOne"));
       var relationReflector = CreateRelationReflector (_classWithVirtualRelationEndPoints, propertyInfo);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithVirtualRelationEndPoints, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne");
-      var propertyInfo = new PropertyInfoAdapter (typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToOne"));
+      var propertyInfo = PropertyInfoAdapter.Create(typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToOne"));
       var relationReflector = CreateRelationReflector (_classWithVirtualRelationEndPoints, propertyInfo);
 
       var actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithVirtualRelationEndPoints, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany");
-      var propertyInfo = new PropertyInfoAdapter (typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToMany"));
+      var propertyInfo = PropertyInfoAdapter.Create(typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToMany"));
       var relationReflector = CreateRelationReflector (_classWithVirtualRelationEndPoints, propertyInfo);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithVirtualRelationEndPoints, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany");
-      var propertyInfo = new PropertyInfoAdapter (typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToMany"));
+      var propertyInfo = PropertyInfoAdapter.Create(typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToMany"));
       var relationReflector = CreateRelationReflector (_classWithVirtualRelationEndPoints, propertyInfo);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
@@ -532,7 +532,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classType = typeof (TestDomain.RelationReflector.OppositePropertyHasStorageClassNoneAttribute.ClassWithOppositeProperty);
       var originatingClass = ClassDefinitionFactory.CreateClassDefinition (classType);
-      var originatingProperty = new PropertyInfoAdapter (classType.GetProperty ("OppositeProperty"));
+      var originatingProperty = PropertyInfoAdapter.Create(classType.GetProperty ("OppositeProperty"));
 
       var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver);
 
@@ -567,7 +567,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         string propertyName)
     {
       var propertyInfo = 
-          new PropertyInfoAdapter (declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
+          PropertyInfoAdapter.Create(declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
       var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver());
       var propertyDefinition = propertyReflector.GetMetadata();
 

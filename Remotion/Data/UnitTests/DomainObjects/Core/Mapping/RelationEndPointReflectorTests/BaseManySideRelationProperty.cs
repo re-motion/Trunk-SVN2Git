@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var type = typeof (ClassWithRealRelationEndPointsNotInMapping);
       var propertyInfo =
-          new PropertyInfoAdapter (type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+          PropertyInfoAdapter.Create(type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
       return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
     }

@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreatePropertyDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo = new PropertyInfoAdapter (typeof (Order).GetProperty ("OrderItems"));
+      var propertyInfo = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
 
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateRelationEndPointDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo = new PropertyInfoAdapter (typeof (Order).GetProperty ("OrderItems"));
+      var propertyInfo = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
 
@@ -118,8 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreatePropertyDefinitionCollection ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo1 = new PropertyInfoAdapter (typeof (Order).GetProperty ("OrderNumber"));
-      var propertyInfo2 = new PropertyInfoAdapter (typeof (Order).GetProperty ("DeliveryDate"));
+      var propertyInfo1 = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderNumber"));
+      var propertyInfo2 = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("DeliveryDate"));
 
       var result = _factory.CreatePropertyDefinitionCollection (classDefinition, new[] { propertyInfo1, propertyInfo2 });
 

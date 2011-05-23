@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       ArgumentUtility.CheckNotNullOrEmpty ("property", property);
 
       Type type = typeof (T);
-      var propertyInfo = new PropertyInfoAdapter (type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
       ClassDefinition classDefinition;
       if (ReflectionUtility.IsDomainObject (type))
         classDefinition = ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, TestDomainStorageProviderDefinition, type, true);

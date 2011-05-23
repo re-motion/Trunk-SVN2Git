@@ -83,8 +83,7 @@ namespace Remotion.ObjectBinding.BindableObject
       if (introducedMemberAttributes.Length > 0)
       {
         var introducedMemberAttribute = (IntroducedMemberAttribute) introducedMemberAttributes[0];
-        var interfaceProperty = new PropertyInfoAdapter (
-            introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
+        var interfaceProperty = PropertyInfoAdapter.Create(introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
         var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
         var interfaceImplementation = new InterfaceImplementationPropertyInformation (mixinProperty, interfaceProperty);
 
@@ -92,7 +91,7 @@ namespace Remotion.ObjectBinding.BindableObject
       }
       else
       {
-        var propertyInfoAdapter = new PropertyInfoAdapter (propertyInfo);
+        var propertyInfoAdapter = PropertyInfoAdapter.Create(propertyInfo);
         var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclaration();
         if (interfaceDeclaration != null)
           return new InterfaceImplementationPropertyInformation (propertyInfoAdapter, interfaceDeclaration);

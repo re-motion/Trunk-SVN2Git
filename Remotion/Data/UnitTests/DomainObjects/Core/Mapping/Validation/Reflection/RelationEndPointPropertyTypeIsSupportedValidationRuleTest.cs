@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          new PropertyInfoAdapter (typeof (RelationEndPointPropertyClass).GetProperty ("PropertyWithoutBidirectionalAttribute")));
+          PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass).GetProperty ("PropertyWithoutBidirectionalAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          new PropertyInfoAdapter (typeof (RelationEndPointPropertyClass).GetProperty ("DomainObjectPropertyWithoutBidirectionalAttribute")));
+          PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass).GetProperty ("DomainObjectPropertyWithoutBidirectionalAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          new PropertyInfoAdapter (typeof (RelationEndPointPropertyClass).GetProperty ("DomainObjectPropertyWithBidirectionalAttribute")));
+          PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass).GetProperty ("DomainObjectPropertyWithBidirectionalAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          new PropertyInfoAdapter (typeof (RelationEndPointPropertyClass).GetProperty ("PropertyWithBidirectionalAttribute")));
+          PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass).GetProperty ("PropertyWithBidirectionalAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);

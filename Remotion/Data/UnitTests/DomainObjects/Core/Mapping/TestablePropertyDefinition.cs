@@ -24,12 +24,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class TestablePropertyDefinition : PropertyDefinition
   {
     public TestablePropertyDefinition (ClassDefinition classDefinition, string propertyName, int? maxLength, StorageClass storageClass)
-        : base (classDefinition, new PropertyInfoAdapter (typeof(string).GetProperty("Length")), propertyName, typeof(object), false, maxLength, storageClass)
+        : base (classDefinition, PropertyInfoAdapter.Create(typeof(string).GetProperty("Length")), propertyName, typeof(object), false, maxLength, storageClass)
     {
     }
     
     public TestablePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo, int? maxLength, StorageClass storageClass)
-      : base (classDefinition, new PropertyInfoAdapter (propertyInfo), propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
+      : base (classDefinition, PropertyInfoAdapter.Create(propertyInfo), propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
     {
     }
 

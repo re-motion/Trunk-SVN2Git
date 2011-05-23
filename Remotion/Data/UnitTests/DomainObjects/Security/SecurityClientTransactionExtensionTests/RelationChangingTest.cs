@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _extension = new SecurityClientTransactionExtension ();
       _propertyInfo = typeof (SecurableObject).GetProperty ("Parent");
 
-      _setMethodInformation = new MethodInfoAdapter (_propertyInfo.GetSetMethod());
+      _setMethodInformation = MethodInfoAdapter.Create(_propertyInfo.GetSetMethod());
       
       _testHelper.SetupSecurityConfiguration ();
     }
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       var propertyInfo =
           typeof (SecurableObject).GetProperty ("NonPublicRelationPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
-      var setMethodInformation = new MethodInfoAdapter (propertyInfo.GetSetMethod (true));
+      var setMethodInformation = MethodInfoAdapter.Create(propertyInfo.GetSetMethod (true));
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (setMethodInformation, TestAccessTypes.First);
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       var propertyInfo =
           typeof (SecurableObject).GetProperty ("NonPublicRelationPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
-      var setMethodInformation = new MethodInfoAdapter (propertyInfo.GetSetMethod (true));
+      var setMethodInformation = MethodInfoAdapter.Create(propertyInfo.GetSetMethod (true));
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (setMethodInformation, TestAccessTypes.First);
@@ -257,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered())
       {
-        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new MethodInfoAdapter (childrenPropertyInfo.GetGetMethod()), TestAccessTypes.First);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (MethodInfoAdapter.Create(childrenPropertyInfo.GetGetMethod()), TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
 
         _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.Second);
@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered ())
       {
-        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new MethodInfoAdapter (childrenPropertyInfo.GetGetMethod()), TestAccessTypes.First);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (MethodInfoAdapter.Create(childrenPropertyInfo.GetGetMethod()), TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
 
         _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.Second);

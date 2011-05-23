@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       var classDefinition = new ClassDefinitionForUnresolvedRelationPropertyType (
           "Test",
           typeof (ClassOutOfInheritanceHierarchy),
-          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("Property")));
+          PropertyInfoAdapter.Create(typeof (DerivedValidationDomainObjectClass).GetProperty ("Property")));
       var endPoint = new VirtualRelationEndPointDefinition (
           classDefinition,
           "RelationProperty",
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           CardinalityType.One,
           typeof (ClassNotInMapping),
           null,
-          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("Property")));
+          PropertyInfoAdapter.Create(typeof (DerivedValidationDomainObjectClass).GetProperty ("Property")));
       var relationDefinition = new RelationDefinition ("ID", endPoint, endPoint);
 
       var validationResult = _validationRule.Validate (relationDefinition);

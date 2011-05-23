@@ -53,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_MethodWithOneAttribute ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "CreateForSpecialCase", MemberAffiliation.Static);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
+      var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
 
       Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
@@ -71,7 +71,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_OverloadedMethodWithOneAttributes ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "IsValid", MemberAffiliation.Static);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("IsValid", new [] {typeof(SecurableObject)}));
+      var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("IsValid", new [] {typeof(SecurableObject)}));
 
       Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
@@ -81,7 +81,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_MethodOfDerivedClass ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "CreateForSpecialCase", MemberAffiliation.Static);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
+      var expectedMethodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
 
       Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));

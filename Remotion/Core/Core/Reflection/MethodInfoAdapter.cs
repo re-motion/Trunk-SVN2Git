@@ -18,6 +18,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -27,15 +28,21 @@ namespace Remotion.Reflection
   /// Implements the <see cref="IMethodInformation"/> to wrap a <see cref="MethodInfo"/> instance.
   /// </summary>
   [TypeConverter (typeof (MethodInfoAdapterConverter))]
-  public class MethodInfoAdapter : IMethodInformation
+  public sealed class MethodInfoAdapter : IMethodInformation
   {
+    private static readonly InterlockedCache<MethodInfo, MethodInfoAdapter> s_cache = new InterlockedCache<MethodInfo, MethodInfoAdapter>();
+
+    public static MethodInfoAdapter Create (MethodInfo methodInfo)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      return s_cache.GetOrCreateValue (methodInfo, mi=> new MethodInfoAdapter (mi));
+    }
+
     private readonly MethodInfo _methodInfo;
     private readonly DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
 
-    public MethodInfoAdapter (MethodInfo methodInfo)
+    private MethodInfoAdapter (MethodInfo methodInfo)
     {
-      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-
       _methodInfo = methodInfo;
       _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_methodInfo));
     }
@@ -100,7 +107,7 @@ namespace Remotion.Reflection
           .Select ((m, i) => new { InterfaceMethod = m, Index = i })
           .First (tuple => tuple.InterfaceMethod.Equals (_methodInfo)) // actually Single, but we can stop at the first matching method
           .Index;
-      return new MethodInfoAdapter (interfaceMap.TargetMethods[methodIndex]);
+      return Create(interfaceMap.TargetMethods[methodIndex]);
     }
 
     public IMethodInformation FindInterfaceDeclaration ()
@@ -114,7 +121,7 @@ namespace Remotion.Reflection
            from index in Enumerable.Range (0, map.TargetMethods.Length)
            where MemberInfoEqualityComparer.Instance.Equals(map.TargetMethods[index], _methodInfo)
            select map.InterfaceMethods[index]).FirstOrDefault();
-      return Maybe.ForValue (resultMethodInfo).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
+      return Maybe.ForValue (resultMethodInfo).Select (mi => Create(mi)).ValueOrDefault();
     }
 
     public T GetFastInvoker<T> () where T: class
@@ -142,7 +149,7 @@ namespace Remotion.Reflection
            from accessor in new[] { pi.GetGetMethod (true), pi.GetSetMethod (true) }
            where accessor != null && MemberInfoEqualityComparer.Instance.Equals (_methodInfo, accessor)
            select pi).FirstOrDefault();
-      return propertyInfo != null ? new PropertyInfoAdapter (propertyInfo) : null;
+      return propertyInfo != null ? PropertyInfoAdapter.Create(propertyInfo) : null;
     }
 
     public ParameterInfo[] GetParameters ()
@@ -152,7 +159,7 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetBaseDefinition ()
     {
-      return new MethodInfoAdapter (_methodInfo.GetBaseDefinition());
+      return Create(_methodInfo.GetBaseDefinition());
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

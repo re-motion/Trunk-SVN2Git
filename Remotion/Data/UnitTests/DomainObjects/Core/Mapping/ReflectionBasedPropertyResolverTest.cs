@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition ()
     {
-      var property = new PropertyInfoAdapter(typeof (Order).GetProperty ("OrderNumber"));
+      var property = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderNumber"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (property, _orderClass, _orderClass.GetPropertyDefinition);
 
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_StorageClassNoneProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (Order).GetProperty ("RedirectedOrderNumber"));
+      var property =  PropertyInfoAdapter.Create(typeof (Order).GetProperty ("RedirectedOrderNumber"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (property, _orderClass, _orderClass.GetPropertyDefinition);
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_InterfaceImplementation_FromInterfaceProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (IInterfaceWithProperties).GetProperty ("ImplicitProperty"));
+      var property =  PropertyInfoAdapter.Create(typeof (IInterfaceWithProperties).GetProperty ("ImplicitProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithInterface, _classWithInterface.GetPropertyDefinition);
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_ExplicitInterfaceImplementation_FromInterfaceProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (IInterfaceWithProperties).GetProperty ("ExplicitManagedProperty"));
+      var property =  PropertyInfoAdapter.Create(typeof (IInterfaceWithProperties).GetProperty ("ExplicitManagedProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithInterface, _classWithInterface.GetPropertyDefinition);
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_ExplicitInterfaceImplementation_FromInterfaceProperty_FromDerivedClass()
     {
-      var property = new PropertyInfoAdapter (typeof(IInterfaceWithProperties).GetProperty("ExplicitManagedProperty"));
+      var property = PropertyInfoAdapter.Create(typeof(IInterfaceWithProperties).GetProperty("ExplicitManagedProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition>(
           property, _classDerivedFromClassWithInterface, _classDerivedFromClassWithInterface.GetPropertyDefinition);
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_InterfaceImplementation_FromImplementationProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (ClassWithInterface).GetProperty ("ImplicitProperty"));
+      var property =  PropertyInfoAdapter.Create(typeof (ClassWithInterface).GetProperty ("ImplicitProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithInterface, _classWithInterface.GetPropertyDefinition);
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_InterfaceImplementation_FromInterfaceProperty_GetAccessorOnly ()
     {
-      var property =  new PropertyInfoAdapter(typeof (IInterfaceWithPropertiesWithMissingAccessors).GetProperty ("PropertyWithGetAccessor"));
+      var property =  PropertyInfoAdapter.Create(typeof (IInterfaceWithPropertiesWithMissingAccessors).GetProperty ("PropertyWithGetAccessor"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithInterfaceWithMissingAccessors, _classWithInterfaceWithMissingAccessors.GetPropertyDefinition);
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_InterfaceImplementation_FromInterfaceProperty_SetAccessorOnly ()
     {
-      var property =  new PropertyInfoAdapter(typeof (IInterfaceWithPropertiesWithMissingAccessors).GetProperty ("PropertyWithSetAccessor"));
+      var property =  PropertyInfoAdapter.Create(typeof (IInterfaceWithPropertiesWithMissingAccessors).GetProperty ("PropertyWithSetAccessor"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithInterfaceWithMissingAccessors, _classWithInterfaceWithMissingAccessors.GetPropertyDefinition);
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_InterfaceImplementation_NotImplemented ()
     {
-      var property =  new PropertyInfoAdapter(typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ImplicitProperty"));
+      var property =  PropertyInfoAdapter.Create(typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ImplicitProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithInterface, _classWithInterface.GetPropertyDefinition); // does not implement this property
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_ExplicitInterfaceImplementation_FromImplementationProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (ClassWithInterface).GetProperty (
+      var property =  PropertyInfoAdapter.Create(typeof (ClassWithInterface).GetProperty (
           typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty",
           BindingFlags.Instance | BindingFlags.NonPublic));
 
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_MixinProperty_FromInterfaceProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ImplicitProperty"));
+      var property =  PropertyInfoAdapter.Create(typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ImplicitProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithMixinAddingInterface, _classWithMixinAddingInterface.GetPropertyDefinition);
@@ -199,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_ExplicitMixinProperty_FromInterfaceProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ExplicitManagedProperty"));
+      var property =  PropertyInfoAdapter.Create(typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ExplicitManagedProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithMixinAddingInterface, _classWithMixinAddingInterface.GetPropertyDefinition);
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_MixinProperty_FromImplementationProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (MixinAddingInterfaceWithProperties).GetProperty ("ImplicitProperty"));
+      var property =  PropertyInfoAdapter.Create(typeof (MixinAddingInterfaceWithProperties).GetProperty ("ImplicitProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _classWithMixinAddingInterface, _classWithMixinAddingInterface.GetPropertyDefinition);
@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_ExplicitMixinProperty_FromImplementationProperty ()
     {
-      var property =  new PropertyInfoAdapter(typeof (MixinAddingInterfaceWithProperties).GetProperty (
+      var property =  PropertyInfoAdapter.Create(typeof (MixinAddingInterfaceWithProperties).GetProperty (
           typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty",
           BindingFlags.Instance | BindingFlags.NonPublic));
 
@@ -242,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_MixinPropertyOnBaseClass ()
     {
-      var property =  new PropertyInfoAdapter(typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty"));
+      var property =  PropertyInfoAdapter.Create(typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _derivedTargetClassForPersistentMixinClass, _derivedTargetClassForPersistentMixinClass.GetPropertyDefinition);
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ResolveDefinition_MixinWithDuplicateInterface ()
     {
-      var property = new PropertyInfoAdapter (typeof (IMixinAddingProperty).GetProperty ("Property"));
+      var property = PropertyInfoAdapter.Create(typeof (IMixinAddingProperty).GetProperty ("Property"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
           property, _derivedClassWithMixinWithDuplicateInterface, _derivedClassWithMixinWithDuplicateInterface.GetPropertyDefinition);

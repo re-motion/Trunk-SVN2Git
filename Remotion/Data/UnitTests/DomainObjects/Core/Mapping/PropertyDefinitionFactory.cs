@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var propertyDefinition = new PropertyDefinition (
           classDefinition,
-          new PropertyInfoAdapter (propertyInfo),
+          PropertyInfoAdapter.Create(propertyInfo),
           fullPropertyName,
           propertyType,
           isNullable,
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var propertyDefinition = new PropertyDefinition (
           classDefinition,
-          new PropertyInfoAdapter (propertyInfo),
+          PropertyInfoAdapter.Create(propertyInfo),
           propertyName,
           propertyType,
           isNullable,

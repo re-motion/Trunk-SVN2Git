@@ -93,7 +93,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void FindInterfaceImplementation ()
     {
-      var propertyInfoAdapter = new PropertyInfoAdapter (typeof (string).GetProperty ("Length"));
+      var propertyInfoAdapter = PropertyInfoAdapter.Create(typeof (string).GetProperty ("Length"));
       _implementationPropertyInformationStub.Stub (stub => stub.FindInterfaceImplementation (typeof (bool))).Return (propertyInfoAdapter);
 
       Assert.That (_interfaceImplementationPropertyInformation.FindInterfaceImplementation (typeof (bool)), Is.SameAs (propertyInfoAdapter));
@@ -138,10 +138,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var value = new SimpleReferenceType();
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
-          new MethodInfoAdapter (
-              typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
+          MethodInfoAdapter.Create(typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
       _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
+          MethodInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
 
       _interfaceImplementationPropertyInformation.SetValue (instance, value, null);
       Assert.That (instance.ImplicitInterfaceScalar, Is.SameAs (value));
@@ -155,7 +154,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
       _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
+          MethodInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
 
       _interfaceImplementationPropertyInformation.SetValue (instance, value, null);
       Assert.That (instance.ImplicitInterfaceScalar, Is.SameAs (value));
@@ -169,8 +168,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
       _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
-          new MethodInfoAdapter (
-              typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }).GetSetMethod (true)));
+          MethodInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }).GetSetMethod (true)));
 
       _interfaceImplementationPropertyInformation.SetValue (instance, value, new object[] { 0 });
       Assert.That (instance[0], Is.SameAs (value));
@@ -184,10 +182,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       instance.ImplicitInterfaceScalar = value;
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
-          new MethodInfoAdapter (
-              typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
+          MethodInfoAdapter.Create(typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
       _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
+          MethodInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
 
       Assert.That (_interfaceImplementationPropertyInformation.GetValue (instance, null), Is.SameAs (value));
     }
@@ -201,7 +198,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (null);
       _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
+          MethodInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
 
       Assert.That (_interfaceImplementationPropertyInformation.GetValue (instance, null), Is.SameAs (value));
     }
@@ -210,8 +207,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_ImplicitPropertyImplementation ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("ImplicitProperty"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ImplicitProperty"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("ImplicitProperty"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ImplicitProperty"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -229,11 +226,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetGetMethod_GetSetMethod_ExplicitPropertyImplementation ()
     {
       var implementationPropertyInfo =
-          new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty (
-                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
-                  BindingFlags.NonPublic | BindingFlags.Instance));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ExplicitProperty"));
+          PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
+              "Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
+              BindingFlags.NonPublic | BindingFlags.Instance));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ExplicitProperty"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -256,8 +252,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_ReadOnlyImplicitPropertyImplementation ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("ReadOnlyImplicitProperty"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ReadOnlyImplicitProperty"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("ReadOnlyImplicitProperty"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ReadOnlyImplicitProperty"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -271,8 +267,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_WriteOnlyImplicitPropertyImplementation ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("WriteOnlyImplicitProperty"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("WriteOnlyImplicitProperty"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("WriteOnlyImplicitProperty"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("WriteOnlyImplicitProperty"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -287,11 +283,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetGetMethod_GetSetMethod_ReadOnlyExplicitPropertyImplementation ()
     {
       var implementationPropertyInfo =
-          new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty (
-                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
-                  BindingFlags.NonPublic | BindingFlags.Instance));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ReadOnlyExplicitProperty"));
+          PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
+              "Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
+              BindingFlags.NonPublic | BindingFlags.Instance));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ReadOnlyExplicitProperty"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -309,11 +304,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetGetMethod_GetSetMethod_WriteOnlyExplicitPropertyImplementation ()
     {
       var implementationPropertyInfo =
-          new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty (
-                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
-                  BindingFlags.NonPublic | BindingFlags.Instance));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("WriteOnlyExplicitProperty"));
+          PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
+              "Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
+              BindingFlags.NonPublic | BindingFlags.Instance));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("WriteOnlyExplicitProperty"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -330,8 +324,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_ImplicitWriteOnlyPropertyImplementationAddingGetAccessor ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingGetAccessor"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingGetAccessor"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("PropertyAddingGetAccessor"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("PropertyAddingGetAccessor"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -347,8 +341,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_ImplicitReadOnlyOnlyPropertyImplementationAddingSetAccessor ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingSetAccessor"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingSetAccessor"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("PropertyAddingSetAccessor"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("PropertyAddingSetAccessor"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -364,8 +358,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_ImplicitWriteOnlyPropertyImplementationAddingPrivateGetAccessor_NonPublicFlagTrue ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateGetAccessor"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateGetAccessor"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateGetAccessor"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateGetAccessor"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -384,8 +378,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_ImplicitWriteOnlyPropertyImplementationAddingPrivateGetAccessor_NonPublicFlagFalse ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateGetAccessor"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateGetAccessor"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateGetAccessor"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateGetAccessor"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -402,8 +396,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_ImplicitWriteOnlyPropertyImplementationAddingPrivateSetAccessor_NonPublicFlagTrue ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateSetAccessor"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateSetAccessor"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateSetAccessor"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateSetAccessor"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -422,8 +416,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod_GetSetMethod_ImplicitWriteOnlyPropertyImplementationAddingPrivateSetAccessor_NonPublicFlagFalse ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateSetAccessor"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateSetAccessor"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateSetAccessor"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateSetAccessor"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
@@ -440,8 +434,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void CanBeSetFromOutside_ImplicitPropertyImplementation ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("ImplicitProperty"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ImplicitProperty"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("ImplicitProperty"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ImplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
@@ -452,11 +446,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CanBeSetFromOutside_ExplicitPropertyImplementation ()
     {
       var implementationPropertyInfo =
-          new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty (
-                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
-                  BindingFlags.NonPublic | BindingFlags.Instance));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ExplicitProperty"));
+          PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
+              "Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
+              BindingFlags.NonPublic | BindingFlags.Instance));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ExplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
@@ -466,8 +459,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void CanBeSetFromOutside_ImplicitReadOnlyPropertyImplementation ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("ReadOnlyImplicitProperty"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ReadOnlyImplicitProperty"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("ReadOnlyImplicitProperty"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ReadOnlyImplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
@@ -477,8 +470,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void CanBeSetFromOutside_ImplicitWriteOnlyPropertyImplementation ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("WriteOnlyImplicitProperty"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("WriteOnlyImplicitProperty"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("WriteOnlyImplicitProperty"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("WriteOnlyImplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
@@ -489,11 +482,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CanBeSetFromOutside_ExplicitReadOnlyPropertyImplementation ()
     {
       var implementationPropertyInfo =
-          new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty (
-                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
-                  BindingFlags.NonPublic | BindingFlags.Instance));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ReadOnlyExplicitProperty"));
+          PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
+              "Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
+              BindingFlags.NonPublic | BindingFlags.Instance));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ReadOnlyExplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
@@ -504,11 +496,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CanBeSetFromOutside_ExplicitWriteOnlyPropertyImplementation ()
     {
       var implementationPropertyInfo =
-          new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty (
-                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
-                  BindingFlags.NonPublic | BindingFlags.Instance));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("WriteOnlyExplicitProperty"));
+          PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
+              "Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
+              BindingFlags.NonPublic | BindingFlags.Instance));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("WriteOnlyExplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
@@ -518,8 +509,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void CanBeSetFromOutside_ImplicitPropertyImplementationAddingSetAccessor ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingSetAccessor"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingSetAccessor"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("PropertyAddingSetAccessor"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("PropertyAddingSetAccessor"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
@@ -529,8 +520,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void CanBeSetFromOutside_ImplicitPropertyImplementationAddingPrivateSetAccessor ()
     {
-      var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateSetAccessor"));
-      var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateSetAccessor"));
+      var implementationPropertyInfo = PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateSetAccessor"));
+      var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateSetAccessor"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
@@ -545,8 +536,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (
           _interfaceImplementationPropertyInformation.Equals (
               new InterfaceImplementationPropertyInformation (
-                  new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
-                  new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))),
+                  PropertyInfoAdapter.Create(typeof (string).GetProperty ("Length")),
+                  PropertyInfoAdapter.Create(typeof (string).GetProperty ("Length")))),
           Is.False);
 
       Assert.That (

@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyInfo propertyInfo = type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
       Assert.IsNotNull (propertyInfo, "Property '{0}' was not found on type '{1}'.", propertyName, type);
 
-      return new PropertyInfoAdapter (propertyInfo);
+      return PropertyInfoAdapter.Create(propertyInfo);
     }
 
     protected IPropertyInformation GetPropertyInfo (Type type, Type interfaceType, string propertyName)
@@ -69,8 +69,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       if (introducedMemberAttributes.Length > 0)
       {
         var introducedMemberAttribute = introducedMemberAttributes[0] as IntroducedMemberAttribute;
-        var interfaceProperty = new PropertyInfoAdapter (
-            introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
+        var interfaceProperty = PropertyInfoAdapter.Create(introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
         var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
         var interfaceImplementation = new InterfaceImplementationPropertyInformation (mixinProperty, interfaceProperty);
 
@@ -78,7 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       }
       else
       {
-        var propertyInfoAdapter = new PropertyInfoAdapter (propertyInfo);
+        var propertyInfoAdapter = PropertyInfoAdapter.Create(propertyInfo);
         var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclaration();
         if (interfaceDeclaration != null)
           return new InterfaceImplementationPropertyInformation (propertyInfoAdapter, interfaceDeclaration);

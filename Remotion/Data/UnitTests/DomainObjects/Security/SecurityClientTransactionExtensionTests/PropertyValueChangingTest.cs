@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
       _propertyInfo = typeof (SecurableObject).GetProperty ("StringProperty");
-      _setMethodInformation = new MethodInfoAdapter (_propertyInfo.GetSetMethod ());
+      _setMethodInformation = MethodInfoAdapter.Create(_propertyInfo.GetSetMethod ());
       _testHelper.SetupSecurityConfiguration ();
     }
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       var propertyInfo =
           typeof (SecurableObject).GetProperty ("NonPublicPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
-      var setMethodInformation = new MethodInfoAdapter (propertyInfo.GetSetMethod (true));
+      var setMethodInformation = MethodInfoAdapter.Create(propertyInfo.GetSetMethod (true));
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       var propertyInfo =
           typeof (SecurableObject).GetProperty ("NonPublicPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
-      var setMethodInformation = new MethodInfoAdapter (propertyInfo.GetSetMethod (true));
+      var setMethodInformation = MethodInfoAdapter.Create(propertyInfo.GetSetMethod (true));
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);

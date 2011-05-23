@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     public void CreateRelationEndPointReflector()
     {
       var type = typeof (ClassWithVirtualRelationEndPoints);
-      var propertyInfo =  new PropertyInfoAdapter (type.GetProperty ("NoAttribute"));
+      var propertyInfo =  PropertyInfoAdapter.Create(type.GetProperty ("NoAttribute"));
       Assert.IsInstanceOf (
           typeof (RdbmsRelationEndPointReflector), 
           RelationEndPointReflector.CreateRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver));
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     public void IsVirtualEndRelationEndpoint_WithoutAttribute ()
     {
       var type = typeof (ClassWithRealRelationEndPoints);
-      var propertyInfo = new PropertyInfoAdapter ( type.GetProperty ("NoAttribute"));
+      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty ("NoAttribute"));
       var relationEndPointReflector =
           RelationEndPointReflector.CreateRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     public void IsVirtualEndRelationEndpoint_WithCollectionPropertyAndWithoutAttribute ()
     {
       var type = typeof(ClassWithInvalidUnidirectionalRelation);
-      var propertyInfo = new PropertyInfoAdapter (type.GetProperty ("LeftSide"));
+      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty ("LeftSide"));
       var relationEndPointReflector =
           RelationEndPointReflector.CreateRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     public void IsVirtualRelationEndPoint_UnidirectionalRelation()
     {
       var type = typeof (ClassWithRealRelationEndPoints);
-      var propertyInfo = new PropertyInfoAdapter (type.GetProperty ("Unidirectional"));
+      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty ("Unidirectional"));
       var relationEndPointReflector =
           new RdbmsRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     public void GetMetadata_NonVirtualEndPoint_PropertyTypeIsNoObjectID ()
     {
       var type = typeof (ClassWithRealRelationEndPoints);
-      var propertyInfo = new PropertyInfoAdapter (type.GetProperty ("Unidirectional"));
+      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty ("Unidirectional"));
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "Unidirectional", type);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));

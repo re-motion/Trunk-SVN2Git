@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinition employeeClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Employee));
       VirtualRelationEndPointDefinition relationEndPointDefinition =
           (VirtualRelationEndPointDefinition) employeeClassDefinition.GetRelationEndPointDefinition (typeof (Employee) + ".Computer");
-      Assert.AreEqual (new PropertyInfoAdapter (typeof (Employee).GetProperty ("Computer")), relationEndPointDefinition.PropertyInfo);
+      Assert.AreEqual (PropertyInfoAdapter.Create(typeof (Employee).GetProperty ("Computer")), relationEndPointDefinition.PropertyInfo);
     }
 
     private VirtualRelationEndPointDefinition CreateFullVirtualEndPoint (string sortExpressionString)

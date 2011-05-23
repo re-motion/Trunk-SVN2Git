@@ -159,14 +159,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           FindPropertiesFilter, 
           null);
 
-      var propertyInfos = Array.ConvertAll (memberInfos, input => new PropertyInfoAdapter ((PropertyInfo) input));
+      var propertyInfos = Array.ConvertAll (memberInfos, input => PropertyInfoAdapter.Create((PropertyInfo) input));
 
       return propertyInfos;
     }
 
     private bool FindPropertiesFilter (MemberInfo member, object filterCriteria)
     {
-      return FindPropertiesFilter (new PropertyInfoAdapter ((PropertyInfo) member));
+      return FindPropertiesFilter (PropertyInfoAdapter.Create((PropertyInfo) member));
     }
 
     private Set<IMethodInformation> GetExplicitInterfaceImplementations (Type type)
@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         MethodInfo[] explicitInterfaceImplementations = Array.FindAll (
             interfaceMapping.TargetMethods,
             targetMethod => targetMethod.IsSpecialName && !targetMethod.IsPublic);
-        explicitInterfaceImplementationSet.AddRange (explicitInterfaceImplementations.Select (mi => (IMethodInformation) new MethodInfoAdapter (mi)));
+        explicitInterfaceImplementationSet.AddRange (explicitInterfaceImplementations.Select (mi => (IMethodInformation) MethodInfoAdapter.Create(mi)));
       }
 
       return explicitInterfaceImplementationSet;

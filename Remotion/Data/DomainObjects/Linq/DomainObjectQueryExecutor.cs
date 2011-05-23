@@ -364,7 +364,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new NotSupportedException (message);
       }
 
-      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo));
+      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (PropertyInfoAdapter.Create(propertyInfo));
       try
       {
         return classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);

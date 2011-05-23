@@ -33,7 +33,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper = NullSecurityClientTestHelper.CreateForStatefulSecurity ();
       _securityClient = _testHelper.CreateSecurityClient();
-      _methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetProperty ("IsVisible").GetGetMethod());
+      _methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetProperty ("IsVisible").GetGetMethod());
     }
 
     [Test]

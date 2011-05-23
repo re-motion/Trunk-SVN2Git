@@ -84,7 +84,7 @@ namespace Remotion.Reflection
         throw new NotSupportedException (message);
       }
 
-      return new MethodInfoAdapter (methodInfo);
+      return MethodInfoAdapter.Create(methodInfo);
     }
 
     /// <summary>

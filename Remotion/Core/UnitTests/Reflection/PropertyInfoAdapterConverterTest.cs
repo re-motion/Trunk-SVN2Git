@@ -16,7 +16,7 @@ namespace Remotion.UnitTests.Reflection
     public void SetUp ()
     {
       _propertyInfo = typeof (string).GetProperty ("Length");
-      _propertyInfoAdapter = new PropertyInfoAdapter (_propertyInfo);
+      _propertyInfoAdapter = PropertyInfoAdapter.Create(_propertyInfo);
 
       _converter = new PropertyInfoAdapterConverter ();
     }

@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void Initialize_IndexedProperty ()
     {
       IPropertyInformation propertyInfo =
-          new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }));
+          PropertyInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }));
       new StubPropertyBase (
               new PropertyBase.Parameters (
                   _bindableObjectProvider,

@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Reflection
     public void SetUp ()
     {
       _methodInfo = typeof (string).GetMethod ("Format", new[] { typeof (string), typeof (object) });
-      _methodInfoAdapter = new MethodInfoAdapter (_methodInfo);
+      _methodInfoAdapter = MethodInfoAdapter.Create(_methodInfo);
 
       _converter = new MethodInfoAdapterConverter();
     }

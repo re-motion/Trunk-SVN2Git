@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
       _enumValue = MockRepository.GenerateStub<IBocEnumValue>();
       var businessObjectProvider = BindableObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute));
-      var propertyInfo = new PropertyInfoAdapter (typeof (TypeWithEnum).GetProperty ("EnumValue"));
+      var propertyInfo = PropertyInfoAdapter.Create(typeof (TypeWithEnum).GetProperty ("EnumValue"));
       IBusinessObjectEnumerationProperty property =
           new EnumerationProperty (
               new PropertyBase.Parameters (

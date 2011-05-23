@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ClassDefinition classDefinition, Type declaringType, string propertyName)
     {
       var propertyInfo = 
-          new PropertyInfoAdapter (declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
+          PropertyInfoAdapter.Create(declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
       var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver());
       var propertyDefinition = propertyReflector.GetMetadata();
       var properties = new List<PropertyDefinition>();

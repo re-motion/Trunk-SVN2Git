@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (OrderTicket), null);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection(new[]{propertyDefinition},true));
-      var expectedPropertyInfo = new PropertyInfoAdapter (typeof (OrderTicket).GetProperty ("Order"));
+      var expectedPropertyInfo = PropertyInfoAdapter.Create(typeof (OrderTicket).GetProperty ("Order"));
       var fakeRelationEndPoint = new RelationEndPointDefinition (propertyDefinition, false);
       
       _mappingObjectFactoryMock

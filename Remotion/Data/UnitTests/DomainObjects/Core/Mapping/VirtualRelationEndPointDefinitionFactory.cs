@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public static class VirtualRelationEndPointDefinitionFactory
   {
-    private static readonly IPropertyInformation s_dummyPropertyInfo = new PropertyInfoAdapter (typeof (Order).GetProperty ("OrderNumber"));
+    private static readonly IPropertyInformation s_dummyPropertyInfo = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderNumber"));
 
     public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (
         ClassDefinition classDefinition,

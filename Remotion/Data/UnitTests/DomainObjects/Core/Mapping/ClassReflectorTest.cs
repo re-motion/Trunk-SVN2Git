@@ -410,7 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           shortPropertyName,
           BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
       Assert.IsNotNull (propertyInfo, "Property '" + shortPropertyName + "' not found on type '" + declaringType + "'.");
-      return new PropertyInfoAdapter (propertyInfo);
+      return PropertyInfoAdapter.Create(propertyInfo);
     }
   }
 }

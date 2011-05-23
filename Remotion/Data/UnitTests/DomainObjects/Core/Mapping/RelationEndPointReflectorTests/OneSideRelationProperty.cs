@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void GetMetadata_ForOptional()
     {
-      var propertyInfo = new PropertyInfoAdapter (_classType.GetProperty ("NoAttribute"));
+      var propertyInfo = PropertyInfoAdapter.Create(_classType.GetProperty ("NoAttribute"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata ();
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void GetMetadata_ForMandatory()
     {
-      var propertyInfo = new PropertyInfoAdapter (_classType.GetProperty ("NotNullable"));
+      var propertyInfo = PropertyInfoAdapter.Create(_classType.GetProperty ("NotNullable"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata ();
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void GetMetadata_BidirectionalOneToOne()
     {
-      var propertyInfo = new PropertyInfoAdapter (_classType.GetProperty ("BidirectionalOneToOne"));
+      var propertyInfo = PropertyInfoAdapter.Create(_classType.GetProperty ("BidirectionalOneToOne"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata ();
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void GetMetadata_BidirectionalOneToMany ()
     {
-      var propertyInfo = new PropertyInfoAdapter (_classType.GetProperty ("BidirectionalOneToMany"));
+      var propertyInfo = PropertyInfoAdapter.Create(_classType.GetProperty ("BidirectionalOneToMany"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata ();
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void IsVirtualEndRelationEndpoint_BidirectionalOneToOne ()
     {
-      var propertyInfo = new PropertyInfoAdapter (_classType.GetProperty ("BidirectionalOneToOne"));
+      var propertyInfo = PropertyInfoAdapter.Create(_classType.GetProperty ("BidirectionalOneToOne"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
 
       Assert.IsTrue (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void IsVirtualEndRelationEndpoint_BidirectionalOneToMany ()
     {
-      var propertyInfo = new PropertyInfoAdapter (_classType.GetProperty ("BidirectionalOneToMany"));
+      var propertyInfo = PropertyInfoAdapter.Create(_classType.GetProperty ("BidirectionalOneToMany"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
 
       Assert.IsTrue (relationEndPointReflector.IsVirtualEndRelationEndpoint());

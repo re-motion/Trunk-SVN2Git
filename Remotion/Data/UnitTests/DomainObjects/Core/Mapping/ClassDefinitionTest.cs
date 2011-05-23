@@ -1220,7 +1220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       PropertyInfo property = typeof (Order).GetProperty ("OrderNumber");
       var propertyDefinition = _orderClass.GetPropertyDefinition (property.DeclaringType.FullName + "." + property.Name);
-      Assert.AreEqual (new PropertyInfoAdapter (property), propertyDefinition.PropertyInfo);
+      Assert.AreEqual (PropertyInfoAdapter.Create(property), propertyDefinition.PropertyInfo);
     }
 
     [Test]
@@ -1262,7 +1262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
 
-      var result = _orderClass.ResolveProperty (new PropertyInfoAdapter (property));
+      var result = _orderClass.ResolveProperty (PropertyInfoAdapter.Create(property));
 
       var expected = _orderClass.GetPropertyDefinition (typeof (Order).FullName + ".OrderNumber");
       Assert.That (result, Is.SameAs (expected));
@@ -1273,8 +1273,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
 
-      var result1 = _orderClass.ResolveProperty (new PropertyInfoAdapter (property));
-      var result2 = _orderClass.ResolveProperty (new PropertyInfoAdapter (property));
+      var result1 = _orderClass.ResolveProperty (PropertyInfoAdapter.Create(property));
+      var result2 = _orderClass.ResolveProperty (PropertyInfoAdapter.Create(property));
 
       Assert.That (result1, Is.SameAs (result2));
     }
@@ -1284,7 +1284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
 
-      var result = _orderClass.ResolveProperty (new PropertyInfoAdapter (property));
+      var result = _orderClass.ResolveProperty (PropertyInfoAdapter.Create(property));
 
       Assert.That (result, Is.Null);
     }
@@ -1294,7 +1294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty");
 
-      var result = _targetClassForPersistentMixinClass.ResolveProperty (new PropertyInfoAdapter (property));
+      var result = _targetClassForPersistentMixinClass.ResolveProperty (PropertyInfoAdapter.Create(property));
 
       var expected = _targetClassForPersistentMixinClass.GetPropertyDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty");
@@ -1306,7 +1306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty");
 
-      var result = _derivedTargetClassForPersistentMixinClass.ResolveProperty (new PropertyInfoAdapter (property));
+      var result = _derivedTargetClassForPersistentMixinClass.ResolveProperty (PropertyInfoAdapter.Create(property));
 
       var expected = _targetClassForPersistentMixinClass.GetPropertyDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty");
@@ -1318,7 +1318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderTicket");
 
-      var result = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
+      var result = _orderClass.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property));
 
       var expected = _orderClass.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
       Assert.That (result, Is.SameAs (expected));
@@ -1329,7 +1329,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderItems");
 
-      var result = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
+      var result = _orderClass.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property));
 
       var expected = _orderClass.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       Assert.That (result, Is.SameAs (expected));
@@ -1340,7 +1340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
 
-      var result = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
+      var result = _orderClass.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property));
 
       Assert.That (result, Is.Null);
     }
@@ -1350,8 +1350,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderItems");
 
-      var result1 = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
-      var result2 = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
+      var result1 = _orderClass.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property));
+      var result2 = _orderClass.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property));
 
       Assert.That (result1, Is.SameAs (result2));
     }
@@ -1361,7 +1361,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("VirtualRelationProperty");
 
-      var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
+      var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property));
 
       var expected = _targetClassForPersistentMixinClass.GetRelationEndPointDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".VirtualRelationProperty");
@@ -1373,7 +1373,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
 
-      var result = _derivedTargetClassForPersistentMixinClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
+      var result = _derivedTargetClassForPersistentMixinClass.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property));
 
       var expected = _targetClassForPersistentMixinClass.GetRelationEndPointDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".RelationProperty");

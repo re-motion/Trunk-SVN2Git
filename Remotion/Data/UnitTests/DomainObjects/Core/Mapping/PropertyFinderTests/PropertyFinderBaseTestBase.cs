@@ -28,8 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     protected IPropertyInformation GetProperty (Type type, string propertyName)
     {
       var propertyInfo =
-          new PropertyInfoAdapter (
-              type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+          PropertyInfoAdapter.Create(type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
       Assert.That (propertyInfo, Is.Not.Null, "Property '{0}' was not found on type '{1}'.", propertyName, type);
 
       return propertyInfo;

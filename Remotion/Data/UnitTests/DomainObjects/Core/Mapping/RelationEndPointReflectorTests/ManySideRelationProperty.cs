@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     private PropertyReflector CreatePropertyReflector (string property)
     {
       var propertyInfo = 
-          new PropertyInfoAdapter (_classType.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+          PropertyInfoAdapter.Create(_classType.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
       return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
     }

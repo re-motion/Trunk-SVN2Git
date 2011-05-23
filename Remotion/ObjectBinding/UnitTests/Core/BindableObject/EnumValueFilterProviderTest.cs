@@ -191,7 +191,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
     private IPropertyInformation GetPropertyInformation (string name)
     {
-      return new PropertyInfoAdapter (typeof (ClassWithDisabledEnumValue).GetProperty (name));
+      return PropertyInfoAdapter.Create(typeof (ClassWithDisabledEnumValue).GetProperty (name));
     }
   }
 }

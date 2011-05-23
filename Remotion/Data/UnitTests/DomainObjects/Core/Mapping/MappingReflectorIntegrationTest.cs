@@ -76,8 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition2 =
           classDefinition2.GetMandatoryPropertyDefinition (property2.DeclaringType.FullName + "." + property2.Name);
 
-      Assert.That (propertyDefinition1.PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (property1)));
-      Assert.That (propertyDefinition2.PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (property2)));
+      Assert.That (propertyDefinition1.PropertyInfo, Is.EqualTo (PropertyInfoAdapter.Create(property1)));
+      Assert.That (propertyDefinition2.PropertyInfo, Is.EqualTo (PropertyInfoAdapter.Create(property2)));
     }
 
     [Test]

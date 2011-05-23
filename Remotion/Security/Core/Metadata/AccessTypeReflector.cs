@@ -110,7 +110,7 @@ namespace Remotion.Security.Metadata
           BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy,
           FindSecuredMembersFilter,
           null);
-      return staticMethods.Cast<MethodInfo> ().Select (mi => (IMethodInformation) new MethodInfoAdapter (mi));
+      return staticMethods.Cast<MethodInfo> ().Select (mi => (IMethodInformation) MethodInfoAdapter.Create(mi));
     }
 
     private IEnumerable<IMethodInformation> GetInstanceMethods (Type type)
@@ -120,7 +120,7 @@ namespace Remotion.Security.Metadata
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
           null);
-      return instanceMethods.Cast<MethodInfo> ().Select (mi => (IMethodInformation) new MethodInfoAdapter (mi));
+      return instanceMethods.Cast<MethodInfo> ().Select (mi => (IMethodInformation) MethodInfoAdapter.Create(mi));
     }
 
     private bool FindSecuredMembersFilter (MemberInfo member, object filterCriteria)

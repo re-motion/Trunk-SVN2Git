@@ -94,7 +94,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void FindInterfaceImplementation ()
     {
-      var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
+      var methodInfoAdapter = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
       _implementationMethodInformationStub.Stub (stub => stub.FindInterfaceImplementation (typeof (object))).Return (methodInfoAdapter);
 
       Assert.That (_mixinIntroducedMethodInformation.FindInterfaceImplementation (typeof (object)), Is.SameAs (methodInfoAdapter));
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void FindInterfaceDeclaration ()
     {
-      var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
+      var methodInfoAdapter = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
       _declarationMethodInformationStub.Stub (stub => stub.FindInterfaceDeclaration()).Return (methodInfoAdapter);
 
       Assert.That (_mixinIntroducedMethodInformation.FindInterfaceDeclaration(), Is.SameAs (_declarationMethodInformationStub));
@@ -112,7 +112,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void FindDeclaringProperty ()
     {
-      var propertyInfoAdapter = new PropertyInfoAdapter (typeof (string).GetProperty ("Length"));
+      var propertyInfoAdapter = PropertyInfoAdapter.Create(typeof (string).GetProperty ("Length"));
       _implementationMethodInformationStub.Stub (stub => stub.FindDeclaringProperty()).Return (propertyInfoAdapter);
 
       Assert.That (_mixinIntroducedMethodInformation.FindDeclaringProperty(), Is.SameAs (propertyInfoAdapter));
@@ -129,7 +129,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void Invoke ()
     {
-      var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
+      var methodInfoAdapter = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
       _declarationMethodInformationStub.Stub (stub => stub.Invoke ("Test", new object[] { })).Return (methodInfoAdapter);
 
       var result = _mixinIntroducedMethodInformation.Invoke ("Test", new object[] { });
@@ -161,7 +161,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetBaseDefinition ()
     {
-      var objToReturn = new MethodInfoAdapter(typeof (string).GetMethod ("get_Length"));
+      var objToReturn = MethodInfoAdapter.Create(typeof (string).GetMethod ("get_Length"));
       _implementationMethodInformationStub.Stub (stub => stub.GetBaseDefinition ()).Return (objToReturn);
 
       Assert.That (_mixinIntroducedMethodInformation.GetBaseDefinition (), Is.SameAs (objToReturn));

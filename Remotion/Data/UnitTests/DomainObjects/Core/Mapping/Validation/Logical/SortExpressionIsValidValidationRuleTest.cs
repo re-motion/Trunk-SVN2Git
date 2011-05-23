@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           CardinalityType.Many,
           typeof (Order),
           "Test",
-          new PropertyInfoAdapter (typeof (Customer).GetProperty ("Orders")));
+          PropertyInfoAdapter.Create(typeof (Customer).GetProperty ("Orders")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       endPointDefinition.SetRelationDefinition (relationDefinition);
 

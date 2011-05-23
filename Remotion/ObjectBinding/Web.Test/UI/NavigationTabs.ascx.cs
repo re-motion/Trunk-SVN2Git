@@ -60,7 +60,7 @@ namespace OBWTest.UI
       EnumerationProperty property = new EnumerationProperty (
           new PropertyBase.Parameters (
               (BindableObjectProvider) BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>(),
-              new PropertyInfoAdapter (propertyInfo),
+              PropertyInfoAdapter.Create(propertyInfo),
               propertyInfo.PropertyType,
               propertyInfo.PropertyType,
               null,

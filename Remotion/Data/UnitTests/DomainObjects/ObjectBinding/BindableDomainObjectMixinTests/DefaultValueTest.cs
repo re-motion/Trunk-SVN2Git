@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       propertyInformationStub.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
       propertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (object));
       propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeof (object));
-      propertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (new MethodInfoAdapter (typeof (object).GetMethod ("ToString")));
+      propertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString")));
 
       var booleanProperty = CreateProperty (propertyInformationStub);
 

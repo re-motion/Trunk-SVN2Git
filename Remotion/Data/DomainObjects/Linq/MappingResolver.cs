@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var classDefinition = GetClassDefinition (joinInfo.OriginatingEntity.Type);
 
       var property = joinInfo.MemberInfo as PropertyInfo;
-      var leftEndPointDefinition = property != null ? classDefinition.ResolveRelationEndPoint (new PropertyInfoAdapter (property)) : null;
+      var leftEndPointDefinition = property != null ? classDefinition.ResolveRelationEndPoint (PropertyInfoAdapter.Create(property)) : null;
 
       if (leftEndPointDefinition == null)
       {
@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (property.Name == _storageNameProvider.IDColumnName && property.DeclaringType == typeof (DomainObject))
         return _storageSpecificExpressionResolver.ResolveIDColumn (originatingEntity, classDefinition);
 
-      var propertyInfoAdapter = new PropertyInfoAdapter (property);
+      var propertyInfoAdapter = PropertyInfoAdapter.Create(property);
       var endPointDefinition = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
       if (endPointDefinition != null)
         return new SqlEntityRefMemberExpression (originatingEntity, property);

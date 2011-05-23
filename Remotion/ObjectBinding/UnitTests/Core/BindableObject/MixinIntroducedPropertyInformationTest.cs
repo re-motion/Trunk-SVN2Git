@@ -94,7 +94,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void FindInterfaceImplementation ()
     {
-      var propertyInfoAdapter = new PropertyInfoAdapter (typeof (string).GetProperty ("Length"));
+      var propertyInfoAdapter = PropertyInfoAdapter.Create(typeof (string).GetProperty ("Length"));
       _implementationPropertyInformationStub.Stub (stub => stub.FindInterfaceImplementation (typeof (object))).Return (propertyInfoAdapter);
 
       Assert.That (_mixinIntroducedPropertyInformation.FindInterfaceImplementation (typeof (object)), Is.SameAs (propertyInfoAdapter));
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetGetMethod ()
     {
-      var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
+      var methodInfoAdapter = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
       _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (methodInfoAdapter);
       _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (false)).Return (methodInfoAdapter);
 
@@ -146,7 +146,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetSetMethod ()
     {
-      var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
+      var methodInfoAdapter = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
       _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (methodInfoAdapter);
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (false)).Return (methodInfoAdapter);
 
@@ -172,7 +172,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
       _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return(
-          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
+          MethodInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
 
       _mixinIntroducedPropertyInformation.SetValue (instance, value, null);
 
@@ -188,7 +188,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (null);
       _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
+          MethodInfoAdapter.Create(typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
 
       Assert.That (_mixinIntroducedPropertyInformation.GetValue (instance, null), Is.SameAs (value));
     }
@@ -220,8 +220,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           _mixinIntroducedPropertyInformation.Equals (
               new MixinIntroducedPropertyInformation (
                   new InterfaceImplementationPropertyInformation (
-                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
-                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length"))))),
+                      PropertyInfoAdapter.Create(typeof (string).GetProperty ("Length")),
+                      PropertyInfoAdapter.Create(typeof (string).GetProperty ("Length"))))),
           Is.False);
 
       Assert.That (
