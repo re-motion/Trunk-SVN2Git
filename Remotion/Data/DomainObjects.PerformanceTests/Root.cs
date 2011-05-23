@@ -50,13 +50,13 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       //RunLoadObjectsTest();
 
-      RunSerializationTest();
+      //RunSerializationTest();
 
       //RunHasRelationChangedTest();
       //RunCommitTest ();
 
-      //BindableObjectWithSecurityTest();
-      //BindableObjectWithoutSecurityTest();
+      BindableObjectWithSecurityTest();
+      BindableObjectWithoutSecurityTest();
 
       //LinqTest();
       // InstantiationTest ();

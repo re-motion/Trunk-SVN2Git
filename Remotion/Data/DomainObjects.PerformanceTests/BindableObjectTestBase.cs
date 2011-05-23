@@ -79,14 +79,14 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       bool value = false;
 
-      var indexParameters = new object[0];
       var propertyInfo = property.PropertyInfo;
-      Assert.That (propertyInfo.GetValue (obj, indexParameters), Is.Not.Null);
+      var dynamicMethod = propertyInfo.GetGetMethod (false).GetFastInvoker<Func<object, object>>();
+      Assert.That (dynamicMethod (obj), Is.Not.Null);
 
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
-        value ^= propertyInfo.GetValue (obj, indexParameters) == null;
+        value ^= dynamicMethod (obj) == null;
       stopwatch.Stop();
 
       Trace.WriteLine (value);
