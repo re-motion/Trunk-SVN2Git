@@ -55,6 +55,12 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void Create_ReturnsSameInstance ()
+    {
+      Assert.That (PropertyInfoAdapter.Create (_property), Is.SameAs (PropertyInfoAdapter.Create (_property)));
+    }
+
+    [Test]
     public void PropertyInfo ()
     {
       Assert.That (_adapter.PropertyInfo, Is.SameAs (_property));
@@ -729,7 +735,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void Equals_ChecksPropertyInfo ()
+    public void Equals ()
     {
       Assert.That (_adapter.Equals (null), Is.False);
       Assert.That (_adapter.Equals ("test"), Is.False);

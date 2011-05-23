@@ -30,12 +30,13 @@ namespace Remotion.Reflection
   [TypeConverter (typeof (MethodInfoAdapterConverter))]
   public sealed class MethodInfoAdapter : IMethodInformation
   {
-    private static readonly InterlockedCache<MethodInfo, MethodInfoAdapter> s_cache = new InterlockedCache<MethodInfo, MethodInfoAdapter>();
+    //If this is changed to an (expiring) cache, equals implementation must be updated.
+    private static readonly IDataStore<MethodInfo, MethodInfoAdapter> s_dataStore = new InterlockedDataStore<MethodInfo, MethodInfoAdapter> ();
 
     public static MethodInfoAdapter Create (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-      return s_cache.GetOrCreateValue (methodInfo, mi=> new MethodInfoAdapter (mi));
+      return s_dataStore.GetOrCreateValue (methodInfo, mi=> new MethodInfoAdapter (mi));
     }
 
     private readonly MethodInfo _methodInfo;
@@ -121,7 +122,7 @@ namespace Remotion.Reflection
            from index in Enumerable.Range (0, map.TargetMethods.Length)
            where MemberInfoEqualityComparer.Instance.Equals(map.TargetMethods[index], _methodInfo)
            select map.InterfaceMethods[index]).FirstOrDefault();
-      return Maybe.ForValue (resultMethodInfo).Select (mi => Create(mi)).ValueOrDefault();
+      return Maybe.ForValue (resultMethodInfo).Select (Create).ValueOrDefault();
     }
 
     public T GetFastInvoker<T> () where T: class
@@ -159,7 +160,7 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetBaseDefinition ()
     {
-      return Create(_methodInfo.GetBaseDefinition());
+      return Create (_methodInfo.GetBaseDefinition());
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
@@ -179,12 +180,7 @@ namespace Remotion.Reflection
 
     public override bool Equals (object obj)
     {
-      if (obj == null)
-        return false;
-      if (obj.GetType() != GetType()) return false;
-      var other = (MethodInfoAdapter) obj;
-      
-      return MemberInfoEqualityComparer.Instance.Equals (_methodInfo, other._methodInfo);
+      return ReferenceEquals (this, obj);
     }
 
     public override int GetHashCode ()

@@ -55,6 +55,12 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void Create_ReturnsSameInstance ()
+    {
+      Assert.That (MethodInfoAdapter.Create (_method), Is.SameAs (MethodInfoAdapter.Create (_method)));
+    }
+
+    [Test]
     public void MethodInfo ()
     {
       Assert.That (_adapter.MethodInfo, Is.SameAs (_method));

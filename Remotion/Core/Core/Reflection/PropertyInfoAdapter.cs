@@ -29,12 +29,13 @@ namespace Remotion.Reflection
   [TypeConverter (typeof (PropertyInfoAdapterConverter))]
   public sealed class PropertyInfoAdapter : IPropertyInformation
   {
-    private static readonly InterlockedCache<PropertyInfo, PropertyInfoAdapter> s_cache = new InterlockedCache<PropertyInfo, PropertyInfoAdapter>();
+    //If this is changed to an (expiring) cache, equals implementation must be updated.
+    private static readonly IDataStore<PropertyInfo, PropertyInfoAdapter> s_dataStore = new InterlockedDataStore<PropertyInfo, PropertyInfoAdapter>();
 
     public static PropertyInfoAdapter Create (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-      return s_cache.GetOrCreateValue (propertyInfo, pi => new PropertyInfoAdapter (pi));
+      return s_dataStore.GetOrCreateValue (propertyInfo, pi => new PropertyInfoAdapter (pi));
     }
 
     private readonly PropertyInfo _propertyInfo;
@@ -107,7 +108,7 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_propertyInfo.GetGetMethod (nonPublic)).Select (mi => MethodInfoAdapter.Create(mi)).ValueOrDefault();
+      return Maybe.ForValue (_propertyInfo.GetGetMethod (nonPublic)).Select (MethodInfoAdapter.Create).ValueOrDefault();
     }
 
     public IMethodInformation GetSetMethod (bool nonPublic)
@@ -171,13 +172,7 @@ namespace Remotion.Reflection
 
     public override bool Equals (object obj)
     {
-      if (obj == null)
-        return false;
-      if (obj.GetType() != GetType()) 
-        return false;
-      var other = (PropertyInfoAdapter) obj;
-
-      return MemberInfoEqualityComparer.Instance.Equals (_propertyInfo, other._propertyInfo);
+      return ReferenceEquals (this, obj);
     }
 
     public override int GetHashCode ()
