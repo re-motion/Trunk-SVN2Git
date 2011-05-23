@@ -16,9 +16,10 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Reflection
+namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
   /// Represents a mixin method that is introduced to its target classes.

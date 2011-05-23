@@ -100,6 +100,10 @@
     <Compile Include="Core\BindableObject\DisableExtensibleEnumValuesAttributeTest.cs" />
     <Compile Include="Core\BindableObject\EnumValueFilterProviderTest.cs" />
     <Compile Include="Core\BindableObject\ExtensibleEnumerationPropertyTest.cs" />
+    <Compile Include="Core\BindableObject\InterfaceImplementationMethodInformationTest.cs" />
+    <Compile Include="Core\BindableObject\InterfaceImplementationPropertyInformationTest.cs" />
+    <Compile Include="Core\BindableObject\MixinIntroducedMethodInformationTest.cs" />
+    <Compile Include="Core\BindableObject\MixinIntroducedPropertyInformationTest.cs" />
     <Compile Include="Core\BindableObject\NullEnumerationValueFilterTest.cs" />
     <Compile Include="Core\BindableObject\PropertyCollectionTest.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\Extensibility.cs" />

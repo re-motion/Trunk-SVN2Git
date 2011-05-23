@@ -17,9 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Reflection
+namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
   /// Represents a property that implements a property declared by an interface. The accessors returned by <see cref="GetGetMethod(bool)"/> and 

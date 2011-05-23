@@ -147,6 +147,7 @@
     <Compile Include="BindableObject\BindableObjectGlobalizationService.cs" />
     <Compile Include="BindableObject\BindableObjectMixin.cs" />
     <Compile Include="BindableObject\BindableObjectMixinBase.cs" />
+    <Compile Include="BindableObject\BindableObjectMixinIntroducedPropertyInformation.cs" />
     <Compile Include="BindableObject\BindableObjectProvider.cs" />
     <Compile Include="BindableObject\BindableObjectProviderAttribute.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityBaseImplementation.cs" />
@@ -162,6 +163,10 @@
     <Compile Include="BindableObject\DisableExtensibleEnumValuesAttribute.cs" />
     <Compile Include="BindableObject\IBindableObjectBaseImplementation.cs" />
     <Compile Include="BindableObject\IDefaultValueStrategy.cs" />
+    <Compile Include="BindableObject\InterfaceImplementationMethodInformation.cs" />
+    <Compile Include="BindableObject\InterfaceImplementationPropertyInformation.cs" />
+    <Compile Include="BindableObject\MixinIntroducedMethodInformation.cs" />
+    <Compile Include="BindableObject\MixinIntroducedPropertyInformation.cs" />
     <Compile Include="BindableObject\NullEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\Properties\EnumValueFilterProvider.cs" />
     <Compile Include="BindableObject\Properties\ExtensibleEnumerationProperty.cs" />

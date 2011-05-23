@@ -14,15 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
-using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
-using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
 using Rhino.Mocks;
 
-namespace Remotion.UnitTests.Reflection
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
   [TestFixture]
   public class MixinIntroducedPropertyInformationTest

@@ -17,10 +17,11 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
-namespace Remotion.UnitTests.Reflection
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
   [TestFixture]
   public class InterfaceImplementationMethodInformationTest

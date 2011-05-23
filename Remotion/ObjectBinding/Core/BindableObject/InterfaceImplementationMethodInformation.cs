@@ -16,9 +16,10 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Reflection
+namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
   /// Represents a method that implements a method declared by an interface. <see cref="Invoke"/> and <see cref="GetFastInvoker"/> call the method

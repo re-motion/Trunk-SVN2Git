@@ -314,11 +314,7 @@
     <Compile Include="Reflection\CodeGeneration\MethodGenerationTestBase.cs" />
     <Compile Include="Reflection\CodeGeneration\TestMethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactoryTest.cs" />
-    <Compile Include="Reflection\InterfaceImplementationMethodInformationTest.cs" />
-    <Compile Include="Reflection\InterfaceImplementationPropertyInformationTest.cs" />
     <Compile Include="Reflection\MethodInfoAdapterConverterTest.cs" />
-    <Compile Include="Reflection\MixinIntroducedMethodInformationTest.cs" />
-    <Compile Include="Reflection\MixinIntroducedPropertyInformationTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverterTest.cs" />
     <Compile Include="Reflection\ReflectionExtensionsTest.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\DerivedClassWithReferenceType.cs" />
