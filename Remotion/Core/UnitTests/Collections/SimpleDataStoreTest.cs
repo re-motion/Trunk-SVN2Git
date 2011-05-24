@@ -38,11 +38,11 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Initialize_WithCustomEqualityComparer ()
     {
-      _store = new SimpleDataStore<string, int?> (StringComparer.InvariantCultureIgnoreCase);
-      _store.Add ("a", 1);
+      var dataStore = new SimpleDataStore<string, int?> (StringComparer.InvariantCultureIgnoreCase);
+      dataStore.Add ("a", 1);
 
-      Assert.That (_store.ContainsKey ("a"));
-      Assert.That (_store.ContainsKey ("A"));
+      Assert.That (dataStore.ContainsKey ("a"));
+      Assert.That (dataStore.ContainsKey ("A"));
     }
 
     [Test]
