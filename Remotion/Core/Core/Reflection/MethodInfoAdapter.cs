@@ -31,7 +31,9 @@ namespace Remotion.Reflection
   public sealed class MethodInfoAdapter : IMethodInformation
   {
     //If this is changed to an (expiring) cache, equals implementation must be updated.
-    private static readonly IDataStore<MethodInfo, MethodInfoAdapter> s_dataStore = new InterlockedDataStore<MethodInfo, MethodInfoAdapter> ();
+    private static readonly IDataStore<MethodInfo, MethodInfoAdapter> s_dataStore =
+        new InterlockedDataStore<MethodInfo, MethodInfoAdapter> (
+            new SimpleDataStore<MethodInfo, MethodInfoAdapter> (MemberInfoEqualityComparer<MethodInfo>.Instance));
 
     public static MethodInfoAdapter Create (MethodInfo methodInfo)
     {
@@ -120,7 +122,7 @@ namespace Remotion.Reflection
           (from ifc in DeclaringType.GetInterfaces()
            let map = DeclaringType.GetInterfaceMap (ifc)
            from index in Enumerable.Range (0, map.TargetMethods.Length)
-           where MemberInfoEqualityComparer.Instance.Equals(map.TargetMethods[index], _methodInfo)
+           where MemberInfoEqualityComparer<MethodInfo>.Instance.Equals(map.TargetMethods[index], _methodInfo)
            select map.InterfaceMethods[index]).FirstOrDefault();
       return Maybe.ForValue (resultMethodInfo).Select (Create).ValueOrDefault();
     }
@@ -148,7 +150,7 @@ namespace Remotion.Reflection
           (from t in DeclaringType.CreateSequence (t => t.BaseType)
            from pi in t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
            from accessor in new[] { pi.GetGetMethod (true), pi.GetSetMethod (true) }
-           where accessor != null && MemberInfoEqualityComparer.Instance.Equals (_methodInfo, accessor)
+           where accessor != null && MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (_methodInfo, accessor)
            select pi).FirstOrDefault();
       return propertyInfo != null ? PropertyInfoAdapter.Create(propertyInfo) : null;
     }
@@ -185,7 +187,7 @@ namespace Remotion.Reflection
 
     public override int GetHashCode ()
     {
-      return MemberInfoEqualityComparer.Instance.GetHashCode (_methodInfo);
+      return base.GetHashCode();
     }
 
     public override string ToString ()

@@ -30,7 +30,9 @@ namespace Remotion.Reflection
   public sealed class PropertyInfoAdapter : IPropertyInformation
   {
     //If this is changed to an (expiring) cache, equals implementation must be updated.
-    private static readonly IDataStore<PropertyInfo, PropertyInfoAdapter> s_dataStore = new InterlockedDataStore<PropertyInfo, PropertyInfoAdapter>();
+    private static readonly IDataStore<PropertyInfo, PropertyInfoAdapter> s_dataStore =
+        new InterlockedDataStore<PropertyInfo, PropertyInfoAdapter> (
+            new SimpleDataStore<PropertyInfo, PropertyInfoAdapter> (MemberInfoEqualityComparer<PropertyInfo>.Instance));
 
     public static PropertyInfoAdapter Create (PropertyInfo propertyInfo)
     {
@@ -177,7 +179,7 @@ namespace Remotion.Reflection
 
     public override int GetHashCode ()
     {
-      return MemberInfoEqualityComparer.Instance.GetHashCode (_propertyInfo);
+      return base.GetHashCode();
     }
 
     public override string ToString ()

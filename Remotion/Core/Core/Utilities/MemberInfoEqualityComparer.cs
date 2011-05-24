@@ -23,9 +23,9 @@ namespace Remotion.Utilities
   /// <summary>
   /// Provides logic to compare two <see cref="MemberInfo"/> for logical equality, without considering the <see cref="MemberInfo.ReflectedType"/>.
   /// </summary>
-  public class MemberInfoEqualityComparer : IEqualityComparer<MemberInfo>
+  public class MemberInfoEqualityComparer<T> : IEqualityComparer<T> where T:MemberInfo
   {
-    public static readonly MemberInfoEqualityComparer Instance = new MemberInfoEqualityComparer ();
+    public static readonly MemberInfoEqualityComparer<T> Instance = new MemberInfoEqualityComparer<T> ();
 
     protected MemberInfoEqualityComparer () { }
 
@@ -45,7 +45,7 @@ namespace Remotion.Utilities
     /// The idea for this method, but not the code, was taken from http://blogs.msdn.com/b/kingces/archive/2005/08/17/452774.aspx.
     /// </para>
     /// </returns>
-    public bool Equals (MemberInfo one, MemberInfo two)
+    public bool Equals (T one, T two)
     {
       // Same reference => true of course
       if (ReferenceEquals (one, two))
@@ -76,9 +76,9 @@ namespace Remotion.Utilities
         return false;
 
       var oneAsMethodInfo = one as MethodInfo;
-      if (oneAsMethodInfo != null && oneAsMethodInfo.IsGenericMethod)
+      var twoAsMethodInfo = two as MethodInfo;
+      if (oneAsMethodInfo != null && twoAsMethodInfo != null && oneAsMethodInfo.IsGenericMethod)
       {
-        var twoAsMethodInfo = (MethodInfo) two;
         var genericArgumentsOne = oneAsMethodInfo.GetGenericArguments ();
         var genericArgumentsTwo = twoAsMethodInfo.GetGenericArguments ();
 
@@ -102,7 +102,7 @@ namespace Remotion.Utilities
     /// </summary>
     /// <param name="memberInfo">The <see cref="MemberInfo"/> for which the hash code should be calculated.</param>
     /// <returns>The calculated hash code of the <see cref="MemberInfo"/>.</returns>
-    public int GetHashCode (MemberInfo memberInfo)
+    public int GetHashCode (T memberInfo)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
  

@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
@@ -41,6 +42,13 @@ namespace Remotion.UnitTests.Reflection
     [SetUp]
     public void SetUp ()
     {
+      var propertyInfoAdapterDataStore =
+          (IDataStore<PropertyInfo, PropertyInfoAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (PropertyInfoAdapter), "s_dataStore");
+      propertyInfoAdapterDataStore.Clear();
+      var methodInfoAdapterDataStore =
+          (IDataStore<MethodInfo, MethodInfoAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (MethodInfoAdapter), "s_dataStore");
+      methodInfoAdapterDataStore.Clear();
+
       _method = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("TestMethod");
       _adapter = MethodInfoAdapter.Create(_method);
 
@@ -58,6 +66,16 @@ namespace Remotion.UnitTests.Reflection
     public void Create_ReturnsSameInstance ()
     {
       Assert.That (MethodInfoAdapter.Create (_method), Is.SameAs (MethodInfoAdapter.Create (_method)));
+    }
+
+    [Test]
+    public void Create_ReturnsSameInstance_ForMethodsReflectedFromDifferentLevelsInHierarchy ()
+    {
+      var methodViaBase = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("TestMethod");
+      var methodViaDerived = typeof (DerivedClassWithReferenceType<SimpleReferenceType>).GetMethod ("TestMethod");
+
+      Assert.That (methodViaBase, Is.Not.SameAs (methodViaDerived));
+      Assert.That (MethodInfoAdapter.Create (methodViaBase), Is.SameAs (MethodInfoAdapter.Create (methodViaDerived)));
     }
 
     [Test]

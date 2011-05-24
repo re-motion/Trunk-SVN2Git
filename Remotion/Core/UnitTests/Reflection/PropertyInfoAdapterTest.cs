@@ -17,6 +17,8 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Collections;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
@@ -40,6 +42,13 @@ namespace Remotion.UnitTests.Reflection
     [SetUp]
     public void SetUp ()
     {
+      var propertyInfoAdapterDataStore = 
+          (IDataStore<PropertyInfo, PropertyInfoAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (PropertyInfoAdapter), "s_dataStore");
+      propertyInfoAdapterDataStore.Clear();
+      var methodInfoAdapterDataStore =
+          (IDataStore<MethodInfo, MethodInfoAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (MethodInfoAdapter), "s_dataStore");
+      methodInfoAdapterDataStore.Clear();
+
       _property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("NotVisibleAttributeScalar");
       _adapter = PropertyInfoAdapter.Create(_property);
 
@@ -58,6 +67,16 @@ namespace Remotion.UnitTests.Reflection
     public void Create_ReturnsSameInstance ()
     {
       Assert.That (PropertyInfoAdapter.Create (_property), Is.SameAs (PropertyInfoAdapter.Create (_property)));
+    }
+
+    [Test]
+    public void Create_ReturnsSameInstance_ForMethodsReflectedFromDifferentLevelsInHierarchy ()
+    {
+      var propertyViaBase = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("NotVisibleAttributeScalar");
+      var propertyViaDerived = typeof (DerivedClassWithReferenceType<SimpleReferenceType>).GetProperty ("NotVisibleAttributeScalar");
+
+      Assert.That (propertyViaBase, Is.Not.SameAs (propertyViaDerived));
+      Assert.That (PropertyInfoAdapter.Create (propertyViaBase), Is.SameAs (PropertyInfoAdapter.Create (propertyViaDerived)));
     }
 
     [Test]
