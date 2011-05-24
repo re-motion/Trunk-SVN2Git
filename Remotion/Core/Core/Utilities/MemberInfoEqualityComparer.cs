@@ -48,12 +48,20 @@ namespace Remotion.Utilities
     public bool Equals (MemberInfo one, MemberInfo two)
     {
       // Same reference => true of course
-      // Methods defined by concrete arrays (int[].Set (...) etc.) will always fall into the block above if they are equal; it doesn't seem to be 
-      // possible to get two different MethodInfo references for the same array method
       if (ReferenceEquals (one, two))
         return true;
 
       if (ReferenceEquals (one, null) || ReferenceEquals (null, two)) return false;
+
+      // Methods defined by concrete arrays (int[].Set (...) etc.) will always succeed in the checks above if they are equal; it doesn't seem to be 
+      // possible to get two different MethodInfo references for the same array method. Therefore, return false if an array method got through the 
+      // check. (Since array methods have no metadata tokens, the checks below wouldn't detect any differences.)
+
+      // This ReSharper warning is not correct - MemberInfos can of course have null declaring types.
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
+      if (one.DeclaringType != null && one.DeclaringType.IsArray)
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
+        return false;
 
       // Equal members always have the same metadata token
       if (one.MetadataToken != two.MetadataToken)
@@ -96,9 +104,8 @@ namespace Remotion.Utilities
     /// <returns>The calculated hash code of the <see cref="MemberInfo"/>.</returns>
     public int GetHashCode (MemberInfo memberInfo)
     {
-      if (memberInfo == null)
-        return 0;
-
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+ 
       // DeclaringType can return null, even if ReSharper thinks otherwise.
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
       if (memberInfo.DeclaringType != null && memberInfo.DeclaringType.IsArray)

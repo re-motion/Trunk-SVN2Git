@@ -233,7 +233,7 @@ namespace Remotion.UnitTests.Utilities
 
       var result = MemberInfoEqualityComparer.Instance.Equals (one, two);
 
-      Assert.That (result, Is.True);
+      Assert.That (result, Is.False);
     }
 
     [Test]
@@ -340,8 +340,7 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void GetHashCode_NullMember ()
     {
-      Assert.That (MemberInfoEqualityComparer.Instance.GetHashCode (null), Is.EqualTo (0));
+      Assert.That (() => MemberInfoEqualityComparer.Instance.GetHashCode (null), Throws.Exception.TypeOf<ArgumentNullException>());
     }
-
   }
 }
