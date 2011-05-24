@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (!classDefinition.ClassType.IsSubclassOf (typeof (DomainObject)))
+      if (!ReflectionUtility.IsDomainObject (classDefinition.ClassType))
       {
         return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,
