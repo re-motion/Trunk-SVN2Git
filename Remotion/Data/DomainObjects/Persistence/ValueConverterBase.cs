@@ -23,11 +23,11 @@ namespace Remotion.Data.DomainObjects.Persistence
 {
   public class ValueConverterBase
   {
-    private TypeConversionProvider _typeConversionProvider;
+    private readonly TypeConversionProvider _typeConversionProvider;
 
     protected ValueConverterBase (TypeConversionProvider typeConversionProvider)
     {
-      ArgumentUtility.CheckNotNull ("typeConversionServices", typeConversionProvider);
+      ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
       _typeConversionProvider = typeConversionProvider;
     }
