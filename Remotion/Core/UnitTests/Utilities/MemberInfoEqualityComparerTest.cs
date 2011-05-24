@@ -224,11 +224,10 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [Ignore ("TODO: Is red after caching of method infos is enabled.")]
     public void Equals_False_ArrayMembers ()
     {
-      var one = typeof (int[]).GetMethods ()[0];
-      var two = typeof (int[]).GetMethods ()[1];
+      var one = typeof (int[]).GetMethod ("Set", new[] { typeof (int), typeof (int) });
+      var two = typeof (int[]).GetMethod ("Address", new[] { typeof (int) });
 
       Assert.That (one, Is.Not.SameAs (two));
 
