@@ -29,7 +29,17 @@ namespace Remotion.Collections
   [Serializable]
   public class SimpleDataStore<TKey, TValue> : IDataStore<TKey, TValue>
   {
-    private readonly Dictionary<TKey, TValue> _innerDictionary = new Dictionary<TKey, TValue>();
+    private readonly Dictionary<TKey, TValue> _innerDictionary;
+
+    public SimpleDataStore ()
+      :this (null)
+    {
+    }
+
+    public SimpleDataStore (IEqualityComparer<TKey> comparer)
+    {
+      _innerDictionary = new Dictionary<TKey, TValue> (comparer);
+    }
 
     bool INullObject.IsNull
     {

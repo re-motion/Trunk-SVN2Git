@@ -36,6 +36,16 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
+    public void Initialize_WithCustomEqualityComparer ()
+    {
+      _store = new SimpleDataStore<string, int?> (StringComparer.InvariantCultureIgnoreCase);
+      _store.Add ("a", 1);
+
+      Assert.That (_store.ContainsKey ("a"));
+      Assert.That (_store.ContainsKey ("A"));
+    }
+
+    [Test]
     public void IsNull ()
     {
       Assert.That (((INullObject) _store).IsNull, Is.False);
