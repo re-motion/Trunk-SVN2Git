@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -29,12 +30,18 @@ namespace Remotion.Collections
 
     // member fields
 
-    private readonly SimpleDataStore<TKey, TValue> _cache = new SimpleDataStore<TKey, TValue> ();
+    private readonly SimpleDataStore<TKey, TValue> _cache;
 
     // construction and disposing
 
     public Cache ()
+      : this (null)
     {
+    }
+
+    public Cache (IEqualityComparer<TKey> comparer)
+    {
+      _cache = new SimpleDataStore<TKey, TValue> (comparer);
     }
 
     // methods and properties

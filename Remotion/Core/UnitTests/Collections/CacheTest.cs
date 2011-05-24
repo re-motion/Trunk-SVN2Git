@@ -43,6 +43,16 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
+    public void Initialize_WithCustomEqualityComparer ()
+    {
+      var cache = new Cache<string, int?> (StringComparer.InvariantCultureIgnoreCase);
+      cache.Add ("a", 1);
+
+      Assert.That (cache.GetOrCreateValue ("a", delegate { throw new InvalidOperationException (); }), Is.EqualTo (1));
+      Assert.That (cache.GetOrCreateValue ("A", delegate { throw new InvalidOperationException (); }), Is.EqualTo (1));
+    }
+
+    [Test]
     public void TryGet_WithResultNotInCache ()
     {
       object actual;
