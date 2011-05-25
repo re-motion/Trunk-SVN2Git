@@ -147,6 +147,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBase.cs" />
+    <Compile Include="Core\TestDomain\ClassImplementingInterface.cs" />
     <Compile Include="Core\TestDomain\ClassWithBaseProperty.cs" />
     <Compile Include="Core\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingDisplayName.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Core\TestDomain\ExtensibleEnumWithFilterExtensions.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
+    <Compile Include="Core\TestDomain\IInterfaceToImplement.cs" />
     <Compile Include="Core\TestDomain\IInterfaceWithProperty.cs" />
     <Compile Include="Core\TestDomain\IMixinSecurableClass.cs" />
     <Compile Include="Core\TestDomain\PropertyFinderMixinAddingPropertyBase.cs" />

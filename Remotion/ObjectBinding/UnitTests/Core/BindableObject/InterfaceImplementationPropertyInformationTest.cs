@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
-using Remotion.Reflection.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
@@ -227,7 +226,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var implementationPropertyInfo =
           PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
-              "Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.ExplicitProperty",
               BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ExplicitProperty"));
 
@@ -238,14 +237,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
           typeof (ClassImplementingInterface),
-          "Remotion.Reflection.TestDomain.IInterfaceToImplement.get_ExplicitProperty",
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.get_ExplicitProperty",
           getMethodResult);
 
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
           typeof (ClassImplementingInterface),
-          "Remotion.Reflection.TestDomain.IInterfaceToImplement.set_ExplicitProperty",
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.set_ExplicitProperty",
           setMethodResult);
     }
 
@@ -284,7 +283,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var implementationPropertyInfo =
           PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
-              "Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
               BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ReadOnlyExplicitProperty"));
 
@@ -295,7 +294,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
           typeof (ClassImplementingInterface),
-          "Remotion.Reflection.TestDomain.IInterfaceToImplement.get_ReadOnlyExplicitProperty",
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.get_ReadOnlyExplicitProperty",
           getMethodResult);
       Assert.That (interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
     }
@@ -305,7 +304,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var implementationPropertyInfo =
           PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
-              "Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
               BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("WriteOnlyExplicitProperty"));
 
@@ -317,7 +316,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
           typeof (ClassImplementingInterface),
-          "Remotion.Reflection.TestDomain.IInterfaceToImplement.set_WriteOnlyExplicitProperty",
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.set_WriteOnlyExplicitProperty",
           getMethodResult);
     }
 
@@ -447,7 +446,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var implementationPropertyInfo =
           PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
-              "Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.ExplicitProperty",
               BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ExplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
@@ -483,7 +482,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var implementationPropertyInfo =
           PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
-              "Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
               BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("ReadOnlyExplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
@@ -497,7 +496,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var implementationPropertyInfo =
           PropertyInfoAdapter.Create(typeof (ClassImplementingInterface).GetProperty (
-              "Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
               BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = PropertyInfoAdapter.Create(typeof (IInterfaceToImplement).GetProperty ("WriteOnlyExplicitProperty"));
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
