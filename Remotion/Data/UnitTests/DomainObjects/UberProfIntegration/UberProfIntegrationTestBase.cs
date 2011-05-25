@@ -59,9 +59,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
       get { return _appenderProxy; }
     }
 
-    public MockableLinqToSqlAppender MockableAppender
+    protected void SetAppender (MockableLinqToSqlAppender.ILinqToSqlAppender appender)
     {
-      get { return _mockableAppender; }
+      _mockableAppender.AppenderMock = appender;
     }
   }
 }

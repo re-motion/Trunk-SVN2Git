@@ -31,8 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
   {
     private TracingLinqToSqlAppender _tracingLinqToSqlAppender;
 
-    private ClientTransaction _clientTransaction;
-
     public override void SetUp ()
     {
       base.SetUp();
@@ -44,9 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
       ServiceLocator.SetLocatorProvider (() => locator);
 
       _tracingLinqToSqlAppender = new TracingLinqToSqlAppender();
-      MockableAppender.AppenderMock = _tracingLinqToSqlAppender;
+      SetAppender (_tracingLinqToSqlAppender);
 
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
     }
 
     public override void TearDown ()
@@ -59,12 +56,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
     [Test]
     public void LoadSingleObject ()
     {
-      LifetimeService.GetObject (_clientTransaction, DomainObjectIDs.Order1, false);
+      var clientTransaction = ClientTransaction.CreateRootTransaction ();
+      LifetimeService.GetObject (clientTransaction, DomainObjectIDs.Order1, false);
+      clientTransaction.Discard();
 
       Assert.That (
           _tracingLinqToSqlAppender.TraceLog,
           Is.StringMatching (
-              @"ConnectionStarted \((?<connectionid>[^,]+)\)" + Environment.NewLine
+              @"^ConnectionStarted \((?<connectionid>[^,]+)\)" + Environment.NewLine
               + @"StatementExecuted \(\k<connectionid>, (?<statementid>[^,]+), -- Statement \k<statementid>" + Environment.NewLine
               + @"SELECT \* FROM \[Order\] WHERE \[ID\] = \@ID;" + Environment.NewLine
               + @"-- Ignore unbounded result sets: TOP \*" + Environment.NewLine
@@ -72,7 +71,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
               + @"-- \@ID = \[-\[5682f032-2f0b-494b-a31c-c97f02b89c36\]-\] \[-\[Type \(0\)\]-\]" + Environment.NewLine
               + @"\)" + Environment.NewLine
               + @"CommandDurationAndRowCount \(\k<connectionid>, \d+, \<null\>\)" + Environment.NewLine
-              + @"StatementRowCount \(\k<connectionid>, \k<statementid>, 1\)" + Environment.NewLine));
+              + @"StatementRowCount \(\k<connectionid>, \k<statementid>, 1\)" + Environment.NewLine
+              + @"ConnectionDisposed \(\k<connectionid>\)" + Environment.NewLine
+              + @"$"));
     }
   }
 }
