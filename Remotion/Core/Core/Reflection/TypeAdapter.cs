@@ -22,7 +22,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
-  public class TypeAdapter : ITypeInformation
+  /// <summary>
+  /// Implements the <see cref="ITypeInformation"/> to wrap a <see cref="Type"/> instance.
+  /// </summary>
+  public sealed class TypeAdapter : ITypeInformation
   {
     private readonly Type _type;
     //If this is changed to an (expiring) cache, equals implementation must be updated.
@@ -238,6 +241,75 @@ namespace Remotion.Reflection
       return AttributeUtility.IsDefined<T> (_type, inherited);
     }
 
+    /// <summary>
+    /// Gets the type from which the current <see cref="Type"/> directly inherits.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="Type"/> from which the current <see cref="Type"/> directly inherits, 
+    /// or null if the current Type represents the <see cref="Object"/> class or an interface.
+    /// </returns>
+    public ITypeInformation BaseType
+    {
+      get { return Maybe.ForValue (_type.BaseType).Select (TypeAdapter.Create).ValueOrDefault(); }
+    }
+
+    /// <summary>
+    /// Determines whether the specified object is an instance of the current <see cref="Type"/>.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if the current Type is in the inheritance hierarchy of the object represented by <paramref name="o"/>, 
+    /// or if the current Type is an interface that <paramref name="o"/> supports. <see langword="false"/> if neither of these conditions is the case, 
+    /// or if <paramref name="o"/> is <see langword="null"/>, or if the current Type is an open generic type 
+    /// (that is, <see cref="ContainsGenericParameters"/> returns <see langword="true"/>).
+    /// </returns>
+    /// <param name="o">The object to compare with the current Type. </param>
+    public bool IsInstanceOfType (object o)
+    {
+      return _type.IsInstanceOfType (o);
+    }
+
+    /// <summary>
+    /// Determines whether the class represented by the current <see cref="Type"/> derives from the class represented by the specified <see cref="Type"/>.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if the Type represented by the <paramref name="c"/> parameter and the current Type represent classes, 
+    /// and the class represented by the current Type derives from the class represented by <paramref name="c"/>; otherwise, <see langword="false"/>. 
+    /// This method also returns <see langword="false"/> if <paramref name="c"/> and the current Type represent the same class.
+    /// In addition, the implementation of <paramref name="c"/> must match the implementation of this <see cref="ITypeInformation"/>,
+    /// otherwise this method will also return <see langword="false" />.
+    /// </returns>
+    /// <param name="c">The Type to compare with the current Type. </param>
+    /// <exception cref="ArgumentNullException">The <paramref name="c"/> parameter is <see langword="null"/>. </exception>
+    public bool IsSubclassOf (ITypeInformation c)
+    {
+      ArgumentUtility.CheckNotNull ("c", c);
+
+      var otherTypeAsTypeAdapter = c as TypeAdapter;
+      if (otherTypeAsTypeAdapter == null)
+        return false;
+
+      return _type.IsSubclassOf (otherTypeAsTypeAdapter.Type);
+    }
+
+    /// <summary>
+    /// Determines whether an instance of the current <see cref="Type"/> can be assigned from an instance of the specified Type.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="c"/> and the current Type represent the same type, 
+    /// or if the current Type is in the inheritance hierarchy of <paramref name="c"/>, 
+    /// or if the current Type is an interface that <paramref name="c"/> implements, 
+    /// or if <paramref name="c"/> is a generic type parameter and the current Type represents one of the constraints of <paramref name="c"/>. 
+    /// <see langword="false"/> if none of these conditions are <see langword="true"/>, or if <paramref name="c"/> is <see langword="null"/>,
+    /// or the implementation of <paramref name="c"/> does not match the implementation of this <see cref="ITypeInformation"/>.
+    /// </returns>
+    /// <param name="c">The Type to compare with the current Type. </param>
+    public bool IsAssignableFrom (ITypeInformation c)
+    {
+      var otherTypeAsTypeAdapter = c as TypeAdapter;
+      if (otherTypeAsTypeAdapter == null)
+        return false;
+      return _type.IsAssignableFrom (otherTypeAsTypeAdapter.Type);
+    }
 
     public override string ToString ()
     {
@@ -252,52 +324,11 @@ namespace Remotion.Reflection
     /*
 
 
-    /// <summary>
-    /// Determines whether the class represented by the current <see cref="Type"/> derives from the class represented by the specified <see cref="Type"/>.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the Type represented by the <paramref name="c"/> parameter and the current Type represent classes, and the class represented by the current Type derives from the class represented by <paramref name="c"/>; otherwise, <see langword="false"/>. This method also returns <see langword="false"/> if <paramref name="c"/> and the current Type represent the same class.
-    /// </returns>
-    /// <param name="c">The Type to compare with the current Type. 
-    ///                 </param><exception cref="ArgumentNullException">The <paramref name="c"/> parameter is <see langword="null"/>. 
-    ///                 </exception><filterpriority>2</filterpriority>
-    public bool IsSubclassOf (Type c)
-    {
-      return _type.IsSubclassOf (c);
-    }
-
-    /// <summary>
-    /// Determines whether the specified object is an instance of the current <see cref="Type"/>.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the current Type is in the inheritance hierarchy of the object represented by <paramref name="o"/>, or if the current Type is an interface that <paramref name="o"/> supports. <see langword="false"/> if neither of these conditions is the case, or if <paramref name="o"/> is <see langword="null"/>, or if the current Type is an open generic type (that is, <see cref="P:System.Type.ContainsGenericParameters"/> returns <see langword="true"/>).
-    /// </returns>
-    /// <param name="o">The object to compare with the current Type. 
-    ///                 </param><filterpriority>2</filterpriority>
-    public bool IsInstanceOfType (object o)
-    {
-      return _type.IsInstanceOfType (o);
-    }
 
 
      * 
 
      * 
-    /// <summary>
-    /// Determines whether an instance of the current <see cref="Type"/> can be assigned from an instance of the specified Type.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="c"/> and the current Type represent the same type, or if the current Type is in the inheritance hierarchy of <paramref name="c"/>, or if the current Type is an interface that <paramref name="c"/> implements, or if <paramref name="c"/> is a generic type parameter and the current Type represents one of the constraints of <paramref name="c"/>. <see langword="false"/> if none of these conditions are <see langword="true"/>, or if <paramref name="c"/> is <see langword="null"/>.
-    /// </returns>
-    /// <param name="c">The Type to compare with the current Type. 
-    ///                 </param><filterpriority>2</filterpriority>
-    public bool IsAssignableFrom (Type c)
-    {
-      return _type.IsAssignableFrom (c);
-    }
-
-        public override Type DeclaringType { get; }
-    public abstract Type BaseType { get; }
 
      // use this.GetProperties {name.equals(value.name), returntype.equals(value.returntype)}
      public static PropertyInfo GetProperty (this IPropertyInformation

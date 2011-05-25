@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -22,66 +23,68 @@ using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Reflection
 {
   [TestFixture]
   public class TypeAdapterTest
   {
-    private Type _type;
-    private TypeAdapter _adapter;
-
     [SetUp]
     public void SetUp ()
     {
       var typeAdapterDataStore =
           (IDataStore<Type, TypeAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (TypeAdapter), "s_dataStore");
       typeAdapterDataStore.Clear ();
-
-      _type = typeof (List);
-      _adapter = TypeAdapter.Create (_type);
     }
 
     [Test]
     public void Create_ReturnsSameInstance ()
     {
-      Assert.That (TypeAdapter.Create (_type), Is.SameAs (TypeAdapter.Create (_type)));
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type), Is.SameAs (TypeAdapter.Create (type)));
     }
 
     [Test]
     public void Type ()
     {
-      Assert.That (_adapter.Type, Is.SameAs (_type));
+      var _type = typeof (List);
+      Assert.That (TypeAdapter.Create (_type).Type, Is.SameAs (_type));
     }
 
     [Test]
     public void Name ()
     {
-      Assert.That (_adapter.Name, Is.EqualTo(_type.Name));
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).Name, Is.EqualTo (type.Name));
     }
 
     [Test]
     public void FullName ()
     {
-      Assert.That (_adapter.FullName, Is.EqualTo (_type.FullName));
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).FullName, Is.EqualTo (type.FullName));
     }
 
     [Test]
     public void Namespace ()
     {
-      Assert.That (_adapter.Namespace, Is.EqualTo (_type.Namespace));
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).Namespace, Is.EqualTo (type.Namespace));
     }
     
     [Test]
     public void AssemblyQualifiedName ()
     {
-      Assert.That (_adapter.AssemblyQualifiedName, Is.EqualTo (_type.AssemblyQualifiedName));
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).AssemblyQualifiedName, Is.EqualTo (type.AssemblyQualifiedName));
     }
     
     [Test]
     public void Assembly ()
     {
-      Assert.That (_adapter.Assembly, Is.SameAs(_type.Assembly));
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).Assembly, Is.SameAs (type.Assembly));
     }
 
     [Test]
@@ -540,6 +543,141 @@ namespace Remotion.UnitTests.Reflection
           Is.EqualTo (AttributeUtility.IsDefined<SerializableAttribute> (type, true)));
     }
 
+    [Test]
+    public void BaseType ()
+    {
+      var type = typeof (SystemException);
+      Assert.That (
+          TypeAdapter.Create (type).BaseType,
+          Is.TypeOf<TypeAdapter> ().And.Property ("Type").SameAs (type.BaseType));
+    }
 
+    [Test]
+    public void BaseType_ForObject ()
+    {
+      var type = typeof (Object);
+      Assert.That (TypeAdapter.Create (type).BaseType, Is.Null);
+    }
+
+    [Test]
+    public void BaseType_ForInterface ()
+    {
+      var type = typeof (IList);
+      Assert.That (TypeAdapter.Create (type).BaseType, Is.Null);
+    }
+
+    [Test]
+    public void IsInstanceOf_SameType ()
+    {
+      var type = typeof (List);
+      var value = new List();
+      Assert.That (TypeAdapter.Create (type).IsInstanceOfType (value), Is.EqualTo (type.IsInstanceOfType (value)).And.True);
+    }
+
+    [Test]
+    public void IsInstanceOf_DerivedType ()
+    {
+      var type = typeof (Exception);
+      var value = new SystemException ();
+      Assert.That (TypeAdapter.Create (type).IsInstanceOfType (value), Is.EqualTo (type.IsInstanceOfType (value)).And.True);
+    }
+
+    [Test]
+    public void IsInstanceOf_OtherType ()
+    {
+      var type = typeof (List);
+      var value = new object ();
+      Assert.That (TypeAdapter.Create (type).IsInstanceOfType (value), Is.EqualTo (type.IsInstanceOfType (value)).And.False);
+    }
+
+
+    [Test]
+    public void IsSubclassOf_BaseType ()
+    {
+      var currentType = typeof (SystemException);
+      var otherType = typeof (Exception);
+      Assert.That (
+          TypeAdapter.Create (currentType).IsSubclassOf (TypeAdapter.Create (otherType)),
+          Is.EqualTo (currentType.IsSubclassOf (otherType)).And.True);
+    }
+
+    [Test]
+    public void IsSubclassOf_SameType ()
+    {
+      var currentType = typeof (SystemException);
+      Assert.That (
+          TypeAdapter.Create (currentType).IsSubclassOf (TypeAdapter.Create (currentType)),
+          Is.EqualTo (currentType.IsSubclassOf (currentType)).And.False);
+    }
+
+    [Test]
+    public void IsSubclassOf_NotBaseType ()
+    {
+      var currentType = typeof (SystemException);
+      var otherType = typeof (string);
+      Assert.That (
+          TypeAdapter.Create (currentType).IsSubclassOf (TypeAdapter.Create (otherType)),
+          Is.EqualTo (currentType.IsSubclassOf (otherType)).And.False);
+    }
+
+    [Test]
+    public void IsSubclassOf_DifferentITypeInformationImplementation ()
+    {
+      var currentType = typeof (SystemException);
+      var otherType = MockRepository.GenerateStub<ITypeInformation>();
+      Assert.That (TypeAdapter.Create (currentType).IsSubclassOf (otherType), Is.False);
+    }
+
+    [Test]
+    public void IsSubclassOf_Null ()
+    {
+      Assert.That (() => TypeAdapter.Create (typeof (object)).IsSubclassOf (null), Throws.TypeOf<ArgumentNullException>());
+    }
+
+    [Test]
+    public void IsAssignableFrom_DerivedType ()
+    {
+      var currentType = typeof (Exception);
+      var otherType = typeof (SystemException);
+      Assert.That (
+          TypeAdapter.Create (currentType).IsAssignableFrom (TypeAdapter.Create (otherType)),
+          Is.EqualTo (currentType.IsAssignableFrom (otherType)).And.True);
+    }
+
+    [Test]
+    public void IsAssignableFrom_SameType ()
+    {
+      var currentType = typeof (Exception);
+      Assert.That (
+          TypeAdapter.Create (currentType).IsAssignableFrom (TypeAdapter.Create (currentType)),
+          Is.EqualTo (currentType.IsAssignableFrom (currentType)).And.True);
+    }
+
+    [Test]
+    public void IsAssignableFrom_NotDerivedType ()
+    {
+      var currentType = typeof (Exception);
+      var otherType = typeof (string);
+      Assert.That (
+          TypeAdapter.Create (currentType).IsAssignableFrom (TypeAdapter.Create (otherType)),
+          Is.EqualTo (currentType.IsAssignableFrom (otherType)).And.False);
+    }
+
+    [Test]
+    public void IsAssignableFrom_DifferentITypeInformationImplementation ()
+    {
+      var currentType = typeof (Exception);
+      var otherType = MockRepository.GenerateStub<ITypeInformation> ();
+      Assert.That (TypeAdapter.Create (currentType).IsAssignableFrom (otherType), Is.False);
+    }
+
+    [Test]
+    public void IsAssignableFrom_Null ()
+    {
+      var currentType = typeof (Exception);
+      Assert.That (
+          TypeAdapter.Create (currentType).IsAssignableFrom (null),
+          Is.EqualTo (currentType.IsAssignableFrom (null)).And.False);
+    }
   }
 }
