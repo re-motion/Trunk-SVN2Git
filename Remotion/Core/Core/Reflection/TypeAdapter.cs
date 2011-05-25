@@ -130,6 +130,26 @@ namespace Remotion.Reflection
       get { return _type.IsEnum; }
     }
 
+    public ITypeInformation GetUnderlyingTypeOfEnum ()
+    {
+      if (!_type.IsEnum)
+        throw new InvalidOperationException (string.Format ("The type '{0}' is not an enum type.", _type.FullName));
+      return TypeAdapter.Create (Enum.GetUnderlyingType (_type));
+    }
+
+    public bool IsNullableValueType
+    {
+      get { return Nullable.GetUnderlyingType (_type) != null; }
+    }
+
+    public ITypeInformation GetUnderlyingTypeOfNullableValueType ()
+    {
+      var underlyingType = Nullable.GetUnderlyingType (_type);
+      if (underlyingType == null)
+        throw new InvalidOperationException (string.Format ("The type '{0}' is not a nullable value type.", _type.FullName));
+      return TypeAdapter.Create (underlyingType);
+    }
+
     public bool IsPointer
     {
       get { return _type.IsPointer; }

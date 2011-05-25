@@ -119,6 +119,34 @@ namespace Remotion.Reflection
     bool IsEnum { get; }
 
     /// <summary>
+    /// Returns a <see cref="Type"/> object that represents the underlying type for the enumeration.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Type"/> object representing the underlying type for the enumeration.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">The current type is not an enumeration. That is, <see cref="IsEnum"/> returns <see langword="false"/>.</exception>
+    ITypeInformation GetUnderlyingTypeOfEnum ();
+
+    /// <summary>
+    /// Gets a value indicating whether the current <see cref="Type"/> represents a nullable value type.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if the current <see cref="Type"/> represents a nullable value type; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool IsNullableValueType { get; }
+
+    /// <summary>
+    /// Returns a <see cref="Type"/> object that represents the underlying type argument for the <see cref="Nullable{T}"/>.
+    /// <note type="caution">This method throws if <see cref="IsNullableValueType"/> returns <see langword="false" />, 
+    /// which differs from the behavior <see cref="Nullable.GetUnderlyingType"/>, which would return <see langword="null" />.</note>
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Type"/> object representing the underlying type argument for the <see cref="Nullable{T}"/>.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">The current type is not an instantiation of <see cref="Nullable{T}"/>. That is, <see cref="IsNullableValueType"/> returns <see langword="false"/>.</exception>
+    ITypeInformation GetUnderlyingTypeOfNullableValueType ();
+
+    /// <summary>
     /// Gets a value indicating whether the <see cref="Type"/> is a pointer.
     /// </summary>
     /// <returns>
