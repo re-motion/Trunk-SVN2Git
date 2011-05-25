@@ -28,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   [TestFixture]
   public class RelationEndPointRegistrationAgentTest : StandardMappingTest
   {
-    private ClientTransaction _clientTransaction;
     private IRelationEndPointProvider _endPointProviderMock;
     private RelationEndPointMap _map;
 
@@ -41,15 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp();
 
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
       _endPointProviderMock = MockRepository.GenerateStrictMock<IRelationEndPointProvider> ();
-      _map = new RelationEndPointMap (_clientTransaction);
+      _map = new RelationEndPointMap (ClientTransaction.CreateRootTransaction());
 
       _realOneManyEndPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
       _virtualEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
       _unidirectionalEndPointID = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
 
-      _agent = new RelationEndPointRegistrationAgent (_endPointProviderMock, _clientTransaction);
+      _agent = new RelationEndPointRegistrationAgent (_endPointProviderMock);
     }
 
     [Test]
@@ -127,63 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void RegisterEndPoint_RealEndPoint_PointingToNonNull_OppositeObjectEndPoint_InRootTx_VirtualEndPointNotYetComplete ()
-    {
-      var objectReference = DomainObjectMother.CreateFakeObject<OrderItem>();
-      var endPointMock = CreateRealObjectEndPointMock (_virtualEndPointID.ObjectID);
-      endPointMock.Stub (stub => stub.GetDomainObjectReference()).Return (objectReference);
-      endPointMock.Replay ();
-
-      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      oppositeEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
-      oppositeEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
-      oppositeEndPointMock.Expect (mock => mock.MarkDataComplete (objectReference));
-      oppositeEndPointMock.Replay ();
-
-      _endPointProviderMock
-          .Expect (
-              mock => mock.GetRelationEndPointWithMinimumLoading (_virtualEndPointID))
-          .Return (oppositeEndPointMock);
-      _endPointProviderMock.Replay ();
-
-      _agent.RegisterEndPoint (endPointMock, _map);
-
-      endPointMock.VerifyAllExpectations ();
-      _endPointProviderMock.VerifyAllExpectations ();
-      oppositeEndPointMock.VerifyAllExpectations ();
-      Assert.That (_map, Has.Member (endPointMock));
-    }
-
-    [Test]
-    public void RegisterEndPoint_RealEndPoint_PointingToNonNull_OppositeObjectEndPoint_InRootTx_VirtualEndPointAlreadyComplete ()
-    {
-      var objectReference = DomainObjectMother.CreateFakeObject<OrderItem> ();
-      var endPointMock = CreateRealObjectEndPointMock (_virtualEndPointID.ObjectID);
-      endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (objectReference);
-      endPointMock.Replay ();
-
-      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      oppositeEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
-      oppositeEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
-      oppositeEndPointMock.Replay ();
-
-      _endPointProviderMock
-          .Expect (
-              mock => mock.GetRelationEndPointWithMinimumLoading (_virtualEndPointID))
-          .Return (oppositeEndPointMock);
-      _endPointProviderMock.Replay ();
-
-      _agent.RegisterEndPoint (endPointMock, _map);
-
-      oppositeEndPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (objectReference));
-      endPointMock.VerifyAllExpectations ();
-      _endPointProviderMock.VerifyAllExpectations ();
-      oppositeEndPointMock.VerifyAllExpectations ();
-      Assert.That (_map, Has.Member (endPointMock));
-    }
-
-    [Test]
-    public void RegisterEndPoint_RealEndPoint_PointingToNonNull_OppositeObjectEndPoint_InSubTx ()
+    public void RegisterEndPoint_RealEndPoint_PointingToNonNull_OppositeObjectEndPoint ()
     {
       var objectReference = DomainObjectMother.CreateFakeObject<OrderItem> ();
       var endPointMock = CreateRealObjectEndPointMock (_virtualEndPointID.ObjectID);
@@ -193,23 +135,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
       oppositeEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
       oppositeEndPointMock.Replay ();
-
-      var subTransaction = _clientTransaction.CreateSubTransaction();
-      var relationEndPoints = new RelationEndPointMap (subTransaction);
-      var agent = new RelationEndPointRegistrationAgent (_endPointProviderMock, subTransaction);
 
       _endPointProviderMock
           .Expect (mock => mock.GetRelationEndPointWithMinimumLoading (_virtualEndPointID))
           .Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
-      agent.RegisterEndPoint (endPointMock, relationEndPoints);
+      _agent.RegisterEndPoint (endPointMock, _map);
 
       oppositeEndPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (objectReference));
       endPointMock.VerifyAllExpectations ();
       _endPointProviderMock.VerifyAllExpectations ();
       oppositeEndPointMock.VerifyAllExpectations ();
-      Assert.That (relationEndPoints, Has.Member (endPointMock));
+      Assert.That (_map, Has.Member (endPointMock));
     }
 
     [Test]
@@ -254,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oppositeEndPointID = RelationEndPointID.CreateOpposite (endPointMock.Definition, null);
       _endPointProviderMock
           .Expect (mock => mock.GetRelationEndPointWithoutLoading (oppositeEndPointID))
-          .Return (new NullCollectionEndPoint (_clientTransaction, oppositeEndPointID.Definition));
+          .Return (new NullCollectionEndPoint (_map.ClientTransaction, oppositeEndPointID.Definition));
       _endPointProviderMock.Replay ();
 
       _agent.UnregisterEndPoint (endPointMock, _map);
@@ -369,11 +307,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Serialization ()
     {
-      var agent = new RelationEndPointRegistrationAgent (new SerializableRelationEndPointProviderFake(), _clientTransaction);
+      var agent = new RelationEndPointRegistrationAgent (new SerializableRelationEndPointProviderFake());
 
       var deserializedAgent = Serializer.SerializeAndDeserialize (agent);
 
-      Assert.That (deserializedAgent.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedAgent.EndPointProvider, Is.Not.Null);
     }
 

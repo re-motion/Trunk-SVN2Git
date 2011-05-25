@@ -26,25 +26,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   public class RelationEndPointRegistrationAgent : IRelationEndPointRegistrationAgent
   {
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly ClientTransaction _clientTransaction;
 
-    public RelationEndPointRegistrationAgent (IRelationEndPointProvider endPointProvider, ClientTransaction clientTransaction)
+    public RelationEndPointRegistrationAgent (IRelationEndPointProvider endPointProvider)
     {
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
       _endPointProvider = endPointProvider;
-      _clientTransaction = clientTransaction;
     }
 
     public IRelationEndPointProvider EndPointProvider
     {
       get { return _endPointProvider; }
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
     }
 
     public void RegisterEndPoint (IRelationEndPoint endPoint, RelationEndPointMap map)
@@ -79,25 +70,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       map.RemoveEndPoint (endPoint.ID);
     }
 
-    private void RegisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
+    protected virtual IVirtualEndPoint RegisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
     {
       var oppositeVirtualEndPointID = RelationEndPointID.CreateOpposite (realObjectEndPoint.Definition, realObjectEndPoint.OriginalOppositeObjectID);
       if (oppositeVirtualEndPointID.Definition.IsAnonymous)
       {
         realObjectEndPoint.MarkSynchronized ();
-        return;
+        return null;
       }
 
       var oppositeVirtualEndPoint = (IVirtualEndPoint) _endPointProvider.GetRelationEndPointWithMinimumLoading (oppositeVirtualEndPointID);
       oppositeVirtualEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
-
-      // Optimization for 1:1 relations: to avoid a database query, we'll mark the virtual end-point complete when the first opposite foreign key
-      // is registered with it. We can only do this in root transactions; in sub-transactions we need the query to occur so that we get the same
-      // relation state in the sub-transaction as in the root transaction even in the case of unsynchronized end-points.
-
-      var oppositeVirtualObjectEndPoint = oppositeVirtualEndPoint as IVirtualObjectEndPoint;
-      if (_clientTransaction.ParentTransaction == null && oppositeVirtualObjectEndPoint != null && !oppositeVirtualObjectEndPoint.IsDataComplete)
-        oppositeVirtualObjectEndPoint.MarkDataComplete (realObjectEndPoint.GetDomainObjectReference ());
+      return oppositeVirtualEndPoint;
     }
 
     private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint, RelationEndPointMap map)

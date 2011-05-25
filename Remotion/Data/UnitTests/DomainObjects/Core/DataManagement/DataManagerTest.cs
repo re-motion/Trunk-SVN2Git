@@ -69,10 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataManager = new DataManager (clientTransaction, collectionEndPointChangeDetectionStrategy, invalidDomainObjectManager, objectLoader);
 
       var manager = DataManagerTestHelper.GetRelationEndPointManager (dataManager);
-      Assert.That (manager, Is.TypeOf (typeof (RelationEndPointManager)));
-
       Assert.That (manager.ClientTransaction, Is.SameAs (clientTransaction));
       Assert.That (manager.EndPointFactory, Is.TypeOf<RelationEndPointFactory> ());
+      Assert.That (manager.RegistrationAgent, Is.TypeOf<RootRelationEndPointRegistrationAgent> ());
       
       var endPointFactory = ((RelationEndPointFactory) manager.EndPointFactory);
       Assert.That (endPointFactory.ClientTransaction, Is.SameAs (clientTransaction));
@@ -87,6 +86,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
       Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
+    }
+
+    [Test]
+    public void Initialization_SubTransaction ()
+    {
+      var clientTransaction = ClientTransaction.CreateRootTransaction ().CreateSubTransaction();
+      var collectionEndPointChangeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+
+      var dataManager = new DataManager (clientTransaction, collectionEndPointChangeDetectionStrategy, invalidDomainObjectManager, objectLoader);
+
+      var manager = DataManagerTestHelper.GetRelationEndPointManager (dataManager);
+      Assert.That (manager.RegistrationAgent, Is.TypeOf<RelationEndPointRegistrationAgent> ());
     }
 
     [Test]

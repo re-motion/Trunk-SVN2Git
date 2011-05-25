@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -73,7 +72,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
           this,
           virtualObjectEndPointDataKeeperFactory,
           collectionEndPointDataKeeperFactory);
-      var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (this, _clientTransaction);
+      var relationEndPointRegistrationAgent = _clientTransaction.ParentTransaction == null 
+          ? new RootRelationEndPointRegistrationAgent (this) 
+          : new RelationEndPointRegistrationAgent (this);
       _relationEndPointManager = new RelationEndPointManager (
           clientTransaction, 
           this,
@@ -345,25 +346,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       return _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
-    }
-
-    private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)
-    {
-      Maybe.ForValue (relationEndPoint as IObjectEndPoint)
-          .Where (endPoint => endPoint.OppositeObjectID != null)
-          .Select (endPoint => String.Format ("End point '{0}' still references object '{1}'.", endPoint.ID, endPoint.OppositeObjectID))
-          .Do (message => { throw new InvalidOperationException (message); });
-
-      Maybe.ForValue (relationEndPoint as ICollectionEndPoint)
-          .Where (endPoint => endPoint.Collection.Count != 0)
-          .Select (
-              endPoint => String.Format (
-                  "End point '{0}' still references objects '{1}'.",
-                  endPoint.ID,
-                  SeparatedStringBuilder.Build (", ", endPoint.Collection, (DomainObject obj) => obj.ID.ToString())))
-          .Do (message => { throw new InvalidOperationException (message); });
-
-      return relationEndPoint;
     }
 
     public IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject)

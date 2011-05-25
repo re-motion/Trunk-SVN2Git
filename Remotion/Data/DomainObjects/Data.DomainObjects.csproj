@@ -197,6 +197,7 @@
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointMap.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointRegistrationAgent.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\RootRelationEndPointRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IncompleteVirtualEndPointLoadStateBase.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IVirtualEndPointLoadState.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CompleteVirtualEndPointLoadStateBase.cs" />
