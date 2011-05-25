@@ -18,7 +18,7 @@ using System;
 
 namespace Remotion.Utilities
 {
-  public class NullableTypeUtility
+  public static class NullableTypeUtility
   {
     /// <summary>
     /// Determines whether a type is nullable, ie. whether variables of it can be assigned <see langword="null"/>.
