@@ -341,6 +341,7 @@
     <Compile Include="Reflection\SignatureStringBuilding\TestDomain\GenericClassWithNestedType.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\TestDomain\GenericClass.cs" />
     <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons.cs" />
+    <Compile Include="Reflection\TypeAdapterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FixedRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\NamedRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\RootAssemblyTest.cs" />

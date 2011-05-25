@@ -135,9 +135,11 @@
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Mixins\TypeExtensions.cs" />
+    <Compile Include="Reflection\ITypeInformation.cs" />
     <Compile Include="Reflection\MethodInfoAdapterConverter.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverter.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
+    <Compile Include="Reflection\TypeAdapter.cs" />
     <Compile Include="Utilities\CompoundComparer.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />
