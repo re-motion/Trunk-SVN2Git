@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -33,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     public PropertyDefinitionCollectionFactory (IMappingObjectFactory mappingObjectFactory)
     {
       ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
-      
+
       _mappingObjectFactory = mappingObjectFactory;
     }
 
@@ -44,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       var propertyDefinitionsForClass =
           from IPropertyInformation propertyInfo in propertyInfos
-          select _mappingObjectFactory.CreatePropertyDefinition(classDefinition, propertyInfo);
+          select _mappingObjectFactory.CreatePropertyDefinition (classDefinition, propertyInfo);
       return new PropertyDefinitionCollection (propertyDefinitionsForClass, true);
     }
   }

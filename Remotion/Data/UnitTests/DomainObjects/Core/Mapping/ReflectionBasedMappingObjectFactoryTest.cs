@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Reflection;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
       _mappingNameResolver = new ReflectionBasedNameResolver();
-      _factory = new ReflectionBasedMappingObjectFactory (_mappingNameResolver);
+      _factory = new ReflectionBasedMappingObjectFactory (_mappingNameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
     }
 
     [Test]
@@ -65,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreatePropertyDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderItems"));
+      var propertyInfo = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
 
@@ -83,25 +84,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _factory.CreateRelationDefinition (
               new[] { orderClassDefinition, orderItemClassDefinition }.ToDictionary (cd => cd.ClassType),
               orderItemClassDefinition,
-               orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo);
+              orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.EndPointDefinitions[0], 
-        Is.SameAs (orderItemClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]));
-      Assert.That (result.EndPointDefinitions[1], 
-        Is.SameAs (orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"]));
+      Assert.That (
+          result.EndPointDefinitions[0],
+          Is.SameAs (orderItemClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]));
+      Assert.That (
+          result.EndPointDefinitions[1],
+          Is.SameAs (orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"]));
     }
 
     [Test]
     public void CreateRelationEndPointDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderItems"));
+      var propertyInfo = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
 
       Assert.That (result, Is.TypeOf (typeof (VirtualRelationEndPointDefinition)));
-      Assert.That (((VirtualRelationEndPointDefinition) result).PropertyInfo, Is.SameAs(propertyInfo));
+      Assert.That (((VirtualRelationEndPointDefinition) result).PropertyInfo, Is.SameAs (propertyInfo));
     }
 
     [Test]
@@ -110,16 +113,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var result = _factory.CreateClassDefinitionCollection (new[] { typeof (Order), typeof (Company) });
 
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (result.Any (cd=>cd.ClassType == typeof (Order)));
-      Assert.That (result.Any (cd=>cd.ClassType == typeof (Company)));
+      Assert.That (result.Any (cd => cd.ClassType == typeof (Order)));
+      Assert.That (result.Any (cd => cd.ClassType == typeof (Company)));
     }
-    
+
     [Test]
     public void CreatePropertyDefinitionCollection ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo1 = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderNumber"));
-      var propertyInfo2 = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("DeliveryDate"));
+      var propertyInfo1 = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderNumber"));
+      var propertyInfo2 = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("DeliveryDate"));
 
       var result = _factory.CreatePropertyDefinitionCollection (classDefinition, new[] { propertyInfo1, propertyInfo2 });
 
@@ -158,8 +161,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var result = _factory.CreateRelationEndPointDefinitionCollection (classDefinition);
 
       Assert.That (result.Count, Is.EqualTo (1));
-      Assert.That (((RelationEndPointDefinition) result[0]).PropertyName, 
-        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"));
+      Assert.That (
+          ((RelationEndPointDefinition) result[0]).PropertyName,
+          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"));
     }
   }
 }

@@ -28,19 +28,26 @@ namespace Remotion.Data.DomainObjects.Mapping
   public class ReflectionBasedMappingObjectFactory : IMappingObjectFactory
   {
     private readonly IMappingNameResolver _mappingNameResolver;
+    private readonly IClassIDProvider _classIDProvider;
+    private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
 
-    public ReflectionBasedMappingObjectFactory (IMappingNameResolver mappingNameResolver)
+    public ReflectionBasedMappingObjectFactory (
+        IMappingNameResolver mappingNameResolver, IClassIDProvider classIDProvider, IDomainModelConstraintProvider domainModelConstraintProvider)
     {
       ArgumentUtility.CheckNotNull ("mappingNameResolver", mappingNameResolver);
+      ArgumentUtility.CheckNotNull ("classIDProvider", classIDProvider);
+      ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
 
       _mappingNameResolver = mappingNameResolver;
+      _classIDProvider = classIDProvider;
+      _domainModelConstraintProvider = domainModelConstraintProvider;
     }
 
     public ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      var classReflector = new ClassReflector (type, this, _mappingNameResolver);
+      var classReflector = new ClassReflector (type, this, _mappingNameResolver, _classIDProvider, _domainModelConstraintProvider);
       return classReflector.GetMetadata (baseClass);
     }
 
@@ -49,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      return new PropertyReflector (classDefinition, propertyInfo, _mappingNameResolver).GetMetadata();
+      return new PropertyReflector (classDefinition, propertyInfo, _mappingNameResolver, _domainModelConstraintProvider).GetMetadata();
     }
 
     public RelationDefinition CreateRelationDefinition (
@@ -68,7 +75,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, propertyInfo, _mappingNameResolver);
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
+          classDefinition, propertyInfo, _mappingNameResolver, _domainModelConstraintProvider);
       return relationEndPointReflector.GetMetadata();
     }
 
@@ -80,7 +88,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classDefinitionCollectionFactory.CreateClassDefinitionCollection (types);
     }
 
-    public PropertyDefinitionCollection CreatePropertyDefinitionCollection (ClassDefinition classDefinition, IEnumerable<IPropertyInformation> propertyInfos)
+    public PropertyDefinitionCollection CreatePropertyDefinitionCollection (
+        ClassDefinition classDefinition, IEnumerable<IPropertyInformation> propertyInfos)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfos", propertyInfos);

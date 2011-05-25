@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 
@@ -24,8 +25,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class RdbmsRelationEndPointReflector : RelationEndPointReflector<DBBidirectionalRelationAttribute>
   {
-    public RdbmsRelationEndPointReflector (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
-        : base (classDefinition, propertyInfo, nameResolver)
+    public RdbmsRelationEndPointReflector (
+        ClassDefinition classDefinition,
+        IPropertyInformation propertyInfo,
+        IMappingNameResolver nameResolver,
+        IDomainModelConstraintProvider domainModelConstraintProvider)
+        : base (classDefinition, propertyInfo, nameResolver, domainModelConstraintProvider)
     {
     }
 
@@ -57,6 +62,5 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       return true;
     }
-    
   }
 }

@@ -29,67 +29,71 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
   public class Common : MappingReflectionTestBase
   {
     [Test]
-    public void CreateRelationEndPointReflector()
+    public void CreateRelationEndPointReflector ()
     {
       var type = typeof (ClassWithVirtualRelationEndPoints);
-      var propertyInfo =  PropertyInfoAdapter.Create(type.GetProperty ("NoAttribute"));
+      var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("NoAttribute"));
       Assert.IsInstanceOf (
-          typeof (RdbmsRelationEndPointReflector), 
-          RelationEndPointReflector.CreateRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver));
+          typeof (RdbmsRelationEndPointReflector),
+          RelationEndPointReflector.CreateRelationEndPointReflector (
+              CreateClassDefinition (type), propertyInfo, Configuration.NameResolver, new DomainModelConstraintProvider()));
     }
 
     [Test]
     public void IsVirtualEndRelationEndpoint_WithoutAttribute ()
     {
       var type = typeof (ClassWithRealRelationEndPoints);
-      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty ("NoAttribute"));
+      var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("NoAttribute"));
       var relationEndPointReflector =
-          RelationEndPointReflector.CreateRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver);
+          RelationEndPointReflector.CreateRelationEndPointReflector (
+              CreateClassDefinition (type), propertyInfo, Configuration.NameResolver, new DomainModelConstraintProvider());
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
+      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
     [Test]
     public void IsVirtualEndRelationEndpoint_WithCollectionPropertyAndWithoutAttribute ()
     {
-      var type = typeof(ClassWithInvalidUnidirectionalRelation);
-      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty ("LeftSide"));
+      var type = typeof (ClassWithInvalidUnidirectionalRelation);
+      var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("LeftSide"));
       var relationEndPointReflector =
-          RelationEndPointReflector.CreateRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver);
+          RelationEndPointReflector.CreateRelationEndPointReflector (
+              CreateClassDefinition (type), propertyInfo, Configuration.NameResolver, new DomainModelConstraintProvider());
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
+      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
     [Test]
-    public void IsVirtualRelationEndPoint_UnidirectionalRelation()
+    public void IsVirtualRelationEndPoint_UnidirectionalRelation ()
     {
       var type = typeof (ClassWithRealRelationEndPoints);
-      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty ("Unidirectional"));
+      var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("Unidirectional"));
       var relationEndPointReflector =
-          new RdbmsRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver);
+          new RdbmsRelationEndPointReflector (
+              CreateClassDefinition (type), propertyInfo, Configuration.NameResolver, new DomainModelConstraintProvider());
 
-      Assert.IsFalse(relationEndPointReflector.IsVirtualEndRelationEndpoint ());
+      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
     [Test]
     public void GetMetadata_NonVirtualEndPoint_PropertyTypeIsNoObjectID ()
     {
       var type = typeof (ClassWithRealRelationEndPoints);
-      var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty ("Unidirectional"));
+      var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("Unidirectional"));
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "Unidirectional", type);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      var mappingNameResolverMock = MockRepository.GenerateStrictMock<IMappingNameResolver> ();
+      var mappingNameResolverMock = MockRepository.GenerateStrictMock<IMappingNameResolver>();
       mappingNameResolverMock.Expect (mock => mock.GetPropertyName (propertyInfo)).Return ("Unidirectional");
-      mappingNameResolverMock.Replay ();
+      mappingNameResolverMock.Replay();
 
       var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
-          classDefinition, propertyInfo, mappingNameResolverMock);
+          classDefinition, propertyInfo, mappingNameResolverMock, new DomainModelConstraintProvider());
 
-      var result = relationEndPointReflector.GetMetadata ();
+      var result = relationEndPointReflector.GetMetadata();
 
-      mappingNameResolverMock.VerifyAllExpectations ();
+      mappingNameResolverMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (TypeNotObjectIDRelationEndPointDefinition)));
     }
 

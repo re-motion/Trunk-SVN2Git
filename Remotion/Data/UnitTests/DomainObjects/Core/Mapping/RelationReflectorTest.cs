@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -31,7 +32,6 @@ using Remotion.Reflection;
 using Class1 =
     Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot.
         Class1;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithVirtualRelationEndPoints, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne");
-      var propertyInfo = PropertyInfoAdapter.Create(typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToOne"));
+      var propertyInfo = PropertyInfoAdapter.Create (typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToOne"));
       var relationReflector = CreateRelationReflector (_classWithVirtualRelationEndPoints, propertyInfo);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithVirtualRelationEndPoints, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne");
-      var propertyInfo = PropertyInfoAdapter.Create(typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToOne"));
+      var propertyInfo = PropertyInfoAdapter.Create (typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToOne"));
       var relationReflector = CreateRelationReflector (_classWithVirtualRelationEndPoints, propertyInfo);
 
       var actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithVirtualRelationEndPoints, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany");
-      var propertyInfo = PropertyInfoAdapter.Create(typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToMany"));
+      var propertyInfo = PropertyInfoAdapter.Create (typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToMany"));
       var relationReflector = CreateRelationReflector (_classWithVirtualRelationEndPoints, propertyInfo);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithVirtualRelationEndPoints, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany");
-      var propertyInfo = PropertyInfoAdapter.Create(typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToMany"));
+      var propertyInfo = PropertyInfoAdapter.Create (typeof (ClassWithVirtualRelationEndPoints).GetProperty ("BidirectionalOneToMany"));
       var relationReflector = CreateRelationReflector (_classWithVirtualRelationEndPoints, propertyInfo);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
@@ -339,26 +339,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMetadata_WithInvalidOppositePropertyName ()
     {
       var type1 = GetClassWithInvalidBidirectionalRelationLeftSide();
-      var type2 = GetClassWithInvalidBidirectionalRelationRightSide ();
+      var type2 = GetClassWithInvalidBidirectionalRelationRightSide();
 
       var classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (type1);
       classDefinition1.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition1.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var propertyInfo = EnsurePropertyDefinitionExisitsOnClassDefinition (classDefinition1, type1, "InvalidOppositePropertyNameLeftSide");
       var classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (type2);
-      classDefinition2.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      classDefinition2.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition2.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      EnsurePropertyDefinitionExisitsOnClassDefinition (classDefinition2, type2, "InvalidPropertyNameInBidirectionalRelationAttributeOnOppositePropertyRightSide");
-      
+      EnsurePropertyDefinitionExisitsOnClassDefinition (
+          classDefinition2, type2, "InvalidPropertyNameInBidirectionalRelationAttributeOnOppositePropertyRightSide");
+
       var relationReflector = CreateRelationReflector (classDefinition1, propertyInfo);
       _classDefinitions.Add (classDefinition1.ClassType, classDefinition1);
       _classDefinitions.Add (classDefinition2.ClassType, classDefinition2);
 
       var result = relationReflector.GetMetadata (_classDefinitions);
-      
-      Assert.That (result.ID, Is.EqualTo (
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide:Remotion.Data.UnitTests."
-        +"DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide.InvalidOppositePropertyNameLeftSide"));
+
+      Assert.That (
+          result.ID,
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide:Remotion.Data.UnitTests."
+              + "DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide.InvalidOppositePropertyNameLeftSide"));
     }
 
     [Test]
@@ -367,13 +370,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var originatingClass = ClassDefinitionFactory.CreateClassDefinition (typeof (Class1));
       originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       originatingClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var originatingProperty = 
+      var originatingProperty =
           EnsurePropertyDefinitionExisitsOnClassDefinition (originatingClass, typeof (Class1), "RelationProperty");
 
       var classDeclaringOppositeProperty = ClassDefinitionFactory.CreateClassDefinition (typeof (BaseClass2));
       classDeclaringOppositeProperty.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDeclaringOppositeProperty.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var oppositeProperty = 
+      var oppositeProperty =
           EnsurePropertyDefinitionExisitsOnClassDefinition (classDeclaringOppositeProperty, typeof (BaseClass2), "RelationPropertyOnBaseClass");
       var derivedOfClassDeclaringOppositeProperty = ClassDefinitionFactory.CreateClassDefinition (
           typeof (DerivedClass2), classDeclaringOppositeProperty);
@@ -448,20 +451,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMetadata_OppositeClassDefinition_IsInheritanceRoot_IfDeclaringTypeOfPropertyIsNotInMapping ()
     {
       var originatingClass = ClassDefinitionFactory.CreateClassDefinition (
-              typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1));
-      originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+          typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1));
+      originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       originatingClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var originatingProperty = EnsurePropertyDefinitionExisitsOnClassDefinition (
-          originatingClass, typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1), "RelationProperty");
-      
+          originatingClass,
+          typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1),
+          "RelationProperty");
+
       var classNotInMapping = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassAboveInheritanceRoot));
-      classNotInMapping.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      classNotInMapping.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classNotInMapping.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var derivedOfClassDeclaringOppositeProperty = ClassDefinitionFactory.CreateClassDefinition (typeof (Class2));
       derivedOfClassDeclaringOppositeProperty.SetPropertyDefinitions (new PropertyDefinitionCollection());
       derivedOfClassDeclaringOppositeProperty.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      EnsurePropertyDefinitionExisitsOnClassDefinition (derivedOfClassDeclaringOppositeProperty, typeof (Class2), "RelationPropertyOnClassAboveInheritanceRoot");
-      
+      EnsurePropertyDefinitionExisitsOnClassDefinition (
+          derivedOfClassDeclaringOppositeProperty, typeof (Class2), "RelationPropertyOnClassAboveInheritanceRoot");
+
       Assert.That (originatingProperty.PropertyType, Is.Not.SameAs (classNotInMapping.ClassType));
       Assert.That (originatingProperty.PropertyType.BaseType, Is.SameAs (classNotInMapping.ClassType));
 
@@ -499,21 +505,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMetadata_OppositePropertyIsAlsoDeclaredInBaseClass ()
     {
       var originatingClass = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithOppositeProperty));
-      originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       originatingClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var originatingProperty = 
+      var originatingProperty =
           EnsurePropertyDefinitionExisitsOnClassDefinition (originatingClass, typeof (ClassWithOppositeProperty), "OppositeProperty");
 
       var oppositeBaseClass = ClassDefinitionFactory.CreateClassDefinition (typeof (OppositeBaseClass));
-      oppositeBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      oppositeBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       oppositeBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var oppositePropertyFromBaseClass = 
+      var oppositePropertyFromBaseClass =
           EnsurePropertyDefinitionExisitsOnClassDefinition (oppositeBaseClass, typeof (OppositeBaseClass), "OppositeProperty");
-      
+
       var oppositeClass = ClassDefinitionFactory.CreateClassDefinition (typeof (OppositeClass));
-      oppositeClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      oppositeClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       oppositeClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var oppositeProperty = 
+      var oppositeProperty =
           EnsurePropertyDefinitionExisitsOnClassDefinition (oppositeClass, typeof (OppositeClass), "OppositeProperty");
 
       var classDefinitions = new[] { originatingClass, oppositeClass, oppositeBaseClass }.ToDictionary (cd => cd.ClassType);
@@ -532,7 +538,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classType = typeof (TestDomain.RelationReflector.OppositePropertyHasStorageClassNoneAttribute.ClassWithOppositeProperty);
       var originatingClass = ClassDefinitionFactory.CreateClassDefinition (classType);
-      var originatingProperty = PropertyInfoAdapter.Create(classType.GetProperty ("OppositeProperty"));
+      var originatingProperty = PropertyInfoAdapter.Create (classType.GetProperty ("OppositeProperty"));
 
       var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver);
 
@@ -562,21 +568,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     private IPropertyInformation EnsurePropertyDefinitionExisitsOnClassDefinition (
-        ClassDefinition classDefinition, 
-        Type declaringType, 
+        ClassDefinition classDefinition,
+        Type declaringType,
         string propertyName)
     {
-      var propertyInfo = 
-          PropertyInfoAdapter.Create(declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
-      var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver());
+      var propertyInfo =
+          PropertyInfoAdapter.Create (declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
+      var propertyReflector = new PropertyReflector (
+          classDefinition, propertyInfo, new ReflectionBasedNameResolver(), new DomainModelConstraintProvider());
       var propertyDefinition = propertyReflector.GetMetadata();
 
       if (!classDefinition.MyPropertyDefinitions.Contains (propertyDefinition.PropertyName))
       {
-        var propertyDefinitions = new PropertyDefinitionCollection(classDefinition.MyPropertyDefinitions, false);
+        var propertyDefinitions = new PropertyDefinitionCollection (classDefinition.MyPropertyDefinitions, false);
         propertyDefinitions.Add (propertyDefinition);
         PrivateInvoke.SetNonPublicField (classDefinition, "_propertyDefinitions", propertyDefinitions);
-        var endPoints = new RelationEndPointDefinitionCollection(classDefinition.MyRelationEndPointDefinitions, false);
+        var endPoints = new RelationEndPointDefinitionCollection (classDefinition.MyRelationEndPointDefinitions, false);
         endPoints.Add (MappingObjectFactory.CreateRelationEndPointDefinition (classDefinition, propertyInfo));
         PrivateInvoke.SetNonPublicField (classDefinition, "_relationEndPoints", endPoints);
       }

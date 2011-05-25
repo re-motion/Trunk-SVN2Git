@@ -33,7 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition ("ClosedGenericClassWithManySideRelationProperties",
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+          "ClosedGenericClassWithManySideRelationProperties",
           "ClosedGenericClassWithManySideRelationProperties",
           UnitTestDomainStorageProviderDefinition,
           typeof (ClosedGenericClassWithRealRelationEndPoints),
@@ -113,16 +114,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo, MappingConfiguration.Current.NameResolver);
+      return new RdbmsRelationEndPointReflector (
+          _classDefinition, propertyReflector.PropertyInfo, MappingConfiguration.Current.NameResolver, new DomainModelConstraintProvider());
     }
 
     private PropertyReflector CreatePropertyReflector (string property)
     {
       Type type = typeof (ClosedGenericClassWithRealRelationEndPoints);
-      var propertyInfo = 
-          PropertyInfoAdapter.Create(type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+      var propertyInfo =
+          PropertyInfoAdapter.Create (type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
-      return new PropertyReflector (_classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver);
+      return new PropertyReflector (_classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver, new DomainModelConstraintProvider());
     }
 
     private PropertyDefinition GetPropertyDefinition (string propertyName)

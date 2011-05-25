@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       else
         classDefinition = ClassDefinitionFactory.CreateClassDefinition ("Order", "Order", TestDomainStorageProviderDefinition, typeof (Order), false);
 
-      return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver);
+      return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver, new DomainModelConstraintProvider());
     }
   }
 }

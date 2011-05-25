@@ -33,8 +33,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition ("ClassWithManySideRelationProperties",
-          "ClassWithManySideRelationProperties", 
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+          "ClassWithManySideRelationProperties",
+          "ClassWithManySideRelationProperties",
           UnitTestDomainStorageProviderDefinition,
           typeof (ClassWithRealRelationEndPoints),
           false);
@@ -88,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       RdbmsRelationEndPointReflector relationEndPointReflector = CreateRelationEndPointReflector ("BaseUnidirectional");
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
+      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
     [Test]
@@ -104,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       RdbmsRelationEndPointReflector relationEndPointReflector = CreateRelationEndPointReflector ("BaseBidirectionalOneToMany");
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
+      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
     private RdbmsRelationEndPointReflector CreateRelationEndPointReflector (string propertyName)
@@ -113,16 +114,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo, Configuration.NameResolver);
+      return new RdbmsRelationEndPointReflector (
+          _classDefinition, propertyReflector.PropertyInfo, Configuration.NameResolver, new DomainModelConstraintProvider());
     }
 
     private PropertyReflector CreatePropertyReflector (string property)
     {
       var type = typeof (ClassWithRealRelationEndPointsNotInMapping);
       var propertyInfo =
-          PropertyInfoAdapter.Create(type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+          PropertyInfoAdapter.Create (type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
-      return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
+      return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver, new DomainModelConstraintProvider());
     }
 
     private PropertyDefinition GetPropertyDefinition (string propertyName)

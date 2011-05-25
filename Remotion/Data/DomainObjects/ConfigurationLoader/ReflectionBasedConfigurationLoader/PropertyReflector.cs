@@ -25,15 +25,23 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Used to create the <see cref="PropertyDefinition"/> from a <see cref="PropertyInfo"/>.</summary>
   //TODO: Validation: check that only non-virtual relation endpoints are returned as propertydefinition.
   //TODO: Test for null or empty StorageSpecificIdentifier
-  public class PropertyReflector: MemberReflectorBase
+  public class PropertyReflector : MemberReflectorBase
   {
     private readonly ClassDefinition _classDefinition;
+    private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
 
-    public PropertyReflector (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
+    public PropertyReflector (
+        ClassDefinition classDefinition,
+        IPropertyInformation propertyInfo,
+        IMappingNameResolver nameResolver,
+        IDomainModelConstraintProvider domainModelConstraintProvider)
         : base (propertyInfo, nameResolver)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
+
       _classDefinition = classDefinition;
+      _domainModelConstraintProvider = domainModelConstraintProvider;
     }
 
     public PropertyDefinition GetMetadata ()
@@ -44,12 +52,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           GetPropertyName(),
           ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType) ? typeof (ObjectID) : PropertyInfo.PropertyType,
           IsNullable(),
-          GetMaxLength(),
+          _domainModelConstraintProvider.GetMaxLength(PropertyInfo),
           StorageClass);
       return propertyDefinition;
     }
 
-    private bool IsNullable()
+    private bool IsNullable ()
     {
       if (PropertyInfo.PropertyType.IsValueType)
         return Nullable.GetUnderlyingType (PropertyInfo.PropertyType) != null;
@@ -57,15 +65,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType))
         return true;
 
-      return IsNullableFromAttribute();
-    }
-
-    private int? GetMaxLength()
-    {
-      var attribute = PropertyInfo.GetCustomAttribute<ILengthConstrainedPropertyAttribute> (true);
-      if (attribute != null)
-        return attribute.MaximumLength;
-      return null;
+      return _domainModelConstraintProvider.IsNullable (PropertyInfo);
     }
   }
 }

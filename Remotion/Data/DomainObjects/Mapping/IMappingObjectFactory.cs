@@ -26,13 +26,18 @@ namespace Remotion.Data.DomainObjects.Mapping
   public interface IMappingObjectFactory
   {
     ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass);
+
     PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo);
+
     RelationDefinition CreateRelationDefinition (
         IDictionary<Type, ClassDefinition> classDefinitions, ClassDefinition classDefinition, IPropertyInformation propertyInfo);
+
     IRelationEndPointDefinition CreateRelationEndPointDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo);
 
     ClassDefinition[] CreateClassDefinitionCollection (IEnumerable<Type> types);
+
     PropertyDefinitionCollection CreatePropertyDefinitionCollection (ClassDefinition classDefinition, IEnumerable<IPropertyInformation> propertyInfos);
+
     RelationDefinition[] CreateRelationDefinitionCollection (IDictionary<Type, ClassDefinition> classDefinitions);
     RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ClassDefinition classDefinition);
   }

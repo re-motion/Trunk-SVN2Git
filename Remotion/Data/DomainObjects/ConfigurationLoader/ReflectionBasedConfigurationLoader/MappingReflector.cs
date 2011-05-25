@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _classIDProvider = classIDProvider;
       _domainModelConstraintProvider = domainModelConstraintProvider;
       _nameResolver = nameResolver;
-      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (_nameResolver);
+      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (_nameResolver, _classIDProvider, _domainModelConstraintProvider);
     }
 
     public ITypeDiscoveryService TypeDiscoveryService

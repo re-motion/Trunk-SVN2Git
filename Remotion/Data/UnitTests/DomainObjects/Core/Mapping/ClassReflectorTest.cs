@@ -48,7 +48,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForBaseClass ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (ClassWithDifferentProperties),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          new ClassIDProvider(),
+          new DomainModelConstraintProvider());
       var expected = CreateClassWithDifferentPropertiesClassDefinition();
 
       var actual = classReflector.GetMetadata (null);
@@ -61,7 +66,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForDerivedClass ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (DerivedClassWithDifferentProperties),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          new ClassIDProvider(),
+          new DomainModelConstraintProvider());
       var expected = CreateDerivedClassWithDifferentPropertiesClassDefinition();
 
       var baseClassDefinition = CreateClassWithDifferentPropertiesClassDefinition();
@@ -75,7 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForMixedClass ()
     {
-      var classReflector = new ClassReflector (typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
       var actual = classReflector.GetMetadata (null);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinA), typeof (MixinC), typeof (MixinD) }));
     }
@@ -83,10 +94,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForDerivedMixedClass ()
     {
-      var classReflectorForBaseClass = new ClassReflector (typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver);
+      var classReflectorForBaseClass = new ClassReflector (
+          typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
       var baseClass = classReflectorForBaseClass.GetMetadata (null);
 
-      var classReflector = new ClassReflector (typeof (TargetClassB), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (TargetClassB), MappingObjectFactory, Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
       var actual = classReflector.GetMetadata (baseClass);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinB), typeof (MixinE) }));
     }
@@ -94,7 +107,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithVirtualRelationEndPoints ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (ClassWithVirtualRelationEndPoints),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          new ClassIDProvider(),
+          new DomainModelConstraintProvider());
       var expected = CreateClassWithVirtualRelationEndPointsClassDefinition();
       expected.SetPropertyDefinitions (new PropertyDefinitionCollection());
       CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (expected);
@@ -109,7 +127,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassHavingClassIDAttribute ()
     {
-      var classReflector = new ClassReflector (typeof (ClassHavingClassIDAttribute), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (ClassHavingClassIDAttribute),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          new ClassIDProvider(),
+          new DomainModelConstraintProvider());
 
       var actual = classReflector.GetMetadata (null);
 
@@ -120,7 +143,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClosedGenericClass ()
     {
-      var classReflector = new ClassReflector (typeof (ClosedGenericClass), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (ClosedGenericClass), MappingObjectFactory, Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
 
       Assert.IsNotNull (classReflector.GetMetadata (null));
     }
@@ -128,7 +152,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithoutStorageGroupAttribute ()
     {
-      var classReflector = new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (ClassDerivedFromSimpleDomainObject),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          new ClassIDProvider(),
+          new DomainModelConstraintProvider());
 
       var actual = classReflector.GetMetadata (null);
 
@@ -139,7 +168,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithStorageGroupAttribute ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithStorageGroupAttribute), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (DerivedClassWithStorageGroupAttribute),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          new ClassIDProvider(),
+          new DomainModelConstraintProvider());
 
       var actual = classReflector.GetMetadata (null);
 
@@ -150,7 +184,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_PersistentMixinFinder_ForBaseClass ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (ClassWithDifferentProperties),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          new ClassIDProvider(),
+          new DomainModelConstraintProvider());
 
       var actual = classReflector.GetMetadata (null);
 
@@ -160,7 +199,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_PersistentMixinFinder_ForDerivedClass ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflector (
+          typeof (DerivedClassWithDifferentProperties),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          new ClassIDProvider(),
+          new DomainModelConstraintProvider());
       var baseClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition();
 
       var actual = classReflector.GetMetadata (baseClassDefinition);
@@ -380,8 +424,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyInfo = GetPropertyInfo (declaringType, shortPropertyName);
 
       return new RelationEndPointDefinition (
-              classDefinition[MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo)],
-              isMandatory);
+          classDefinition[MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo)],
+          isMandatory);
     }
 
     private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (
@@ -410,7 +454,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           shortPropertyName,
           BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
       Assert.IsNotNull (propertyInfo, "Property '" + shortPropertyName + "' not found on type '" + declaringType + "'.");
-      return PropertyInfoAdapter.Create(propertyInfo);
+      return PropertyInfoAdapter.Create (propertyInfo);
     }
   }
 }

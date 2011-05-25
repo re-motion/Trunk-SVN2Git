@@ -32,16 +32,27 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly Type _type;
     private readonly IMappingObjectFactory _mappingObjectFactory;
     private readonly IMappingNameResolver _nameResolver;
+    private readonly IClassIDProvider _classIDProvider;
+    private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
 
-    public ClassReflector (Type type, IMappingObjectFactory mappingObjectFactory, IMappingNameResolver nameResolver)
+    public ClassReflector (
+        Type type,
+        IMappingObjectFactory mappingObjectFactory,
+        IMappingNameResolver nameResolver,
+        IClassIDProvider classIDProvider,
+        IDomainModelConstraintProvider domainModelConstraintProvider)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
       ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("classIDProvider", classIDProvider);
+      ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
 
       _type = type;
       _mappingObjectFactory = mappingObjectFactory;
       _nameResolver = nameResolver;
+      _classIDProvider = classIDProvider;
+      _domainModelConstraintProvider = domainModelConstraintProvider;
     }
 
     public Type Type
@@ -63,7 +74,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       var persistentMixinFinder = new PersistentMixinFinder (Type, baseClassDefinition == null);
       var classDefinition = new ClassDefinition (
-          GetID(), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), persistentMixinFinder);
+          _classIDProvider.GetClassID(Type), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), persistentMixinFinder);
 
       var properties = MappingObjectFactory.CreatePropertyDefinitionCollection (classDefinition, GetPropertyInfos (classDefinition));
       classDefinition.SetPropertyDefinitions (properties);
@@ -71,14 +82,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       classDefinition.SetRelationEndPointDefinitions (endPoints);
 
       return classDefinition;
-    }
-
-    private string GetID ()
-    {
-      ClassIDAttribute attribute = AttributeUtility.GetCustomAttribute<ClassIDAttribute> (Type, false);
-      if (attribute != null)
-        return attribute.ClassID;
-      return Type.Name;
     }
 
     private Type GetStorageGroupType ()
@@ -105,7 +108,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           classDefinition.BaseClass == null,
           true,
           NameResolver,
-          classDefinition.PersistentMixinFinder);
+          classDefinition.PersistentMixinFinder, 
+          _domainModelConstraintProvider
+          );
       return propertyFinder.FindPropertyInfos();
     }
   }

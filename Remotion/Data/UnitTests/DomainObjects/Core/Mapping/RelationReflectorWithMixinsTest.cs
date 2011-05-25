@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _mixinTargetClassDefinition,
           typeof (MixinAddingPersistentProperties),
           "VirtualRelationProperty");
-      
+
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
       Assert.That (
           actualRelationDefinition.ID,
@@ -246,7 +246,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMetadata_Mixed_PropertyAboveInheritanceRoot ()
     {
       var classAboveInheritanceRoot = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationTargetForPersistentMixinAboveInheritanceRoot));
-      CreateRelationReflectorForProperty (classAboveInheritanceRoot, typeof (RelationTargetForPersistentMixinAboveInheritanceRoot), "RelationProperty1");
+      CreateRelationReflectorForProperty (
+          classAboveInheritanceRoot, typeof (RelationTargetForPersistentMixinAboveInheritanceRoot), "RelationProperty1");
       var relationReflector = CreateRelationReflectorForProperty (
           _inheritanceRootInheritingMixinClassDefinition,
           typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot),
@@ -259,9 +260,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private RelationReflector CreateRelationReflectorForProperty (
         ClassDefinition classDefinition, Type declaringType, string propertyName)
     {
-      var propertyInfo = 
-          PropertyInfoAdapter.Create(declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
-      var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver());
+      var propertyInfo =
+          PropertyInfoAdapter.Create (declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
+      var propertyReflector = new PropertyReflector (
+          classDefinition, propertyInfo, new ReflectionBasedNameResolver(), new DomainModelConstraintProvider());
       var propertyDefinition = propertyReflector.GetMetadata();
       var properties = new List<PropertyDefinition>();
       properties.Add (propertyDefinition);
@@ -279,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       if (endPointDefinitionsOfClass != null)
         endPoints.AddRange (endPointDefinitionsOfClass);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
-      
+
       return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver());
     }
   }

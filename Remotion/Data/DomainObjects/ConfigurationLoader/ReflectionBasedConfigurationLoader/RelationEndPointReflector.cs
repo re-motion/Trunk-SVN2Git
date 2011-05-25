@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
@@ -24,19 +26,30 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     public static RdbmsRelationEndPointReflector CreateRelationEndPointReflector (
         ClassDefinition classDefinition,
-        IPropertyInformation propertyInfo, 
-        IMappingNameResolver nameResolver)
+        IPropertyInformation propertyInfo,
+        IMappingNameResolver nameResolver,
+        IDomainModelConstraintProvider domainModelConstraintProvider)
     {
-      return new RdbmsRelationEndPointReflector (classDefinition, propertyInfo, nameResolver);
+      return new RdbmsRelationEndPointReflector (classDefinition, propertyInfo, nameResolver, domainModelConstraintProvider);
     }
   }
 
   /// <summary>Used to create the <see cref="IRelationEndPointDefinition"/> from a <see cref="IPropertyInformation"/>.</summary>
-  public abstract class RelationEndPointReflector<T>: RelationReflectorBase<T> where T: BidirectionalRelationAttribute
+  public abstract class RelationEndPointReflector<T> : RelationReflectorBase<T>
+      where T: BidirectionalRelationAttribute
   {
-    protected RelationEndPointReflector (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
+    private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
+
+    protected RelationEndPointReflector (
+        ClassDefinition classDefinition,
+        IPropertyInformation propertyInfo,
+        IMappingNameResolver nameResolver,
+        IDomainModelConstraintProvider domainModelConstraintProvider)
         : base (classDefinition, propertyInfo, nameResolver)
     {
+      ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
+
+      _domainModelConstraintProvider = domainModelConstraintProvider;
     }
 
     public IRelationEndPointDefinition GetMetadata ()
@@ -47,7 +60,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return CreateRelationEndPointDefinition (ClassDefinition);
     }
 
-    public virtual bool IsVirtualEndRelationEndpoint()
+    public virtual bool IsVirtualEndRelationEndpoint ()
     {
       if (!IsBidirectionalRelation)
         return false;
@@ -62,16 +75,22 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!propertyDefinition.IsObjectID)
         return new TypeNotObjectIDRelationEndPointDefinition (classDefinition, propertyName, propertyDefinition.PropertyType);
       else
-        return new RelationEndPointDefinition (propertyDefinition, !IsNullable());
+        return new RelationEndPointDefinition (propertyDefinition, !_domainModelConstraintProvider.IsNullable (PropertyInfo));
     }
 
     private IRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (ClassDefinition classDefinition)
     {
       return new VirtualRelationEndPointDefinition (
-          classDefinition, GetPropertyName(), !IsNullable(), GetCardinality(), PropertyInfo.PropertyType, GetSortExpression(), PropertyInfo);
+          classDefinition,
+          GetPropertyName(),
+          !_domainModelConstraintProvider.IsNullable (PropertyInfo),
+          GetCardinality(),
+          PropertyInfo.PropertyType,
+          GetSortExpression(),
+          PropertyInfo);
     }
 
-    private CardinalityType GetCardinality()
+    private CardinalityType GetCardinality ()
     {
       return ReflectionUtility.IsObjectList (PropertyInfo.PropertyType) ? CardinalityType.Many : CardinalityType.One;
     }
@@ -82,11 +101,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return null;
 
       return BidirectionalRelationAttribute.SortExpression;
-    }
-
-    private bool IsNullable ()
-    {
-      return IsNullableFromAttribute ();
     }
   }
 }

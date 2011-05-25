@@ -35,7 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       base.SetUp();
 
       _classType = typeof (ClassWithRealRelationEndPoints);
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition ("ClassWithManySideRelationProperties",
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+          "ClassWithManySideRelationProperties",
           "ClassWithManySideRelationProperties",
           UnitTestDomainStorageProviderDefinition,
           _classType,
@@ -119,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       RdbmsRelationEndPointReflector relationEndPointReflector = CreateRelationEndPointReflector ("BidirectionalOneToOne");
 
-      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
+      Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
     [Test]
@@ -136,15 +137,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo, Configuration.NameResolver);
+      return new RdbmsRelationEndPointReflector (
+          _classDefinition, propertyReflector.PropertyInfo, Configuration.NameResolver, new DomainModelConstraintProvider());
     }
 
     private PropertyReflector CreatePropertyReflector (string property)
     {
-      var propertyInfo = 
-          PropertyInfoAdapter.Create(_classType.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+      var propertyInfo =
+          PropertyInfoAdapter.Create (_classType.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
-      return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
+      return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver, new DomainModelConstraintProvider());
     }
 
     private PropertyDefinition GetPropertyDefinition (string propertyName)

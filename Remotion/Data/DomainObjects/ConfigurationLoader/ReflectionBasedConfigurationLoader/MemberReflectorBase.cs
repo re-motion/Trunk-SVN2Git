@@ -63,13 +63,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       return _nameResolver.GetPropertyName (PropertyInfo);
     }
-
-    protected bool IsNullableFromAttribute ()
-    {
-      var attribute = PropertyInfo.GetCustomAttribute<INullablePropertyAttribute> (true);
-      if (attribute != null)
-        return attribute.IsNullable;
-      return true;
-    }
+    
   }
 }

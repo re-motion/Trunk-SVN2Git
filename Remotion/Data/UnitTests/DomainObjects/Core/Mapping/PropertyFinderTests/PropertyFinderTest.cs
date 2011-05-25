@@ -31,7 +31,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder =
           new PropertyFinder (
-              typeof (ClassWithDifferentProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+              typeof (ClassWithDifferentProperties),
+              classDefinition,
+              true,
+              true,
+              new ReflectionBasedNameResolver(),
+              classDefinition.PersistentMixinFinder,
+              new DomainModelConstraintProvider());
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithDifferentProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -43,7 +49,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder =
           new PropertyFinder (
-              typeof (ClassWithDifferentProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+              typeof (ClassWithDifferentProperties),
+              classDefinition,
+              true,
+              true,
+              new ReflectionBasedNameResolver(),
+              classDefinition.PersistentMixinFinder,
+              new DomainModelConstraintProvider());
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),
@@ -71,7 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
               true,
               true,
               new ReflectionBasedNameResolver(),
-              classDefinition.PersistentMixinFinder);
+              classDefinition.PersistentMixinFinder,
+              new DomainModelConstraintProvider());
 
       Assert.That (propertyFinder.FindPropertyInfos(), Is.Empty);
     }

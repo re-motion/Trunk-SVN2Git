@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 
@@ -38,7 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
 
-      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (Configuration.NameResolver);
+      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (
+          Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
     }
 
     [TearDown]
