@@ -3,31 +3,34 @@ using System.Reflection;
 
 namespace Remotion.Reflection
 {
+  /// <summary>
+  /// Provides information about a type.
+  /// </summary>
   public interface ITypeInformation : IMemberInformation
   {
     /// <summary>
-    /// Gets the fully qualified name of the <see cref="Type"/>, including the namespace of the <see cref="Type"/> but not the assembly.
+    /// Gets the fully qualified name of the type, including the namespace of the type but not the assembly.
     /// </summary>
     /// <returns>
-    /// The fully qualified name of the <see cref="Type"/>, including the namespace of the <see cref="Type"/> but not the assembly; 
+    /// The fully qualified name of the type, including the namespace of the type but not the assembly; 
     /// or <see langword="null"/> if the current instance represents a generic type parameter, an array type, pointer type, 
     /// or byref type based on a type parameter, or a generic type that is not a generic type definition but contains unresolved type parameters.
     /// </returns>
     string FullName { get; }
 
     /// <summary>
-    /// Gets the namespace of the <see cref="Type"/>.
+    /// Gets the namespace of the type.
     /// </summary>
     /// <returns>
-    /// The namespace of the <see cref="Type"/>, or <see langword="null"/> if the current instance represents a generic parameter.
+    /// The namespace of the type, or <see langword="null"/> if the current instance represents a generic parameter.
     /// </returns>
     string Namespace { get; }
 
     /// <summary>
-    /// Gets the assembly-qualified name of the <see cref="Type"/>, which includes the name of the assembly from which the <see cref="Type"/> was loaded.
+    /// Gets the assembly-qualified name of the type, which includes the name of the assembly from which the type was loaded.
     /// </summary>
     /// <returns>
-    /// The assembly-qualified name of the <see cref="Type"/>, which includes the name of the assembly from which the <see cref="Type"/> was loaded, or <see langword="null"/> if the current instance represents a generic type parameter.
+    /// The assembly-qualified name of the type, which includes the name of the assembly from which the type was loaded, or <see langword="null"/> if the current instance represents a generic type parameter.
     /// </returns>
     string AssemblyQualifiedName { get; }
 
@@ -43,41 +46,41 @@ namespace Remotion.Reflection
     /// Gets the type that declares the current nested type or generic type parameter.
     /// </summary>
     /// <returns>
-    /// A <see cref="Type"/> object representing the enclosing type, if the current type is a nested type; or the generic type definition, 
+    /// A <see cref="ITypeInformation"/> object representing the enclosing type, if the current type is a nested type; or the generic type definition, 
     /// if the current type is a type parameter of a generic type; or the type that declares the generic method, 
     /// if the current type is a type parameter of a generic method; otherwise, <see langword="null"/>.
     /// </returns>
     new ITypeInformation DeclaringType { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is a class; that is, not a value type or interface.
+    /// Gets a value indicating whether the type is a class; that is, not a value type or interface.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is a class; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is a class; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsClass { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is a value type.
+    /// Gets a value indicating whether the type is a value type.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is a value type; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is a value type; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsValueType { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is an interface; that is, not a class or a value type.
+    /// Gets a value indicating whether the type is an interface; that is, not a class or a value type.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is an interface; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is an interface; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsInterface { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is an array.
+    /// Gets a value indicating whether the type is an array.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is an array; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is an array; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsArray { get; }
 
@@ -92,10 +95,10 @@ namespace Remotion.Reflection
     int GetArrayRank ();
 
     /// <summary>
-    /// Returns a <see cref="Type"/> object representing an array of the current type, with the specified number of dimensions.
+    /// Returns a type object representing an array of the current type, with the specified number of dimensions.
     /// </summary>
     /// <returns>
-    /// A <see cref="Type"/> object representing an array of the current type, with the specified number of dimensions.
+    /// A type object representing an array of the current type, with the specified number of dimensions.
     /// </returns>
     /// <param name="rank">The number of dimensions for the array.</param>
     /// <exception cref="IndexOutOfRangeException"><paramref name="rank"/> is invalid. For example, 0 or negative.</exception>
@@ -103,130 +106,130 @@ namespace Remotion.Reflection
     ITypeInformation MakeArrayType (int rank);
 
     /// <summary>
-    /// Returns a <see cref="Type"/> object representing a one-dimensional array of the current type, with a lower bound of zero.
+    /// Returns a type object representing a one-dimensional array of the current type, with a lower bound of zero.
     /// </summary>
     /// <returns>
-    /// A <see cref="Type"/> object representing a one-dimensional array of the current type, with a lower bound of zero.
+    /// A <see cref="ITypeInformation"/> object representing a one-dimensional array of the current type, with a lower bound of zero.
     /// </returns>
     ITypeInformation MakeArrayType ();
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> represents an enumeration.
+    /// Gets a value indicating whether the current type represents an enumeration.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the current <see cref="Type"/> represents an enumeration; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the current type represents an enumeration; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsEnum { get; }
 
     /// <summary>
-    /// Returns a <see cref="Type"/> object that represents the underlying type for the enumeration.
+    /// Returns a type object that represents the underlying type for the enumeration.
     /// </summary>
     /// <returns>
-    /// A <see cref="Type"/> object representing the underlying type for the enumeration.
+    /// A <see cref="ITypeInformation"/> object representing the underlying type for the enumeration.
     /// </returns>
     /// <exception cref="InvalidOperationException">The current type is not an enumeration. That is, <see cref="IsEnum"/> returns <see langword="false"/>.</exception>
     ITypeInformation GetUnderlyingTypeOfEnum ();
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> represents a nullable value type.
+    /// Gets a value indicating whether the current type represents a nullable value type.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the current <see cref="Type"/> represents a nullable value type; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the current type represents a nullable value type; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsNullableValueType { get; }
 
     /// <summary>
-    /// Returns a <see cref="Type"/> object that represents the underlying type argument for the <see cref="Nullable{T}"/>.
+    /// Returns a <see cref="ITypeInformation"/> object that represents the underlying type argument for the <see cref="Nullable{T}"/>.
     /// <note type="caution">This method throws if <see cref="IsNullableValueType"/> returns <see langword="false" />, 
     /// which differs from the behavior <see cref="Nullable.GetUnderlyingType"/>, which would return <see langword="null" />.</note>
     /// </summary>
     /// <returns>
-    /// A <see cref="Type"/> object representing the underlying type argument for the <see cref="Nullable{T}"/>.
+    /// A <see cref="ITypeInformation"/> object representing the underlying type argument for the <see cref="Nullable{T}"/>.
     /// </returns>
     /// <exception cref="InvalidOperationException">The current type is not an instantiation of <see cref="Nullable{T}"/>. That is, <see cref="IsNullableValueType"/> returns <see langword="false"/>.</exception>
     ITypeInformation GetUnderlyingTypeOfNullableValueType ();
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is a pointer.
+    /// Gets a value indicating whether the type is a pointer.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is a pointer; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is a pointer; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsPointer { get; }
 
     /// <summary>
-    /// Returns a <see cref="Type"/> object that represents a pointer to the current type.
+    /// Returns a type object that represents a pointer to the current type.
     /// </summary>
     /// <returns>
-    /// A <see cref="Type"/> object that represents a pointer to the current type.
+    /// A <see cref="ITypeInformation"/> object that represents a pointer to the current type.
     /// </returns>
     /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
     ITypeInformation MakePointerType ();
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is passed by reference.
+    /// Gets a value indicating whether the type is passed by reference.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is passed by reference; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is passed by reference; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsByRef { get; }
 
     /// <summary>
-    /// Returns a <see cref="Type"/> object that represents the current type when passed as a ref parameter.
+    /// Returns a <see cref="ITypeInformation"/> object that represents the current type when passed as a ref parameter.
     /// </summary>
     /// <returns>
-    /// A <see cref="Type"/> object that represents the current type when passed as a ref parameter.
+    /// A <see cref="ITypeInformation"/> object that represents the current type when passed as a ref parameter.
     /// </returns>
     /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
     ITypeInformation MakeByRefType ();
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is declared sealed.
+    /// Gets a value indicating whether the type is declared sealed.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is declared sealed; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is declared sealed; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsSealed { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is abstract and must be overridden.
+    /// Gets a value indicating whether the type is abstract and must be overridden.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is abstract; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is abstract; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsAbstract { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> object represents a type whose definition is nested inside the definition of another type.
+    /// Gets a value indicating whether the current type object represents a type whose definition is nested inside the definition of another type.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is nested inside another type; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is nested inside another type; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsNested { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is serializable.
+    /// Gets a value indicating whether the type is serializable.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is serializable; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is serializable; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsSerializable { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> encompasses or refers to another type; 
-    /// that is, whether the current <see cref="Type"/> is an array, a pointer, or is passed by reference.
+    /// Gets a value indicating whether the current type encompasses or refers to another type; 
+    /// that is, whether the current type is an array, a pointer, or is passed by reference.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is an array, a pointer, or is passed by reference; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type is an array, a pointer, or is passed by reference; otherwise, <see langword="false"/>.
     /// </returns>
     bool HasElementType { get; }
 
     /// <summary>
-    /// When overridden in a derived class, returns the <see cref="Type"/> of the object encompassed or referred to by the current array, pointer or reference type.
+    /// When overridden in a derived class, returns the <see cref="ITypeInformation"/> of the object encompassed or referred to by the current array, pointer or reference type.
     /// </summary>
     /// <returns>
-    /// The <see cref="Type"/> of the object encompassed or referred to by the current array, pointer, or reference type, 
-    /// or <see langword="null"/> if the current <see cref="Type"/> is not an array or a pointer, or is not passed by reference, 
+    /// The <see cref="ITypeInformation"/> of the object encompassed or referred to by the current array, pointer, or reference type, 
+    /// or <see langword="null"/> if the current type is not an array or a pointer, or is not passed by reference, 
     /// or represents a generic type or a type parameter in the definition of a generic type or generic method.
     /// </returns>
     ITypeInformation GetElementType ();
@@ -240,50 +243,50 @@ namespace Remotion.Reflection
     bool IsGenericType { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> represents a generic type definition, from which other generic types can be constructed.
+    /// Gets a value indicating whether the current type represents a generic type definition, from which other generic types can be constructed.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> object represents a generic type definition; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type object represents a generic type definition; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsGenericTypeDefinition { get; }
 
     /// <summary>
-    /// Returns a <see cref="Type"/> object that represents a generic type definition from which the current generic type can be constructed.
+    /// Returns a <see cref="ITypeInformation"/> object that represents a generic type definition from which the current generic type can be constructed.
     /// </summary>
     /// <returns>
-    /// A <see cref="Type"/> object representing a generic type from which the current type can be constructed.
+    /// A <see cref="ITypeInformation"/> object representing a generic type from which the current type can be constructed.
     /// </returns>
     /// <exception cref="InvalidOperationException">The current type is not a generic type. That is, <see cref="IsGenericType"/> returns <see langword="false"/>.</exception>
     /// <exception cref="NotSupportedException">The invoked method is not supported in the base class. Derived classes must provide an implementation.</exception>
     ITypeInformation GetGenericTypeDefinition ();
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> object has type parameters that have not been replaced by specific types.
+    /// Gets a value indicating whether the current type object has type parameters that have not been replaced by specific types.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> object is itself a generic type parameter or has type parameters for which specific types have not been supplied; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type object is itself a generic type parameter or has type parameters for which specific types have not been supplied; otherwise, <see langword="false"/>.
     /// </returns>
     bool ContainsGenericParameters { get; }
 
     /// <summary>
-    /// Returns an array of <see cref="Type"/> objects that represent the type arguments of a generic type or the type parameters of a generic type definition.
+    /// Returns an array of <see cref="ITypeInformation"/> objects that represent the type arguments of a generic type or the type parameters of a generic type definition.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="Type"/> objects that represent the type arguments of a generic type. Returns an empty array if the current type is not a generic type.
+    /// An array of <see cref="ITypeInformation"/> objects that represent the type arguments of a generic type. Returns an empty array if the current type is not a generic type.
     /// </returns>
     ITypeInformation[] GetGenericArguments ();
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> represents a type parameter in the definition of a generic type or method.
+    /// Gets a value indicating whether the current type represents a type parameter in the definition of a generic type or method.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> object represents a type parameter of a generic type definition or generic method definition; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the type object represents a type parameter of a generic type definition or generic method definition; otherwise, <see langword="false"/>.
     /// </returns>
     bool IsGenericParameter { get; }
 
     /// <summary>
     /// Gets the position of the type parameter in the type parameter list of the generic type or method that declared the parameter, 
-    /// when the <see cref="Type"/> object represents a type parameter of a generic type or a generic method.
+    /// when the type object represents a type parameter of a generic type or a generic method.
     /// </summary>
     /// <returns>
     /// The position of a type parameter in the type parameter list of the generic type or method that defines the parameter. Position numbers begin at 0.
@@ -292,12 +295,12 @@ namespace Remotion.Reflection
     int GenericParameterPosition { get; }
 
     /// <summary>
-    /// Returns an array of <see cref="Type"/> objects that represent the constraints on the current generic type parameter. 
+    /// Returns an array of <see cref="ITypeInformation"/> objects that represent the constraints on the current generic type parameter. 
     /// </summary>
     /// <returns>
-    /// An array of <see cref="Type"/> objects that represent the constraints on the current generic type parameter.
+    /// An array of <see cref="ITypeInformation"/> objects that represent the constraints on the current generic type parameter.
     /// </returns>
-    /// <exception cref="InvalidOperationException">The current <see cref="Type"/> object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
+    /// <exception cref="InvalidOperationException">The current type object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
     ITypeInformation[] GetGenericParameterConstraints ();
 
     /// <summary>
@@ -306,21 +309,21 @@ namespace Remotion.Reflection
     /// <returns>
     /// A bitwise combination of <see cref="GenericParameterAttributes"/> values that describes the covariance and special constraints of the current generic type parameter.
     /// </returns>
-    /// <exception cref="InvalidOperationException">The current <see cref="Type"/> object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
+    /// <exception cref="InvalidOperationException">The current type object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
     /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
     GenericParameterAttributes GenericParameterAttributes { get; }
 
     /// <summary>
-    /// Gets the type from which the current <see cref="Type"/> directly inherits.
+    /// Gets the <see cref="ITypeInformation"/> object from which the current type directly inherits.
     /// </summary>
     /// <returns>
-    /// The <see cref="Type"/> from which the current <see cref="Type"/> directly inherits, 
+    /// The <see cref="ITypeInformation"/> from which the current type directly inherits, 
     /// or null if the current Type represents the <see cref="Object"/> class or an interface.
     /// </returns>
     ITypeInformation BaseType { get; }
 
     /// <summary>
-    /// Determines whether the specified object is an instance of the current <see cref="Type"/>.
+    /// Determines whether the specified object is an instance of the current type.
     /// </summary>
     /// <returns>
     /// <see langword="true"/> if the current Type is in the inheritance hierarchy of the object represented by <paramref name="o"/>, 
@@ -332,7 +335,7 @@ namespace Remotion.Reflection
     bool IsInstanceOfType (object o);
 
     /// <summary>
-    /// Determines whether the class represented by the current <see cref="Type"/> derives from the class represented by the specified <see cref="Type"/>.
+    /// Determines whether the class represented by the current type derives from the class represented by the specified <see cref="ITypeInformation"/> object.
     /// </summary>
     /// <returns>
     /// <see langword="true"/> if the Type represented by the <paramref name="c"/> parameter and the current Type represent classes, 
@@ -346,7 +349,7 @@ namespace Remotion.Reflection
     bool IsSubclassOf (ITypeInformation c);
 
     /// <summary>
-    /// Determines whether an instance of the current <see cref="Type"/> can be assigned from an instance of the specified Type.
+    /// Determines whether an instance of the current type can be assigned from an instance of the specified Type.
     /// </summary>
     /// <returns>
     /// <see langword="true"/> if <paramref name="c"/> and the current Type represent the same type, 

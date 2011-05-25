@@ -335,6 +335,8 @@ namespace Remotion.Reflection
     {
       return _type.ToString ();
     }
+    //Equals
+    //GetHashcode
 
     private ITypeInformation[] ConvertToTypeAdapters (Type[] types)
     {
@@ -343,13 +345,8 @@ namespace Remotion.Reflection
 
     /*
 
-
-
-
+     Type Ascribing
      * 
-
-     * 
-
      // use this.GetProperties {name.equals(value.name), returntype.equals(value.returntype)}
      public static PropertyInfo GetProperty (this IPropertyInformation
         string name, BindingFlags bindingAttr, Type returnType, Type[] types);
