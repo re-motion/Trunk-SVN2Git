@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     {
       var testDomainNamespace = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration." + testDomainNamespaceSuffix;
       new MappingConfiguration (
-          new MappingReflector (GetTypeDiscoveryService (testDomainNamespace, GetType().Assembly)),
+          MappingReflectorFactory.CreateMappingReflector (GetTypeDiscoveryService (testDomainNamespace, GetType ().Assembly)),
           new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 

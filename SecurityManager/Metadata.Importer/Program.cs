@@ -91,7 +91,8 @@ namespace Remotion.SecurityManager.Metadata.Importer
         ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
         MappingConfiguration.SetCurrent (
             new MappingConfiguration (
-                new MappingReflector (typeDiscoveryService),
+                new MappingReflector (
+                    typeDiscoveryService, new ClassIDProvider(), new DomainModelConstraintProvider(), new ReflectionBasedNameResolver()),
                 new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
 
         ClientTransaction transaction = ClientTransaction.CreateRootTransaction();

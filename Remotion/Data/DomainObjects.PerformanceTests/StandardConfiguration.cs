@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
       MappingConfiguration mappingConfiguration = new MappingConfiguration (
-          new MappingReflector (typeDiscoveryService),
+          new MappingReflector (typeDiscoveryService, new ClassIDProvider(), new DomainModelConstraintProvider(), new ReflectionBasedNameResolver()),
           new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       MappingConfiguration.SetCurrent (mappingConfiguration);
     }

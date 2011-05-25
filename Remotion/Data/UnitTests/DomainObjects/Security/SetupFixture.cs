@@ -31,6 +31,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
@@ -58,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
         MappingConfiguration.SetCurrent (
             new MappingConfiguration (
-                new MappingReflector (GetTypeDiscoveryService (GetType().Assembly)),
+                MappingReflectorFactory.CreateMappingReflector (GetTypeDiscoveryService (GetType ().Assembly)),
                 new PersistenceModelLoader(new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
       }
       catch (Exception ex)

@@ -34,19 +34,34 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly IMappingNameResolver _nameResolver;
     private readonly IMappingObjectFactory _mappingObjectFactory;
     private readonly ITypeDiscoveryService _typeDiscoveryService;
+    private readonly IClassIDProvider _classIDProvider;
+    private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
 
     // This ctor is required when the MappingReflector is instantiated as a configuration element from a config file.
-    public MappingReflector () : this(ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService())
+    public MappingReflector ()
+        : this (
+            ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(),
+            new ClassIDProvider(),
+            new DomainModelConstraintProvider(),
+            new ReflectionBasedNameResolver())
     {
-      
     }
 
-    public MappingReflector (ITypeDiscoveryService typeDiscoveryService)
+    public MappingReflector (
+        ITypeDiscoveryService typeDiscoveryService,
+        IClassIDProvider classIDProvider,
+        IDomainModelConstraintProvider domainModelConstraintProvider,
+        IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
+      ArgumentUtility.CheckNotNull ("classIDProvider", classIDProvider);
+      ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
+      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       _typeDiscoveryService = typeDiscoveryService;
-      _nameResolver = new ReflectionBasedNameResolver ();
+      _classIDProvider = classIDProvider;
+      _domainModelConstraintProvider = domainModelConstraintProvider;
+      _nameResolver = nameResolver;
       _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (_nameResolver);
     }
 
@@ -86,14 +101,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       return (from type in _typeDiscoveryService.GetTypes (typeof (DomainObject), false).Cast<Type>()
               where !type.IsDefined (typeof (IgnoreForMappingConfigurationAttribute), false)
-                //TODO COMMONS-825: test this
-              && !ReflectionUtility.IsDomainObjectBase (type)
+                    //TODO COMMONS-825: test this
+                    && !ReflectionUtility.IsDomainObjectBase (type)
               select type).Distinct();
     }
 
     private Type[] GetDomainObjectTypesSorted ()
     {
-      return GetDomainObjectTypes ().OrderBy (t => t.FullName, StringComparer.OrdinalIgnoreCase).ToArray ();
+      return GetDomainObjectTypes().OrderBy (t => t.FullName, StringComparer.OrdinalIgnoreCase).ToArray();
     }
 
     bool IMappingLoader.ResolveTypes
@@ -114,41 +129,41 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public IClassDefinitionValidator CreateClassDefinitionValidator ()
     {
       return new ClassDefinitionValidator (
-          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule (),
-          new DomainObjectTypeIsNotGenericValidationRule (),
-          new InheritanceHierarchyFollowsClassHierarchyValidationRule (),
-          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule (),
-          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule (),
-          new StorageGroupTypesAreSameWithinInheritanceTreeRule ());
+          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule(),
+          new DomainObjectTypeIsNotGenericValidationRule(),
+          new InheritanceHierarchyFollowsClassHierarchyValidationRule(),
+          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule(),
+          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule(),
+          new StorageGroupTypesAreSameWithinInheritanceTreeRule());
     }
 
     public IPropertyDefinitionValidator CreatePropertyDefinitionValidator ()
     {
       return new PropertyDefinitionValidator (
-        new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
-        new MappingAttributesAreSupportedForPropertyTypeValidationRule (),
-        new StorageClassIsSupportedValidationRule (),
-        new PropertyTypeIsSupportedValidationRule ());
+          new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule(),
+          new MappingAttributesAreSupportedForPropertyTypeValidationRule(),
+          new StorageClassIsSupportedValidationRule(),
+          new PropertyTypeIsSupportedValidationRule());
     }
 
     public IRelationDefinitionValidator CreateRelationDefinitionValidator ()
     {
       return new RelationDefinitionValidator (
-          new RdbmsRelationEndPointCombinationIsSupportedValidationRule (),
-          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule (),
-          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule (),
-          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule (),
-          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule (),
-          new RelationEndPointPropertyTypeIsSupportedValidationRule (),
-          new RelationEndPointNamesAreConsistentValidationRule (),
-          new RelationEndPointTypesAreConsistentValidationRule (),
-          new CheckForInvalidRelationEndPointsValidationRule (),
-          new CheckForTypeNotFoundClassDefinitionValidationRule ());
+          new RdbmsRelationEndPointCombinationIsSupportedValidationRule(),
+          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule(),
+          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule(),
+          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule(),
+          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule(),
+          new RelationEndPointPropertyTypeIsSupportedValidationRule(),
+          new RelationEndPointNamesAreConsistentValidationRule(),
+          new RelationEndPointTypesAreConsistentValidationRule(),
+          new CheckForInvalidRelationEndPointsValidationRule(),
+          new CheckForTypeNotFoundClassDefinitionValidationRule());
     }
 
     public ISortExpressionValidator CreateSortExpressionValidator ()
     {
-      return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
+      return new SortExpressionValidator (new SortExpressionIsValidValidationRule());
     }
   }
 }

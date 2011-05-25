@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       var mappingConfiguration =
           new MappingConfiguration (
-              new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly)),
+              MappingReflectorFactory.CreateMappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType ().Assembly)),
               new PersistenceModelLoader(new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       var domainBaseClass = mappingConfiguration.GetTypeDefinition (typeof (DomainBase));
       Assert.IsNull (StorageModelTestHelper.GetEntityName (domainBaseClass));

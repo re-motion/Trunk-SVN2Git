@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
@@ -37,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinitions ()
     {
-      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
+      MappingReflector mappingReflector = MappingReflectorFactory.CreateMappingReflector(TestMappingConfiguration.GetTypeDiscoveryService());
 
       var actualClassDefinitions = mappingReflector.GetClassDefinitions().ToDictionary (cd => cd.ClassType);
       mappingReflector.GetRelationDefinitions (actualClassDefinitions);
@@ -67,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
           .Return (new[] { typeof (Base), typeof (Shadower) });
 
-      var mappingReflector = new MappingReflector (typeDiscoveryServiceStub);
+      var mappingReflector = MappingReflectorFactory.CreateMappingReflector(typeDiscoveryServiceStub);
       var classDefinition1 = mappingReflector.GetClassDefinitions().Single (cd => cd.ClassType == typeof (Shadower));
       var classDefinition2 = classDefinition1.BaseClass;
 
@@ -91,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                   typeof (UnidirectionalRelationClass), typeof (AboveInheritanceRootClassWithRelation), typeof (DerivedInheritanceRootClass1),
                   typeof (DerivedInheritanceRootClass2)
               });
-      MappingReflector reflector = new MappingReflector (typeDiscoveryServiceStub);
+      var reflector = MappingReflectorFactory.CreateMappingReflector(typeDiscoveryServiceStub);
       var mappingConfiguration = new MappingConfiguration (
           reflector, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 

@@ -29,6 +29,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -110,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var typeDiscoveryService = GetTypeDiscoveryService (GetType ().Assembly);
 
       _mappingConfiguration = new MappingConfiguration (
-          new MappingReflector (typeDiscoveryService), 
+          MappingReflectorFactory.CreateMappingReflector (typeDiscoveryService), 
           new PersistenceModelLoader (new StorageProviderDefinitionFinder (_storageConfiguration)));
       _domainObjectsConfiguration = new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration);
     }

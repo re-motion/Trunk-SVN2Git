@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var typeDiscoveryService = GetTypeDiscoveryService();
 
       _mappingConfiguration = new MappingConfiguration (
-          new MappingReflector (typeDiscoveryService),
+          MappingReflectorFactory.CreateMappingReflector (typeDiscoveryService),
           new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       MappingConfiguration.SetCurrent (_mappingConfiguration);
 
