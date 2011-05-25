@@ -167,6 +167,8 @@
     <Compile Include="Cloning\DomainObjectCloner.cs" />
     <Compile Include="Cloning\ICloneStrategy.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\AllMappingPropertiesFinder.cs" />
+    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\ClassIDProvider.cs" />
+    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\DomainModelConstraintProvider.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IClassIDProvider.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IDomainModelConstraintProvider.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IgnoreForMappingConfigurationAttribute.cs" />
