@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -225,6 +226,31 @@ namespace Remotion.Reflection
     }
 
     /// <summary>
+    /// Gets a value indicating whether the current <see cref="Type"/> encompasses or refers to another type; 
+    /// that is, whether the current <see cref="Type"/> is an array, a pointer, or is passed by reference.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if the <see cref="Type"/> is an array, a pointer, or is passed by reference; otherwise, <see langword="false"/>.
+    /// </returns>
+    public bool HasElementType
+    {
+      get { return _type.HasElementType; }
+    }
+
+    /// <summary>
+    /// When overridden in a derived class, returns the <see cref="Type"/> of the object encompassed or referred to by the current array, pointer or reference type.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="Type"/> of the object encompassed or referred to by the current array, pointer, or reference type, 
+    /// or <see langword="null"/> if the current <see cref="Type"/> is not an array or a pointer, or is not passed by reference, 
+    /// or represents a generic type or a type parameter in the definition of a generic type or generic method.
+    /// </returns>
+    public ITypeInformation GetElementType ()
+    {
+      return Maybe.ForValue (_type.GetElementType()).Select (TypeAdapter.Create).ValueOrDefault();
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the current type is a generic type.
     /// </summary>
     /// <returns>
@@ -260,20 +286,84 @@ namespace Remotion.Reflection
     }
 
     /// <summary>
+    /// Gets a value indicating whether the current <see cref="Type"/> object has type parameters that have not been replaced by specific types.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if the <see cref="Type"/> object is itself a generic type parameter or has type parameters for which specific types have not been supplied; otherwise, <see langword="false"/>.
+    /// </returns>
+    public bool ContainsGenericParameters
+    {
+      get { return _type.ContainsGenericParameters; }
+    }
+
+    /// <summary>
     /// Returns an array of <see cref="Type"/> objects that represent the type arguments of a generic type or the type parameters of a generic type definition.
     /// </summary>
     /// <returns>
     /// An array of <see cref="Type"/> objects that represent the type arguments of a generic type. Returns an empty array if the current type is not a generic type.
     /// </returns>
-    public Type[] GetGenericArguments ()
+    public ITypeInformation[] GetGenericArguments ()
     {
-      return _type.GetGenericArguments ();
+      return ConvertToTypeAdapters(_type.GetGenericArguments());
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the current <see cref="Type"/> represents a type parameter in the definition of a generic type or method.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if the <see cref="Type"/> object represents a type parameter of a generic type definition or generic method definition; otherwise, <see langword="false"/>.
+    /// </returns>
+    public bool IsGenericParameter
+    {
+      get { return _type.IsGenericParameter; }
+    }
+
+    /// <summary>
+    /// Gets the position of the type parameter in the type parameter list of the generic type or method that declared the parameter, 
+    /// when the <see cref="Type"/> object represents a type parameter of a generic type or a generic method.
+    /// </summary>
+    /// <returns>
+    /// The position of a type parameter in the type parameter list of the generic type or method that defines the parameter. Position numbers begin at 0.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">The current type does not represent a type parameter. That is, <see cref="IsGenericParameter"/> returns <see langword="false"/>.</exception>
+    public int GenericParameterPosition
+    {
+      get { return _type.GenericParameterPosition; }
+    }
+
+    /// <summary>
+    /// Returns an array of <see cref="Type"/> objects that represent the constraints on the current generic type parameter. 
+    /// </summary>
+    /// <returns>
+    /// An array of <see cref="Type"/> objects that represent the constraints on the current generic type parameter.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">The current <see cref="Type"/> object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
+    public ITypeInformation[] GetGenericParameterConstraints ()
+    {
+      return ConvertToTypeAdapters (_type.GetGenericParameterConstraints ());
+    }
+
+    /// <summary>
+    /// Gets a combination of <see cref="GenericParameterAttributes"/> flags that describe the covariance and special constraints of the current generic type parameter. 
+    /// </summary>
+    /// <returns>
+    /// A bitwise combination of <see cref="GenericParameterAttributes"/> values that describes the covariance and special constraints of the current generic type parameter.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">The current <see cref="Type"/> object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
+    /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
+    public GenericParameterAttributes GenericParameterAttributes
+    {
+      get { return _type.GenericParameterAttributes; }
+    }
 
     public override string ToString ()
     {
       return _type.ToString ();
+    }
+
+    private ITypeInformation[] ConvertToTypeAdapters (Type[] types)
+    {
+      return Array.ConvertAll (types, t => (ITypeInformation) TypeAdapter.Create (t));
     }
 
     /*
@@ -307,40 +397,8 @@ namespace Remotion.Reflection
     }
 
 
+     * 
 
-
-
-    /// <summary>
-    /// Returns an array of <see cref="Type"/> objects that represent the constraints on the current generic type parameter. 
-    /// </summary>
-    /// <returns>
-    /// An array of <see cref="Type"/> objects that represent the constraints on the current generic type parameter.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">The current <see cref="Type"/> object is not a generic type parameter. That is, the <see cref="P:System.Type.IsGenericParameter"/> property returns <see langword="false"/>.
-    ///                 </exception><filterpriority>1</filterpriority>
-    public Type[] GetGenericParameterConstraints ()
-    {
-      return _type.GetGenericParameterConstraints();
-    }
-
-    public virtual bool IsGenericParameter { get; }
-    public virtual int GenericParameterPosition { get; }
-    public virtual bool ContainsGenericParameters { get; }
-    public virtual GenericParameterAttributes GenericParameterAttributes { get; }
-    
-     *          public bool HasElementType { get; }
-
-    /// <summary>
-    /// When overridden in a derived class, returns the <see cref="Type"/> of the object encompassed or referred to by the current array, pointer or reference type.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="Type"/> of the object encompassed or referred to by the current array, pointer, or reference type, or <see langword="null"/> if the current <see cref="Type"/> is not an array or a pointer, or is not passed by reference, or represents a generic type or a type parameter in the definition of a generic type or generic method.
-    /// </returns>
-    /// <filterpriority>2</filterpriority>
-    public Type GetElementType ()
-    {
-      return _type.GetElementType();
-    }
      * 
     /// <summary>
     /// Determines whether an instance of the current <see cref="Type"/> can be assigned from an instance of the specified Type.

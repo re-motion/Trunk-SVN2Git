@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
@@ -237,7 +238,37 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void IsGenericType_GenericType ()
+    public void HasElementType_TypeWithElementType ()
+    {
+      var type = typeof (int[]);
+      Assert.That (TypeAdapter.Create (type).HasElementType, Is.EqualTo (type.HasElementType).And.True);
+    }
+
+    [Test]
+    public void HasElementType_TypeWithoutElementType ()
+    {
+      var type = typeof (int);
+      Assert.That (TypeAdapter.Create (type).HasElementType, Is.EqualTo (type.HasElementType).And.False);
+    }
+
+    [Test]
+    public void GetElementType_TypeWithElementType ()
+    {
+      var type = typeof (int[]);
+      Assert.That (
+          TypeAdapter.Create (type).GetElementType(),
+          Is.TypeOf<TypeAdapter>().And.Property ("Type").SameAs (type.GetElementType()));
+    }
+
+    [Test]
+    public void GetElementType_TypeWithoutElementType ()
+    {
+      var type = typeof (int);
+      Assert.That (TypeAdapter.Create (type).GetElementType(), Is.EqualTo (type.GetElementType()).And.Null);
+    }
+
+    [Test]
+    public void IsGenericType_ClosedGenericType ()
     {
       var type = typeof (List<int>);
       Assert.That (TypeAdapter.Create (type).IsGenericType, Is.EqualTo (type.IsGenericType).And.True);
@@ -265,7 +296,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GetGenericTypeDefintion_GenericType ()
+    public void GetGenericTypeDefintion_ClosedGenericType ()
     {
       var type = typeof (List<int>);
       Assert.That (
@@ -287,6 +318,109 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (()=>
           TypeAdapter.Create (typeof (List)).GetGenericTypeDefinition (),
+          Throws.InvalidOperationException);
+    }
+
+    [Test]
+    public void ContainsGenericParameters_OpenGenericType ()
+    {
+      var type = typeof (List<>);
+      Assert.That (TypeAdapter.Create (type).ContainsGenericParameters, Is.EqualTo (type.ContainsGenericParameters).And.True);
+    }
+
+    [Test]
+    public void ContainsGenericParameters_ClosedGenericType ()
+    {
+      var type = typeof (List<int>);
+      Assert.That (TypeAdapter.Create (type).ContainsGenericParameters, Is.EqualTo (type.ContainsGenericParameters).And.False);
+    }
+
+    [Test]
+    public void ContainsGenericParameters_NotGenericType ()
+    {
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).ContainsGenericParameters, Is.EqualTo (type.ContainsGenericParameters).And.False);
+    }
+
+    [Test]
+    public void GetGenericArguments_ClosedGenericType ()
+    {
+      var type = typeof (List<int>);
+      Assert.That (TypeAdapter.Create (type).GetGenericArguments(), Has.All.TypeOf<TypeAdapter>());
+      Assert.That (TypeAdapter.Create (type).GetGenericArguments().Cast<TypeAdapter>().Select (ta => ta.Type), Is.EqualTo (new[] { typeof (int) }));
+    }
+
+    [Test]
+    public void GetGenericArguments_NotGenericType ()
+    {
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).GetGenericArguments (), Is.Empty);
+    }
+
+    [Test]
+    public void IsGenericParameter_GenericParameter ()
+    {
+      var type = typeof (Nullable<>).GetGenericArguments ().Single ();
+
+      Assert.That (TypeAdapter.Create (type).IsGenericParameter, Is.EqualTo (type.IsGenericParameter).And.True);
+    }
+
+    [Test]
+    public void IsGenericParameter_NotGenericParameter ()
+    {
+      var type = typeof (ValueType);
+
+      Assert.That (TypeAdapter.Create (type).IsGenericParameter, Is.EqualTo (type.IsGenericParameter).And.False);
+    }
+
+    [Test]
+    public void GetGenericParameterConstraints_GenericParameter ()
+    {
+      var type = typeof (Nullable<>).GetGenericArguments().Single();
+
+      Assert.That (TypeAdapter.Create (type).GetGenericParameterConstraints(), Has.All.TypeOf<TypeAdapter>());
+      Assert.That (
+          TypeAdapter.Create (type).GetGenericParameterConstraints().Cast<TypeAdapter>().Select (ta => ta.Type),
+          Is.EqualTo (new[] { typeof (ValueType) }));
+    }
+
+    [Test]
+    public void GetGenericParameterConstraints_NotGenericParameter ()
+    {
+      Assert.That (() =>
+          TypeAdapter.Create (typeof (ValueType)).GetGenericTypeDefinition (),
+          Throws.InvalidOperationException);
+    }
+
+    [Test]
+    public void GenericParameterPosition_GenericParameter ()
+    {
+      var type = typeof (Tuple<,>).GetGenericArguments()[1];
+
+      Assert.That (TypeAdapter.Create (type).GenericParameterPosition, Is.EqualTo (type.GenericParameterPosition).And.EqualTo (1));
+    }
+
+    [Test]
+    public void GenericParameterPosition_NotGenericParameter ()
+    {
+      Assert.That (() =>
+          TypeAdapter.Create (typeof (ValueType)).GenericParameterPosition,
+          Throws.InvalidOperationException);
+    }
+
+    [Test]
+    public void GenericParameterAttributes_GenericParameter ()
+    {
+      var type = typeof (Nullable<>).GetGenericArguments().Single();
+
+      Assert.That (TypeAdapter.Create (type).GenericParameterAttributes, Is.EqualTo (type.GenericParameterAttributes));
+    }
+
+    [Test]
+    public void GenericParameterAttributes_NotGenericParameter ()
+    {
+      Assert.That (() =>
+          TypeAdapter.Create (typeof (ValueType)).GenericParameterAttributes,
           Throws.InvalidOperationException);
     }
 
