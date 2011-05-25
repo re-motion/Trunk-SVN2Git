@@ -27,6 +27,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public interface IClientTransactionComponentFactory
   {
+    ClientTransaction GetParentTransaction ();
+
     Dictionary<Enum, object> CreateApplicationData ();
     ClientTransactionExtensionCollection CreateExtensions ();
     IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction);

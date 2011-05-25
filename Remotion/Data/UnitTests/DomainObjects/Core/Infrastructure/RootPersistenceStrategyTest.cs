@@ -30,11 +30,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _rootPersistenceStrategy = new RootPersistenceStrategy (Guid.Empty);
     }
-
-    [Test]
-    public void ParentTransaction ()
-    {
-      Assert.That (((IPersistenceStrategy) _rootPersistenceStrategy).ParentTransaction, Is.Null);
-    }
   }
 }

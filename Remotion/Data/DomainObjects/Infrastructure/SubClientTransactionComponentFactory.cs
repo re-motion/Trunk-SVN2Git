@@ -20,7 +20,6 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -45,6 +44,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       _parentTransaction = parentTransaction;
       _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
+    }
+
+    public virtual ClientTransaction GetParentTransaction ()
+    {
+      return _parentTransaction;
     }
 
     public virtual Dictionary<Enum, object> CreateApplicationData ()

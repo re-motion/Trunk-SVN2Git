@@ -71,6 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
 
       _transactionWithMocks = ClientTransactionObjectMother.Create (
+          null,
           _fakeApplicationData,
           tx => { throw new NotImplementedException(); },
           _dataManagerMock,
@@ -85,46 +86,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void ParentTransaction ()
     {
-      var parent = ClientTransaction.CreateRootTransaction();
-      _persistenceStrategyMock.Stub (stub => stub.ParentTransaction).Return (parent);
-      _mockRepository.ReplayAll();
-      
-      Assert.That (_transactionWithMocks.ParentTransaction, Is.SameAs (parent));
+      var subTransaction = _transaction.CreateSubTransaction();
+
+      Assert.That (subTransaction.ParentTransaction, Is.SameAs (_transaction));
     }
 
     [Test]
     public void ParentTransaction_Null ()
     {
-      _persistenceStrategyMock.Stub (stub => stub.ParentTransaction).Return (null);
-      _mockRepository.ReplayAll ();
-
-      Assert.That (_transactionWithMocks.ParentTransaction, Is.Null);
+      Assert.That (_transaction.ParentTransaction, Is.Null);
     }
 
     [Test]
     public void ActiveSubTransaction_Null ()
     {
-      Assert.That (_transactionWithMocks.SubTransaction, Is.Null);
+      Assert.That (_transaction.SubTransaction, Is.Null);
     }
 
     [Test]
     public void RootTransaction_Same ()
     {
-      _persistenceStrategyMock.Stub (stub => stub.ParentTransaction).Return (null);
-      _mockRepository.ReplayAll();
-      
-      Assert.That (_transactionWithMocks.RootTransaction, Is.SameAs (_transactionWithMocks));
+      Assert.That (_transaction.RootTransaction, Is.SameAs (_transaction));
     }
 
     [Test]
     public void RootTransaction_NotSame ()
     {
-      var grandParentTransaction = ClientTransaction.CreateRootTransaction ();
+      var grandParentTransaction = _transaction;
       var parentTransaction = grandParentTransaction.CreateSubTransaction();
-      _persistenceStrategyMock.Stub (stub => stub.ParentTransaction).Return (parentTransaction);
-      _mockRepository.ReplayAll ();
+      var transaction = parentTransaction.CreateSubTransaction();
 
-      Assert.That (_transactionWithMocks.RootTransaction, Is.SameAs (grandParentTransaction));
+      Assert.That (transaction.RootTransaction, Is.SameAs (grandParentTransaction));
     }
 
     [Test]
@@ -648,9 +640,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       Assert.That (_transaction.IsReadOnly, Is.False);
 
-      var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
-      fakePersistenceStrategy.Stub (stub => stub.ParentTransaction).Return (_transaction);
-      var fakeSubTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (fakePersistenceStrategy);
+      var fakeSubTransaction = CreateTransactionInHierarchy (_transaction);
 
       Func<ClientTransaction, IInvalidDomainObjectManager, ClientTransaction> factoryMock = (tx, invalidDomainObjectManager) =>
       {
@@ -674,9 +664,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _transaction, 
           ClientTransactionTestHelper.GetInvalidDomainObjectManager (_transaction));
       var eventReceiverMock = mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_transaction);
-      
-      var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
-      fakePersistenceStrategy.Stub (stub => stub.ParentTransaction).Return (_transaction);
 
       using (mockRepository.Ordered ())
       {
@@ -684,8 +671,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Expect (mock => mock.SubTransactionCreating (_transaction))
             .WhenCalled (mi => Assert.That (_transaction.IsReadOnly, Is.False));
         componentFactoryPartialMock
-            .Expect (mock => mock.CreatePersistenceStrategy (Arg<Guid>.Is.Anything))
-            .Return (fakePersistenceStrategy);
+            .Expect (mock => mock.GetParentTransaction())
+            .Return (_transaction);
         eventReceiverMock
             .Expect (mock => mock.SubTransactionCreated (
                 Arg.Is (_transaction), 
@@ -797,8 +784,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener>();
       listenerMock.Expect (mock => mock.TransactionDiscarding (_transactionWithMocks));
 
-      _persistenceStrategyMock.Stub (stub => stub.ParentTransaction).Return (null);
-
       _mockRepository.ReplayAll();
       _fakeListeners.AddListener (listenerMock);
 
@@ -818,16 +803,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var parentTransaction = ClientTransaction.CreateRootTransaction ();
       ClientTransactionTestHelper.SetIsReadOnly (parentTransaction, true);
-      ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, _transactionWithMocks);
 
-      _persistenceStrategyMock.Stub (stub => stub.ParentTransaction).Return (parentTransaction);
+      var subTransaction = CreateTransactionInHierarchy (parentTransaction);
+      ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, subTransaction);
 
       _mockRepository.ReplayAll ();
 
       Assert.That (parentTransaction.IsReadOnly, Is.True);
       Assert.That (parentTransaction.SubTransaction, Is.Not.Null);
 
-      _transactionWithMocks.Discard ();
+      subTransaction.Discard ();
 
       Assert.That (parentTransaction.IsReadOnly, Is.False);
       Assert.That (parentTransaction.SubTransaction, Is.Null);
@@ -840,12 +825,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ClientTransactionTestHelper.SetIsReadOnly (parentTransaction, true);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, _transactionWithMocks);
 
-      _persistenceStrategyMock.Stub (stub => stub.ParentTransaction).Return (parentTransaction);
-      _mockRepository.ReplayAll();
+      var subTransaction = CreateTransactionInHierarchy (parentTransaction);
+      ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, subTransaction);
 
-      _transactionWithMocks.Discard();
+      subTransaction.Discard();
 
-      var otherSubTransaction = ClientTransaction.CreateRootTransaction();
+      var otherSubTransaction = CreateTransactionInHierarchy (parentTransaction);
       ClientTransactionTestHelper.SetIsReadOnly (parentTransaction, true);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, otherSubTransaction);
 
@@ -853,9 +838,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       listenerMock.Replay();
       _fakeListeners.AddListener (listenerMock);
 
-      _transactionWithMocks.Discard();
+      subTransaction.Discard ();
 
-      listenerMock.AssertWasNotCalled (mock => mock.TransactionDiscarding (_transactionWithMocks));
+      listenerMock.AssertWasNotCalled (mock => mock.TransactionDiscarding (subTransaction));
       Assert.That (parentTransaction.IsReadOnly, Is.True);
       Assert.That (parentTransaction.SubTransaction, Is.SameAs (otherSubTransaction));
     }
@@ -1006,5 +991,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
+    private ClientTransaction CreateTransactionInHierarchy (ClientTransaction parent)
+    {
+      return ClientTransactionObjectMother.Create (
+          parent,
+          _fakeApplicationData,
+          tx => { throw new NotImplementedException (); },
+          _dataManagerMock,
+          _enlistedObjectManagerMock,
+          _fakeExtensions,
+          _invalidDomainObjectManagerMock,
+          new[] { _fakeListeners },
+          _objectLoaderMock,
+          _persistenceStrategyMock);
+    }
   }
 }

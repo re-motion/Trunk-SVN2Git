@@ -138,6 +138,7 @@ public class ClientTransaction
   public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
   private readonly IClientTransactionComponentFactory _componentFactory;
+  private readonly ClientTransaction _parentTransaction;
 
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly ClientTransactionExtensionCollection _extensions;
@@ -149,6 +150,7 @@ public class ClientTransaction
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IObjectLoader _objectLoader;
+
   private ClientTransaction _subTransaction;
 
   private bool _isDiscarded;
@@ -163,6 +165,7 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
     
     _componentFactory = componentFactory;
+    _parentTransaction = componentFactory.GetParentTransaction();
 
     _applicationData = componentFactory.CreateApplicationData ();
     _extensions = componentFactory.CreateExtensions ();
@@ -191,7 +194,7 @@ public class ClientTransaction
   /// <value>The parent transaction, or <see langword="null" /> if this transaction is a root transaction.</value>
   public ClientTransaction ParentTransaction 
   { 
-    get { return _persistenceStrategy.ParentTransaction; }
+    get { return _parentTransaction; }
   }
 
   /// <summary>

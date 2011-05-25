@@ -42,11 +42,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _transactionID = transactionID;
     }
 
-    ClientTransaction IPersistenceStrategy.ParentTransaction
-    {
-      get { return null; }
-    }
-
     public virtual ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

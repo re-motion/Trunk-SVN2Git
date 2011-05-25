@@ -35,6 +35,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class RootClientTransactionComponentFactory : IClientTransactionComponentFactory
   {
+    public ClientTransaction GetParentTransaction ()
+    {
+      return null;
+    }
+
     public virtual Dictionary<Enum, object> CreateApplicationData ()
     {
       return new Dictionary<Enum, object> ();

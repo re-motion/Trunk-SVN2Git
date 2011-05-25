@@ -37,6 +37,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void GetParentTransaction ()
+    {
+      Assert.That (_factory.GetParentTransaction(), Is.Null);
+    }
+
+    [Test]
     public void CreateInvalidDomainObjectManager ()
     {
       var manager = _factory.CreateInvalidDomainObjectManager ();

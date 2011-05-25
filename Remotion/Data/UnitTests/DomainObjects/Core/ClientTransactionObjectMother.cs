@@ -53,6 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     public static ClientTransaction Create (
+        ClientTransaction parentTransaction,
         Dictionary<Enum, object> applicationData,
         Func<ClientTransaction, ClientTransaction> clineFactory,
         IDataManager dataManager,
@@ -64,6 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IPersistenceStrategy persistenceStrategy)
     {
       var componentFactoryStub = CreateComponentFactory (
+          parentTransaction,
           applicationData,
           clineFactory,
           dataManager,
@@ -78,6 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     public static IClientTransactionComponentFactory CreateComponentFactory (
+        ClientTransaction parentTransaction,
         Dictionary<Enum, object> applicationData,
         Func<ClientTransaction, ClientTransaction> clineFactory,
         IDataManager dataManager,
@@ -89,6 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IPersistenceStrategy persistenceStrategy)
     {
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
+      componentFactoryStub.Stub (stub => stub.GetParentTransaction()).Return (parentTransaction);
       componentFactoryStub.Stub (stub => stub.CreateApplicationData ()).Return (applicationData);
       componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (clineFactory);
       componentFactoryStub

@@ -20,8 +20,8 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.DomainObjects.UberProfIntegration;
-using Remotion.Implementation;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
@@ -31,34 +31,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
   {
     private TracingLinqToSqlAppender _tracingLinqToSqlAppender;
 
+    private ClientTransaction _clientTransaction;
+
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       var locator = new DefaultServiceLocator();
-      locator.Register (typeof (IClientTransactionListenerFactory), typeof (LinqToSqlListenerFactory), LifetimeKind.Singleton);
+      var factory = new LinqToSqlListenerFactory();
+      locator.Register (typeof (IClientTransactionListenerFactory), () => factory);
+      locator.Register (typeof (IPersistenceListenerFactory), () => factory);
       ServiceLocator.SetLocatorProvider (() => locator);
 
-      _tracingLinqToSqlAppender = new TracingLinqToSqlAppender ();
+      _tracingLinqToSqlAppender = new TracingLinqToSqlAppender();
       MockableAppender.AppenderMock = _tracingLinqToSqlAppender;
+
+      _clientTransaction = ClientTransaction.CreateRootTransaction();
     }
 
     public override void TearDown ()
     {
-      base.TearDown ();
+      base.TearDown();
 
       ServiceLocator.SetLocatorProvider (null);
     }
 
     [Test]
-    [Ignore ("TODO 3838")]
     public void LoadSingleObject ()
     {
-      var clientTransaction = ClientTransaction.CreateRootTransaction ();
-      LifetimeService.GetObject (clientTransaction, DomainObjectIDs.Order1, false);
+      LifetimeService.GetObject (_clientTransaction, DomainObjectIDs.Order1, false);
 
-      Console.WriteLine (_tracingLinqToSqlAppender.TraceLog);
-      Assert.That (_tracingLinqToSqlAppender.TraceLog, Is.EqualTo ("???"));
+      Assert.That (
+          _tracingLinqToSqlAppender.TraceLog,
+          Is.StringMatching (
+              @"ConnectionStarted \((?<connectionid>[^,]+)\)" + Environment.NewLine
+              + @"StatementExecuted \(\k<connectionid>, (?<statementid>[^,]+), -- Statement \k<statementid>" + Environment.NewLine
+              + @"SELECT \* FROM \[Order\] WHERE \[ID\] = \@ID;" + Environment.NewLine
+              + @"-- Ignore unbounded result sets: TOP \*" + Environment.NewLine
+              + @"-- Parameters:" + Environment.NewLine
+              + @"-- \@ID = \[-\[5682f032-2f0b-494b-a31c-c97f02b89c36\]-\] \[-\[Type \(0\)\]-\]" + Environment.NewLine
+              + @"\)" + Environment.NewLine
+              + @"CommandDurationAndRowCount \(\k<connectionid>, \d+, \<null\>\)" + Environment.NewLine
+              + @"StatementRowCount \(\k<connectionid>, \k<statementid>, 1\)" + Environment.NewLine));
     }
   }
 }

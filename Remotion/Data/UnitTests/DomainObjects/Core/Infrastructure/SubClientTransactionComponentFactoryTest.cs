@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -44,6 +43,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _parentTransaction = new ClientTransactionMock ();
       _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       _factory = new SubClientTransactionComponentFactory (_parentTransaction, _parentInvalidDomainObjectManagerStub);
+    }
+
+    [Test]
+    public void GetParentTransaction ()
+    {
+      Assert.That (_factory.GetParentTransaction (), Is.SameAs (_parentTransaction));
     }
 
     [Test]

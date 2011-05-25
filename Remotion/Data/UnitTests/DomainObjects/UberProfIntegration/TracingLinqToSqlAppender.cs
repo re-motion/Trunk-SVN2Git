@@ -32,51 +32,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
     public void ConnectionStarted (Guid sessionID)
     {
       _log.AppendFormat ("ConnectionStarted ({0})", sessionID);
+      _log.AppendLine();
     }
 
     public void ConnectionDisposed (Guid sessionID)
     {
       _log.AppendFormat ("ConnectionDisposed ({0})", sessionID);
+      _log.AppendLine ();
     }
 
     public void StatementRowCount (Guid sessionID, Guid queryID, int rowCount)
     {
       _log.AppendFormat ("StatementRowCount ({0}, {1}, {2})", sessionID, queryID, rowCount);
+      _log.AppendLine ();
     }
 
     public void StatementError (Guid sessionID, Exception e)
     {
       _log.AppendFormat ("ConnectionDisposed ({0}, {1})", sessionID, e);
+      _log.AppendLine ();
     }
 
     public void CommandDurationAndRowCount (Guid sessionID, long milliseconds, int? rowCount)
     {
       _log.AppendFormat ("CommandDurationAndRowCount ({0}, {1}, {2})", sessionID, milliseconds, (object) rowCount ?? "<null>");
+      _log.AppendLine ();
     }
 
     public void StatementExecuted (Guid sessionID, Guid queryID, string statement)
     {
       _log.AppendFormat ("StatementExecuted ({0}, {1}, {2})", sessionID, queryID, statement);
+      _log.AppendLine ();
     }
 
     public void TransactionBegan (Guid sessionID, IsolationLevel isolationLevel)
     {
       _log.AppendFormat ("TransactionBegan ({0}, {1})", sessionID, isolationLevel);
+      _log.AppendLine ();
     }
 
     public void TransactionCommit (Guid sessionID)
     {
       _log.AppendFormat ("TransactionCommit ({0})", sessionID);
+      _log.AppendLine ();
     }
 
     public void TransactionDisposed (Guid sessionID)
     {
       _log.AppendFormat ("TransactionDisposed ({0})", sessionID);
+      _log.AppendLine ();
     }
 
     public void TransactionRolledBack (Guid sessionID)
     {
       _log.AppendFormat ("TransactionRolledBack ({0})", sessionID);
+      _log.AppendLine ();
     }
   }
 }
