@@ -51,7 +51,12 @@ namespace Remotion.Utilities
       if (ReferenceEquals (one, two))
         return true;
 
-      if (ReferenceEquals (one, null) || ReferenceEquals (null, two)) return false;
+      if (ReferenceEquals (one, null) || ReferenceEquals (null, two))
+        return false;
+
+      // Types are always reference equals or not equal at all.
+      if (one is Type || two is Type)
+        return false;
 
       // Methods defined by concrete arrays (int[].Set (...) etc.) will always succeed in the checks above if they are equal; it doesn't seem to be 
       // possible to get two different MethodInfo references for the same array method. Therefore, return false if an array method got through the 

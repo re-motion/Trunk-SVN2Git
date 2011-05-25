@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.UnitTests.Utilities.MemberInfoEqualityComparerTestDomain;
@@ -271,6 +272,16 @@ namespace Remotion.UnitTests.Utilities
 
       Assert.That (MemberInfoEqualityComparer<FieldInfo>.Instance.Equals (fieldInfo1a, fieldInfo1b), Is.True);
       Assert.That (MemberInfoEqualityComparer<FieldInfo>.Instance.Equals (fieldInfo1a, fieldInfo2), Is.False);
+    }
+
+    [Test]
+    public void Equals_Types ()
+    {
+      Assert.That (MemberInfoEqualityComparer<Type>.Instance.Equals (typeof (List), typeof (List)), Is.True);
+      Assert.That (MemberInfoEqualityComparer<Type>.Instance.Equals (typeof (List<int>), typeof (List<int>)), Is.True);
+      Assert.That (MemberInfoEqualityComparer<Type>.Instance.Equals (typeof (List<>), typeof (List<>)), Is.True);
+      Assert.That (MemberInfoEqualityComparer<Type>.Instance.Equals (typeof (List<int>), typeof (List<>)), Is.False);
+      Assert.That (MemberInfoEqualityComparer<Type>.Instance.Equals (typeof (List<>), typeof (List<int>)), Is.False);
     }
 
     [Test]
