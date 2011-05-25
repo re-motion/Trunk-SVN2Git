@@ -317,6 +317,8 @@
     <Compile Include="Reflection\MethodInfoAdapterConverterTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverterTest.cs" />
     <Compile Include="Reflection\ReflectionExtensionsTest.cs" />
+    <Compile Include="Reflection\TestDomain\ClassImplementingInterface.cs" />
+    <Compile Include="Reflection\TestDomain\IInterfaceToImplement.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\DerivedClassWithReferenceType.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\MethodInfoAdapterTest.cs" />
