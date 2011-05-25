@@ -48,7 +48,7 @@ namespace Remotion.Reflection
     /// <paramref name="implementationType"/> does not implement the interface.</returns>
     /// <exception cref="ArgumentException">The <paramref name="implementationType"/> is itself an interface.</exception>
     /// <exception cref="InvalidOperationException">This <see cref="IMethodInformation"/> does not describe an interface method.</exception>
-    new IMethodInformation FindInterfaceImplementation (Type implementationType);
+    IMethodInformation FindInterfaceImplementation (Type implementationType);
 
     /// <summary>
     /// Finds the property declaration corresponding to this <see cref="IMethodInformation"/> on the given <see cref="Type"/> and it's base types.
@@ -65,7 +65,7 @@ namespace Remotion.Reflection
     /// <see langword="null" /> if this <see cref="IMethodInformation"/> is not an implementation of an interface member.</returns>
     /// <exception cref="InvalidOperationException">This <see cref="IMethodInformation"/> is itself an interface member, so it cannot have an 
     /// interface declaration.</exception>
-    new IMethodInformation FindInterfaceDeclaration ();
+    IMethodInformation FindInterfaceDeclaration ();
 
     /// <summary>
     /// Returns a delegate invoking the method described by this <see cref="IMethodInformation"/>.

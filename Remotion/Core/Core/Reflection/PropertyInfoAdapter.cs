@@ -162,16 +162,6 @@ namespace Remotion.Reflection
       return interfaceAccessorMethod.FindDeclaringProperty ();
     }
 
-    IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
-    {
-      return FindInterfaceImplementation (implementationType);
-    }
-
-    IMemberInformation IMemberInformation.FindInterfaceDeclaration ()
-    {
-      return FindInterfaceDeclaration ();
-    }
-
     public override bool Equals (object obj)
     {
       return ReferenceEquals (this, obj);

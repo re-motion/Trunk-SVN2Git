@@ -72,6 +72,21 @@ namespace Remotion.Reflection
       get { return _type.Assembly; }
     }
 
+    Type IMemberInformation.DeclaringType
+    {
+      get { return _type.DeclaringType; }
+    }
+
+    public ITypeInformation DeclaringType
+    {
+      get { return Maybe.ForValue (_type.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault (); }
+    }
+
+    public Type GetOriginalDeclaringType ()
+    {
+      return _type.DeclaringType;
+    }
+
     public bool IsClass
     {
       get { return _type.IsClass; }
@@ -208,6 +223,21 @@ namespace Remotion.Reflection
     }
 
 
+    public T GetCustomAttribute<T> (bool inherited) where T : class
+    {
+      return AttributeUtility.GetCustomAttribute<T> (_type, inherited);
+    }
+
+    public T[] GetCustomAttributes<T> (bool inherited) where T : class
+    {
+      return AttributeUtility.GetCustomAttributes<T> (_type, inherited);
+    }
+
+    public bool IsDefined<T> (bool inherited) where T : class
+    {
+      return AttributeUtility.IsDefined<T> (_type, inherited);
+    }
+
 
     public override string ToString ()
     {
@@ -264,37 +294,6 @@ namespace Remotion.Reflection
     public bool IsAssignableFrom (Type c)
     {
       return _type.IsAssignableFrom (c);
-    }
-
-    /// <summary>
-    /// When overridden in a derived class, indicates whether one or more instance of <paramref name="attributeType"/> is applied to this member.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if one or more instance of <paramref name="attributeType"/> is applied to this member; otherwise <see langword="false"/>.
-    /// </returns>
-    /// <param name="attributeType">The Type object to which the custom attributes are applied. 
-    ///                 </param><param name="inherit">Specifies whether to search this member's inheritance chain to find the attributes. 
-    ///                 </param>
-    public bool IsDefined (Type attributeType, bool inherit)
-    {
-      return _type.IsDefined (attributeType, inherit);
-    }
-
-    /// <summary>
-    /// When overridden in a derived class, returns an array of custom attributes identified by <see cref="Type"/>.
-    /// </summary>
-    /// <returns>
-    /// An array of custom attributes applied to this member, or an array with zero (0) elements if no attributes have been applied.
-    /// </returns>
-    /// <param name="attributeType">The type of attribute to search for. Only attributes that are assignable to this type are returned. 
-    ///                 </param><param name="inherit">Specifies whether to search this member's inheritance chain to find the attributes. 
-    ///                 </param><exception cref="TypeLoadException">A custom attribute type cannot be loaded. 
-    ///                 </exception><exception cref="ArgumentNullException">If <paramref name="attributeType"/> is <see langword="null"/>.
-    ///                 </exception><exception cref="InvalidOperationException">This member belongs to a type that is loaded into the reflection-only context. See How to: Load Assemblies into the Reflection-Only Context.
-    ///                 </exception>
-    public object[] GetCustomAttributes (Type attributeType, bool inherit)
-    {
-      return _type.GetCustomAttributes (attributeType, inherit);
     }
 
         public override Type DeclaringType { get; }

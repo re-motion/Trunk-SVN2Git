@@ -3,16 +3,8 @@ using System.Reflection;
 
 namespace Remotion.Reflection
 {
-  public interface ITypeInformation
+  public interface ITypeInformation : IMemberInformation
   {
-    /// <summary>
-    /// Gets the name of the current member.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="String"/> containing the name of this member.
-    /// </returns>
-    string Name { get; }
-
     /// <summary>
     /// Gets the fully qualified name of the <see cref="Type"/>, including the namespace of the <see cref="Type"/> but not the assembly.
     /// </summary>
@@ -46,6 +38,16 @@ namespace Remotion.Reflection
     /// An <see cref="System.Reflection.Assembly"/> instance that describes the assembly containing the current type. For generic types, the instance describes the assembly that contains the generic type definition, not the assembly that creates and uses a particular constructed type.
     /// </returns>
     Assembly Assembly { get; }
+
+        /// <summary>
+    /// Gets the type that declares the current nested type or generic type parameter.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Type"/> object representing the enclosing type, if the current type is a nested type; or the generic type definition, 
+    /// if the current type is a type parameter of a generic type; or the type that declares the generic method, 
+    /// if the current type is a type parameter of a generic method; otherwise, <see langword="null"/>.
+    /// </returns>
+    new ITypeInformation DeclaringType { get; }
 
     /// <summary>
     /// Gets a value indicating whether the <see cref="Type"/> is a class; that is, not a value type or interface.

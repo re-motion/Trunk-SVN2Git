@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection
 {
@@ -81,6 +82,35 @@ namespace Remotion.UnitTests.Reflection
     public void Assembly ()
     {
       Assert.That (_adapter.Assembly, Is.SameAs(_type.Assembly));
+    }
+
+    [Test]
+    public void DeclaringType_NestedType ()
+    {
+      var type = typeof (Environment.SpecialFolder);
+      Assert.That (TypeAdapter.Create (type).DeclaringType, Is.TypeOf<TypeAdapter> ().And.Property ("Type").SameAs (type.DeclaringType));
+    }
+
+    [Test]
+    public void DeclaringType_NotNestedType ()
+    {
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).DeclaringType, Is.Null);
+    }
+
+    [Test]
+    public void GetOriginalDeclaringType_NestedType ()
+    {
+      var type = typeof (Environment.SpecialFolder);
+      //Assert.That (TypeAdapter.Create (type).GetOriginalDeclaration (), Is.TypeOf<TypeAdapter> ().And.Property ("Type").SameAs (type.DeclaringType));
+      Assert.That (TypeAdapter.Create (type).GetOriginalDeclaringType (), Is.SameAs (type.DeclaringType));
+    }
+
+    [Test]
+    public void GetOriginalDeclaringType_NotNestedType ()
+    {
+      var type = typeof (List);
+      Assert.That (TypeAdapter.Create (type).GetOriginalDeclaringType(), Is.Null);
     }
 
     [Test]
@@ -480,12 +510,36 @@ namespace Remotion.UnitTests.Reflection
           Throws.InvalidOperationException);
     }
 
+    [Test]
+    public void GetCustomAttribute ()
+    {
+      var type = typeof (DateTime);
+      var adapter = TypeAdapter.Create (type);
+      Assert.That (
+          adapter.GetCustomAttribute<SerializableAttribute> (true),
+          Is.EqualTo (AttributeUtility.GetCustomAttribute<SerializableAttribute> (type, true)));
+    }
 
-    // var types = typeof (int).Assembly.GetTypes().Where (t=>t.IsNestedPublic);
-      //foreach (var t in types)
-      //{
-      //  Console.WriteLine (t.FullName);
-      //}
+    [Test]
+    public void GetCustomAttributes ()
+    {
+      var type = typeof (DateTime);
+      var adapter = TypeAdapter.Create (type);
+      Assert.That (
+          adapter.GetCustomAttributes<SerializableAttribute> (true),
+          Is.EqualTo (AttributeUtility.GetCustomAttributes<SerializableAttribute> (type, true)));
+    }
+
+    [Test]
+    public void IsDefined ()
+    {
+      var type = typeof (DateTime);
+      var adapter = TypeAdapter.Create (type);
+      Assert.That (
+          adapter.IsDefined<SerializableAttribute> (true),
+          Is.EqualTo (AttributeUtility.IsDefined<SerializableAttribute> (type, true)));
+    }
+
 
   }
 }

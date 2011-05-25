@@ -35,7 +35,7 @@ namespace Remotion.Reflection
     /// <summary>
     /// Gets the type declaring the member.
     /// </summary>
-    /// <value>The declaring type of the property.</value>
+    /// <value>The declaring type of the member.</value>
     Type DeclaringType { get; }
 
     /// <summary>
@@ -76,27 +76,5 @@ namespace Remotion.Reflection
     /// True if a custom attribute of the specified type is defined on the member; otherwise, false.
     /// </returns>
     bool IsDefined<T> (bool inherited) where T : class;
-
-    /// <summary>
-    /// Finds the implementation <see cref="IMemberInformation"/> corresponding to this <see cref="IMemberInformation"/> on the given 
-    /// <see cref="Type"/>. This <see cref="IMemberInformation"/> object must denote an interface member.
-    /// </summary>
-    /// <param name="implementationType">The type to search for an implementation of this <see cref="IMemberInformation"/> on.</param>
-    /// <returns>An instance of <see cref="IMemberInformation"/> describing the member implementing this interface 
-    /// <see cref="IMemberInformation"/> on <paramref name="implementationType"/>, or <see langword="null" /> if the 
-    /// <paramref name="implementationType"/> does not implement the interface.</returns>
-    /// <exception cref="ArgumentException">The <paramref name="implementationType"/> is itself an interface.</exception>
-    /// <exception cref="InvalidOperationException">This <see cref="IMemberInformation"/> does not describe an interface member.</exception>
-    IMemberInformation FindInterfaceImplementation (Type implementationType);
-
-    /// <summary>
-    /// Finds the interface declaration for this <see cref="IMemberInformation"/>, returning <see langword="null" /> if this 
-    /// <see cref="IMemberInformation"/> is not an implementation of an interface member.
-    /// </summary>
-    /// <returns>An <see cref="IMemberInformation"/> for the interface member this <see cref="IMemberInformation"/> implements, or 
-    /// <see langword="null" /> if this <see cref="IMemberInformation"/> is not an implementation of an interface member.</returns>
-    /// <exception cref="InvalidOperationException">This <see cref="IMemberInformation"/> is itself an interface member, so it cannot have an 
-    /// interface declaration.</exception>
-    IMemberInformation FindInterfaceDeclaration ();
   }
 }

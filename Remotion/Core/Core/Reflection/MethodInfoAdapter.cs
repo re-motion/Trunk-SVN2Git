@@ -165,16 +165,6 @@ namespace Remotion.Reflection
       return Create (_methodInfo.GetBaseDefinition());
     }
 
-    IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
-    {
-      return FindInterfaceImplementation (implementationType);
-    }
-
-    IMemberInformation IMemberInformation.FindInterfaceDeclaration ()
-    {
-      return FindInterfaceDeclaration ();
-    }
-
     public bool IsDefined<T> (bool inherited) where T: class
     {
       return AttributeUtility.IsDefined<T> (_methodInfo, inherited);
