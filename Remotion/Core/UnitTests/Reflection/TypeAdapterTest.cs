@@ -140,6 +140,44 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetArrayRank_Array ()
+    {
+      var type = typeof (object[,]);
+      Assert.That (TypeAdapter.Create (type).GetArrayRank (), Is.EqualTo (type.GetArrayRank ()).And.EqualTo (2));
+    }
+
+    [Test]
+    public void GetArrayRank_NotArray ()
+    {
+      var type = typeof (List);
+      Assert.That (()=>TypeAdapter.Create (type).GetArrayRank(), Throws.ArgumentException);
+    }
+
+    [Test]
+    public void MakeArrayType_WithRank ()
+    {
+      var type = typeof (object);
+      Assert.That (
+          TypeAdapter.Create (type).MakeArrayType (2),
+          Is.TypeOf<TypeAdapter>().And.Property ("Type").SameAs (type.MakeArrayType (2)));
+    }
+
+    [Test]
+    public void MakeArrayType_WithInvalidRank ()
+    {
+      Assert.That (() => TypeAdapter.Create (typeof (object)).MakeArrayType (0), Throws.TypeOf<IndexOutOfRangeException>());
+    }
+
+    [Test]
+    public void MakeArrayType_WithoutRank ()
+    {
+      var type = typeof (object);
+      Assert.That (
+          TypeAdapter.Create (type).MakeArrayType (),
+          Is.TypeOf<TypeAdapter> ().And.Property ("Type").SameAs (type.MakeArrayType ()));
+    }
+
+    [Test]
     public void IsEnum_Enum ()
     {
       var type = typeof (System.Reflection.MemberTypes);
@@ -168,6 +206,15 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void MakePointerType ()
+    {
+      var type = typeof (int);
+      Assert.That (
+          TypeAdapter.Create (type).MakePointerType(),
+          Is.TypeOf<TypeAdapter>().And.Property ("Type").SameAs (type.MakePointerType()));
+    }
+
+    [Test]
     public void IsByRef_ByRef ()
     {
       var type = typeof (int).MakeByRefType();
@@ -179,6 +226,15 @@ namespace Remotion.UnitTests.Reflection
     {
       var type = typeof (List);
       Assert.That (TypeAdapter.Create (type).IsByRef, Is.EqualTo (type.IsByRef).And.False);
+    }
+
+    [Test]
+    public void MakeByRefType ()
+    {
+      var type = typeof (int);
+      Assert.That (
+          TypeAdapter.Create (type).MakeByRefType (),
+          Is.TypeOf<TypeAdapter> ().And.Property ("Type").SameAs (type.MakeByRefType ()));
     }
 
     [Test]

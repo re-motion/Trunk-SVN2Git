@@ -47,314 +47,167 @@ namespace Remotion.Reflection
       get { return _type; }
     }
 
-    /// <summary>
-    /// Gets the name of the current member.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="String"/> containing the name of this member.
-    /// </returns>
     public string Name
     {
       get { return _type.Name; }
     }
 
-    /// <summary>
-    /// Gets the fully qualified name of the <see cref="Type"/>, including the namespace of the <see cref="Type"/> but not the assembly.
-    /// </summary>
-    /// <returns>
-    /// The fully qualified name of the <see cref="Type"/>, including the namespace of the <see cref="Type"/> but not the assembly; 
-    /// or <see langword="null"/> if the current instance represents a generic type parameter, an array type, pointer type, 
-    /// or byref type based on a type parameter, or a generic type that is not a generic type definition but contains unresolved type parameters.
-    /// </returns>
     public string FullName
     {
       get { return _type.FullName; }
     }
 
-    /// <summary>
-    /// Gets the namespace of the <see cref="Type"/>.
-    /// </summary>
-    /// <returns>
-    /// The namespace of the <see cref="Type"/>, or <see langword="null"/> if the current instance represents a generic parameter.
-    /// </returns>
     public string Namespace
     {
       get { return _type.Namespace; }
     }
 
-    /// <summary>
-    /// Gets the assembly-qualified name of the <see cref="Type"/>, which includes the name of the assembly from which the <see cref="Type"/> was loaded.
-    /// </summary>
-    /// <returns>
-    /// The assembly-qualified name of the <see cref="Type"/>, which includes the name of the assembly from which the <see cref="Type"/> was loaded, or <see langword="null"/> if the current instance represents a generic type parameter.
-    /// </returns>
     public string AssemblyQualifiedName
     {
       get { return _type.AssemblyQualifiedName; }
     }
 
-    /// <summary>
-    /// Gets the <see cref="System.Reflection.Assembly"/> in which the type is declared. For generic types, gets the <see cref="System.Reflection.Assembly"/> in which the generic type is defined.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="System.Reflection.Assembly"/> instance that describes the assembly containing the current type. For generic types, the instance describes the assembly that contains the generic type definition, not the assembly that creates and uses a particular constructed type.
-    /// </returns>
     public Assembly Assembly
     {
       get { return _type.Assembly; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is a class; that is, not a value type or interface.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is a class; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsClass
     {
       get { return _type.IsClass; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is a value type.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is a value type; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsValueType
     {
       get { return _type.IsValueType; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is an interface; that is, not a class or a value type.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is an interface; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsInterface
     {
       get { return _type.IsInterface; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is an array.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is an array; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsArray
     {
       get { return _type.IsArray; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> represents an enumeration.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the current <see cref="Type"/> represents an enumeration; otherwise, <see langword="false"/>.
-    /// </returns>
+    public int GetArrayRank ()
+    {
+      return _type.GetArrayRank ();
+    }
+
+    public ITypeInformation MakeArrayType (int rank)
+    {
+      return TypeAdapter.Create (_type.MakeArrayType (rank));
+    }
+
+    public ITypeInformation MakeArrayType ()
+    {
+      return TypeAdapter.Create (_type.MakeArrayType ());
+    }
+
     public bool IsEnum
     {
       get { return _type.IsEnum; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is a pointer.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is a pointer; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsPointer
     {
       get { return _type.IsPointer; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is passed by reference.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is passed by reference; otherwise, <see langword="false"/>.
-    /// </returns>
+    public ITypeInformation MakePointerType ()
+    {
+      return TypeAdapter.Create (_type.MakePointerType ());
+    }
+
     public bool IsByRef
     {
       get { return _type.IsByRef; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is declared sealed.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is declared sealed; otherwise, <see langword="false"/>.
-    /// </returns>
+    public ITypeInformation MakeByRefType ()
+    {
+      return TypeAdapter.Create (_type.MakeByRefType ());
+    }
+
     public bool IsSealed
     {
       get { return _type.IsSealed; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is abstract and must be overridden.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is abstract; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsAbstract
     {
       get { return _type.IsAbstract; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> object represents a type whose definition is nested inside the definition of another type.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is nested inside another type; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsNested
     {
       get { return _type.IsNested; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Type"/> is serializable.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is serializable; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsSerializable
     {
       get { return _type.IsSerializable; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> encompasses or refers to another type; 
-    /// that is, whether the current <see cref="Type"/> is an array, a pointer, or is passed by reference.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> is an array, a pointer, or is passed by reference; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool HasElementType
     {
       get { return _type.HasElementType; }
     }
 
-    /// <summary>
-    /// When overridden in a derived class, returns the <see cref="Type"/> of the object encompassed or referred to by the current array, pointer or reference type.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="Type"/> of the object encompassed or referred to by the current array, pointer, or reference type, 
-    /// or <see langword="null"/> if the current <see cref="Type"/> is not an array or a pointer, or is not passed by reference, 
-    /// or represents a generic type or a type parameter in the definition of a generic type or generic method.
-    /// </returns>
     public ITypeInformation GetElementType ()
     {
       return Maybe.ForValue (_type.GetElementType()).Select (TypeAdapter.Create).ValueOrDefault();
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the current type is a generic type.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the current type is a generic type; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsGenericType
     {
       get { return _type.IsGenericType; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> represents a generic type definition, from which other generic types can be constructed.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> object represents a generic type definition; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsGenericTypeDefinition
     {
       get { return _type.IsGenericTypeDefinition; }
     }
 
-    /// <summary>
-    /// Returns a <see cref="Type"/> object that represents a generic type definition from which the current generic type can be constructed.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="Type"/> object representing a generic type from which the current type can be constructed.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">The current type is not a generic type. That is, <see cref="IsGenericType"/> returns <see langword="false"/>.</exception>
-    /// <exception cref="NotSupportedException">The invoked method is not supported in the base class. Derived classes must provide an implementation.</exception>
     public ITypeInformation GetGenericTypeDefinition ()
     {
       return TypeAdapter.Create (_type.GetGenericTypeDefinition());
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> object has type parameters that have not been replaced by specific types.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> object is itself a generic type parameter or has type parameters for which specific types have not been supplied; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool ContainsGenericParameters
     {
       get { return _type.ContainsGenericParameters; }
     }
 
-    /// <summary>
-    /// Returns an array of <see cref="Type"/> objects that represent the type arguments of a generic type or the type parameters of a generic type definition.
-    /// </summary>
-    /// <returns>
-    /// An array of <see cref="Type"/> objects that represent the type arguments of a generic type. Returns an empty array if the current type is not a generic type.
-    /// </returns>
     public ITypeInformation[] GetGenericArguments ()
     {
       return ConvertToTypeAdapters(_type.GetGenericArguments());
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the current <see cref="Type"/> represents a type parameter in the definition of a generic type or method.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true"/> if the <see cref="Type"/> object represents a type parameter of a generic type definition or generic method definition; otherwise, <see langword="false"/>.
-    /// </returns>
     public bool IsGenericParameter
     {
       get { return _type.IsGenericParameter; }
     }
 
-    /// <summary>
-    /// Gets the position of the type parameter in the type parameter list of the generic type or method that declared the parameter, 
-    /// when the <see cref="Type"/> object represents a type parameter of a generic type or a generic method.
-    /// </summary>
-    /// <returns>
-    /// The position of a type parameter in the type parameter list of the generic type or method that defines the parameter. Position numbers begin at 0.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">The current type does not represent a type parameter. That is, <see cref="IsGenericParameter"/> returns <see langword="false"/>.</exception>
     public int GenericParameterPosition
     {
       get { return _type.GenericParameterPosition; }
     }
 
-    /// <summary>
-    /// Returns an array of <see cref="Type"/> objects that represent the constraints on the current generic type parameter. 
-    /// </summary>
-    /// <returns>
-    /// An array of <see cref="Type"/> objects that represent the constraints on the current generic type parameter.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">The current <see cref="Type"/> object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
     public ITypeInformation[] GetGenericParameterConstraints ()
     {
       return ConvertToTypeAdapters (_type.GetGenericParameterConstraints ());
     }
 
-    /// <summary>
-    /// Gets a combination of <see cref="GenericParameterAttributes"/> flags that describe the covariance and special constraints of the current generic type parameter. 
-    /// </summary>
-    /// <returns>
-    /// A bitwise combination of <see cref="GenericParameterAttributes"/> values that describes the covariance and special constraints of the current generic type parameter.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">The current <see cref="Type"/> object is not a generic type parameter. That is, the <see cref="IsGenericParameter"/> property returns <see langword="false"/>.</exception>
-    /// <exception cref="NotSupportedException">The invoked method is not supported in the base class.</exception>
     public GenericParameterAttributes GenericParameterAttributes
     {
       get { return _type.GenericParameterAttributes; }
     }
+
+
 
     public override string ToString ()
     {
@@ -456,11 +309,6 @@ namespace Remotion.Reflection
         string name, BindingFlags bindingAttr, Type returnType, Type[] types);
     public abstract MethodInfo[] GetMethods (BindingFlags bindingAttr);
 
-     * public virtual Type MakeByRefType ();
-    public virtual Type MakePointerType ();
-    public virtual Type MakeArrayType ();
-    public virtual Type MakeArrayType (int rank);
-        public virtual int GetArrayRank ();
     public abstract Type[] GetInterfaces ();
     public virtual InterfaceMapping GetInterfaceMap (Type interfaceType);
 
