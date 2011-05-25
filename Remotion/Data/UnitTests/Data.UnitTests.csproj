@@ -1198,6 +1198,8 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritancePersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceSecondDerivedClass.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\FakeLinqToSqlProfiler.cs" />
+    <Compile Include="DomainObjects\UberProfIntegration\IntegrationTest.cs" />
+    <Compile Include="DomainObjects\UberProfIntegration\TracingLinqToSqlAppender.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\UberProfIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\MockableLinqToSqlAppender.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\LinqToSqlListenerFactoryTest.cs" />

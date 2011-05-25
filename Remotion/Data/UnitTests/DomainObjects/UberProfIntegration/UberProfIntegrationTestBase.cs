@@ -22,6 +22,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
   public abstract class UberProfIntegrationTestBase : StandardMappingTest
   {
     private LinqToSqlAppenderProxy _appenderProxy;
+    private MockableLinqToSqlAppender _mockableAppender;
     private LinqToSqlAppenderProxy _originalAppender;
     private DoubleCheckedLockingContainer<LinqToSqlAppenderProxy> _container;
 
@@ -34,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
           "Test",
           typeof (FakeLinqToSqlProfiler),
           typeof (MockableLinqToSqlAppender));
+      _mockableAppender = (MockableLinqToSqlAppender) _appenderProxy.LinqToSqlAppender;
 
       _container = (DoubleCheckedLockingContainer<LinqToSqlAppenderProxy>)
                    PrivateInvoke.GetNonPublicStaticField (typeof (LinqToSqlAppenderProxy), "s_instance");
@@ -55,6 +57,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
     public LinqToSqlAppenderProxy AppenderProxy
     {
       get { return _appenderProxy; }
+    }
+
+    public MockableLinqToSqlAppender MockableAppender
+    {
+      get { return _mockableAppender; }
     }
   }
 }
