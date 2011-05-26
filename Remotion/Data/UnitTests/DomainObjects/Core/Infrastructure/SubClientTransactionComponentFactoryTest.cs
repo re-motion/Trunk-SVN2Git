@@ -18,13 +18,14 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -101,17 +102,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateDataManager ()
     {
-      var invalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var objectLoaderStub = MockRepository.GenerateStub<IObjectLoader> ();
-      var dataManager = _factory.CreateDataManager (new ClientTransactionMock (), invalidDomainObjectManagerStub, objectLoaderStub);
+      var clientTransaction = ClientTransaction.CreateRootTransaction ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
 
-      var relationEndPointManager = DataManagerTestHelper.GetRelationEndPointManager (dataManager);
-      var dataKeeperFactory = ((RelationEndPointFactory) relationEndPointManager.EndPointFactory).CollectionEndPointDataKeeperFactory;
-      Assert.That (
-          ((CollectionEndPointDataKeeperFactory) dataKeeperFactory).ChangeDetectionStrategy,
-          Is.InstanceOf (typeof (SubCollectionEndPointChangeDetectionStrategy)));
-      Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_invalidDomainObjectManager"), Is.SameAs (invalidDomainObjectManagerStub));
-      Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_objectLoader"), Is.SameAs (objectLoaderStub));
+      var dataManager = (DataManager) _factory.CreateDataManager (clientTransaction, invalidDomainObjectManager, objectLoader);
+      Assert.That (dataManager.ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (DataManagerTestHelper.GetInvalidDomainObjectManager (dataManager), Is.SameAs (invalidDomainObjectManager));
+      Assert.That (DataManagerTestHelper.GetObjectLoader (dataManager), Is.SameAs (objectLoader));
+
+      var manager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (dataManager);
+      Assert.That (manager.ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (manager.EndPointFactory, Is.TypeOf<RelationEndPointFactory> ());
+      Assert.That (manager.RegistrationAgent, Is.TypeOf<RelationEndPointRegistrationAgent> ());
+
+      var endPointFactory = ((RelationEndPointFactory) manager.EndPointFactory);
+      Assert.That (endPointFactory.ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (endPointFactory.LazyLoader, Is.SameAs (dataManager));
+      Assert.That (endPointFactory.EndPointProvider, Is.SameAs (dataManager));
+      Assert.That (endPointFactory.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
+
+      var collectionEndPointDataKeeperFactory = ((CollectionEndPointDataKeeperFactory) endPointFactory.CollectionEndPointDataKeeperFactory);
+      Assert.That (collectionEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (collectionEndPointDataKeeperFactory.ChangeDetectionStrategy, Is.TypeOf<SubCollectionEndPointChangeDetectionStrategy> ());
+      Assert.That (endPointFactory.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf<VirtualObjectEndPointDataKeeperFactory> ());
+
+      var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
+      Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
     }
   }
 }

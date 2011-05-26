@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public override void SetUp ()
     {
       base.SetUp ();
-      _relationEndPointManager = DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
+      _relationEndPointManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
     }
 
     [Test]
@@ -58,7 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       Assert.That (_relationEndPointManager.RelationEndPoints.Count, Is.EqualTo (7));
 
-      var deserializedManager = DataManagerTestHelper.GetRelationEndPointManager (Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager));
+      var deserializedManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (
+          Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager));
 
       Assert.That (deserializedManager.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedManager.ClientTransaction, Is.InstanceOf (typeof (ClientTransactionMock)));

@@ -21,10 +21,6 @@ using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -36,11 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataManagerIsSerializable ()
     {
-      var dataManager = new DataManager (
-          ClientTransactionMock,
-          new RootCollectionEndPointChangeDetectionStrategy(),
-          new RootInvalidDomainObjectManager(),
-          new SerializableFakeObjectLoader());
+      var dataManager = ClientTransactionMock.DataManager;
+
       DataManager dataManager2 = Serializer.SerializeAndDeserialize (dataManager);
       Assert.That (dataManager2, Is.Not.Null);
       Assert.That (dataManager, Is.Not.SameAs (dataManager2));
@@ -114,40 +107,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       foreach (var entry in typeList)
         Console.WriteLine ("{0}: {1}", entry.Key != typeof (void) ? entry.Key.ToString() : "<null>", entry.Value);
     }
-
-    [Serializable]
-    class SerializableFakeObjectLoader : IObjectLoader
-    {
-      public DomainObject LoadObject (ObjectID id, IDataManager dataManager)
-      {
-        throw new NotImplementedException ();
-      }
-
-      public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
-      {
-        throw new NotImplementedException ();
-      }
-
-      public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager)
-      {
-        throw new NotImplementedException ();
-      }
-
-      public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager)
-      {
-        throw new NotImplementedException ();
-      }
-
-      public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject
-      {
-        throw new NotImplementedException ();
-      }
-
-      public ClientTransaction ClientTransaction
-      {
-        get { throw new NotImplementedException (); }
-      }
-    }
-
   }
 }

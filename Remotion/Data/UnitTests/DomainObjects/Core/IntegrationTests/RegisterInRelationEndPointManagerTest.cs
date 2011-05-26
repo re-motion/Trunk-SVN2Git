@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       base.SetUp ();
 
-      _relationEndPointManager = DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
+      _relationEndPointManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
     }
 
     [Test]

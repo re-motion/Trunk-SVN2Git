@@ -18,6 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
@@ -113,9 +116,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IObjectLoader objectLoader)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      return new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy(), invalidDomainObjectManager, objectLoader);
-    }
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
 
+      Func<DataManager, IRelationEndPointManager> endPointManagerFactory = dataManager =>
+      {
+        var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (
+            clientTransaction,
+            new SubCollectionEndPointChangeDetectionStrategy ());
+        var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
+
+        var relationEndPointFactory = new RelationEndPointFactory (
+            clientTransaction,
+            dataManager,
+            dataManager,
+            virtualObjectEndPointDataKeeperFactory,
+            collectionEndPointDataKeeperFactory);
+        var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (dataManager);
+        return new RelationEndPointManager (clientTransaction, dataManager, relationEndPointFactory, relationEndPointRegistrationAgent);
+      };
+      
+      return new DataManager (clientTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
+    }
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
     {

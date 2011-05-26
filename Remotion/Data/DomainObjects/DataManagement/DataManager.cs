@@ -20,8 +20,6 @@ using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Text;
@@ -42,48 +40,35 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private IClientTransactionListener _transactionEventSink;
 
     private DataContainerMap _dataContainerMap;
-    private IRelationEndPointManager _relationEndPointManager;
+    
     private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private IObjectLoader _objectLoader;
     private DomainObjectStateCache _domainObjectStateCache;
+    private IRelationEndPointManager _relationEndPointManager;
 
     private object[] _deserializedData; // only used for deserialization
 
     public DataManager (
         ClientTransaction clientTransaction, 
-        ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy, 
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        IObjectLoader objectLoader)
+        IObjectLoader objectLoader,
+        Func<DataManager, IRelationEndPointManager> endPointManagerFactory)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
+      ArgumentUtility.CheckNotNull ("endPointManagerFactory", endPointManagerFactory);
 
       _clientTransaction = clientTransaction;
       _transactionEventSink = clientTransaction.TransactionEventSink;
-      _dataContainerMap = new DataContainerMap (clientTransaction);
 
-      var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, collectionEndPointChangeDetectionStrategy);
-      var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
-      var relationEndPointFactory = new RelationEndPointFactory (
-          clientTransaction,
-          this,
-          this,
-          virtualObjectEndPointDataKeeperFactory,
-          collectionEndPointDataKeeperFactory);
-      var relationEndPointRegistrationAgent = _clientTransaction.ParentTransaction == null 
-          ? new RootRelationEndPointRegistrationAgent (this) 
-          : new RelationEndPointRegistrationAgent (this);
-      _relationEndPointManager = new RelationEndPointManager (
-          clientTransaction, 
-          this,
-          relationEndPointFactory,
-          relationEndPointRegistrationAgent);
+      _dataContainerMap = new DataContainerMap (clientTransaction);
 
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
       _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
+
+      _relationEndPointManager = endPointManagerFactory (this);
     }
 
     public ClientTransaction ClientTransaction

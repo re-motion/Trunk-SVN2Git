@@ -17,6 +17,8 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Development.UnitTesting;
 
@@ -29,19 +31,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DataContainerMap) dataManager.DataContainers;
     }
 
-    public static RelationEndPointManager GetRelationEndPointManager (IDataManager dataManager)
+    public static IRelationEndPointManager GetRelationEndPointManager (IDataManager dataManager)
     {
-      return (RelationEndPointManager) PrivateInvoke.GetNonPublicField (dataManager, "_relationEndPointManager");
+      return (IRelationEndPointManager) PrivateInvoke.GetNonPublicField (dataManager, "_relationEndPointManager");
     }
 
     public static void RemoveEndPoint (IDataManager dataManager, RelationEndPointID endPointID)
     {
-      RelationEndPointManagerTestHelper.RemoveEndPoint (GetRelationEndPointManager (dataManager), endPointID);
+      RelationEndPointManagerTestHelper.RemoveEndPoint ((RelationEndPointManager) GetRelationEndPointManager (dataManager), endPointID);
     }
 
     public static void AddEndPoint (DataManager dataManager, IRelationEndPoint endPoint)
     {
-      RelationEndPointManagerTestHelper.AddEndPoint (GetRelationEndPointManager (dataManager), endPoint);
+      RelationEndPointManagerTestHelper.AddEndPoint ((RelationEndPointManager) GetRelationEndPointManager (dataManager), endPoint);
+    }
+
+    public static IInvalidDomainObjectManager GetInvalidDomainObjectManager (DataManager dataManager)
+    {
+      return (IInvalidDomainObjectManager) PrivateInvoke.GetNonPublicField (dataManager, "_invalidDomainObjectManager");
+    }
+
+    public static IObjectLoader GetObjectLoader (DataManager dataManager)
+    {
+      return (IObjectLoader) PrivateInvoke.GetNonPublicField (dataManager, "_objectLoader");
+    }
+
+    public static void AddDataContainer (DataManager dataManager, DataContainer dataContainer)
+    {
+      GetDataContainerMap (dataManager).Register (dataContainer);
     }
   }
 }

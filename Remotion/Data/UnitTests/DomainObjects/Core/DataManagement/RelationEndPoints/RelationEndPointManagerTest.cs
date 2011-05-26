@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp();
 
-      _relationEndPointManager = DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
+      _relationEndPointManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
     }
 
     [Test]
