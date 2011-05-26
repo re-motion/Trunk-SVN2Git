@@ -31,7 +31,9 @@ namespace Remotion.UnitTests.Reflection
   [TestFixture]
   public class TypeAdapterTest
   {
-    private interface IDoubleInheritingGenericInterface : IList<int>, IList<string>
+// ReSharper disable PossibleInterfaceMemberAmbiguity
+    private interface IDoubleInheritingGenericInterface : IEnumerable<int>, IEnumerable<string>
+// ReSharper restore PossibleInterfaceMemberAmbiguity
     {
     }
 
@@ -848,7 +850,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var type = typeof (IDoubleInheritingGenericInterface);
       Assert.That (
-          () => TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IList<>))),
+          () => TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IEnumerable<>))),
           Throws.TypeOf<AmbiguousMatchException> ());
     }
 
