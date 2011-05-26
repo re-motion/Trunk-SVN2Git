@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Linq;
@@ -38,6 +37,8 @@ namespace Remotion.Data.DomainObjects.Linq
   {
     private readonly IStorageSpecificExpressionResolver _storageSpecificExpressionResolver;
     private readonly IStorageNameProvider _storageNameProvider;
+    private static readonly PropertyInfo s_classIDPropertyInfo = typeof (ObjectID).GetProperty ("ClassID");
+    private static readonly PropertyInfo s_idPropertyInfo = typeof (DomainObject).GetProperty ("ID");
 
     public MappingResolver (IStorageSpecificExpressionResolver storageSpecificExpressionResolver, IStorageNameProvider storageNameProvider)
     {
@@ -131,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      if (memberInfo == typeof (ObjectID).GetProperty (_storageNameProvider.ClassIDColumnName))
+      if (memberInfo == s_classIDPropertyInfo)
         return sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, _storageNameProvider.ClassIDColumnName, false);
 
       throw new UnmappedItemException (
@@ -167,8 +168,8 @@ namespace Remotion.Data.DomainObjects.Linq
         }
 
         var classDefinition = GetClassDefinition (desiredType);
-        var idExpression = Expression.MakeMemberAccess (checkedExpression, typeof (DomainObject).GetProperty ("ID"));
-        var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
+        var idExpression = Expression.MakeMemberAccess (checkedExpression, s_idPropertyInfo);
+        var classIDExpression = Expression.MakeMemberAccess (idExpression, s_classIDPropertyInfo);
         return Expression.Equal (classIDExpression, new SqlLiteralExpression (classDefinition.ID));
       }
       else
