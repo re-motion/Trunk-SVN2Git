@@ -50,62 +50,64 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     private class IndexDefinitionVisitor : ISqlIndexDefinitionVisitor
     {
       private readonly SqlIndexScriptElementFactory _elementFactory;
+      private readonly EntityNameDefinition _ownerName;
 
-      public IndexDefinitionVisitor (SqlIndexScriptElementFactory elementFactory)
+      public IndexDefinitionVisitor (SqlIndexScriptElementFactory elementFactory, EntityNameDefinition ownerName)
       {
         _elementFactory = elementFactory;
+        _ownerName = ownerName;
       }
 
       void ISqlIndexDefinitionVisitor.VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition)
       {
-        _elementFactory.AddIndexDefinition (sqlIndexDefinition);
+        _elementFactory.AddIndexDefinition (sqlIndexDefinition, _ownerName);
       }
 
       void ISqlIndexDefinitionVisitor.VisitPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition primaryXmlIndexDefinition)
       {
-        _elementFactory.AddPrimaryXmlIndexDefinition (primaryXmlIndexDefinition);
+        _elementFactory.AddPrimaryXmlIndexDefinition (primaryXmlIndexDefinition, _ownerName);
       }
 
       void ISqlIndexDefinitionVisitor.VisitSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
       {
-        _elementFactory.AddSecondaryXmlIndexDefinition (secondaryXmlIndexDefinition);
+        _elementFactory.AddSecondaryXmlIndexDefinition (secondaryXmlIndexDefinition, _ownerName);
       }
     }
 
-    public IScriptElement GetCreateElement (IIndexDefinition indexDefinition)
+    public IScriptElement GetCreateElement (IIndexDefinition indexDefinition, EntityNameDefinition ownerName)
     {
       ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
 
-      var visitor = new IndexDefinitionVisitor (this);
+      var visitor = new IndexDefinitionVisitor (this, ownerName);
       indexDefinition.Accept (visitor);
       return _createScriptElement;
     }
 
-    public IScriptElement GetDropElement (IIndexDefinition indexDefinition)
+    public IScriptElement GetDropElement (IIndexDefinition indexDefinition, EntityNameDefinition ownerName)
     {
       ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
 
-      var visitor = new IndexDefinitionVisitor (this);
+      var visitor = new IndexDefinitionVisitor (this, ownerName);
       indexDefinition.Accept (visitor);
       return _dropScriptElement;
     }
 
-    private void AddIndexDefinition (SqlIndexDefinition indexDefinition)
+    private void AddIndexDefinition (SqlIndexDefinition indexDefinition, EntityNameDefinition ownerName)
     {
-      _createScriptElement = _indexDefinitionElementFactory.GetCreateElement (indexDefinition);
-      _dropScriptElement = _indexDefinitionElementFactory.GetDropElement (indexDefinition);
+      _createScriptElement = _indexDefinitionElementFactory.GetCreateElement (indexDefinition, ownerName);
+      _dropScriptElement = _indexDefinitionElementFactory.GetDropElement (indexDefinition, ownerName);
     }
 
-    private void AddPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition indexDefinition)
+    private void AddPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition indexDefinition, EntityNameDefinition ownerName)
     {
-      _createScriptElement = _primaryIndexDefinitionElementFactory.GetCreateElement (indexDefinition);
-      _dropScriptElement = _primaryIndexDefinitionElementFactory.GetDropElement (indexDefinition);
+      _createScriptElement = _primaryIndexDefinitionElementFactory.GetCreateElement (indexDefinition, ownerName);
+      _dropScriptElement = _primaryIndexDefinitionElementFactory.GetDropElement (indexDefinition, ownerName);
     }
 
-    private void AddSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition indexDefinition)
+    private void AddSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition indexDefinition, EntityNameDefinition ownerName)
     {
-      _createScriptElement = _secondaryIndexDefinitionElementFactory.GetCreateElement (indexDefinition);
-      _dropScriptElement = _secondaryIndexDefinitionElementFactory.GetDropElement (indexDefinition);
+      _createScriptElement = _secondaryIndexDefinitionElementFactory.GetCreateElement (indexDefinition, ownerName);
+      _dropScriptElement = _secondaryIndexDefinitionElementFactory.GetDropElement (indexDefinition, ownerName);
     }
   }
 }

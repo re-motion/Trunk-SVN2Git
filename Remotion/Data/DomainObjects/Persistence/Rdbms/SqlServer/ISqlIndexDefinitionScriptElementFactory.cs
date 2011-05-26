@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
@@ -25,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
   /// </summary>
   public interface ISqlIndexDefinitionScriptElementFactory<in T> where T:SqlIndexDefinitionBase
   {
-    IScriptElement GetCreateElement (T table);
-    IScriptElement GetDropElement (T table);
+    IScriptElement GetCreateElement (T table, EntityNameDefinition ownerName);
+    IScriptElement GetDropElement (T table, EntityNameDefinition ownerName); 
   }
 }

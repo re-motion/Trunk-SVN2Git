@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
@@ -28,7 +29,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
   public class SqlIndexDefinition : SqlIndexDefinitionBase
   {
     private readonly string _indexName;
-    private readonly EntityNameDefinition _objectName;
     private readonly ReadOnlyCollection<SqlIndexedColumnDefinition> _columns;
     private readonly ReadOnlyCollection<SimpleColumnDefinition> _includedColumns;
     private readonly bool? _isClustered;
@@ -38,7 +38,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 
     public SqlIndexDefinition (
         string indexName,
-        EntityNameDefinition objectName,
         IEnumerable<SqlIndexedColumnDefinition> columns,
         IEnumerable<SimpleColumnDefinition> includedColumns = null,
         bool? isClustered = false,
@@ -52,16 +51,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         bool? dropExisting = null,
         bool? allowRowLocks = null,
         bool? allowPageLocks = null,
-        int? maxDop = null) 
+        int? maxDop = null)
         : base (padIndex, fillFactor, sortInTempDb, statisticsNoReCompute, dropExisting, allowRowLocks, allowPageLocks, maxDop)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
-      ArgumentUtility.CheckNotNull ("objectName", objectName);
       ArgumentUtility.CheckNotNullOrEmpty ("columns", columns);
       ArgumentUtility.CheckNotEmpty ("includedColumns", includedColumns);
 
       _indexName = indexName;
-      _objectName = objectName;
       _columns = columns.ToList().AsReadOnly();
       if (includedColumns != null)
         _includedColumns = includedColumns.ToList().AsReadOnly();
@@ -74,11 +71,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     public override string IndexName
     {
       get { return _indexName; }
-    }
-
-    public override EntityNameDefinition ObjectName
-    {
-      get { return _objectName; }
     }
 
     public ReadOnlyCollection<SqlIndexedColumnDefinition> Columns

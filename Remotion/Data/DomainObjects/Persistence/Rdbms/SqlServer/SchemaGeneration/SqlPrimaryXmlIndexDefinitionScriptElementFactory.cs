@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Utilities;
 
@@ -27,17 +27,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class SqlPrimaryXmlIndexDefinitionScriptElementFactory : SqlIndexScriptElementFactoryBase<SqlPrimaryXmlIndexDefinition>
   {
-    public override IScriptElement GetCreateElement (SqlPrimaryXmlIndexDefinition indexDefinition)
+    public override IScriptElement GetCreateElement (SqlPrimaryXmlIndexDefinition indexDefinition, EntityNameDefinition ownerName)
     {
       ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
+      ArgumentUtility.CheckNotNull ("ownerName", ownerName);
 
       return new ScriptStatement(
       string.Format (
           "CREATE PRIMARY XML INDEX [{0}]\r\n"
           + "  ON [{1}].[{2}] ([{3}]){4}",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? DefaultSchema,
-          indexDefinition.ObjectName.EntityName,
+          ownerName.SchemaName ?? DefaultSchema,
+          ownerName.EntityName,
           indexDefinition.XmlColumn.Name,
           GetCreateIndexOptions (GetCreateIndexOptionItems (indexDefinition))));
     }

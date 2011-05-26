@@ -36,14 +36,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _xmlColumn = new SimpleColumnDefinition ("xmlColumn", typeof (string), "xml", false, false);
 
       _indexDefinition = new SqlSecondaryXmlIndexDefinition (
-          "IndexName", _objectName, _xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Property, true, 5, true, true, true, true, true, 2);
+          "IndexName", _xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Property, true, 5, true, true, true, true, true, 2);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_indexDefinition.IndexName, Is.EqualTo ("IndexName"));
-      Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
       Assert.That (_indexDefinition.PrimaryIndexName, Is.EqualTo ("PrimaryIndexName"));
       Assert.That (_indexDefinition.XmlColumn, Is.SameAs (_xmlColumn));
       Assert.That (_indexDefinition.Kind, Is.EqualTo (SqlSecondaryXmlIndexKind.Property));

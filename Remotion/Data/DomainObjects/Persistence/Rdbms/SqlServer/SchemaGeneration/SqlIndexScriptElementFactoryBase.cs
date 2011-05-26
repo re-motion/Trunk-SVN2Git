@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -32,19 +31,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   public abstract class SqlIndexScriptElementFactoryBase<T> : SqlElementFactoryBase, ISqlIndexDefinitionScriptElementFactory<T>
       where T: SqlIndexDefinitionBase
   {
-    public abstract IScriptElement GetCreateElement (T indexDefinition);
+    public abstract IScriptElement GetCreateElement (T indexDefinition, EntityNameDefinition ownerName);
 
-    public virtual IScriptElement GetDropElement (T indexDefinition)
+    public virtual IScriptElement GetDropElement (T indexDefinition, EntityNameDefinition ownerName)
     {
       ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
+      ArgumentUtility.CheckNotNull ("ownerName", ownerName);
 
       return new ScriptStatement (
           string.Format (
               "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
               + "WHERE so.[name] = '{0}' AND schema_name (so.schema_id)='{1}' AND si.[name] = '{2}')\r\n"
               + "  DROP INDEX [{2}] ON [{1}].[{0}]",
-              indexDefinition.ObjectName.EntityName,
-              indexDefinition.ObjectName.SchemaName ?? DefaultSchema,
+              ownerName.EntityName,
+              ownerName.SchemaName ?? DefaultSchema,
               indexDefinition.IndexName));
     }
 

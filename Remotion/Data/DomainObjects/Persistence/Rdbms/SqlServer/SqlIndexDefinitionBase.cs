@@ -54,7 +54,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     }
 
     public abstract string IndexName { get; }
-    public abstract EntityNameDefinition ObjectName { get; }
 
     public bool? PadIndex
     {

@@ -33,14 +33,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _objectName = new EntityNameDefinition ("objectSchema", "objectName");
       _xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", true, false);
-      _indexDefinition = new SqlPrimaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn, true, 5, true, true, true, true, true, 2);
+      _indexDefinition = new SqlPrimaryXmlIndexDefinition ("IndexName", _xmlColumn, true, 5, true, true, true, true, true, 2);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_indexDefinition.IndexName, Is.EqualTo("IndexName"));
-      Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
       Assert.That (_indexDefinition.XmlColumn, Is.SameAs (_xmlColumn));
       Assert.That (_indexDefinition.PadIndex.Value, Is.True);
       Assert.That (_indexDefinition.SortInDb.Value, Is.True);

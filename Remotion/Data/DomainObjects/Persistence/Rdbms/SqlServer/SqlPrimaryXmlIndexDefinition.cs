@@ -23,7 +23,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
   public class SqlPrimaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
     private readonly string _indexName;
-    private readonly EntityNameDefinition _objectName;
     private readonly IColumnDefinition _xmlColumn;
 
     /// <summary>
@@ -31,7 +30,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     /// </summary>
     public SqlPrimaryXmlIndexDefinition (
         string indexName,
-        EntityNameDefinition objectName,
         IColumnDefinition xmlColumn,
         bool? padIndex = null,
         int? fillFactor = null,
@@ -44,22 +42,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         : base (padIndex, fillFactor, sortInTempDb, statisticsNoReCompute, dropExisting, allowRowLocks, allowPageLocks, maxDop)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
-      ArgumentUtility.CheckNotNull ("objectName", objectName);
       ArgumentUtility.CheckNotNull ("xmlColumn", xmlColumn);
 
       _indexName = indexName;
-      _objectName = objectName;
       _xmlColumn = xmlColumn;
     }
 
     public override string IndexName
     {
       get { return _indexName; }
-    }
-
-    public override EntityNameDefinition ObjectName
-    {
-      get { return _objectName; }
     }
 
     public IColumnDefinition XmlColumn

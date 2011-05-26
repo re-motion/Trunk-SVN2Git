@@ -93,25 +93,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     private void AddTableDefinition (TableDefinition tableDefinition)
     {
-      AddIndexes (tableDefinition.Indexes);
+      AddIndexes (tableDefinition.Indexes, tableDefinition.TableName);
     }
 
     private void AddUnionViewDefinition (UnionViewDefinition unionViewDefinition)
     {
-      AddIndexes (unionViewDefinition.Indexes);
+      AddIndexes (unionViewDefinition.Indexes, unionViewDefinition.ViewName);
     }
 
     private void AddFilterViewDefinition (FilterViewDefinition filterViewDefinition)
     {
-      AddIndexes (filterViewDefinition.Indexes);
+      AddIndexes (filterViewDefinition.Indexes, filterViewDefinition.ViewName);
     }
 
-    private void AddIndexes (IEnumerable<IIndexDefinition> indexes)
+    private void AddIndexes (IEnumerable<IIndexDefinition> indexes, EntityNameDefinition ownerName)
     {
       foreach (var index in indexes)
       {
-        _createScriptElements.AddElement (_indexScriptElementFactory.GetCreateElement (index));
-        _dropScriptElements.AddElement (_indexScriptElementFactory.GetDropElement (index));
+        _createScriptElements.AddElement (_indexScriptElementFactory.GetCreateElement (index, ownerName));
+        _dropScriptElements.AddElement (_indexScriptElementFactory.GetDropElement (index, ownerName));
       }
     }
   }

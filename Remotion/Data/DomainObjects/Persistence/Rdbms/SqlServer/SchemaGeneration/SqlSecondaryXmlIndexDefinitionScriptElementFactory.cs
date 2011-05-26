@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Utilities;
 
@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class SqlSecondaryXmlIndexDefinitionScriptElementFactory : SqlIndexScriptElementFactoryBase<SqlSecondaryXmlIndexDefinition>
   {
-    public override IScriptElement GetCreateElement (SqlSecondaryXmlIndexDefinition indexDefinition)
+    public override IScriptElement GetCreateElement (SqlSecondaryXmlIndexDefinition indexDefinition, EntityNameDefinition ownerName)
     {
       ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
 
@@ -38,8 +38,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  USING XML INDEX [{4}]\r\n"
           + "  FOR {5}{6}",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? DefaultSchema,
-          indexDefinition.ObjectName.EntityName,
+          ownerName.SchemaName ?? DefaultSchema,
+          ownerName.EntityName,
           indexDefinition.XmlColumn.Name,
           indexDefinition.PrimaryIndexName,
           indexDefinition.Kind,

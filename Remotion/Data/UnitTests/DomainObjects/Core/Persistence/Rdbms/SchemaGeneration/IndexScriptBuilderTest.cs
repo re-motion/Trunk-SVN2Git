@@ -121,8 +121,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_OneTableDefinitionWithOneIndexDefinitionAdded ()
     {
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1)).Return (_fakeElement1);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1, _tableDefinition1.TableName)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1, _tableDefinition1.TableName)).Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_tableDefinition1);
 
@@ -141,12 +141,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_SeveralTableDefinitionsWithSeveralIndexesAdded ()
     {
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1)).Return (_fakeElement1);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1)).Return (_fakeElement3);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition2)).Return (_fakeElement2);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition2)).Return (_fakeElement2);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition3)).Return (_fakeElement3);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition3)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1, _tableDefinition1.TableName)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1, _tableDefinition1.TableName)).Return (_fakeElement3);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition2, _tableDefinition2.TableName)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition2, _tableDefinition2.TableName)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition3, _tableDefinition2.TableName)).Return (_fakeElement3);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition3, _tableDefinition2.TableName)).Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
@@ -170,8 +170,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_OneUnionViewDefinitionWithOneIndexDefinitionAdded ()
     {
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1)).Return (_fakeElement1);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1, _unionViewDefinition1.ViewName)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1, _unionViewDefinition1.ViewName)).Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_unionViewDefinition1);
 
@@ -190,12 +190,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_SeveralUnionViewDefinitionsWithSeveralIndexesAdded ()
     {
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1)).Return (_fakeElement1);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1)).Return (_fakeElement3);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition2)).Return (_fakeElement2);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition2)).Return (_fakeElement2);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition3)).Return (_fakeElement3);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition3)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1, _unionViewDefinition1.ViewName)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1, _unionViewDefinition1.ViewName)).Return (_fakeElement3);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition2, _unionViewDefinition2.ViewName)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition2, _unionViewDefinition2.ViewName)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition3, _unionViewDefinition2.ViewName)).Return (_fakeElement3);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition3, _unionViewDefinition2.ViewName)).Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_unionViewDefinition2);
@@ -219,8 +219,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_OneFilterViewDefinitionWithOneIndexDefinitionAdded ()
     {
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1)).Return (_fakeElement1);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1, _filterViewDefinition1.ViewName)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1, _filterViewDefinition1.ViewName)).Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
@@ -239,12 +239,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_SeveralFilterViewDefinitionsWithSeveralIndexesAdded ()
     {
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1)).Return (_fakeElement1);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1)).Return (_fakeElement3);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition2)).Return (_fakeElement2);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition2)).Return (_fakeElement2);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition3)).Return (_fakeElement3);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition3)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1, _filterViewDefinition1.ViewName)).Return (_fakeElement1);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1, _filterViewDefinition1.ViewName)).Return (_fakeElement3);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition2, _filterViewDefinition2.ViewName)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition2, _filterViewDefinition2.ViewName)).Return (_fakeElement2);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition3, _filterViewDefinition2.ViewName)).Return (_fakeElement3);
+      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition3, _filterViewDefinition2.ViewName)).Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_filterViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition2);

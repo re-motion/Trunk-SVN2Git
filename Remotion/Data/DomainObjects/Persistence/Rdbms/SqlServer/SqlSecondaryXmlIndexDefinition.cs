@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
@@ -25,17 +26,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
   public class SqlSecondaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
     private readonly string _indexName;
-    private readonly EntityNameDefinition _objectName;
     private readonly IColumnDefinition _xmlColumn;
     private readonly string _primaryIndexName;
     private readonly SqlSecondaryXmlIndexKind _kind;
 
     public SqlSecondaryXmlIndexDefinition (
         string indexName,
-        EntityNameDefinition objectName,
         IColumnDefinition xmlColumn,
         string primaryIndexName,
-        SqlSecondaryXmlIndexKind kind, 
+        SqlSecondaryXmlIndexKind kind,
         bool? padIndex = null,
         int? fillFactor = null,
         bool? sortInTempDb = null,
@@ -44,15 +43,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         bool? allowRowLocks = null,
         bool? allowPageLocks = null,
         int? maxDop = null)
-      : base (padIndex, fillFactor, sortInTempDb, statisticsNoReCompute, dropExisting, allowRowLocks, allowPageLocks, maxDop)
+        : base (padIndex, fillFactor, sortInTempDb, statisticsNoReCompute, dropExisting, allowRowLocks, allowPageLocks, maxDop)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
-      ArgumentUtility.CheckNotNull ("objectName", objectName);
       ArgumentUtility.CheckNotNull ("xmlColumn", xmlColumn);
       ArgumentUtility.CheckNotNullOrEmpty ("primaryIndexName", primaryIndexName);
 
       _indexName = indexName;
-      _objectName = objectName;
       _xmlColumn = xmlColumn;
       _primaryIndexName = primaryIndexName;
       _kind = kind;
@@ -61,11 +58,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     public override string IndexName
     {
       get { return _indexName; }
-    }
-
-    public override EntityNameDefinition ObjectName
-    {
-      get { return _objectName; }
     }
 
     public IColumnDefinition XmlColumn

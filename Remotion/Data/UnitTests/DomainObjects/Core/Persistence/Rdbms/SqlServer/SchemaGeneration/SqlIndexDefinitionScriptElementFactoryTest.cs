@@ -33,6 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlIndexedColumnDefinition _column2;
     private SimpleColumnDefinition _includedColumn1;
     private SimpleColumnDefinition _includedColumn2;
+    private EntityNameDefinition _customSchemaNameDefinition;
+    private EntityNameDefinition _defaultSchemaNameDefinition;
 
     public override void SetUp ()
     {
@@ -46,17 +48,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new SimpleColumnDefinition ("IndexColumn2", typeof (string), "varchar", false, false), IndexOrder.Asc);
       _includedColumn1 = new SimpleColumnDefinition ("IncludedColumn1", typeof (bool), "bit", true, false);
       _includedColumn2 = new SimpleColumnDefinition ("IncludedColumn2", typeof (bool), "bit", true, false);
-      
+
+      _customSchemaNameDefinition = new EntityNameDefinition ("SchemaName", "TableName1");
       _indexDefinitionWithCustomSchema = new SqlIndexDefinition (
-          "Index1", new EntityNameDefinition ("SchemaName", "TableName1"), new[] { _column1 });
+          "Index1", new[] { _column1 });
+      _defaultSchemaNameDefinition = new EntityNameDefinition (null, "TableName2");
       _indexDefinitionWithDefaultSchema = new SqlIndexDefinition (
-          "Index2", new EntityNameDefinition (null, "TableName2"), new[] { _column2 });
+          "Index2", new[] { _column2 });
     }
 
     [Test]
     public void GetCreateElement_CustomSchema ()
     {
-      var result = _factory.GetCreateElement (_indexDefinitionWithCustomSchema);
+      var result = _factory.GetCreateElement (_indexDefinitionWithCustomSchema, _customSchemaNameDefinition);
 
       var expectedResult =
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
@@ -69,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_DefaultSchema ()
     {
-      var result = _factory.GetCreateElement (_indexDefinitionWithDefaultSchema);
+      var result = _factory.GetCreateElement (_indexDefinitionWithDefaultSchema, _defaultSchemaNameDefinition);
 
       var expectedResult =
           "CREATE NONCLUSTERED INDEX [Index2]\r\n"
@@ -82,10 +86,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_WithIncludedColumnsAndSomeOptions ()
     {
+      var entityNameDefinition = new EntityNameDefinition (null, "TableName");
       var indexDefinition = new SqlIndexDefinition (
-          "Index1", new EntityNameDefinition (null, "TableName"), new[] { _column1, _column2 }, new[] { _includedColumn1 }, false, false, true, true);
+          "Index1", new[] { _column1, _column2 }, new[] { _includedColumn1 }, false, false, true, true);
 
-      var result = _factory.GetCreateElement (indexDefinition);
+      var result = _factory.GetCreateElement (indexDefinition, entityNameDefinition);
 
       var expectedResult =
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
@@ -98,9 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_WithAllOptionsOn ()
     {
+      var entityNameDefinition = new EntityNameDefinition(null, "TableName");
       var indexDefinition = new SqlIndexDefinition (
           "Index1",
-          new EntityNameDefinition(null, "TableName"),
           new[] { _column1, _column2 },
           new[] { _includedColumn1, _includedColumn2 },
           true,
@@ -116,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           true,
           2);
 
-      var result = _factory.GetCreateElement (indexDefinition);
+      var result = _factory.GetCreateElement (indexDefinition, entityNameDefinition);
 
       var expectedResult =
           "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
@@ -130,9 +135,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_WithAllOptionsOff ()
     {
+      var entityNameDefinition = new EntityNameDefinition(null, "TableName");
       var indexDefinition = new SqlIndexDefinition (
           "Index1",
-          new EntityNameDefinition(null, "TableName"),
           new[] { _column1, _column2 },
           new[] { _includedColumn1 },
           false,
@@ -148,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false,
           0);
 
-      var result = _factory.GetCreateElement (indexDefinition);
+      var result = _factory.GetCreateElement (indexDefinition, entityNameDefinition);
 
       var expectedResult =
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
@@ -162,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_CustomSchema ()
     {
-      var result = _factory.GetDropElement (_indexDefinitionWithCustomSchema);
+      var result = _factory.GetDropElement (_indexDefinitionWithCustomSchema, _customSchemaNameDefinition);
 
       var expectedResult =
           "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName1' AND "
@@ -176,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_DefaultSchema ()
     {
-      var result = _factory.GetDropElement (_indexDefinitionWithDefaultSchema);
+      var result = _factory.GetDropElement (_indexDefinitionWithDefaultSchema, _defaultSchemaNameDefinition);
 
       var expectedResult =
           "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName2' AND "

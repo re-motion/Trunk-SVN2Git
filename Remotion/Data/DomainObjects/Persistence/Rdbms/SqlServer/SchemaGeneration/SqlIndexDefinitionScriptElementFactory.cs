@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -28,9 +29,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class SqlIndexDefinitionScriptElementFactory : SqlIndexScriptElementFactoryBase<SqlIndexDefinition>
   {
-    public override IScriptElement GetCreateElement (SqlIndexDefinition indexDefinition)
+    public override IScriptElement GetCreateElement (SqlIndexDefinition indexDefinition, EntityNameDefinition ownerName)
     {
       ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
+      ArgumentUtility.CheckNotNull ("ownerName", ownerName);
 
       return new ScriptStatement(
       string.Format (
@@ -39,8 +41,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
          indexDefinition.IsUnique.HasValue && indexDefinition.IsUnique.Value ? "UNIQUE " : string.Empty,
          indexDefinition.IsClustered.HasValue && indexDefinition.IsClustered.Value ? "CLUSTERED" : "NONCLUSTERED",
          indexDefinition.IndexName,
-         indexDefinition.ObjectName.SchemaName ?? DefaultSchema,
-         indexDefinition.ObjectName.EntityName,
+         ownerName.SchemaName ?? DefaultSchema,
+         ownerName.EntityName,
          GetIndexedColumnNames (indexDefinition.Columns),
          indexDefinition.IncludedColumns != null
              ? "\r\n  INCLUDE (" + SeparatedStringBuilder.Build (", ", indexDefinition.IncludedColumns.Select (c => "[" + c.Name + "]")) + ")"

@@ -30,6 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlSecondaryXmlIndexDefinition _indexDefinitionWithDefaultSchema;
     private SqlSecondaryXmlIndexDefinitionScriptElementFactory _factory;
     private SimpleColumnDefinition _xmlColumn;
+    private EntityNameDefinition _customSchemaNameDefinition;
+    private EntityNameDefinition _defaultSchemaNameDefinition;
 
     public override void SetUp ()
     {
@@ -39,16 +41,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", true, false);
 
+      _customSchemaNameDefinition = new EntityNameDefinition ("SchemaName", "TableName1");
       _indexDefinitionWithCustomSchema = new SqlSecondaryXmlIndexDefinition (
-          "Index1", new EntityNameDefinition ("SchemaName", "TableName1"), _xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Property);
+          "Index1", _xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Property);
+      _defaultSchemaNameDefinition = new EntityNameDefinition (null, "TableName2");
       _indexDefinitionWithDefaultSchema = new SqlSecondaryXmlIndexDefinition (
-          "Index2", new EntityNameDefinition (null, "TableName2"), _xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Value);
+          "Index2", _xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Value);
     }
 
     [Test]
     public void GetCreateElement_CustomSchema ()
     {
-      var result = _factory.GetCreateElement (_indexDefinitionWithCustomSchema);
+      var result = _factory.GetCreateElement (_indexDefinitionWithCustomSchema, _customSchemaNameDefinition);
 
       var expectedResult =
           "CREATE XML INDEX [Index1]\r\n"
@@ -62,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_DefaultSchema ()
     {
-      var result = _factory.GetCreateElement (_indexDefinitionWithDefaultSchema);
+      var result = _factory.GetCreateElement (_indexDefinitionWithDefaultSchema, _defaultSchemaNameDefinition);
 
       var expectedResult =
           "CREATE XML INDEX [Index2]\r\n"
@@ -76,9 +80,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_WithAllOptionsOn ()
     {
+      var entityNameDefinition = new EntityNameDefinition (null, "TableName");
       var indexDefinition = new SqlSecondaryXmlIndexDefinition (
           "Index1",
-          new EntityNameDefinition (null, "TableName"),
           _xmlColumn,
           "PrimaryIndexName",
           SqlSecondaryXmlIndexKind.Path,
@@ -91,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           true,
           2);
 
-      var result = _factory.GetCreateElement (indexDefinition);
+      var result = _factory.GetCreateElement (indexDefinition, entityNameDefinition);
 
       var expectedResult =
           "CREATE XML INDEX [Index1]\r\n"
@@ -107,9 +111,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_WithAllOptionsOff ()
     {
+      var entityNameDefinition = new EntityNameDefinition (null, "TableName");
       var indexDefinition = new SqlSecondaryXmlIndexDefinition (
           "Index1",
-          new EntityNameDefinition (null, "TableName"),
           _xmlColumn,
           "PrimaryIndexName",
           SqlSecondaryXmlIndexKind.Property,
@@ -122,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false,
           0);
 
-      var result = _factory.GetCreateElement (indexDefinition);
+      var result = _factory.GetCreateElement (indexDefinition, entityNameDefinition);
 
       var expectedResult =
           "CREATE XML INDEX [Index1]\r\n"
@@ -138,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_CustomSchema ()
     {
-      var result = _factory.GetDropElement (_indexDefinitionWithCustomSchema);
+      var result = _factory.GetDropElement (_indexDefinitionWithCustomSchema, _customSchemaNameDefinition);
 
       var expectedResult =
           "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName1' AND "
@@ -152,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_DefaultSchema ()
     {
-      var result = _factory.GetDropElement (_indexDefinitionWithDefaultSchema);
+      var result = _factory.GetDropElement (_indexDefinitionWithDefaultSchema, _defaultSchemaNameDefinition);
 
       var expectedResult =
           "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName2' AND "

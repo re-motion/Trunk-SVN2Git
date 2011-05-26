@@ -38,14 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _includedColumns = new[] { new SimpleColumnDefinition ("TestColumn2", typeof (string), "varchar", true, false) };
 
       _sqlIndexDefinition = new SqlIndexDefinition (
-          "IndexName", _objectName, _columns, _includedColumns, true, true, true, true, true, 5, true, true, true, true, true, 2);
+          "IndexName", _columns, _includedColumns, true, true, true, true, true, 5, true, true, true, true, true, 2);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_sqlIndexDefinition.IndexName, Is.EqualTo ("IndexName"));
-      Assert.That (_sqlIndexDefinition.ObjectName, Is.SameAs (_objectName));
       Assert.That (_sqlIndexDefinition.Columns, Is.EqualTo (_columns));
       Assert.That (_sqlIndexDefinition.IncludedColumns, Is.EqualTo (_includedColumns));
       Assert.That (_sqlIndexDefinition.IsClustered.Value, Is.True);
@@ -65,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void Initialization_NoIncludedColumns ()
     {
-      _sqlIndexDefinition = new SqlIndexDefinition ("IndexName", _objectName, _columns, null, true, true, true, true);
+      _sqlIndexDefinition = new SqlIndexDefinition ("IndexName", _columns, null, true, true, true, true);
 
       Assert.That (_sqlIndexDefinition.IncludedColumns, Is.Null);
     }
