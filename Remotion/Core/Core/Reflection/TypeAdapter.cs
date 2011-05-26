@@ -292,6 +292,17 @@ namespace Remotion.Reflection
       return _type.IsAssignableFrom (otherTypeAsTypeAdapter.Type);
     }
 
+    public bool CanAscribeTo (ITypeInformation c)
+    {
+      ArgumentUtility.CheckNotNull ("c", c);
+
+      var otherTypeAsTypeAdapter = c as TypeAdapter;
+      if (otherTypeAsTypeAdapter == null)
+        return false;
+
+      return ReflectionUtility.CanAscribe (_type, otherTypeAsTypeAdapter.Type);
+    }
+
     public override bool Equals (object obj)
     {
       return ReferenceEquals (this, obj);

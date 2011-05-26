@@ -323,7 +323,7 @@ namespace Remotion.Reflection
     ITypeInformation BaseType { get; }
 
     /// <summary>
-    /// Determines whether the specified object is an instance of the current type.
+    /// Determines whether the specified object <paramref name="o"/> is an instance of the current type.
     /// </summary>
     /// <returns>
     /// <see langword="true"/> if the current Type is in the inheritance hierarchy of the object represented by <paramref name="o"/>, 
@@ -331,25 +331,25 @@ namespace Remotion.Reflection
     /// or if <paramref name="o"/> is <see langword="null"/>, or if the current Type is an open generic type 
     /// (that is, <see cref="ContainsGenericParameters"/> returns <see langword="true"/>).
     /// </returns>
-    /// <param name="o">The object to compare with the current Type. </param>
+    /// <param name="o">The object to compare with the current <see cref="ITypeInformation"/>. </param>
     bool IsInstanceOfType (object o);
 
     /// <summary>
-    /// Determines whether the class represented by the current type derives from the class represented by the specified <see cref="ITypeInformation"/> object.
+    /// Determines whether the class represented by the current type derives from the class represented by <paramref name="c"/>.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/> if the Type represented by the <paramref name="c"/> parameter and the current Type represent classes, 
+    /// <see langword="true"/> if the Type represented by the <paramref name="c"/> parameter and the current type represent classes, 
     /// and the class represented by the current Type derives from the class represented by <paramref name="c"/>; otherwise, <see langword="false"/>. 
-    /// This method also returns <see langword="false"/> if <paramref name="c"/> and the current Type represent the same class.
+    /// This method also returns <see langword="false"/> if <paramref name="c"/> and the current type represent the same class.
     /// In addition, the implementation of <paramref name="c"/> must match the implementation of this <see cref="ITypeInformation"/>,
     /// otherwise this method will also return <see langword="false" />.
     /// </returns>
-    /// <param name="c">The Type to compare with the current Type. </param>
+    /// <param name="c">The <see cref="ITypeInformation"/> to compare with the current <see cref="ITypeInformation"/>. </param>
     /// <exception cref="ArgumentNullException">The <paramref name="c"/> parameter is <see langword="null"/>. </exception>
     bool IsSubclassOf (ITypeInformation c);
 
     /// <summary>
-    /// Determines whether an instance of the current type can be assigned from an instance of the specified Type.
+    /// Determines whether an instance of the current type can be assigned from an instance of the type represented by <paramref name="c"/>.
     /// </summary>
     /// <returns>
     /// <see langword="true"/> if <paramref name="c"/> and the current Type represent the same type, 
@@ -359,7 +359,22 @@ namespace Remotion.Reflection
     /// <see langword="false"/> if none of these conditions are <see langword="true"/>, or if <paramref name="c"/> is <see langword="null"/>,
     /// or the implementation of <paramref name="c"/> does not match the implementation of this <see cref="ITypeInformation"/>.
     /// </returns>
-    /// <param name="c">The Type to compare with the current Type. </param>
+    /// <param name="c">The <see cref="ITypeInformation"/> to compare with the current <see cref="ITypeInformation"/>. </param>
     bool IsAssignableFrom (ITypeInformation c);
+
+    /// <summary>
+    /// Determines whether the instance of the current type can be ascribed to the instance of the type represented by <paramref name="c"/>.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if the type represented by the <paramref name="c"/> parameter and the current type represent the same type,
+    /// or if <paramref name="c"/> is in the inheritance hierarchy of the current type, 
+    /// or the current type is a closed version of the generic type represented by <paramref name="c"/>; otherwise, <see langword="false"/>. 
+    /// This method also returns <see langword="false"/> if the implementation of <paramref name="c"/> 
+    /// does not match the implementation of this <see cref="ITypeInformation"/>.
+    /// </returns>
+    /// <param name="c">The <see cref="ITypeInformation"/> to compare with the current <see cref="ITypeInformation"/>. </param>
+    /// <exception cref="ArgumentNullException">The <paramref name="c"/> parameter is <see langword="null"/>. </exception>
+    bool CanAscribeTo (ITypeInformation c);
+
   }
 }

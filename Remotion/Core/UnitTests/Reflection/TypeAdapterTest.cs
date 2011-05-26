@@ -731,6 +731,79 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void CanAscribeTo_SameType ()
+    {
+      var currentType = typeof (SystemException);
+      Assert.That (
+          TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (currentType)),
+          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, currentType)).And.True);
+    }
+
+    [Test]
+    public void CanAscribeTo_BaseType ()
+    {
+      var currentType = typeof (SystemException);
+      var otherType = typeof (Exception);
+      Assert.That (
+          TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
+          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.True);
+    }
+
+    [Test]
+    public void CanAscribeTo_DerivedType ()
+    {
+      var currentType = typeof (Exception);
+      var otherType = typeof (SystemException);
+      Assert.That (
+          TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
+          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.False);
+    }
+
+    [Test]
+    public void CanAscribeTo_OpenGeneric ()
+    {
+      var currentType = typeof (List<int>);
+      var otherType = typeof (List<>);
+      Assert.That (
+          TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
+          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.True);
+    }
+
+    [Test]
+    public void CanAscribeTo_Interface ()
+    {
+      var currentType = typeof (ArrayList);
+      var otherType = typeof (IList);
+      Assert.That (
+          TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
+          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.True);
+    }
+
+    [Test]
+    public void CanAscribeTo_OpenGenericInterface ()
+    {
+      var currentType = typeof (List<int>);
+      var otherType = typeof (IList<>);
+      Assert.That (
+          TypeAdapter.Create (currentType).CanAscribeTo (TypeAdapter.Create (otherType)),
+          Is.EqualTo (ReflectionUtility.CanAscribe (currentType, otherType)).And.True);
+    }
+
+    [Test]
+    public void CanAscribeTo_DifferentITypeInformationImplementation ()
+    {
+      var currentType = typeof (SystemException);
+      var otherType = MockRepository.GenerateStub<ITypeInformation> ();
+      Assert.That (TypeAdapter.Create (currentType).CanAscribeTo (otherType), Is.False);
+    }
+
+    [Test]
+    public void CanAscribeTo_Null ()
+    {
+      Assert.That (() => TypeAdapter.Create (typeof (object)).CanAscribeTo (null), Throws.TypeOf<ArgumentNullException> ());
+    }
+
+    [Test]
     public void Equals ()
     {
       var adapter = TypeAdapter.Create (typeof (ArrayList));
