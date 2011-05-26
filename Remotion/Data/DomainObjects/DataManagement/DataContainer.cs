@@ -515,7 +515,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
             args.OldValue, 
             args.NewValue);
 
-      if (args.PropertyValue.Definition.PropertyType != typeof (ObjectID))
+      if (!args.PropertyValue.Definition.IsObjectID)
       {
         // To save memory, DomainObject does not register any event handlers with its data management infrastructure.
         // Therefore notification of DomainObject when changing property values is not organized through events.
@@ -533,7 +533,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenChanged = !_hasBeenChanged || args.PropertyValue.HasChanged || CalculatePropertyValueChangeState();
       RaiseStateUpdatedNotification (State);
 
-      if (args.PropertyValue.Definition.PropertyType != typeof (ObjectID))
+      if (!args.PropertyValue.Definition.IsObjectID)
       {
         if (_domainObject != null)
         {

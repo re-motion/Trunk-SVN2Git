@@ -148,8 +148,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private bool MustBeUpdated (PropertyValue propertyValue)
     {
-      return (_dataContainer.State == StateType.New && propertyValue.Definition.PropertyType == typeof (ObjectID))
-             || (_dataContainer.State == StateType.Deleted && propertyValue.Definition.PropertyType == typeof (ObjectID))
+      return (_dataContainer.State == StateType.New && propertyValue.Definition.IsObjectID)
+             || (_dataContainer.State == StateType.Deleted && propertyValue.Definition.IsObjectID)
              || (_dataContainer.State == StateType.Changed && propertyValue.HasChanged);
     }
 
@@ -157,7 +157,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       AppendColumn (updateSetBuilder, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue.Definition.StoragePropertyDefinition.Name);
 
-      if (propertyValue.Definition.PropertyType != typeof (ObjectID))
+      if (!propertyValue.Definition.IsObjectID)
         AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue);
       else
         AddObjectIDAndClassIDParameters (updateSetBuilder, command, _dataContainer.ClassDefinition, propertyValue);

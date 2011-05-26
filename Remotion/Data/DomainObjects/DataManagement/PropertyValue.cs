@@ -430,7 +430,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public bool IsRelationProperty
     {
-      get { return _definition.PropertyType == typeof (ObjectID); }
+      get { return _definition.IsObjectID; }
     }
 
     private void CheckNotDiscarded ()

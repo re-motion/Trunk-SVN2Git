@@ -39,9 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         throw new ArgumentException ("The foreign key data container must be compatible with the end point definition.", "foreignKeyDataContainer", ex);
       }
 
-      Assertion.IsTrue (
-          foreignKeyProperty.Definition.PropertyType == typeof (ObjectID),
-          "The foreign key property must have a property type of ObjectID.");
+      Assertion.IsTrue (foreignKeyProperty.Definition.IsObjectID, "The foreign key property must have a property type of ObjectID.");
       return foreignKeyProperty;
     }
 

@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      if (propertyDefinition.PropertyType != typeof (ObjectID))
+      if (!propertyDefinition.IsObjectID)
         return GetValue (classDefinition, propertyDefinition, GetValue (dataReader, propertyDefinition.StoragePropertyDefinition.Name));
       else
         return GetObjectID (classDefinition, propertyDefinition, dataReader, propertyDefinition.StoragePropertyDefinition.Name);

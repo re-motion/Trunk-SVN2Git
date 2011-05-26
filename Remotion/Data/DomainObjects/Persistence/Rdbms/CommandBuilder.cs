@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       commandParameter.ParameterName = Provider.GetParameterName (parameterName);
 
       ValueConverter valueConverter = Provider.CreateValueConverter ();
-      if (parameterValue != null && parameterValue.GetType() == typeof (ObjectID))
+      if (parameterValue is ObjectID)
         commandParameter.Value = valueConverter.GetDBValue ((ObjectID) parameterValue, Provider.StorageProviderDefinition.Name);
       else
         commandParameter.Value = valueConverter.GetDBValue (parameterValue);
@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
-      if (value.GetType() == typeof (ObjectID))
+      if (value is ObjectID)
         return GetObjectIDValueForParameter ((ObjectID) value);
       else
         return value;
