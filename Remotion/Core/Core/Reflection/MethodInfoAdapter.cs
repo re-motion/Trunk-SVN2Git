@@ -42,12 +42,13 @@ namespace Remotion.Reflection
     }
 
     private readonly MethodInfo _methodInfo;
-    private readonly DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
+    private readonly DoubleCheckedLockingContainer<ITypeInformation> _cachedOriginalDeclaringType;
 
     private MethodInfoAdapter (MethodInfo methodInfo)
     {
       _methodInfo = methodInfo;
-      _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_methodInfo));
+      _cachedOriginalDeclaringType =
+          new DoubleCheckedLockingContainer<ITypeInformation> (() => TypeAdapter.Create (ReflectionUtility.GetOriginalDeclaringType (_methodInfo)));
     }
 
     public MethodInfo MethodInfo
@@ -65,17 +66,12 @@ namespace Remotion.Reflection
       get { return _methodInfo.Name; }
     }
 
-    Type IMemberInformation.DeclaringType
-    {
-      get { return _methodInfo.DeclaringType; }
-    }
-
     public ITypeInformation DeclaringType
     {
       get { return Maybe.ForValue (_methodInfo.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault (); }
     }
-    
-    public Type GetOriginalDeclaringType ()
+
+    public ITypeInformation GetOriginalDeclaringType ()
     {
       return _cachedOriginalDeclaringType.Value;
     }

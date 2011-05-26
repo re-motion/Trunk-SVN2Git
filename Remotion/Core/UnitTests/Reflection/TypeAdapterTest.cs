@@ -112,8 +112,7 @@ namespace Remotion.UnitTests.Reflection
     public void GetOriginalDeclaringType_NestedType ()
     {
       var type = typeof (Environment.SpecialFolder);
-      //Assert.That (TypeAdapter.Create (type).GetOriginalDeclaration (), Is.TypeOf<TypeAdapter> ().And.Property ("Type").SameAs (type.DeclaringType));
-      Assert.That (TypeAdapter.Create (type).GetOriginalDeclaringType (), Is.SameAs (type.DeclaringType));
+      Assert.That (TypeAdapter.Create (type).GetOriginalDeclaringType(), Is.TypeOf<TypeAdapter> ().And.Property ("Type").SameAs (type.DeclaringType));
     }
 
     [Test]

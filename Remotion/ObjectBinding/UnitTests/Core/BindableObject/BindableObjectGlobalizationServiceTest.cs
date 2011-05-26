@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -92,22 +93,32 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetPropertyDisplayName ()
     {
-      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithResources), "Value1");
-      Assert.That (_globalizationService.GetPropertyDisplayName (IPropertyInformation), Is.EqualTo ("Value 1"));
+      IPropertyInformation propertyInformation = GetPropertyInfo (typeof (ClassWithResources), "Value1");
+      Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformation), Is.EqualTo ("Value 1"));
     }
 
     [Test]
     public void GetPropertyDisplayName_WithoutMultiLingualResourcesAttribute ()
     {
-      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
-      Assert.That (_globalizationService.GetPropertyDisplayName (IPropertyInformation), Is.EqualTo ("String"));
+      IPropertyInformation propertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
+      Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformation), Is.EqualTo ("String"));
     }
 
     [Test]
     public void GetPropertyDisplayName_WithoutResourceForProperty ()
     {
-      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithResources), "ValueWithoutResource");
-      Assert.That (_globalizationService.GetPropertyDisplayName (IPropertyInformation), Is.EqualTo ("ValueWithoutResource"));
+      IPropertyInformation propertyInformation = GetPropertyInfo (typeof (ClassWithResources), "ValueWithoutResource");
+      Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformation), Is.EqualTo ("ValueWithoutResource"));
+    }
+
+    [Test]
+    public void GetPropertyDisplayName_WithDeclaringTypeNotSupportingConversionFromITypeInformationToType ()
+    {
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub.Stub (stub => stub.Name).Return ("PropertyName");
+      propertyInformationStub.Stub (stub => stub.DeclaringType).Return (MockRepository.GenerateStub<ITypeInformation>());
+
+      Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformationStub), Is.EqualTo ("PropertyName"));
     }
 
     [Test]
@@ -115,8 +126,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       using (MixinConfiguration.BuildFromActive().ForClass<SimpleBusinessObjectClass>().AddMixin<MixinAddingResources>().EnterScope())
       {
-        IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
-        Assert.That (_globalizationService.GetPropertyDisplayName (IPropertyInformation), Is.EqualTo ("Resource from mixin"));
+        IPropertyInformation propertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
+        Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformation), Is.EqualTo ("Resource from mixin"));
       }
     }
 

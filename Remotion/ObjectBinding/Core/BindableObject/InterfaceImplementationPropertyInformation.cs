@@ -46,12 +46,12 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _implementationPropertyInfo.Name; }
     }
 
-    public Type DeclaringType
+    public ITypeInformation DeclaringType
     {
       get { return _implementationPropertyInfo.DeclaringType; }
     }
 
-    public Type GetOriginalDeclaringType ()
+    public ITypeInformation GetOriginalDeclaringType ()
     {
       return _implementationPropertyInfo.GetOriginalDeclaringType();
     }

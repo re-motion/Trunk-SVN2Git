@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using System.Text;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -49,17 +48,17 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
       ArgumentUtility.CheckNotNullOrEmpty ("messageFormat", messageFormat);
       ArgumentUtility.CheckNotNull ("args", args);
 
-      return new MappingValidationResult (false, BuildMessage (type, (IPropertyInformation) null, null, messageFormat, args));
+      return CreateInvalidResultForType (TypeAdapter.Create (type), messageFormat, args);
     }
 
     [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
-    public static MappingValidationResult CreateInvalidResultForProperty (PropertyInfo propertyInfo, string messageFormat, params object[] args)
+    public static MappingValidationResult CreateInvalidResultForType (ITypeInformation type, string messageFormat, params object[] args)
     {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("messageFormat", messageFormat);
       ArgumentUtility.CheckNotNull ("args", args);
 
-      return new MappingValidationResult (false, BuildMessage (propertyInfo.DeclaringType, propertyInfo, null, messageFormat, args));
+      return new MappingValidationResult (false, BuildMessage (type, null, null, messageFormat, args));
     }
 
     [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
@@ -83,7 +82,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
       return new MappingValidationResult (false, BuildMessage (propertyInfo.DeclaringType, propertyInfo, relationID, messageFormat, args));
     }
 
-    private static string BuildMessage (Type type, PropertyInfo property, string relationID, string messageFormat, params object[] args)
+    private static string BuildMessage (
+        ITypeInformation type, 
+        IPropertyInformation property,
+        string relationID,
+        string messageFormat,
+        params object[] args)
     {
       var stringBuilder = new StringBuilder();
 
@@ -106,31 +110,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
       }
 
       return stringBuilder.ToString();
-    }
-
-    private static string BuildMessage (Type type, IPropertyInformation property, string relationID, string messageFormat, params object[] args)
-    {
-      var stringBuilder = new StringBuilder ();
-
-      stringBuilder.AppendFormat (messageFormat, args);
-      if (type != null)
-      {
-        stringBuilder.AppendLine ();
-        stringBuilder.AppendLine ();
-        stringBuilder.AppendFormat ("Declaring type: {0}", type);
-        if (property != null)
-        {
-          stringBuilder.AppendLine ();
-          stringBuilder.AppendFormat ("Property: {0}", property.Name);
-        }
-        if (relationID != null)
-        {
-          stringBuilder.AppendLine ();
-          stringBuilder.AppendFormat ("Relation ID: {0}", relationID);
-        }
-      }
-
-      return stringBuilder.ToString ();
     }
 
     private readonly bool _isValid;

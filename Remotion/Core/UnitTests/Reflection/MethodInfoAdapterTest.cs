@@ -157,7 +157,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetOriginalDeclaringType ()
     {
-      Assert.That (_adapter.GetOriginalDeclaringType(), Is.EqualTo (_method.DeclaringType));
+      Assert.That (_adapter.GetOriginalDeclaringType(), Is.TypeOf<TypeAdapter>().And.Property ("Type").SameAs (_method.DeclaringType));
     }
 
     [Test]

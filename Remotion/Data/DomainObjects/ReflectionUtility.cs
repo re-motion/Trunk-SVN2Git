@@ -29,9 +29,7 @@ namespace Remotion.Data.DomainObjects
   /// </summary>
   public static class ReflectionUtility
   {
-    // types
-
-    // static members and constants
+    private static readonly TypeConversionProvider s_typeConversionProvider = TypeConversionProvider.Create();
 
     /// <summary>
     /// Returns the directory of the current executing assembly.
@@ -259,14 +257,14 @@ namespace Remotion.Data.DomainObjects
       if (IsMixedProperty (propertyInfo, classDefinition))
       {
         var originalMixinTarget =
-            classDefinition.PersistentMixinFinder.FindOriginalMixinTarget (classDefinition.GetPersistentMixin (propertyInfo.DeclaringType));
+            classDefinition.PersistentMixinFinder.FindOriginalMixinTarget (classDefinition.GetPersistentMixin (propertyInfo.DeclaringType.ToRuntimeType ()));
         if (originalMixinTarget == null)
           throw new InvalidOperationException (
               string.Format ("IPersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin) evaluated and returned null."));
         return originalMixinTarget;
       }
       else
-        return propertyInfo.DeclaringType;
+        return propertyInfo.DeclaringType.ToRuntimeType();
     }
 
     /// <summary>
@@ -280,7 +278,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return classDefinition.GetPersistentMixin (propertyInfo.DeclaringType) != null;
+      return classDefinition.GetPersistentMixin (propertyInfo.DeclaringType.ToRuntimeType()) != null;
     }
 
     /// <summary>
@@ -310,6 +308,12 @@ namespace Remotion.Data.DomainObjects
 
       return type.Assembly == typeof (DomainObject).Assembly;
     }
-    
+
+    public static Type ToRuntimeType (this ITypeInformation typeInformation)
+    {
+      ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
+
+      return (Type) s_typeConversionProvider.Convert (typeInformation.GetType(), typeof (Type), typeInformation);
+    }
   }
 }

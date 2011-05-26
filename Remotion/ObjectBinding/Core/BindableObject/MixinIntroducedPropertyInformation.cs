@@ -49,12 +49,12 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _mixinPropertyInfo.Name;  }
     }
 
-    public Type DeclaringType
+    public ITypeInformation DeclaringType
     {
-      get { return _mixinPropertyInfo.DeclaringType;  }
+      get { return _mixinPropertyInfo.DeclaringType; }
     }
 
-    public Type GetOriginalDeclaringType ()
+    public ITypeInformation GetOriginalDeclaringType ()
     {
       return _mixinPropertyInfo.GetOriginalDeclaringType();
     }

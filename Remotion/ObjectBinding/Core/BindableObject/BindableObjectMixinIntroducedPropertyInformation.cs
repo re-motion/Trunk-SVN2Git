@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -28,8 +29,8 @@ namespace Remotion.ObjectBinding.BindableObject
   /// </summary>
   public class BindableObjectMixinIntroducedPropertyInformation : MixinIntroducedPropertyInformation
   {
-    private readonly Type _concreteType;
-    private readonly PropertyInfo _concreteProperty;
+    private readonly ITypeInformation _concreteType;
+    private readonly IPropertyInformation _concreteProperty;
 
     public BindableObjectMixinIntroducedPropertyInformation (InterfaceImplementationPropertyInformation mixinPropertyInfo, Type concreteType, PropertyInfo propertyInfo)
         :  base (mixinPropertyInfo)
@@ -37,16 +38,16 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      _concreteType = concreteType;
-      _concreteProperty = propertyInfo;
+      _concreteType = TypeAdapter.Create (concreteType);
+      _concreteProperty = PropertyInfoAdapter.Create (propertyInfo);
     }
 
-    public Type ConcreteType
+    public ITypeInformation ConcreteType
     {
       get { return _concreteType; }
     }
 
-    public PropertyInfo ConcreteProperty
+    public IPropertyInformation ConcreteProperty
     {
       get { return _concreteProperty; }
     }

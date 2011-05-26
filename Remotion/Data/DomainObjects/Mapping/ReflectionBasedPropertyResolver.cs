@@ -60,14 +60,14 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
 
-      if (interfaceProperty.DeclaringType.IsAssignableFrom (classDefinition.ClassType))
+      if (interfaceProperty.DeclaringType.IsAssignableFrom (TypeAdapter.Create (classDefinition.ClassType)))
         return new[] { classDefinition.ClassType };
       else
       {
         var allPersistentMixins = classDefinition
             .CreateSequence (cd => cd.BaseClass)
             .SelectMany (cd => cd.PersistentMixins);
-        return allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (m)).ToArray();
+        return allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (TypeAdapter.Create (m))).ToArray();
       }
     }
   }

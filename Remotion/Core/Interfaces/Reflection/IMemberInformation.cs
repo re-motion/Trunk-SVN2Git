@@ -36,14 +36,14 @@ namespace Remotion.Reflection
     /// Gets the type declaring the member.
     /// </summary>
     /// <value>The declaring type of the member.</value>
-    Type DeclaringType { get; }
+    ITypeInformation DeclaringType { get; }
 
     /// <summary>
     /// Gets the type the member was originally declared on.
     /// </summary>
     /// <returns>The type the member was originally declared on.</returns>
     /// <remarks>If the member represented by this instance overrides a member from a base type, this method will return the base type.</remarks>
-    Type GetOriginalDeclaringType ();
+    ITypeInformation GetOriginalDeclaringType ();
 
     /// <summary>
     /// Gets the one custom attribute of type <typeparamref name="T"/> declared on this member, or null if no such attribute exists.

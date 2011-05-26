@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       IPropertyFinder finder = BindableObjectMetadataFactory.Create().CreatePropertyFinder (typeof (TestClass));
       Assert.AreSame (typeof (ReflectionBasedPropertyFinder), finder.GetType());
-      Assert.AreSame (typeof (TestClass), new List<IPropertyInformation> (finder.GetPropertyInfos())[0].DeclaringType);
+      Assert.AreSame (TypeAdapter.Create (typeof (TestClass)), new List<IPropertyInformation> (finder.GetPropertyInfos())[0].DeclaringType);
     }
 
     [Test]

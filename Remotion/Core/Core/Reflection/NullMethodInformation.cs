@@ -30,17 +30,12 @@ namespace Remotion.Reflection
       get { return null; }
     }
 
-    Type IMemberInformation.DeclaringType
-    {
-      get { return null; }
-    }
-
     public ITypeInformation DeclaringType
     {
       get { return null; }
     }
 
-    public Type GetOriginalDeclaringType ()
+    public ITypeInformation GetOriginalDeclaringType ()
     {
       return null;
     }

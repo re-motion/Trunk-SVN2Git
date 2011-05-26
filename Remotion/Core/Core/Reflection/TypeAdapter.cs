@@ -77,19 +77,14 @@ namespace Remotion.Reflection
       get { return _type.Assembly; }
     }
 
-    Type IMemberInformation.DeclaringType
-    {
-      get { return _type.DeclaringType; }
-    }
-
     public ITypeInformation DeclaringType
     {
       get { return Maybe.ForValue (_type.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault (); }
     }
 
-    public Type GetOriginalDeclaringType ()
+    public ITypeInformation GetOriginalDeclaringType ()
     {
-      return _type.DeclaringType;
+      return DeclaringType;
     }
 
     public bool IsClass

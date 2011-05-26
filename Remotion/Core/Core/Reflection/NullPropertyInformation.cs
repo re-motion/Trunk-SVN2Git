@@ -29,12 +29,12 @@ namespace Remotion.Reflection
       get { return null; }
     }
 
-    public Type DeclaringType
+    public ITypeInformation DeclaringType
     {
       get { return null; }
     }
 
-    public Type GetOriginalDeclaringType ()
+    public ITypeInformation GetOriginalDeclaringType ()
     {
       return null;
     }

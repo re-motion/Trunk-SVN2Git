@@ -118,7 +118,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void DeclaringType ()
     {
-      Assert.That (_adapter.DeclaringType, Is.EqualTo (_property.DeclaringType));
+      Assert.That (_adapter.DeclaringType, Is.EqualTo (TypeAdapter.Create (_property.DeclaringType)));
     }
 
     [Test]
@@ -391,7 +391,7 @@ namespace Remotion.UnitTests.Reflection
       PropertyInfoAdapter overrideAdapter = PropertyInfoAdapter.Create(propertyInfo);
       Assert.AreNotEqual (overrideAdapter.DeclaringType, overrideAdapter.GetOriginalDeclaringType());
       Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.EqualTo (overrideAdapter.DeclaringType.BaseType));
-      Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.EqualTo (typeof (ClassWithBaseMember)));
+      Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.TypeOf<TypeAdapter>().And.Property ("Type").SameAs (typeof (ClassWithBaseMember)));
     }
 
     [Test]
@@ -594,7 +594,7 @@ namespace Remotion.UnitTests.Reflection
       var result = adapter.FindInterfaceDeclaration();
 
       Assert.That (result.Name, Is.EqualTo ("ImplicitInterfaceScalar"));
-      Assert.That (result.DeclaringType, Is.SameAs (typeof (IInterfaceWithReferenceType<object>)));
+      Assert.That (result.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (IInterfaceWithReferenceType<object>))));
     }
 
     [Test]
@@ -607,7 +607,7 @@ namespace Remotion.UnitTests.Reflection
       var result = adapter.FindInterfaceDeclaration();
 
       Assert.That (result.Name, Is.EqualTo ("ExplicitInterfaceScalar"));
-      Assert.That (result.DeclaringType, Is.SameAs (typeof (IInterfaceWithReferenceType<object>)));
+      Assert.That (result.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (IInterfaceWithReferenceType<object>))));
     }
 
     [Test]
@@ -620,7 +620,7 @@ namespace Remotion.UnitTests.Reflection
       var result = adapter.FindInterfaceDeclaration();
 
       Assert.That (result.Name, Is.EqualTo ("ExplicitInterfaceReadOnlyScalar"));
-      Assert.That (result.DeclaringType, Is.SameAs (typeof (IInterfaceWithReferenceType<object>)));
+      Assert.That (result.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (IInterfaceWithReferenceType<object>))));
     }
 
     [Test]
@@ -633,7 +633,7 @@ namespace Remotion.UnitTests.Reflection
       var result = adapter.FindInterfaceDeclaration();
 
       Assert.That (result.Name, Is.EqualTo ("ExplicitInterfaceWriteOnlyScalar"));
-      Assert.That (result.DeclaringType, Is.SameAs (typeof (IInterfaceWithReferenceType<object>)));
+      Assert.That (result.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (IInterfaceWithReferenceType<object>))));
     }
 
     [Test]

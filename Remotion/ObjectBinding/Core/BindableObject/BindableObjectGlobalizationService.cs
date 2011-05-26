@@ -35,7 +35,13 @@ namespace Remotion.ObjectBinding.BindableObject
       False
     }
 
-    private readonly InterlockedCache<Type, IResourceManager> _resourceManagerCache = new InterlockedCache<Type, IResourceManager>();
+    private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache = new InterlockedCache<ITypeInformation, IResourceManager>();
+    private readonly TypeConversionProvider _typeConversionProvider;
+
+    public BindableObjectGlobalizationService ()
+    {
+      _typeConversionProvider = TypeConversionProvider.Create();
+    }
 
     public string GetEnumerationValueDisplayName (Enum value)
     {
@@ -51,7 +57,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public string GetBooleanValueDisplayName (bool value)
     {
-      IResourceManager resourceManager = GetResourceManagerFromCache (typeof (ResourceIdentifier));
+      IResourceManager resourceManager = GetResourceManagerFromCache (TypeAdapter.Create (typeof (ResourceIdentifier)));
       return resourceManager.GetString (value ? ResourceIdentifier.True : ResourceIdentifier.False);
     }
 
@@ -65,29 +71,35 @@ namespace Remotion.ObjectBinding.BindableObject
 
       var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
       var globalizedType = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteType : propertyInfo.DeclaringType;
-      var propertyName = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteProperty.Name : propertyInfo.Name;
+      var property = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteProperty : propertyInfo;
       
       var resourceManager = GetResourceManagerFromCache (globalizedType);
 
-      string resourceID = "property:" + propertyName;
+      string resourceID = "property:" + property.Name;
       if (!resourceManager.ContainsResource (resourceID))
         return propertyInfo.Name;
       return resourceManager.GetString (resourceID);
     }
 
-    private IResourceManager GetResourceManagerFromCache (Type type)
+    private IResourceManager GetResourceManagerFromCache (ITypeInformation typeInformation)
     {
       IResourceManager resourceManager;
-      if (_resourceManagerCache.TryGetValue (type, out resourceManager))
+      if (_resourceManagerCache.TryGetValue (typeInformation, out resourceManager))
         return resourceManager;
-      return _resourceManagerCache.GetOrCreateValue (type, GetResourceManager);
+      return _resourceManagerCache.GetOrCreateValue (typeInformation, GetResourceManager);
     }
 
-    private IResourceManager GetResourceManager (Type type)
+    private IResourceManager GetResourceManager (ITypeInformation typeInformation)
     {
-      if (!MixedMultiLingualResources.ExistsResource (type))
+      if (!_typeConversionProvider.CanConvert (typeInformation.GetType (), typeof (Type)))
         return NullResourceManager.Instance;
-      return MixedMultiLingualResources.GetResourceManager (type, true);
+
+      var type = (Type) _typeConversionProvider.Convert (typeInformation.GetType(), typeof (Type), typeInformation);
+
+      if (MixedMultiLingualResources.ExistsResource (type))
+        return MixedMultiLingualResources.GetResourceManager (type, true);
+
+      return NullResourceManager.Instance;
     }
   }
 } 

@@ -41,12 +41,13 @@ namespace Remotion.Reflection
     }
 
     private readonly PropertyInfo _propertyInfo;
-    private readonly DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
+    private readonly DoubleCheckedLockingContainer<ITypeInformation> _cachedOriginalDeclaringType;
 
     private PropertyInfoAdapter (PropertyInfo propertyInfo)
     {
       _propertyInfo = propertyInfo;
-      _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_propertyInfo));
+      _cachedOriginalDeclaringType = 
+          new DoubleCheckedLockingContainer<ITypeInformation> (() => TypeAdapter.Create (ReflectionUtility.GetOriginalDeclaringType (_propertyInfo)));
     }
 
     public PropertyInfo PropertyInfo
@@ -64,12 +65,12 @@ namespace Remotion.Reflection
       get { return _propertyInfo.Name; }
     }
 
-    public Type DeclaringType
+    public ITypeInformation DeclaringType
     {
-      get { return _propertyInfo.DeclaringType; }
+      get { return Maybe.ForValue (_propertyInfo.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault (); }
     }
 
-    public Type GetOriginalDeclaringType ()
+    public ITypeInformation GetOriginalDeclaringType ()
     {
       return _cachedOriginalDeclaringType.Value;
     }

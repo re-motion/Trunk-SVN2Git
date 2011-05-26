@@ -119,8 +119,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (bool));
       propertyInformationStub.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
-      propertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (object));
-      propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeof (object));
       propertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString")));
 
       var booleanProperty = CreateProperty (propertyInformationStub);

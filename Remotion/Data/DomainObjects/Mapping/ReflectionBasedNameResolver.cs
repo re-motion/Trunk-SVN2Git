@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Mapping
           propertyInformation, pi => GetPropertyName (pi.GetOriginalDeclaringType(), pi.Name));
     }
 
-    private string GetPropertyName (Type type, string shortPropertyName)
+    private string GetPropertyName (ITypeInformation type, string shortPropertyName)
     {
       if (type.IsGenericType && !type.IsGenericTypeDefinition)
         type = type.GetGenericTypeDefinition ();

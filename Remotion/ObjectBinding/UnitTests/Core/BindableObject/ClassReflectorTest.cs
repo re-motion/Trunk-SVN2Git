@@ -61,7 +61,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (_type));
       Assert.That (bindableObjectClass.GetPropertyDefinitions().Length, Is.EqualTo (1));
       Assert.That (bindableObjectClass.GetPropertyDefinitions()[0].Identifier, Is.EqualTo ("Public"));
-      Assert.That (((PropertyBase) bindableObjectClass.GetPropertyDefinitions()[0]).PropertyInfo.DeclaringType, Is.SameAs (_type));
+      Assert.That (
+          ((PropertyBase) bindableObjectClass.GetPropertyDefinitions()[0]).PropertyInfo.DeclaringType, 
+          Is.SameAs (TypeAdapter.Create (_type)));
       Assert.That (bindableObjectClass.GetPropertyDefinitions()[0].BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
     }
 

@@ -61,9 +61,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetOriginalDeclaringType ()
     {
-      _implementationMethodInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeof (string));
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation> ();
+      _implementationMethodInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeInformationStub);
 
-      Assert.That (_interfaceImplementationMethodInformation.GetOriginalDeclaringType(), Is.SameAs (typeof (string)));
+      Assert.That (_interfaceImplementationMethodInformation.GetOriginalDeclaringType(), Is.SameAs (typeInformationStub));
     }
 
     [Test]

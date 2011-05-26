@@ -51,17 +51,19 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void DeclaringType ()
     {
-      _implementationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      _implementationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeInformationStub);
 
-      Assert.That (_interfaceImplementationPropertyInformation.DeclaringType, Is.SameAs (typeof (bool)));
+      Assert.That (_interfaceImplementationPropertyInformation.DeclaringType, Is.SameAs (typeInformationStub));
     }
 
     [Test]
     public void GetOriginalDeclaringType ()
     {
-      _implementationPropertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeof (bool));
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation> ();
+      _implementationPropertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeInformationStub);
 
-      Assert.That (_interfaceImplementationPropertyInformation.GetOriginalDeclaringType(), Is.SameAs (typeof (bool)));
+      Assert.That (_interfaceImplementationPropertyInformation.GetOriginalDeclaringType(), Is.SameAs (typeInformationStub));
     }
 
     [Test]
@@ -585,8 +587,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void To_String ()
     {
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation> ();
+      typeInformationStub.Stub (stub => stub.Name).Return ("Boolean");
       _implementationPropertyInformationStub.Stub (stub => stub.Name).Return ("Test");
-      _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
+      _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeInformationStub);
 
       Assert.That (_interfaceImplementationPropertyInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean')"));
     }

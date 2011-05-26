@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       if (optionalOppositePropertyInfo != null)
       {
-        while (oppositeClassDefinition.BaseClass != null && oppositeClassDefinition.ClassType != optionalOppositePropertyInfo.DeclaringType)
+        while (oppositeClassDefinition.BaseClass != null && !oppositeClassDefinition.ClassType.Equals (optionalOppositePropertyInfo.DeclaringType.ToRuntimeType()))
           oppositeClassDefinition = oppositeClassDefinition.BaseClass;
       }
 
