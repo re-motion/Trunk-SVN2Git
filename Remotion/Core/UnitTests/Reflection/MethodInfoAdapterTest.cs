@@ -335,7 +335,7 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindDeclaringProperty();
 
-      CheckProperty (typeof (ClassWithReferenceType<object>), "ImplicitInterfaceScalar", result);
+      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "ImplicitInterfaceScalar", result);
     }
 
     [Test]
@@ -346,7 +346,7 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindDeclaringProperty();
 
-      CheckProperty (typeof (ClassWithReferenceType<object>), "ImplicitInterfaceScalar", result);
+      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "ImplicitInterfaceScalar", result);
     }
 
     [Test]
@@ -357,7 +357,7 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindDeclaringProperty();
 
-      CheckProperty (typeof (ClassWithReferenceType<object>), "PrivateProperty", result);
+      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "PrivateProperty", result);
     }
 
     [Test]
@@ -368,7 +368,7 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindDeclaringProperty();
 
-      CheckProperty (typeof (ClassWithReferenceType<object>), "PrivateProperty", result);
+      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "PrivateProperty", result);
     }
 
     [Test]
@@ -380,7 +380,7 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindDeclaringProperty();
 
-      CheckProperty (typeof (ClassWithReferenceType<object>), "ReadOnlyNonPublicSetterScalar", result);
+      CheckProperty (TypeAdapter.Create (typeof (ClassWithReferenceType<object>)), "ReadOnlyNonPublicSetterScalar", result);
     }
 
     [Test]
@@ -404,7 +404,7 @@ namespace Remotion.UnitTests.Reflection
       var result = adapter.FindDeclaringProperty();
 
       CheckProperty (
-          typeof (ClassWithReferenceType<object>),
+          TypeAdapter.Create (typeof (ClassWithReferenceType<object>)),
           "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
           result);
     }
@@ -552,7 +552,7 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (typeConversionProvider.CanConvert (typeof (MethodInfoAdapter), typeof (MethodInfo)), Is.True);
     }
 
-    private void CheckProperty (Type expectedDeclaringType, string expectedName, IPropertyInformation actualProperty)
+    private void CheckProperty (ITypeInformation expectedDeclaringType, string expectedName, IPropertyInformation actualProperty)
     {
       Assert.That (actualProperty.Name, Is.EqualTo (expectedName));
       Assert.That (actualProperty.DeclaringType, Is.SameAs (expectedDeclaringType));
