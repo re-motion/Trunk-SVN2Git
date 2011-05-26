@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -28,9 +29,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class MappingReflectionTestBase
   {
     private ReflectionBasedMappingObjectFactory _mappingObjectFactory;
+    private IClassIDProvider _classIDProviderMock;
+    private IDomainModelConstraintProvider _domainModelConstraintProviderMock;
     public const string DefaultStorageProviderID = "DefaultStorageProvider";
     public const string c_testDomainProviderID = "TestDomain";
     public const string c_unitTestStorageProviderStubID = "UnitTestStorageProviderStub";
+
+    protected IClassIDProvider ClassIDProviderMock
+    {
+      get { return _classIDProviderMock; }
+    }
+
+    protected IDomainModelConstraintProvider DomainModelConstraintProviderMock
+    {
+      get { return _domainModelConstraintProviderMock; }
+    }
 
     [SetUp]
     public virtual void SetUp ()
@@ -38,9 +51,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       DomainObjectsConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetDomainObjectsConfiguration());
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
+      
+      _classIDProviderMock = MockRepository.GenerateStrictMock<IClassIDProvider>();
+      _domainModelConstraintProviderMock = MockRepository.GenerateStrictMock<IDomainModelConstraintProvider>();
 
       _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (
-          Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
+          Configuration.NameResolver, _classIDProviderMock, _domainModelConstraintProviderMock);
     }
 
     [TearDown]

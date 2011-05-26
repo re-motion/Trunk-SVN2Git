@@ -14,85 +14,129 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests
 {
   [TestFixture]
-  public class ValueTypes: BaseTest
+  public class ValueTypes : BaseTest
   {
     [Test]
-    public void GetMetadata_WithBasicType()
+    public void GetMetadata_WithBasicType ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
+      Assert.AreEqual (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
       Assert.AreSame (typeof (bool), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (false, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void GetMetadata_WithNullableBasicType()
+    public void GetMetadata_WithNullableBasicType ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("NaBooleanProperty");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("NaBooleanProperty", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.NaBooleanProperty", actual.PropertyName);
+      Assert.AreEqual (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.NaBooleanProperty", actual.PropertyName);
       Assert.AreSame (typeof (bool?), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.IsNull (actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void GetMetadata_WithEnumProperty()
+    public void GetMetadata_WithEnumProperty ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("EnumProperty");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("EnumProperty", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.EnumProperty", actual.PropertyName);
+      Assert.AreEqual (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.EnumProperty", actual.PropertyName);
       Assert.AreSame (typeof (ClassWithAllDataTypes.EnumType), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value0, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithExtensibleEnumProperty ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("ExtensibleEnumProperty");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> (
+          "ExtensibleEnumProperty", DomainModelConstraintProviderMock);
 
-      PropertyDefinition actual = propertyReflector.GetMetadata ();
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+          .Return (false);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.ExtensibleEnumProperty", actual.PropertyName);
+      PropertyDefinition actual = propertyReflector.GetMetadata();
+
+      Assert.AreEqual (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.ExtensibleEnumProperty",
+          actual.PropertyName);
       Assert.AreSame (typeof (Color), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (Color.Values.Blue(), actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void GetMetadata_WithOptionalRelationProperty()
+    public void GetMetadata_WithOptionalRelationProperty ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithGuidKey> ("ClassWithValidRelationsOptional");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithGuidKey> (
+          "ClassWithValidRelationsOptional", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithValidRelationsOptional", actual.PropertyName);
+      Assert.AreEqual (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithValidRelationsOptional",
+          actual.PropertyName);
       Assert.AreSame (typeof (ObjectID), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     public object ObjectProperty

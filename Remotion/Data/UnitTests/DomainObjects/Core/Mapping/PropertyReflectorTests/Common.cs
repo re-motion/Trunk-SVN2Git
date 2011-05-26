@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests
 {
@@ -29,7 +30,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     [Test]
     public void GetMetadata_ForSingleProperty()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (new SimpleColumnDefinition ("Boolean", typeof (bool), "bit", true, false));
@@ -38,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
       Assert.AreEqual ("Boolean", StorageModelTestHelper.GetColumnName(actual));
       Assert.AreSame (typeof (bool), actual.PropertyType);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
   }
 }

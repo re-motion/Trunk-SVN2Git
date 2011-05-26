@@ -28,6 +28,7 @@ using
     Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
         StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -48,12 +49,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForBaseClass ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseString")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseUnidirectionalOneToOne")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BasePrivateUnidirectionalOneToOne")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Int32")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "String")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalOneToOne")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateString")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseString")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseUnidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BasePrivateUnidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "String")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateString")))
+          .Return (true);
+      DomainModelConstraintProviderMock.Replay();
+      
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (ClassWithDifferentProperties))).Return ("ClassWithDifferentProperties");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
           typeof (ClassWithDifferentProperties),
           MappingObjectFactory,
           Configuration.NameResolver,
-          new ClassIDProvider(),
-          new DomainModelConstraintProvider());
+          ClassIDProviderMock,
+          DomainModelConstraintProviderMock);
       var expected = CreateClassWithDifferentPropertiesClassDefinition();
 
       var actual = classReflector.GetMetadata (null);
@@ -61,17 +106,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
       _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetMetadata_ForDerivedClass ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "OtherString")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "String")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateString")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "OtherString")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "String")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateString")))
+          .Return (true);
+      DomainModelConstraintProviderMock.Replay ();
+
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (DerivedClassWithDifferentProperties))).Return ("DerivedClassWithDifferentProperties");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
           typeof (DerivedClassWithDifferentProperties),
           MappingObjectFactory,
           Configuration.NameResolver,
-          new ClassIDProvider(),
-          new DomainModelConstraintProvider());
+          ClassIDProviderMock,
+          DomainModelConstraintProviderMock);
       var expected = CreateDerivedClassWithDifferentPropertiesClassDefinition();
 
       var baseClassDefinition = CreateClassWithDifferentPropertiesClassDefinition();
@@ -80,62 +150,179 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
       _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetMetadata_ForMixedClass ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P0")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P1")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P2")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P5")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P7")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P8")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P0a")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
+
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (TargetClassA))).Return ("ClassID");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
-          typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
+          typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderMock, DomainModelConstraintProviderMock);
       var actual = classReflector.GetMetadata (null);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinA), typeof (MixinC), typeof (MixinD) }));
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetMetadata_ForDerivedMixedClass ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P0")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P1")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P2")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P7")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P8")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P5")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+         .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P0a")))
+         .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
+
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (TargetClassA))).Return ("ClassID");
+      ClassIDProviderMock.Replay ();
+
       var classReflectorForBaseClass = new ClassReflector (
-          typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
+          typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderMock, DomainModelConstraintProviderMock);
       var baseClass = classReflectorForBaseClass.GetMetadata (null);
 
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
+
+      ClassIDProviderMock.BackToRecord();
+      DomainModelConstraintProviderMock.BackToRecord();
+
+      DomainModelConstraintProviderMock
+        .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P3")))
+        .Return (null);
+      DomainModelConstraintProviderMock
+        .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P4")))
+        .Return (null);
+      DomainModelConstraintProviderMock
+        .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P9")))
+        .Return (null);
+      DomainModelConstraintProviderMock
+        .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "P6")))
+        .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
+
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (TargetClassB))).Return ("ClassID");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
-          typeof (TargetClassB), MappingObjectFactory, Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
+          typeof (TargetClassB), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderMock, DomainModelConstraintProviderMock);
       var actual = classReflector.GetMetadata (baseClass);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinB), typeof (MixinE) }));
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetMetadata_ForClassWithVirtualRelationEndPoints ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseBidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseBidirectionalOneToMany")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BasePrivateBidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BasePrivateBidirectionalOneToMany")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "NoAttribute")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "NotNullable")))
+          .Return (false);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
+          .Return (true);
+      DomainModelConstraintProviderMock.Replay ();
+
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (ClassWithVirtualRelationEndPoints))).Return ("ClassWithVirtualRelationEndPoints");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
           typeof (ClassWithVirtualRelationEndPoints),
           MappingObjectFactory,
           Configuration.NameResolver,
-          new ClassIDProvider(),
-          new DomainModelConstraintProvider());
+          ClassIDProviderMock,
+          DomainModelConstraintProviderMock);
       var expected = CreateClassWithVirtualRelationEndPointsClassDefinition();
       expected.SetPropertyDefinitions (new PropertyDefinitionCollection());
       CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (expected);
 
       var actual = classReflector.GetMetadata (null);
 
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
       _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
     }
 
     [Test]
-    public void GetMetadata_ForClassHavingClassIDAttribute ()
+    public void GetMetadata_GetClassID ()
     {
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (ClassHavingClassIDAttribute))).Return ("ClassIDForClassHavingClassIDAttribute");
+      ClassIDProviderMock.Replay();
+
       var classReflector = new ClassReflector (
           typeof (ClassHavingClassIDAttribute),
           MappingObjectFactory,
           Configuration.NameResolver,
-          new ClassIDProvider(),
-          new DomainModelConstraintProvider());
+          ClassIDProviderMock,
+          DomainModelConstraintProviderMock);
 
       var actual = classReflector.GetMetadata (null);
 
+      ClassIDProviderMock.VerifyAllExpectations();
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
     }
@@ -143,24 +330,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClosedGenericClass ()
     {
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (ClosedGenericClass))).Return ("ClassID");
+      ClassIDProviderMock.Replay();
+     
       var classReflector = new ClassReflector (
-          typeof (ClosedGenericClass), MappingObjectFactory, Configuration.NameResolver, new ClassIDProvider(), new DomainModelConstraintProvider());
+          typeof (ClosedGenericClass), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderMock, DomainModelConstraintProviderMock);
 
       Assert.IsNotNull (classReflector.GetMetadata (null));
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetMetadata_ForClassWithoutStorageGroupAttribute ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "IntProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
+
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (ClassDerivedFromSimpleDomainObject))).Return ("ClassID");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
           typeof (ClassDerivedFromSimpleDomainObject),
           MappingObjectFactory,
           Configuration.NameResolver,
-          new ClassIDProvider(),
-          new DomainModelConstraintProvider());
+          ClassIDProviderMock,
+          DomainModelConstraintProviderMock);
 
       var actual = classReflector.GetMetadata (null);
 
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
       Assert.IsNotNull (actual);
       Assert.That (actual.StorageGroupType, Is.Null);
     }
@@ -168,15 +370,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithStorageGroupAttribute ()
     {
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (DerivedClassWithStorageGroupAttribute))).Return ("ClassID");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
           typeof (DerivedClassWithStorageGroupAttribute),
           MappingObjectFactory,
           Configuration.NameResolver,
-          new ClassIDProvider(),
-          new DomainModelConstraintProvider());
+          ClassIDProviderMock,
+          DomainModelConstraintProviderMock);
 
       var actual = classReflector.GetMetadata (null);
 
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
       Assert.IsNotNull (actual);
       Assert.That (actual.StorageGroupType, Is.SameAs (typeof (DBStorageGroupAttribute)));
     }
@@ -184,31 +391,102 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_PersistentMixinFinder_ForBaseClass ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseString")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseUnidirectionalOneToOne")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BasePrivateUnidirectionalOneToOne")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Int32")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "String")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalOneToOne")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateString")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseString")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BaseUnidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BasePrivateUnidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "String")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalOneToOne")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateString")))
+          .Return (true);
+      DomainModelConstraintProviderMock.Replay();
+
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (ClassWithDifferentProperties))).Return ("ClassID");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
           typeof (ClassWithDifferentProperties),
           MappingObjectFactory,
           Configuration.NameResolver,
-          new ClassIDProvider(),
-          new DomainModelConstraintProvider());
+          ClassIDProviderMock,
+          DomainModelConstraintProviderMock);
 
       var actual = classReflector.GetMetadata (null);
 
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations ();
       Assert.That (actual.PersistentMixinFinder.IncludeInherited, Is.True);
     }
 
     [Test]
     public void GetMetadata_PersistentMixinFinder_ForDerivedClass ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateString")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "OtherString")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "String")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateString")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "OtherString")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "String")))
+          .Return (true);
+      DomainModelConstraintProviderMock.Replay();
+
+      ClassIDProviderMock.Expect (mock => mock.GetClassID (typeof (DerivedClassWithDifferentProperties))).Return ("ClassID");
+      ClassIDProviderMock.Replay ();
+
       var classReflector = new ClassReflector (
           typeof (DerivedClassWithDifferentProperties),
           MappingObjectFactory,
           Configuration.NameResolver,
-          new ClassIDProvider(),
-          new DomainModelConstraintProvider());
+          ClassIDProviderMock,
+          DomainModelConstraintProviderMock);
       var baseClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition();
 
       var actual = classReflector.GetMetadata (baseClassDefinition);
 
+      ClassIDProviderMock.VerifyAllExpectations ();
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
       Assert.That (actual.PersistentMixinFinder.IncludeInherited, Is.False);
     }
 

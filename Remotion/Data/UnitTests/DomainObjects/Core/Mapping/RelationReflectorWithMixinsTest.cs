@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -71,6 +72,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_Mixed_RealSide_ID ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalRelationProperty")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalRelationProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
+
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
           typeof (MixinAddingPersistentProperties),
@@ -82,11 +91,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Is.EqualTo (
               typeof (TargetClassForPersistentMixin).FullName + ":" +
               typeof (MixinAddingPersistentProperties).FullName + ".UnidirectionalRelationProperty"));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_VirtualSide ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches(pi=>pi.Name=="RelationProperty2")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+         .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty2")))
+         .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "VirtualRelationProperty")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "VirtualRelationProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay();
+
       CreateRelationReflectorForProperty (_relatedClassDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty2");
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
@@ -100,11 +124,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (RelationTargetForPersistentMixin).FullName + ":" +
               typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2->" + typeof (MixinAddingPersistentProperties)
               + ".VirtualRelationProperty"));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_Unidirectional_EndPointDefinition0 ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalRelationProperty")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalRelationProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay();
+
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
           typeof (MixinAddingPersistentProperties),
@@ -117,11 +150,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_mixinTargetClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_mixinTargetClassDefinition));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_Unidirectional_EndPointDefinition1 ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalRelationProperty")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "UnidirectionalRelationProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
+
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
           typeof (MixinAddingPersistentProperties),
@@ -132,11 +174,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeEndPointDefinition = (AnonymousRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
 
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_relatedClassDefinition));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_BidirectionalOneToOne_EndPointDefinition0 ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty1")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty1")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
+
       CreateRelationReflectorForProperty (_relatedClassDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty1");
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
@@ -150,11 +207,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_mixinTargetClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_mixinTargetClassDefinition));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_BidirectionalOneToOne_EndPointDefinition1 ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty1")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty1")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay();
+
       CreateRelationReflectorForProperty (_relatedClassDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty1");
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
@@ -170,11 +242,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty1"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (TargetClassForPersistentMixin)));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_BidirectionalOneToMany_EndPoint0 ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty4")))
+          .Repeat.Twice()
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty4")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "CollectionPropertyNSide")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "CollectionPropertyNSide")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
+
       CreateRelationReflectorForProperty (_relatedClassDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty4");
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
@@ -188,11 +276,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_mixinTargetClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_mixinTargetClassDefinition));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_BidirectionalOneToMany_EndPoint1 ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty4")))
+          .Repeat.Twice()
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty4")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "CollectionPropertyNSide")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "CollectionPropertyNSide")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay();
+
       CreateRelationReflectorForProperty (_relatedClassDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty4");
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
@@ -207,11 +311,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty4"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<TargetClassForPersistentMixin>)));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_OppositePropertyPrivateOnBase ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty5")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty5")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateBaseRelationProperty")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PrivateBaseRelationProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay();
+
       CreateRelationReflectorForProperty (_relatedClassDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty5");
       var relationReflector = CreateRelationReflectorForProperty (
           _mixinTargetClassDefinition,
@@ -219,11 +338,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "PrivateBaseRelationProperty");
 
       Assert.That (relationReflector.GetMetadata (_classDefinitions), Is.Not.Null);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_TwoMixins ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "MyBase1")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "MyBase2")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "MyDerived1")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "MyDerived2")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "MyBase1")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "MyBase2")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "MyDerived1")))
+          .Repeat.Twice()
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "MyDerived2")))
+          .Repeat.Twice ()
+          .Return (true);
+      DomainModelConstraintProviderMock.Replay();
+
       CreateRelationReflectorForProperty (_multiMixinTargetClassDefinition, typeof (MixinAddingTwoReferencesToDerivedClass1), "MyDerived1");
       var relationReflector1 = CreateRelationReflectorForProperty (
           _multiMixinRelatedClassDefinition,
@@ -240,11 +388,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (metadata1, Is.Not.Null);
       var metadata2 = relationReflector2.GetMetadata (_classDefinitions);
       Assert.That (metadata2, Is.Not.Null);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Mixed_PropertyAboveInheritanceRoot ()
     {
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty1")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty1")))
+          .Return (null);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PersistentRelationProperty")))
+          .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "PersistentRelationProperty")))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay();
+
       var classAboveInheritanceRoot = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationTargetForPersistentMixinAboveInheritanceRoot));
       CreateRelationReflectorForProperty (
           classAboveInheritanceRoot, typeof (RelationTargetForPersistentMixinAboveInheritanceRoot), "RelationProperty1");
@@ -255,6 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _classDefinitions.Add (classAboveInheritanceRoot.ClassType, classAboveInheritanceRoot);
 
       Assert.That (relationReflector.GetMetadata (_classDefinitions), Is.Not.Null);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     private RelationReflector CreateRelationReflectorForProperty (
@@ -263,7 +427,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyInfo =
           PropertyInfoAdapter.Create (declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
       var propertyReflector = new PropertyReflector (
-          classDefinition, propertyInfo, new ReflectionBasedNameResolver(), new DomainModelConstraintProvider());
+          classDefinition, propertyInfo, new ReflectionBasedNameResolver(), DomainModelConstraintProviderMock);
       var propertyDefinition = propertyReflector.GetMetadata();
       var properties = new List<PropertyDefinition>();
       properties.Add (propertyDefinition);

@@ -14,22 +14,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests
 {
   [TestFixture]
-  public class StorageSpecificName: BaseTest
+  public class StorageSpecificName : BaseTest
   {
     [Test]
-    public void GetMetadata_WithNoAttribute()
+    public void GetMetadata_WithNoAttribute ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassHavingStorageSpecificIdentifierAttribute> ("NoAttribute");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassHavingStorageSpecificIdentifierAttribute> (
+          "NoAttribute", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (new SimpleColumnDefinition ("NoAttribute", typeof (string), "varchar", true, false));
@@ -37,13 +45,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.NoAttribute",
           actual.PropertyName);
-      Assert.AreEqual ("NoAttribute", StorageModelTestHelper.GetColumnName(actual));
+      Assert.AreEqual ("NoAttribute", StorageModelTestHelper.GetColumnName (actual));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void GetMetadata_WithStorageSpecificName()
+    public void GetMetadata_WithStorageSpecificName ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassHavingStorageSpecificIdentifierAttribute> ("StorageSpecificName");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassHavingStorageSpecificIdentifierAttribute> (
+          "StorageSpecificName", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (new SimpleColumnDefinition ("CustomName", typeof (string), "varchar", true, false));
@@ -51,7 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.StorageSpecificName",
           actual.PropertyName);
-      Assert.AreEqual ("CustomName", StorageModelTestHelper.GetColumnName(actual));
+      Assert.AreEqual ("CustomName", StorageModelTestHelper.GetColumnName (actual));
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
   }
 }

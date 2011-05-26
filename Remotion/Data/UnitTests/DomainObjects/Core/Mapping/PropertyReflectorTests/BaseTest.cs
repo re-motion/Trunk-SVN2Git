@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 {
   public class BaseTest : MappingReflectionTestBase
   {
-    protected PropertyReflector CreatePropertyReflector<T> (string property)
+    protected PropertyReflector CreatePropertyReflector<T> (string property, IDomainModelConstraintProvider domainModelConstraintProvider)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("property", property);
 
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       else
         classDefinition = ClassDefinitionFactory.CreateClassDefinition ("Order", "Order", TestDomainStorageProviderDefinition, typeof (Order), false);
 
-      return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver, new DomainModelConstraintProvider());
+      return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver, domainModelConstraintProvider);
     }
   }
 }

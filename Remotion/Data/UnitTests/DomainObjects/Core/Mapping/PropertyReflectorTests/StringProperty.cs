@@ -20,16 +20,25 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests
 {
   [TestFixture]
-  public class StringProperty: BaseTest
+  public class StringProperty : BaseTest
   {
     [Test]
-    public void GetMetadata_WithNoAttribute()
+    public void GetMetadata_WithNullableFalse ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("NoAttribute");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("NoAttribute", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+         .Return (false);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -37,15 +46,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.NoAttribute",
           actual.PropertyName);
       Assert.AreSame (typeof (string), actual.PropertyType);
-      Assert.IsTrue (actual.IsNullable);
+      Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (null, actual.DefaultValue);
+      Assert.AreEqual (string.Empty, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void GetMetadata_WithNullableFromAttribute()
+    public void GetMetadata_WithNullableTrue ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("NullableFromAttribute");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> (
+          "NullableFromAttribute", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+         .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -56,28 +75,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void GetMetadata_WithNotNullableFromAttribute()
+    public void GetMetadata_WithMaximumLength ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("NotNullable");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("MaximumLength", DomainModelConstraintProviderMock);
 
-      PropertyDefinition actual = propertyReflector.GetMetadata();
-
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithStringProperties.NotNullable",
-          actual.PropertyName);
-      Assert.AreSame (typeof (string), actual.PropertyType);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (string.Empty, actual.DefaultValue);
-    }
-
-    [Test]
-    public void GetMetadata_WithMaximumLength()
-    {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("MaximumLength");
+      DomainModelConstraintProviderMock
+         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+         .Return (true);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (100);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -88,12 +100,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.AreEqual (100, actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void GetMetadata_WithNotNullableAndMaximumLength()
+    public void GetMetadata_WithNotNullableAndMaximumLength ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("NotNullableAndMaximumLength");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> (
+          "NotNullableAndMaximumLength", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+         .Return (false);
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (100);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -104,6 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsFalse (actual.IsNullable);
       Assert.AreEqual (100, actual.MaxLength);
       Assert.AreEqual (string.Empty, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [StringProperty]

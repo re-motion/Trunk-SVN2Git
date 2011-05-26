@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests
 {
@@ -29,7 +30,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     [Test]
     public void GetMetadata_WithNoAttribute()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithRealRelationEndPoints> ("NoAttribute");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithRealRelationEndPoints> ("NoAttribute", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -40,12 +46,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithNotNullableFromAttribute()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithRealRelationEndPoints> ("NotNullable");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithRealRelationEndPoints> ("NotNullable", DomainModelConstraintProviderMock);
+
+      DomainModelConstraintProviderMock
+          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+          .Return (null);
+      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -56,6 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
+      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Mandatory]
