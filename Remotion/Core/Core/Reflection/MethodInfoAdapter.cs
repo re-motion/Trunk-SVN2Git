@@ -65,11 +65,16 @@ namespace Remotion.Reflection
       get { return _methodInfo.Name; }
     }
 
-    public Type DeclaringType
+    Type IMemberInformation.DeclaringType
     {
       get { return _methodInfo.DeclaringType; }
     }
 
+    public ITypeInformation DeclaringType
+    {
+      get { return Maybe.ForValue (_methodInfo.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault (); }
+    }
+    
     public Type GetOriginalDeclaringType ()
     {
       return _cachedOriginalDeclaringType.Value;
@@ -96,16 +101,16 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 
-      if (!DeclaringType.IsInterface)
+      if (!_methodInfo.DeclaringType.IsInterface)
         throw new InvalidOperationException ("This method is not an interface method.");
 
       if (implementationType.IsInterface)
         throw new ArgumentException ("The implementationType parameter must not be an interface.", "implementationType");
 
-      if (!DeclaringType.IsAssignableFrom (implementationType))
+      if (!_methodInfo.DeclaringType.IsAssignableFrom (implementationType))
         return null;
 
-      var interfaceMap = implementationType.GetInterfaceMap (DeclaringType);
+      var interfaceMap = implementationType.GetInterfaceMap (_methodInfo.DeclaringType);
       var methodIndex = interfaceMap.InterfaceMethods
           .Select ((m, i) => new { InterfaceMethod = m, Index = i })
           .First (tuple => tuple.InterfaceMethod.Equals (_methodInfo)) // actually Single, but we can stop at the first matching method
@@ -115,12 +120,12 @@ namespace Remotion.Reflection
 
     public IMethodInformation FindInterfaceDeclaration ()
     {
-      if (DeclaringType.IsInterface)
+      if (_methodInfo.DeclaringType.IsInterface)
         throw new InvalidOperationException ("This method is itself an interface member, so it cannot have an interface declaration.");
 
       var resultMethodInfo =
-          (from ifc in DeclaringType.GetInterfaces()
-           let map = DeclaringType.GetInterfaceMap (ifc)
+          (from ifc in _methodInfo.DeclaringType.GetInterfaces ()
+           let map = _methodInfo.DeclaringType.GetInterfaceMap (ifc)
            from index in Enumerable.Range (0, map.TargetMethods.Length)
            where MemberInfoEqualityComparer<MethodInfo>.Instance.Equals(map.TargetMethods[index], _methodInfo)
            select map.InterfaceMethods[index]).FirstOrDefault();
@@ -146,8 +151,8 @@ namespace Remotion.Reflection
       // ReflectedType will be the declaring type, whereas _methodInfo might have a different ReflectedType.
       // AreEqualMethodsWithoutReflectedType can't deal with closed generic methods, but property accessors aren't generic anyway.
 
-      var propertyInfo = 
-          (from t in DeclaringType.CreateSequence (t => t.BaseType)
+      var propertyInfo =
+          (from t in _methodInfo.DeclaringType.CreateSequence (t => t.BaseType)
            from pi in t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
            from accessor in new[] { pi.GetGetMethod (true), pi.GetSetMethod (true) }
            where accessor != null && MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (_methodInfo, accessor)

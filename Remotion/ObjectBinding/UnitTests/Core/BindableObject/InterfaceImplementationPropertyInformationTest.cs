@@ -214,11 +214,17 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "get_ImplicitProperty", getMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "get_ImplicitProperty",
+          getMethodResult);
 
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "set_ImplicitProperty", setMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "set_ImplicitProperty",
+          setMethodResult);
     }
 
     [Test]
@@ -236,14 +242,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
-          typeof (ClassImplementingInterface),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.get_ExplicitProperty",
           getMethodResult);
 
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
-          typeof (ClassImplementingInterface),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.set_ExplicitProperty",
           setMethodResult);
     }
@@ -259,7 +265,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "get_ReadOnlyImplicitProperty", getMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "get_ReadOnlyImplicitProperty",
+          getMethodResult);
       Assert.That (interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
     }
 
@@ -275,7 +284,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (interfaceImplementationPropertyInformation.GetGetMethod (false), Is.Null);
       var getMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "set_WriteOnlyImplicitProperty", getMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "set_WriteOnlyImplicitProperty",
+          getMethodResult);
     }
 
     [Test]
@@ -293,7 +305,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
-          typeof (ClassImplementingInterface),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.get_ReadOnlyExplicitProperty",
           getMethodResult);
       Assert.That (interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
@@ -315,7 +327,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var getMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
-          typeof (ClassImplementingInterface),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceToImplement.set_WriteOnlyExplicitProperty",
           getMethodResult);
     }
@@ -331,10 +343,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
-          typeof (MethodInfoAdapter), typeof (ClassImplementingInterface), "get_PropertyAddingGetAccessor", getMethodResult);
+          typeof (MethodInfoAdapter),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "get_PropertyAddingGetAccessor",
+          getMethodResult);
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "set_PropertyAddingGetAccessor", setMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "set_PropertyAddingGetAccessor",
+          setMethodResult);
     }
 
     [Test]
@@ -348,10 +366,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "get_PropertyAddingSetAccessor", getMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "get_PropertyAddingSetAccessor",
+          getMethodResult);
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
-          typeof (MethodInfoAdapter), typeof (ClassImplementingInterface), "set_PropertyAddingSetAccessor", setMethodResult);
+          typeof (MethodInfoAdapter),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "set_PropertyAddingSetAccessor",
+          setMethodResult);
     }
 
     [Test]
@@ -365,11 +389,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (true);
       CheckMethodInformation (
-          typeof (MethodInfoAdapter), typeof (ClassImplementingInterface), "get_PropertyAddingPrivateGetAccessor", getMethodResult);
+          typeof (MethodInfoAdapter),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "get_PropertyAddingPrivateGetAccessor",
+          getMethodResult);
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
-          typeof (ClassImplementingInterface),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
           "set_PropertyAddingPrivateGetAccessor",
           setMethodResult);
     }
@@ -387,7 +414,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
-          typeof (ClassImplementingInterface),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
           "set_PropertyAddingPrivateGetAccessor",
           setMethodResult);
     }
@@ -404,12 +431,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
-          typeof (ClassImplementingInterface),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
           "get_PropertyAddingPrivateSetAccessor",
           getMethodResult);
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (true);
       CheckMethodInformation (
-          typeof (MethodInfoAdapter), typeof (ClassImplementingInterface), "set_PropertyAddingPrivateSetAccessor", setMethodResult);
+          typeof (MethodInfoAdapter),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
+          "set_PropertyAddingPrivateSetAccessor",
+          setMethodResult);
     }
 
     [Test]
@@ -424,7 +454,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation),
-          typeof (ClassImplementingInterface),
+          TypeAdapter.Create (typeof (ClassImplementingInterface)),
           "get_PropertyAddingPrivateSetAccessor",
           getMethodResult);
       Assert.That (interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
@@ -562,7 +592,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     private void CheckMethodInformation (
-        Type expectedType, Type expectedPropertyDeclaringType, string expectedPropertyName, IMethodInformation actualMethodInformation)
+        Type expectedType, ITypeInformation expectedPropertyDeclaringType, string expectedPropertyName, IMethodInformation actualMethodInformation)
     {
       Assert.That (actualMethodInformation, Is.TypeOf (expectedType));
       Assert.That (actualMethodInformation.DeclaringType, Is.SameAs (expectedPropertyDeclaringType));

@@ -52,9 +52,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void DeclaringType ()
     {
-      _implementationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (object));
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation> ();
+      _implementationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeInformationStub);
 
-      Assert.That (_mixinIntroducedMethodInformation.DeclaringType, Is.SameAs (typeof (object)));
+      Assert.That (_mixinIntroducedMethodInformation.DeclaringType, Is.SameAs (typeInformationStub));
     }
 
     [Test]
@@ -197,8 +198,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void To_String ()
     {
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation> ();
+      typeInformationStub.Stub (stub => stub.Name).Return ("Boolean");
       _implementationMethodInformationStub.Stub (stub => stub.Name).Return ("Test");
-      _declarationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
+      _declarationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeInformationStub);
 
       Assert.That (_mixinIntroducedMethodInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean') (Mixin)"));
     }

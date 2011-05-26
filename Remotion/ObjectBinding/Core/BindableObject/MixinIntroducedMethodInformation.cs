@@ -50,7 +50,12 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _mixinMethodInfo.Name; }
     }
 
-    public Type DeclaringType
+    Type IMemberInformation.DeclaringType
+    {
+      get { return ((IMemberInformation) _mixinMethodInfo).DeclaringType; }
+    }
+
+    public ITypeInformation DeclaringType
     {
       get { return _mixinMethodInfo.DeclaringType; }
     }

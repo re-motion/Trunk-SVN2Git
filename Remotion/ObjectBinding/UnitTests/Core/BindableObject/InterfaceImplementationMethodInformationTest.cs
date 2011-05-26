@@ -52,9 +52,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void DeclaringType ()
     {
-      _implementationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (string));
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      _implementationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeInformationStub);
 
-      Assert.That (_interfaceImplementationMethodInformation.DeclaringType, Is.SameAs (typeof (string)));
+      Assert.That (_interfaceImplementationMethodInformation.DeclaringType, Is.SameAs (typeInformationStub));
     }
 
     [Test]
@@ -198,8 +199,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void To_String ()
     {
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation> ();
+      typeInformationStub.Stub (stub => stub.Name).Return ("Boolean");
+
       _implementationMethodInformationStub.Stub (stub => stub.Name).Return ("Test");
-      _declarationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
+      _declarationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeInformationStub);
 
       Assert.That (_interfaceImplementationMethodInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean')"));
     }

@@ -48,6 +48,9 @@ namespace Remotion.UnitTests.Reflection
       var methodInfoAdapterDataStore =
           (IDataStore<MethodInfo, MethodInfoAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (MethodInfoAdapter), "s_dataStore");
       methodInfoAdapterDataStore.Clear();
+      var typeAdapterDataStore =
+          (IDataStore<Type, TypeAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (TypeAdapter), "s_dataStore");
+      typeAdapterDataStore.Clear ();
 
       _method = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("TestMethod");
       _adapter = MethodInfoAdapter.Create(_method);
@@ -107,7 +110,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void DeclaringType ()
     {
-      Assert.That (_adapter.DeclaringType, Is.EqualTo (_method.DeclaringType));
+      Assert.That (_adapter.DeclaringType, Is.EqualTo (TypeAdapter.Create (_method.DeclaringType)));
     }
 
     [Test]

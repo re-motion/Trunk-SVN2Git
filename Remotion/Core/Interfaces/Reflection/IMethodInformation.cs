@@ -24,6 +24,8 @@ namespace Remotion.Reflection
   /// </summary>
   public interface IMethodInformation : IMemberInformation
   {
+    new ITypeInformation DeclaringType { get; }
+
     /// <summary>
     /// Gets the return type of the method.
     /// </summary>
