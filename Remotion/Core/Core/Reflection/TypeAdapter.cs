@@ -303,6 +303,13 @@ namespace Remotion.Reflection
       return ReflectionUtility.CanAscribe (_type, otherTypeAsTypeAdapter.Type);
     }
 
+    public ITypeInformation[] GetAscribedGenericArgumentsFor (ITypeInformation c)
+    {
+      var otherTypeAsTypeAdapter = ArgumentUtility.CheckNotNullAndType<TypeAdapter> ("c", c);
+
+      return ConvertToTypeAdapters (ReflectionUtility.GetAscribedGenericArguments (_type, otherTypeAsTypeAdapter.Type));
+    }
+
     public override bool Equals (object obj)
     {
       return ReferenceEquals (this, obj);
@@ -325,9 +332,6 @@ namespace Remotion.Reflection
     }
 
     /*
-
-     Type Ascribing
-     * 
      // use this.GetProperties {name.equals(value.name), returntype.equals(value.returntype)}
      public static PropertyInfo GetProperty (this IPropertyInformation
         string name, BindingFlags bindingAttr, Type returnType, Type[] types);

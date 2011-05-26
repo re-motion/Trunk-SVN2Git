@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
@@ -376,5 +377,22 @@ namespace Remotion.Reflection
     /// <exception cref="ArgumentNullException">The <paramref name="c"/> parameter is <see langword="null"/>. </exception>
     bool CanAscribeTo (ITypeInformation c);
 
+    /// <summary>
+    /// Returns the ascribed type arguments for the type represented by <paramref name="c"/> as inherited or implemented by the current type.
+    /// </summary>
+    /// <returns>An array of <see cref="ITypeInformation"/> objects containing the generic arguments of the type 
+    /// represented by <paramref name="c"/> as it is inherited or implemented by the current type.
+    /// </returns>
+    /// <param name="c">The <see cref="ITypeInformation"/> to retrieve the ascribed generic arguments for Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentTypeException">
+    /// Thrown if the type represented by <paramref name="c"/> is not equal to the current type, 
+    /// or if <paramref name="c"/> is in the inheritance hierarchy of the current type,
+    /// or if the implementation of <paramref name="c"/> does not match the implementation of the current <see cref="ITypeInformation"/> object.
+    /// </exception>
+    /// <exception cref="AmbiguousMatchException">
+    /// Thrown if the current type is an interface and implements the interface represented by <paramref name="c"/> or its instantiations
+    /// more than once.
+    /// </exception>
+    ITypeInformation[] GetAscribedGenericArgumentsFor (ITypeInformation c);
   }
 }

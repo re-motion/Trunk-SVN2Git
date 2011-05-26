@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
@@ -30,6 +31,10 @@ namespace Remotion.UnitTests.Reflection
   [TestFixture]
   public class TypeAdapterTest
   {
+    private interface IDoubleInheritingGenericInterface : IList<int>, IList<string>
+    {
+    }
+
     [SetUp]
     public void SetUp ()
     {
@@ -639,8 +644,7 @@ namespace Remotion.UnitTests.Reflection
       var value = new object ();
       Assert.That (TypeAdapter.Create (type).IsInstanceOfType (value), Is.EqualTo (type.IsInstanceOfType (value)).And.False);
     }
-
-
+    
     [Test]
     public void IsSubclassOf_BaseType ()
     {
@@ -801,6 +805,67 @@ namespace Remotion.UnitTests.Reflection
     public void CanAscribeTo_Null ()
     {
       Assert.That (() => TypeAdapter.Create (typeof (object)).CanAscribeTo (null), Throws.TypeOf<ArgumentNullException> ());
+    }
+
+    [Test]
+    public void GetAscribedGenericArgumentsFor_NotGenericType ()
+    {
+      var type = typeof (ArrayList);
+      var arguments = TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IList)));
+      Assert.That (arguments, Has.All.TypeOf<TypeAdapter> ());
+      Assert.That (arguments.Cast<TypeAdapter> ().Select (ta => ta.Type), Is.Empty);
+    }
+
+    [Test]
+    public void GetAscribedGenericArgumentsFor_ClosedGenericType ()
+    {
+      var type = typeof (List<int>);
+      var arguments = TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IList<>)));
+      Assert.That (arguments, Has.All.TypeOf<TypeAdapter> ());
+      Assert.That (arguments.Cast<TypeAdapter> ().Select (ta => ta.Type), Is.EqualTo (new[] { typeof (int) }));
+    }
+
+    [Test]
+    public void GetAscribedGenericArgumentsFor_ClosedGenericType_ForNotGenericBaseType ()
+    {
+      var type = typeof (List<int>);
+      var arguments = TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IList)));
+      Assert.That (arguments, Has.All.TypeOf<TypeAdapter> ());
+      Assert.That (arguments.Cast<TypeAdapter> ().Select (ta => ta.Type), Is.Empty);
+    }
+
+    [Test]
+    public void GetAscribedGenericArgumentsFor_ClosedGenericType_ForOtherType ()
+    {
+      var type = typeof (List<int>);
+      Assert.That (
+          () => TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (string))),
+          Throws.TypeOf<ArgumentTypeException>());
+    }
+
+    [Test]
+    public void GetAscribedGenericArgumentsFor_Interface_WithMultipleImplementations ()
+    {
+      var type = typeof (IDoubleInheritingGenericInterface);
+      Assert.That (
+          () => TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IList<>))),
+          Throws.TypeOf<AmbiguousMatchException> ());
+    }
+
+    [Test]
+    public void GetAscribedGenericArgumentsFor_DifferentITypeInformationImplementation ()
+    {
+      var currentType = typeof (SystemException);
+      var otherType = MockRepository.GenerateStub<ITypeInformation> ();
+      Assert.That (
+          () => TypeAdapter.Create (currentType).GetAscribedGenericArgumentsFor (otherType),
+          Throws.TypeOf<ArgumentTypeException> ());
+    }
+
+    [Test]
+    public void GetAscribedGenericArgumentsFor_Null ()
+    {
+      Assert.That (() => TypeAdapter.Create (typeof (object)).GetAscribedGenericArgumentsFor (null), Throws.TypeOf<ArgumentNullException> ());
     }
 
     [Test]
