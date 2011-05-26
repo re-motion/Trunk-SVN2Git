@@ -240,8 +240,8 @@ namespace Remotion.Utilities
     /// <param name="type">The <see cref="Type"/> to check. Must not be <see langword="null" />.</param>
     /// <param name="ascribeeType">The <see cref="Type"/> to check the <paramref name="type"/> against. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// <see langword="true"/> if the <paramref name="type"/> is not the <paramref name="ascribeeType"/> or its instantiation, 
-    /// its subclass or the implementation of an interface in case the <paramref name="ascribeeType"/> is an interface..
+    /// <see langword="true"/> if the <paramref name="type"/> is the <paramref name="ascribeeType"/> or its instantiation, 
+    /// its subclass or the implementation of an interface in case the <paramref name="ascribeeType"/> is an interface.
     /// </returns>
     public static bool CanAscribe (Type type, Type ascribeeType)
     {
