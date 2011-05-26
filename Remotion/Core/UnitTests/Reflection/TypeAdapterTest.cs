@@ -729,5 +729,13 @@ namespace Remotion.UnitTests.Reflection
           TypeAdapter.Create (currentType).IsAssignableFrom (null),
           Is.EqualTo (currentType.IsAssignableFrom (null)).And.False);
     }
+
+    [Test]
+    public void IsSupportedByTypeConversionProvider ()
+    {
+      var typeConversionProvider = TypeConversionProvider.Create ();
+
+      Assert.That (typeConversionProvider.CanConvert (typeof (TypeAdapter), typeof (Type)), Is.True);
+    }
   }
 }

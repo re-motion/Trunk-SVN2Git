@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
@@ -25,6 +26,7 @@ namespace Remotion.Reflection
   /// <summary>
   /// Implements the <see cref="ITypeInformation"/> to wrap a <see cref="Type"/> instance.
   /// </summary>
+  [TypeConverter (typeof (TypeAdapterConverter))]
   public sealed class TypeAdapter : ITypeInformation
   {
     private readonly Type _type;
