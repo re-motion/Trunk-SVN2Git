@@ -333,12 +333,21 @@ namespace Remotion.Reflection
       return _type.IsAssignableFrom (otherTypeAsTypeAdapter.Type);
     }
 
+    public override bool Equals (object obj)
+    {
+      return ReferenceEquals (this, obj);
+    }
+
+    public override int GetHashCode ()
+    {
+      return base.GetHashCode ();
+    }
+
     public override string ToString ()
     {
       return _type.ToString ();
     }
-    //Equals
-    //GetHashcode
+    
 
     private ITypeInformation[] ConvertToTypeAdapters (Type[] types)
     {

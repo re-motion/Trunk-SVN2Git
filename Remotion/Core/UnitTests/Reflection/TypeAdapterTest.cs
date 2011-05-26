@@ -731,6 +731,33 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void Equals ()
+    {
+      var adapter = TypeAdapter.Create (typeof (ArrayList));
+      Assert.That (adapter.Equals (null), Is.False);
+      Assert.That (adapter.Equals ("test"), Is.False);
+      Assert.That (TypeAdapter.Create (typeof (List<int>)).Equals (TypeAdapter.Create (typeof (List<string>))), Is.False);
+      Assert.That (TypeAdapter.Create (typeof (List<>)).Equals (TypeAdapter.Create (typeof (List<int>))), Is.False);
+
+      Assert.That (adapter.Equals (TypeAdapter.Create (typeof (ArrayList))), Is.True);
+      Assert.That (TypeAdapter.Create (typeof (List<int>)).GetGenericTypeDefinition ().Equals (TypeAdapter.Create (typeof (List<>))), Is.True);
+    }
+
+    [Test]
+    public void GetHashcode ()
+    {
+      Assert.That (
+          TypeAdapter.Create (typeof (ArrayList)).GetHashCode (),
+          Is.EqualTo (TypeAdapter.Create (typeof (ArrayList)).GetHashCode ()));
+    }
+
+    [Test]
+    public void To_String ()
+    {
+      Assert.That (TypeAdapter.Create(typeof (ArrayList)).ToString (), Is.EqualTo ("System.Collections.ArrayList"));
+    }
+
+    [Test]
     public void IsSupportedByTypeConversionProvider ()
     {
       var typeConversionProvider = TypeConversionProvider.Create ();
