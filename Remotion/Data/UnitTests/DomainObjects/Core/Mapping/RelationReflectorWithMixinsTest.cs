@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty1"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (TargetClassForPersistentMixin)));
+      Assert.That (oppositeEndPointDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (TargetClassForPersistentMixin)));
     }
 
     [Test]
@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty4"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<TargetClassForPersistentMixin>)));
+      Assert.That (oppositeEndPointDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (ObjectList<TargetClassForPersistentMixin>)));
     }
 
     [Test]

@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           UnitTestDomainStorageProviderDefinition,
           typeof (Customer),
           false);
-      _customerOrdersEndPoint = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
+      _customerOrdersEndPoint = VirtualRelationEndPointDefinitionFactory.Create (
           _customerClassDefinition,
           "Orders",
           false,
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void InitializeWithPropertyType ()
     {
-      var endPoint = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition(
+      var endPoint = VirtualRelationEndPointDefinitionFactory.Create(
           _orderClassDefinition,
           "VirtualEndPoint",
           true,
@@ -63,13 +63,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof(OrderItem),
           null);
 
-      Assert.AreSame (typeof (OrderItem), endPoint.PropertyType);
+      Assert.AreSame (typeof (OrderItem), endPoint.PropertyInfo.PropertyType);
     }
 
     [Test]
     public void InitializeWithSortExpression ()
     {
-      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.Create (
           _customerClassDefinition,
           "Orders",
           false,
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetSortExpression_Null ()
     {
-      var endPoint = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
+      var endPoint = VirtualRelationEndPointDefinitionFactory.Create (
           _orderClassDefinition,
           "OrderItems",
           false,
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
         "SortExpression 'Product asc asc' cannot be parsed: Expected one or two parts (a property name and an optional identifier), found 3 parts instead.\r\n\r\n"+
-        "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\nProperty: OrderNumber")]
+        "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\nProperty: OrderItems")]
     public void GetSortExpression_Error ()
     {
       var endPoint = CreateFullVirtualEndPoint ("Product asc asc");
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private VirtualRelationEndPointDefinition CreateFullVirtualEndPoint (string sortExpressionString)
     {
-      var endPoint = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
+      var endPoint = VirtualRelationEndPointDefinitionFactory.Create (
           _orderClassDefinition,
           "OrderItems",
           false,

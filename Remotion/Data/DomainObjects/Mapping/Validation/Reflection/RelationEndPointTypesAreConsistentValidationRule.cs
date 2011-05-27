@@ -43,15 +43,20 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      if (relationEndPointDefinition.PropertyInfo != null)
+      if (!relationEndPointDefinition.IsAnonymous && !(relationEndPointDefinition is InvalidRelationEndPointDefinitionBase))
       {
         var relationAttribute = relationEndPointDefinition.PropertyInfo.GetCustomAttribute<BidirectionalRelationAttribute> (true);
-        var oppositePropertyInfo = relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyInfo;
-        if (oppositePropertyInfo != null && relationAttribute!=null)
+        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
+        if (oppositeEndPointDefinition != null
+            && !oppositeEndPointDefinition.IsAnonymous
+            && !(oppositeEndPointDefinition is InvalidRelationEndPointDefinitionBase)
+            && relationAttribute != null)
         {
+          var oppositePropertyInfo = oppositeEndPointDefinition.PropertyInfo;
           var classDefinition = relationEndPointDefinition.ClassDefinition;
           var oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (oppositePropertyInfo);
-          var declaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (relationEndPointDefinition.PropertyInfo, classDefinition);
+          var declaringDomainObjectTypeForProperty =
+              ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (relationEndPointDefinition.PropertyInfo, classDefinition);
           bool isPropertyDeclaredByThisClassDefinition = declaringDomainObjectTypeForProperty == classDefinition.ClassType;
           if (isPropertyDeclaredByThisClassDefinition)
           {
@@ -91,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           }
         }
       }
-      return MappingValidationResult.CreateValidResult ();
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

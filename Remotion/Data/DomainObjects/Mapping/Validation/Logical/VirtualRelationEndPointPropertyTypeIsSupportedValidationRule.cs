@@ -49,15 +49,15 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 
       var endPointDefinitionAsVirtualRelationEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
       if (endPointDefinitionAsVirtualRelationEndPointDefinition != null &&
-          endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType != null &&
-          !ReflectionUtility.IsRelationType (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType))
+          endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.PropertyType != null &&
+          !ReflectionUtility.IsRelationType (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.PropertyType))
       {
         return MappingValidationResult.CreateInvalidResultForProperty (
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
             "Virtual property '{0}' of class '{1}' is of type '{2}', but must be assignable to '{3}' or '{4}'.",
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name,
             endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.Name,
-            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.Name,
+            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.PropertyType.Name,
             typeof (DomainObject).Name,
             typeof (ObjectList<>).Name);
       }

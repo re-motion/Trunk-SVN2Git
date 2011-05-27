@@ -154,6 +154,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       + "BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch.InvalidRelationClass1\r\n"
       + "Property: RelationProperty1\r\n"
       + "----------\r\n"
+      + "Opposite relation property 'RelationProperty2' declared on type 'InvalidRelationClass1' does not "
+      + "define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
+      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
+      + "BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch.InvalidRelationClass2\r\n"
+      + "Property: RelationProperty1\r\n"
+      + "----------\r\n"
       + "Property 'RelationProperty2' on class 'InvalidRelationClass1' could not be found.\r\n\r\n"
       + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
       + "BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch.InvalidRelationClass1")]
@@ -177,8 +183,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //CheckForTypeNotFoundClassDefinitionValidationRule
     [Test]
     [ExpectedException(typeof(MappingException), ExpectedMessage =
-      "Property 'RelationProperty' on class 'ClassNotInMapping' could not be found.\r\n\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations.RelationPropertyTypeNotInMapping.ClassNotInMapping\r\n"
+      "Opposite relation property 'RelationProperty' declared on type 'ClassNotInMapping' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
+      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
+      + "RelationPropertyTypeNotInMapping.InvalidRelationClass1\r\n"
+      + "Property: RelationProperty\r\n"
+      + "----------\r\n"
+      + "Property 'RelationProperty' on class 'ClassNotInMapping' could not be found.\r\n\r\n"
+      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
+      + "RelationPropertyTypeNotInMapping.ClassNotInMapping\r\n"
       + "----------\r\n"
       + "The relation property 'RelationProperty' has return type 'ClassNotInMapping', which is not a part of the mapping. Relation properties must "
       + "not point to classes above the inheritance root.\r\n\r\n"

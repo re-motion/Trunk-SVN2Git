@@ -16,16 +16,14 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public static class VirtualRelationEndPointDefinitionFactory
   {
-    private static readonly IPropertyInformation s_dummyPropertyInfo = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderNumber"));
-
-    public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (
+    public static VirtualRelationEndPointDefinition Create (
         ClassDefinition classDefinition,
         string propertyName,
         bool isMandatory,
@@ -33,14 +31,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         Type propertyType,
         string sortExpressionString)
     {
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub.Stub (stub => stub.Name).Return (propertyName);
+      propertyInformationStub.Stub (stub => stub.PropertyType).Return (propertyType);
+      propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (classDefinition.ClassType));
+
       return new VirtualRelationEndPointDefinition (
-          classDefinition, propertyName, isMandatory, cardinality, propertyType, sortExpressionString, s_dummyPropertyInfo);
+          classDefinition, propertyName, isMandatory, cardinality, propertyType, sortExpressionString, propertyInformationStub);
     }
 
-    public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (
-        ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, Type propertyType)
+    public static VirtualRelationEndPointDefinition Create (
+        ClassDefinition classDefinition,
+        string propertyName,
+        bool isMandatory,
+        CardinalityType cardinality,
+        Type propertyType)
     {
-      return CreateVirtualRelationEndPointDefinition (classDefinition, propertyName, isMandatory, cardinality, propertyType, null);
+      return Create (classDefinition, propertyName, isMandatory, cardinality, propertyType, null);
     }
   }
 }

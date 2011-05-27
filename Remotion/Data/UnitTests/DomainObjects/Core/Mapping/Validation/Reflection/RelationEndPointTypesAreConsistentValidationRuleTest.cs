@@ -43,10 +43,77 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
-    public void EndPointWithoutPropertyInfo ()
+    public void LeftEndPointIsAnonymous ()
     {
       var endPoint1 = new AnonymousRelationEndPointDefinition (_baseClassDefinition1);
+      var endPoint2 = new VirtualRelationEndPointDefinition (
+          _baseClassDefinition2,
+          "RelationProperty1",
+          false,
+          CardinalityType.One,
+          typeof (BaseRelationEndPointPropertyClass1),
+          null,
+          PropertyInfoAdapter.Create (typeof (BaseRelationEndPointPropertyClass2).GetProperty ("RelationProperty1")));
+
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void RightEndPointIsAnonymous ()
+    {
+      var endPoint1 = new VirtualRelationEndPointDefinition (
+          _baseClassDefinition1,
+          "RelationProperty1",
+          false,
+          CardinalityType.One,
+          typeof (BaseRelationEndPointPropertyClass2),
+          null,
+          PropertyInfoAdapter.Create (typeof (BaseRelationEndPointPropertyClass1).GetProperty ("RelationProperty1")));
       var endPoint2 = new AnonymousRelationEndPointDefinition (_baseClassDefinition2);
+
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void RightEndPointWithoutPropertyType ()
+    {
+      var endPoint1 = new VirtualRelationEndPointDefinition (
+          _baseClassDefinition1,
+          "RelationProperty2",
+          false,
+          CardinalityType.One,
+          typeof (BaseRelationEndPointPropertyClass2),
+          null,
+          PropertyInfoAdapter.Create (typeof (BaseRelationEndPointPropertyClass1).GetProperty ("RelationProperty2")));
+      var endPoint2 = new PropertyNotFoundRelationEndPointDefinition (_baseClassDefinition2, "PropertyName");
+
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void LeftEndPointWithoutPropertyType ()
+    {
+      var endPoint1 = new PropertyNotFoundRelationEndPointDefinition (_baseClassDefinition2, "PropertyName");
+      var endPoint2 = new VirtualRelationEndPointDefinition (
+          _baseClassDefinition1,
+          "RelationProperty2",
+          false,
+          CardinalityType.One,
+          typeof (BaseRelationEndPointPropertyClass2),
+          null,
+          PropertyInfoAdapter.Create (typeof (BaseRelationEndPointPropertyClass1).GetProperty ("RelationProperty2")));
 
       var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
 

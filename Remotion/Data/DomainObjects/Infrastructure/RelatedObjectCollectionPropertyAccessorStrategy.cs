@@ -38,6 +38,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public Type GetPropertyType (PropertyDefinition propertyDefinition, IRelationEndPointDefinition relationEndPointDefinition)
     {
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       return RelatedObjectPropertyAccessorStrategy.Instance.GetPropertyType (propertyDefinition, relationEndPointDefinition);
     }
 

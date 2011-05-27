@@ -37,14 +37,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize ()
     {
-
-      Assert.IsNotNull (_definition as IRelationEndPointDefinition);
+      Assert.IsInstanceOf<IRelationEndPointDefinition> (_definition);
       Assert.AreSame (_clientDefinition, _definition.ClassDefinition);
       Assert.AreEqual (CardinalityType.Many, _definition.Cardinality);
       Assert.AreEqual (false, _definition.IsMandatory);
       Assert.AreEqual (true, _definition.IsVirtual);
       Assert.IsNull (_definition.PropertyName);
-      Assert.IsNull (_definition.PropertyType);
+      Assert.IsNull (_definition.PropertyInfo);
       Assert.IsTrue (_definition.IsAnonymous);
     }
 

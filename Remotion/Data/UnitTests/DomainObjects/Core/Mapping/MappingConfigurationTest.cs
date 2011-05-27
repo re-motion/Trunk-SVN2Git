@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
@@ -328,16 +327,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "The property type of an uni-directional relation property must be assignable to 'DomainObject'.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
-        + "Property: OrderNumber")]
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer\r\n"
+        + "Property: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders")]
     public void RelationDefinitionsAreValidated ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              + "TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:"
+              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer->"
+              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
 
       StubMockMappingLoaderWithValidation (new[] { classDefinition }, new[] { relationDefinition });
       _mockRepository.ReplayAll();
@@ -348,8 +348,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. Make class 'DerivedValidationDomainObjectClass' "
-        + "abstract or define a table for it or one of its base classes.\r\n\r\n"
+        "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. "
+        + "Make class 'DerivedValidationDomainObjectClass' abstract or define a table for it or one of its base classes.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass")]
     public void PersistenceModelIsValidated ()
     {

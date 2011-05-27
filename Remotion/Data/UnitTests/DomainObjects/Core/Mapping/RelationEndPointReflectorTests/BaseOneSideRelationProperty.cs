@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToOne",
           relationEndPointDefinition.PropertyName);
-      Assert.AreSame (typeof (ClassWithRealRelationEndPoints), relationEndPointDefinition.PropertyType);
+      Assert.AreSame (typeof (ClassWithRealRelationEndPoints), relationEndPointDefinition.PropertyInfo.PropertyType);
       Assert.AreEqual (CardinalityType.One, relationEndPointDefinition.Cardinality);
       Assert.IsNull (relationEndPointDefinition.RelationDefinition);
     }
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToMany",
           relationEndPointDefinition.PropertyName);
-      Assert.AreSame (typeof (ObjectList<ClassWithRealRelationEndPoints>), relationEndPointDefinition.PropertyType);
+      Assert.AreSame (typeof (ObjectList<ClassWithRealRelationEndPoints>), relationEndPointDefinition.PropertyInfo.PropertyType);
       Assert.AreEqual (CardinalityType.Many, relationEndPointDefinition.Cardinality);
       Assert.IsNull (relationEndPointDefinition.RelationDefinition);
       Assert.AreEqual ("NoAttribute", relationEndPointDefinition.SortExpressionText);

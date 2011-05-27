@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
             "Relation property '{0}' on class '{1}' is of type '{2}', but non-virtual relation properties must be of type '{3}'.",
             endPointDefinition.PropertyName,
             endPointDefinition.ClassDefinition.ClassType.Name,
-            endPointDefinition.PropertyType.Name,
+            endPointDefinition.PropertyInfo.PropertyType.Name,
             typeof(ObjectID).Name);
         }
       }

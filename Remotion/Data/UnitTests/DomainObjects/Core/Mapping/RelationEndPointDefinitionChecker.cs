@@ -65,16 +65,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "PropertyName of end point definitions (property name: '{0}') does not match.",
           expectedEndPointDefinition.PropertyName);
 
-      Assert.AreEqual (
-          expectedEndPointDefinition.PropertyType,
-          actualEndPointDefinition.PropertyType,
-          "PropertyType of end point definitions (property name: '{0}') does not match.",
-          expectedEndPointDefinition.PropertyName);
+      if (!expectedEndPointDefinition.IsAnonymous)
+      {
+        Assert.AreEqual (
+            expectedEndPointDefinition.PropertyInfo.PropertyType,
+            actualEndPointDefinition.PropertyInfo.PropertyType,
+            "PropertyType of end point definitions (property name: '{0}') does not match.",
+            expectedEndPointDefinition.PropertyName);
+      }
 
       Assert.AreEqual (
           expectedEndPointDefinition.IsMandatory,
           actualEndPointDefinition.IsMandatory,
           "IsMandatory of end point definitions (property name: '{0}') does not match. ",
+          expectedEndPointDefinition.PropertyName);
+
+      Assert.AreEqual (
+          expectedEndPointDefinition.IsAnonymous,
+          actualEndPointDefinition.IsAnonymous,
+          "IsAnonymous of end point definitions (property name: '{0}') does not match.",
           expectedEndPointDefinition.PropertyName);
 
       Assert.AreEqual (

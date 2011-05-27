@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void InitializeWithResolvedPropertyType ()
+    public void Initialize ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           typeof (Order), (ClassDefinition) null, Type.EmptyTypes);
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection { propertyDefinition });
       var endPoint = new RelationEndPointDefinition (propertyDefinition, true);
 
-      Assert.AreSame (typeof (ObjectID), endPoint.PropertyType);
+      Assert.AreSame (propertyDefinition.PropertyInfo, endPoint.PropertyInfo);
     }
 
     [Test]

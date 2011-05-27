@@ -65,6 +65,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
+    public void LeftEndPointIsAnonymous ()
+    {
+      var endPointDefinition1 = new AnonymousRelationEndPointDefinition(_classDefinition1);
+      var endPointDefinition2 = new VirtualRelationEndPointDefinition (
+          _classDefinition2,
+          "RelationProperty2",
+          false,
+          CardinalityType.One,
+          typeof (string),
+          null,
+          PropertyInfoAdapter.Create (typeof (RelationEndPointPropertyClass2).GetProperty ("RelationProperty2")));
+
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPointDefinition1, endPointDefinition2);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void RightEndPointIsAnonymous ()
+    {
+      var endPointDefinition1 = new VirtualRelationEndPointDefinition (
+          _classDefinition1,
+          "RelationProperty2",
+          false,
+          CardinalityType.One,
+          typeof (string),
+          null,
+          PropertyInfoAdapter.Create (typeof (RelationEndPointPropertyClass1).GetProperty ("RelationProperty2")));
+      var endPointDefinition2 = new AnonymousRelationEndPointDefinition (_classDefinition2);
+
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPointDefinition1, endPointDefinition2);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
     public void OppositeRelationPropertyHasNoBidirectionalRelationAttributeDefined ()
     {
       var endPointDefinition1 = new VirtualRelationEndPointDefinition (

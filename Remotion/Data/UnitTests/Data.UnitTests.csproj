@@ -284,6 +284,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadedCollectionRelationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassIDProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainModelConstraintProviderTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\InvalidPropertyInformationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />

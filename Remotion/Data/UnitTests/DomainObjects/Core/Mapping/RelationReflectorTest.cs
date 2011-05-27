@@ -29,10 +29,9 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationRefl
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
-using Rhino.Mocks;
 using Class1 =
-    Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot.
-        Class1;
+    Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.
+    RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot.Class1;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -162,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToOne"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ClassWithRealRelationEndPoints)));
+      Assert.That (oppositeEndPointDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (ClassWithRealRelationEndPoints)));
     }
 
     [Test]
@@ -184,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToOne"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ClassWithRealRelationEndPoints)));
+      Assert.That (oppositeEndPointDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (ClassWithRealRelationEndPoints)));
     }
 
     [Test]
@@ -249,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToMany"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithRealRelationEndPoints>)));
+      Assert.That (oppositeEndPointDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithRealRelationEndPoints>)));
     }
 
     [Test]
@@ -270,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToMany"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithRealRelationEndPoints>)));
+      Assert.That (oppositeEndPointDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithRealRelationEndPoints>)));
     }
 
     [Test]
@@ -333,7 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           oppositeEndPointDefinition.PropertyName,
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBothEndPointsOnSameClass.Children"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithBothEndPointsOnSameClass>)));
+      Assert.That (oppositeEndPointDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithBothEndPointsOnSameClass>)));
     }
 
     [Test]
@@ -361,8 +360,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (
           result.ID,
           Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide:Remotion.Data.UnitTests."
-              + "DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide.InvalidOppositePropertyNameLeftSide"));
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide:"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide."
+              + "InvalidOppositePropertyNameLeftSide->"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationRightSide.Invalid"));
     }
 
     [Test]

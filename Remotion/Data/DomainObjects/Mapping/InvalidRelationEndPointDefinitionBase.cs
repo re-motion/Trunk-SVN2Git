@@ -4,12 +4,16 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
+  /// <summary>
+  /// Holds information about a relation end point that could not be resolved.
+  /// </summary>
   public class InvalidRelationEndPointDefinitionBase : IRelationEndPointDefinition
   {
     private readonly ClassDefinition _classDefinition;
     private readonly string _propertyName;
     private readonly Type _propertyType;
     private RelationDefinition _relationDefinition;
+    private readonly IPropertyInformation _propertyInformation;
 
     public InvalidRelationEndPointDefinitionBase (ClassDefinition classDefinition, string propertyName, Type propertyType)
     {
@@ -19,6 +23,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _classDefinition = classDefinition;
       _propertyName = propertyName;
       _propertyType = propertyType;
+      _propertyInformation = new InvalidPropertyInformation (TypeAdapter.Create (_classDefinition.ClassType), propertyName, propertyType);
     }
 
     public ClassDefinition ClassDefinition
@@ -43,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public IPropertyInformation PropertyInfo
     {
-      get { return null; }
+      get { return _propertyInformation; }
     }
 
     public bool IsMandatory
@@ -68,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public bool CorrespondsTo (string classID, string propertyName)
     {
-      throw new NotImplementedException();
+      return false;
     }
 
     public void SetRelationDefinition (RelationDefinition relationDefinition)

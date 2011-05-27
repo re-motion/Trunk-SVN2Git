@@ -21,8 +21,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
-using Remotion.Reflection;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
@@ -58,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyTypIsObjectList()
     {
       var propertyType = typeof (ObjectList<BaseOfBaseValidationDomainObjectClass>);
-      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
-          _classDefinition, "Property", false, CardinalityType.Many, propertyType, null);
+      var endPointDefinition = 
+          VirtualRelationEndPointDefinitionFactory.Create (_classDefinition, "Property", false, CardinalityType.Many, propertyType);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -71,8 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyTypeIsDerivedFromObjectList ()
     {
       var propertyType = typeof (DerivedObjectList<BaseOfBaseValidationDomainObjectClass>);
-      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
-          _classDefinition, "Property", false, CardinalityType.Many, propertyType, null);
+      var endPointDefinition = 
+          VirtualRelationEndPointDefinitionFactory.Create (_classDefinition, "Property", false, CardinalityType.Many, propertyType);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -84,8 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyTypeIsDomainObject ()
     {
       var propertyType = typeof (DomainObject);
-      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
-          _classDefinition, "Property", false, CardinalityType.One, propertyType, null);
+      var endPointDefinition = 
+          VirtualRelationEndPointDefinitionFactory.Create (_classDefinition, "Property", false, CardinalityType.One, propertyType);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -97,8 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyTypeIsSubclassOfDomainObject ()
     {
       var propertyType = typeof (BaseOfBaseValidationDomainObjectClass);
-      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
-          _classDefinition, "Property", false, CardinalityType.One, propertyType, null);
+      var endPointDefinition = 
+          VirtualRelationEndPointDefinitionFactory.Create (_classDefinition, "Property", false, CardinalityType.One, propertyType);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -109,8 +107,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void LeftEndpointPropertyType_NotAssignableToObjectListOrDomainObject ()
     {
-      var leftEndPointDefinition = CreateVirtualRelationEndPointDefinition ("Left", CardinalityType.One, typeof (string));
-      var rightEndPointDefinition = CreateVirtualRelationEndPointDefinition ("Right", CardinalityType.One, typeof (DomainObject));
+      var leftEndPointDefinition = 
+          VirtualRelationEndPointDefinitionFactory.Create (_classDefinition, "Left", false, CardinalityType.One, typeof (string));
+      var rightEndPointDefinition = 
+          VirtualRelationEndPointDefinitionFactory.Create (_classDefinition, "Right", false, CardinalityType.One, typeof (DomainObject));
       var relationDefinition = new RelationDefinition ("Test", leftEndPointDefinition, rightEndPointDefinition);
       
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -125,8 +125,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void RightEndpointPropertyType_NotAssignableToObjectListOrDomainObject ()
     {
-      var leftEndPointDefinition = CreateVirtualRelationEndPointDefinition ("Left", CardinalityType.Many, typeof (ObjectList<>));
-      var rightEndPointDefinition = CreateVirtualRelationEndPointDefinition ("Right", CardinalityType.One, typeof (string));
+      var leftEndPointDefinition = 
+          VirtualRelationEndPointDefinitionFactory.Create (_classDefinition, "Left", false, CardinalityType.Many, typeof (ObjectList<>));
+      var rightEndPointDefinition = 
+          VirtualRelationEndPointDefinitionFactory.Create (_classDefinition, "Right", false, CardinalityType.One, typeof (string));
       var relationDefinition = new RelationDefinition ("Test", leftEndPointDefinition, rightEndPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -136,28 +138,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
           + "Property: Right";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
-    }
-
-    private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (string propertyName, CardinalityType cardinality, Type propertyType)
-    {
-      return new VirtualRelationEndPointDefinition (
-          _classDefinition,
-          "Definition." + propertyName,
-          false,
-          cardinality,
-          propertyType,
-          null,
-          CreatePropertyInformationStub (propertyName));
-    }
-
-    private IPropertyInformation CreatePropertyInformationStub (string name)
-    {
-      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
-      propertyInformationStub.Stub (stub => stub.Name).Return (name);
-      propertyInformationStub.Stub (stub => stub.PropertyType).Throw (new NotSupportedException());
-      propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (typeof (Order)));
-
-      return propertyInformationStub;
     }
   }
 }

@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       if (endPointDefinitionAsVirtualRelationEndPointDefinition != null)
       {
         if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.One &&
-            !ReflectionUtility.IsDomainObject (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType))
+            !ReflectionUtility.IsDomainObject (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.PropertyType))
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         }
 
         if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.Many &&
-           !ReflectionUtility.IsObjectList (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType))
+           !ReflectionUtility.IsObjectList (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.PropertyType))
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,

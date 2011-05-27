@@ -58,9 +58,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _endPointProvider = endPointProvider;
       _dataKeeperFactory = dataKeeperFactory;
 
-      var collectionType = id.Definition.PropertyType;
-      var dataStrategy = CreateDelegatingCollectionData ();
-      _collection = DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, dataStrategy);
+      _collection = CreateCollection(CreateDelegatingCollectionData ());
 
       _originalCollection = _collection;
 
@@ -118,7 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
-      return DomainObjectCollectionFactory.Instance.CreateCollection (Definition.PropertyType, _loadState.GetOriginalData (this));
+      return CreateCollection ( _loadState.GetOriginalData (this));
     }
 
     public override bool IsDataComplete
@@ -334,6 +332,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private void SetIncompleteLoadState ()
     {
       _loadState = new IncompleteCollectionEndPointLoadState (_lazyLoader, _dataKeeperFactory);
+    }
+
+    private DomainObjectCollection CreateCollection (IDomainObjectCollectionData dataStrategy)
+    {
+      return DomainObjectCollectionFactory.Instance.CreateCollection (Definition.PropertyInfo.PropertyType, dataStrategy);
     }
 
     #region Serialization

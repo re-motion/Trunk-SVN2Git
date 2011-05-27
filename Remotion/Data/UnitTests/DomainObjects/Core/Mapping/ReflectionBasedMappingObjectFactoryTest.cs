@@ -147,8 +147,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (
           result.First().ID,
           Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core."
-              + "Mapping.TestDomain.Integration.OrderItem.Order"));
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
+              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"));
     }
 
     [Test]

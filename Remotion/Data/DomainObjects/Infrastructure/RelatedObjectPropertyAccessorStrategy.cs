@@ -32,10 +32,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public Type GetPropertyType (PropertyDefinition propertyDefinition, IRelationEndPointDefinition relationEndPointDefinition)
     {
-      if (relationEndPointDefinition.PropertyType.Equals (typeof (ObjectID)))
-        return relationEndPointDefinition.GetOppositeClassDefinition ().ClassType;
-      else
-        return relationEndPointDefinition.PropertyType;      
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      Assertion.IsFalse (relationEndPointDefinition.IsAnonymous);
+
+      return relationEndPointDefinition.PropertyInfo.PropertyType;
     }
 
     public RelationEndPointID CreateRelationEndPointID (PropertyAccessor propertyAccessor)

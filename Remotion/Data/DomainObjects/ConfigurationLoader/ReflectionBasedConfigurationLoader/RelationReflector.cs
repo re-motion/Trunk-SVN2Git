@@ -46,18 +46,17 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       bool isFirstEndPointReal = !first.IsVirtual && !first.IsAnonymous;
       var endPoints = isFirstEndPointReal ? new { Left = first, Right = second } : new { Left = second, Right = first };
-      
-      var nameGivingEndPoint = endPoints.Left.PropertyInfo != null ? endPoints.Left : endPoints.Right;
-      var leftPropertyName = NameResolver.GetPropertyName (nameGivingEndPoint.PropertyInfo);
 
-      if (endPoints.Right.PropertyInfo == null)
+      var leftPropertyName = NameResolver.GetPropertyName (endPoints.Left.PropertyInfo);
+
+      if (endPoints.Right.IsAnonymous)
       {
-        return string.Format ("{0}:{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, leftPropertyName);
+        return string.Format ("{0}:{1}", endPoints.Left.ClassDefinition.ClassType.FullName, leftPropertyName);
       }
       else
       {
         var rightPropertyName = NameResolver.GetPropertyName (endPoints.Right.PropertyInfo);
-        return string.Format ("{0}:{1}->{2}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, leftPropertyName, rightPropertyName);
+        return string.Format ("{0}:{1}->{2}", endPoints.Left.ClassDefinition.ClassType.FullName, leftPropertyName, rightPropertyName);
       }
     }
 
