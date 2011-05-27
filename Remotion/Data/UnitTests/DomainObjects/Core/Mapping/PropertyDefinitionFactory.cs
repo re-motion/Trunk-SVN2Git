@@ -88,18 +88,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         string propertyName,
         string columnName,
         Type propertyType,
-        int maxLength)
-    {
-      return Create (
-          classDefinition, declaringClassType, propertyName, columnName, propertyType, IsNullable (propertyType), maxLength, StorageClass.Persistent);
-    }
-
-    public static PropertyDefinition Create (
-        ClassDefinition classDefinition,
-        Type declaringClassType,
-        string propertyName,
-        string columnName,
-        Type propertyType,
         bool isNullable,
         int maxLength)
     {
@@ -230,6 +218,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           storageClass,
           propertyInfo,
           GetFakeStorageProperty (propertyInfo.Name));
+    }
+
+    public static PropertyDefinition Create (ClassDefinition classDefinition, StorageClass storageClass, IPropertyInformation propertyInfo, bool isObjectID, int? maxLength)
+    {
+      return new PropertyDefinition (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, isObjectID, false, maxLength, storageClass);
     }
 
     public static PropertyDefinition Create (ClassDefinition classDefinition, string propertyName, Type propertyType, bool isObjectID, bool isNullable, int? maxLength, StorageClass storageClass, PropertyInfo propertyInfo, IStoragePropertyDefinition columnDefinition)

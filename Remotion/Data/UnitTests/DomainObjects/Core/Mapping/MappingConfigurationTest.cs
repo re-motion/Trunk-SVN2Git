@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           type.Name, type.Name, TestDomainStorageProviderDefinition, type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
-      var propertyDefinition = new TestablePropertyDefinition (classDefinition, PropertyInfoAdapter.Create (propertyInfo), false, 20, StorageClass.None);
+      var propertyDefinition = PropertyDefinitionFactory.Create(classDefinition, StorageClass.None, PropertyInfoAdapter.Create (propertyInfo), false, 20);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);

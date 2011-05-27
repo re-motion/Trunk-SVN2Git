@@ -215,15 +215,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetToString ()
     {
-      PropertyDefinition propertyDefinition = new TestablePropertyDefinition (_classDefinition, "ThePropertyName", null, StorageClass.None);
+      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo(_classDefinition, "ThePropertyName", "ColumnName");
 
-      Assert.That (propertyDefinition.ToString (), Is.EqualTo (typeof (TestablePropertyDefinition).FullName + ": ThePropertyName"));
+      Assert.That (propertyDefinition.ToString (), Is.EqualTo (typeof (PropertyDefinition).FullName + ": ThePropertyName"));
     }
 
     [Test]
     public void SetStorageProperty ()
     {
-      PropertyDefinition propertyDefinition = new TestablePropertyDefinition (_classDefinition, "ThePropertyName", null, StorageClass.Persistent);
+      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo(_classDefinition, "ThePropertyName", null);
       var columnDefinition = new SimpleColumnDefinition ("Test", typeof (string), "varchar", true, false);
 
       propertyDefinition.SetStorageProperty (columnDefinition);
