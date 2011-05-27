@@ -52,16 +52,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
-      if (propertyType.IsValueType && Nullable.GetUnderlyingType (propertyType) == null && isNullable)
-        throw CreateArgumentException (propertyName, "Properties cannot be nullable when they have a non-nullable value type.");
-
-      //TODO: change byte[] to all arrays. Will have repurcussions in several places -> Search for byte[]
-      if (propertyType != typeof (string) && propertyType != typeof (byte[]) && maxLength.HasValue)
-      {
-        throw CreateArgumentException (
-            propertyName, "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type '{0}'.", propertyType);
-      }
-
       _classDefinition = classDefinition;
       _propertyInfo = propertyInfo;
       _propertyType = propertyType;
@@ -156,11 +146,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override string ToString ()
     {
       return GetType ().FullName + ": " + _propertyName;
-    }
-
-    private ArgumentException CreateArgumentException (string propertyName, string message, params object[] args)
-    {
-      return new ArgumentException (string.Format (message, args) + "\r\n  Property: " + propertyName);
     }
   }
 }

@@ -81,14 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Properties cannot be nullable when they have a non-nullable value type.\r\n  Property: Test")]
-    public void Initialize_WithNonNullableValueType_IsNullableTrue ()
-    {
-      new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, true, null, StorageClass.Persistent);
-    }
-
-    [Test]
     public void Initialize_WithNullableValueType_IsNullableFalse ()
     {
       var actual = new PropertyDefinition (
@@ -135,14 +127,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), false, true, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type 'System.Int32'.\r\n  Property: Test")]
-    public void Initialize_WithOtherType_MaxLengthSet ()
-    {
-      new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, false, 50, StorageClass.Persistent);
     }
 
     [Test]
