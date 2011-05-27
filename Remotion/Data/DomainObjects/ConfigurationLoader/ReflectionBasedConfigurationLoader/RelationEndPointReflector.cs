@@ -83,11 +83,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new VirtualRelationEndPointDefinition (
           classDefinition,
           GetPropertyName(),
-          !_domainModelConstraintProvider.IsNullable (PropertyInfo),
+          IsMandatory(),
           GetCardinality(),
           PropertyInfo.PropertyType,
           GetSortExpression(),
           PropertyInfo);
+    }
+
+    private bool IsMandatory ()
+    {
+      return !_domainModelConstraintProvider.IsNullable (PropertyInfo);
     }
 
     private CardinalityType GetCardinality ()
@@ -95,7 +100,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return ReflectionUtility.IsObjectList (PropertyInfo.PropertyType) ? CardinalityType.Many : CardinalityType.One;
     }
 
-    protected string GetSortExpression ()
+    private string GetSortExpression ()
     {
       if (!IsBidirectionalRelation)
         return null;
