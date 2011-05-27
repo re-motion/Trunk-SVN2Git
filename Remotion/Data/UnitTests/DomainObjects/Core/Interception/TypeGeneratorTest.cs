@@ -718,7 +718,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
               classDefinition,
               MockRepository.GenerateStub<IPropertyInformation>(),
               "CustomProperty",
-              typeof (int),
+              typeof (int), 
+              false,
               false,
               null,
               StorageClass.Transaction));

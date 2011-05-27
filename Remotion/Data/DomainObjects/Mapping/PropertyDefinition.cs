@@ -35,12 +35,14 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly IPropertyInformation _propertyInfo;
     private readonly Type _propertyType;
     private readonly bool _isNullable;
+    private bool _isObjectID;
 
     public PropertyDefinition (
-        ClassDefinition classDefinition,
-        IPropertyInformation propertyInfo,
-        string propertyName,
-        Type propertyType,
+        ClassDefinition classDefinition, 
+        IPropertyInformation propertyInfo, 
+        string propertyName, 
+        Type propertyType, 
+        bool isObjectID,
         bool isNullable,
         int? maxLength,
         StorageClass storageClass)
@@ -64,6 +66,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyInfo = propertyInfo;
       _propertyType = propertyType;
       _propertyName = propertyName;
+      _isObjectID = isObjectID;
       _isNullable = isNullable;
       _maxLength = maxLength;
       _storageClass = storageClass;
@@ -130,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public bool IsObjectID
     {
-      get { return _propertyType == typeof (ObjectID); }
+      get { return _isObjectID; }
     }
 
     public int? MaxLength

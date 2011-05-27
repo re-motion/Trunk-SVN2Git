@@ -132,8 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoin_LeftSideIsReal_RightSideIsVirtual ()
     {
-      var propertyDefinition = CreatePropertyDefinition (
-          _classDefinition, "Customer", "Customer", typeof (ObjectID), true, null, StorageClass.Persistent);
+      var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var leftEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
@@ -163,8 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoin_LeftSideIsVirtual_RightSideIsReal ()
     {
-      var propertyDefinition = CreatePropertyDefinition (
-          _classDefinition, "Customer", "Customer", typeof (ObjectID), true, null, StorageClass.Persistent);
+      var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var leftEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
@@ -179,24 +177,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (((SqlColumnExpression) result.RightKey).IsPrimaryKey, Is.False);
     }
 
-    private PropertyDefinition CreatePropertyDefinition (
-        ClassDefinition classDefinition,
-        string propertyName,
-        string columnName,
-        Type propertyType,
-        bool isNullable,
-        int? maxLength,
-        StorageClass storageClass)
+    private PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, string propertyName, string columnName)
     {
       var propertyDefinition = new PropertyDefinition (
           classDefinition,
           MockRepository.GenerateStub<IPropertyInformation>(),
           propertyName,
-          propertyType,
-          isNullable,
-          maxLength,
-          storageClass);
-      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable, false));
+          typeof (ObjectID),
+          true,
+          true,
+          null,
+          StorageClass.Persistent);
+      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, typeof (ObjectID), "dummyStorageType", true, false));
       return propertyDefinition;
     }
   }

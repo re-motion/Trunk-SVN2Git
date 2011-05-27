@@ -42,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyInfo1 = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderNumber"));
       var propertyInfo2 = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("DeliveryDate"));
-      var fakePropertyDefinition1 = new TestablePropertyDefinition (classDefinition, propertyInfo1, null, StorageClass.Persistent);
-      var fakePropertyDefinition2 = new TestablePropertyDefinition (classDefinition, propertyInfo2, null, StorageClass.Persistent);
+      var fakePropertyDefinition1 = new TestablePropertyDefinition (classDefinition, propertyInfo1, false, null, StorageClass.Persistent);
+      var fakePropertyDefinition2 = new TestablePropertyDefinition (classDefinition, propertyInfo2, false, null, StorageClass.Persistent);
       
       _mappingObjectFactoryMock
           .Expect (mock => mock.CreatePropertyDefinition (classDefinition, propertyInfo1))

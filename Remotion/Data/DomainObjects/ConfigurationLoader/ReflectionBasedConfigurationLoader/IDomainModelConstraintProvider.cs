@@ -20,7 +20,8 @@ using Remotion.Reflection;
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>
-  /// <see cref="IDomainModelConstraintProvider"/> defines the API for all implementaions that check for <see cref="IPropertyInformation"/> constraints.
+  /// <see cref="IDomainModelConstraintProvider"/> defines the API for all implementaions that provide additonal constraints 
+  /// that cannot be expressed by the property's <see cref="IPropertyInformation.PropertyType"/> alone.
   /// </summary>
   public interface IDomainModelConstraintProvider
   {

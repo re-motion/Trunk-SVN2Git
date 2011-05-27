@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 
@@ -24,17 +23,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class TestablePropertyDefinition : PropertyDefinition
   {
     public TestablePropertyDefinition (ClassDefinition classDefinition, string propertyName, int? maxLength, StorageClass storageClass)
-        : base (classDefinition, PropertyInfoAdapter.Create(typeof(string).GetProperty("Length")), propertyName, typeof(object), false, maxLength, storageClass)
-    {
-    }
-    
-    public TestablePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo, int? maxLength, StorageClass storageClass)
-      : base (classDefinition, PropertyInfoAdapter.Create(propertyInfo), propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
+        : base (classDefinition, PropertyInfoAdapter.Create(typeof(string).GetProperty("Length")), propertyName, typeof(object), false, false, maxLength, storageClass)
     {
     }
 
-    public TestablePropertyDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo, int? maxLength, StorageClass storageClass)
-      : base (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
+    public TestablePropertyDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo, bool isObjectID, int? maxLength, StorageClass storageClass)
+      : base (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, isObjectID, false, maxLength, storageClass)
     {
     }
   }

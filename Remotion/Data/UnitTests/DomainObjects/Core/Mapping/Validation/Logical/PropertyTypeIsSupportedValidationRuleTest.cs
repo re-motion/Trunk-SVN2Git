@@ -45,7 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           _classDefinition,
           PropertyInfoAdapter.Create(typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent")),
           "PropertyWithStorageClassPersistent",
-          typeof (string),
+          typeof (string), 
+          false,
           true,
           20,
           StorageClass.Persistent);
@@ -66,6 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           PropertyInfoAdapter.Create(typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithTypeObjectWithStorageClassPersistent")),
           "PropertyWithTypeObjectWithStorageClassPersistent",
           typeof (object),
+          false,
           true,
           null,
           StorageClass.Persistent);
@@ -89,7 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           _classDefinition,
           PropertyInfoAdapter.Create(typeof (DerivedValidationDomainObjectClass).GetProperty ("RelationPropertyWithStorageClassPersistent")),
           "RelationPropertyWithStorageClassPersistent",
-          typeof (ObjectID),
+          typeof (ObjectID), 
+          true,
           true,
           null,
           StorageClass.Persistent);

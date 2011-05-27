@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
-using System.Linq;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyWithoutStorageClassAttribute ()
     {
       var propertyInfo = _type.GetProperty ("Property");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, PropertyInfoAdapter.Create (propertyInfo), false, 20, StorageClass.None);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyWithStorageClassPersistent ()
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassPersistent");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, PropertyInfoAdapter.Create (propertyInfo), false, 20, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyWithStorageClassTransaction ()
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassTransaction");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Transaction);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, PropertyInfoAdapter.Create (propertyInfo), false, 20, StorageClass.Transaction);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyWithStorageClassNone ()
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassNone");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, PropertyInfoAdapter.Create (propertyInfo), false, 20, StorageClass.None);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 

@@ -21,7 +21,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>
-  /// The <see cref="DomainModelConstraintProvider"/> provides methods to check for <see cref="IPropertyInformation"/> constraints.
+  /// The <see cref="DomainModelConstraintProvider"/> is the default implementation of <see cref="IDomainModelConstraintProvider"/>.
+  /// It uses the mapping attributes to resolve the constraints.
   /// </summary>
   public class DomainModelConstraintProvider : IDomainModelConstraintProvider
   {

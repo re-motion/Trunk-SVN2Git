@@ -1020,7 +1020,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       PropertyDefinition propertyDefinition =
           PropertyDefinitionFactory.Create (
               employee.InternalDataContainer.ClassDefinition,
-              typeof (Employee), "Name",
+              typeof (Employee), 
+              "Name",
               "Name",
               typeof (string),
               true,

@@ -108,7 +108,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
           "Test1",
-          typeof (string),
+          typeof (string), 
+          false,
           true,
           null,
           StorageClass.Persistent,
@@ -117,7 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
           "Test2",
-          typeof (string),
+          typeof (string), 
+          false,
           true,
           null,
           StorageClass.Persistent,
@@ -155,7 +157,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
           "Test1",
-          typeof (string),
+          typeof (string), 
+          false,
           true,
           null,
           StorageClass.Persistent,
