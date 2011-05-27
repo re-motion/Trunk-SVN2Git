@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!propertyDefinition.IsObjectID)
         return new TypeNotObjectIDRelationEndPointDefinition (classDefinition, propertyName, propertyDefinition.PropertyType);
       else
-        return new RelationEndPointDefinition (propertyDefinition, !_domainModelConstraintProvider.IsNullable (PropertyInfo));
+        return new RelationEndPointDefinition (propertyDefinition, IsMandatory ());
     }
 
     private IRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (ClassDefinition classDefinition)
