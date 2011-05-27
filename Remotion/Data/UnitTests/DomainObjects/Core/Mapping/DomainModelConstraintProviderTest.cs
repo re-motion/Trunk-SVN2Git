@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -26,19 +27,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class DomainModelConstraintProviderTest
   {
     private DomainModelConstraintProvider _domainModelConstraintProvider;
+    private IPropertyInformation _propertyInformationStub;
+    private INullablePropertyAttribute _nullablePropertyAttributeStub;
+    private ILengthConstrainedPropertyAttribute _lengthConstraintPropertyAttributeStub;
 
     [SetUp]
     public void SetUp ()
     {
       _domainModelConstraintProvider = new DomainModelConstraintProvider();
+      _propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      _nullablePropertyAttributeStub = MockRepository.GenerateStub<INullablePropertyAttribute>();
+      _lengthConstraintPropertyAttributeStub = MockRepository.GenerateStub<ILengthConstrainedPropertyAttribute>();
     }
 
     [Test]
     public void IsNullable_NoAttribute ()
     {
-      var result =
-          _domainModelConstraintProvider.IsNullable (
-              PropertyInfoAdapter.Create (typeof (ClassWithStringProperties).GetProperty ("NoAttribute")));
+      _propertyInformationStub.Stub (stub => stub.GetCustomAttribute<INullablePropertyAttribute> (true)).Return (null);
+
+      var result = _domainModelConstraintProvider.IsNullable (_propertyInformationStub);
 
       Assert.That (result, Is.True);
     }
@@ -46,9 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsNullable_NullableFromAttribute ()
     {
-      var result =
-          _domainModelConstraintProvider.IsNullable (
-              PropertyInfoAdapter.Create (typeof (ClassWithStringProperties).GetProperty ("NullableFromAttribute")));
+      _nullablePropertyAttributeStub.Stub (stub => stub.IsNullable).Return (true);
+      _propertyInformationStub.Stub (stub => stub.GetCustomAttribute<INullablePropertyAttribute> (true)).Return (_nullablePropertyAttributeStub);
+
+      var result = _domainModelConstraintProvider.IsNullable (_propertyInformationStub);
 
       Assert.That (result, Is.True);
     }
@@ -56,9 +64,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsNullable_NotNullableFromAttribute ()
     {
-      var result =
-          _domainModelConstraintProvider.IsNullable (
-              PropertyInfoAdapter.Create (typeof (ClassWithStringProperties).GetProperty ("NotNullable")));
+      _nullablePropertyAttributeStub.Stub (stub => stub.IsNullable).Return (false);
+      _propertyInformationStub.Stub (stub => stub.GetCustomAttribute<INullablePropertyAttribute> (true)).Return (_nullablePropertyAttributeStub);
+
+      var result = _domainModelConstraintProvider.IsNullable (_propertyInformationStub);
 
       Assert.That (result, Is.False);
     }
@@ -66,9 +75,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMaxLength_NoAttribute ()
     {
-      var result =
-          _domainModelConstraintProvider.GetMaxLength (
-              PropertyInfoAdapter.Create (typeof (ClassWithStringProperties).GetProperty ("NoAttribute")));
+      _propertyInformationStub.Stub (stub => stub.GetCustomAttribute<ILengthConstrainedPropertyAttribute> (true)).Return (null);
+
+      var result = _domainModelConstraintProvider.GetMaxLength (_propertyInformationStub);
 
       Assert.That (result, Is.Null);
     }
@@ -76,9 +85,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMaxLength_MaxLengthFromAttribute ()
     {
-      var result =
-          _domainModelConstraintProvider.GetMaxLength (
-              PropertyInfoAdapter.Create (typeof (ClassWithStringProperties).GetProperty ("MaximumLength")));
+      _lengthConstraintPropertyAttributeStub.Stub (stub => stub.MaximumLength).Return (100);
+      _propertyInformationStub.Stub (stub => stub.GetCustomAttribute<ILengthConstrainedPropertyAttribute> (true)).Return (_lengthConstraintPropertyAttributeStub);
+
+      var result = _domainModelConstraintProvider.GetMaxLength (_propertyInformationStub);
 
       Assert.That (result, Is.EqualTo(100));
     }
