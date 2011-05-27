@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects
@@ -35,8 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     // member fields
 
-    private IQueryManager _queryManager;
-
     // construction and disposing
 
     public ClientTransactionMock () : this (new RootClientTransactionComponentFactory())
@@ -45,7 +42,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     protected ClientTransactionMock (IClientTransactionComponentFactory componentFactory) : base (componentFactory)
     {
-      _queryManager = base.QueryManager;
     }
 
     public IClientTransactionListener TransactionEventSink
@@ -93,16 +89,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public new void AddListener (IClientTransactionListener listener)
     {
       base.AddListener (listener);
-    }
-
-    public override IQueryManager QueryManager
-    {
-      get { return _queryManager; }
-    }
-
-    public void SetQueryManager (IQueryManager queryManager)
-    {
-      _queryManager = queryManager;
     }
 
     public new void Delete (DomainObject domainObject)

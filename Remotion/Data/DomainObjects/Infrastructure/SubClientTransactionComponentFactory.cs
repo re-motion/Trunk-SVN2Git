@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -137,6 +138,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       };
       
       return new DataManager (clientTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
+    }
+
+    public IQueryManager CreateQueryManager (
+        ClientTransaction clientTransaction,
+        IPersistenceStrategy persistenceStrategy,
+        IObjectLoader objectLoader,
+        IDataManager dataManager)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
+      return new QueryManager (persistenceStrategy, objectLoader, clientTransaction, clientTransaction.TransactionEventSink, dataManager);
     }
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

@@ -15,8 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -61,9 +67,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       IQuery query = _cache.GetQuery<Order> ("id", orders => from o in orders where o.OrderNumber > 1 select o);
 
-      var clientTransactionStub = new ClientTransactionMock ();
       var queryManagerMock = MockRepository.GenerateMock<IQueryManager> ();
-      clientTransactionStub.SetQueryManager (queryManagerMock);
+      var clientTransactionStub = ClientTransactionObjectMother.Create (
+          null,
+          new Dictionary<Enum, object>(),
+          tx => { throw new Exception ("Should not be called."); },
+          MockRepository.GenerateStub<IDataManager>(),
+          MockRepository.GenerateStub<IEnlistedDomainObjectManager>(),
+          new ClientTransactionExtensionCollection(),
+          MockRepository.GenerateStub<IInvalidDomainObjectManager>(),
+          new CompoundClientTransactionListener[0],
+          MockRepository.GenerateStub<IObjectLoader>(),
+          MockRepository.GenerateStub<IPersistenceStrategy>(),
+          queryManagerMock);
 
       var expectedResult = new QueryResult<Order> (query, new Order[0]);
       queryManagerMock.Expect (mock => mock.GetCollection<Order> (query)).Return (expectedResult);

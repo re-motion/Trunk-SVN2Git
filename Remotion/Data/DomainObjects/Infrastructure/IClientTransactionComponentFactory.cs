@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
+using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -42,6 +43,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     IInvalidDomainObjectManager CreateInvalidDomainObjectManager ();
 
     IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager, IObjectLoader objectLoader);
+
+    IQueryManager CreateQueryManager (
+        ClientTransaction clientTransaction,
+        IPersistenceStrategy persistenceStrategy,
+        IObjectLoader objectLoader,
+        IDataManager dataManager);
     
     // This member is likely to be removed in the future
     // TODO 2968: Remove this member

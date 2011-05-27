@@ -150,13 +150,12 @@ public class ClientTransaction
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IObjectLoader _objectLoader;
+  private readonly IQueryManager _queryManager;
 
   private ClientTransaction _subTransaction;
 
   private bool _isDiscarded;
 
-  [NonSerialized]
-  private QueryManager _queryManager;
 
   private readonly Guid _id = Guid.NewGuid ();
   
@@ -184,6 +183,7 @@ public class ClientTransaction
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id);
     _objectLoader = componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
     _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager, _objectLoader);
+    _queryManager = componentFactory.CreateQueryManager (this, _persistenceStrategy, _objectLoader, _dataManager);
 
     TransactionEventSink.TransactionInitializing (this);
   }
@@ -312,15 +312,9 @@ public class ClientTransaction
   /// <summary>
   /// Gets the <see cref="IQueryManager"/> of the <see cref="ClientTransaction"/>.
   /// </summary>
-  public virtual IQueryManager QueryManager
+  public IQueryManager QueryManager
   {
-    get
-    {
-      if (_queryManager == null)
-        _queryManager = new QueryManager (_persistenceStrategy, _objectLoader, TransactionEventSink, DataManager);
-
-      return _queryManager;
-    }
+    get { return _queryManager; }
   }
 
   /// <summary>

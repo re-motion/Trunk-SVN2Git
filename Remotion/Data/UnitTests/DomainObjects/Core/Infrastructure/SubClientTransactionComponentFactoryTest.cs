@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -129,6 +130,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
       Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
+    }
+
+    [Test]
+    public void CreateQueryManager ()
+    {
+      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      var clientTransaction = ClientTransaction.CreateRootTransaction ();
+      var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+      var dataManager = MockRepository.GenerateStub<IDataManager> ();
+
+      var result = _factory.CreateQueryManager (clientTransaction, persistenceStrategy, objectLoader, dataManager);
+
+      Assert.That (result, Is.TypeOf (typeof (QueryManager)));
+      Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
+      Assert.That (((QueryManager) result).ObjectLoader, Is.SameAs (objectLoader));
+      Assert.That (((QueryManager) result).DataManager, Is.SameAs (dataManager));
+      Assert.That (((QueryManager) result).ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (((QueryManager) result).TransactionEventSink, Is.SameAs (ClientTransactionTestHelper.GetTransactionEventSink (clientTransaction)));
     }
   }
 }

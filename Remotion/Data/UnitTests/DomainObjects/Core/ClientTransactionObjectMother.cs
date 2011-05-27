@@ -5,6 +5,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -55,26 +56,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static ClientTransaction Create (
         ClientTransaction parentTransaction,
         Dictionary<Enum, object> applicationData,
-        Func<ClientTransaction, ClientTransaction> clineFactory,
+        Func<ClientTransaction, ClientTransaction> cloneFactory,
         IDataManager dataManager,
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         CompoundClientTransactionListener[] listeners,
         IObjectLoader objectLoader,
-        IPersistenceStrategy persistenceStrategy)
+        IPersistenceStrategy persistenceStrategy,
+        IQueryManager queryManager)
     {
       var componentFactoryStub = CreateComponentFactory (
           parentTransaction,
           applicationData,
-          clineFactory,
+          cloneFactory,
           dataManager,
           enlistedDomainObjectManager,
           extensions,
           invalidDomainObjectManager,
           listeners,
           objectLoader,
-          persistenceStrategy);
+          persistenceStrategy,
+          queryManager);
 
       return Create<ClientTransaction> (componentFactoryStub);
     }
@@ -82,19 +85,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static IClientTransactionComponentFactory CreateComponentFactory (
         ClientTransaction parentTransaction,
         Dictionary<Enum, object> applicationData,
-        Func<ClientTransaction, ClientTransaction> clineFactory,
+        Func<ClientTransaction, ClientTransaction> cloneFactory,
         IDataManager dataManager,
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         CompoundClientTransactionListener[] listeners,
         IObjectLoader objectLoader,
-        IPersistenceStrategy persistenceStrategy)
+        IPersistenceStrategy persistenceStrategy,
+        IQueryManager queryManager)
     {
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
       componentFactoryStub.Stub (stub => stub.GetParentTransaction()).Return (parentTransaction);
       componentFactoryStub.Stub (stub => stub.CreateApplicationData ()).Return (applicationData);
-      componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (clineFactory);
+      componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (cloneFactory);
       componentFactoryStub
           .Stub (stub => stub.CreateDataManager(
               Arg<ClientTransaction>.Is.Anything, 
@@ -112,6 +116,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IClientTransactionListener>.Is.Anything))
           .Return (objectLoader);
       componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<Guid>.Is.Anything)).Return (persistenceStrategy);
+      componentFactoryStub
+          .Stub (stub => stub.CreateQueryManager (
+              Arg<ClientTransaction>.Is.Anything, Arg<IPersistenceStrategy>.Is.Anything, Arg<IObjectLoader>.Is.Anything, Arg<IDataManager>.Is.Anything))
+          .Return (queryManager);
       return componentFactoryStub;
     }
   }

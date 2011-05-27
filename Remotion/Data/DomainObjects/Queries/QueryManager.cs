@@ -30,6 +30,7 @@ namespace Remotion.Data.DomainObjects.Queries
   {
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly IObjectLoader _objectLoader;
+    private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly IDataManager _dataManager;
 
@@ -41,19 +42,52 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="persistenceStrategy">The <see cref="IPersistenceStrategy"/> used to load query results not involving <see cref="DomainObject"/> instances.</param>
     /// <param name="objectLoader">An <see cref="IObjectLoader"/> implementation that can be used to load objects. This parameter determines
     /// the <see cref="ClientTransaction"/> housing the objects loaded by queries.</param>
+    /// <param name="clientTransaction">The client transaction to use for the notifications via <paramref name="transactionEventSink"/>.</param>
     /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
     /// <param name="dataManager">The <see cref="IDataManager"/> managing the data inside the <see cref="ClientTransaction"/>.</param>
-    public QueryManager (IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IClientTransactionListener transactionEventSink, IDataManager dataManager)
+    public QueryManager (
+        IPersistenceStrategy persistenceStrategy,
+        IObjectLoader objectLoader,
+        ClientTransaction clientTransaction,
+        IClientTransactionListener transactionEventSink,
+        IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       _persistenceStrategy = persistenceStrategy;
       _objectLoader = objectLoader;
+      _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
       _dataManager = dataManager;
+    }
+
+    public IPersistenceStrategy PersistenceStrategy
+    {
+      get { return _persistenceStrategy; }
+    }
+
+    public IObjectLoader ObjectLoader
+    {
+      get { return _objectLoader; }
+    }
+
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
+
+    public IClientTransactionListener TransactionEventSink
+    {
+      get { return _transactionEventSink; }
+    }
+
+    public IDataManager DataManager
+    {
+      get { return _dataManager; }
     }
 
     /// <summary>
@@ -135,7 +169,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query, _dataManager);
       var queryResult = new QueryResult<T> (query, resultArray);
-      return _transactionEventSink.FilterQueryResult (_objectLoader.ClientTransaction, queryResult);
+      return _transactionEventSink.FilterQueryResult (_clientTransaction, queryResult);
     }
   }
 }

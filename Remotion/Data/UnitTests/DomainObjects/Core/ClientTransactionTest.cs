@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -50,6 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private CompoundClientTransactionListener _fakeListeners;
     private IObjectLoader _objectLoaderMock;
     private IPersistenceStrategy _persistenceStrategyMock;
+    private IQueryManager _queryManagerMock;
 
     private ClientTransaction _transactionWithMocks;
 
@@ -69,6 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _fakeListeners = new CompoundClientTransactionListener();
       _objectLoaderMock = _mockRepository.StrictMock<IObjectLoader> ();
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
+      _queryManagerMock = _mockRepository.StrictMock<IQueryManager> ();
 
       _transactionWithMocks = ClientTransactionObjectMother.Create (
           null,
@@ -80,7 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _invalidDomainObjectManagerMock,
           new[] { _fakeListeners },
           _objectLoaderMock,
-          _persistenceStrategyMock);
+          _persistenceStrategyMock,
+          _queryManagerMock);
     }
 
     [Test]
@@ -1003,7 +1007,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _invalidDomainObjectManagerMock,
           new[] { _fakeListeners },
           _objectLoaderMock,
-          _persistenceStrategyMock);
+          _persistenceStrategyMock,
+          _queryManagerMock);
     }
   }
 }
