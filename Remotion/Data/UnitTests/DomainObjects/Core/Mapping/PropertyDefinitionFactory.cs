@@ -220,11 +220,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           GetFakeStorageProperty (propertyInfo.Name));
     }
 
-    public static PropertyDefinition Create (ClassDefinition classDefinition, StorageClass storageClass, IPropertyInformation propertyInfo, bool isObjectID, int? maxLength)
-    {
-      return new PropertyDefinition (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, isObjectID, false, maxLength, storageClass);
-    }
-
     public static PropertyDefinition Create (ClassDefinition classDefinition, string propertyName, Type propertyType, bool isObjectID, bool isNullable, int? maxLength, StorageClass storageClass, PropertyInfo propertyInfo, IStoragePropertyDefinition columnDefinition)
     {
       var propertyDefinition = new PropertyDefinition (
