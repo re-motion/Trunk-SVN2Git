@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.TenantTests
@@ -110,7 +111,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       bool isFound = false;
       foreach (PropertyBase property in properties)
       {
-        if (property.Identifier == "UniqueIdentifier" && property.PropertyInfo.DeclaringType == typeof (Tenant))
+        if (property.Identifier == "UniqueIdentifier" && property.PropertyInfo.DeclaringType == TypeAdapter.Create (typeof (Tenant)))
         {
           isFound = true;
           break;

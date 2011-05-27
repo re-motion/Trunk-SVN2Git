@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupTests
@@ -124,7 +125,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       bool isFound = false;
       foreach (PropertyBase property in properties)
       {
-        if (property.Identifier == "UniqueIdentifier" && property.PropertyInfo.DeclaringType == typeof (Group))
+        if (property.Identifier == "UniqueIdentifier" && property.PropertyInfo.DeclaringType.Equals (TypeAdapter.Create (typeof (Group))))
         {
           isFound = true;
           break;
