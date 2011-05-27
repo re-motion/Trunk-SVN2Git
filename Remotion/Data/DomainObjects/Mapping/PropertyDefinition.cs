@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly IPropertyInformation _propertyInfo;
     private readonly Type _propertyType;
     private readonly bool _isNullable;
-    private bool _isObjectID;
+    private readonly bool _isObjectID;
 
     public PropertyDefinition (
         ClassDefinition classDefinition, 
