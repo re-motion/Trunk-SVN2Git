@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 
@@ -66,7 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (Order),
           "Customer",
           "CustomerID",
-          typeof (ObjectID),
           false);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection { propertyDefinition });
       var endPoint = new RelationEndPointDefinition (propertyDefinition, true);

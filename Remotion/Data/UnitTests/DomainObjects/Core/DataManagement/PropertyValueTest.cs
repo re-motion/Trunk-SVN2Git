@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void IsRelationProperty_True ()
     {
-      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (ObjectID), true);
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (DomainObject), true);
       var propertyValue1 = new PropertyValue (propertyDefinition, null);
       Assert.IsTrue (propertyValue1.IsRelationProperty);
     }
@@ -510,8 +510,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
-                                                                              + "'System.DayOfWeek'.")]
+    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = 
+        "Value '17420' for property 'test' is not defined by enum type 'System.DayOfWeek'.")]
     public void EnumCheckInConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
@@ -524,7 +524,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetRelationPropertyDirectly ()
     {
       PropertyDefinition definition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (ObjectID), true, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (DomainObject), true, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, null);
 
       propertyValue.Value = DomainObjectIDs.Customer1;

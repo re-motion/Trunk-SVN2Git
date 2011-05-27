@@ -188,8 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
-          propertyName,
-          typeof (string), 
+          propertyName, 
           false,
           true,
           null,

@@ -50,17 +50,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           _classDefinition,
           PropertyInfo,
           GetPropertyName(),
-          GetPropertyType(),
           IsDomainObject(),
           IsNullable(),
           _domainModelConstraintProvider.GetMaxLength(PropertyInfo),
           StorageClass);
       return propertyDefinition;
-    }
-
-    private Type GetPropertyType ()
-    {
-      return IsDomainObject() ? typeof (ObjectID) : PropertyInfo.PropertyType;
     }
 
     private bool IsDomainObject ()

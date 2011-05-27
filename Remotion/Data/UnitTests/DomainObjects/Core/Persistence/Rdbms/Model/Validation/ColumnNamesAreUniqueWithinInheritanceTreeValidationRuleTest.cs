@@ -142,8 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
          
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
-          "FirstName1",
-          typeof (string), 
+          "FirstName1", 
           false,
           true,
           null,
@@ -153,7 +152,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
           "FirstName2",
-          typeof (string),
           false,
           true,
           null,
@@ -175,8 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           _derivedBaseClass1, 
-          "FirstName1",
-          typeof (string), 
+          "FirstName1", 
           false,
           true,
           null,
@@ -185,8 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
-          "FirstName2",
-          typeof (string), 
+          "FirstName2", 
           false,
           true,
           null,
@@ -216,8 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           _baseOfBaseClass, 
-          "FirstName1",
-          typeof (string), 
+          "FirstName1", 
           false,
           true,
           null,
@@ -226,8 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass1,
-          "FirstName2",
-          typeof (string), 
+          "FirstName2", 
           false,
           true,
           null,
@@ -236,8 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
       var propertyDefinition3 = PropertyDefinitionFactory.Create (
           _derivedClass,
-          "FirstName3",
-          typeof (string), 
+          "FirstName3", 
           false,
           true,
           null,
@@ -275,8 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           _derivedBaseClass1,
-          "FirstName1",
-          typeof (string), 
+          "FirstName1", 
           false,
           true,
           null,
@@ -285,8 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new SimpleColumnDefinition ("Property1", typeof (string), "varchar", true, false));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
-          "FirstName2",
-          typeof (string), 
+          "FirstName2", 
           false,
           true,
           null,
@@ -311,8 +302,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           _derivedClass,
-          "FirstName1",
-          typeof (string), 
+          "FirstName1", 
           false,
           true,
           null,
@@ -321,8 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
-          "FirstName2",
-          typeof (string), 
+          "FirstName2", 
           false,
           true,
           null,
@@ -352,8 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           _derivedClass,
-          "FirstName1",
-          typeof (string), 
+          "FirstName1", 
           false,
           true,
           null,
@@ -362,8 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new SimpleColumnDefinition ("Property1", typeof (string), "varchar", true, false));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
-          "FirstName2",
-          typeof (string), 
+          "FirstName2", 
           false,
           true,
           null,
@@ -388,8 +375,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           _derivedClass,
-          "Length",
-          typeof (int), 
+          "Length", 
           false,
           false,
           null,
@@ -398,8 +384,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new SimpleColumnDefinition ("Length", typeof (int), "integer", false, false));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
-          "Length",
-          typeof (int), 
+          "Length", 
           false,
           false,
           null,

@@ -41,7 +41,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         ClassDefinition classDefinition, 
         IPropertyInformation propertyInfo, 
         string propertyName, 
-        Type propertyType, 
         bool isObjectID,
         bool isNullable,
         int? maxLength,
@@ -50,7 +49,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
       _classDefinition = classDefinition;
       _propertyInfo = propertyInfo;

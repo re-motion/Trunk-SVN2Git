@@ -1023,7 +1023,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
               typeof (Employee), 
               "Name",
               "Name",
-              typeof (string),
               true,
               10);
       PropertyValueCollection propertyValues = employee.InternalDataContainer.PropertyValues;

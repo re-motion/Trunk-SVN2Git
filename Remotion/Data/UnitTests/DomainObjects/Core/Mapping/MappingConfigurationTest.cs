@@ -472,24 +472,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition,
           "OrderNumber",
+          "FakeColumn1",
           typeof (int),
           false,
           null,
-          StorageClass.Persistent,
-          MockRepository.GenerateStub<IPropertyInformation>(),
-          new SimpleColumnDefinition ("FakeColumn1", typeof (string), "varchar", true, false));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+          StorageClass.Persistent);
+      propertyDefinition1.SetStorageProperty (new SimpleColumnDefinition ("FakeColumn1", typeof (string), "varchar", true, false));
+      var propertyDefinition2 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition,
           "DeliveryDate",
+          "FakeColumn2",
           typeof (DateTime),
           false,
           null,
-          StorageClass.Persistent,
-          MockRepository.GenerateStub<IPropertyInformation> (),
-          new SimpleColumnDefinition ("FakeColumn2", typeof (string), "varchar", true, false));
+          StorageClass.Persistent);
+      propertyDefinition2.SetStorageProperty (new SimpleColumnDefinition ("FakeColumn2", typeof (string), "varchar", true, false));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 

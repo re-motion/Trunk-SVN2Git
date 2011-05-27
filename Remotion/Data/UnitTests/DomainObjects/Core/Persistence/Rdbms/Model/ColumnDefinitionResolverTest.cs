@@ -107,8 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
-          "Test1",
-          typeof (string), 
+          "Test1", 
           false,
           true,
           null,
@@ -117,8 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           null);
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
-          "Test2",
-          typeof (string), 
+          "Test2", 
           false,
           true,
           null,
@@ -156,8 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
-          "Test1",
-          typeof (string), 
+          "Test1", 
           false,
           true,
           null,

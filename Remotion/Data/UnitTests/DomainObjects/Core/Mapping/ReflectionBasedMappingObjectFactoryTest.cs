@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
       var propertyDefinition = PropertyDefinitionFactory.Create (
-          classDefinition, typeof (OrderItem), "Order", "OrderID", typeof (ObjectID), true);
+          classDefinition, typeof (OrderItem), "Order", "OrderID", true);
       var endPoint = new RelationEndPointDefinition (propertyDefinition, false);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint }, true));

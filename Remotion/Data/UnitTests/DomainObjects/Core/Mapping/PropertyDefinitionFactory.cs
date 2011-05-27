@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -46,7 +47,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return Create (
           classDefinition,
           propertyName,
-          propertyType,
           IsObjectID (propertyType),
           IsNullable (propertyType),
           null,
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ClassDefinition classDefinition, Type declaringClassType, string propertyName, string columnName, Type propertyType)
     {
       return Create (
-          classDefinition, declaringClassType, propertyName, columnName, propertyType, IsNullable (propertyType), null, StorageClass.Persistent);
+          classDefinition, declaringClassType, propertyName, columnName, IsNullable (propertyType), null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (
@@ -67,10 +67,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         Type declaringClassType,
         string propertyName,
         string columnName,
-        Type propertyType,
         bool isNullable)
     {
-      return Create (classDefinition, declaringClassType, propertyName, columnName, propertyType, isNullable, null, StorageClass.Persistent);
+      return Create (classDefinition, declaringClassType, propertyName, columnName, isNullable, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (
@@ -78,11 +77,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         Type declaringClassType,
         string propertyName,
         string columnName,
-        Type propertyType,
         bool isNullable,
         int maxLength)
     {
-      return Create (classDefinition, declaringClassType, propertyName, columnName, propertyType, isNullable, maxLength, StorageClass.Persistent);
+      return Create (classDefinition, declaringClassType, propertyName, columnName, isNullable, maxLength, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (
@@ -90,14 +88,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         Type declaringClassType,
         string propertyName,
         string columnName,
-        Type propertyType,
         bool isNullable,
         int? maxLength,
         StorageClass storageClass)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
       var propertyInfo = declaringClassType.GetProperty (
           propertyName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
@@ -112,8 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition,
           PropertyInfoAdapter.Create(propertyInfo),
           fullPropertyName,
-          propertyType,
-          IsObjectID (propertyType),
+          ReflectionUtility.IsDomainObject (propertyInfo.PropertyType),
           isNullable,
           maxLength,
           storageClass);
@@ -128,7 +123,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         string propertyName,
-        Type propertyType,
         bool isNullable,
         int? maxLength,
         StorageClass storageClass,
@@ -139,8 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition,
           propertyInfo,
           propertyName,
-          propertyType,
-          IsObjectID (propertyType),
+          IsObjectID (propertyInfo.PropertyType),
           isNullable,
           maxLength,
           storageClass);
@@ -153,13 +146,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         StorageClass storageClass,
         PropertyInfo propertyInfo)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
       return Create (
           classDefinition,
           propertyInfo.Name,
-          propertyInfo.PropertyType,
           IsObjectID (propertyInfo.PropertyType),
           IsNullable (propertyInfo.PropertyType),
           null,
@@ -174,13 +163,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         PropertyInfo propertyInfo,
         IStoragePropertyDefinition storagePropertyDefinition)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
       return Create (
           classDefinition,
           propertyInfo.Name,
-          propertyInfo.PropertyType,
           IsObjectID (propertyInfo.PropertyType),
           IsNullable (propertyInfo.PropertyType),
           null,
@@ -193,17 +178,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
-        bool isNullable
-        )
+        bool isNullable)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
       return Create (
           classDefinition,
           propertyInfo.Name,
-          propertyInfo.PropertyType,
-          IsObjectID(propertyInfo.PropertyType),
+          IsObjectID (propertyInfo.PropertyType),
           isNullable,
           null,
           storageClass,
@@ -211,12 +191,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           GetFakeStorageProperty (propertyInfo.Name));
     }
 
-    public static PropertyDefinition Create (ClassDefinition classDefinition, string propertyName, Type propertyType, bool isObjectID, bool isNullable, int? maxLength, StorageClass storageClass, PropertyInfo propertyInfo, IStoragePropertyDefinition columnDefinition)
+    public static PropertyDefinition Create (
+        ClassDefinition classDefinition, string propertyName, bool isObjectID, bool isNullable, int? maxLength, StorageClass storageClass, PropertyInfo propertyInfo, IStoragePropertyDefinition columnDefinition)
     {
       return Create (
           classDefinition,
           propertyName,
-          propertyType,
           isObjectID,
           isNullable,
           maxLength,
@@ -225,13 +205,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           columnDefinition);
     }
 
-    private static PropertyDefinition Create (ClassDefinition classDefinition, string propertyName, Type propertyType, bool isObjectID, bool isNullable, int? maxLength, StorageClass storageClass, IPropertyInformation propertyInformation, IStoragePropertyDefinition columnDefinition)
+    private static PropertyDefinition Create (
+        ClassDefinition classDefinition, string propertyName, bool isObjectID, bool isNullable, int? maxLength, StorageClass storageClass, IPropertyInformation propertyInformation, IStoragePropertyDefinition columnDefinition)
     {
       var propertyDefinition = new PropertyDefinition (
           classDefinition,
           propertyInformation,
           propertyName,
-          propertyType,
           isObjectID,
           isNullable,
           maxLength,
@@ -281,7 +261,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return Create (
           classDefinition,
           propertyName,
-          propertyType,
           IsObjectID (propertyType),
           isNullable,
           maxLength,
@@ -292,7 +271,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private static bool IsObjectID (Type propertyType)
     {
-      return propertyType == typeof (ObjectID);
+      Assertion.IsFalse (propertyType == typeof (ObjectID));
+      return ReflectionUtility.IsDomainObject (propertyType);
     }
 
     private static bool IsNullable (Type propertyType)

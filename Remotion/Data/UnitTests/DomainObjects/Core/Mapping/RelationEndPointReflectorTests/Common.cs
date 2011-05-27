@@ -76,12 +76,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     }
 
     [Test]
-    public void GetMetadata_NonVirtualEndPoint_PropertyTypeIsNoObjectID ()
+    public void GetMetadata_NonVirtualEndPoint_PropertyTypeIsNotObjectID ()
     {
-      var type = typeof (ClassWithRealRelationEndPoints);
-      var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("Unidirectional"));
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type);
-      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "Unidirectional", type);
+      var propertyInfo = PropertyInfoAdapter.Create (typeof (ClassWithRealRelationEndPoints).GetProperty ("Unidirectional"));
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithRealRelationEndPoints));
+      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "Unidirectional", typeof (string));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var mappingNameResolverMock = MockRepository.GenerateStrictMock<IMappingNameResolver>();

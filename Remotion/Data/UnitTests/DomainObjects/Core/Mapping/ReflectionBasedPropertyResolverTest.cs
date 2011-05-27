@@ -274,7 +274,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithInterface),
               "ImplicitProperty",
               "ImplicitProperty",
-              typeof (string),
               false,
               100));
       properties.Add (
@@ -283,7 +282,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithInterface),
               typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty",
               "ExplicitManagedProperty",
-              typeof (string),
               false,
               100));
       classWithInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
@@ -307,7 +305,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithInterfaceWithMissingAccessors),
               "PropertyWithGetAccessor",
               "PropertyWithGetAccessor",
-              typeof (string),
               false,
               100));
       properties.Add (
@@ -316,7 +313,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithInterfaceWithMissingAccessors),
               "PropertyWithSetAccessor",
               "PropertyWithSetAccessor",
-              typeof (string),
               false,
               100));
       classWithInterfaceWithMissingAccessors.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
@@ -334,7 +330,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (MixinAddingInterfaceWithProperties),
               "ImplicitProperty",
               "ImplicitProperty",
-              typeof (string),
               false,
               100));
       properties.Add (
@@ -343,7 +338,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (MixinAddingInterfaceWithProperties),
               typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty",
               "ExplicitManagedProperty",
-              typeof (string),
               false,
               100));
       classWithMixinAddingInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
@@ -360,7 +354,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (MixinAddingPropertyBase),
               "Property",
               "Property",
-              typeof (string),
               false,
               100)}, true));
       return classWithMixinAddingInterface;

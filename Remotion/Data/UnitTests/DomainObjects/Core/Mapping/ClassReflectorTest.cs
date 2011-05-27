@@ -342,7 +342,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithDifferentPropertiesNotInMapping),
               "BaseString",
               "BaseString",
-              typeof (string),
               true,
               null,
               StorageClass.Persistent));
@@ -352,7 +351,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithDifferentPropertiesNotInMapping),
               "BaseUnidirectionalOneToOne",
               "BaseUnidirectionalOneToOneID",
-              typeof (ObjectID),
               true,
               null,
               StorageClass.Persistent));
@@ -362,23 +360,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithDifferentPropertiesNotInMapping),
               "BasePrivateUnidirectionalOneToOne",
               "BasePrivateUnidirectionalOneToOneID",
-              typeof (ObjectID),
               true,
               null,
               StorageClass.Persistent));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classDefinition, typeof (ClassWithDifferentProperties), "Int32", "Int32", typeof (int), false, null, StorageClass.Persistent));
+              classDefinition, typeof (ClassWithDifferentProperties), "Int32", "Int32", false, null, StorageClass.Persistent));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classDefinition, typeof (ClassWithDifferentProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
+              classDefinition, typeof (ClassWithDifferentProperties), "String", "String", true, null, StorageClass.Persistent));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithDifferentProperties),
               "PrivateString",
               "PrivateString",
-              typeof (string),
               true,
               null,
               StorageClass.Persistent));
@@ -388,7 +384,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithDifferentProperties),
               "UnidirectionalOneToOne",
               "UnidirectionalOneToOneID",
-              typeof (ObjectID),
               true,
               null,
               StorageClass.Persistent));
@@ -416,7 +411,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (DerivedClassWithDifferentProperties),
               "String",
               "NewString",
-              typeof (string),
               true,
               null,
               StorageClass.Persistent));
@@ -426,7 +420,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (DerivedClassWithDifferentProperties),
               "PrivateString",
               "DerivedPrivateString",
-              typeof (string),
               true,
               null,
               StorageClass.Persistent));
@@ -436,7 +429,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (DerivedClassWithDifferentProperties),
               "OtherString",
               "OtherString",
-              typeof (string),
               true,
               null,
               StorageClass.Persistent));

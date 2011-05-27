@@ -183,7 +183,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           classDefinition,
           MockRepository.GenerateStub<IPropertyInformation>(),
           propertyName,
-          typeof (ObjectID),
           true,
           true,
           null,
