@@ -61,10 +61,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
       if (!string.IsNullOrEmpty (sqlDataType))
         return sqlDataType;
 
-      if (propertyDefinition.PropertyType == typeof (String))
+      if (ReflectionUtility.IsStringPropertyValueType (propertyDefinition.PropertyType))
         return string.Format ("nvarchar ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
 
-      if (propertyDefinition.PropertyType == typeof (Byte[]))
+      if (ReflectionUtility.IsBinaryPropertyValueType (propertyDefinition.PropertyType))
         return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
 
       return base.GetStorageType (propertyDefinition);

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
@@ -26,6 +27,9 @@ namespace Remotion.ExtensibleEnums
   /// <threadsafety static="true" instance="true" />
   public static class ExtensibleEnumUtility
   {
+    private static readonly TypeAdapter s_extensibleEnumInterfaceType = TypeAdapter.Create (typeof (IExtensibleEnum));
+    private static readonly TypeAdapter s_extensibleEnumGenericBaseType = TypeAdapter.Create (typeof (ExtensibleEnum<>));
+
     /// <summary>
     /// Determines whether the specified type is an <see cref="ExtensibleEnum{T}"/> type.
     /// </summary>
@@ -43,10 +47,30 @@ namespace Remotion.ExtensibleEnums
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      return typeof (IExtensibleEnum).IsAssignableFrom (type)
-          && type != typeof (ExtensibleEnum<>)
-          && !(type.IsGenericType && type.GetGenericTypeDefinition() == typeof (ExtensibleEnum<>))
-          && type != typeof (IExtensibleEnum);
+      return IsExtensibleEnumType (TypeAdapter.Create (type));
+    }
+
+    /// <summary>
+    /// Determines whether the specified type is an <see cref="ExtensibleEnum{T}"/> type.
+    /// </summary>
+    /// <param name="type">The type to be checked.</param>
+    /// <returns>
+    ///   <see langword="true"/> if the specified type is an extensible enum type; otherwise, <see langword="false"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="type"/> parameter is <see langword="null" />.</exception>
+    /// <remarks>
+    /// For performance reasons, this method only checks if the <paramref name="type"/> implements <see cref="IExtensibleEnum"/>, it does not
+    /// check whether the type is derived from <see cref="ExtensibleEnum{T}"/>. The <see cref="GetDefinition"/> method, however, will throw
+    /// an exception when used with a type not derived from <see cref="ExtensibleEnum{T}"/>.
+    /// </remarks>
+    public static bool IsExtensibleEnumType (ITypeInformation type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      return s_extensibleEnumInterfaceType.IsAssignableFrom (type)
+             && !type.Equals (s_extensibleEnumGenericBaseType)
+             && !(type.IsGenericType && type.GetGenericTypeDefinition().Equals (s_extensibleEnumGenericBaseType))
+             && !type.Equals (s_extensibleEnumInterfaceType);
     }
 
     /// <summary>

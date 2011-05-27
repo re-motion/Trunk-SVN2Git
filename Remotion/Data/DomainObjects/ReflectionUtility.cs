@@ -19,6 +19,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.ExtensibleEnums;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -30,6 +31,11 @@ namespace Remotion.Data.DomainObjects
   public static class ReflectionUtility
   {
     private static readonly TypeConversionProvider s_typeConversionProvider = TypeConversionProvider.Create();
+
+    private static readonly Type s_stringPropertyValueType = typeof (string);
+    private static readonly Type s_binaryPropertyValueType = typeof (byte[]);
+    private static readonly Type s_typePropertyValueType = typeof (Type);
+    private static readonly Type s_objectIDPropertyValueType = typeof (ObjectID);
 
     /// <summary>
     /// Returns the directory of the current executing assembly.
@@ -209,6 +215,41 @@ namespace Remotion.Data.DomainObjects
       return IsDomainObject (type) || IsObjectList (type);
     }
 
+    /// <remarks>Only temporary solution until type resulition is refactored.</remarks>
+    internal static bool IsBinaryPropertyValueType (Type propertyType)
+    {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
+      return s_binaryPropertyValueType.Equals(propertyType);
+    }
+
+    /// <remarks>Only temporary solution until type resulition is refactored.</remarks>
+    internal static bool IsStringPropertyValueType (Type propertyType)
+    {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
+      return s_stringPropertyValueType.Equals (propertyType);
+    }
+
+    /// <remarks>Only temporary solution until type resulition is refactored.</remarks>
+    internal static bool IsExtensibleEnumPropertyValueType (Type propertyType)
+    {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
+      return ExtensibleEnumUtility.IsExtensibleEnumType (propertyType);
+    }
+
+    /// <remarks>Only temporary solution until type resulition is refactored.</remarks>
+    internal static bool IsObjectIDPropertyValueType (Type propertyType)
+    {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
+      return s_objectIDPropertyValueType.Equals (propertyType);
+    }
+
+    /// <remarks>Only temporary solution until type resulition is refactored.</remarks>
+    internal static bool IsTypePropertyValueType (Type propertyType)
+    {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
+      return s_typePropertyValueType.Equals (propertyType);
+    }
+
     /// <summary>
     /// Returns the type parameter of the <see cref="ObjectList{T}"/>.
     /// </summary>
@@ -260,7 +301,7 @@ namespace Remotion.Data.DomainObjects
             classDefinition.PersistentMixinFinder.FindOriginalMixinTarget (classDefinition.GetPersistentMixin (propertyInfo.DeclaringType.ToRuntimeType ()));
         if (originalMixinTarget == null)
           throw new InvalidOperationException (
-              string.Format ("IPersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin) evaluated and returned null."));
+              String.Format ("IPersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin) evaluated and returned null."));
         return originalMixinTarget;
       }
       else

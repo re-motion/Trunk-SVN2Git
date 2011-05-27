@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.ExtensibleEnums;
+using Remotion.Reflection;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
 namespace Remotion.UnitTests.ExtensibleEnums
@@ -42,6 +43,26 @@ namespace Remotion.UnitTests.ExtensibleEnums
       Assert.That (ExtensibleEnumUtility.IsExtensibleEnumType (typeof (ExtensibleEnum<>)), Is.False);
       Assert.That (ExtensibleEnumUtility.IsExtensibleEnumType (typeof (ExtensibleEnum<Color>)), Is.False);
       Assert.That (ExtensibleEnumUtility.IsExtensibleEnumType (typeof (IExtensibleEnum)), Is.False);
+    }
+
+    [Test]
+    public void IsExtensibleEnumType_FromITypeInformation_True ()
+    {
+      Assert.That (ExtensibleEnumUtility.IsExtensibleEnumType (TypeAdapter.Create (typeof (Color))), Is.True);
+    }
+
+    [Test]
+    public void IsExtensibleEnumType_FromITypeInformation_False ()
+    {
+      Assert.That (ExtensibleEnumUtility.IsExtensibleEnumType (TypeAdapter.Create (typeof (object))), Is.False);
+    }
+
+    [Test]
+    public void IsExtensibleEnumType_FromITypeInformation_False_BaseType ()
+    {
+      Assert.That (ExtensibleEnumUtility.IsExtensibleEnumType (TypeAdapter.Create (typeof (ExtensibleEnum<>))), Is.False);
+      Assert.That (ExtensibleEnumUtility.IsExtensibleEnumType (TypeAdapter.Create (typeof (ExtensibleEnum<Color>))), Is.False);
+      Assert.That (ExtensibleEnumUtility.IsExtensibleEnumType (TypeAdapter.Create (typeof (IExtensibleEnum))), Is.False);
     }
 
     [Test]

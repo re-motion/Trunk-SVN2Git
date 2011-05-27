@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -37,11 +36,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
       return propertyType.IsValueType 
-          || propertyType == typeof (string) 
-          || propertyType == typeof (byte[]) 
-          || propertyType == typeof (Type)
-          || propertyType == typeof (ObjectID) 
-          || ExtensibleEnumUtility.IsExtensibleEnumType (propertyType);
+          || ReflectionUtility.IsStringPropertyValueType(propertyType) 
+          || ReflectionUtility.IsBinaryPropertyValueType(propertyType) 
+          || ReflectionUtility.IsTypePropertyValueType(propertyType)
+          || ReflectionUtility.IsObjectIDPropertyValueType(propertyType) 
+          || ReflectionUtility.IsExtensibleEnumPropertyValueType(propertyType);
     }
 
     private static bool AreValuesDifferent (object value1, object value2)
@@ -324,13 +323,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
         if (!definition.PropertyType.IsInstanceOfType (value))
           throw new InvalidTypeException (definition.PropertyName, definition.PropertyType, value.GetType ());
 
-        if (value.GetType () == typeof (string))
-          CheckStringValue ((string) value, definition);
+        var valueAsString = value as string;
+        if (valueAsString != null)
+          CheckStringValue (valueAsString, definition);
 
-        if (value.GetType () == typeof (byte[]))
-          CheckByteArrayValue ((byte[]) value, definition);
+        var valueAsBinary = value as byte[];
+        if (valueAsBinary != null)
+          CheckByteArrayValue (valueAsBinary, definition);
 
-        if (value.GetType ().IsEnum)
+        if (value is Enum)
           CheckEnumValue (value, definition);
       }
       else
@@ -420,12 +421,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // Therefore notification of PropertyValueCollection when changing property values is not organized through events.
       foreach (PropertyValueCollection accessObserver in _accessObservers)
         accessObserver.PropertyValueChanged (this, changedArgs);
-    }
-
-    private void CheckForRelationProperty ()
-    {
-      if (IsRelationProperty)
-        throw new InvalidOperationException (string.Format ("The relation property '{0}' cannot be set directly.", _definition.PropertyName));
     }
 
     public bool IsRelationProperty
