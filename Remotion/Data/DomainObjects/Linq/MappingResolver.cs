@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var classDefinition = GetClassDefinition (originatingEntity.Type);
 
-      if (property.Name == _storageNameProvider.IDColumnName && property.DeclaringType == typeof (DomainObject))
+      if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return _storageSpecificExpressionResolver.ResolveIDColumn (originatingEntity, classDefinition);
 
       var propertyInfoAdapter = PropertyInfoAdapter.Create(property);
