@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
@@ -43,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateRelationEndPointDefinitionCollection ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (OrderTicket), null);
-      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID));
+      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, typeof (OrderTicket), "Order", "OrderID");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection(new[]{propertyDefinition},true));
       var expectedPropertyInfo = PropertyInfoAdapter.Create(typeof (OrderTicket).GetProperty ("Order"));
       var fakeRelationEndPoint = new RelationEndPointDefinition (propertyDefinition, false);

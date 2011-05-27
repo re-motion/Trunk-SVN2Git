@@ -118,9 +118,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetSortExpression_NonNull ()
     {
       var endPoint = CreateFullVirtualEndPoint ("Product asc");
-      
+
       Assert.That (endPoint.GetSortExpression(), Is.Not.Null);
-      Assert.That (endPoint.GetSortExpression().ToString(), Is.EqualTo ("Product ASC"));
+      Assert.That (
+          endPoint.GetSortExpression().ToString(),
+          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Product ASC"));
     }
 
     [Test]
@@ -152,8 +154,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (ObjectList<OrderItem>),
           sortExpressionString);
       var orderItemClassDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
-      var oppositeProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Order", typeof (Order));
-      var productProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Product", typeof (string));
+      var oppositeProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Order");
+      var productProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Product");
       orderItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{oppositeProperty, productProperty}, true));
       orderItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var oppositeEndPoint = new RelationEndPointDefinition (oppositeProperty, false);

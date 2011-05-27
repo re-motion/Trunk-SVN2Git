@@ -186,10 +186,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var properties = new List<PropertyDefinition> ();
       properties.Add (
           PropertyDefinitionFactory.Create (
-              customer, typeof (Customer), "CustomerSince", "CustomerSince", typeof (DateTime?)));
+              customer, typeof (Customer), "CustomerSince", "CustomerSince"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              customer, typeof (Customer), "Type", "CustomerType", typeof (Customer.CustomerType)));
+              customer, typeof (Customer), "Type", "CustomerType"));
       customer.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return customer;
@@ -217,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var properties = new List<PropertyDefinition> ();
       properties.Add (
           PropertyDefinitionFactory.Create (
-              supplier, typeof (Supplier), "SupplierQuality", "SupplierQuality", typeof (int)));
+              supplier, typeof (Supplier), "SupplierQuality", "SupplierQuality"));
       supplier.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return supplier;
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var properties = new List<PropertyDefinition> ();
       properties.Add (
           PropertyDefinitionFactory.Create (
-              distributor, typeof (Distributor), "NumberOfShops", "NumberOfShops", typeof (int)));
+              distributor, typeof (Distributor), "NumberOfShops", "NumberOfShops"));
       distributor.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return distributor;
@@ -245,10 +245,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var properties = new List<PropertyDefinition> ();
       properties.Add (
           PropertyDefinitionFactory.Create (
-              order, typeof (Order), "OrderNumber", "OrderNo", typeof (int)));
+              order, typeof (Order), "OrderNumber", "OrderNo"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              order, typeof (Order), "DeliveryDate", "DeliveryDate", typeof (DateTime)));
+              order, typeof (Order), "DeliveryDate", "DeliveryDate"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               order, typeof (Order), "Customer", "CustomerID", true));
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               orderItem, typeof (OrderItem), "Order", "OrderID", true));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              orderItem, typeof (OrderItem), "Position", "Position", typeof (int)));
+              orderItem, typeof (OrderItem), "Position", "Position"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               orderItem, typeof (OrderItem), "Product", "Product", false, 100));
@@ -433,38 +433,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "BooleanProperty",
-              "Boolean",
-              typeof (bool)));
+              "Boolean"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty", "Byte", typeof (byte)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty", "Byte"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty", "Date", typeof (DateTime)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty", "Date"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "DateTimeProperty",
-              "DateTime",
-              typeof (DateTime)));
+              "DateTime"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "DecimalProperty",
-              "Decimal",
-              typeof (Decimal)));
+              "Decimal"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "DoubleProperty",
-              "Double",
-              typeof (double)));
+              "Double"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "EnumProperty",
-              "Enum",
-              typeof (ClassWithAllDataTypes.EnumType)));
+              "Enum"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
@@ -475,23 +470,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "FlagsProperty",
-              "Flags",
-              typeof (ClassWithAllDataTypes.FlagsType)));
+              "Flags"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty", "Guid", typeof (Guid)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty", "Guid"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property", "Int16", typeof (short)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property", "Int16"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property", "Int32", typeof (int)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property", "Int32"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property", "Int64", typeof (long)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property", "Int64"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty", "Single", typeof (float)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty", "Single"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
@@ -516,74 +510,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaBooleanProperty",
-              "NaBoolean",
-              typeof (bool?)));
+              "NaBoolean"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty", "NaByte", typeof (byte?)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty", "NaByte"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDateProperty",
-              "NaDate",
-              typeof (DateTime?)));
+              "NaDate"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDateTimeProperty",
-              "NaDateTime",
-              typeof (DateTime?)));
+              "NaDateTime"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDecimalProperty",
-              "NaDecimal",
-              typeof (Decimal?)));
+              "NaDecimal"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDoubleProperty",
-              "NaDouble",
-              typeof (double?)));
+              "NaDouble"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaEnumProperty",
-              "NaEnum",
-              typeof (ClassWithAllDataTypes.EnumType?)));
+              "NaEnum"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaFlagsProperty",
-              "NaFlags",
-              typeof (ClassWithAllDataTypes.FlagsType?)));
+              "NaFlags"));
       properties.Add (
           PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty", "NaGuid", typeof (Guid?)));
+              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty", "NaGuid"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt16Property",
-              "NaInt16",
-              typeof (short?)));
+              "NaInt16"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt32Property",
-              "NaInt32",
-              typeof (int?)));
+              "NaInt32"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt64Property",
-              "NaInt64",
-              typeof (long?)));
+              "NaInt64"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaSingleProperty",
-              "NaSingle",
-              typeof (float?)));
+              "NaSingle"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
@@ -601,80 +584,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty",
-              "NaBooleanWithNullValue",
-              typeof (bool?)));
+              "NaBooleanWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty",
-              "NaByteWithNullValue",
-              typeof (byte?)));
+              "NaByteWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty",
-              "NaDateWithNullValue",
-              typeof (DateTime?)));
+              "NaDateWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty",
-              "NaDateTimeWithNullValue",
-              typeof (DateTime?)));
+              "NaDateTimeWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty",
-              "NaDecimalWithNullValue",
-              typeof (Decimal?)));
+              "NaDecimalWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty",
-              "NaDoubleWithNullValue",
-              typeof (double?)));
+              "NaDoubleWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty",
-              "NaEnumWithNullValue",
-              typeof (ClassWithAllDataTypes.EnumType?)));
+              "NaEnumWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaFlagsWithNullValueProperty",
-              "NaFlagsWithNullValue",
-              typeof (ClassWithAllDataTypes.FlagsType?)));
+              "NaFlagsWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty",
-              "NaGuidWithNullValue",
-              typeof (Guid?)));
+              "NaGuidWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty",
-              "NaInt16WithNullValue",
-              typeof (short?)));
+              "NaInt16WithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty",
-              "NaInt32WithNullValue",
-              typeof (int?)));
+              "NaInt32WithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty",
-              "NaInt64WithNullValue",
-              typeof (long?)));
+              "NaInt64WithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty",
-              "NaSingleWithNullValue",
-              typeof (float?)));
+              "NaSingleWithNullValue"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
@@ -925,14 +895,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           PropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "PersistentProperty",
-              "PersistentProperty",
-              typeof (int)));
+              "PersistentProperty"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "ExtraPersistentProperty",
-              "ExtraPersistentProperty",
-              typeof (int)));
+              "ExtraPersistentProperty"));
       properties.Add (
           PropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,

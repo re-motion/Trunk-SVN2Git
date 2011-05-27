@@ -78,21 +78,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void GetMetadata_NonVirtualEndPoint_PropertyTypeIsNotObjectID ()
     {
-      var propertyInfo = PropertyInfoAdapter.Create (typeof (ClassWithRealRelationEndPoints).GetProperty ("Unidirectional"));
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithRealRelationEndPoints));
-      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "Unidirectional", typeof (string));
+      var propertyDefinition = 
+          PropertyDefinitionFactory.CreateForFakePropertyInfo(classDefinition, "Unidirectional", "Column", typeof (string), StorageClass.Persistent);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      var mappingNameResolverMock = MockRepository.GenerateStrictMock<IMappingNameResolver>();
-      mappingNameResolverMock.Expect (mock => mock.GetPropertyName (propertyInfo)).Return ("Unidirectional");
-      mappingNameResolverMock.Replay();
+      var mappingNameResolverMock = MockRepository.GenerateStub<IMappingNameResolver>();
+      mappingNameResolverMock.Stub (mock => mock.GetPropertyName (propertyDefinition.PropertyInfo)).Return (propertyDefinition.PropertyName);
 
       var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
-          classDefinition, propertyInfo, mappingNameResolverMock, DomainModelConstraintProviderStub);
+          classDefinition, propertyDefinition.PropertyInfo, mappingNameResolverMock, DomainModelConstraintProviderStub);
 
       var result = relationEndPointReflector.GetMetadata();
 
-      mappingNameResolverMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (TypeNotObjectIDRelationEndPointDefinition)));
     }
 

@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_RelationProperty ()
     {
-      var propertyDefinition = PropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (FileSystemItem));
+      var propertyDefinition = PropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder");
       StubStorageCalculators (propertyDefinition);
 
       var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);

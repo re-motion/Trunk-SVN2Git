@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       var propertyName = GetPropertyName();
 
-      PropertyDefinition propertyDefinition = classDefinition[propertyName];
+      PropertyDefinition propertyDefinition = classDefinition.GetMandatoryPropertyDefinition (propertyName);
       if (!propertyDefinition.IsObjectID)
         return new TypeNotObjectIDRelationEndPointDefinition (classDefinition, propertyName, propertyDefinition.PropertyType);
       else

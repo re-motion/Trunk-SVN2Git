@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return StorageClassAttribute != null ? StorageClassAttribute.StorageClass : DefaultStorageClass; }
     }
 
-    protected virtual string GetPropertyName ()
+    protected string GetPropertyName ()
     {
       return _nameResolver.GetPropertyName (PropertyInfo);
     }

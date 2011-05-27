@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var clientClass = ClassDefinitionFactory.CreateClassDefinition (
           "Client", "TableInheritance_Client", StorageProviderDefinition, typeof (Client), false);
       var clientClassPropertyDefinition = PropertyDefinitionFactory.Create (
-          domainBaseClass, typeof (DomainBase), "Client", "ClientID", typeof (ObjectID));
+          domainBaseClass, typeof (DomainBase), "Client", "ClientID");
       domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { clientClassPropertyDefinition }, true));
       var propertyDefinition = domainBaseClass["Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"];
 
