@@ -28,6 +28,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
   [TestFixture]
   public class VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRuleTest : ValidationRuleTestBase
   {
+    private class DerivedObjectList<T> : ObjectList<T> where T : DomainObject
+    {
+    }
+
     private VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule _validationRule;
     private ClassDefinition _classDefinition;
     
@@ -50,20 +54,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     }
 
     [Test]
-    public void VirtualRelationEndPointDefinitionWithCardinalityOne_And_PropertyTypeNotDerivedFromDomainObject ()
+    public void VirtualRelationEndPointDefinitionWithCardinalityOne_And_PropertyTypeNotAssignableToDomainObject ()
     {
       var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (DomainObject));
+      PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (string));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
       var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = 
-        "The property type of a virtual end point of a one-to-one relation must be derived from 'DomainObject'.\r\n\r\n"
+        "The property type of a virtual end point of a one-to-one relation must be assignable to 'DomainObject'.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
         + "Property: OrderNumber";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
+    }
+
+    [Test]
+    public void VirtualRelationEndPointDefinitionWithCardinalityOne_And_PropertyTypeIsDomainObject ()
+    {
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
+         _classDefinition, "Property", false, CardinalityType.One, typeof (DomainObject), null);
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -82,16 +98,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void VirtualRelationEndPointDefinitionWithCardinalityMany_And_PropertyTypeIsDomainObjectCollection ()
     {
       var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
-         _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
+          _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
-      AssertMappingValidationResult (validationResult, true, null);
+      var expectedMessage =
+          "The property type of a virtual end point of a one-to-many relation must be assignable to 'ObjectList`1'.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+          + "Property: OrderNumber";
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
-    public void VirtualRelationEndPointDefinitionWithCardinalityMany_And_PropertyTypeIsDerivedFromDomainObjectCollection ()
+    public void VirtualRelationEndPointDefinitionWithCardinalityMany_And_PropertyTypeIsObjectList ()
     {
       var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.Many, typeof (ObjectList<BaseOfBaseValidationDomainObjectClass>), null);
@@ -103,7 +123,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     }
 
     [Test]
-    public void VirtualRelationEndPointDefinitionWithCardinalityMany_And_PropertyTypeIsNotDerivedFromDomainObjectCollection ()
+    public void VirtualRelationEndPointDefinitionWithCardinalityMany_And_PropertyTypeIsDerivedFromObjectList ()
+    {
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
+         _classDefinition, "Property", false, CardinalityType.Many, typeof (DerivedObjectList<BaseOfBaseValidationDomainObjectClass>), null);
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void VirtualRelationEndPointDefinitionWithCardinalityMany_And_PropertyTypeIsNotAssignableToObjectList ()
     {
       var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
@@ -112,8 +144,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
-      var expectedMessage = 
-        "The property type of a virtual end point of a one-to-many relation must be or be derived from 'DomainObjectCollection'.\r\n\r\n"
+      var expectedMessage =
+        "The property type of a virtual end point of a one-to-many relation must be assignable to 'ObjectList`1'.\r\n\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
         +"Property: OrderNumber";
       AssertMappingValidationResult (validationResult, false, expectedMessage);

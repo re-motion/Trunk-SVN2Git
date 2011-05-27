@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       
       var validationResult = _validationRule.Validate (classDefinition);
 
-      var expectedMessage = "Type 'String' of class 'String' is not derived from 'DomainObject'.\r\n\r\nDeclaring type: System.String";
+      var expectedMessage = "Type 'String' of class 'String' is not assignable to 'DomainObject'.\r\n\r\nDeclaring type: System.String";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   }

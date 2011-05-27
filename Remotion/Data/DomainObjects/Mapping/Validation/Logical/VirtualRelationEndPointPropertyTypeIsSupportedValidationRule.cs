@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -49,22 +48,20 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
       var endPointDefinitionAsVirtualRelationEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
-      if (endPointDefinitionAsVirtualRelationEndPointDefinition!=null &&
+      if (endPointDefinitionAsVirtualRelationEndPointDefinition != null &&
           endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType != null &&
-          endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType != typeof (DomainObjectCollection) &&
-          !endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObjectCollection)) &&
-          !endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObject)))
+          !ReflectionUtility.IsRelationType (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType))
       {
         return MappingValidationResult.CreateInvalidResultForProperty (
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
-            "Virtual property '{0}' of class '{1}' is of type '{2}', but must be derived from '{3}' or '{4}' or must be '{4}'.",
+            "Virtual property '{0}' of class '{1}' is of type '{2}', but must be assignable to '{3}' or '{4}'.",
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name,
             endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.Name,
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.Name,
             typeof (DomainObject).Name,
-            typeof (DomainObjectCollection).Name);
+            typeof (ObjectList<>).Name);
       }
-      return  MappingValidationResult.CreateValidResult();
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

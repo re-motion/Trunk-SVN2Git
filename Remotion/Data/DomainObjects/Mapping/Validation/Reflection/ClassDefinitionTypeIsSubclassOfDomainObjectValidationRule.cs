@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,
-            "Type '{0}' of class '{1}' is not derived from '{2}'.",
+            "Type '{0}' of class '{1}' is not assignable to '{2}'.",
             classDefinition.ClassType.Name,
             classDefinition.ID,
             typeof (DomainObject).Name);

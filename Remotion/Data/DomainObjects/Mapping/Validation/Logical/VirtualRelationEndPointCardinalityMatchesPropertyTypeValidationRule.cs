@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -51,22 +50,21 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       if (endPointDefinitionAsVirtualRelationEndPointDefinition != null)
       {
         if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.One &&
-            !endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObject)))
+            !ReflectionUtility.IsDomainObject (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType))
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
-              "The property type of a virtual end point of a one-to-one relation must be derived from '{0}'.", 
+              "The property type of a virtual end point of a one-to-one relation must be assignable to '{0}'.", 
               typeof (DomainObject).Name);
         }
 
         if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.Many &&
-            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType != typeof (DomainObjectCollection) &&
-            ! endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObjectCollection)))
+           !ReflectionUtility.IsObjectList (endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType))
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
-              "The property type of a virtual end point of a one-to-many relation must be or be derived from '{0}'.", 
-              typeof (DomainObjectCollection).Name);
+              "The property type of a virtual end point of a one-to-many relation must be assignable to '{0}'.", 
+              typeof (ObjectList<>).Name);
         }
       }
       return MappingValidationResult.CreateValidResult();
