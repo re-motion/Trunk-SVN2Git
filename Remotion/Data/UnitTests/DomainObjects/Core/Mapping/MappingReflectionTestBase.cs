@@ -29,20 +29,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class MappingReflectionTestBase
   {
     private ReflectionBasedMappingObjectFactory _mappingObjectFactory;
-    private IClassIDProvider _classIDProviderMock;
-    private IDomainModelConstraintProvider _domainModelConstraintProviderMock;
+    private IClassIDProvider _classIDProviderStub;
+    private IDomainModelConstraintProvider _domainModelConstraintProviderStub;
     public const string DefaultStorageProviderID = "DefaultStorageProvider";
     public const string c_testDomainProviderID = "TestDomain";
     public const string c_unitTestStorageProviderStubID = "UnitTestStorageProviderStub";
 
-    protected IClassIDProvider ClassIDProviderMock
+    protected IClassIDProvider ClassIDProviderStub
     {
-      get { return _classIDProviderMock; }
+      get { return _classIDProviderStub; }
     }
 
-    protected IDomainModelConstraintProvider DomainModelConstraintProviderMock
+    protected IDomainModelConstraintProvider DomainModelConstraintProviderStub
     {
-      get { return _domainModelConstraintProviderMock; }
+      get { return _domainModelConstraintProviderStub; }
     }
 
     [SetUp]
@@ -52,11 +52,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
       
-      _classIDProviderMock = MockRepository.GenerateStrictMock<IClassIDProvider>();
-      _domainModelConstraintProviderMock = MockRepository.GenerateStrictMock<IDomainModelConstraintProvider>();
+      _classIDProviderStub = MockRepository.GenerateStub<IClassIDProvider>();
+      _domainModelConstraintProviderStub = MockRepository.GenerateStub<IDomainModelConstraintProvider>();
 
       _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (
-          Configuration.NameResolver, _classIDProviderMock, _domainModelConstraintProviderMock);
+          Configuration.NameResolver, _classIDProviderStub, _domainModelConstraintProviderStub);
     }
 
     [TearDown]

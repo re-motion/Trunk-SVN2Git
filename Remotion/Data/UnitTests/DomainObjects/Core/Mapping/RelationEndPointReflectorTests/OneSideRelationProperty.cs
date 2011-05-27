@@ -44,10 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("NoAttribute"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderMock);
+          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock.Expect (mock => mock.IsNullable (propertyInfo)).Return (true);
-      DomainModelConstraintProviderMock.Replay();
+      DomainModelConstraintProviderStub.Stub (stub => stub.IsNullable (propertyInfo)).Return (true);
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata();
 
@@ -56,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.NoAttribute",
           actual.PropertyName);
       Assert.IsFalse (actual.IsMandatory);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
+      DomainModelConstraintProviderStub.VerifyAllExpectations();
     }
 
     [Test]
@@ -64,10 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("NotNullable"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderMock);
+          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock.Expect (mock => mock.IsNullable (propertyInfo)).Return (false);
-      DomainModelConstraintProviderMock.Replay ();
+      DomainModelConstraintProviderStub.Stub (stub => stub.IsNullable (propertyInfo)).Return (false);
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata();
 
@@ -76,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.NotNullable",
           actual.PropertyName);
       Assert.IsTrue (actual.IsMandatory);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
+      DomainModelConstraintProviderStub.VerifyAllExpectations();
     }
 
     [Test]
@@ -84,10 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("BidirectionalOneToOne"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderMock);
+          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock.Expect (mock => mock.IsNullable (propertyInfo)).Return (true);
-      DomainModelConstraintProviderMock.Replay ();
+      DomainModelConstraintProviderStub.Stub (stub => stub.IsNullable (propertyInfo)).Return (true);
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata();
 
@@ -100,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.AreSame (typeof (ClassWithRealRelationEndPoints), relationEndPointDefinition.PropertyType);
       Assert.AreEqual (CardinalityType.One, relationEndPointDefinition.Cardinality);
       Assert.IsNull (relationEndPointDefinition.RelationDefinition);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
+      DomainModelConstraintProviderStub.VerifyAllExpectations();
     }
 
     [Test]
@@ -108,10 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("BidirectionalOneToMany"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderMock);
+          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock.Expect (mock => mock.IsNullable (propertyInfo)).Return (true);
-      DomainModelConstraintProviderMock.Replay ();
+      DomainModelConstraintProviderStub.Stub (stub => stub.IsNullable (propertyInfo)).Return (true);
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata();
 
@@ -125,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.AreEqual (CardinalityType.Many, relationEndPointDefinition.Cardinality);
       Assert.IsNull (relationEndPointDefinition.RelationDefinition);
       Assert.AreEqual ("NoAttribute", relationEndPointDefinition.SortExpressionText);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
+      DomainModelConstraintProviderStub.VerifyAllExpectations();
     }
 
     [Test]
@@ -133,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("BidirectionalOneToOne"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderMock);
+          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
       Assert.IsTrue (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
@@ -143,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("BidirectionalOneToMany"));
       var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderMock);
+          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
 
       Assert.IsTrue (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }

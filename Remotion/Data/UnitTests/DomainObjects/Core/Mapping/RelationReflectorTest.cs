@@ -73,14 +73,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_RealSide_ID ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Unidirectional")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Unidirectional")))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-
       var relationReflector = CreateRelationReflector (
           _classWithRealRelationEndPoints,
           typeof (ClassWithRealRelationEndPoints),
@@ -93,20 +85,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
               +
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.Unidirectional"));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Unidirectional_EndPoint0 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Unidirectional")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Unidirectional")))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       var relationReflector = CreateRelationReflector (
           _classWithRealRelationEndPoints,
           typeof (ClassWithRealRelationEndPoints),
@@ -119,20 +102,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithRealRelationEndPoints.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithRealRelationEndPoints));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_Unidirectional_EndPoint1 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Unidirectional")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Unidirectional")))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       var relationReflector = CreateRelationReflector (
           _classWithRealRelationEndPoints,
           typeof (ClassWithRealRelationEndPoints),
@@ -142,23 +116,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOf (typeof (AnonymousRelationEndPointDefinition)));
       var oppositeEndPointDefinition = (AnonymousRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_classWithVirtualRelationEndPoints));
-
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithRealRelationEndPoint_BidirectionalOneToOne_CheckEndPoint0 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
-          .Repeat.Twice ()
-          .Return (true);
-      DomainModelConstraintProviderMock
-         .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
-         .Repeat.Times (3)
-         .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -176,22 +138,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithRealRelationEndPoints.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithRealRelationEndPoints));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithRealRelationEndPoint_BidirectionalOneToOne_CheckEndPoint1 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
-          .Repeat.Twice()
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
-          .Repeat.Times (3)
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -212,22 +163,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToOne"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ClassWithRealRelationEndPoints)));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithVirtualRelationEndPoint_BidirectionalOneToOne_CheckEndPoint0 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
-          .Repeat.Twice ()
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
-          .Repeat.Twice()
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -245,22 +185,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToOne"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ClassWithRealRelationEndPoints)));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithVirtualRelationEndPoint_BidirectionalOneToOne_CheckEndPoint1 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
-          .Repeat.Twice()
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToOne")))
-          .Repeat.Twice ()
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -275,22 +204,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithRealRelationEndPoints.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithRealRelationEndPoints));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithRealRelationEndPoint_BidirectionalOneToMany_CheckEndPoint0 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
-          .Repeat.Times (3)
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
-          .Repeat.Times(3)
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -308,22 +226,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithRealRelationEndPoints.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithRealRelationEndPoints));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithRealRelationEndPoint_BidirectionalOneToMany_CheckEndPoint1 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
-          .Repeat.Times (3)
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
-          .Repeat.Times (3)
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -343,22 +250,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToMany"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithRealRelationEndPoints>)));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithVirtualRelationEndPoint_BidirectionalOneToMany_CheckEndPoint0 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
-          .Repeat.Times (3)
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
-          .Repeat.Twice ()
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -375,22 +271,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToMany"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithRealRelationEndPoints>)));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithVirtualRelationEndPoint_BidirectionalOneToMany_CheckEndPoint1 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
-          .Repeat.Times (3)
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalOneToMany")))
-          .Repeat.Twice ()
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithRealRelationEndPoints, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -405,28 +290,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithRealRelationEndPoints.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithRealRelationEndPoints));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_BidirectionalOneToMany_WithBothEndPointsOnSameClass_EndPoint0 ()
     {
-       DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Parent")))
-          .Return (true);
-       DomainModelConstraintProviderMock
-           .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Parent")))
-           .Repeat.Twice()
-           .Return (null);
-       DomainModelConstraintProviderMock
-           .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Children")))
-           .Repeat.Twice()
-           .Return (true);
-       DomainModelConstraintProviderMock
-            .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Children")))
-            .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithBothEndPointsOnSameClassClassDefinition, typeof (ClassWithBothEndPointsOnSameClass), "Parent");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -443,28 +311,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithBothEndPointsOnSameClassClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithBothEndPointsOnSameClassClassDefinition));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_BidirectionalOneToMany_WithBothEndPointsOnSameClass_EndPoint1 ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Parent")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Children")))
-          .Repeat.Twice()
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Parent")))
-          .Repeat.Twice()
-          .Return (null);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "Children")))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-      
       EnsurePropertyDefinitionExisitsOnClassDefinition (
           _classWithBothEndPointsOnSameClassClassDefinition, typeof (ClassWithBothEndPointsOnSameClass), "Parent");
       EnsurePropertyDefinitionExisitsOnClassDefinition (
@@ -483,26 +334,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBothEndPointsOnSameClass.Children"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithBothEndPointsOnSameClass>)));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithInvalidOppositePropertyName ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "InvalidOppositePropertyNameLeftSide")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "InvalidOppositePropertyNameLeftSide")))
-          .Return (null);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "InvalidPropertyNameInBidirectionalRelationAttributeOnOppositePropertyRightSide")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "InvalidPropertyNameInBidirectionalRelationAttributeOnOppositePropertyRightSide")))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       var type1 = GetClassWithInvalidBidirectionalRelationLeftSide();
       var type2 = GetClassWithInvalidBidirectionalRelationRightSide();
 
@@ -527,26 +363,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide:Remotion.Data.UnitTests."
               + "DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide.InvalidOppositePropertyNameLeftSide"));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_OppositeClassDefinition_IsDeclaringTypeOfOppositeProperty_NotReturnTypeOfThisProperty ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
-          .Return (null);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationPropertyOnBaseClass")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationPropertyOnBaseClass")))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-
       var originatingClass = ClassDefinitionFactory.CreateClassDefinition (typeof (Class1));
       originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       originatingClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
@@ -577,28 +398,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.SameAs (originatingClass));
       Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.SameAs (oppositeProperty));
       Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (classDeclaringOppositeProperty));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_OppositeClassDefinition_IsDeclaringTypeOfProperty_WithOverriddenProperty ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
-          .Return (null);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "OverriddenProperty")))
-          .Repeat.Twice ()
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "OverriddenProperty")))
-          .Repeat.Twice ()
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-
       var originatingClass =
           ClassDefinitionFactory.CreateClassDefinition (
               typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1));
@@ -642,26 +446,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.SameAs (originatingClass));
       Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.SameAs (oppositeProperty));
       Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (classDeclaringOppositeProperty));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_OppositeClassDefinition_IsInheritanceRoot_IfDeclaringTypeOfPropertyIsNotInMapping ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationProperty")))
-          .Return (null);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationPropertyOnClassAboveInheritanceRoot")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "RelationPropertyOnClassAboveInheritanceRoot")))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-
       var originatingClass = ClassDefinitionFactory.CreateClassDefinition (
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1));
       originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -692,20 +481,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.SameAs (originatingClass));
       Assert.That (result.EndPointDefinitions[1].PropertyInfo.Name, Is.EqualTo ("RelationPropertyOnClassAboveInheritanceRoot"));
       Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (derivedOfClassDeclaringOppositeProperty));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_RelatedPropertyTypeIsNotInMapping ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalRelationProperty")))
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "BidirectionalRelationProperty")))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-
       var originatingClass =
           ClassDefinitionFactory.CreateClassDefinition (typeof (TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1));
       originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -720,22 +500,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.EqualTo (originatingClass));
       Assert.That (result.EndPointDefinitions[1], Is.TypeOf (typeof (PropertyNotFoundRelationEndPointDefinition)));
       Assert.That (result.EndPointDefinitions[1].PropertyName, Is.EqualTo ("RelationProperty"));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_OppositePropertyIsAlsoDeclaredInBaseClass ()
     {
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (Arg<IPropertyInformation>.Matches (pi => pi.Name == "OppositeProperty")))
-          .Repeat.Times(3)
-          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (Arg<IPropertyInformation>.Matches (pi => pi.Name == "OppositeProperty")))
-          .Repeat.Times (3)
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay();
-
       var originatingClass = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithOppositeProperty));
       originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       originatingClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
@@ -763,7 +532,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.Not.SameAs (oppositePropertyFromBaseClass));
       Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.SameAs (oppositeProperty));
       Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (oppositeClass));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -808,7 +576,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyInfo =
           PropertyInfoAdapter.Create (declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
       var propertyReflector = new PropertyReflector (
-          classDefinition, propertyInfo, new ReflectionBasedNameResolver(), DomainModelConstraintProviderMock);
+          classDefinition, propertyInfo, new ReflectionBasedNameResolver(), DomainModelConstraintProviderStub);
       var propertyDefinition = propertyReflector.GetMetadata();
 
       if (!classDefinition.MyPropertyDefinitions.Contains (propertyDefinition.PropertyName))

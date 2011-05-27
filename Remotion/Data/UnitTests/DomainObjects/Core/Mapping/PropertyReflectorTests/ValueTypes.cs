@@ -30,12 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     [Test]
     public void GetMetadata_WithBasicType ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty", DomainModelConstraintProviderMock);
-
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty", DomainModelConstraintProviderStub);
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -45,18 +40,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (false, actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithNullableBasicType ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("NaBooleanProperty", DomainModelConstraintProviderMock);
-
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("NaBooleanProperty", DomainModelConstraintProviderStub);
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -66,18 +55,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.IsNull (actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithEnumProperty ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("EnumProperty", DomainModelConstraintProviderMock);
-
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("EnumProperty", DomainModelConstraintProviderStub);
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -87,22 +70,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value0, actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithExtensibleEnumProperty ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> (
-          "ExtensibleEnumProperty", DomainModelConstraintProviderMock);
+          "ExtensibleEnumProperty", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+          .Stub (stub => stub.IsNullable (propertyReflector.PropertyInfo))
           .Return (false);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -113,19 +91,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (Color.Values.Blue(), actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithOptionalRelationProperty ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithGuidKey> (
-          "ClassWithValidRelationsOptional", DomainModelConstraintProviderMock);
-
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
+          "ClassWithValidRelationsOptional", DomainModelConstraintProviderStub);
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -136,7 +108,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     public object ObjectProperty

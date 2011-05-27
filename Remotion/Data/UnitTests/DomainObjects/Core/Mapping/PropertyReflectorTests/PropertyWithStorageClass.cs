@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     public void StorageClass_WithNoAttribute ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "NoAttribute", DomainModelConstraintProviderMock);
+          "NoAttribute", DomainModelConstraintProviderStub);
       Assert.That (propertyReflector.StorageClass, Is.EqualTo (StorageClass.Persistent));
     }
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     public void StorageClass_WithPersistentAttribute ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "Persistent", DomainModelConstraintProviderMock);
+          "Persistent", DomainModelConstraintProviderStub);
       Assert.That (propertyReflector.StorageClass, Is.EqualTo (StorageClass.Persistent));
     }
 
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     public void StorageClass_WithTransactionAttribute ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "Transaction", DomainModelConstraintProviderMock);
+          "Transaction", DomainModelConstraintProviderStub);
       Assert.That (propertyReflector.StorageClass, Is.EqualTo (StorageClass.Transaction));
     }
 
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     public void StorageClass_WithNoneAttribute ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "None", DomainModelConstraintProviderMock);
+          "None", DomainModelConstraintProviderStub);
       Assert.That (propertyReflector.StorageClass, Is.EqualTo (StorageClass.None));
     }
 
@@ -65,12 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     public void GetMetadata_WithNoAttribute ()
     {
       var propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "NoAttribute", DomainModelConstraintProviderMock);
-
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
+          "NoAttribute", DomainModelConstraintProviderStub);
 
       var actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (new SimpleColumnDefinition ("NoAttribute", typeof (string), "varchar", true, false));
@@ -80,19 +75,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           actual.PropertyName);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.AreEqual ("NoAttribute", StorageModelTestHelper.GetColumnName (actual));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithStorageClassPersistent ()
     {
       var propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "Persistent", DomainModelConstraintProviderMock);
-
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
+          "Persistent", DomainModelConstraintProviderStub);
 
       var actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (new SimpleColumnDefinition ("Persistent", typeof (string), "varchar", true, false));
@@ -102,55 +91,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           actual.PropertyName);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.AreEqual ("Persistent", StorageModelTestHelper.GetColumnName (actual));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithStorageClassTransaction_DoesntThrow ()
     {
       var propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "Transaction", DomainModelConstraintProviderMock);
+          "Transaction", DomainModelConstraintProviderStub);
       
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-
       propertyReflector.GetMetadata();
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithStorageClassTransaction_SetsStorageClass ()
     {
       var propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "Transaction", DomainModelConstraintProviderMock);
+          "Transaction", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
-      
       var propertyDefinition = propertyReflector.GetMetadata();
       Assert.That (propertyDefinition.StorageClass, Is.EqualTo (StorageClass.Transaction));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithStorageClassTransaction_NonPersistableDataType ()
     {
       var propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> (
-          "TransactionWithDateTimeDataType", DomainModelConstraintProviderMock);
-
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
+          "TransactionWithDateTimeDataType", DomainModelConstraintProviderStub);
 
       var propertyDefinition = propertyReflector.GetMetadata();
       Assert.That (propertyDefinition.StorageClass, Is.EqualTo (StorageClass.Transaction));
       Assert.That (propertyDefinition.PropertyType, Is.EqualTo (typeof (DateTime)));
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
   }
 }

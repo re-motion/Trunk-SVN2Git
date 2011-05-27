@@ -31,15 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     [Test]
     public void GetMetadata_NoDomainObjectAndNoValueType_NullableTrue()
     {
-      var propertyReflector = CreatePropertyReflector<ClassWithBinaryProperties> ("NoAttribute", DomainModelConstraintProviderMock);
+      var propertyReflector = CreatePropertyReflector<ClassWithBinaryProperties> ("NoAttribute", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+         .Stub(stub => stub.IsNullable (propertyReflector.PropertyInfo))
          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
 
       var actual = propertyReflector.GetMetadata();
 
@@ -50,21 +46,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
+      DomainModelConstraintProviderStub.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_NoDomainObjectAndNoValueType_NullableFalse ()
     {
-      var propertyReflector = CreatePropertyReflector<ClassWithBinaryProperties> ("NoAttribute", DomainModelConstraintProviderMock);
+      var propertyReflector = CreatePropertyReflector<ClassWithBinaryProperties> ("NoAttribute", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+         .Stub(stub => stub.IsNullable (propertyReflector.PropertyInfo))
          .Return (false);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
 
       var actual = propertyReflector.GetMetadata ();
 
@@ -75,21 +67,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (new byte[0], actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations ();
     }
     
     [Test]
     public void GetMetadata_WithMaximumLength()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithBinaryProperties> ("MaximumLength", DomainModelConstraintProviderMock);
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithBinaryProperties> ("MaximumLength", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+         .Stub (stub => stub.IsNullable (propertyReflector.PropertyInfo))
          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (100);
-      DomainModelConstraintProviderMock.Replay ();
+      DomainModelConstraintProviderStub
+         .Stub(stub => stub.GetMaxLength (propertyReflector.PropertyInfo))
+         .Return (100);
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 

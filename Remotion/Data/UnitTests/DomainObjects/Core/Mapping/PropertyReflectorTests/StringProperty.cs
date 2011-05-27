@@ -30,15 +30,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
     [Test]
     public void GetMetadata_WithNullableFalse ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("NoAttribute", DomainModelConstraintProviderMock);
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("NoAttribute", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+         .Stub(stub => stub.IsNullable (propertyReflector.PropertyInfo))
          .Return (false);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -49,22 +45,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (string.Empty, actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithNullableTrue ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> (
-          "NullableFromAttribute", DomainModelConstraintProviderMock);
+          "NullableFromAttribute", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+         .Stub(stub => stub.IsNullable (propertyReflector.PropertyInfo))
          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
-          .Return (null);
-      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -75,21 +66,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithMaximumLength ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("MaximumLength", DomainModelConstraintProviderMock);
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> ("MaximumLength", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+         .Stub (stub => stub.IsNullable (propertyReflector.PropertyInfo))
          .Return (true);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+          .Stub (stub => stub.GetMaxLength (propertyReflector.PropertyInfo))
           .Return (100);
-      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -100,22 +89,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsTrue (actual.IsNullable);
       Assert.AreEqual (100, actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetMetadata_WithNotNullableAndMaximumLength ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithStringProperties> (
-          "NotNullableAndMaximumLength", DomainModelConstraintProviderMock);
+          "NotNullableAndMaximumLength", DomainModelConstraintProviderStub);
 
-      DomainModelConstraintProviderMock
-         .Expect (mock => mock.IsNullable (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+         .Stub(stub => stub.IsNullable (propertyReflector.PropertyInfo))
          .Return (false);
-      DomainModelConstraintProviderMock
-          .Expect (mock => mock.GetMaxLength (propertyReflector.PropertyInfo))
+      DomainModelConstraintProviderStub
+          .Stub (stub => stub.GetMaxLength (propertyReflector.PropertyInfo))
           .Return (100);
-      DomainModelConstraintProviderMock.Replay ();
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
@@ -126,7 +113,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsFalse (actual.IsNullable);
       Assert.AreEqual (100, actual.MaxLength);
       Assert.AreEqual (string.Empty, actual.DefaultValue);
-      DomainModelConstraintProviderMock.VerifyAllExpectations();
     }
 
     [StringProperty]
