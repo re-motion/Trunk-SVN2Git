@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (classDefinition.ClassType));
 
       return new VirtualRelationEndPointDefinition (
-          classDefinition, propertyName, isMandatory, cardinality, propertyType, sortExpressionString, propertyInformationStub);
+          classDefinition, propertyName, isMandatory, cardinality, sortExpressionString, propertyInformationStub);
     }
 
     public static VirtualRelationEndPointDefinition Create (

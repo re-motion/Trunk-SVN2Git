@@ -88,7 +88,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "PropertyWithNoDbBidirectionalRelationAttribute",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (ForeignKeyIsSupportedClass).GetProperty ("PropertyWithNoDbBidirectionalRelationAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -106,7 +105,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "NoCollectionProperty_ContainsForeignKey",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -124,7 +122,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "NoCollectionProperty_ContainsNoForeignKey",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsNoForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -142,7 +139,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "CollectionProperty_ContainsForeignKey",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -165,7 +161,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "CollectionProperty_ContainsForeignKey",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -188,7 +183,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "CollectionProperty_ContainsNoForeignKey",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsNoForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);

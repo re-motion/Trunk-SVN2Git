@@ -55,7 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "PropertyWithoutBidirectionalAttribute",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass).GetProperty ("PropertyWithoutBidirectionalAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -78,7 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "DomainObjectPropertyWithoutBidirectionalAttribute",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass).GetProperty ("DomainObjectPropertyWithoutBidirectionalAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -96,7 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "DomainObjectPropertyWithBidirectionalAttribute",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass).GetProperty ("DomainObjectPropertyWithBidirectionalAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -114,7 +111,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "PropertyWithBidirectionalAttribute",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass).GetProperty ("PropertyWithBidirectionalAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);

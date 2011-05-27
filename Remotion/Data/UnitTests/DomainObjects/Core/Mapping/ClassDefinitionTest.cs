@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetRelationEndPointDefinitions ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-          _domainBaseClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, MockRepository.GenerateStub<IPropertyInformation>());
+          _domainBaseClass, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
 
       _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
 
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetRelationEndPointDefinitions_DifferentClassDefinition_ThrowsException ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-          _distributorClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, MockRepository.GenerateStub<IPropertyInformation>());
+          _distributorClass, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
 
       _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
     }
@@ -258,9 +258,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetRelationEndPointDefinitions_EndPointWithSamePropertyNameWasAlreadyAdded_ThrowsException ()
     {
       var baseEndPointDefinition = new VirtualRelationEndPointDefinition (
-          _domainBaseClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, MockRepository.GenerateStub<IPropertyInformation>());
+          _domainBaseClass, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
       var derivedEndPointDefinition = new VirtualRelationEndPointDefinition (
-          _personClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, MockRepository.GenerateStub<IPropertyInformation>());
+          _personClass, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
 
       _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { baseEndPointDefinition }, true));
       _personClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { derivedEndPointDefinition }, true));
@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetRelationEndPointDefinitions_Twice_ThrowsException ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-          _domainBaseClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, MockRepository.GenerateStub<IPropertyInformation>());
+          _domainBaseClass, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
 
       _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
       _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
@@ -707,7 +707,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-          classDefinition, "Test", false, CardinalityType.One, typeof (DomainObject), null, MockRepository.GenerateStub<IPropertyInformation>());
+          classDefinition, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, true));
       classDefinition.SetReadOnly();
 
@@ -733,7 +733,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-          classDefinition, "Test", false, CardinalityType.One, typeof (DomainObject), null, MockRepository.GenerateStub<IPropertyInformation>());
+          classDefinition, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, true));
       classDefinition.SetReadOnly();
 
@@ -750,7 +750,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-          classDefinition, "Test", false, CardinalityType.One, typeof (DomainObject), null, MockRepository.GenerateStub<IPropertyInformation>());
+          classDefinition, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, true));
       classDefinition.SetReadOnly();
 

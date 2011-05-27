@@ -34,7 +34,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly ClassDefinition _classDefinition;
     private readonly bool _isMandatory;
     private readonly CardinalityType _cardinality;
-    private readonly Type _propertyType;
     private readonly string _sortExpressionText;
     private readonly DoubleCheckedLockingContainer<SortExpressionDefinition> _sortExpression;
     private readonly IPropertyInformation _propertyInfo;
@@ -44,21 +43,18 @@ namespace Remotion.Data.DomainObjects.Mapping
         string propertyName,
         bool isMandatory,
         CardinalityType cardinality,
-        Type propertyType,
         string sortExpressionText,
         IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckValidEnumValue ("cardinality", cardinality);
-      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       _classDefinition = classDefinition;
       _cardinality = cardinality;
       _isMandatory = isMandatory;
       _propertyName = propertyName;
-      _propertyType = propertyType;
       _sortExpressionText = sortExpressionText;
       _sortExpression = new DoubleCheckedLockingContainer<SortExpressionDefinition> (() => ParseSortExpression (_sortExpressionText));
       _propertyInfo = propertyInfo;

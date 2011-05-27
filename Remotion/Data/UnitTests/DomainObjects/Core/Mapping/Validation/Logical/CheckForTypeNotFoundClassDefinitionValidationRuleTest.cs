@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Reflection;
 
@@ -59,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           "RelationProperty",
           false,
           CardinalityType.One,
-          typeof (ClassNotInMapping),
           null,
           PropertyInfoAdapter.Create(typeof (DerivedValidationDomainObjectClass).GetProperty ("Property")));
       var relationDefinition = new RelationDefinition ("ID", endPoint, endPoint);

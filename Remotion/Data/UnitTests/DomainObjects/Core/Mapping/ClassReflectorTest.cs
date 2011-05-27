@@ -514,7 +514,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo),
           isMandatory,
           cardinality,
-          propertyInfo.PropertyType,
           sortExpressionText,
           propertyInfo);
     }

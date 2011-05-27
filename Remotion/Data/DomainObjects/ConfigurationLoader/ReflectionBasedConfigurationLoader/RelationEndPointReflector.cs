@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       PropertyDefinition propertyDefinition = classDefinition.GetMandatoryPropertyDefinition (propertyName);
       if (!propertyDefinition.IsObjectID)
-        return new TypeNotObjectIDRelationEndPointDefinition (classDefinition, propertyName, propertyDefinition.PropertyType);
+        return new TypeNotObjectIDRelationEndPointDefinition (classDefinition, propertyName, propertyDefinition.PropertyInfo.PropertyType);
       else
         return new RelationEndPointDefinition (propertyDefinition, IsMandatory ());
     }
@@ -85,7 +85,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           GetPropertyName(),
           IsMandatory(),
           GetCardinality(),
-          PropertyInfo.PropertyType,
           GetSortExpression(),
           PropertyInfo);
     }

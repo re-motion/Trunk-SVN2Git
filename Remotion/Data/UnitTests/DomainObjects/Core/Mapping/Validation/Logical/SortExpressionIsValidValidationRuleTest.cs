@@ -45,7 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           "Orders",
           false,
           CardinalityType.Many,
-          typeof (Order),
           "OrderNumber desc",
           MockRepository.GenerateStub<IPropertyInformation>());
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -60,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void ValidSortExpressionWithoutSortingDirection ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-          _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "OrderNumber", MockRepository.GenerateStub<IPropertyInformation>());
+          _classDefinition, "Orders", false, CardinalityType.Many, "OrderNumber", MockRepository.GenerateStub<IPropertyInformation>());
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       endPointDefinition.SetRelationDefinition (relationDefinition);
 
@@ -77,7 +76,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           "Orders",
           false,
           CardinalityType.Many,
-          typeof (Order),
           "Test",
           PropertyInfoAdapter.Create(typeof (Customer).GetProperty ("Orders")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);

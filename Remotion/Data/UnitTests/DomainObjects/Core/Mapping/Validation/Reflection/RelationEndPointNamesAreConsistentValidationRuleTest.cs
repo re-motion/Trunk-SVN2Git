@@ -46,7 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "RelationProperty2",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass1).GetProperty ("RelationProperty2")));
       var endPointDefinition2 = new VirtualRelationEndPointDefinition (
@@ -54,7 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "RelationProperty2",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass2).GetProperty ("RelationProperty2")));
 
@@ -73,7 +71,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "RelationProperty2",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create (typeof (RelationEndPointPropertyClass2).GetProperty ("RelationProperty2")));
 
@@ -91,7 +88,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "RelationProperty2",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create (typeof (RelationEndPointPropertyClass1).GetProperty ("RelationProperty2")));
       var endPointDefinition2 = new AnonymousRelationEndPointDefinition (_classDefinition2);
@@ -110,7 +106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "RelationProperty1",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
          PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass1).GetProperty ("RelationProperty1")));
       var endPointDefinition2 = new VirtualRelationEndPointDefinition (
@@ -118,7 +113,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "RelationPopertyWithoutBidirectionalRelationAttribute",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass2).GetProperty ("RelationPopertyWithoutBidirectionalRelationAttribute")));
 
@@ -143,7 +137,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "RelationProperty3",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass1).GetProperty ("RelationProperty3")));
       var endPointDefinition2 = new VirtualRelationEndPointDefinition (
@@ -151,7 +144,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "RelationPopertyWithNonMatchingPropertyName",
           false,
           CardinalityType.One,
-          typeof (string),
           null,
           PropertyInfoAdapter.Create(typeof (RelationEndPointPropertyClass2).GetProperty ("RelationPopertyWithNonMatchingPropertyName")));
 
