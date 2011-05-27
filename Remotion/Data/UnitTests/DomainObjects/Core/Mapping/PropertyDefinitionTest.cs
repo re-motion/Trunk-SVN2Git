@@ -29,22 +29,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class PropertyDefinitionTest : StandardMappingTest
   {
     private ClassDefinition _classDefinition;
-    private IPropertyInformation _propertyInfo;
+    private IPropertyInformation _propertyInformationStub;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
-           "Order", "OrderTable", TestDomainStorageProviderDefinition, typeof (Order), false);
-      _propertyInfo = MockRepository.GenerateStub<IPropertyInformation>();
+          "Order", "OrderTable", TestDomainStorageProviderDefinition, typeof (Order), false);
+      _propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("Test");
+      _propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (typeof (Order)));
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (TypeAdapter.Create (typeof (Order)));
     }
 
     [Test]
     public void Initialize ()
     {
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (string));
       var actual = new PropertyDefinition (
-          _classDefinition, _propertyInfo, "Test", typeof (string), false, false, null, StorageClass.Persistent);
+          _classDefinition, _propertyInformationStub, "Test", typeof (string), false, false, null, StorageClass.Persistent);
 
       Assert.That (actual.ClassDefinition, Is.SameAs (_classDefinition));
       Assert.That (actual.IsNullable, Is.False);
@@ -53,13 +57,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actual.PropertyType, Is.EqualTo (typeof (string)));
       Assert.That (actual.StorageClass, Is.EqualTo (StorageClass.Persistent));
       Assert.That (actual.IsObjectID, Is.False);
-      Assert.That (actual.PropertyInfo, Is.SameAs (_propertyInfo));
+      Assert.That (actual.PropertyInfo, Is.SameAs (_propertyInformationStub));
     }
 
     [Test]
     public void Initialize_WithReferenceType_IsNullableFalse ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (string));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (string), false, false, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.False);
     }
@@ -67,7 +73,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithReferenceType_IsNullableTrue ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, true, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (string));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (string), false, true, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.True);
     }
@@ -75,7 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithNonNullableValueType_IsNullableFalse ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (int), false, false, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.False);
     }
@@ -83,8 +93,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithNullableValueType_IsNullableFalse ()
     {
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int?));
       var actual = new PropertyDefinition (
-          _classDefinition, _propertyInfo, "Test", typeof (int?), false, false, null, StorageClass.Persistent);
+          _classDefinition, _propertyInformationStub, "Test", typeof (int?), false, false, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.False);
     }
@@ -92,7 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithNullableValueType_IsNullableTrue ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int?), false, true, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int?));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (int?), false, true, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.True);
     }
@@ -100,7 +113,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithString_MaxLengthSet ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, true, 50, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (string));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (string), false, true, 50, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.EqualTo (50));
     }
@@ -108,7 +123,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithString_MaxLengthNotSet ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, true, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (string));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (string), false, true, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
     }
@@ -116,7 +133,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithByteArray_MaxLengthSet ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), false, true, 50, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (byte[]));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (byte[]), false, true, 50, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.EqualTo (50));
     }
@@ -124,7 +143,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithByteArrayString_MaxLengthNotSet ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), false, true, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (byte[]));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (byte[]), false, true, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
     }
@@ -132,7 +153,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithOtherType_MaxLengthNotSet ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (int), false, false, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
     }
@@ -140,74 +163,96 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsObjectID_True ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (ObjectID), true, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (DomainObject));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (ObjectID), true, false, null, StorageClass.Persistent);
       Assert.IsTrue (actual.IsObjectID);
     }
 
     [Test]
     public void IsObjectID_False ()
     {
-      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
+      var actual = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (int), false, false, null, StorageClass.Persistent);
       Assert.IsFalse (actual.IsObjectID);
     }
 
     [Test]
-    public void DefaultValue_Nullable ()
+    public void DefaultValue_NullableValueType ()
     {
-      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int?), false, true, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int?));
+      var nullableValueProperty = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (int?), false, true, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.Null);
+    }
 
-      var nullableReferenceProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, true, null, StorageClass.Persistent);
+    [Test]
+    public void DefaultValue_ReferenceType ()
+    {
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (string));
+      var nullableReferenceProperty = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (string), false, true, null, StorageClass.Persistent);
       Assert.That (nullableReferenceProperty.DefaultValue, Is.Null);
     }
 
     [Test]
     public void DefaultValue_NotNullable_Array ()
     {
-      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), false, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (byte[]));
+      var nullableValueProperty = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (byte[]), false, false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (new byte[0]));
     }
 
     [Test]
     public void DefaultValue_NotNullable_String ()
     {
-      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (string));
+      var nullableValueProperty = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (string), false, false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (""));
     }
 
     [Test]
     public void DefaultValue_NotNullable_Enum ()
     {
-      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (EnumNotDefiningZero), false, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (EnumNotDefiningZero));
+      var nullableValueProperty = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (EnumNotDefiningZero), false, false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (EnumNotDefiningZero.First));
     }
 
     [Test]
     public void DefaultValue_NotNullable_ExtensibleEnum ()
     {
-      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (Color), false, false, null, StorageClass.Persistent);
-      Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (Color.Values.Blue ()));
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (Color));
+      var nullableValueProperty = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (Color), false, false, null, StorageClass.Persistent);
+      Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (Color.Values.Blue()));
     }
 
     [Test]
     public void DefaultValue_NotNullable_OtherType ()
     {
-      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, false, null, StorageClass.Persistent);
+      _propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
+      var nullableValueProperty = new PropertyDefinition (
+          _classDefinition, _propertyInformationStub, "Test", typeof (int), false, false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (0));
     }
 
     [Test]
     public void GetToString ()
     {
-      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo(_classDefinition, "ThePropertyName", "ColumnName");
+      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "ThePropertyName", "ColumnName");
 
-      Assert.That (propertyDefinition.ToString (), Is.EqualTo (typeof (PropertyDefinition).FullName + ": ThePropertyName"));
+      Assert.That (propertyDefinition.ToString(), Is.EqualTo (typeof (PropertyDefinition).FullName + ": ThePropertyName"));
     }
 
     [Test]
     public void SetStorageProperty ()
     {
-      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo(_classDefinition, "ThePropertyName", null);
+      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "ThePropertyName", null);
       var columnDefinition = new SimpleColumnDefinition ("Test", typeof (string), "varchar", true, false);
 
       propertyDefinition.SetStorageProperty (columnDefinition);
