@@ -182,9 +182,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       CheckObjectIDColumn (classDefinition, propertyDefinition, dataReader, objectIDColumnOrdinal);
 
-      var retriever = new OppositeClassDefinitionRetriever (_provider, classDefinition, propertyDefinition);
+      var retriever = new OppositeClassDefinitionRetriever (_provider, classDefinition, propertyDefinition, GetStorageNameProvider());
       ClassDefinition relatedClassDefinition = retriever.GetMandatoryOppositeClassDefinition (dataReader, objectIDColumnOrdinal);
       return GetObjectID (relatedClassDefinition, dataReader.GetValue (objectIDColumnOrdinal));
+    }
+
+    private IStorageNameProvider GetStorageNameProvider ()
+    {
+      return _provider.StorageProviderDefinition.Factory.CreateStorageNameProvider();
     }
 
     private void CheckObjectIDColumn (

@@ -29,6 +29,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class ReflectionBasedStorageNameProvider : IStorageNameProvider
   {
+    public ReflectionBasedStorageNameProvider ()
+    {
+    }
+
     public string IDColumnName
     {
       get { return "ID"; }

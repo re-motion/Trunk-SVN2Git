@@ -37,31 +37,41 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly ClassDefinition _classDefinition;
     private readonly PropertyDefinition _propertyDefinition;
     private readonly ClassDefinition _relatedClassDefinition;
-    private readonly IStorageNameProvider _storageNameProvider;
+    private readonly string _classIDColumnName;
 
-    public OppositeClassDefinitionRetriever (RdbmsProvider provider, ClassDefinition classDefinition, PropertyDefinition propertyDefinition)
+    public OppositeClassDefinitionRetriever (
+        RdbmsProvider provider,
+        ClassDefinition classDefinition,
+        PropertyDefinition propertyDefinition,
+        IStorageNameProvider storageNameProvider)
     {
+      ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-      ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       _provider = provider;
       _classDefinition = classDefinition;
       _propertyDefinition = propertyDefinition;
       _relatedClassDefinition = _classDefinition.GetMandatoryOppositeClassDefinition (_propertyDefinition.PropertyName);
-      _storageNameProvider = new ReflectionBasedStorageNameProvider(); // TODO: Inject via ctor
+      
+      _classIDColumnName = storageNameProvider.GetRelationClassIDColumnName (_propertyDefinition);
     }
 
     public ClassDefinition GetMandatoryOppositeClassDefinition (IDataReader dataReader, int objectIDColumnOrdinal)
     {
-      var classIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (_propertyDefinition);
       var sourceStorageProviderDefinition = _classDefinition.StorageEntityDefinition.StorageProviderDefinition;
       var relatedStorageProviderDefinition = _relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
       if (_relatedClassDefinition.IsPartOfInheritanceHierarchy && sourceStorageProviderDefinition == relatedStorageProviderDefinition)
-        return GetOppositeClassDefinitionInInheritanceHierarchy (dataReader, objectIDColumnOrdinal, classIDColumnName);
+      {
+        Assertion.IsTrue (
+            _propertyDefinition.StoragePropertyDefinition is IDColumnDefinition 
+            && ((IDColumnDefinition) _propertyDefinition.StoragePropertyDefinition).HasClassIDColumn);
+        return GetOppositeClassDefinitionInInheritanceHierarchy (dataReader, objectIDColumnOrdinal, _classIDColumnName);
+      }
       else
       {
-        CheckNoOppositeClassID (dataReader, classIDColumnName);
+        CheckNoOppositeClassID (dataReader, _classIDColumnName);
         return _relatedClassDefinition;
       }
     }
