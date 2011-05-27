@@ -24,7 +24,6 @@ public interface IRelationEndPointDefinition
   RelationDefinition RelationDefinition { get; }
   ClassDefinition ClassDefinition { get; }
   string PropertyName { get; }
-  Type PropertyType { get; }
   IPropertyInformation PropertyInfo { get; }
   bool IsMandatory { get; }
   CardinalityType Cardinality { get; }

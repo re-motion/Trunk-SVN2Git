@@ -102,11 +102,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyName; }
     }
 
-    public Type PropertyType
-    {
-      get { return _propertyType; }
-    }
-
     public IPropertyInformation PropertyInfo
     {
       get { return _propertyInfo; }

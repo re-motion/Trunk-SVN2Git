@@ -51,11 +51,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return null; }
     }
 
-    public Type PropertyType
-    {
-      get { return null; }
-    }
-
     public IPropertyInformation PropertyInfo 
     {
       get { return null; }

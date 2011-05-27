@@ -90,11 +90,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return CardinalityType.One; }
     }
 
-    public Type PropertyType
-    {
-      get { return _propertyDefinition.PropertyType; }
-    }
-
     public IPropertyInformation PropertyInfo 
     {
       get { return _propertyDefinition.PropertyInfo; }
