@@ -55,8 +55,8 @@ namespace Remotion.Globalization
     // member fields
 
     private readonly ResourceManager _resourceManager;
-    private readonly InterlockedCache<Tuple<CultureInfo, string>, NameValueCollection> _cachedResourceSet = 
-        new InterlockedCache<Tuple<CultureInfo, string>, NameValueCollection> ();
+    private readonly LockingCacheDecorator<Tuple<CultureInfo, string>, NameValueCollection> _cachedResourceSet = 
+        new LockingCacheDecorator<Tuple<CultureInfo, string>, NameValueCollection> ();
 
     // construction and disposing
 

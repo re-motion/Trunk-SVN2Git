@@ -168,6 +168,7 @@
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
+    <Compile Include="Collections\DataStoreFactoryTest.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapterTest.cs" />
     <Compile Include="Collections\ListAdapterTest.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecoratorTest.cs" />
@@ -597,7 +598,7 @@
     <Compile Include="Reflection\CodeGeneration\TryFinallyStatementTest.cs" />
     <Compile Include="Reflection\CodeGeneration\TypedMethodInvocationExpressionTest.cs" />
     <Compile Include="Reflection\CodeGeneration\TypeReferenceWrapperTest.cs" />
-    <Compile Include="Collections\InterlockedCacheTest.cs" />
+    <Compile Include="Collections\LockingCacheDecoratorTest.cs" />
     <Compile Include="Collections\SetTest.cs" />
     <Compile Include="Collections\AutoInitDictionaryTest.cs" />
     <Compile Include="Configuration\ConstructorException.cs" />

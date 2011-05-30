@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public class ReflectionBasedNameResolver : IMappingNameResolver
   {
-    private static readonly InterlockedCache<IPropertyInformation, string> s_propertyNameCache = new InterlockedCache<IPropertyInformation, string>();
+    private static readonly LockingCacheDecorator<IPropertyInformation, string> s_propertyNameCache = new LockingCacheDecorator<IPropertyInformation, string>();
 
     /// <summary>
     /// Returns the mapping name for the given <paramref name="propertyInformation"/>.

@@ -37,26 +37,6 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    public void CreateWithLocking ()
-    {
-      var result = SimpleDataStore<string, int>.CreateWithLocking();
-
-      var innerStore = PrivateInvoke.GetNonPublicField (result, "_innerStore");
-      Assert.That (innerStore, Is.TypeOf (typeof (SimpleDataStore<string, int>)));
-    }
-
-    [Test]
-    public void CreateWithLocking_IEqualityComparerOverload ()
-    {
-      var result = SimpleDataStore<string, int>.CreateWithLocking (StringComparer.InvariantCultureIgnoreCase);
-
-      var innerStore = PrivateInvoke.GetNonPublicField (result, "_innerStore");
-      Assert.That (innerStore, Is.TypeOf (typeof (SimpleDataStore<string, int>)));
-      Assert.That (((Dictionary<string, int>) PrivateInvoke.GetNonPublicField (innerStore, "_innerDictionary")).Comparer, 
-        Is.SameAs (StringComparer.InvariantCultureIgnoreCase));
-    }
-
-    [Test]
     public void Initialize_WithCustomEqualityComparer ()
     {
       var dataStore = new SimpleDataStore<string, int?> (StringComparer.InvariantCultureIgnoreCase);

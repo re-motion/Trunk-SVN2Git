@@ -27,7 +27,7 @@ namespace Remotion.Globalization
   /// </summary>
   public class ResourceManagerFactory
   {
-    private readonly InterlockedCache<string, ResourceManager> _resourceManagersCache = new InterlockedCache<string, ResourceManager> ();
+    private readonly LockingCacheDecorator<string, ResourceManager> _resourceManagersCache = new LockingCacheDecorator<string, ResourceManager> ();
 
     /// <summary>
     ///   Returns an <b>ResourceManager</b> array for the resource containers specified through the 

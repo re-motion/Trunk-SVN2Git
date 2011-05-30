@@ -24,7 +24,7 @@ using Remotion.Security.Configuration;
 
 namespace Remotion.Security
 {
-  using CacheType = InterlockedCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>;
+  using CacheType = LockingCacheDecorator<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>;
 
   [Serializable]
   public class RevisionBasedAccessTypeCacheProvider : ExtendedProviderBase, IGlobalAccessTypeCacheProvider
@@ -86,7 +86,7 @@ namespace Remotion.Security
           if (_revision < currentRevision)
           {
             _revision = currentRevision;
-            _cache = new InterlockedCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
+            _cache = new LockingCacheDecorator<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
           }
         }
       }

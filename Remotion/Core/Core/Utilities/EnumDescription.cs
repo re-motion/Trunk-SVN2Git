@@ -83,11 +83,11 @@ namespace Remotion.Utilities
   {
     /// <summary>This is for enums with the EnumDescriptionAttribute on values. </summary>
     /// <remarks> This is for enums with the EnumDescriptionAttribute on values. </remarks>
-    private static readonly InterlockedCache<Type, IDictionary<Enum, string>> s_typeDescriptions = new InterlockedCache<Type, IDictionary<Enum, string>> ();
+    private static readonly LockingCacheDecorator<Type, IDictionary<Enum, string>> s_typeDescriptions = new LockingCacheDecorator<Type, IDictionary<Enum, string>> ();
 
     /// <summary> This is for enums with the EnumDescriptionResourceAttribute.  </summary>
-    private static readonly InterlockedCache<Tuple<string, Assembly>, ResourceManager> s_enumResourceManagers = 
-        new InterlockedCache<Tuple<string, Assembly>, ResourceManager> ();
+    private static readonly LockingCacheDecorator<Tuple<string, Assembly>, ResourceManager> s_enumResourceManagers = 
+        new LockingCacheDecorator<Tuple<string, Assembly>, ResourceManager> ();
 
     public static EnumValue[] GetAllValues (Type enumType)
     {

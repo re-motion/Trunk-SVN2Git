@@ -21,11 +21,11 @@ using Remotion.Collections;
 namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
-  public class InterlockedCacheTest : CacheTest
+  public class LockingCacheDecoratorTest : CacheTest
   {
     protected override ICache<TKey, TValue> CreateCache<TKey, TValue> ()
     {
-      return new InterlockedCache<TKey, TValue> ();
+      return new LockingCacheDecorator<TKey, TValue> ();
     }
   }
 }

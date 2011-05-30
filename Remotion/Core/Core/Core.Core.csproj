@@ -132,6 +132,7 @@
     <Compile Include="BridgeImplementations\TypeDiscoveryServiceFactoryImplementation.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.generated.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.template.cs" />
+    <Compile Include="Collections\DataStoreFactory.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
@@ -344,7 +345,7 @@
     <Compile Include="Reflection\CodeGeneration\SerializationImplementer.cs" />
     <Compile Include="Collections\AutoInitDictionary.cs" />
     <Compile Include="Collections\MultiDictionary.cs" />
-    <Compile Include="Collections\InterlockedCache.cs" />
+    <Compile Include="Collections\LockingCacheDecorator.cs" />
     <Compile Include="Collections\Set.cs" />
     <Compile Include="Collections\Tuple.cs" />
     <Compile Include="Configuration\ConfigurationElementCollection.cs" />

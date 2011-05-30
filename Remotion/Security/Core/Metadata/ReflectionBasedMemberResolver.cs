@@ -70,7 +70,7 @@ namespace Remotion.Security.Metadata
       }
     }
 
-    private static readonly ICache<CacheKey, IMethodInformation> s_cache = new InterlockedCache<CacheKey, IMethodInformation> ();
+    private static readonly ICache<CacheKey, IMethodInformation> s_cache = new LockingCacheDecorator<CacheKey, IMethodInformation> ();
 
     public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
     {

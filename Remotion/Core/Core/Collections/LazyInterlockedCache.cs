@@ -31,7 +31,7 @@ namespace Remotion.Collections
   /// </remarks>
   /// <typeparam name="TKey"> Type of the cache key. </typeparam>
   /// <typeparam name="TValue"> Type of the cache value. </typeparam>
-  [Obsolete ("Experimental code. Stability and performance advantages questionable. Use InterlockedCache for production code. Both implement ICache")]
+  [Obsolete ("Experimental code. Stability and performance advantages questionable. Use LockingCacheDecorator for production code. Both implement ICache")]
   [Serializable]
   public class LazyInterlockedCache<TKey, TValue>: ICache<TKey, TValue>
   {

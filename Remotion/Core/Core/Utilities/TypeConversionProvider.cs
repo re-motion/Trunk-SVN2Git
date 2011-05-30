@@ -53,7 +53,7 @@ namespace Remotion.Utilities
   /// </remarks>
   public class TypeConversionProvider
   {
-    private static readonly LockingDataStoreDecorator<Type, TypeConverter> s_typeConverters = SimpleDataStore<Type, TypeConverter>.CreateWithLocking();
+    private static readonly LockingDataStoreDecorator<Type, TypeConverter> s_typeConverters = DataStoreFactory.CreateWithLocking<Type, TypeConverter>();
 
     private static readonly DoubleCheckedLockingContainer<TypeConversionProvider> s_current =
         new DoubleCheckedLockingContainer<TypeConversionProvider> (Create);

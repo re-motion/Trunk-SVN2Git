@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.BindableObject
       False
     }
 
-    private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache = new InterlockedCache<ITypeInformation, IResourceManager>();
+    private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache = new LockingCacheDecorator<ITypeInformation, IResourceManager>();
     private readonly TypeConversionProvider _typeConversionProvider;
 
     public BindableObjectGlobalizationService ()

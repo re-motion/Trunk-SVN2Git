@@ -24,10 +24,10 @@ namespace Remotion.Utilities
   {
     public delegate bool CompareValues (object propertyOrFieldValue, object compareToValue);
 
-    private static readonly InterlockedCache<Tuple<Type, Type>, bool> s_canAscribeCache = new InterlockedCache<Tuple<Type, Type>, bool>();
-    private static readonly InterlockedCache<Tuple<Type, Type>, bool> s_canAscribeInternalCache = new InterlockedCache<Tuple<Type, Type>, bool> ();
-    private static readonly InterlockedCache<Tuple<Type, Type>, Type[]> s_ascribedGenericArgumentsCache = new InterlockedCache<Tuple<Type, Type>, Type[]> ();
-    private static readonly InterlockedCache<Tuple<Type, Type, Type>, bool> s_canDirectlyAscribeToGenericTypeInternalCache = new InterlockedCache<Tuple<Type, Type, Type>, bool> ();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeCache = new LockingCacheDecorator<Tuple<Type, Type>, bool>();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeInternalCache = new LockingCacheDecorator<Tuple<Type, Type>, bool> ();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type>, Type[]> s_ascribedGenericArgumentsCache = new LockingCacheDecorator<Tuple<Type, Type>, Type[]> ();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type, Type>, bool> s_canDirectlyAscribeToGenericTypeInternalCache = new LockingCacheDecorator<Tuple<Type, Type, Type>, bool> ();
 
     [Obsolete ("Replace with AttributeUtilities.GetCustomAttriubte")]
     public static object GetSingleAttribute (MemberInfo member, Type attributeType, bool inherit, bool throwExceptionIfNotPresent)

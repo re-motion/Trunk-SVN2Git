@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     #endregion
 
-    private static readonly InterlockedCache<Type, Type> s_ProviderAttributeTypeCache = new InterlockedCache<Type, Type>();
+    private static readonly LockingCacheDecorator<Type, Type> s_ProviderAttributeTypeCache = new LockingCacheDecorator<Type, Type>();
 
     /// <summary>
     /// Use this method as a shortcut to retrieve the <see cref="BindableObjectProvider"/> for a <see cref="Type"/> 
@@ -115,9 +115,9 @@ namespace Remotion.ObjectBinding.BindableObject
     }
 
     private readonly LockingDataStoreDecorator<Type, BindableObjectClass> _businessObjectClassStore =
-        SimpleDataStore<Type, BindableObjectClass>.CreateWithLocking();
+        DataStoreFactory.CreateWithLocking<Type, BindableObjectClass>();
     private readonly LockingDataStoreDecorator<Type, IBusinessObjectService> _serviceStore =
-        SimpleDataStore<Type, IBusinessObjectService>.CreateWithLocking();
+        DataStoreFactory.CreateWithLocking<Type, IBusinessObjectService>();
     private readonly IMetadataFactory _metadataFactory;
 
     public BindableObjectProvider ()

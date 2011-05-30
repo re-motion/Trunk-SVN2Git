@@ -147,7 +147,7 @@ namespace Remotion.Security.UnitTests.Core
 
       Assert.AreEqual ("MyProvider", deserializedProvider.Name);
       Assert.AreEqual ("The Description", deserializedProvider.Description);
-      Assert.IsInstanceOf (typeof (InterlockedCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>), deserializedProvider.GetCache ());
+      Assert.IsInstanceOf (typeof (LockingCacheDecorator<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>), deserializedProvider.GetCache ());
       Assert.AreNotSame (provider.GetCache(), deserializedProvider.GetCache());
       Assert.IsFalse (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull);
 

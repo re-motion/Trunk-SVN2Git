@@ -32,7 +32,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   [Serializable]
   public class WxeVariablesContainer
   {
-    private static readonly InterlockedCache<Type, WxeParameterDeclaration[]> s_parameterDeclarations = new InterlockedCache<Type, WxeParameterDeclaration[]>();
+    private static readonly LockingCacheDecorator<Type, WxeParameterDeclaration[]> s_parameterDeclarations = new LockingCacheDecorator<Type, WxeParameterDeclaration[]>();
 
     public static WxeParameterDeclaration[] GetParameterDeclarations (Type type)
     {

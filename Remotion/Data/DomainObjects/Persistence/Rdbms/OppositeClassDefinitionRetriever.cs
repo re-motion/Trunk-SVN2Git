@@ -25,8 +25,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public class OppositeClassDefinitionRetriever
   {
-    private static readonly InterlockedCache<Tuple<ClassDefinition, PropertyDefinition>, bool> s_hasClassIDColumnCache =
-        new InterlockedCache<Tuple<ClassDefinition, PropertyDefinition>, bool>();
+    private static readonly LockingCacheDecorator<Tuple<ClassDefinition, PropertyDefinition>, bool> s_hasClassIDColumnCache =
+        new LockingCacheDecorator<Tuple<ClassDefinition, PropertyDefinition>, bool>();
 
     public static void ResetCache ()
     {

@@ -56,7 +56,7 @@ namespace Remotion.Security.Metadata
       }
     }
 
-    private static readonly ICache<CacheKey, Enum[]> s_cache = new InterlockedCache<CacheKey, Enum[]>();
+    private static readonly ICache<CacheKey, Enum[]> s_cache = new LockingCacheDecorator<CacheKey, Enum[]>();
 
     public PermissionReflector ()
         : this ("Reflection", new NameValueCollection())

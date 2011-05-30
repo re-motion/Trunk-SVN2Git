@@ -41,8 +41,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     private RelationEndPointDefinitionCollection _relationEndPoints;
     private IStorageEntityDefinition _storageEntityDefinition;
     private ReadOnlyCollection<ClassDefinition> _derivedClasses;
-    private readonly InterlockedCache<IPropertyInformation, PropertyDefinition> _propertyDefinitionCache;
-    private readonly InterlockedCache<IPropertyInformation, IRelationEndPointDefinition> _relationDefinitionCache;
+    private readonly LockingCacheDecorator<IPropertyInformation, PropertyDefinition> _propertyDefinitionCache;
+    private readonly LockingCacheDecorator<IPropertyInformation, IRelationEndPointDefinition> _relationDefinitionCache;
     private readonly bool _isAbstract;
     private readonly Type _classType;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
@@ -66,8 +66,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       _persistentMixinFinder = persistentMixinFinder;
       _isAbstract = isAbstract;
 
-      _propertyDefinitionCache = new InterlockedCache<IPropertyInformation, PropertyDefinition>();
-      _relationDefinitionCache = new InterlockedCache<IPropertyInformation, IRelationEndPointDefinition>();
+      _propertyDefinitionCache = new LockingCacheDecorator<IPropertyInformation, PropertyDefinition>();
+      _relationDefinitionCache = new LockingCacheDecorator<IPropertyInformation, IRelationEndPointDefinition>();
 
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> (

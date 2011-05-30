@@ -76,7 +76,7 @@ namespace Remotion.Utilities
       }
     }
 
-    private static readonly InterlockedCache<Type, EnumMetadata> s_cache = new InterlockedCache<Type, EnumMetadata>();
+    private static readonly LockingCacheDecorator<Type, EnumMetadata> s_cache = new LockingCacheDecorator<Type, EnumMetadata>();
 
     /// <summary>
     /// Checks whether the specified value is one of the values that the enumeration type defines.

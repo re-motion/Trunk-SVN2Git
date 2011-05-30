@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   public class StubBusinessObjectProvider : BusinessObjectProvider
   {
     private readonly LockingDataStoreDecorator<Type, IBusinessObjectService> _serviceStore =
-        SimpleDataStore<Type, IBusinessObjectService>.CreateWithLocking();
+        DataStoreFactory.CreateWithLocking<Type, IBusinessObjectService>();
 
 
     public StubBusinessObjectProvider ()

@@ -25,7 +25,7 @@ namespace Remotion.Mixins.Utilities
 {
   public static class ReflectionUtility
   {
-    private static InterlockedCache<Assembly, bool> s_isAssemblySignedCache = new InterlockedCache<Assembly, bool> ();
+    private static LockingCacheDecorator<Assembly, bool> s_isAssemblySignedCache = new LockingCacheDecorator<Assembly, bool> ();
 
     public static bool IsEqualOrInstantiationOf (Type typeToCheck, Type expectedType)
     {

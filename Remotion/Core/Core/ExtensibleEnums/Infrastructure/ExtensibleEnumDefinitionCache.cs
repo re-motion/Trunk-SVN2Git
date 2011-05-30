@@ -32,7 +32,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
     /// </summary>
     public static readonly ExtensibleEnumDefinitionCache Instance = new ExtensibleEnumDefinitionCache();
 
-    private readonly InterlockedCache<Type, IExtensibleEnumDefinition> _cache = new InterlockedCache<Type, IExtensibleEnumDefinition>();
+    private readonly LockingCacheDecorator<Type, IExtensibleEnumDefinition> _cache = new LockingCacheDecorator<Type, IExtensibleEnumDefinition>();
     private readonly IExtensibleEnumValueDiscoveryService _valueDiscoveryService;
 
     private ExtensibleEnumDefinitionCache ()

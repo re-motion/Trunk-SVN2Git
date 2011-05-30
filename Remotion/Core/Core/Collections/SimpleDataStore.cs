@@ -29,16 +29,6 @@ namespace Remotion.Collections
   [Serializable]
   public class SimpleDataStore<TKey, TValue> : IDataStore<TKey, TValue>
   {
-    public static LockingDataStoreDecorator<TKey, TValue> CreateWithLocking ()
-    {
-      return new LockingDataStoreDecorator<TKey, TValue> (new SimpleDataStore<TKey, TValue>());
-    }
-
-    public static LockingDataStoreDecorator<TKey, TValue> CreateWithLocking (IEqualityComparer<TKey> comparer)
-    {
-      return new LockingDataStoreDecorator<TKey, TValue> (new SimpleDataStore<TKey, TValue> (comparer));
-    }
-    
     private readonly Dictionary<TKey, TValue> _innerDictionary;
 
     public SimpleDataStore ()

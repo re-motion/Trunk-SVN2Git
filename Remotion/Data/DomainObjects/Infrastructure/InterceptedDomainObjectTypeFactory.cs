@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     private readonly ModuleManager _scope;
-    private readonly InterlockedCache<CodeGenerationKeys, Type> _typeCache = new InterlockedCache<CodeGenerationKeys, Type> ();
+    private readonly LockingCacheDecorator<CodeGenerationKeys, Type> _typeCache = new LockingCacheDecorator<CodeGenerationKeys, Type> ();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InterceptedDomainObjectTypeFactory"/> class.

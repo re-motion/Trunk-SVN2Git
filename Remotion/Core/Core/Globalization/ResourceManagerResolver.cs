@@ -30,7 +30,7 @@ namespace Remotion.Globalization
   public class ResourceManagerResolver<TAttribute>
       where TAttribute : Attribute, IResourcesAttribute
   {
-    private readonly InterlockedCache<object, ResourceManagerCacheEntry> _resourceManagerWrappersCache = new InterlockedCache<object, ResourceManagerCacheEntry> ();
+    private readonly LockingCacheDecorator<object, ResourceManagerCacheEntry> _resourceManagerWrappersCache = new LockingCacheDecorator<object, ResourceManagerCacheEntry> ();
     private readonly ResourceManagerFactory _resourceManagerFactory = new ResourceManagerFactory();
 
     protected ResourceManagerFactory ResourceManagerFactory

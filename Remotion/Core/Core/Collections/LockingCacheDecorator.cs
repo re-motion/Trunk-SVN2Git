@@ -24,16 +24,16 @@ namespace Remotion.Collections
   /// A simple thread-safe cache.
   /// </summary>
   [Serializable]
-  public class InterlockedCache<TKey, TValue> : ICache<TKey, TValue>
+  public class LockingCacheDecorator<TKey, TValue> : ICache<TKey, TValue>
   {
     private Dictionary<TKey, TValue> _cache;
 
-    public InterlockedCache ()
+    public LockingCacheDecorator ()
       : this (null)
     {
     }
 
-    public InterlockedCache (IEqualityComparer<TKey> comparer)
+    public LockingCacheDecorator (IEqualityComparer<TKey> comparer)
     {
       _cache = new Dictionary<TKey,TValue> (comparer);
     }
