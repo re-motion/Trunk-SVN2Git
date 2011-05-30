@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -33,6 +34,26 @@ namespace Remotion.UnitTests.Collections
       _store = new SimpleDataStore<string, int?>();
       _store.Add ("a", 1);
       _store.Add ("b", 2);
+    }
+
+    [Test]
+    public void CreateWithLocking ()
+    {
+      var result = SimpleDataStore<string, int>.CreateWithLocking();
+
+      var innerStore = PrivateInvoke.GetNonPublicField (result, "_innerStore");
+      Assert.That (innerStore, Is.TypeOf (typeof (SimpleDataStore<string, int>)));
+    }
+
+    [Test]
+    public void CreateWithLocking_IEqualityComparerOverload ()
+    {
+      var result = SimpleDataStore<string, int>.CreateWithLocking (StringComparer.InvariantCultureIgnoreCase);
+
+      var innerStore = PrivateInvoke.GetNonPublicField (result, "_innerStore");
+      Assert.That (innerStore, Is.TypeOf (typeof (SimpleDataStore<string, int>)));
+      Assert.That (((Dictionary<string, int>) PrivateInvoke.GetNonPublicField (innerStore, "_innerDictionary")).Comparer, 
+        Is.SameAs (StringComparer.InvariantCultureIgnoreCase));
     }
 
     [Test]

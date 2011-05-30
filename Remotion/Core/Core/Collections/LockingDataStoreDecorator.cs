@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Utilities;
 
@@ -43,15 +44,6 @@ namespace Remotion.Collections
     {
       ArgumentUtility.CheckNotNull ("innerStore", innerStore);
       _innerStore = innerStore;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LockingDataStoreDecorator{TKey,TValue}"/> class wrapping a 
-    /// <see cref="SimpleDataStore{TKey,TValue}"/>.
-    /// </summary>
-    public LockingDataStoreDecorator ()
-        : this (new SimpleDataStore<TKey, TValue>())
-    {
     }
 
     bool INullObject.IsNull

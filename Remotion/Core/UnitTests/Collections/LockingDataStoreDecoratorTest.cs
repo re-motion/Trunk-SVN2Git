@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 using Castle.DynamicProxy;
@@ -35,17 +36,10 @@ namespace Remotion.UnitTests.Collections
     public void SetUp ()
     {
       ProxyGenerator generator = new ProxyGenerator();
-      _innerStoreInterceptor = new MonitorCheckingInterceptor ();
+      _innerStoreInterceptor = new MonitorCheckingInterceptor();
       _innerStore = generator.CreateInterfaceProxyWithoutTarget<IDataStore<string, int>> (_innerStoreInterceptor);
       _store = new LockingDataStoreDecorator<string, int> (_innerStore);
       _innerStoreInterceptor.Monitor = PrivateInvoke.GetNonPublicField (_store, "_lock");
-    }
-
-    [Test]
-    public void DefaultConstructor ()
-    {
-      LockingDataStoreDecorator<string, int> store = new LockingDataStoreDecorator<string, int> ();
-      Assert.IsInstanceOf (typeof (SimpleDataStore<string, int>), PrivateInvoke.GetNonPublicField (store, "_innerStore"));
     }
 
     [Test]
@@ -111,7 +105,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Serializable ()
     {
-      Serializer.SerializeAndDeserialize (new LockingDataStoreDecorator<string, int>());
+      Serializer.SerializeAndDeserialize (new LockingDataStoreDecorator<string, int>(new SimpleDataStore<string, int>()));
     }
 
     private void ExpectSynchronizedDelegation (object result, string methodName, params object[] args)
@@ -127,7 +121,7 @@ namespace Remotion.UnitTests.Collections
       }
       catch (TargetInvocationException ex)
       {
-        throw ex.InnerException.PreserveStackTrace ();
+        throw ex.InnerException.PreserveStackTrace();
       }
       Assert.That (_innerStoreInterceptor.Executed);
       Assert.That (actualResult, Is.EqualTo (result));

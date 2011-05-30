@@ -114,8 +114,10 @@ namespace Remotion.ObjectBinding.BindableObject
       return attribute.GetType ();
     }
 
-    private readonly LockingDataStoreDecorator<Type, BindableObjectClass> _businessObjectClassStore = new LockingDataStoreDecorator<Type, BindableObjectClass>();
-    private readonly LockingDataStoreDecorator<Type, IBusinessObjectService> _serviceStore = new LockingDataStoreDecorator<Type, IBusinessObjectService>();
+    private readonly LockingDataStoreDecorator<Type, BindableObjectClass> _businessObjectClassStore =
+        SimpleDataStore<Type, BindableObjectClass>.CreateWithLocking();
+    private readonly LockingDataStoreDecorator<Type, IBusinessObjectService> _serviceStore =
+        SimpleDataStore<Type, IBusinessObjectService>.CreateWithLocking();
     private readonly IMetadataFactory _metadataFactory;
 
     public BindableObjectProvider ()
