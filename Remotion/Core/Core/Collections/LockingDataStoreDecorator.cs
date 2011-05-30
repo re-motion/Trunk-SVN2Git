@@ -30,26 +30,26 @@ namespace Remotion.Collections
   /// <see cref="IDataStore{TKey,TValue}"/> thread-safe, as long as the store is only executed through this wrapper.
   /// </remarks>
   [Serializable]
-  public class InterlockedDataStore<TKey, TValue> : IDataStore<TKey, TValue>
+  public class LockingDataStoreDecorator<TKey, TValue> : IDataStore<TKey, TValue>
   {
     private readonly IDataStore<TKey, TValue> _innerStore;
     private readonly object _lock = new object();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InterlockedDataStore&lt;TKey, TValue&gt;"/> class.
+    /// Initializes a new instance of the <see cref="LockingDataStoreDecorator{TKey,TValue}"/> class.
     /// </summary>
     /// <param name="innerStore">The inner store which is wrapped.</param>
-    public InterlockedDataStore (IDataStore<TKey, TValue> innerStore)
+    public LockingDataStoreDecorator (IDataStore<TKey, TValue> innerStore)
     {
       ArgumentUtility.CheckNotNull ("innerStore", innerStore);
       _innerStore = innerStore;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InterlockedDataStore&lt;TKey, TValue&gt;"/> class wrapping a 
+    /// Initializes a new instance of the <see cref="LockingDataStoreDecorator{TKey,TValue}"/> class wrapping a 
     /// <see cref="SimpleDataStore{TKey,TValue}"/>.
     /// </summary>
-    public InterlockedDataStore ()
+    public LockingDataStoreDecorator ()
         : this (new SimpleDataStore<TKey, TValue>())
     {
     }

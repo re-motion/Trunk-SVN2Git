@@ -32,7 +32,7 @@ namespace Remotion.Reflection
   {
     //If this is changed to an (expiring) cache, equals implementation must be updated.
     private static readonly IDataStore<MethodInfo, MethodInfoAdapter> s_dataStore =
-        new InterlockedDataStore<MethodInfo, MethodInfoAdapter> (
+        new LockingDataStoreDecorator<MethodInfo, MethodInfoAdapter> (
             new SimpleDataStore<MethodInfo, MethodInfoAdapter> (MemberInfoEqualityComparer<MethodInfo>.Instance));
 
     public static MethodInfoAdapter Create (MethodInfo methodInfo)

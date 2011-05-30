@@ -31,7 +31,7 @@ namespace Remotion.Reflection
   {
     //If this is changed to an (expiring) cache, equals implementation must be updated.
     private static readonly IDataStore<PropertyInfo, PropertyInfoAdapter> s_dataStore =
-        new InterlockedDataStore<PropertyInfo, PropertyInfoAdapter> (
+        new LockingDataStoreDecorator<PropertyInfo, PropertyInfoAdapter> (
             new SimpleDataStore<PropertyInfo, PropertyInfoAdapter> (MemberInfoEqualityComparer<PropertyInfo>.Instance));
 
     public static PropertyInfoAdapter Create (PropertyInfo propertyInfo)

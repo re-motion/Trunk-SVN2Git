@@ -55,7 +55,7 @@ public class StubTypeConversionProvider: TypeConversionProvider
   public static void ClearCache()
   {
     var cache =
-        (InterlockedDataStore<Type, TypeConverter>) PrivateInvoke.GetNonPublicStaticField (typeof (TypeConversionProvider), "s_typeConverters");
+        (LockingDataStoreDecorator<Type, TypeConverter>) PrivateInvoke.GetNonPublicStaticField (typeof (TypeConversionProvider), "s_typeConverters");
     cache.Clear();
   }
 }

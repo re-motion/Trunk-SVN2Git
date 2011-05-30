@@ -304,7 +304,7 @@
     <Compile Include="Reflection\Properties.cs" />
     <Compile Include="Reflection\Property.cs" />
     <Compile Include="SafeContextSingleton.cs" />
-    <Compile Include="Collections\InterlockedDataStore.cs" />
+    <Compile Include="Collections\LockingDataStoreDecorator.cs" />
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
     <Compile Include="Context\CallContextStorageProvider.cs" />

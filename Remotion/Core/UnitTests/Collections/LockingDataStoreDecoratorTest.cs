@@ -25,11 +25,11 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
-  public class InterlockedDataStoreTest
+  public class LockingDataStoreDecoratorTest
   {
     private IDataStore<string, int> _innerStore;
     private MonitorCheckingInterceptor _innerStoreInterceptor;
-    private InterlockedDataStore<string, int> _store;
+    private LockingDataStoreDecorator<string, int> _store;
 
     [SetUp]
     public void SetUp ()
@@ -37,14 +37,14 @@ namespace Remotion.UnitTests.Collections
       ProxyGenerator generator = new ProxyGenerator();
       _innerStoreInterceptor = new MonitorCheckingInterceptor ();
       _innerStore = generator.CreateInterfaceProxyWithoutTarget<IDataStore<string, int>> (_innerStoreInterceptor);
-      _store = new InterlockedDataStore<string, int> (_innerStore);
+      _store = new LockingDataStoreDecorator<string, int> (_innerStore);
       _innerStoreInterceptor.Monitor = PrivateInvoke.GetNonPublicField (_store, "_lock");
     }
 
     [Test]
     public void DefaultConstructor ()
     {
-      InterlockedDataStore<string, int> store = new InterlockedDataStore<string, int> ();
+      LockingDataStoreDecorator<string, int> store = new LockingDataStoreDecorator<string, int> ();
       Assert.IsInstanceOf (typeof (SimpleDataStore<string, int>), PrivateInvoke.GetNonPublicField (store, "_innerStore"));
     }
 
@@ -111,7 +111,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Serializable ()
     {
-      Serializer.SerializeAndDeserialize (new InterlockedDataStore<string, int>());
+      Serializer.SerializeAndDeserialize (new LockingDataStoreDecorator<string, int>());
     }
 
     private void ExpectSynchronizedDelegation (object result, string methodName, params object[] args)

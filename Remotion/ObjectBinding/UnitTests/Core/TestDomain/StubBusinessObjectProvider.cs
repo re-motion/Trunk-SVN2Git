@@ -22,7 +22,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
   public class StubBusinessObjectProvider : BusinessObjectProvider
   {
-    private readonly InterlockedDataStore<Type, IBusinessObjectService> _serviceStore = new InterlockedDataStore<Type, IBusinessObjectService>();
+    private readonly LockingDataStoreDecorator<Type, IBusinessObjectService> _serviceStore = new LockingDataStoreDecorator<Type, IBusinessObjectService>();
 
 
     public StubBusinessObjectProvider ()

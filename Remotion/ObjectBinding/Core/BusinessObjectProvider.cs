@@ -25,8 +25,8 @@ namespace Remotion.ObjectBinding
   /// <summary>The <see langword="abstract"/> default implementation of the <see cref="IBusinessObjectProvider"/> interface.</summary>
   public abstract class BusinessObjectProvider : IBusinessObjectProviderWithIdentity
   {
-    private static readonly InterlockedDataStore<Type, IBusinessObjectProvider> s_businessObjectProviderStore =
-        new InterlockedDataStore<Type, IBusinessObjectProvider>();
+    private static readonly LockingDataStoreDecorator<Type, IBusinessObjectProvider> s_businessObjectProviderStore =
+        new LockingDataStoreDecorator<Type, IBusinessObjectProvider>();
 
     /// <summary>
     /// Gets the <see cref="IBusinessObjectProvider"/> associated with the <see cref="BusinessObjectProviderAttribute"/> type specified.

@@ -32,7 +32,7 @@ namespace Remotion.Reflection
     private readonly Type _type;
     //If this is changed to an (expiring) cache, equals implementation must be updated.
     private static readonly IDataStore<Type, TypeAdapter> s_dataStore =
-        new InterlockedDataStore<Type, TypeAdapter> (
+        new LockingDataStoreDecorator<Type, TypeAdapter> (
             new SimpleDataStore<Type, TypeAdapter> (MemberInfoEqualityComparer<Type>.Instance));
 
     public static TypeAdapter Create (Type type)
