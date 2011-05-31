@@ -171,6 +171,7 @@
     <Compile Include="Collections\DataStoreFactoryTest.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapterTest.cs" />
     <Compile Include="Collections\ListAdapterTest.cs" />
+    <Compile Include="Collections\LockingDataStoreDecoratorTestHelper.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecoratorTest.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttribute.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttributeExtensions.cs" />
@@ -540,7 +541,6 @@
     <Compile Include="Reflection\TestDomain\TestClass.cs" />
     <Compile Include="SafeContextSingletonTest.cs" />
     <Compile Include="Collections\LockingDataStoreDecoratorTest.cs" />
-    <Compile Include="Collections\MonitorCheckingInterceptor.cs" />
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
     <Compile Include="Context\CallContextStorageProviderTest.cs" />
     <Compile Include="Context\SafeContextIntegrationTest.cs" />

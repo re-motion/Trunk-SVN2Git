@@ -33,6 +33,7 @@ namespace Remotion.Collections
   /// instances. This leads to the effect that the lock used for the synchronization of the data store is always held for a very short time only,
   /// even if the factory delegate for a specific value takes a long time to execute.
   /// </remarks>
+  // Not serializable because DoubleCheckedLockingContainer is not serializable.
   public class LazyLockingDataStoreAdapter<TKey, TValue> : IDataStore<TKey, TValue>
       where TValue: class
   {
