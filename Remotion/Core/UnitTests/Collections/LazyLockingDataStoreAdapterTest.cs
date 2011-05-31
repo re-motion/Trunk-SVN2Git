@@ -131,7 +131,7 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    public void GetValueOrDefault ()
+    public void GetValueOrDefault_ValueFound ()
     {
       var value = new object();
       var doubleCheckedLockingContainer = new DoubleCheckedLockingContainer<object> (() => value);
@@ -146,41 +146,52 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
+    public void GetValueOrDefault_NoValueFound ()
+    {
+      _innerDataStoreMock.Expect (mock => mock.GetValueOrDefault ("test")).Return (null);
+      _innerDataStoreMock.Replay ();
+
+      var result = _store.GetValueOrDefault ("test");
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
     public void TryGetValue_ValueFound ()
     {
-      object result;
       var value = new object();
-      DoubleCheckedLockingContainer<object> outParameter;
 
       _innerDataStoreMock
-        .Expect (mock => mock.TryGetValue ("key", out outParameter))
-        .Return (true)
-        .OutRef (new DoubleCheckedLockingContainer<object> (() => value));
+          .Expect (
+              mock => mock.TryGetValue (
+                  Arg.Is ("key"),
+                  out Arg<DoubleCheckedLockingContainer<object>>.Out (new DoubleCheckedLockingContainer<object> (() => value)).Dummy))
+          .Return (true);
       _innerDataStoreMock.Replay();
 
-      _store.TryGetValue ("key", out result);
+      object result;
+      var found = _store.TryGetValue ("key", out result);
 
+      Assert.That (found, Is.True);
       Assert.That (result, Is.SameAs (value));
     }
 
     [Test]
     public void TryGetValue_NoValueFound ()
     {
-      object result;
-      DoubleCheckedLockingContainer<object> outParameter;
-
       _innerDataStoreMock
-        .Expect (mock => mock.TryGetValue ("key", out outParameter))
-        .Return (false)
-        .OutRef (new DoubleCheckedLockingContainer<object> (() => null));
+          .Expect (mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<object>>.Out (null).Dummy))
+          .Return (false);
       _innerDataStoreMock.Replay();
 
-      _store.TryGetValue ("key", out result);
+      object result;
+      var found = _store.TryGetValue ("key", out result);
 
+      Assert.That (found, Is.False);
       Assert.That (result, Is.Null);
     }
 
-    //TODO 3916: improve this test !?
     [Test]
     public void GetOrCreateValue ()
     {
@@ -188,11 +199,13 @@ namespace Remotion.UnitTests.Collections
       var doubleCheckedLockingContainer = new DoubleCheckedLockingContainer<object> (() => value);
 
       _innerDataStoreMock
-        .Expect (mock => mock.GetOrCreateValue (Arg.Is("Test"), Arg<Func<string, DoubleCheckedLockingContainer<object>>>.Is.Anything))
-        .Return(doubleCheckedLockingContainer);
+          .Expect (mock => mock.GetOrCreateValue (
+              Arg.Is("Test"), 
+              Arg<Func<string, DoubleCheckedLockingContainer<object>>>.Matches (f => f("Test").Value.Equals ("Test123"))))
+          .Return (doubleCheckedLockingContainer);
       _innerDataStoreMock.Replay();
 
-      var result = _store.GetOrCreateValue ("Test", key => value);
+      var result = _store.GetOrCreateValue ("Test", key => key + "123");
 
       _innerDataStoreMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (value));

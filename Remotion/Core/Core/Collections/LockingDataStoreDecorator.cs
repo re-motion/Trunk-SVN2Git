@@ -21,7 +21,8 @@ using Remotion.Utilities;
 namespace Remotion.Collections
 {
   /// <summary>
-  /// Provides a synchronization wrapper around an implementation of <see cref="IDataStore{TKey,TValue}"/>.
+  /// Provides a synchronization wrapper around an implementation of <see cref="IDataStore{TKey,TValue}"/>. Use 
+  /// <see cref="DataStoreFactory.CreateWithLocking{TKey,TValue}()"/> to create an instance of this type.
   /// </summary>
   /// <typeparam name="TKey">The type of the keys.</typeparam>
   /// <typeparam name="TValue">The type of the values.</typeparam>
@@ -30,6 +31,7 @@ namespace Remotion.Collections
   /// locking on a private synchronization object while the method is executed. This provides a convenient way to make an 
   /// <see cref="IDataStore{TKey,TValue}"/> thread-safe, as long as the store is only executed through this wrapper.
   /// </remarks>
+  /// <threadsafety static="true" instance="true" />
   [Serializable]
   public class LockingDataStoreDecorator<TKey, TValue> : IDataStore<TKey, TValue>
   {

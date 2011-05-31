@@ -20,6 +20,19 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
+  /// <summary>
+  /// Adapts an implementation of <see cref="IDataStore{TKey,TValue}"/> that stores <see cref="DoubleCheckedLockingContainer{T}"/> holding
+  /// lazily constructed values so that users can access those values without indirection, and in a thread-safe way. Use 
+  /// <see cref="DataStoreFactory.CreateWithLazyLocking{TKey,TValue}()"/> to create an instance of this type.
+  /// </summary>
+  /// <typeparam name="TKey">The type of the keys.</typeparam>
+  /// <typeparam name="TValue">The type of the values.</typeparam>
+  /// <threadsafety static="true" instance="true" />
+  /// <remarks>
+  /// This class internally combines a <see cref="LockingDataStoreDecorator{TKey,TValue}"/> with <see cref="DoubleCheckedLockingContainer{T}"/>
+  /// instances. This leads to the effect that the lock used for the synchronization of the data store is always held for a very short time only,
+  /// even if the factory delegate for a specific value takes a long time to execute.
+  /// </remarks>
   public class LazyLockingDataStoreAdapter<TKey, TValue> : IDataStore<TKey, TValue>
       where TValue: class
   {
@@ -38,16 +51,19 @@ namespace Remotion.Collections
 
     public bool ContainsKey (TKey key)
     {
+      ArgumentUtility.CheckNotNull ("key", key);
       return _innerDataStore.ContainsKey (key);
     }
 
     public void Add (TKey key, TValue value)
     {
-      _innerDataStore.Add (key, new DoubleCheckedLockingContainer<TValue>(() => value));
+      ArgumentUtility.CheckNotNull ("key", key);
+      _innerDataStore.Add (key, new DoubleCheckedLockingContainer<TValue> (() => value));
     }
 
     public bool Remove (TKey key)
     {
+      ArgumentUtility.CheckNotNull ("key", key);
       return _innerDataStore.Remove (key);
     }
 
@@ -58,17 +74,30 @@ namespace Remotion.Collections
 
     public TValue this [TKey key]
     {
-      get { return _innerDataStore[key].Value; }
-      set { _innerDataStore[key] = new DoubleCheckedLockingContainer<TValue>(()=>value); }
+      get
+      {
+        ArgumentUtility.CheckNotNull ("key", key);
+        return _innerDataStore[key].Value;
+      }
+      set
+      {
+        ArgumentUtility.CheckNotNull ("key", key);
+        _innerDataStore[key] = new DoubleCheckedLockingContainer<TValue> (() => value);
+      }
     }
 
     public TValue GetValueOrDefault (TKey key)
     {
-      return _innerDataStore.GetValueOrDefault (key).Value;
+      ArgumentUtility.CheckNotNull ("key", key);
+
+      var doubleCheckedLockingContainer = _innerDataStore.GetValueOrDefault (key);
+      return doubleCheckedLockingContainer != null ? doubleCheckedLockingContainer.Value : null;
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
+      ArgumentUtility.CheckNotNull ("key", key);
+      
       DoubleCheckedLockingContainer<TValue> result;
 
       if (_innerDataStore.TryGetValue (key, out result))
@@ -83,7 +112,10 @@ namespace Remotion.Collections
 
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
     {
-      var doubleCheckedLockingContainer = _innerDataStore.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<TValue> (() => creator (k)));
+      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("creator", creator);
+
+     var doubleCheckedLockingContainer = _innerDataStore.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<TValue> (() => creator (k)));
       return doubleCheckedLockingContainer.Value;
     }
   }
