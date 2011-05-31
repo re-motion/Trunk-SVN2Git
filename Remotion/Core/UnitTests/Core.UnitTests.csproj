@@ -176,6 +176,7 @@
     <Compile Include="Collections\LockingCacheDecoratorTestHelper.cs" />
     <Compile Include="Collections\LockingDataStoreDecoratorTestHelper.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecoratorTest.cs" />
+    <Compile Include="Collections\TimeSpanBasedExpirationPolicyTest.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttribute.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttributeExtensions.cs" />
     <Compile Include="FunctionalProgramming\Element.cs" />
@@ -1106,6 +1107,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\NullableTypeUtilityTest.cs" />
+    <Compile Include="Utilities\ReferenceEqualityComparerTest.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
@@ -1152,6 +1154,7 @@
     <Compile Include="Utilities\TypeUtilityTests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\UtcNowProviderTest.cs" />
     <Compile Include="Utilities\WorkContextTest.cs">
       <SubType>Code</SubType>
     </Compile>
