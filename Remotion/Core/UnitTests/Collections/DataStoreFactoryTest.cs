@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
@@ -26,6 +25,14 @@ namespace Remotion.UnitTests.Collections
   [TestFixture]
   public class DataStoreFactoryTest
   {
+    private StringComparer _comparer;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _comparer = StringComparer.InvariantCultureIgnoreCase;
+    }
+
     [Test]
     public void Create ()
     {
@@ -37,12 +44,10 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Create_IEqualityComparerOverload ()
     {
-      var result = DataStoreFactory.Create<string, int> (StringComparer.InvariantCultureIgnoreCase);
+      var result = DataStoreFactory.Create<string, int> (_comparer);
 
       Assert.That (result, Is.TypeOf (typeof (SimpleDataStore<string, int>)));
-      Assert.That (
-          ((Dictionary<string, int>) PrivateInvoke.GetNonPublicField (result, "_innerDictionary")).Comparer,
-          Is.SameAs (StringComparer.InvariantCultureIgnoreCase));
+      Assert.That (result.Comparer, Is.SameAs (_comparer));
     }
 
     [Test]
@@ -58,14 +63,12 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void CreateWithLocking_IEqualityComparerOverload ()
     {
-      var result = DataStoreFactory.CreateWithLocking<string, int> (StringComparer.InvariantCultureIgnoreCase);
+      var result = DataStoreFactory.CreateWithLocking<string, int> (_comparer);
 
       Assert.That (result, Is.TypeOf (typeof (LockingDataStoreDecorator<string, int>)));
       var innerStore = PrivateInvoke.GetNonPublicField (result, "_innerStore");
       Assert.That (innerStore, Is.TypeOf (typeof (SimpleDataStore<string, int>)));
-      Assert.That (
-          ((Dictionary<string, int>) PrivateInvoke.GetNonPublicField (innerStore, "_innerDictionary")).Comparer,
-          Is.SameAs (StringComparer.InvariantCultureIgnoreCase));
+      Assert.That (((SimpleDataStore<string, int>) innerStore).Comparer, Is.SameAs (_comparer));
     }
 
     [Test]
@@ -83,16 +86,14 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void CreateWithLazyLocking_IEqualityComparerOverload ()
     {
-      var result = DataStoreFactory.CreateWithLazyLocking<string, object> (StringComparer.InvariantCultureIgnoreCase);
+      var result = DataStoreFactory.CreateWithLazyLocking<string, object> (_comparer);
 
       Assert.That (result, Is.TypeOf (typeof (LazyLockingDataStoreAdapter<string, object>)));
       var innerStore = PrivateInvoke.GetNonPublicField (result, "_innerDataStore");
       Assert.That (innerStore, Is.TypeOf (typeof (LockingDataStoreDecorator<string, DoubleCheckedLockingContainer<object>>)));
       var innerDecoratorStore = PrivateInvoke.GetNonPublicField (innerStore, "_innerStore");
       Assert.That (innerDecoratorStore, Is.TypeOf (typeof (SimpleDataStore<string, DoubleCheckedLockingContainer<object>>)));
-      Assert.That (
-          ((Dictionary<string, DoubleCheckedLockingContainer<object>>) PrivateInvoke.GetNonPublicField (innerDecoratorStore, "_innerDictionary")).Comparer,
-          Is.SameAs (StringComparer.InvariantCultureIgnoreCase));
+      Assert.That (((SimpleDataStore<string, DoubleCheckedLockingContainer<object>>) innerDecoratorStore).Comparer, Is.SameAs (_comparer));
     }
   }
 }

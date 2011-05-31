@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -44,6 +45,11 @@ namespace Remotion.Collections
     bool INullObject.IsNull
     {
       get { return false; }
+    }
+
+    public IEqualityComparer<TKey> Comparer
+    {
+      get { return _innerDictionary.Comparer; }
     }
 
     /// <summary>
