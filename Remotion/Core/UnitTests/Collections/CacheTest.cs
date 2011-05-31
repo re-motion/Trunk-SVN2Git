@@ -25,11 +25,13 @@ namespace Remotion.UnitTests.Collections
   public class CacheTest
   {
     private ICache<string, object> _cache;
+    private StringComparer _comparer;
 
     [SetUp]
     public void SetUp ()
     {
       _cache = CreateCache<string, object> ();
+      _comparer = StringComparer.InvariantCultureIgnoreCase;
     }
 
     protected virtual ICache<TKey, TValue> CreateCache<TKey, TValue> ()
@@ -40,6 +42,28 @@ namespace Remotion.UnitTests.Collections
     private void Add (string key, object value)
     {
       _cache.GetOrCreateValue (key, delegate { return value; });
+    }
+
+    [Test]
+    public void CreateWithLocking ()
+    {
+      var result = Cache<string, int>.CreateWithLocking();
+
+      Assert.That (result, Is.TypeOf (typeof (LockingCacheDecorator<string, int>)));
+      var innerCache = PrivateInvoke.GetNonPublicField (result, "_innerCache");
+      Assert.That (innerCache, Is.TypeOf (typeof (Cache<string, int>)));
+    }
+
+    [Test]
+    public void CreateWithLocking_IEqualityComparerOverload ()
+    {
+      var result = Cache<string, int>.CreateWithLocking (_comparer);
+     
+      Assert.That (result, Is.TypeOf (typeof (LockingCacheDecorator<string, int>)));
+      var innerCache = PrivateInvoke.GetNonPublicField (result, "_innerCache");
+      Assert.That (innerCache, Is.TypeOf (typeof (Cache<string, int>)));
+      var innerDataStore = PrivateInvoke.GetNonPublicField (innerCache, "_cache");
+      Assert.That (((SimpleDataStore<string, int>) innerDataStore).Comparer, Is.SameAs (_comparer));
     }
 
     [Test]
