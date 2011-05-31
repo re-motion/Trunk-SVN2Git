@@ -22,18 +22,8 @@ namespace Remotion.Collections
 {
   //TODO: Doc
   [Serializable]
-  public class Cache<TKey, TValue> : ICache<TKey, TValue>
+  public class Cache<TKey, TValue> : ICache<TKey, TValue> 
   {
-    public static LockingCacheDecorator<TKey, TValue> CreateWithLocking ()
-    {
-      return new LockingCacheDecorator<TKey, TValue> (new Cache<TKey, TValue>());
-    }
-
-    public static LockingCacheDecorator<TKey, TValue> CreateWithLocking (IEqualityComparer<TKey> comparer)
-    {
-      return new LockingCacheDecorator<TKey, TValue> (new Cache<TKey, TValue> (comparer));
-    }
-
     private readonly SimpleDataStore<TKey, TValue> _cache;
 
     // construction and disposing

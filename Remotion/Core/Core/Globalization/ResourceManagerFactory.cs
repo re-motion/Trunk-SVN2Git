@@ -27,7 +27,7 @@ namespace Remotion.Globalization
   /// </summary>
   public class ResourceManagerFactory
   {
-    private readonly LockingCacheDecorator<string, ResourceManager> _resourceManagersCache = Cache<string, ResourceManager>.CreateWithLocking();
+    private readonly LockingCacheDecorator<string, ResourceManager> _resourceManagersCache = CacheFactory.CreateWithLocking<string, ResourceManager>();
 
     /// <summary>
     ///   Returns an <b>ResourceManager</b> array for the resource containers specified through the 

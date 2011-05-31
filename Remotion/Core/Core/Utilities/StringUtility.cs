@@ -48,7 +48,7 @@ namespace Remotion.Utilities
       public bool IsQuoted;
     }
 
-    private static readonly LockingCacheDecorator<Type, MethodInfo> s_parseMethods = Cache<Type, MethodInfo>.CreateWithLocking();
+    private static readonly LockingCacheDecorator<Type, MethodInfo> s_parseMethods = CacheFactory.CreateWithLocking<Type, MethodInfo>();
 
 
     public static string GetFileNameTimestamp (DateTime dt)

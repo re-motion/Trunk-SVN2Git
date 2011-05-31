@@ -26,7 +26,7 @@ namespace Remotion.Reflection.CodeGeneration
   public class SerializationEventRaiser
   {
     private readonly LockingCacheDecorator<Tuple<Type, Type>, List<MethodInfo>> _attributedMethodCache =
-        Cache<Tuple<Type, Type>, List<MethodInfo>>.CreateWithLocking();
+        CacheFactory.CreateWithLocking<Tuple<Type, Type>, List<MethodInfo>>();
 
     public virtual void InvokeAttributedMethod (object deserializedObject, Type attributeType, StreamingContext context)
     {

@@ -66,7 +66,7 @@ namespace Remotion.ServiceLocation
   {
     private static readonly MethodInfo s_genericGetInstanceMethod = typeof (IServiceLocator).GetMethod ("GetInstance", Type.EmptyTypes);
 
-    private readonly LockingCacheDecorator<Type, Func<object>> _cache = Cache<Type, Func<object>>.CreateWithLocking();
+    private readonly LockingCacheDecorator<Type, Func<object>> _cache = CacheFactory.CreateWithLocking<Type, Func<object>>();
 
     /// <summary>
     /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or

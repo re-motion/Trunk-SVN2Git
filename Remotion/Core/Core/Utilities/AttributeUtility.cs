@@ -109,7 +109,7 @@ namespace Remotion.Utilities
     }
 
     private static readonly LockingCacheDecorator<Tuple<Type, bool>, AttributeWithMetadata[]> s_attributesWithMetadataCache =
-        Cache<Tuple<Type, bool>, AttributeWithMetadata[]>.CreateWithLocking();
+        CacheFactory.CreateWithLocking<Tuple<Type, bool>, AttributeWithMetadata[]>();
 
     public static AttributeWithMetadata[] GetCustomAttributesWithMetadata (Type type, bool inherit)
     {
@@ -164,7 +164,7 @@ namespace Remotion.Utilities
       return usage.AllowMultiple;
     }
 
-    private static readonly LockingCacheDecorator<Type, AttributeUsageAttribute> s_cache = Cache<Type, AttributeUsageAttribute>.CreateWithLocking();
+    private static readonly LockingCacheDecorator<Type, AttributeUsageAttribute> s_cache = CacheFactory.CreateWithLocking<Type, AttributeUsageAttribute>();
 
     public static AttributeUsageAttribute GetAttributeUsage (Type attributeType)
     {

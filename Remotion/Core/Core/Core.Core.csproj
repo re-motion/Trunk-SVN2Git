@@ -132,7 +132,9 @@
     <Compile Include="BridgeImplementations\TypeDiscoveryServiceFactoryImplementation.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.generated.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.template.cs" />
+    <Compile Include="Collections\CacheFactory.cs" />
     <Compile Include="Collections\DataStoreFactory.cs" />
+    <Compile Include="Collections\LazyLockingCachingAdapter.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
     <Compile Include="Logging\LogExtensions.cs" />

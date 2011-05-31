@@ -32,7 +32,7 @@ namespace Remotion.Globalization
       where TAttribute: Attribute, IResourcesAttribute
   {
     private readonly LockingCacheDecorator<object, ResourceManagerCacheEntry> _resourceManagerWrappersCache =
-        Cache<object, ResourceManagerCacheEntry>.CreateWithLocking();
+        CacheFactory.CreateWithLocking<object, ResourceManagerCacheEntry>();
 
     private readonly ResourceManagerFactory _resourceManagerFactory = new ResourceManagerFactory();
 

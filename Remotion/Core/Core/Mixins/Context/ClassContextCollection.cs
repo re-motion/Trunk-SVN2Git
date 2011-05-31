@@ -34,7 +34,7 @@ namespace Remotion.Mixins.Context
     private readonly Dictionary<Type, ClassContext> _values = new Dictionary<Type, ClassContext> ();
     private readonly IMixinInheritancePolicy _inheritancePolicy = DefaultMixinInheritancePolicy.Instance;
 
-    private readonly LockingCacheDecorator<Type, ClassContext> _inheritedContextCache = Cache<Type, ClassContext>.CreateWithLocking();
+    private readonly LockingCacheDecorator<Type, ClassContext> _inheritedContextCache = CacheFactory.CreateWithLocking<Type, ClassContext>();
 
     public ClassContextCollection (IEnumerable<ClassContext> classContexts)
     {

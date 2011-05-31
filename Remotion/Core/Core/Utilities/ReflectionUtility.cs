@@ -24,13 +24,13 @@ namespace Remotion.Utilities
   {
     public delegate bool CompareValues (object propertyOrFieldValue, object compareToValue);
 
-    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeCache = Cache<Tuple<Type, Type>, bool>.CreateWithLocking();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeCache = CacheFactory.CreateWithLocking<Tuple<Type, Type>, bool>();
     private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeInternalCache =
-        Cache<Tuple<Type, Type>, bool>.CreateWithLocking();
+        CacheFactory.CreateWithLocking<Tuple<Type, Type>, bool>();
     private static readonly LockingCacheDecorator<Tuple<Type, Type>, Type[]> s_ascribedGenericArgumentsCache =
-        Cache<Tuple<Type, Type>, Type[]>.CreateWithLocking();
+        CacheFactory.CreateWithLocking<Tuple<Type, Type>, Type[]>();
     private static readonly LockingCacheDecorator<Tuple<Type, Type, Type>, bool> s_canDirectlyAscribeToGenericTypeInternalCache =
-        Cache<Tuple<Type, Type, Type>, bool>.CreateWithLocking();
+        CacheFactory.CreateWithLocking<Tuple<Type, Type, Type>, bool>();
 
     [Obsolete ("Replace with AttributeUtilities.GetCustomAttriubte")]
     public static object GetSingleAttribute (MemberInfo member, Type attributeType, bool inherit, bool throwExceptionIfNotPresent)
