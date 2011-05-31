@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +29,11 @@ namespace Remotion.Globalization
   /// </summary>
   /// <typeparam name="TAttribute">The type of the resource attribute to be resolved by this class.</typeparam>
   public class ResourceManagerResolver<TAttribute>
-      where TAttribute : Attribute, IResourcesAttribute
+      where TAttribute: Attribute, IResourcesAttribute
   {
-    private readonly LockingCacheDecorator<object, ResourceManagerCacheEntry> _resourceManagerWrappersCache = new LockingCacheDecorator<object, ResourceManagerCacheEntry> ();
+    private readonly LockingCacheDecorator<object, ResourceManagerCacheEntry> _resourceManagerWrappersCache =
+        Cache<object, ResourceManagerCacheEntry>.CreateWithLocking();
+
     private readonly ResourceManagerFactory _resourceManagerFactory = new ResourceManagerFactory();
 
     protected ResourceManagerFactory ResourceManagerFactory
@@ -66,7 +69,8 @@ namespace Remotion.Globalization
       var cacheEntry = GetResourceManagerCacheEntry (objectType, includeHierarchy);
       if (cacheEntry.IsEmpty)
       {
-        string message = string.Format ("Type {0} and its base classes do not define the attribute {1}.", objectType.FullName, typeof (TAttribute).Name);
+        string message = string.Format (
+            "Type {0} and its base classes do not define the attribute {1}.", objectType.FullName, typeof (TAttribute).Name);
         throw new ResourceException (message);
       }
 
@@ -139,7 +143,7 @@ namespace Remotion.Globalization
       // Get the first resource definition in the stream (this is the type itself, or the first base class that has a resource definition).
       // If that first definition's defining type already has a resource manager, we'll use that resource manager. Otherwise, we'll create a new one
       // and store it for that first type.
-      var firstResourceDefinition = resourceDefinitions.FirstOrDefault ();
+      var firstResourceDefinition = resourceDefinitions.FirstOrDefault();
       if (firstResourceDefinition == null)
         return ResourceManagerCacheEntry.Empty;
 
@@ -162,20 +166,20 @@ namespace Remotion.Globalization
 
     private ResourceManagerSet CreateResourceManagerSet (IEnumerable<ResourceDefinition<TAttribute>> resourceDefinitions)
     {
-      var resourceManagers = new List<ResourceManager> ();
+      var resourceManagers = new List<ResourceManager>();
       foreach (ResourceDefinition<TAttribute> definition in resourceDefinitions)
       {
-        foreach (Tuple<Type, TAttribute[]> attributePair in definition.GetAllAttributePairs ())
+        foreach (Tuple<Type, TAttribute[]> attributePair in definition.GetAllAttributePairs())
         {
-          ResourceManager[] resourceManagersForAttributePair = _resourceManagerFactory.GetResourceManagers (attributePair.Item1.Assembly, attributePair.Item2);
+          ResourceManager[] resourceManagersForAttributePair = _resourceManagerFactory.GetResourceManagers (
+              attributePair.Item1.Assembly, attributePair.Item2);
           resourceManagers.InsertRange (0, resourceManagersForAttributePair);
         }
       }
 
       //  Create a new resource mananger wrapper set and return it.
-      var resourceManagerArray = resourceManagers.ToArray ();
+      var resourceManagerArray = resourceManagers.ToArray();
       return ResourceManagerWrapper.CreateWrapperSet (resourceManagerArray);
     }
-
   }
 }

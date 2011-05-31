@@ -24,10 +24,13 @@ namespace Remotion.Utilities
   {
     public delegate bool CompareValues (object propertyOrFieldValue, object compareToValue);
 
-    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeCache = new LockingCacheDecorator<Tuple<Type, Type>, bool>();
-    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeInternalCache = new LockingCacheDecorator<Tuple<Type, Type>, bool> ();
-    private static readonly LockingCacheDecorator<Tuple<Type, Type>, Type[]> s_ascribedGenericArgumentsCache = new LockingCacheDecorator<Tuple<Type, Type>, Type[]> ();
-    private static readonly LockingCacheDecorator<Tuple<Type, Type, Type>, bool> s_canDirectlyAscribeToGenericTypeInternalCache = new LockingCacheDecorator<Tuple<Type, Type, Type>, bool> ();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeCache = Cache<Tuple<Type, Type>, bool>.CreateWithLocking();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type>, bool> s_canAscribeInternalCache =
+        Cache<Tuple<Type, Type>, bool>.CreateWithLocking();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type>, Type[]> s_ascribedGenericArgumentsCache =
+        Cache<Tuple<Type, Type>, Type[]>.CreateWithLocking();
+    private static readonly LockingCacheDecorator<Tuple<Type, Type, Type>, bool> s_canDirectlyAscribeToGenericTypeInternalCache =
+        Cache<Tuple<Type, Type, Type>, bool>.CreateWithLocking();
 
     [Obsolete ("Replace with AttributeUtilities.GetCustomAttriubte")]
     public static object GetSingleAttribute (MemberInfo member, Type attributeType, bool inherit, bool throwExceptionIfNotPresent)

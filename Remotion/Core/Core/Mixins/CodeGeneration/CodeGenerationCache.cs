@@ -63,7 +63,8 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> _mixinTypeCache = 
         new Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> ();
 
-    private readonly LockingCacheDecorator<CtorLookupInfoKey, IConstructorLookupInfo> _constructorLookupInfos = new LockingCacheDecorator<CtorLookupInfoKey, IConstructorLookupInfo> ();
+    private readonly LockingCacheDecorator<CtorLookupInfoKey, IConstructorLookupInfo> _constructorLookupInfos =
+        Cache<CtorLookupInfoKey, IConstructorLookupInfo>.CreateWithLocking();
 
     public CodeGenerationCache (ConcreteTypeBuilder concreteTypeBuilder)
     {

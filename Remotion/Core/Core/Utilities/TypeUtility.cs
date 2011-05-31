@@ -38,7 +38,7 @@ namespace Remotion.Utilities
       private static readonly Regex s_enclosedTypeRegex;
       private static readonly Regex s_typeRegex;
 
-      private static readonly LockingCacheDecorator<string, string> s_fullTypeNames = new LockingCacheDecorator<string, string>();
+      private static readonly LockingCacheDecorator<string, string> s_fullTypeNames = Cache<string, string>.CreateWithLocking();
 
       static AbbreviationParser ()
       {
@@ -127,7 +127,7 @@ namespace Remotion.Utilities
       }
     }
 
-    private static readonly ICache<Type, string> s_partialAssemblyQualifiedNameCache = new LockingCacheDecorator<Type, string> ();
+    private static readonly ICache<Type, string> s_partialAssemblyQualifiedNameCache = Cache<Type, string>.CreateWithLocking();
 
     /// <summary>
     ///   Converts abbreviated qualified type names into standard qualified type names.

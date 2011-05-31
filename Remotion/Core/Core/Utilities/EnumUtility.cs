@@ -76,7 +76,7 @@ namespace Remotion.Utilities
       }
     }
 
-    private static readonly LockingCacheDecorator<Type, EnumMetadata> s_cache = new LockingCacheDecorator<Type, EnumMetadata>();
+    private static readonly LockingCacheDecorator<Type, EnumMetadata> s_cache = Cache<Type, EnumMetadata>.CreateWithLocking();
 
     /// <summary>
     /// Checks whether the specified value is one of the values that the enumeration type defines.

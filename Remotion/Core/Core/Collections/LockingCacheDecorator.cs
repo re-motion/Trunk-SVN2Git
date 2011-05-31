@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -26,16 +25,14 @@ namespace Remotion.Collections
   [Serializable]
   public class LockingCacheDecorator<TKey, TValue> : ICache<TKey, TValue>
   {
-    private Dictionary<TKey, TValue> _cache;
+    private readonly ICache<TKey, TValue> _innerCache;
+    private readonly object _lock = new object ();
 
-    public LockingCacheDecorator ()
-      : this (null)
+    public LockingCacheDecorator (ICache<TKey, TValue> innerCache)
     {
-    }
+      ArgumentUtility.CheckNotNull ("innerCache", innerCache);
 
-    public LockingCacheDecorator (IEqualityComparer<TKey> comparer)
-    {
-      _cache = new Dictionary<TKey,TValue> (comparer);
+      _innerCache = innerCache;
     }
 
     // Add is not safe for interlocked caches
@@ -45,30 +42,22 @@ namespace Remotion.Collections
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
 
-      lock (_cache)
-      {
-        TValue value;
-        if (! _cache.TryGetValue (key, out value))
-        {
-          value = valueFactory (key);
-          _cache.Add (key, value);
-        }
-        return value;
-      }
+      lock (_lock)
+        return _innerCache.GetOrCreateValue (key, valueFactory);
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
 
-      lock (_cache)
-        return _cache.TryGetValue (key, out value);
+      lock (_lock)
+        return _innerCache.TryGetValue (key, out value);
     }
 
     public void Clear ()
     {
-      lock (_cache)
-        _cache.Clear ();
+      lock (_lock)
+        _innerCache.Clear ();
     }
 
     bool INullObject.IsNull

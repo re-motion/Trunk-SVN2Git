@@ -15,17 +15,78 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
+using Castle.DynamicProxy;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
-  public class LockingCacheDecoratorTest : CacheTest
+  public class LockingCacheDecoratorTest
   {
-    protected override ICache<TKey, TValue> CreateCache<TKey, TValue> ()
+    private ICache<string, int> _innerCacheMock;
+    private LockingCacheDecorator<string, int> _cache;
+
+    [SetUp]
+    public void SetUp ()
     {
-      return new LockingCacheDecorator<TKey, TValue> ();
+      _innerCacheMock = MockRepository.GenerateStrictMock<ICache<string, int>> ();
+      _cache = new LockingCacheDecorator<string, int> (_innerCacheMock);
+    }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (((INullObject) _cache).IsNull, Is.False);
+    }
+
+    [Test]
+    public void GetOrCreateValue ()
+    {
+      ExpectSynchronizedDelegation (cache => cache.GetOrCreateValue ("hugo", delegate { return 3; }), 17);
+    }
+
+    [Test]
+    public void TryGetValue ()
+    {
+      int value;
+      ExpectSynchronizedDelegation (store => store.TryGetValue ("hugo", out value), true);
+    }
+
+    [Test]
+    public void Clear ()
+    {
+      ExpectSynchronizedDelegation (store => store.Clear ());
+    }
+
+    private void ExpectSynchronizedDelegation<TResult> (Func<ICache<string, int>, TResult> action, TResult fakeResult)
+    {
+      _innerCacheMock
+          .Expect (mock => action (mock))
+          .Return (fakeResult)
+          .WhenCalled (mi => LockingCacheDecoratorTestHelper.CheckLockIsHeld (_cache));
+      _innerCacheMock.Replay ();
+
+      TResult actualResult = action (_cache);
+
+      _innerCacheMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (fakeResult));
+    }
+
+    private void ExpectSynchronizedDelegation (Action<ICache<string, int>> action)
+    {
+      _innerCacheMock
+          .Expect (action)
+          .WhenCalled (mi => LockingCacheDecoratorTestHelper.CheckLockIsHeld (_cache));
+      _innerCacheMock.Replay ();
+
+      action (_cache);
+
+      _innerCacheMock.VerifyAllExpectations ();
     }
   }
 }
