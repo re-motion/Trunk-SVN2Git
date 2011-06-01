@@ -29,7 +29,7 @@ namespace Remotion.Collections
   /// <remarks>
   /// Instances of this object delegate every method call to an inner <see cref="IDataStore{TKey,TValue}"/> implementation,
   /// locking on a private synchronization object while the method is executed. This provides a convenient way to make an 
-  /// <see cref="IDataStore{TKey,TValue}"/> thread-safe, as long as the store is only executed through this wrapper.
+  /// <see cref="IDataStore{TKey,TValue}"/> thread-safe, as long as the store is only accessed through this wrapper.
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
   [Serializable]

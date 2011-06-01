@@ -15,12 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using Castle.DynamicProxy;
 using NUnit.Framework;
 using Remotion.Collections;
-using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Collections

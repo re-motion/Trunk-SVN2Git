@@ -20,8 +20,17 @@ using Remotion.Utilities;
 namespace Remotion.Collections
 {
   /// <summary>
-  /// A simple thread-safe cache.
+  /// Provides a synchronization wrapper around an implementation of <see cref="ICache{TKey,TValue}"/>. Use 
+  /// <see cref="CacheFactory.CreateWithLocking{TKey,TValue}()"/> to create an instance of this type.
   /// </summary>
+  /// <typeparam name="TKey">The type of the keys.</typeparam>
+  /// <typeparam name="TValue">The type of the values.</typeparam>
+  /// <remarks>
+  /// Instances of this object delegate every method call to an inner <see cref="ICache{TKey,TValue}"/> implementation,
+  /// locking on a private synchronization object while the method is executed. This provides a convenient way to make an 
+  /// <see cref="ICache{TKey,TValue}"/> thread-safe, as long as the cache is only accessed through this wrapper.
+  /// </remarks>
+  /// <threadsafety static="true" instance="true" />
   [Serializable]
   public class LockingCacheDecorator<TKey, TValue> : ICache<TKey, TValue>
   {
@@ -34,8 +43,6 @@ namespace Remotion.Collections
 
       _innerCache = innerCache;
     }
-
-    // Add is not safe for interlocked caches
 
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
