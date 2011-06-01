@@ -620,7 +620,6 @@
     <Compile Include="Configuration\TypeElement2Test.cs" />
     <Compile Include="Configuration\FakeOtherProvider.cs" />
     <Compile Include="Configuration\FakeProviderBase.cs" />
-    <Compile Include="Collections\LazyInterlockedCacheTest.cs" />
     <Compile Include="Configuration\SampleType.cs" />
     <Compile Include="Configuration\TypeElementTest.cs" />
     <Compile Include="Design\DesignModeHelperBaseTest.cs" />

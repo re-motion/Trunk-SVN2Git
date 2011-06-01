@@ -370,7 +370,6 @@
     <Compile Include="Globalization\ResourceManagerResolver.cs" />
     <Compile Include="Globalization\ResourceManagerResolverUtility.cs" />
     <Compile Include="Collections\ArrayComparer.cs" />
-    <Compile Include="Collections\LazyInterlockedCache.cs" />
     <Compile Include="Logging\Log4NetLog.cs" />
     <Compile Include="Logging\Log4NetLogManager.cs" />
     <Compile Include="Logging\Log4NetTraceListener.cs" />

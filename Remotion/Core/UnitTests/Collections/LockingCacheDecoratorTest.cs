@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Collections
@@ -57,6 +58,12 @@ namespace Remotion.UnitTests.Collections
     public void Clear ()
     {
       ExpectSynchronizedDelegation (store => store.Clear ());
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      Serializer.SerializeAndDeserialize (new LockingCacheDecorator<string, int> (new Cache<string, int> ()));
     }
 
     private void ExpectSynchronizedDelegation<TResult> (Func<ICache<string, int>, TResult> action, TResult fakeResult)
