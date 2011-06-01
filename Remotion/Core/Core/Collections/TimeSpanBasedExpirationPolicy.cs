@@ -30,7 +30,6 @@ namespace Remotion.Collections
 
     public TimeSpanBasedExpirationPolicy (TimeSpan period, IUtcNowProvider utcNowProvider)
     {
-      ArgumentUtility.CheckNotNull ("period", period);
       ArgumentUtility.CheckNotNull ("utcNowProvider", utcNowProvider);
 
       _period = period;

@@ -186,7 +186,7 @@ namespace Remotion.UnitTests.Collections
     public void GetOrCreateValue_Get ()
     {
       bool delegateCalled = false;
-      Assert.That (_store.GetOrCreateValue ("a", delegate (string key) { delegateCalled = true; return 7; }), Is.EqualTo (1));
+      Assert.That (_store.GetOrCreateValue ("a", delegate { delegateCalled = true; return 7; }), Is.EqualTo (1));
       Assert.That (delegateCalled, Is.False);
     }
 
@@ -203,22 +203,24 @@ namespace Remotion.UnitTests.Collections
           Is.EqualTo (7));
       Assert.That (delegateCalled);
     }
+    
+    [Test]
+    public void GetEnumerator ()
+    {
+      using (var enumerator = _store.GetEnumerator ())
+      {
+        Assert.That (enumerator.MoveNext(), Is.True);
+        Assert.That (enumerator.Current.Key, Is.EqualTo ("a"));
+        Assert.That (enumerator.MoveNext(), Is.True);
+        Assert.That (enumerator.Current.Key, Is.EqualTo ("b"));
+        Assert.That (enumerator.MoveNext(), Is.False);
+      }
+    }
 
     [Test]
     public void Serializable ()
     {
       Serializer.SerializeAndDeserialize (_store);
-    }
-
-    [Test]
-    public void GetEnumerator ()
-    {
-      var enumerator = _store.GetEnumerator();
-      Assert.That (enumerator.MoveNext(), Is.True);
-      Assert.That (enumerator.Current.Key, Is.EqualTo("a"));
-      Assert.That (enumerator.MoveNext (), Is.True);
-      Assert.That (enumerator.Current.Key, Is.EqualTo ("b"));
-      Assert.That (enumerator.MoveNext (), Is.False);
     }
   }
 }

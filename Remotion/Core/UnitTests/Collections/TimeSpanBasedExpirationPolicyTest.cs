@@ -32,19 +32,35 @@ namespace Remotion.UnitTests.Collections
     public void SetUp ()
     {
       _utcProviderStub = MockRepository.GenerateStub<IUtcNowProvider>();
-      _policy = new TimeSpanBasedExpirationPolicy<string> (TimeSpan.FromTicks(1), _utcProviderStub);
+
+      SetCurrentTime (new DateTime (5));
+      _policy = new TimeSpanBasedExpirationPolicy<string> (TimeSpan.FromTicks (1), _utcProviderStub);
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      Assert.That (_policy.NextScan.Ticks, Is.EqualTo (6));
+      
     }
 
     [Test]
     public void ItemsScanned ()
     {
-      Assert.That (_policy.NextScan.Ticks, Is.EqualTo (1));
-
-      _utcProviderStub.Stub (stub => stub.UtcNow).Return (new DateTime (1));
+      Assert.That (_policy.NextScan.Ticks, Is.EqualTo (6));
+      SetCurrentTime (new DateTime (9));
 
       _policy.ItemsScanned();
 
-      Assert.That (_policy.NextScan.Ticks, Is.EqualTo (2));
+      Assert.That (_policy.NextScan.Ticks, Is.EqualTo (10));
+    }
+
+    [Test]
+    public void GetExpirationInfo ()
+    {
+      var result = _policy.GetExpirationInfo ("Test");
+
+      Assert.That (result.Ticks, Is.EqualTo (6));
     }
 
     [Test]
@@ -56,9 +72,17 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
+    public void IsExpired_True_ExactSameTime ()
+    {
+      var result = _policy.IsExpired ("Test", new DateTime (5));
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
     public void IsExpired_False ()
     {
-      var result = _policy.IsExpired ("Test", new DateTime (2));
+      var result = _policy.IsExpired ("Test", new DateTime (6));
 
       Assert.That (result, Is.False);
     }
@@ -72,19 +96,25 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void ShouldScanForExpiredItems_True ()
     {
-      _utcProviderStub.Stub (stub => stub.UtcNow).Return (new DateTime (2));
+      SetCurrentTime (new DateTime (7));
+
+      Assert.That (_policy.ShouldScanForExpiredItems (), Is.True);
+    }
+
+    [Test]
+    public void ShouldScanForExpiredItems_True_ExactSameTime ()
+    {
+      SetCurrentTime (new DateTime (6));
 
       Assert.That (_policy.ShouldScanForExpiredItems(), Is.True);
     }
 
-    [Test]
-    public void GetExpirationInfo ()
+    private void SetCurrentTime (DateTime time)
     {
-      _utcProviderStub.Stub (stub => stub.UtcNow).Return (new DateTime (5));
-
-      var result = _policy.GetExpirationInfo ("Test");
-
-      Assert.That (result.Ticks, Is.EqualTo (6));
+      _utcProviderStub.BackToRecord ();
+      _utcProviderStub.Stub (stub => stub.UtcNow).Return (time);
+      _utcProviderStub.Replay();
+      return;
     }
   }
 }

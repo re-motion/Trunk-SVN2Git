@@ -19,7 +19,8 @@ using System;
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// <see cref="IUtcNowProvider"/> defines the API for all implementations that are returning the actual date and time.
+  /// <see cref="IUtcNowProvider"/> defines an abstraction for clients using the current date and time. Use this to decouple code from the system 
+  /// clock.
   /// </summary>
   public interface IUtcNowProvider
   {

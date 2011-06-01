@@ -22,6 +22,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
+  // TODO 3919: Add ExpiringDataStoreFactory class that has 6 factory methods:
+  //   - Create<TKey, TValue, TExpirationInfo> ([IEqualityComparer], IExpirationPolicy)
+  //   - CreateWithLocking<TKey, TValue, TExpirationInfo> ([IEqualityComparer], IExpirationPolicy)
+  //   - CreateWithLazyLocking<TKey, TValue, TExpirationInfo> where TValue : class ([IEqualityComparer], IExpirationPolicy)
+
   /// <summary>
   /// The <see cref="ExpiringDataStore{TKey,TValue,TExpirationInfo}"/> stores values that can be expire.
   /// </summary>
@@ -39,7 +44,7 @@ namespace Remotion.Collections
       _expirationPolicy = expirationPolicy;
     }
 
-    public bool IsNull
+    bool INullObject.IsNull
     {
       get { return false; }
     }
@@ -47,6 +52,9 @@ namespace Remotion.Collections
     public bool ContainsKey (TKey key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
+
+      // TODO 3919: Test single expired item is removed
+      // TODO 3919: return TryGetValue(key, out dummy);
 
       return _innerDataStore.ContainsKey (key);
     }
@@ -74,7 +82,12 @@ namespace Remotion.Collections
 
     public TValue this [TKey key]
     {
+      // TODO 3919: Test that RemoveExpiredItems() is called
+      // TODO 3919: Test single expired item is removed
+      // TODO 3919: if (!TryGetValue(key, out value)) throw KeyNotFoundException, else return value
+      // TODO 3919: (Should be 5 tests, the same as for ContainsKey.)
       get { return _innerDataStore[key].Item1; }
+      // TODO 3919: RemoveExpiredItems(); 
       set { _innerDataStore[key] = Tuple.Create(value, _expirationPolicy.GetExpirationInfo(value)); }
     }
 
@@ -87,6 +100,7 @@ namespace Remotion.Collections
       return value;
     }
 
+    // TODO 3919: RemoveExpiredItems();
     public bool TryGetValue (TKey key, out TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
@@ -94,19 +108,20 @@ namespace Remotion.Collections
       Tuple<TValue, TExpirationInfo> valueResult;
       if (_innerDataStore.TryGetValue (key, out valueResult))
       {
-        if (_expirationPolicy.IsExpired (valueResult.Item1, valueResult.Item2))
+        if (!_expirationPolicy.IsExpired (valueResult.Item1, valueResult.Item2))
         {
-          RemoveWithoutScanning (key);
-          value = default(TValue);
-          return false;
+          value = valueResult.Item1;
+          return true;
         }
-        value = valueResult.Item1;
-        return true;
+
+        RemoveWithoutScanning (key);
       }
+
       value = default (TValue);
       return false;
     }
 
+    // TODO 3919: Test that RemoveExpiredItems() is called
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
     {
       ArgumentUtility.CheckNotNull ("key", key);
@@ -129,19 +144,18 @@ namespace Remotion.Collections
 
     private bool RemoveWithoutScanning (TKey key)
     {
-      if (_innerDataStore.ContainsKey (key))
-      {
-        _innerDataStore.Remove (key);
-        return true;
-      }
-      return false;
+      return _innerDataStore.Remove (key);
     }
 
     private void RemoveExpiredItems ()
     {
       if (_expirationPolicy.ShouldScanForExpiredItems())
       {
-        var expiredKeys = (from kvp in _innerDataStore where _expirationPolicy.IsExpired (kvp.Value.Item1, kvp.Value.Item2) select kvp.Key).ToList();
+        var expiredKeys = (
+            from kvp in _innerDataStore 
+            where _expirationPolicy.IsExpired (kvp.Value.Item1, kvp.Value.Item2) 
+            select kvp.Key).ToList();
+        
         foreach (var key in expiredKeys)
           RemoveWithoutScanning (key);
 

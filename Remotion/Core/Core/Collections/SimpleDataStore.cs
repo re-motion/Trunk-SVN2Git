@@ -184,6 +184,10 @@ namespace Remotion.Collections
       return value;
     }
 
+    /// <summary>
+    /// Returns an <see cref="IEnumerator{T}"/> that iterates through the contents of this <see cref="SimpleDataStore{TKey,TValue}"/>.
+    /// </summary>
+    /// <returns>An <see cref="IEnumerator{T}"/> that iterates through the contents of this <see cref="SimpleDataStore{TKey,TValue}"/>.</returns>
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator ()
     {
       return _innerDictionary.GetEnumerator();
