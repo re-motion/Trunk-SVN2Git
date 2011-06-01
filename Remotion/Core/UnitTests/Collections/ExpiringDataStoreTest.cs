@@ -27,16 +27,18 @@ namespace Remotion.UnitTests.Collections
   [TestFixture]
   public class ExpiringDataStoreTest
   {
-    private IExpirationPolicy<object> _expirationPolicyMock;
-    private ExpiringDataStore<string, object> _dataStore;
+    private IExpirationPolicy<object, DateTime> _expirationPolicyMock;
+    private ExpiringDataStore<string, object, DateTime> _dataStore;
     private object _fakeValue;
+    private DateTime _fakeExpirationInfo;
 
     [SetUp]
     public void SetUp ()
     {
-      _expirationPolicyMock = MockRepository.GenerateStrictMock<IExpirationPolicy<object>>();
-      _dataStore = new ExpiringDataStore<string, object> (_expirationPolicyMock, new ReferenceEqualityComparer<string>());
+      _expirationPolicyMock = MockRepository.GenerateStrictMock<IExpirationPolicy<object, DateTime>>();
+      _dataStore = new ExpiringDataStore<string, object, DateTime> (_expirationPolicyMock, new ReferenceEqualityComparer<string>());
       _fakeValue = new object();
+      _fakeExpirationInfo = new DateTime (0);
     }
 
     [Test]
@@ -48,13 +50,13 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void AddAndContainsKey_ShouldScanForExpiredItemsFalse ()
     {
-      _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
-      _expirationPolicyMock.Replay();
+      _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return(_fakeExpirationInfo);
+      _expirationPolicyMock.Replay ();
 
       _dataStore.Add ("Test", _fakeValue);
 
-      _expirationPolicyMock.VerifyAllExpectations();
+      _expirationPolicyMock.VerifyAllExpectations ();
       Assert.That (_dataStore.ContainsKey ("Test"), Is.True);
     }
 
@@ -62,8 +64,8 @@ namespace Remotion.UnitTests.Collections
     public void AddAndContainsKey_ShouldScanForExpiredItemsTrue_NoValues ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (true);
-      _expirationPolicyMock.Expect (mock => mock.ItemsScanned());
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
+      _expirationPolicyMock.Expect (mock => mock.ItemsScanned ());
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Replay ();
 
       _dataStore.Add ("Test", _fakeValue);
@@ -74,15 +76,15 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void AddAndContainsKey_ShouldScanForExpiredItemsTrue_WithValues_NotExpired ()
     {
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue)).Repeat.Any ();
+       _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo).Repeat.Any ();
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
       _dataStore.Add ("Test1", _fakeValue);
       _dataStore.Add ("Test2", _fakeValue);
 
-      _expirationPolicyMock.BackToRecord();
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
+      _expirationPolicyMock.BackToRecord ();
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (true);
-      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue)).Return(false).Repeat.Twice();
+      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false).Repeat.Twice ();
       _expirationPolicyMock.Expect (mock => mock.ItemsScanned ());
       _expirationPolicyMock.Replay ();
 
@@ -94,16 +96,15 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void AddAndContainsKey_ShouldScanForExpiredItemsTrue_WithValues_Expired ()
     {
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue)).Repeat.Any ();
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo).Repeat.Any ();
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
       _dataStore.Add ("Test1", _fakeValue);
       _dataStore.Add ("Test2", _fakeValue);
 
       _expirationPolicyMock.BackToRecord ();
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (true);
-      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue)).Return (true).Repeat.Twice();
-      _expirationPolicyMock.Expect (mock => mock.ItemRemoved (_fakeValue)).Repeat.Twice ();
+      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true).Repeat.Twice ();
       _expirationPolicyMock.Expect (mock => mock.ItemsScanned ());
       _expirationPolicyMock.Replay ();
 
@@ -118,7 +119,7 @@ namespace Remotion.UnitTests.Collections
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
       _expirationPolicyMock.Replay ();
 
-      var result = _dataStore.Remove("Test");
+      var result = _dataStore.Remove ("Test");
 
       _expirationPolicyMock.VerifyAllExpectations ();
       Assert.That (result, Is.False);
@@ -128,8 +129,7 @@ namespace Remotion.UnitTests.Collections
     public void Remove_ShouldScanForExpiredItemsFalse_KeyDoesExist ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.ItemRemoved(_fakeValue));
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
 
@@ -142,18 +142,17 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Remove_ShouldScanForExpiredItemsTrue_WithValues_NotExpired ()
     {
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue)).Repeat.Any ();
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo).Repeat.Any();
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
       _dataStore.Add ("Test1", _fakeValue);
       _dataStore.Add ("Test2", _fakeValue);
 
-      _expirationPolicyMock.BackToRecord();
+      _expirationPolicyMock.BackToRecord ();
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (true);
-      _expirationPolicyMock.Expect(mock => mock.ItemRemoved (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue)).Return (false).Repeat.Twice ();
+      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false).Repeat.Twice ();
       _expirationPolicyMock.Expect (mock => mock.ItemsScanned ());
       _expirationPolicyMock.Replay ();
-     
+
       var result = _dataStore.Remove ("Test1");
 
       _expirationPolicyMock.VerifyAllExpectations ();
@@ -163,15 +162,14 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Remove_ShouldScanForExpiredItemsTrue_WithValues_Expired ()
     {
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue)).Repeat.Any ();
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo).Repeat.Any ();
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
       _dataStore.Add ("Test1", _fakeValue);
       _dataStore.Add ("Test2", _fakeValue);
 
       _expirationPolicyMock.BackToRecord ();
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (true);
-      _expirationPolicyMock.Expect (mock => mock.ItemRemoved (_fakeValue)).Repeat.Twice();
-      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue)).Return (true).Repeat.Twice ();
+      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true).Repeat.Twice ();
       _expirationPolicyMock.Expect (mock => mock.ItemsScanned ());
       _expirationPolicyMock.Replay ();
 
@@ -191,7 +189,7 @@ namespace Remotion.UnitTests.Collections
     public void GetValue ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Replay ();
 
       _dataStore.Add ("Test", _fakeValue);
@@ -202,10 +200,14 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void SetValue ()
     {
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
+      _expirationPolicyMock.Replay();
+
       Assert.That (_dataStore.ContainsKey ("Test"), Is.False);
 
       _dataStore["Test"] = _fakeValue;
 
+      _expirationPolicyMock.VerifyAllExpectations();
       Assert.That (_dataStore.ContainsKey ("Test"), Is.True);
     }
 
@@ -214,26 +216,25 @@ namespace Remotion.UnitTests.Collections
     {
       _expirationPolicyMock.Replay ();
 
-      _dataStore.Clear();
+      _dataStore.Clear ();
 
-      _expirationPolicyMock.VerifyAllExpectations();
+      _expirationPolicyMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void Clear_WithItems ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue)).Repeat.Twice();
-      _expirationPolicyMock.Expect (mock => mock.ItemRemoved(_fakeValue)).Repeat.Twice();
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo).Repeat.Any();
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test1", _fakeValue);
       _dataStore.Add ("Test2", _fakeValue);
       Assert.That (_dataStore.ContainsKey ("Test1"), Is.True);
       Assert.That (_dataStore.ContainsKey ("Test2"), Is.True);
-      
-      _dataStore.Clear();
 
-      _expirationPolicyMock.VerifyAllExpectations();
+      _dataStore.Clear ();
+
+      _expirationPolicyMock.VerifyAllExpectations ();
       Assert.That (_dataStore.ContainsKey ("Test1"), Is.False);
       Assert.That (_dataStore.ContainsKey ("Test2"), Is.False);
     }
@@ -253,8 +254,8 @@ namespace Remotion.UnitTests.Collections
     {
       object value;
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Stub (stub => stub.IsExpired(_fakeValue)).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
 
@@ -270,9 +271,8 @@ namespace Remotion.UnitTests.Collections
     {
       object value;
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue)).Return (true);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.ItemRemoved(_fakeValue));
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
 
@@ -288,8 +288,8 @@ namespace Remotion.UnitTests.Collections
     {
       object value;
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (true);
-      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue)).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Expect (mock => mock.ItemsScanned ());
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
@@ -306,16 +306,15 @@ namespace Remotion.UnitTests.Collections
     {
       object value;
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (true);
-      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue)).Return (true);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.ItemRemoved(_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.ItemsScanned());
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
+      _expirationPolicyMock.Expect (mock => mock.ItemsScanned ());
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
 
       var result = _dataStore.TryGetValue ("Test", out value);
 
-      _expirationPolicyMock.VerifyAllExpectations();
+      _expirationPolicyMock.VerifyAllExpectations ();
       Assert.That (result, Is.False);
       Assert.That (value, Is.Null);
     }
@@ -324,12 +323,12 @@ namespace Remotion.UnitTests.Collections
     public void GetOrCreateValue_KeyDoesExist_NotExpired ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue)).Return(false);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
+      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
 
-      var result = _dataStore.GetOrCreateValue ("Test", k => new object());
+      var result = _dataStore.GetOrCreateValue ("Test", k => new object ());
 
       Assert.That (result, Is.SameAs (_fakeValue));
     }
@@ -339,10 +338,9 @@ namespace Remotion.UnitTests.Collections
     {
       var newValue = new object ();
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.ItemRemoved (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (newValue));
-      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue)).Return (true);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (newValue)).Return (_fakeExpirationInfo);
+      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true);
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
 
@@ -352,10 +350,10 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    public void GetOrCreateValue_KeyDoesNotExist()
+    public void GetOrCreateValue_KeyDoesNotExist ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
       _expirationPolicyMock.Replay ();
 
       var result = _dataStore.GetOrCreateValue ("Test", k => _fakeValue);
@@ -378,23 +376,22 @@ namespace Remotion.UnitTests.Collections
     public void GetValueOrDefault_KeyDoesExist_NotExpired ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue)).Return (false);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
+      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
 
       var result = _dataStore.GetValueOrDefault ("Test");
 
-      Assert.That (result, Is.SameAs(_fakeValue));
+      Assert.That (result, Is.SameAs (_fakeValue));
     }
 
     [Test]
     public void GetValueOrDefault_KeyDoesExist_Expired ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
-      _expirationPolicyMock.Expect (mock => mock.ItemAdded (_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.ItemRemoved(_fakeValue));
-      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue)).Return (true);
+      _expirationPolicyMock.Expect (mock => mock.GetExpirationInfo (_fakeValue)).Return (_fakeExpirationInfo);
+      _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true);
       _expirationPolicyMock.Replay ();
       _dataStore.Add ("Test", _fakeValue);
 

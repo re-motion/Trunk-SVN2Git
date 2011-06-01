@@ -13,9 +13,7 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
-// 
 
-//
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -38,29 +36,6 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    public void ItemAdded ()
-    {
-      Assert.That (_policy.ExpirationTimes, Is.Empty);
-
-      _policy.ItemAdded ("Test");
-
-      Assert.That (_policy.ExpirationTimes.Count, Is.EqualTo (1));
-      Assert.That (_policy.ExpirationTimes["Test"].Ticks, Is.EqualTo(1));
-    }
-
-    [Test]
-    public void ItemRemoved ()
-    {
-      Assert.That (_policy.ExpirationTimes, Is.Empty);
-      _policy.ItemAdded ("Test");
-      Assert.That (_policy.ExpirationTimes.Count, Is.EqualTo (1));
-
-      _policy.ItemRemoved ("Test");
-
-      Assert.That (_policy.ExpirationTimes, Is.Empty);
-    }
-
-    [Test]
     public void ItemsScanned ()
     {
       Assert.That (_policy.NextScan.Ticks, Is.EqualTo (1));
@@ -75,19 +50,17 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void IsExpired_True ()
     {
-      _policy.ItemAdded ("Test");
+      var result = _policy.IsExpired ("Test", new DateTime(0));
 
-      Assert.That (_policy.IsExpired ("Test"), Is.False);
+      Assert.That (result, Is.True);
     }
 
     [Test]
     public void IsExpired_False ()
     {
-      var policy = new TimeSpanBasedExpirationPolicy<string> (TimeSpan.FromTicks (0), _utcProviderStub);
+      var result = _policy.IsExpired ("Test", new DateTime (2));
 
-      policy.ItemAdded ("Test");
-
-      Assert.That (policy.IsExpired ("Test"), Is.True);
+      Assert.That (result, Is.False);
     }
 
     [Test]
@@ -102,6 +75,16 @@ namespace Remotion.UnitTests.Collections
       _utcProviderStub.Stub (stub => stub.UtcNow).Return (new DateTime (2));
 
       Assert.That (_policy.ShouldScanForExpiredItems(), Is.True);
+    }
+
+    [Test]
+    public void GetExpirationInfo ()
+    {
+      _utcProviderStub.Stub (stub => stub.UtcNow).Return (new DateTime (5));
+
+      var result = _policy.GetExpirationInfo ("Test");
+
+      Assert.That (result.Ticks, Is.EqualTo (6));
     }
   }
 }

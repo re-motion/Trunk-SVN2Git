@@ -13,11 +13,8 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
-// 
 
-//
 using System;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -25,9 +22,8 @@ namespace Remotion.Collections
   /// <summary>
   /// The <see cref="TimeSpanBasedExpirationPolicy{TValue}"/> handles values which can be expire based on <see cref="TimeSpan"/> periods.
   /// </summary>
-  public class TimeSpanBasedExpirationPolicy<TValue> : IExpirationPolicy<TValue> where TValue : class
+  public class TimeSpanBasedExpirationPolicy<TValue> : IExpirationPolicy<TValue, DateTime>
   {
-    private readonly Dictionary<TValue, DateTime> _expirationTimes;
     private readonly TimeSpan _period;
     private readonly IUtcNowProvider _utcNowProvider;
     private DateTime _nextScan;
@@ -37,7 +33,6 @@ namespace Remotion.Collections
       ArgumentUtility.CheckNotNull ("period", period);
       ArgumentUtility.CheckNotNull ("utcNowProvider", utcNowProvider);
 
-      _expirationTimes = new Dictionary<TValue, DateTime> (new ReferenceEqualityComparer<TValue>());
       _period = period;
       _nextScan = utcNowProvider.UtcNow + period;
       _utcNowProvider = utcNowProvider;
@@ -48,35 +43,24 @@ namespace Remotion.Collections
       get { return _nextScan; }
     }
 
-    public Dictionary<TValue, DateTime> ExpirationTimes
-    {
-      get { return _expirationTimes; }
-    }
-
-    public void ItemAdded (TValue value)
-    {
-      ArgumentUtility.CheckNotNull ("value", value);
-
-      _expirationTimes.Add (value, _utcNowProvider.UtcNow + _period);
-    }
-
-    public void ItemRemoved (TValue value)
-    {
-      ArgumentUtility.CheckNotNull ("value", value);
-
-      _expirationTimes.Remove (value);
-    }
-
     public void ItemsScanned ()
     {
       _nextScan = _utcNowProvider.UtcNow + _period;
     }
 
-    public bool IsExpired (TValue value)
+    public DateTime GetExpirationInfo (TValue value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
-      return _expirationTimes[value] <= _utcNowProvider.UtcNow;
+      return _utcNowProvider.UtcNow + _period;
+    }
+
+    public bool IsExpired (TValue value, DateTime expirationInfo)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("expirationInfo", expirationInfo);
+
+      return expirationInfo <= _utcNowProvider.UtcNow;
     }
 
     public bool ShouldScanForExpiredItems ()
