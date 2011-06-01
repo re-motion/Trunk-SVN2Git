@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -28,7 +28,7 @@ namespace Remotion.Collections
   /// <typeparam name="TKey">The type of the keys.</typeparam>
   /// <typeparam name="TValue">The type of the values.</typeparam>
   [Serializable]
-  public class SimpleDataStore<TKey, TValue> : IDataStore<TKey, TValue>
+  public class SimpleDataStore<TKey, TValue> : IDataStore<TKey, TValue>, IEnumerable<KeyValuePair<TKey, TValue>>
   {
     private readonly Dictionary<TKey, TValue> _innerDictionary;
 
@@ -182,6 +182,16 @@ namespace Remotion.Collections
         Add (key, value);
       }
       return value;
+    }
+
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator ()
+    {
+      return _innerDictionary.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
     }
   }
 }

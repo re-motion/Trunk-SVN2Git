@@ -209,5 +209,16 @@ namespace Remotion.UnitTests.Collections
     {
       Serializer.SerializeAndDeserialize (_store);
     }
+
+    [Test]
+    public void GetEnumerator ()
+    {
+      var enumerator = _store.GetEnumerator();
+      Assert.That (enumerator.MoveNext(), Is.True);
+      Assert.That (enumerator.Current.Key, Is.EqualTo("a"));
+      Assert.That (enumerator.MoveNext (), Is.True);
+      Assert.That (enumerator.Current.Key, Is.EqualTo ("b"));
+      Assert.That (enumerator.MoveNext (), Is.False);
+    }
   }
 }
