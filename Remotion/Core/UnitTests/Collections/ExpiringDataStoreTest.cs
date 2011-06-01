@@ -31,6 +31,7 @@ namespace Remotion.UnitTests.Collections
     private ExpiringDataStore<string, object, DateTime> _dataStore;
     private object _fakeValue;
     private object _fakeValue2;
+    private object _fakeValue3;
     private DateTime _fakeExpirationInfo;
     private DateTime _fakeExpirationInfo2;
 
@@ -41,6 +42,7 @@ namespace Remotion.UnitTests.Collections
       _dataStore = new ExpiringDataStore<string, object, DateTime> (_expirationPolicyMock, new ReferenceEqualityComparer<string>());
       _fakeValue = new object ();
       _fakeValue2 = new object ();
+      _fakeValue3 = new object ();
       _fakeExpirationInfo = new DateTime (0);
       _fakeExpirationInfo2 = new DateTime (0);
     }
@@ -199,9 +201,8 @@ namespace Remotion.UnitTests.Collections
       CheckKeyNotContained ("Test");
       StubExpirationInfo (_fakeValue, _fakeExpirationInfo);
 
-      _dataStore["Test"] = _fakeValue;
+      CheckScansForExpiredItems_WithShouldScanTrue (store => store["Test"] = _fakeValue);
 
-      _expirationPolicyMock.VerifyAllExpectations ();
       CheckItemContained ("Test", _fakeValue, _fakeExpirationInfo);
     }
 
@@ -262,42 +263,70 @@ namespace Remotion.UnitTests.Collections
     public void TryGetValue_KeyDoesNotExist ()
     {
       object value;
-      var result = _dataStore.TryGetValue ("Test", out value);
-
+      var result = CheckScansForExpiredItems_WithShouldScanTrue (store => store.TryGetValue("Test", out value));
+      
       Assert.That (result, Is.False);
     }
 
     [Test]
-    public void TryGetValue_KeyDoesExist_NotExpired ()
+    public void TryGetValue_KeyDoesExist_ShouldScanFalse_NotExpired ()
     {
-      PrepareItem ("Test", _fakeValue, _fakeExpirationInfo);
+      PrepareItem ("Test", _fakeValue3, _fakeExpirationInfo);
 
-      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue3, _fakeExpirationInfo)).Return (false);
       _expirationPolicyMock.Replay();
 
-      object value;
-      var result = _dataStore.TryGetValue ("Test", out value);
+      object value = null;
+      var result = CheckScansForExpiredItems_WithShouldScanTrue (store => store.TryGetValue ("Test", out value));
 
-      _expirationPolicyMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
-      Assert.That (value, Is.SameAs (_fakeValue));
+      Assert.That (value, Is.SameAs (_fakeValue3));
     }
 
     [Test]
-    public void TryGetValue_KeyDoesExist_Expired ()
+    public void TryGetValue_KeyDoesExist_ShouldScanFalse_Expired ()
     {
-      PrepareItem ("Test", _fakeValue, _fakeExpirationInfo);
+      PrepareItem ("Test", _fakeValue3, _fakeExpirationInfo);
 
-      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true);
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue3, _fakeExpirationInfo)).Return (true);
       _expirationPolicyMock.Replay();
 
-      object value;
-      var result = _dataStore.TryGetValue ("Test", out value);
+      object value = null;
+      var result = CheckScansForExpiredItems_WithShouldScanTrue (store => store.TryGetValue ("Test", out value));
 
-      _expirationPolicyMock.VerifyAllExpectations();
       Assert.That (result, Is.False);
       Assert.That (value, Is.Null);
       CheckKeyNotContained ("Test");
+    }
+
+    [Test]
+    public void TryGetValue_KeyDoesExist_ShouldScanTrue_NotExpired ()
+    {
+      PrepareItem ("Test", _fakeValue3, _fakeExpirationInfo);
+
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue3, _fakeExpirationInfo)).Return (false);
+      _expirationPolicyMock.Replay ();
+
+      object value = null;
+      var result = CheckScansForExpiredItems_WithShouldScanTrue (store => store.TryGetValue ("Test", out value));
+
+      Assert.That (result, Is.True);
+      Assert.That (value, Is.SameAs (_fakeValue3));
+    }
+
+    [Test]
+    public void TryGetValue_KeyDoesExist_ShouldScanTrue_Expired ()
+    {
+      PrepareItem ("Test", _fakeValue3, _fakeExpirationInfo);
+
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue3, _fakeExpirationInfo)).Return (true);
+      _expirationPolicyMock.Replay ();
+
+      object value = null;
+      var result = CheckScansForExpiredItems_WithShouldScanTrue (store => store.TryGetValue ("Test", out value));
+
+      Assert.That (result, Is.False);
+      Assert.That (value, Is.Null);
     }
 
     [Test]
@@ -306,9 +335,10 @@ namespace Remotion.UnitTests.Collections
       PrepareItem ("Test", _fakeValue, _fakeExpirationInfo);
 
       _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
-      
-      var result = _dataStore.GetOrCreateValue ("Test", k => new object ());
 
+      object result = null;
+      CheckScansForExpiredItems_WithShouldScanFalse (store => { result = store.GetOrCreateValue ("Test", k => new object ()); });
+      
       Assert.That (result, Is.SameAs (_fakeValue));
     }
 
@@ -322,8 +352,9 @@ namespace Remotion.UnitTests.Collections
 
       _expirationPolicyMock.Stub (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true);
 
-      var result = _dataStore.GetOrCreateValue ("Test", k => newValue);
-
+      object result = null;
+      CheckScansForExpiredItems_WithShouldScanFalse (store => { result = store.GetOrCreateValue ("Test", k => newValue); });
+      
       Assert.That (result, Is.SameAs (newValue));
       CheckItemContained ("Test", newValue, _fakeExpirationInfo2);
     }
@@ -334,7 +365,8 @@ namespace Remotion.UnitTests.Collections
       var newValue = new object ();
       StubExpirationInfo (newValue, _fakeExpirationInfo);
 
-      var result = _dataStore.GetOrCreateValue ("Test", k => newValue);
+      object result = null;
+      CheckScansForExpiredItems_WithShouldScanFalse (store => { result = store.GetOrCreateValue ("Test", k => newValue); });
 
       Assert.That (result, Is.SameAs (newValue));
     }
@@ -365,6 +397,22 @@ namespace Remotion.UnitTests.Collections
       CheckItemContained ("Test2", _fakeValue2, _fakeExpirationInfo2);
     }
 
+    private bool CheckScansForExpiredItems_WithShouldScanFalse (Func<ExpiringDataStore<string, object, DateTime>, bool > func)
+    {
+      PrepareItem ("Test1", _fakeValue, _fakeExpirationInfo);
+      PrepareItem ("Test2", _fakeValue2, _fakeExpirationInfo2);
+
+      _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
+      _expirationPolicyMock.Replay ();
+
+      var result = func (_dataStore);
+
+      _expirationPolicyMock.VerifyAllExpectations ();
+      CheckItemContained ("Test1", _fakeValue, _fakeExpirationInfo);
+      CheckItemContained ("Test2", _fakeValue2, _fakeExpirationInfo2);
+      return result;
+    }
+
     private void CheckScansForExpiredItems_WithShouldScanTrue (Action<ExpiringDataStore<string, object, DateTime>> action)
     {
       PrepareItem ("Test1", _fakeValue, _fakeExpirationInfo);
@@ -385,6 +433,29 @@ namespace Remotion.UnitTests.Collections
 
       CheckItemContained ("Test1", _fakeValue, _fakeExpirationInfo);
       CheckKeyNotContained ("Test2");
+    }
+
+    private bool CheckScansForExpiredItems_WithShouldScanTrue (Func<ExpiringDataStore<string, object, DateTime>, bool> action)
+    {
+      PrepareItem ("Test1", _fakeValue, _fakeExpirationInfo);
+      PrepareItem ("Test2", _fakeValue2, _fakeExpirationInfo2);
+
+      _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (true);
+      using (_expirationPolicyMock.GetMockRepository ().Ordered ())
+      {
+        _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
+        _expirationPolicyMock.Expect (mock => mock.IsExpired (_fakeValue2, _fakeExpirationInfo2)).Return (true);
+        _expirationPolicyMock.Expect (mock => mock.ItemsScanned ());
+      }
+      _expirationPolicyMock.Replay ();
+
+      var result = action (_dataStore);
+
+      _expirationPolicyMock.VerifyAllExpectations ();
+
+      CheckItemContained ("Test1", _fakeValue, _fakeExpirationInfo);
+      CheckKeyNotContained ("Test2");
+      return result;
     }
 
     private void CheckItemContained (string key, object value, DateTime expectedExpirationInfo)

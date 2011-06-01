@@ -88,7 +88,11 @@ namespace Remotion.Collections
       // TODO 3919: (Should be 5 tests, the same as for ContainsKey.)
       get { return _innerDataStore[key].Item1; }
       // TODO 3919: RemoveExpiredItems(); 
-      set { _innerDataStore[key] = Tuple.Create(value, _expirationPolicy.GetExpirationInfo(value)); }
+      set
+      {
+        RemoveExpiredItems();
+        _innerDataStore[key] = Tuple.Create(value, _expirationPolicy.GetExpirationInfo(value)); 
+      }
     }
 
     public TValue GetValueOrDefault (TKey key)
@@ -100,10 +104,11 @@ namespace Remotion.Collections
       return value;
     }
 
-    // TODO 3919: RemoveExpiredItems();
     public bool TryGetValue (TKey key, out TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
+
+      RemoveExpiredItems();
 
       Tuple<TValue, TExpirationInfo> valueResult;
       if (_innerDataStore.TryGetValue (key, out valueResult))
@@ -121,7 +126,6 @@ namespace Remotion.Collections
       return false;
     }
 
-    // TODO 3919: Test that RemoveExpiredItems() is called
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> creator)
     {
       ArgumentUtility.CheckNotNull ("key", key);
