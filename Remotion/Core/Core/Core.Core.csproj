@@ -135,6 +135,7 @@
     <Compile Include="Collections\CacheFactory.cs" />
     <Compile Include="Collections\DataStoreFactory.cs" />
     <Compile Include="Collections\ExpiringDataStore.cs" />
+    <Compile Include="Collections\ExpiringDataStoreFactory.cs" />
     <Compile Include="Collections\IExpirationPolicy.cs" />
     <Compile Include="Collections\LazyLockingCachingAdapter.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />

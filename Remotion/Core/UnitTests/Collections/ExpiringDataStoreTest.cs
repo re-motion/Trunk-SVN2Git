@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
@@ -61,7 +62,6 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    [Ignore ("TODO 3919")]
     public void ContainsKey_False_Expired ()
     {
       PrepareItem ("Test1", _fakeValue, _fakeExpirationInfo);
@@ -80,18 +80,18 @@ namespace Remotion.UnitTests.Collections
       PrepareItem ("Test1", _fakeValue, _fakeExpirationInfo);
       StubShouldScanForExpiredItems_False ();
 
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
+
       Assert.That (_dataStore.ContainsKey ("Test1"), Is.True);
     }
 
     [Test]
-    [Ignore ("TODO 3919")]
     public void ContainsKey_ScansForExpiredItems_True ()
     {
       CheckScansForExpiredItems_WithShouldScanTrue (store => store.ContainsKey ("Test"));
     }
 
     [Test]
-    [Ignore ("TODO 3919")]
     public void ContainsKey_ScansForExpiredItems_False ()
     {
       CheckScansForExpiredItems_WithShouldScanFalse (store => store.ContainsKey ("Test"));
@@ -191,8 +191,48 @@ namespace Remotion.UnitTests.Collections
     public void GetValue ()
     {
       PrepareItem ("Test", _fakeValue, _fakeExpirationInfo);
+      StubShouldScanForExpiredItems_False ();
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
+      
+      Assert.That (_dataStore["Test"], Is.SameAs (_fakeValue));
+    }
+
+    [Test]
+    public void GetValue_NotExpired ()
+    {
+      PrepareItem ("Test", _fakeValue, _fakeExpirationInfo);
+      StubShouldScanForExpiredItems_True ();
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
+      _expirationPolicyMock.Replay();
 
       Assert.That (_dataStore["Test"], Is.SameAs (_fakeValue));
+    }
+
+    [Test]
+    [ExpectedException(typeof(KeyNotFoundException), ExpectedMessage = "Key not found.")]
+    public void GetValue_Expired ()
+    {
+      PrepareItem ("Test", _fakeValue, _fakeExpirationInfo);
+      StubShouldScanForExpiredItems_True ();
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (true);
+      _expirationPolicyMock.Replay ();
+
+      var result =_dataStore["Test"];
+    }
+
+    [Test]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "Key not found.")]
+    public void GetValue_ShouldScanForExpiredItems_True ()
+    {
+      CheckScansForExpiredItems_WithShouldScanTrue (store => { var test = store["Test"]; });
+    }
+
+    [Test]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "Key not found.")]
+    public void GetValue_ShouldScanForExpiredItems_False ()
+    {
+      _expirationPolicyMock.Stub (stub => stub.IsExpired (_fakeValue, _fakeExpirationInfo)).Return (false);
+      CheckScansForExpiredItems_WithShouldScanFalse (store => { var test = store["Test"]; });
     }
 
     [Test]
@@ -204,6 +244,20 @@ namespace Remotion.UnitTests.Collections
       CheckScansForExpiredItems_WithShouldScanTrue (store => store["Test"] = _fakeValue);
 
       CheckItemContained ("Test", _fakeValue, _fakeExpirationInfo);
+    }
+
+    [Test]
+    public void SetValue_ShouldScanForExpiredItems_True ()
+    {
+      StubExpirationInfo (_fakeValue, _fakeExpirationInfo);
+      CheckScansForExpiredItems_WithShouldScanTrue (store => { store["Test1"] = _fakeValue; });
+    }
+
+    [Test]
+    public void SetValue_ShouldScanForExpiredItems_False ()
+    {
+      StubExpirationInfo (_fakeValue, _fakeExpirationInfo);
+      CheckScansForExpiredItems_WithShouldScanFalse (store => { store["Test1"] = _fakeValue; });
     }
 
     [Test]
@@ -246,14 +300,12 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    [Ignore ("TODO 3919")]
     public void GetValueOrDefault_ScansForExpiredItems_True ()
     {
       CheckScansForExpiredItems_WithShouldScanTrue (store => store.GetValueOrDefault ("Test"));
     }
 
     [Test]
-    [Ignore ("TODO 3919")]
     public void GetValueOrDefault_ScansForExpiredItems_False ()
     {
       CheckScansForExpiredItems_WithShouldScanFalse (store => store.GetValueOrDefault ("Test"));
@@ -480,6 +532,11 @@ namespace Remotion.UnitTests.Collections
     }
 
     private void StubShouldScanForExpiredItems_False ()
+    {
+      _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
+    }
+
+    private void StubShouldScanForExpiredItems_True ()
     {
       _expirationPolicyMock.Stub (stub => stub.ShouldScanForExpiredItems ()).Return (false);
     }

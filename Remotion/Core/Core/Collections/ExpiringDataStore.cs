@@ -53,10 +53,8 @@ namespace Remotion.Collections
     {
       ArgumentUtility.CheckNotNull ("key", key);
 
-      // TODO 3919: Test single expired item is removed
-      // TODO 3919: return TryGetValue(key, out dummy);
-
-      return _innerDataStore.ContainsKey (key);
+      TValue dummy;
+      return TryGetValue (key, out dummy);
     }
 
     public void Add (TKey key, TValue value)
@@ -82,12 +80,13 @@ namespace Remotion.Collections
 
     public TValue this [TKey key]
     {
-      // TODO 3919: Test that RemoveExpiredItems() is called
-      // TODO 3919: Test single expired item is removed
-      // TODO 3919: if (!TryGetValue(key, out value)) throw KeyNotFoundException, else return value
-      // TODO 3919: (Should be 5 tests, the same as for ContainsKey.)
-      get { return _innerDataStore[key].Item1; }
-      // TODO 3919: RemoveExpiredItems(); 
+      get
+      {
+        TValue result;
+        if (!TryGetValue (key, out result))
+          throw new KeyNotFoundException ("Key not found.");
+        return result; 
+      }
       set
       {
         RemoveExpiredItems();
