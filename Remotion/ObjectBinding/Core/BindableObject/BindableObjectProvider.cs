@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     #endregion
 
-    private static readonly LockingCacheDecorator<Type, Type> s_ProviderAttributeTypeCache = new LockingCacheDecorator<Type, Type>();
+    private static readonly LockingCacheDecorator<Type, Type> s_ProviderAttributeTypeCache = CacheFactory.CreateWithLocking<Type, Type>();
 
     /// <summary>
     /// Use this method as a shortcut to retrieve the <see cref="BindableObjectProvider"/> for a <see cref="Type"/> 

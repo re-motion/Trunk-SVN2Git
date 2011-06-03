@@ -297,23 +297,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateIDColumnDefinition ()
+    public void CreateObjectIDColumnDefinition ()
     {
-      var result = _columnDefinitionFactory.CreateIDColumnDefinition();
+      var result = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
 
-      var objectIDColumn = result.ObjectIDColumn;
-      var classIDColumn = result.ClassIDColumn;
+      Assert.That (result.Name, Is.EqualTo ("ID"));
+      Assert.That (result.IsNullable, Is.False);
+      Assert.That (result.IsPartOfPrimaryKey, Is.True);
+      Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (result.StorageType, Is.EqualTo ("guid"));
+    }
 
-      Assert.That (objectIDColumn.Name, Is.EqualTo ("ID"));
-      Assert.That (objectIDColumn.IsNullable, Is.False);
-      Assert.That (objectIDColumn.IsPartOfPrimaryKey, Is.True);
-      Assert.That (objectIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (objectIDColumn.StorageType, Is.EqualTo ("guid"));
-      Assert.That (classIDColumn.Name, Is.EqualTo ("ClassID"));
-      Assert.That (classIDColumn.IsNullable, Is.False);
-      Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (classIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
-      Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
+    [Test]
+    public void CreateClassIDColumnDefinition ()
+    {
+      var result = _columnDefinitionFactory.CreateClassIDColumnDefinition ();
+
+      Assert.That (result.Name, Is.EqualTo ("ClassID"));
+      Assert.That (result.IsNullable, Is.False);
+      Assert.That (result.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (result.StorageType, Is.EqualTo ("varchar(100)"));
+      Assert.That (result.IsPartOfPrimaryKey, Is.False);
     }
 
     [Test]

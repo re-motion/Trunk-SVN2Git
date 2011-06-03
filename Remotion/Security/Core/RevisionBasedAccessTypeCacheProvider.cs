@@ -54,7 +54,7 @@ namespace Remotion.Security
         : base (name, config)
     {
       _revision = 0;
-      _cache = new CacheType();
+      _cache = CacheFactory.CreateWithLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
     }
 
     protected RevisionBasedAccessTypeCacheProvider (SerializationInfo info, StreamingContext context)
@@ -86,7 +86,7 @@ namespace Remotion.Security
           if (_revision < currentRevision)
           {
             _revision = currentRevision;
-            _cache = new LockingCacheDecorator<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
+            _cache = CacheFactory.CreateWithLocking<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
           }
         }
       }

@@ -31,7 +31,8 @@ public static class ResourceManagerUtility
 {
   private const string c_globalResourceKeyPrefix = "$res:";
 
-  private static readonly LockingCacheDecorator<Type, IResourceManager> s_chachedResourceManagers = new LockingCacheDecorator<Type, IResourceManager>();
+  private static readonly LockingCacheDecorator<Type, IResourceManager> s_chachedResourceManagers =
+      CacheFactory.CreateWithLocking<Type, IResourceManager>();
 
   public static bool IsGlobalResourceKey (string elementValue)
   {

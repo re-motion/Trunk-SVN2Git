@@ -68,14 +68,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return CreateRelationColumnDefinition (propertyDefinition, _providerDefinitionFinder, relationEndPointDefinition, columnDefinition);
     }
 
-    public virtual IDColumnDefinition CreateIDColumnDefinition ()
+    public SimpleColumnDefinition CreateObjectIDColumnDefinition ()
     {
-      var objectIDColumn = new SimpleColumnDefinition (
+      return new SimpleColumnDefinition (
           _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeCalculator.SqlDataTypeObjectID, false, true);
-      var classIDColumnDefinition = new SimpleColumnDefinition (
-          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
+    }
 
-      return new IDColumnDefinition (objectIDColumn, classIDColumnDefinition);
+    public SimpleColumnDefinition CreateClassIDColumnDefinition ()
+    {
+      return new SimpleColumnDefinition (
+          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
     }
 
     public virtual SimpleColumnDefinition CreateTimestampColumnDefinition ()

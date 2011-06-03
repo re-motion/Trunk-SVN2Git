@@ -32,7 +32,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   [Serializable]
   public class WxeVariablesContainer
   {
-    private static readonly LockingCacheDecorator<Type, WxeParameterDeclaration[]> s_parameterDeclarations = new LockingCacheDecorator<Type, WxeParameterDeclaration[]>();
+    private static readonly LockingCacheDecorator<Type, WxeParameterDeclaration[]> s_parameterDeclarations =
+        CacheFactory.CreateWithLocking<Type, WxeParameterDeclaration[]>();
 
     public static WxeParameterDeclaration[] GetParameterDeclarations (Type type)
     {

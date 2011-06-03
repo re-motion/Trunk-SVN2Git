@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition _fakeDerivedColumnDefinition2;
     private SimpleColumnDefinition _fakeDerivedDerivedColumnDefinition;
     private IDColumnDefinition _fakeIDColumnDefinition;
-    private SimpleColumnDefinition _fakeIDColumn;
+    private SimpleColumnDefinition _fakeObjectIDColumn;
     private SimpleColumnDefinition _fakeClassIDColumn;
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
     private IColumnDefinitionFactory _columnDefinitionFactory;
@@ -80,9 +80,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _fakeDerivedColumnDefinition1 = new SimpleColumnDefinition ("DerivedProperty1", typeof (string), "nvarchar (max)", true, false);
       _fakeDerivedColumnDefinition2 = new SimpleColumnDefinition ("DerivedProperty2", typeof (string), "nvarchar (max)", true, false);
       _fakeDerivedDerivedColumnDefinition = new SimpleColumnDefinition ("DerivedDerivedProperty", typeof (string), "nvarchar (max)", true, false);
-      _fakeIDColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition();
-      _fakeIDColumn = (SimpleColumnDefinition) _fakeIDColumnDefinition.ObjectIDColumn;
-      _fakeClassIDColumn = (SimpleColumnDefinition) _fakeIDColumnDefinition.ClassIDColumn;
+      _fakeObjectIDColumn = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
+      _fakeClassIDColumn = _columnDefinitionFactory.CreateClassIDColumnDefinition();
+      _fakeIDColumnDefinition = new IDColumnDefinition (_fakeObjectIDColumn, _fakeClassIDColumn);
       _fakeTimestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition();
 
       _testModel.BaseBasePropertyDefinition.SetStorageProperty (_fakeBaseBaseColumnDefinition);
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { _testModel.BaseClassDefinition.StorageEntityDefinition },
           new[]
           {
-              _fakeIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
+              _fakeObjectIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
               _fakeTableColumnDefinition1,
               _fakeTableColumnDefinition2, _fakeDerivedColumnDefinition1, _fakeDerivedColumnDefinition2, _fakeDerivedDerivedColumnDefinition
           });
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { _testModel.TableClassDefinition1.StorageEntityDefinition, _testModel.TableClassDefinition2.StorageEntityDefinition },
           new[]
           {
-              _fakeIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
+              _fakeObjectIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
               _fakeTableColumnDefinition1,
               _fakeTableColumnDefinition2, _fakeDerivedColumnDefinition1, _fakeDerivedColumnDefinition2, _fakeDerivedDerivedColumnDefinition
           });
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           "Table1ClassView",
           new[]
           {
-              _fakeIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
+              _fakeObjectIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
               _fakeTableColumnDefinition1
           },
           new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { (SimpleColumnDefinition) _fakeIDColumnDefinition.ObjectIDColumn })
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           "Table2ClassView",
           new[]
           {
-              _fakeIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
+              _fakeObjectIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
               _fakeTableColumnDefinition2,
               _fakeDerivedColumnDefinition1, _fakeDerivedColumnDefinition2, _fakeDerivedDerivedColumnDefinition
           },
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "Derived1Class" },
           new[]
           {
-              _fakeIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
+              _fakeObjectIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
               _fakeTableColumnDefinition2, _fakeDerivedColumnDefinition1
           });
     }
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "Derived2Class", "DerivedDerivedClass", "DerivedDerivedDerivedClass" },
           new[]
           {
-              _fakeIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
+              _fakeObjectIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
               _fakeTableColumnDefinition2, _fakeDerivedColumnDefinition2, _fakeDerivedDerivedColumnDefinition
           });
     }
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "DerivedDerivedClass", "DerivedDerivedDerivedClass" },
           new[]
           {
-              _fakeIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
+              _fakeObjectIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
               _fakeTableColumnDefinition2, _fakeDerivedColumnDefinition2, _fakeDerivedDerivedColumnDefinition
           });
     }

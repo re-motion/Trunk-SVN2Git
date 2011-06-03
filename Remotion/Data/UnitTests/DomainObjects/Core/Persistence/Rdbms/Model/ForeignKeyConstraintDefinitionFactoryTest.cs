@@ -67,8 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var officialClassDefinition = Configuration.GetClassDefinition ("Official");
       
       _columnDefintionFactoryMock
-          .Expect (mock => mock.CreateIDColumnDefinition())
-          .Return (_fakeIdColumnDefinition);
+          .Expect (mock => mock.CreateObjectIDColumnDefinition())
+          .Return (_fakeIdColumnDefinition.ObjectIDColumn);
       _columnDefintionFactoryMock.Replay();
 
       _columnDefintionResolverMock
@@ -120,8 +120,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var employeeClassDefinition = Configuration.GetClassDefinition ("Employee");
 
       _columnDefintionFactoryMock
-          .Expect (mock => mock.CreateIDColumnDefinition ())
-          .Return (_fakeIdColumnDefinition).Repeat.Any();
+          .Expect (mock => mock.CreateObjectIDColumnDefinition ())
+          .Return (_fakeIdColumnDefinition.ObjectIDColumn).Repeat.Any();
       _columnDefintionFactoryMock.Replay ();
 
       _columnDefintionResolverMock
@@ -196,8 +196,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefintionResolverMock.Replay();
 
       _columnDefintionFactoryMock
-          .Expect (mock => mock.CreateIDColumnDefinition())
-          .Return (_fakeIdColumnDefinition);
+          .Expect (mock => mock.CreateObjectIDColumnDefinition())
+          .Return (_fakeIdColumnDefinition.ObjectIDColumn);
       _columnDefintionFactoryMock.Replay();
 
       _storageProviderDefinitionFinderStub

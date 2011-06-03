@@ -34,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactoryMock;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private SimpleColumnDefinition _fakeColumnDefinition1;
-    private IDColumnDefinition _fakeObjectIDColumnDefinition;
+    private IDColumnDefinition _fakeIDColumnDefinition;
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
-    private SimpleColumnDefinition _fakeIDColumnDefinition;
+    private SimpleColumnDefinition _fakeObjectIDColumnDefinition;
     private ForeignKeyConstraintDefinition _fakeForeignKeyConstraint;
     private IStorageNameProvider _storageNameProviderMock;
     private RdbmsPersistenceModelLoaderTestHelper _testModel;
@@ -58,13 +58,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
-      _fakeIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
+      _fakeObjectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
       _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
-      _fakeObjectIDColumnDefinition = new IDColumnDefinition (_fakeIDColumnDefinition, _fakeColumnDefinition1);
+      _fakeIDColumnDefinition = new IDColumnDefinition (_fakeObjectIDColumnDefinition, _fakeColumnDefinition1);
       _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false, false);
 
       _fakeForeignKeyConstraint = new ForeignKeyConstraintDefinition (
-          "FakeForeignKeyConstraint", new EntityNameDefinition(null, "Test"), new[] { _fakeIDColumnDefinition }, new[] { _fakeColumnDefinition1 });
+          "FakeForeignKeyConstraint", new EntityNameDefinition(null, "Test"), new[] { _fakeObjectIDColumnDefinition }, new[] { _fakeColumnDefinition1 });
     }
 
     [Test]
@@ -105,9 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderID,
           "FakeTableName",
           "FakeViewName",
-          new[] { _fakeIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1 },
+          new[] { _fakeObjectIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1 },
           new ITableConstraintDefinition[]
-          { new PrimaryKeyConstraintDefinition ("FakePrimaryKeyName", true, new[] { _fakeIDColumnDefinition }), _fakeForeignKeyConstraint },
+          { new PrimaryKeyConstraintDefinition ("FakePrimaryKeyName", true, new[] { _fakeObjectIDColumnDefinition }), _fakeForeignKeyConstraint },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "Derived1Class" },
           new[]
           {
-              _fakeIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
+              _fakeObjectIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "Derived2Class", "DerivedDerivedClass", "DerivedDerivedDerivedClass" },
           new[]
           {
-              _fakeIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
+              _fakeObjectIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { fakeUnionEntity1, fakeUnionEntity2 },
           new[]
           {
-              _fakeIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
+              _fakeObjectIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -347,8 +347,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private void MockSpecialColumns ()
     {
       _columnDefinitionFactoryMock
-          .Expect (mock => mock.CreateIDColumnDefinition())
+          .Expect (mock => mock.CreateObjectIDColumnDefinition())
           .Return (_fakeObjectIDColumnDefinition);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateClassIDColumnDefinition ())
+          .Return (_fakeColumnDefinition1);
       _columnDefinitionFactoryMock
           .Expect (mock => mock.CreateTimestampColumnDefinition())
           .Return (_fakeTimestampColumnDefinition);

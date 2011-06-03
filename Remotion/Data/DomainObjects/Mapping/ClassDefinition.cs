@@ -66,9 +66,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       _persistentMixinFinder = persistentMixinFinder;
       _isAbstract = isAbstract;
 
-      _propertyDefinitionCache = new LockingCacheDecorator<IPropertyInformation, PropertyDefinition>();
-      _relationDefinitionCache = new LockingCacheDecorator<IPropertyInformation, IRelationEndPointDefinition>();
-
+      _propertyDefinitionCache = CacheFactory.CreateWithLocking<IPropertyInformation, PropertyDefinition>();
+      _relationDefinitionCache = CacheFactory.CreateWithLocking<IPropertyInformation, IRelationEndPointDefinition>();
+      
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> (
            () => RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (this, true));

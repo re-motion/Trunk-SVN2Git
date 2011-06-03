@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           columns,
           new ITableConstraintDefinition[] { clusteredPrimaryKeyConstraint }.Concat (foreignKeyConstraints),
-          new IIndexDefinition[0], 
+          new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
 
@@ -94,8 +94,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          GetSimpleColumnDefinitions(columns),
-          new IIndexDefinition[0], 
+          GetSimpleColumnDefinitions (columns),
+          new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
 
@@ -110,8 +110,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           unionedEntities,
-          GetSimpleColumnDefinitions(columns),
-          new IIndexDefinition[0], 
+          GetSimpleColumnDefinitions (columns),
+          new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
 
@@ -122,11 +122,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     protected virtual IEnumerable<IColumnDefinition> GetColumnsDefinitionForEntity (ClassDefinition classDefinition)
     {
-      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition();
+      var objectIDColumnDefinition = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
+      var classIDColumnDefinition = _columnDefinitionFactory.CreateClassIDColumnDefinition();
       var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition();
       var columnDefinitionsForHierarchy = _columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition);
 
-      return new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList();
+      return
+          new IColumnDefinition[] { new IDColumnDefinition (objectIDColumnDefinition, classIDColumnDefinition), timestampColumnDefinition }.Concat (
+              columnDefinitionsForHierarchy).ToList();
     }
 
     private IEnumerable<SimpleColumnDefinition> GetSimpleColumnDefinitions (IEnumerable<IColumnDefinition> columns)

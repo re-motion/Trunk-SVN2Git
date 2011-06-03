@@ -35,7 +35,9 @@ namespace Remotion.ObjectBinding.BindableObject
       False
     }
 
-    private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache = new LockingCacheDecorator<ITypeInformation, IResourceManager>();
+    private readonly ICache<ITypeInformation, IResourceManager> _resourceManagerCache =
+        CacheFactory.CreateWithLocking<ITypeInformation, IResourceManager>();
+
     private readonly TypeConversionProvider _typeConversionProvider;
 
     public BindableObjectGlobalizationService ()
@@ -52,7 +54,7 @@ namespace Remotion.ObjectBinding.BindableObject
     public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      return value.GetLocalizedName ();
+      return value.GetLocalizedName();
     }
 
     public string GetBooleanValueDisplayName (bool value)
@@ -72,7 +74,7 @@ namespace Remotion.ObjectBinding.BindableObject
       var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
       var globalizedType = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteType : propertyInfo.DeclaringType;
       var property = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteProperty : propertyInfo;
-      
+
       var resourceManager = GetResourceManagerFromCache (globalizedType);
 
       string resourceID = "property:" + property.Name;
@@ -91,7 +93,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private IResourceManager GetResourceManager (ITypeInformation typeInformation)
     {
-      if (!_typeConversionProvider.CanConvert (typeInformation.GetType (), typeof (Type)))
+      if (!_typeConversionProvider.CanConvert (typeInformation.GetType(), typeof (Type)))
         return NullResourceManager.Instance;
 
       var type = (Type) _typeConversionProvider.Convert (typeInformation.GetType(), typeof (Type), typeInformation);
@@ -102,4 +104,4 @@ namespace Remotion.ObjectBinding.BindableObject
       return NullResourceManager.Instance;
     }
   }
-} 
+}
