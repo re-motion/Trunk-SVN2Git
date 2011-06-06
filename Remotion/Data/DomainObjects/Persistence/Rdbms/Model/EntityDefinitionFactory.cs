@@ -62,12 +62,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (string.IsNullOrEmpty (tableName))
         throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
-      var columns = GetSimpleColumnDefinitions (GetColumnsDefinitionForEntity (classDefinition));
+      var objectIDColumn = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
+      var classIDColumn = _columnDefinitionFactory.CreateClassIDColumnDefinition();
+      var timestampColumn = _columnDefinitionFactory.CreateTimestampColumnDefinition();
+      var columns = GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition));
+      var allColumns = new[] { objectIDColumn, classIDColumn, timestampColumn }.Concat (columns).ToList();
 
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
           _storageNameProvider.GetPrimaryKeyConstraintName (classDefinition),
           true,
-          columns.Where (c => c.IsPartOfPrimaryKey).ToArray());
+          allColumns.Where (c => c.IsPartOfPrimaryKey).ToArray());
 
       var foreignKeyConstraints =
           _foreignKeyConstraintDefinitionFactory.CreateForeignKeyConstraints (classDefinition).Cast<ITableConstraintDefinition>();
@@ -76,6 +80,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, tableName),
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
+          objectIDColumn,
+          classIDColumn,
+          timestampColumn,
           columns,
           new ITableConstraintDefinition[] { clusteredPrimaryKeyConstraint }.Concat (foreignKeyConstraints),
           new IIndexDefinition[0],
@@ -87,14 +94,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
 
-      var columns = GetColumnsDefinitionForEntity (classDefinition);
-
       return new FilterViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          GetSimpleColumnDefinitions (columns),
+          _columnDefinitionFactory.CreateObjectIDColumnDefinition (),
+          _columnDefinitionFactory.CreateClassIDColumnDefinition (),
+          _columnDefinitionFactory.CreateTimestampColumnDefinition (),
+          GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition)),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -104,13 +112,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
 
-      var columns = GetColumnsDefinitionForEntity (classDefinition);
-
       return new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           unionedEntities,
-          GetSimpleColumnDefinitions (columns),
+          _columnDefinitionFactory.CreateObjectIDColumnDefinition (),
+          _columnDefinitionFactory.CreateClassIDColumnDefinition (),
+          _columnDefinitionFactory.CreateTimestampColumnDefinition (),
+          GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition)),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -118,18 +127,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)
     {
       return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses()).Select (cd => cd.ID);
-    }
-
-    protected virtual IEnumerable<IColumnDefinition> GetColumnsDefinitionForEntity (ClassDefinition classDefinition)
-    {
-      var objectIDColumnDefinition = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
-      var classIDColumnDefinition = _columnDefinitionFactory.CreateClassIDColumnDefinition();
-      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition();
-      var columnDefinitionsForHierarchy = _columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition);
-
-      return
-          new IColumnDefinition[] { new IDColumnDefinition (objectIDColumnDefinition, classIDColumnDefinition), timestampColumnDefinition }.Concat (
-              columnDefinitionsForHierarchy).ToList();
     }
 
     private IEnumerable<SimpleColumnDefinition> GetSimpleColumnDefinitions (IEnumerable<IColumnDefinition> columns)

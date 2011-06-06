@@ -34,6 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private FilterViewDefinition _filterViewDefinition2;
     private EntityNameDefinition _synonymWithCustomSchema;
     private EntityNameDefinition _synonymWithDefaultSchema;
+    private SimpleColumnDefinition _objectIDColunmn;
+    private SimpleColumnDefinition _classIDCOlumn;
+    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
@@ -41,10 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlSynonymScriptElementFactory();
 
+      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
       _tableDefinition1 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "TableName1"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -53,6 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -62,6 +75,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "UnionView1"),
           new[] { _tableDefinition1 },
+          _objectIDColunmn,
+          _classIDCOlumn, 
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -69,6 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView2"),
           new[] { _tableDefinition1, _tableDefinition2 },
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -78,6 +97,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
          new EntityNameDefinition ("SchemaName", "FilterView1"),
          _tableDefinition1,
          new[] { "ClassID1" },
+         _objectIDColunmn,
+         _classIDCOlumn,
+         _timestampColumn,
          new SimpleColumnDefinition[0],
          new IIndexDefinition[0],
          new EntityNameDefinition[0]);
@@ -86,6 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (null, "FilterView2"),
           _tableDefinition2,
           new[] { "ClassID1", "ClassID2" },
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

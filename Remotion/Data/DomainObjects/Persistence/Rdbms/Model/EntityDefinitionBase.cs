@@ -30,18 +30,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
-    private readonly IEnumerable<SimpleColumnDefinition> _columns;
+    private readonly SimpleColumnDefinition _objectIDColumn;
+    private readonly SimpleColumnDefinition _classIDColumn;
+    private readonly SimpleColumnDefinition _timestampColumn;
+    private readonly ReadOnlyCollection<SimpleColumnDefinition> _columns;
 
     protected EntityDefinitionBase (
         EntityNameDefinition viewName,
+        SimpleColumnDefinition objectIDColumn,
+        SimpleColumnDefinition classIDColumn,
+        SimpleColumnDefinition timstampColumn,
         IEnumerable<SimpleColumnDefinition> columns,
         IEnumerable<EntityNameDefinition> synonyms)
     {
+      ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
+      ArgumentUtility.CheckNotNull ("classIDColumn", classIDColumn);
+      ArgumentUtility.CheckNotNull ("timstampColumn", timstampColumn);
       ArgumentUtility.CheckNotNull ("columns", columns);
       ArgumentUtility.CheckNotNull ("synonyms", synonyms);
 
       _viewName = viewName;
-      _columns = columns;
+      _objectIDColumn = objectIDColumn;
+      _classIDColumn = classIDColumn;
+      _timestampColumn = timstampColumn;
+      _columns = columns.ToList().AsReadOnly();
       _synonyms = synonyms.ToList().AsReadOnly();
     }
 
@@ -62,9 +74,34 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _viewName; }
     }
 
+    public SimpleColumnDefinition ObjectIDColumn
+    {
+      get { return _objectIDColumn; }
+    }
+
+    public SimpleColumnDefinition ClassIDColumn
+    {
+      get { return _classIDColumn; }
+    }
+
+    public SimpleColumnDefinition TimestampColumn
+    {
+      get { return _timestampColumn; }
+    }
+
+    public IEnumerable<SimpleColumnDefinition> DataColumns
+    {
+      get { return _columns; }
+    }
+
     public IEnumerable<SimpleColumnDefinition> GetAllColumns ()
     {
-      return _columns; 
+      yield return _objectIDColumn;
+      yield return _classIDColumn;
+      yield return _timestampColumn;
+
+      foreach (var column in _columns)
+        yield return column;
     }
 
     public ReadOnlyCollection<EntityNameDefinition> Synonyms

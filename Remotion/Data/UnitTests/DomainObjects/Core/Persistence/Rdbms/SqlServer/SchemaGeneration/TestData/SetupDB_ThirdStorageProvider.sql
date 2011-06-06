@@ -12,6 +12,9 @@ CREATE TABLE [dbo].[InheritanceRoot]
 )
 CREATE TABLE [dbo].[IndexTestTable]
 (
+  [ObjectID] integer NOT NULL,
+  [ClassID] varchar NOT NULL,
+  [Timestamp] datetime NULL,
   [ID] uniqueidentifier NOT NULL,
   [FirstName] varchar(100) NOT NULL,
   [LastName] varchar(100) NOT NULL,
@@ -20,6 +23,9 @@ CREATE TABLE [dbo].[IndexTestTable]
 )
 CREATE TABLE [dbo].[PKTestTable]
 (
+  [ObjectID] integer NOT NULL,
+  [ClassID] varchar NOT NULL,
+  [Timestamp] datetime NULL,
   [ID] uniqueidentifier NOT NULL,
   [Name] varchar(100) NOT NULL,
   CONSTRAINT [PK_PKTestTable_ID] PRIMARY KEY NONCLUSTERED ([ID])
@@ -53,15 +59,15 @@ CREATE VIEW [dbo].[AddedView] ([ID], [ClassID], [Timestamp], [PropertyAboveInher
     WHERE [ClassID] IN ('ClassID')
   WITH CHECK OPTION
 GO
-CREATE VIEW [dbo].[IndexTestView] ([ID], [FirstName], [LastName], [XmlColumn1])
+CREATE VIEW [dbo].[IndexTestView] ([ObjectID], [ClassID], [Timestamp], [ID], [FirstName], [LastName], [XmlColumn1])
   AS
-  SELECT [ID], [FirstName], [LastName], [XmlColumn1]
+  SELECT [ObjectID], [ClassID], [Timestamp], [ID], [FirstName], [LastName], [XmlColumn1]
     FROM [dbo].[IndexTestTable]
   WITH CHECK OPTION
 GO
-CREATE VIEW [dbo].[PKTestView] ([ID], [Name])
+CREATE VIEW [dbo].[PKTestView] ([ObjectID], [ClassID], [Timestamp], [ID], [Name])
   AS
-  SELECT [ID], [Name]
+  SELECT [ObjectID], [ClassID], [Timestamp], [ID], [Name]
     FROM [dbo].[PKTestTable]
   WITH CHECK OPTION
 GO

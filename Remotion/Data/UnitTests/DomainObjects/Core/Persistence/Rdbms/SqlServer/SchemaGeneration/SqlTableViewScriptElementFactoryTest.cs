@@ -28,6 +28,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlTableViewScriptElementFactory _factory;
     private TableDefinition _tableDefinitionWithCustomSchema;
     private TableDefinition _tableDefinitionWithDefaultSchema;
+    private SimpleColumnDefinition _objectIDColunmn;
+    private SimpleColumnDefinition _classIDCOlumn;
+    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
@@ -38,10 +41,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", false, true);
       var column2 = new SimpleColumnDefinition ("Column2", typeof (int), "integer", true, false);
 
+      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
       _tableDefinitionWithCustomSchema = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "Table1"),
           new EntityNameDefinition ("SchemaName", "View1"),
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[] {column1},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -50,6 +60,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
           new EntityNameDefinition (null, "View2"),
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[] {column1, column2},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -68,9 +81,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
       var expectedResult =
-          "CREATE VIEW [SchemaName].[View1] ([Column1])\r\n"
+          "CREATE VIEW [SchemaName].[View1] ([ObjectID], [ClassID], [Timestamp], [Column1])\r\n"
          + "  WITH SCHEMABINDING AS\r\n"
-         + "  SELECT [Column1]\r\n"
+         + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1]\r\n"
          + "    FROM [SchemaName].[Table1]\r\n"
          + "  WITH CHECK OPTION";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
@@ -90,9 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
       var expectedResult =
-          "CREATE VIEW [dbo].[View2] ([Column1], [Column2])\r\n"
+          "CREATE VIEW [dbo].[View2] ([ObjectID], [ClassID], [Timestamp], [Column1], [Column2])\r\n"
           + "  AS\r\n"
-          + "  SELECT [Column1], [Column2]\r\n"
+          + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1], [Column2]\r\n"
           + "    FROM [dbo].[Table2]\r\n"
           + "  WITH CHECK OPTION";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));

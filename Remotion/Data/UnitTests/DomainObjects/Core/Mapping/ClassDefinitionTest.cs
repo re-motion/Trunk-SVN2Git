@@ -55,6 +55,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition _personClass;
     private ClassDefinition _customerClass;
     private ClassDefinition _organizationalUnitClass;
+    private SimpleColumnDefinition _objectIDColunmn;
+    private SimpleColumnDefinition _classIDCOlumn;
+    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
@@ -85,6 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           FakeMappingConfiguration.Current.TypeDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
           FakeMappingConfiguration.Current.TypeDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+
+      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
     }
 
     [Test]
@@ -168,6 +175,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Tablename"),
           new EntityNameDefinition (null, "Viewname"),
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
@@ -185,6 +195,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Tablename"),
           new EntityNameDefinition (null, "Viewname"),
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);

@@ -28,6 +28,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlFilterViewScriptElementFactory _factory;
     private FilterViewDefinition _filterViewDefinitionWithCustomSchema;
     private FilterViewDefinition _filterViewDefinitionWithDefaultSchema;
+    private SimpleColumnDefinition _objectIDColunmn;
+    private SimpleColumnDefinition _classIDCOlumn;
+    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
@@ -35,10 +38,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlFilterViewScriptElementFactory();
 
+      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
       var tableDefinitionWithCustomSchema = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "TableName1"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -47,6 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -60,7 +73,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition ("SchemaName", "FilterView1"),
           tableDefinitionWithCustomSchema,
           new[] { "ClassID1" },
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[] { column1 },
+          
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       _filterViewDefinitionWithDefaultSchema = new FilterViewDefinition (
@@ -68,6 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (null, "FilterView2"),
           tableDefinitionWithDefaultSchema,
           new[] { "ClassID1", "ClassID2" },
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[] { column1, column2 },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -85,9 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof(ScriptStatement)));
       var expectedResult =
-          "CREATE VIEW [SchemaName].[FilterView1] ([Column1])\r\n"
+          "CREATE VIEW [SchemaName].[FilterView1] ([ObjectID], [ClassID], [Timestamp], [Column1])\r\n"
          +"  WITH SCHEMABINDING AS\r\n"
-         +"  SELECT [Column1]\r\n"
+         + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1]\r\n"
          +"    FROM [dbo].[TableName1]\r\n"
          +"    WHERE [ClassID] IN ('ClassID1')\r\n"
          +"  WITH CHECK OPTION";
@@ -108,9 +128,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
       var expectedResult =
-          "CREATE VIEW [dbo].[FilterView2] ([Column1], [Column2])\r\n"
+          "CREATE VIEW [dbo].[FilterView2] ([ObjectID], [ClassID], [Timestamp], [Column1], [Column2])\r\n"
           +"  AS\r\n"
-          +"  SELECT [Column1], [Column2]\r\n"
+          + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1], [Column2]\r\n"
           +"    FROM [dbo].[TableName2]\r\n"
           +"    WHERE [ClassID] IN ('ClassID1', 'ClassID2')\r\n"
           +"  WITH CHECK OPTION";

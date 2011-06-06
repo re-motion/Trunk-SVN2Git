@@ -28,6 +28,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlUnionViewScriptElementFactory _factory;
     private UnionViewDefinition _unionViewDefinitionWithCustomSchema;
     private UnionViewDefinition _unionViewDefinitionWithDefaultSchema;
+    private SimpleColumnDefinition _objectIDColunmn;
+    private SimpleColumnDefinition _classIDCOlumn;
+    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
@@ -38,10 +41,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", false, true);
       var column2 = new SimpleColumnDefinition ("Column2", typeof (int), "integer", true, false);
 
+      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
       var tableDefinition1 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "TableName1"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[]{column1},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -50,6 +60,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[]{column1, column2},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -59,6 +72,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "UnionView1"),
           new[] { tableDefinition1 },
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[]{column1},
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -66,6 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView2"),
           new[] { tableDefinition1, tableDefinition2 },
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[]{column1, column2},
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -83,9 +102,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
       var expectedResult =
-          "CREATE VIEW [SchemaName].[UnionView1] ([Column1])\r\n"
+          "CREATE VIEW [SchemaName].[UnionView1] ([ObjectID], [ClassID], [Timestamp], [Column1])\r\n"
           +"  WITH SCHEMABINDING AS\r\n"
-          +"  SELECT [Column1]\r\n"
+          + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1]\r\n"
           +"    FROM [SchemaName].[TableName1]\r\n"
           +"  WITH CHECK OPTION";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
@@ -105,9 +124,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
       var expectedResult =
-          "CREATE VIEW [SchemaName].[UnionView1] ([Column1])\r\n"
+          "CREATE VIEW [SchemaName].[UnionView1] ([ObjectID], [ClassID], [Timestamp], [Column1])\r\n"
           + "  AS\r\n"
-          + "  SELECT [Column1]\r\n"
+          + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1]\r\n"
           + "    FROM [SchemaName].[TableName1]\r\n"
           + "  WITH CHECK OPTION";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
@@ -126,13 +145,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
 
       var expectedResult =
-          "CREATE VIEW [dbo].[UnionView2] ([Column1], [Column2])\r\n"
+          "CREATE VIEW [dbo].[UnionView2] ([ObjectID], [ClassID], [Timestamp], [Column1], [Column2])\r\n"
           +"  WITH SCHEMABINDING AS\r\n"
-          +"  SELECT [Column1], NULL\r\n"
+          + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1], NULL\r\n"
           +"    FROM [SchemaName].[TableName1]\r\n"
           +"  UNION ALL\r\n"
-          +"  SELECT [Column1], [Column2]\r\n"
+          + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1], [Column2]\r\n"
           +"    FROM [dbo].[TableName2]";
+
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
     }
 
@@ -151,13 +171,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
 
       var expectedResult =
-          "CREATE VIEW [dbo].[UnionView2] ([Column1], [Column2])\r\n"
+          "CREATE VIEW [dbo].[UnionView2] ([ObjectID], [ClassID], [Timestamp], [Column1], [Column2])\r\n"
           + "  AS\r\n"
-          + "  SELECT [Column1], NULL\r\n"
+          + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1], NULL\r\n"
           + "    FROM [SchemaName].[TableName1]\r\n"
           + "  UNION ALL\r\n"
-          + "  SELECT [Column1], [Column2]\r\n"
+          + "  SELECT [ObjectID], [ClassID], [Timestamp], [Column1], [Column2]\r\n"
           + "    FROM [dbo].[TableName2]";
+
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
     }
 

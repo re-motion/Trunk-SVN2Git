@@ -37,11 +37,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition tableName,
         EntityNameDefinition viewName,
+        SimpleColumnDefinition objectIDColumnDefinition,
+        SimpleColumnDefinition classIDColumnDefinition,
+        SimpleColumnDefinition timstampColumnDefinition,
         IEnumerable<SimpleColumnDefinition> columns,
         IEnumerable<ITableConstraintDefinition> constraints,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, columns, synonyms)
+        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, columns, synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("tableName", tableName);

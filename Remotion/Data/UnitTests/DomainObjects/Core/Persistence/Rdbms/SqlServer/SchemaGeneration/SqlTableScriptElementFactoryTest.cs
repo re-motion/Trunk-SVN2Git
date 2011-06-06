@@ -31,6 +31,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private TableDefinition _tableDefinitionWithNonClusteredPrimaryKeyConstraint;
     private SimpleColumnDefinition _column1;
     private SimpleColumnDefinition _column2;
+    private SimpleColumnDefinition _objectIDColunmn;
+    private SimpleColumnDefinition _classIDCOlumn;
+    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
@@ -41,10 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", false, true);
       _column2 = new SimpleColumnDefinition ("Column2", typeof (bool), "bit", true, false);
 
+      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
       _tableDefinitionWithoutPrimaryKeyConstraint = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "EntityName"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[] { _column1 },
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -54,6 +64,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "EntityName"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[] { _column1, _column2 },
           new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", true, new[] { _column1 }) },
           new IIndexDefinition[0],
@@ -63,6 +76,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "EntityName"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new[] { _column1, _column2 },
           new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", false, new[] { _column1, _column2 }) },
           new IIndexDefinition[0],
@@ -77,6 +93,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedResult =
           "CREATE TABLE [SchemaName].[EntityName]\r\n"
           + "(\r\n"
+          + "  [ObjectID] integer NOT NULL,\r\n"
+          + "  [ClassID] varchar NOT NULL,\r\n"
+          + "  [Timestamp] datetime NULL,\r\n"
           + "  [Column1] varchar NOT NULL\r\n"
           + ")";
 
@@ -92,6 +111,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedResult =
           "CREATE TABLE [SchemaName].[EntityName]\r\n"
           + "(\r\n"
+          + "  [ObjectID] integer NOT NULL,\r\n"
+          + "  [ClassID] varchar NOT NULL,\r\n"
+          + "  [Timestamp] datetime NULL,\r\n"
           + "  [Column1] varchar NOT NULL,\r\n"
           + "  [Column2] bit NULL,\r\n"
           + "  CONSTRAINT [PKName] PRIMARY KEY CLUSTERED ([Column1])\r\n"
@@ -109,6 +131,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedResult =
           "CREATE TABLE [dbo].[EntityName]\r\n"
           + "(\r\n"
+          + "  [ObjectID] integer NOT NULL,\r\n"
+          + "  [ClassID] varchar NOT NULL,\r\n"
+          + "  [Timestamp] datetime NULL,\r\n"
           + "  [Column1] varchar NOT NULL,\r\n"
           + "  [Column2] bit NULL,\r\n"
           + "  CONSTRAINT [PKName] PRIMARY KEY NONCLUSTERED ([Column1], [Column2])\r\n"

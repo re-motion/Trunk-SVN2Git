@@ -38,7 +38,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
             firstTableDefinition.StorageProviderDefinition,
             firstTableDefinition.TableName,
             new EntityNameDefinition (firstTableDefinition.ViewName.SchemaName, "NewViewName"),
-            firstTableDefinition.GetAllColumns(),
+            firstTableDefinition.ObjectIDColumn,
+            firstTableDefinition.ClassIDColumn,
+            firstTableDefinition.TimestampColumn,
+            firstTableDefinition.DataColumns,
             firstTableDefinition.Constraints,
             new IIndexDefinition[0],
             new EntityNameDefinition[0]);
@@ -62,7 +65,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (tableDefinition.TableName.SchemaName, "AddedView"),
           tableDefinition,
           new[] { "ClassID" },
-          tableDefinition.GetAllColumns(),
+          tableDefinition.ObjectIDColumn,
+          tableDefinition.ClassIDColumn,
+          tableDefinition.TimestampColumn,
+          tableDefinition.DataColumns,
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (tableDefinition.ViewName.SchemaName, "AddedViewSynonym") });
     }
@@ -131,10 +137,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           true,
           false);
 
+      var objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      var classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      var timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
       return new TableDefinition (
           storageProviderDefinition,
           tableName,
           viewName,
+          objectIDColunmn,
+          classIDCOlumn,
+          timestampColumn,
           new[] { column1, column2, column3, column4 },
           new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { column1 }) },
           new IIndexDefinition[]
@@ -157,6 +170,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var column1 = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
       var column2 = new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", false, false);
+      var objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      var classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      var timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
 
       var nonClusteredUniqueIndex = new SqlIndexDefinition (
           "IDX_ClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column2) }, null, true, true, true, false);
@@ -165,6 +181,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           storageProviderDefinition,
           tableName,
           viewName,
+          objectIDColunmn,
+          classIDCOlumn,
+          timestampColumn,
           new[] { column1, column2 },
           new[] { new PrimaryKeyConstraintDefinition ("PK_PKTestTable_ID", false, new[] { column1 }) },
           new IIndexDefinition[] { nonClusteredUniqueIndex },

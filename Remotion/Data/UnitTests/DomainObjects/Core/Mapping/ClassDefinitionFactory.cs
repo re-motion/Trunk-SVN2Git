@@ -182,11 +182,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       if (entityName != null)
       {
+        var objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+        var classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+        var timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
         classDefinition.SetStorageEntity (
             new TableDefinition (
                 storageProviderDefinition,
                 new EntityNameDefinition (null, entityName),
                 new EntityNameDefinition(null, classDefinition.ID + "View"),
+                objectIDColunmn,
+                classIDCOlumn,
+                timestampColumn,
                 new SimpleColumnDefinition[0],
                 new ITableConstraintDefinition[0],
                 new IIndexDefinition[0], new EntityNameDefinition[0]));

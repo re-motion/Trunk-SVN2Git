@@ -34,16 +34,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     private UnionViewDefinition _unionViewDefinition;
     private ClassDefinition _baseClassDefinition;
     private ClassDefinition _classDefinitionWithBaseClass;
+    private SimpleColumnDefinition _objectIDColunmn;
+    private SimpleColumnDefinition _classIDCOlumn;
+    private SimpleColumnDefinition _timestampColumn;
 
     [SetUp]
     public void SetUp ()
     {
+      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
       _validationRule = new OnlyOneTablePerHierarchyValidationRule();
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition = new TableDefinition (
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
@@ -56,10 +66,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
               storageProviderDefinition,
               new EntityNameDefinition (null, "Test"),
               null,
+              _objectIDColunmn,
+              _classIDCOlumn,
+              _timestampColumn,
               new SimpleColumnDefinition[0],
               new ITableConstraintDefinition[0],
               new IIndexDefinition[0], new EntityNameDefinition[0])
           },
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
 

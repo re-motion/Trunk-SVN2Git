@@ -35,6 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
     private UnionViewDefinition _unionViewDefinition;
+    private SimpleColumnDefinition _objectIDColunmn;
+    private SimpleColumnDefinition _classIDCOlumn;
+    private SimpleColumnDefinition _timestampColumn;
 
     [SetUp]
     public void SetUp ()
@@ -66,11 +69,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _derivedBaseClass1.SetDerivedClasses (new[] { _derivedClass });
       _derivedClass.SetDerivedClasses (new ClassDefinition[0]);
 
+      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition1 = new TableDefinition (
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName1"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
@@ -78,6 +88,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
           null,
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
@@ -90,10 +103,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
               storageProviderDefinition,
               new EntityNameDefinition (null, "Test"),
               null,
+              _objectIDColunmn,
+              _classIDCOlumn,
+              _timestampColumn,
               new SimpleColumnDefinition[0],
               new ITableConstraintDefinition[0],
               new IIndexDefinition[0], new EntityNameDefinition[0])
           },
+          _objectIDColunmn,
+          _classIDCOlumn,
+          _timestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
     }

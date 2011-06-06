@@ -38,10 +38,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         EntityNameDefinition viewName,
         IEntityDefinition baseEntity,
         IEnumerable<string> classIDs,
+        SimpleColumnDefinition objectIDColumnDefinition,
+        SimpleColumnDefinition classIDColumnDefinition,
+        SimpleColumnDefinition timstampColumnDefinition,
         IEnumerable<SimpleColumnDefinition> columns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, columns, synonyms)
+        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, columns, synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);

@@ -27,10 +27,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public interface IEntityDefinition : IStorageEntityDefinition, INullObject
   {
     EntityNameDefinition ViewName { get; }
-    IEnumerable<SimpleColumnDefinition> GetAllColumns ();
     ReadOnlyCollection<IIndexDefinition> Indexes { get; }
     ReadOnlyCollection<EntityNameDefinition> Synonyms { get; }
+    SimpleColumnDefinition ObjectIDColumn { get; }
+    SimpleColumnDefinition ClassIDColumn { get; }
+    SimpleColumnDefinition TimestampColumn { get; }
+    IEnumerable<SimpleColumnDefinition> DataColumns { get; }
 
+    IEnumerable<SimpleColumnDefinition> GetAllColumns ();
     void Accept (IEntityDefinitionVisitor visitor);
   }
 }

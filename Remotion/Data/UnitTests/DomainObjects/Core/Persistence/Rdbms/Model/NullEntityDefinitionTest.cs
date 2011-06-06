@@ -51,11 +51,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void ObjectIDColumn ()
+    {
+      Assert.That (_nullEntityDefinition.ObjectIDColumn, Is.Null);
+    }
+
+    [Test]
+    public void ClassIDColumn ()
+    {
+      Assert.That (_nullEntityDefinition.ClassIDColumn, Is.Null);
+    }
+
+    [Test]
+    public void TimestampColumn ()
+    {
+      Assert.That (_nullEntityDefinition.TimestampColumn, Is.Null);
+    }
+
+    [Test]
+    public void DataColumns ()
+    {
+      Assert.That (_nullEntityDefinition.DataColumns, Is.Empty);
+    }
+
+    [Test]
     public void GetAllColumns ()
     {
-      var result = _nullEntityDefinition.GetAllColumns().ToList();
+      var result = _nullEntityDefinition.GetAllColumns();
 
-      Assert.That (result.Count, Is.EqualTo (0));
+      Assert.That (result, Is.Empty);
     }
 
     [Test]
