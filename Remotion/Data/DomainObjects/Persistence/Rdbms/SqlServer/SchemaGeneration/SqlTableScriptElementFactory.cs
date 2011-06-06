@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      var columnDeclarationList = SeparatedStringBuilder.Build (",\r\n", tableDefinition.Columns.Select (GetColumnDeclaration));
+      var columnDeclarationList = SeparatedStringBuilder.Build (",\r\n", tableDefinition.GetAllColumns().Select (GetColumnDeclaration));
       var primaryKeyConstraintString = GetPrimaryKeyDeclaration (tableDefinition);
       return
           new ScriptStatement (

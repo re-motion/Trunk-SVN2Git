@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             "  SELECT {0}\r\n"
           + "    FROM [{1}].[{2}]\r\n"
           + "    WHERE [ClassID] IN ({3})",
-            GetColumnList (filterViewDefinition.Columns),
+            GetColumnList (filterViewDefinition.GetAllColumns()),
             filterViewDefinition.GetBaseTable ().TableName.SchemaName ?? DefaultSchema,
             filterViewDefinition.GetBaseTable ().TableName.EntityName,
             GetClassIDList (filterViewDefinition.ClassIDs));

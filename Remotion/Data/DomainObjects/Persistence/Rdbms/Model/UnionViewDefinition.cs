@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var availableColumnsAsDictionary = availableColumns.ToDictionary (c => c);
       var fullColumnList = new List<SimpleColumnDefinition>();
 
-      foreach (var columnDefinition in Columns)
+      foreach (var columnDefinition in GetAllColumns())
         fullColumnList.Add (availableColumnsAsDictionary.GetValueOrDefault (columnDefinition));
 
       return fullColumnList.ToArray();

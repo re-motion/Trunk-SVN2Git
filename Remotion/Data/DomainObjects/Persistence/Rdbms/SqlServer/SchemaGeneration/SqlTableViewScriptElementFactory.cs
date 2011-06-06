@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
       return string.Format (
           "  SELECT {0}\r\n    FROM [{1}].[{2}]",
-          GetColumnList (tableDefinition.Columns),
+          GetColumnList (tableDefinition.GetAllColumns()),
           tableDefinition.TableName.SchemaName ?? DefaultSchema,
           tableDefinition.TableName.EntityName);
     }

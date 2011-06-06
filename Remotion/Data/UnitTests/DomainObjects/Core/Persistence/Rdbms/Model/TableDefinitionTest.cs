@@ -92,9 +92,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Columns ()
+    public void GetAllColumns ()
     {
-      var result = _tableDefintion.Columns;
+      var result = _tableDefintion.GetAllColumns();
 
       Assert.That (result, Is.EqualTo (_columns));
     }

@@ -277,7 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((TableDefinition) expectedEntityDefinition).TableName.SchemaName, Is.Null);
       Assert.That (((TableDefinition) expectedEntityDefinition).ViewName.EntityName, Is.EqualTo (expectedViewName));
       Assert.That (((TableDefinition) expectedEntityDefinition).ViewName.SchemaName, Is.Null);
-      Assert.That (((TableDefinition) expectedEntityDefinition).Columns, Is.EqualTo (expectedColumnDefinitions));
+      Assert.That (((TableDefinition) expectedEntityDefinition).GetAllColumns(), Is.EqualTo (expectedColumnDefinitions));
       Assert.That (((TableDefinition) expectedEntityDefinition).Indexes, Is.EqualTo (expectedIndexDefinitions));
       Assert.That (((TableDefinition) expectedEntityDefinition).Synonyms, Is.EqualTo (expectedSynonyms));
 
@@ -320,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((FilterViewDefinition) expectedEntityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((FilterViewDefinition) expectedEntityDefinition).BaseEntity, Is.SameAs (expectedBaseEntity));
       Assert.That (((FilterViewDefinition) expectedEntityDefinition).ClassIDs, Is.EqualTo (expectedClassIDs));
-      Assert.That (((FilterViewDefinition) expectedEntityDefinition).Columns, Is.EqualTo (expectedColumnDefinitions));
+      Assert.That (((FilterViewDefinition) expectedEntityDefinition).GetAllColumns(), Is.EqualTo (expectedColumnDefinitions));
       Assert.That (((FilterViewDefinition) expectedEntityDefinition).Indexes, Is.EqualTo (expectedIndexDefinitions));
       Assert.That (((FilterViewDefinition) expectedEntityDefinition).Synonyms, Is.EqualTo (expectedSynonyms));
     }
@@ -339,7 +339,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((UnionViewDefinition) expectedEntityDefinition).ViewName.EntityName, Is.EqualTo (expectedViewName));
       Assert.That (((UnionViewDefinition) expectedEntityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((UnionViewDefinition) expectedEntityDefinition).UnionedEntities, Is.EqualTo (expectedStorageEntityDefinitions));
-      Assert.That (((UnionViewDefinition) expectedEntityDefinition).Columns, Is.EqualTo (expectedColumnDefinitions));
+      Assert.That (((UnionViewDefinition) expectedEntityDefinition).GetAllColumns(), Is.EqualTo (expectedColumnDefinitions));
       Assert.That (((UnionViewDefinition) expectedEntityDefinition).Indexes, Is.EqualTo (expectedIndexDefinitions));
       Assert.That (((UnionViewDefinition) expectedEntityDefinition).Synonyms, Is.EqualTo (expectedSynonyms));
     }

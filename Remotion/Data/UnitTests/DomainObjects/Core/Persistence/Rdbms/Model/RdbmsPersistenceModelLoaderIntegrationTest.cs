@@ -237,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName.SchemaName, Is.Null);
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).ViewName.SchemaName, Is.Null);
-      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).Columns, Is.EqualTo (columnDefinitions));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetAllColumns(), Is.EqualTo (columnDefinitions));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).Constraints[0], Is.TypeOf (typeof (PrimaryKeyConstraintDefinition)));
       var primaryKey = (PrimaryKeyConstraintDefinition) ((TableDefinition) classDefinition.StorageEntityDefinition).Constraints[0];
       Assert.That (primaryKey.ConstraintName, Is.EqualTo (primaryKeyConstraintDefinition.ConstraintName));
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).BaseEntity, Is.SameAs (baseEntity));
       Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).ClassIDs, Is.EqualTo (classIDs));
-      Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).Columns, Is.EqualTo (columnDefinitions));
+      Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).GetAllColumns(), Is.EqualTo (columnDefinitions));
     }
 
     private void AssertUnionViewDefinition (
@@ -273,7 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
       Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).UnionedEntities, Is.EqualTo (storageEntityDefinitions));
-      Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).Columns, Is.EqualTo (columnDefinitions));
+      Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).GetAllColumns(), Is.EqualTo (columnDefinitions));
     }
   }
 }

@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
             firstTableDefinition.StorageProviderDefinition,
             firstTableDefinition.TableName,
             new EntityNameDefinition (firstTableDefinition.ViewName.SchemaName, "NewViewName"),
-            firstTableDefinition.Columns,
+            firstTableDefinition.GetAllColumns(),
             firstTableDefinition.Constraints,
             new IIndexDefinition[0],
             new EntityNameDefinition[0]);
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (tableDefinition.TableName.SchemaName, "AddedView"),
           tableDefinition,
           new[] { "ClassID" },
-          tableDefinition.Columns,
+          tableDefinition.GetAllColumns(),
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (tableDefinition.ViewName.SchemaName, "AddedViewSynonym") });
     }

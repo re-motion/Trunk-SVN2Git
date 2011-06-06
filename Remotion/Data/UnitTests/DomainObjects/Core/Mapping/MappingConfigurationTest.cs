@@ -505,7 +505,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName.EntityName, Is.EqualTo ("Order"));
       Assert.That (classDefinition.MyPropertyDefinitions.Count, Is.EqualTo (2));
-      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).Columns.Count, Is.EqualTo (5));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetAllColumns().Count(), Is.EqualTo (5));
       Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
       Assert.That (
           ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn1"));

@@ -29,8 +29,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public abstract class EntityDefinitionBase : IEntityDefinition
   {
     private readonly EntityNameDefinition _viewName;
-    private readonly ReadOnlyCollection<SimpleColumnDefinition> _columns;
     private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
+    private readonly IEnumerable<SimpleColumnDefinition> _columns;
 
     protected EntityDefinitionBase (
         EntityNameDefinition viewName,
@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("synonyms", synonyms);
 
       _viewName = viewName;
-      _columns = columns.ToList().AsReadOnly();
+      _columns = columns;
       _synonyms = synonyms.ToList().AsReadOnly();
     }
 
@@ -62,9 +62,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _viewName; }
     }
 
-    public ReadOnlyCollection<SimpleColumnDefinition> Columns
+    public IEnumerable<SimpleColumnDefinition> GetAllColumns ()
     {
-      get { return _columns; }
+      return _columns; 
     }
 
     public ReadOnlyCollection<EntityNameDefinition> Synonyms

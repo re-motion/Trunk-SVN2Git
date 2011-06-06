@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
                   + "  {3}AS\r\n{4}{5}",
                   entityDefinition.ViewName.SchemaName ?? DefaultSchema,
                   entityDefinition.ViewName.EntityName,
-                  GetColumnList (entityDefinition.Columns),
+                  GetColumnList (entityDefinition.GetAllColumns()),
                   UseSchemaBinding (entityDefinition) ? "WITH SCHEMABINDING " : string.Empty,
                   GetSelectStatements(entityDefinition),
                   UseCheckOption(entityDefinition) ? "\r\n  WITH CHECK OPTION" : string.Empty)));

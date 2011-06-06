@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         if (createSelectStringBuilder.Length > 0)
           createSelectStringBuilder.AppendFormat ("\r\n  UNION ALL\r\n");
 
-        var availableTableColumns = tableDefinition.Columns;
+        var availableTableColumns = tableDefinition.GetAllColumns();
         var unionedColumns = unionViewDefinition.CreateFullColumnList (availableTableColumns);
         createSelectStringBuilder.AppendFormat (
             "  SELECT {0}\r\n"

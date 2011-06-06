@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
@@ -60,9 +61,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return null; }
     }
 
-    public ReadOnlyCollection<SimpleColumnDefinition> Columns
+    public IEnumerable<SimpleColumnDefinition> GetAllColumns ()
     {
-      get { return new ReadOnlyCollection<SimpleColumnDefinition> (new SimpleColumnDefinition[0]); }
+      return new SimpleColumnDefinition[0];
     }
 
     public ReadOnlyCollection<IIndexDefinition> Indexes

@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Columns ()
     {
-      var result = _unionViewDefinition.Columns;
+      var result = _unionViewDefinition.GetAllColumns();
 
       Assert.That (result, Is.EqualTo (new[] { _column1, _column2, _column3 }));
     }

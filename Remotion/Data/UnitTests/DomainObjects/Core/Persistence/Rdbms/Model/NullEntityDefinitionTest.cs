@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -50,9 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Columns ()
+    public void GetAllColumns ()
     {
-      var result = _nullEntityDefinition.Columns;
+      var result = _nullEntityDefinition.GetAllColumns().ToList();
 
       Assert.That (result.Count, Is.EqualTo (0));
     }
