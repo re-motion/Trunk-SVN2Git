@@ -15,22 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
-  public class StubDbCommandBuilder : DbCommandBuilder
+  [TestFixture]
+  public class QueryDbCommandBuilderTest: SqlProviderBaseTest
   {
-    public StubDbCommandBuilder (RdbmsProvider provider)
-        : base(provider, new ReflectionBasedStorageNameProvider())
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
+    public void ConstructorChecksForConnectedProvider ()
     {
-    }
-
-    public override IDbCommand Create ()
-    {
-      throw new NotImplementedException();
+      var queryDefinition = new QueryDefinition ("TheQuery", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection);
+      new QueryDbCommandBuilder (Provider, StorageNameProvider, QueryFactory.CreateQuery (queryDefinition));
     }
   }
 }

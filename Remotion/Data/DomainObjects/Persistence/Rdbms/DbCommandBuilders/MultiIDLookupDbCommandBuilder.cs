@@ -19,7 +19,7 @@ using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   /// <summary>
   /// Builds a command that allows retrieving a set of records whose ID column is contained in a range of <see cref="ObjectID"/> values.

@@ -17,6 +17,7 @@
 using System;
 using System.Data;
 using System.Text;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;

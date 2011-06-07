@@ -16,13 +16,13 @@
 // 
 using System.Data;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
   public class CommandBuilderTest : SqlProviderBaseTest

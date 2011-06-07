@@ -443,8 +443,8 @@
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlStorageTypeCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\TableDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\UnionViewDefinition.cs" />
-    <Compile Include="Persistence\Rdbms\MultiIDLookupDbCommandBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\IDbCommandBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\MultiIDLookupDbCommandBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SortExpressionSqlGenerator.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Sql2005\SqlStorageObjectFactory.cs" />
@@ -797,20 +797,20 @@
     <Compile Include="Persistence\PersistenceManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\DbCommandBuilder.cs">
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\DbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\Rdbms\ConcreteTableInheritanceRelationLoader.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\DeleteDbCommandBuilder.cs">
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\DeleteDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\InsertDbCommandBuilder.cs">
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\InsertDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\QueryDbCommandBuilder.cs">
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\QueryDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\Rdbms\RdbmsProvider.cs">
@@ -822,14 +822,14 @@
     <Compile Include="Persistence\Rdbms\RdbmsProviderException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\SingleIDLookupDbCommandBuilder.cs">
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\Rdbms\SqlServer\SqlProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\UnionSelectDbCommandBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\UpdateDbCommandBuilder.cs">
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\UnionSelectDbCommandBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\UpdateDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\Rdbms\ValueConverter.cs">

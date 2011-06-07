@@ -19,6 +19,7 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
