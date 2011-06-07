@@ -85,11 +85,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return SqlDialect.GetParameterName (name);
     }
 
-    public SortExpressionSqlGenerator GetSortExpressionSqlGenerator ()
-    {
-      return new SortExpressionSqlGenerator (SqlDialect);
-    }
-
     public virtual void Connect ()
     {
       CheckDisposed();

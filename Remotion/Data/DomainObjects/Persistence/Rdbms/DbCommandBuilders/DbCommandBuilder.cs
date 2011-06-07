@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       if (sortExpression == null)
         return string.Empty;
 
-      var generator = Provider.GetSortExpressionSqlGenerator();
+      var generator = new SortExpressionSqlGenerator (SqlDialect);
       var orderByClause = generator.GenerateOrderByClauseString (sortExpression);
       return " " + orderByClause;
     }
