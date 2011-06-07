@@ -24,13 +24,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class UnionSelectCommandBuilder : CommandBuilder
+  public class UnionSelectDbCommandBuilder : DbCommandBuilder
   {
     // types
 
     // static members and constants
 
-  public static UnionSelectCommandBuilder CreateForRelatedIDLookup (
+  public static UnionSelectDbCommandBuilder CreateForRelatedIDLookup (
       RdbmsProvider provider, 
       IStorageNameProvider storageNameProvider,
       ClassDefinition classDefinition, 
@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
     ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-    return new UnionSelectCommandBuilder (provider, storageNameProvider, classDefinition, propertyDefinition, relatedID);
+    return new UnionSelectDbCommandBuilder (provider, storageNameProvider, classDefinition, propertyDefinition, relatedID);
   }
 
     // member fields
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    private UnionSelectCommandBuilder (      
+    private UnionSelectDbCommandBuilder (      
         RdbmsProvider provider, 
         IStorageNameProvider storageNameProvider,
         ClassDefinition classDefinition, 

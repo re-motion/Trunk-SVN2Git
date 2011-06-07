@@ -16,44 +16,45 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
-  /// Builds a command that allows retrieving a set of records where a certain column matches a given <see cref="ObjectID"/> value.
+  /// Builds a command that allows retrieving a set of records whose ID column is contained in a range of <see cref="ObjectID"/> values.
   /// </summary>
-  public class SingleIDLookupCommandBuilder: CommandBuilder
+  public class MultiIDLookupDbCommandBuilder: DbCommandBuilder
   {
     private readonly string _selectColumns;
     private readonly string _entityName;
     private readonly string _checkedColumnName;
-    private readonly ObjectID _expectedValue;
-    private readonly SortExpressionDefinition _orderExpression;
+    private readonly string _checkedColumnTypeName;
+    private readonly ObjectID[] _expectedValues;
 
-    public SingleIDLookupCommandBuilder (
-        RdbmsProvider provider, 
+    public MultiIDLookupDbCommandBuilder (
+        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
         string selectColumns, 
-        string entityName, 
-        string checkedColumnName, 
-        ObjectID expectedValue, 
-        SortExpressionDefinition orderExpression)
+        string entityName,
+        string checkedColumnName,
+        string checkedColumnTypeName,
+        ObjectID[] ids)
       : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNullOrEmpty ("checkedColumnName", checkedColumnName);
-      ArgumentUtility.CheckNotNull ("expectedValue", expectedValue);
+      ArgumentUtility.CheckNotNullOrEmpty ("checkedColumnTypeName", checkedColumnTypeName);
+      ArgumentUtility.CheckNotNull ("ids", ids);
+
+      _checkedColumnName = checkedColumnName;
+      _checkedColumnTypeName = checkedColumnTypeName;
 
       _selectColumns = selectColumns;
       _entityName = entityName;
-      _checkedColumnName = checkedColumnName;
-      _expectedValue = expectedValue;
-      _orderExpression = orderExpression;
+      _expectedValues = ids;
     }
 
     public string SelectColumns
@@ -71,40 +72,45 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _checkedColumnName; }
     }
 
-    public ObjectID ExpectedValue
+    public string CheckedColumnTypeName
     {
-      get { return _expectedValue; }
+      get { return _checkedColumnTypeName; }
     }
 
-    public SortExpressionDefinition OrderExpression
+    public ObjectID[] ExpectedValues
     {
-      get { return _orderExpression; }
+      get { return _expectedValues; }
     }
 
     public override IDbCommand Create()
     {
       IDbCommand command = Provider.CreateDbCommand();
-      WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
+      var whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
-      whereClauseBuilder.Add (_checkedColumnName, GetObjectIDValueForParameter (_expectedValue));
-
-      // TODO in case of integer primary keys: 
-      // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,
-      // the code below must be selectively actived to run only for integer primary keys.
-      // Note: This behaviour is not desired in case of GUID primary keys, because two same foreign key GUIDs pointing 
-      //       to different classIDs must be an error! In this case PersistenceManager.CheckClassIDForVirtualEndPoint raises an exception. 
-      //if (_whereClauseValueIsRelatedID && _expectedValue.ClassDefinition.IsPartOfInheritanceHierarchy && IsOfSameStorageProvider (_expectedValue))
-      //  whereClauseBuilder.Add (RdbmsProvider.GetRelationClassIDColumnName (_checkedColumnName), _expectedValue.ClassID);
+      whereClauseBuilder.SetInExpression (_checkedColumnName, _checkedColumnTypeName, GetValueArrayForParameter (_expectedValues));
 
       command.CommandText = string.Format (
-          "SELECT {0} FROM {1} WHERE {2}{3}{4}",
+          "SELECT {0} FROM {1} WHERE {2}{3}",
           _selectColumns,
           Provider.DelimitIdentifier (_entityName),
           whereClauseBuilder,
-          GetOrderClause (_orderExpression),
           Provider.StatementDelimiter);
 
       return command;
+    }
+
+    private object[] GetValueArrayForParameter (ObjectID[] objectIDs)
+    {
+      var values = new object[objectIDs.Length];
+
+      for (int i = 0; i < objectIDs.Length; i++)
+      {
+        if (!IsOfSameStorageProvider (objectIDs[i]))
+          throw new ArgumentException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.", "objectIDs");
+        values[i] = objectIDs[i].Value;
+      }
+
+      return values;
     }
   }
 }

@@ -15,22 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
+using System.Data;
+using Remotion.Data.DomainObjects.DataManagement;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  [TestFixture]
-  public class QueryCommandBuilderTest: SqlProviderBaseTest
+  public interface IDbCommandBuilder
   {
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
-    public void ConstructorChecksForConnectedProvider ()
-    {
-      var queryDefinition = new QueryDefinition ("TheQuery", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection);
-      new QueryCommandBuilder (Provider, StorageNameProvider, QueryFactory.CreateQuery (queryDefinition));
-    }
+    RdbmsProvider Provider { get; }
+
+    IDbCommand Create ();
+    IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue);
+
+    /// <remarks>
+    /// This method cannot be used for binary (BLOB) <paramref name="parameterValue"/>. Use the overload with a <see cref="PropertyValue"/> instead.
+    /// </remarks>
+    IDataParameter AddCommandParameter (IDbCommand command, string parameterName, object parameterValue);
   }
 }

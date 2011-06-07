@@ -32,19 +32,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _storageNameProvider = storageNameProvider;
     }
 
-    public virtual ICommandBuilder GetCommandBuilderForIDLookup (RdbmsProvider provider, string entityName, ObjectID[] objectIDs)
+    public virtual IDbCommandBuilder GetCommandBuilderForIDLookup (RdbmsProvider provider, string entityName, ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       if (objectIDs.Length == 1)
-        return new SingleIDLookupCommandBuilder (provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, objectIDs[0], null);
+        return new SingleIDLookupDbCommandBuilder (provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, objectIDs[0], null);
       else
-        return new MultiIDLookupCommandBuilder (provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, provider.GetIDColumnTypeName(), objectIDs);
+        return new MultiIDLookupDbCommandBuilder (provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, provider.GetIDColumnTypeName(), objectIDs);
     }
 
-    public virtual ICommandBuilder GetCommandBuilderForRelatedIDLookup (RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID)
+    public virtual IDbCommandBuilder GetCommandBuilderForRelatedIDLookup (RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var oppositeRelationEndPointDefinition = 
           (VirtualRelationEndPointDefinition) relationProperty.ClassDefinition.GetMandatoryOppositeEndPointDefinition (relationProperty.PropertyName);
 
-      return new SingleIDLookupCommandBuilder (
+      return new SingleIDLookupDbCommandBuilder (
           provider,
           _storageNameProvider,
           "*",

@@ -865,7 +865,7 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForBehavioralMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerLoaderHelperTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MultiIDLookupCommandBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MultiIDLookupDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\TestRdbmsProvider.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderTest.cs" />
@@ -950,7 +950,7 @@
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StubCommandBuilder.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StubDbCommandBuilder.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetchQueryCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryResultTest.cs" />
@@ -1145,9 +1145,9 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\ObjectIDLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\StorageProviderWithFixedGuidMixin.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\UpdateCommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\InsertCommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\QueryCommandBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\UpdateDbCommandBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\InsertDbCommandBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\QueryDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\CompositeCommandTest.cs" />
     <Compile Include="DomainObjects\Core\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="DomainObjects\Core\Serialization\CollectionEndPointTest.cs" />
@@ -1410,13 +1410,13 @@
     <Compile Include="DomainObjects\Core\Persistence\PropertyValueChecker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DeleteCommandBuilderTest.cs">
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DeleteDbCommandBuilderTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderDefinitionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SingleIDLookupCommandBuilderTest.cs">
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SingleIDLookupDbCommandBuilderTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlProviderBaseTest.cs">
@@ -1582,7 +1582,7 @@
     </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\TableInheritanceTestDomainAttribute.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\UnidirectionalRelationTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\UnionSelectCommandBuilderTest.cs">
+    <Compile Include="DomainObjects\Core\TableInheritance\UnionSelectDbCommandBuilderTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\ValueConverterTest.cs">

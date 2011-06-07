@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
+      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
+      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
+      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())
@@ -199,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
+      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())

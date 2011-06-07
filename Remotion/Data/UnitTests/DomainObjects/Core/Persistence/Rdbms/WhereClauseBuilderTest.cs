@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private Guid _guid1;
     private Guid _guid2;
     private Guid _guid3;
-    private ICommandBuilder _commandBuilderMock;
+    private IDbCommandBuilder _commandBuilderMock;
     private IDbCommand _commandMock;
 
     public override void SetUp ()
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _guid2 = new Guid ("22222222-68DB-4e68-BC69-AC69B15FA23F");
       _guid3 = new Guid ("33333333-68DB-4e68-BC69-AC69B15FA23F");
 
-      _commandBuilderMock = MockRepository.GenerateStrictMock<ICommandBuilder> ();
+      _commandBuilderMock = MockRepository.GenerateStrictMock<IDbCommandBuilder> ();
       _commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
 
       _commandBuilderMock.Stub (mock => mock.Provider).Return (Provider);

@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainersFromCommandBuilder ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
-      var builder = new MultiIDLookupCommandBuilder (
+      var builder = new MultiIDLookupDbCommandBuilder (
           Provider,
           StorageNameProvider,
           "*",
@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           {
             loader.Provider.Connect();
 
-            var builder = new MultiIDLookupCommandBuilder (
+            var builder = new MultiIDLookupDbCommandBuilder (
                 loader.Provider,
                 StorageNameProvider,
                 "*",
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryCommandBuilder (Provider, StorageNameProvider, query);
+      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query);
 
       var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
 
@@ -305,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryCommandBuilder (Provider, StorageNameProvider, query);
+      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query);
 
       _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }

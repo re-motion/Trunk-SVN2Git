@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class DeleteCommandBuilder: CommandBuilder
+  public class DeleteDbCommandBuilder: DbCommandBuilder
   {
     // types
 
@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    public DeleteCommandBuilder (RdbmsProvider provider,  IStorageNameProvider storageNameProvider, DataContainer dataContainer)
+    public DeleteDbCommandBuilder (RdbmsProvider provider,  IStorageNameProvider storageNameProvider, DataContainer dataContainer)
         : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);

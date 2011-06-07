@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class QueryCommandBuilder: CommandBuilder
+  public class QueryDbCommandBuilder: DbCommandBuilder
   {
     // types
 
@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    public QueryCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query)
+    public QueryDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query)
         : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("query", query);

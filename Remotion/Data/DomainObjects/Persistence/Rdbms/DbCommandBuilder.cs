@@ -23,7 +23,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public abstract class CommandBuilder : ICommandBuilder
+  public abstract class DbCommandBuilder : IDbCommandBuilder
   {
     // types
 
@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    protected CommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider)
+    protected DbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);

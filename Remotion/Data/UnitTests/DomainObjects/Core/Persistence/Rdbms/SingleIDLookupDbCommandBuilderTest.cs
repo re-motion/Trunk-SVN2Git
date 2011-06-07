@@ -16,38 +16,56 @@
 // 
 using System;
 using System.Data;
-using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class MultiIDLookupCommandBuilderTest : SqlProviderBaseTest
+  public class SingleIDLookupDbCommandBuilderTest : SqlProviderBaseTest
   {
     [Test]
-    public void Create ()
+    public void Create_WithOrderClause ()
     {
       Provider.Connect ();
-      var builder = new MultiIDLookupCommandBuilder (
-          Provider, 
+      var builder = new SingleIDLookupDbCommandBuilder (
+          Provider,
           StorageNameProvider,
           "*", 
           "Order", 
-          "ID", 
-          "uniqueidentifier", 
-          new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+          "CustomerID", 
+          DomainObjectIDs.Customer1, 
+          SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"));
 
       using (IDbCommand command = builder.Create ())
       {
-        string expectedCommandText = "SELECT * FROM [Order] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c));";
-        Assert.AreEqual (expectedCommandText, command.CommandText);
-        Assert.AreEqual (1, command.Parameters.Count);
+        Assert.AreEqual (
+            "SELECT * FROM [Order] WHERE [CustomerID] = @CustomerID ORDER BY [OrderNo] ASC;",
+            command.CommandText);
+      }
+    }
 
-        var expectedXml = "<L><I>" + DomainObjectIDs.Order1.Value + "</I><I>" + DomainObjectIDs.Order2.Value + "</I></L>";
-        Assert.AreEqual (expectedXml, ((SqlParameter) command.Parameters["@ID"]).Value);
-        Assert.AreEqual (SqlDbType.Xml, ((SqlParameter) command.Parameters["@ID"]).SqlDbType);
+    [Test]
+    public void Create_WithoutOrderClause ()
+    {
+      Provider.Connect ();
+      var builder = new SingleIDLookupDbCommandBuilder (
+          Provider,
+          StorageNameProvider,
+          "*",
+          "Order",
+          "CustomerID",
+          DomainObjectIDs.Customer1,
+          null);
+
+      using (IDbCommand command = builder.Create ())
+      {
+        Assert.AreEqual (
+            "SELECT * FROM [Order] WHERE [CustomerID] = @CustomerID;",
+            command.CommandText);
       }
     }
 
@@ -55,14 +73,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
     public void ConstructorChecksForConnectedProvider ()
     {
-      new MultiIDLookupCommandBuilder (
+      new SingleIDLookupDbCommandBuilder (
           Provider,
           StorageNameProvider,
           "*",
           "Order",
-          "ID",
-          "uniqueidentifier",
-          new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+          "CustomerID",
+          DomainObjectIDs.Customer1,
+          SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"));
     }
 
     [Test]
@@ -71,14 +89,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
       {
-        var builder = new MultiIDLookupCommandBuilder (
-          Provider,
-          StorageNameProvider,
-          "*",
-          "Order",
-          "ID",
-          "uniqueidentifier",
-          new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+        var builder = new SingleIDLookupDbCommandBuilder (
+            Provider,
+            StorageNameProvider,
+            "*",
+            "Order",
+            "CustomerID",
+            DomainObjectIDs.Customer1,
+            SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"));
 
         using (IDbCommand command = builder.Create())
         {

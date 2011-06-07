@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _provider; }
     }
 
-    public List<ObjectID> LoadObjectIDsFromCommandBuilder (CommandBuilder commandBuilder)
+    public List<ObjectID> LoadObjectIDsFromCommandBuilder (DbCommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 

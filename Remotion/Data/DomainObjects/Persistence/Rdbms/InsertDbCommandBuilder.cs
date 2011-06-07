@@ -24,7 +24,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class InsertCommandBuilder: CommandBuilder
+  public class InsertDbCommandBuilder: DbCommandBuilder
   {
     // types
 
@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    public InsertCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer)
+    public InsertDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer)
         : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);

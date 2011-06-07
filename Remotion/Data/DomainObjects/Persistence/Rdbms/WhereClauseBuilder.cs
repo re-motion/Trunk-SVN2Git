@@ -29,20 +29,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // static members and constants
 
-    public static WhereClauseBuilder Create (ICommandBuilder builder, IDbCommand command)
+    public static WhereClauseBuilder Create (IDbCommandBuilder builder, IDbCommand command)
     {
       return ObjectFactory.Create<WhereClauseBuilder>(true, ParamList.Create (builder, command));
     }
 
     // member fields
 
-    private readonly ICommandBuilder _commandBuilder;
+    private readonly IDbCommandBuilder _commandBuilder;
     private readonly IDbCommand _command;
     private readonly StringBuilder _whereClauseBuilder;
 
     // construction and disposing
 
-    protected WhereClauseBuilder (ICommandBuilder commandBuilder, IDbCommand command)
+    protected WhereClauseBuilder (IDbCommandBuilder commandBuilder, IDbCommand command)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("command", command);

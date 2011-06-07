@@ -29,16 +29,16 @@ using Remotion.Mixins;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
   [TestFixture]
-  public class UnionSelectCommandBuilderTest : SqlProviderBaseTest
+  public class UnionSelectDbCommandBuilderTest : SqlProviderBaseTest
   {
-    private UnionSelectCommandBuilder _builder;
+    private UnionSelectDbCommandBuilder _builder;
     
     public override void SetUp ()
     {
       base.SetUp();
 
       var domainBaseClass = MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase));
-      _builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
+      _builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (
           Provider,
           StorageNameProvider,
           domainBaseClass,
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       organizationalUnitClass.SetReadOnly();
       clientClass.SetReadOnly();
 
-      UnionSelectCommandBuilder builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
+      UnionSelectDbCommandBuilder builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (
           Provider,
           StorageNameProvider,
           domainBaseClass,

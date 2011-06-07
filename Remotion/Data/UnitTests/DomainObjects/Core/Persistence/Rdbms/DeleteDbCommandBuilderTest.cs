@@ -25,7 +25,7 @@ using Remotion.Mixins;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class DeleteCommandBuilderTest : SqlProviderBaseTest
+  public class DeleteDbCommandBuilderTest : SqlProviderBaseTest
   {
     [Test]
     public void CreateWithoutForeignKeyColumn ()
@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       DataContainer deletedContainer = classWithAllDataTypes.InternalDataContainer;
 
       Provider.Connect ();
-      CommandBuilder commandBuilder = new DeleteCommandBuilder (Provider, StorageNameProvider, deletedContainer);
+      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (Provider, StorageNameProvider, deletedContainer);
 
       using (IDbCommand deleteCommand = commandBuilder.Create ())
       {
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       DataContainer deletedOrderContainer = order.InternalDataContainer;
       
       Provider.Connect ();
-      CommandBuilder commandBuilder = new DeleteCommandBuilder (Provider, StorageNameProvider, deletedOrderContainer);
+      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (Provider, StorageNameProvider, deletedOrderContainer);
 
       using (IDbCommand deleteCommand = commandBuilder.Create ())
       {
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
     public void ConstructorChecksForConnectedProvider ()
     {
-      new DeleteCommandBuilder (Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer ());
+      new DeleteDbCommandBuilder (Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer ());
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void InitializeWithDataContainerOfInvalidState ()
     {
       Provider.Connect ();
-      new DeleteCommandBuilder (Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer ());
+      new DeleteDbCommandBuilder (Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer ());
     }
 
     [Test]
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainer deletedContainer = classWithAllDataTypes.InternalDataContainer;
 
         Provider.Connect();
-        CommandBuilder commandBuilder = new DeleteCommandBuilder (Provider, StorageNameProvider, deletedContainer);
+        DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (Provider, StorageNameProvider, deletedContainer);
 
         using (IDbCommand deleteCommand = commandBuilder.Create())
         {

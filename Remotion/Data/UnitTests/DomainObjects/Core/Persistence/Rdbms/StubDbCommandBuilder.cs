@@ -16,20 +16,21 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
-  public interface ICommandBuilder
+  public class StubDbCommandBuilder : DbCommandBuilder
   {
-    RdbmsProvider Provider { get; }
+    public StubDbCommandBuilder (RdbmsProvider provider)
+        : base(provider, new ReflectionBasedStorageNameProvider())
+    {
+    }
 
-    IDbCommand Create ();
-    IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue);
-
-    /// <remarks>
-    /// This method cannot be used for binary (BLOB) <paramref name="parameterValue"/>. Use the overload with a <see cref="PropertyValue"/> instead.
-    /// </remarks>
-    IDataParameter AddCommandParameter (IDbCommand command, string parameterName, object parameterValue);
+    public override IDbCommand Create ()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

@@ -24,11 +24,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class UpdateCommandBuilder : CommandBuilder
+  public class UpdateDbCommandBuilder : DbCommandBuilder
   {
     private readonly DataContainer _dataContainer;
     
-    public UpdateCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer)
+    public UpdateDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer)
         : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);

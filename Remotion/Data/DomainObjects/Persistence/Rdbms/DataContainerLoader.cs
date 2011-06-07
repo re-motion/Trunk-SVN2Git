@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return objectIDsPerEntityName;
     }
 
-    public DataContainer[] LoadDataContainersFromCommandBuilder (ICommandBuilder commandBuilder, bool allowNulls)
+    public DataContainer[] LoadDataContainersFromCommandBuilder (IDbCommandBuilder commandBuilder, bool allowNulls)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 

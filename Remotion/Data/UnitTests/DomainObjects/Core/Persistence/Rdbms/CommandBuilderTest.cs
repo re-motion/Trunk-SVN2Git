@@ -27,13 +27,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   [TestFixture]
   public class CommandBuilderTest : SqlProviderBaseTest
   {
-    private CommandBuilder _commandBuilder;
+    private DbCommandBuilder _commandBuilder;
 
     public override void SetUp ()
     {
       base.SetUp ();
       Provider.Connect ();
-      _commandBuilder = new StubCommandBuilder (Provider);
+      _commandBuilder = new StubDbCommandBuilder (Provider);
     }
 
     [Test]
