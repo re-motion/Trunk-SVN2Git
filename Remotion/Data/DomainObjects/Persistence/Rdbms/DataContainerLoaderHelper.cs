@@ -40,6 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter,
         ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
@@ -48,6 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       if (objectIDs.Length == 1)
       {
@@ -61,7 +63,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             null,
             sqlDialect,
             commandFactory,
-            rdbmsProviderDefinition);
+            rdbmsProviderDefinition,
+            valueConverter);
       }
       else
       {
@@ -75,6 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             sqlDialect,
             commandFactory,
             rdbmsProviderDefinition,
+            valueConverter,
             objectIDs);
       }
     }
@@ -86,7 +90,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ObjectID relatedID,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
-        RdbmsProviderDefinition rdbmsProviderDefinition)
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
@@ -95,6 +100,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       var oppositeRelationEndPointDefinition =
           (VirtualRelationEndPointDefinition) relationProperty.ClassDefinition.GetMandatoryOppositeEndPointDefinition (relationProperty.PropertyName);
@@ -109,7 +115,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           oppositeRelationEndPointDefinition.GetSortExpression(),
           sqlDialect,
           commandFactory,
-          rdbmsProviderDefinition);
+          rdbmsProviderDefinition,
+          valueConverter);
     }
 
     public virtual ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (

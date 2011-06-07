@@ -39,7 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Provider.Connect();
       DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-          Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          deletedContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
 
       using (IDbCommand deleteCommand = commandBuilder.Create())
       {
@@ -65,7 +71,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Provider.Connect();
       DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-          Provider, StorageNameProvider, deletedOrderContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          deletedOrderContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
 
       using (IDbCommand deleteCommand = commandBuilder.Create())
       {
@@ -92,7 +104,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           TestDataContainerFactory.CreateOrder1DataContainer(),
           Provider.SqlDialect,
           Provider,
-          Provider.StorageProviderDefinition);
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
     }
 
     [Test]
@@ -109,7 +122,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
         Provider.Connect();
         DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-            Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+            Provider,
+            StorageNameProvider,
+            deletedContainer,
+            Provider.SqlDialect,
+            Provider,
+            Provider.StorageProviderDefinition,
+            Provider.CreateValueConverter());
 
         using (IDbCommand deleteCommand = commandBuilder.Create())
         {

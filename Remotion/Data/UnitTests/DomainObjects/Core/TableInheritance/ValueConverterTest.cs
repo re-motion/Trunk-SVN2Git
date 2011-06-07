@@ -137,7 +137,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           null,
           Provider.SqlDialect,
           Provider,
-          Provider.StorageProviderDefinition);
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = builder.Create())
       {
         using (IDataReader reader = command.ExecuteReader())
@@ -173,7 +174,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           null,
           Provider.SqlDialect,
           Provider,
-          Provider.StorageProviderDefinition);
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = builder.Create())
       {
         using (IDataReader reader = command.ExecuteReader())
@@ -209,7 +211,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           null,
           Provider.SqlDialect,
           Provider,
-          Provider.StorageProviderDefinition);
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = builder.Create())
       {
         using (IDataReader reader = command.ExecuteReader())
@@ -245,7 +248,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           null,
           Provider.SqlDialect,
           Provider,
-          Provider.StorageProviderDefinition);
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = builder.Create())
       {
         using (IDataReader reader = command.ExecuteReader())

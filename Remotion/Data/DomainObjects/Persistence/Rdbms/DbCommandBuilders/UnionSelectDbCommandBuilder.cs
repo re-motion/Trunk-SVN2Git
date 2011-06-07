@@ -39,7 +39,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ObjectID relatedID,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
-        RdbmsProviderDefinition rdbmsProviderDefinition)
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
@@ -49,9 +50,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       return new UnionSelectDbCommandBuilder (
-          provider, storageNameProvider, classDefinition, propertyDefinition, relatedID, sqlDialect, commandFactory, rdbmsProviderDefinition);
+          provider,
+          storageNameProvider,
+          classDefinition,
+          propertyDefinition,
+          relatedID,
+          sqlDialect,
+          commandFactory,
+          rdbmsProviderDefinition,
+          valueConverter);
     }
 
     // member fields
@@ -70,8 +80,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ObjectID relatedID,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
-        RdbmsProviderDefinition rdbmsProviderDefinition)
-        : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition)
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter)
+        : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

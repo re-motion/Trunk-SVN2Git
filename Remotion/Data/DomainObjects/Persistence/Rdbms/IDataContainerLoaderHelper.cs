@@ -30,6 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter,
         ObjectID[] objectIDs);
 
     IDbCommandBuilder GetCommandBuilderForRelatedIDLookup (
@@ -39,7 +40,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ObjectID relatedID,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
-        RdbmsProviderDefinition rdbmsProviderDefinition);
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter);
 
     ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (
         RdbmsProvider provider,

@@ -31,25 +31,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly ISqlDialect _sqlDialect;
     private readonly IDbCommandFactory _commandFactory;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
+    private readonly ValueConverter _valueConverter;
 
     protected DbCommandBuilder (
         RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
-        RdbmsProviderDefinition rdbmsProviderDefinition)
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       _provider = provider;
       _storageNameProvider = storageNameProvider;
       _sqlDialect = sqlDialect;
       _commandFactory = commandFactory;
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
+      _valueConverter = valueConverter;
     }
 
     public abstract IDbCommand Create ();
@@ -77,6 +81,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public RdbmsProviderDefinition RdbmsProviderDefinition
     {
       get { return _rdbmsProviderDefinition; }
+    }
+
+    public ValueConverter ValueConverter
+    {
+      get { return _valueConverter; }
     }
 
     public IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue)
@@ -114,11 +123,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       IDataParameter commandParameter = command.CreateParameter();
       commandParameter.ParameterName = Provider.GetParameterName (parameterName);
 
-      ValueConverter valueConverter = Provider.CreateValueConverter();
       if (parameterValue is ObjectID)
-        commandParameter.Value = valueConverter.GetDBValue ((ObjectID) parameterValue, Provider.StorageProviderDefinition.Name);
+        commandParameter.Value = ValueConverter.GetDBValue ((ObjectID) parameterValue, RdbmsProviderDefinition.Name);
       else
-        commandParameter.Value = valueConverter.GetDBValue (parameterValue);
+        commandParameter.Value = ValueConverter.GetDBValue (parameterValue);
 
       command.Parameters.Add (commandParameter);
       return commandParameter;

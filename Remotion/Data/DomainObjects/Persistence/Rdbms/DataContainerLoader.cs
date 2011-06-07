@@ -55,7 +55,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("id", id);
 
       var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (
-          Provider, id.ClassDefinition.GetEntityName(), _provider.SqlDialect, _provider, _provider.StorageProviderDefinition, new[] { id });
+          Provider,
+          id.ClassDefinition.GetEntityName(),
+          _provider.SqlDialect,
+          _provider,
+          _provider.StorageProviderDefinition,
+          _provider.CreateValueConverter(),
+          new[] { id });
       using (IDbCommand command = commandBuilder.Create())
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleRow))
@@ -96,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private DataContainerCollection GetDataContainers (string entityName, ObjectID[] objectIDs)
     {
       var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (
-          Provider, entityName, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition, objectIDs);
+          Provider, entityName, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition, Provider.CreateValueConverter(), objectIDs);
 
       using (IDbCommand command = commandBuilder.Create())
       {
@@ -154,7 +160,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             relatedID,
             Provider.SqlDialect,
             Provider,
-            Provider.StorageProviderDefinition);
+            Provider.StorageProviderDefinition,
+            Provider.CreateValueConverter());
         return new DataContainerCollection (Provider.LoadDataContainers (commandBuilder, false), false);
       }
       else

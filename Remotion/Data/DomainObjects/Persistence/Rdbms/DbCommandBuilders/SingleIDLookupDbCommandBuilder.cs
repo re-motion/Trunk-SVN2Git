@@ -43,8 +43,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         SortExpressionDefinition orderExpression,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
-        RdbmsProviderDefinition rdbmsProviderDefinition)
-      : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition)
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter)
+      : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);

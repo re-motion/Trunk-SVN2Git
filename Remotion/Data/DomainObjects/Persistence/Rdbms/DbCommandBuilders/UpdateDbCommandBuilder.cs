@@ -34,8 +34,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         DataContainer dataContainer,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
-        RdbmsProviderDefinition rdbmsProviderDefinition)
-        : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition)
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        ValueConverter valueConverter)
+        : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 

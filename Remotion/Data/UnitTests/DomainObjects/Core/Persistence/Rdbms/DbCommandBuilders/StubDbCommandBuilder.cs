@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -25,7 +26,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class StubDbCommandBuilder : DbCommandBuilder
   {
     public StubDbCommandBuilder (RdbmsProvider provider)
-        : base(provider, new ReflectionBasedStorageNameProvider(), provider.SqlDialect, provider, provider.StorageProviderDefinition)
+        : base (
+            provider,
+            new ReflectionBasedStorageNameProvider(),
+            provider.SqlDialect,
+            provider,
+            provider.StorageProviderDefinition,
+            provider.CreateValueConverter())
     {
     }
 

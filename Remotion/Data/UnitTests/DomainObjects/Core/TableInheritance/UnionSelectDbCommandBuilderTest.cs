@@ -47,7 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           DomainObjectIDs.Client,
           Provider.SqlDialect,
           Provider,
-          Provider.StorageProviderDefinition);
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
     }
 
     [Test]
@@ -99,7 +100,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           DomainObjectIDs.Client,
           Provider.SqlDialect,
           Provider,
-          Provider.StorageProviderDefinition);
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
 
       using (IDbCommand command = builder.Create())
       {

@@ -37,7 +37,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Provider.Connect();
       new UpdateDbCommandBuilder (
-          Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          order.InternalDataContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
     }
 
     [Test]
@@ -52,7 +58,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
               ))
       {
         DbCommandBuilder commandBuilder = new UpdateDbCommandBuilder (
-            Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+            Provider,
+            StorageNameProvider,
+            order.InternalDataContainer,
+            Provider.SqlDialect,
+            Provider,
+            Provider.StorageProviderDefinition,
+            Provider.CreateValueConverter());
         using (IDbCommand command = commandBuilder.Create())
         {
           Assert.IsTrue (command.CommandText.Contains ("Mixed!"));
@@ -67,7 +79,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       ++order.OrderNumber;
       Provider.Connect();
       var commandBuilder = new UpdateDbCommandBuilder (
-          Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          order.InternalDataContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -86,7 +104,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.Employee = Employee.NewObject();
       Provider.Connect();
       var commandBuilder = new UpdateDbCommandBuilder (
-          Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          computer.InternalDataContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -109,7 +133,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Provider.Connect();
 
       var commandBuilder = new UpdateDbCommandBuilder (
-          Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          computer.InternalDataContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -131,7 +161,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Provider.Connect();
 
       var commandBuilder = new UpdateDbCommandBuilder (
-          Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          computer.InternalDataContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -151,7 +187,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.Int32TransactionProperty = 12; // change non-persistent property
       Provider.Connect();
       var commandBuilder = new UpdateDbCommandBuilder (
-          Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          computer.InternalDataContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create())
       {
         Assert.That (command, Is.Null);
@@ -166,7 +208,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Provider.Connect();
 
       var commandBuilder = new UpdateDbCommandBuilder (
-          Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          computer.InternalDataContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create())
       {
         Assert.That (command, Is.Not.Null);
@@ -186,7 +234,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       orderTicket.Int32TransactionProperty = 5;
       Provider.Connect();
       var commandBuilder = new UpdateDbCommandBuilder (
-          Provider, StorageNameProvider, orderTicket.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
+          Provider,
+          StorageNameProvider,
+          orderTicket.InternalDataContainer,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));

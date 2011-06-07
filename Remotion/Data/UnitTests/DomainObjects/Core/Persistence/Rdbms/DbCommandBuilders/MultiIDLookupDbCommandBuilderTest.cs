@@ -41,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           Provider.SqlDialect,
           Provider,
           Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter(),
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
       using (IDbCommand command = builder.Create ())
@@ -71,6 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           Provider.SqlDialect,
           Provider,
           Provider.StorageProviderDefinition,
+          Provider.CreateValueConverter(),
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
         using (IDbCommand command = builder.Create())

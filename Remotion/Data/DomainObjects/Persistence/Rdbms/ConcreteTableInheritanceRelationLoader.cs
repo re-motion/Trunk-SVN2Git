@@ -81,7 +81,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _relatedID,
           _provider.SqlDialect,
           _provider,
-          _provider.StorageProviderDefinition);
+          _provider.StorageProviderDefinition,
+          _provider.CreateValueConverter());
 
       return _objectIDLoader.LoadObjectIDsFromCommandBuilder (builder);
     }
