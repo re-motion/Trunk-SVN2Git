@@ -199,7 +199,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (this, StorageNameProvider, query, SqlDialect);
+      var commandBuilder = new QueryDbCommandBuilder (this, StorageNameProvider, query, SqlDialect, CreateDbCommand);
       return LoadDataContainers (commandBuilder, true);
     }
 
@@ -212,7 +212,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (this, StorageNameProvider, query, SqlDialect);
+      var commandBuilder = new QueryDbCommandBuilder (this, StorageNameProvider, query, SqlDialect, CreateDbCommand);
       using (IDbCommand command = commandBuilder.Create())
       {
         try
@@ -278,16 +278,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Connect();
 
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.New))
-        Save (new InsertDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect), dataContainer.ID);
+        Save (new InsertDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, CreateDbCommand), dataContainer.ID);
 
       foreach (DataContainer dataContainer in dataContainers)
       {
         if (dataContainer.State != StateType.Unchanged)
-          Save (new UpdateDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect), dataContainer.ID);
+          Save (new UpdateDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, CreateDbCommand), dataContainer.ID);
       }
 
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.Deleted))
-        Save (new DeleteDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect), dataContainer.ID);
+        Save (new DeleteDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, CreateDbCommand), dataContainer.ID);
     }
 
     public override void SetTimestamp (DataContainerCollection dataContainers)
@@ -368,7 +368,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       string columnName = DelimitIdentifier (StorageNameProvider.TimestampColumnName);
       string entityName = dataContainer.ClassDefinition.GetEntityName();
       var commandBuilder = new SingleIDLookupDbCommandBuilder (
-          this, StorageNameProvider, columnName, entityName, StorageNameProvider.IDColumnName, dataContainer.ID, null, SqlDialect);
+          this, StorageNameProvider, columnName, entityName, StorageNameProvider.IDColumnName, dataContainer.ID, null, SqlDialect, CreateDbCommand);
 
       using (IDbCommand command = commandBuilder.Create())
       {

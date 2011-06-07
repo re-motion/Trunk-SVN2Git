@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -34,33 +35,48 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     public virtual IDbCommandBuilder GetCommandBuilderForIDLookup (
-        RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, ObjectID[] objectIDs)
+        RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, Func<IDbCommand> commandFactory, ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
 
       if (objectIDs.Length == 1)
       {
         return new SingleIDLookupDbCommandBuilder (
-            provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, objectIDs[0], null, sqlDialect);
+            provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, objectIDs[0], null, sqlDialect, commandFactory);
       }
       else
       {
         return new MultiIDLookupDbCommandBuilder (
-            provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, provider.GetIDColumnTypeName(), sqlDialect, objectIDs);
+            provider,
+            _storageNameProvider,
+            "*",
+            entityName,
+            _storageNameProvider.IDColumnName,
+            provider.GetIDColumnTypeName(),
+            sqlDialect,
+            commandFactory,
+            objectIDs);
       }
     }
 
     public virtual IDbCommandBuilder GetCommandBuilderForRelatedIDLookup (
-        RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID, ISqlDialect sqlDialect)
+        RdbmsProvider provider,
+        string entityName,
+        PropertyDefinition relationProperty,
+        ObjectID relatedID,
+        ISqlDialect sqlDialect,
+        Func<IDbCommand> commandFactory)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
 
       var oppositeRelationEndPointDefinition =
           (VirtualRelationEndPointDefinition) relationProperty.ClassDefinition.GetMandatoryOppositeEndPointDefinition (relationProperty.PropertyName);
@@ -73,7 +89,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           relationProperty.StoragePropertyDefinition.Name,
           relatedID,
           oppositeRelationEndPointDefinition.GetSortExpression(),
-          sqlDialect);
+          sqlDialect,
+          commandFactory);
     }
 
     public virtual ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (

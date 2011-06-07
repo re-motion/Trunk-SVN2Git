@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IDataContainerLoaderHelper _loaderHelper;
 
     public DataContainerLoader (RdbmsProvider provider)
-        : this (new DataContainerLoaderHelper(provider.StorageNameProvider), provider)
+        : this (new DataContainerLoaderHelper (provider.StorageNameProvider), provider)
     {
     }
 
@@ -53,13 +53,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (Provider, id.ClassDefinition.GetEntityName (), _provider.SqlDialect, new[] { id });
-      using (IDbCommand command = commandBuilder.Create ())
+      var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (
+          Provider, id.ClassDefinition.GetEntityName(), _provider.SqlDialect, _provider.CreateDbCommand, new[] { id });
+      using (IDbCommand command = commandBuilder.Create())
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleRow))
         {
           var dataContainerFactory = new DataContainerFactory (Provider, reader);
-          return dataContainerFactory.CreateDataContainer ();
+          return dataContainerFactory.CreateDataContainer();
         }
       }
     }
@@ -69,14 +70,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var objectIDsPerEntityName = GetObjectIDsPerEntityName (orderedIDs);
       var allDataContainers = new DataContainerCollection();
       foreach (string entityName in objectIDsPerEntityName.Keys)
-        allDataContainers = DataContainerCollection.Join (allDataContainers, GetDataContainers (entityName, objectIDsPerEntityName[entityName].ToArray()));
+        allDataContainers = DataContainerCollection.Join (
+            allDataContainers, GetDataContainers (entityName, objectIDsPerEntityName[entityName].ToArray()));
 
       return GetOrderedDataContainers (orderedIDs, allDataContainers);
     }
 
-    private DataContainerCollection GetOrderedDataContainers (IEnumerable<ObjectID> objectIDsInCorrectOrder, DataContainerCollection unorderedDataContainers)
+    private DataContainerCollection GetOrderedDataContainers (
+        IEnumerable<ObjectID> objectIDsInCorrectOrder, DataContainerCollection unorderedDataContainers)
     {
-      var orderedDataContainers = new DataContainerCollection ();
+      var orderedDataContainers = new DataContainerCollection();
       foreach (ObjectID objectID in objectIDsInCorrectOrder)
       {
         DataContainer dataContainer = unorderedDataContainers[objectID];
@@ -89,24 +92,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private DataContainerCollection GetDataContainers (string entityName, ObjectID[] objectIDs)
     {
-      var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (Provider, entityName, Provider.SqlDialect, objectIDs);
+      var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (Provider, entityName, Provider.SqlDialect, Provider.CreateDbCommand, objectIDs);
 
-      using (IDbCommand command = commandBuilder.Create ())
+      using (IDbCommand command = commandBuilder.Create())
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleResult))
         {
           var dataContainerFactory = new DataContainerFactory (Provider, reader);
-          return new DataContainerCollection  (dataContainerFactory.CreateCollection (false), false);
+          return new DataContainerCollection (dataContainerFactory.CreateCollection (false), false);
         }
       }
     }
 
     private MultiDictionary<string, ObjectID> GetObjectIDsPerEntityName (IEnumerable<ObjectID> objectIDsInCorrectOrder)
     {
-      var objectIDsPerEntityName = new MultiDictionary<string, ObjectID> ();
+      var objectIDsPerEntityName = new MultiDictionary<string, ObjectID>();
       foreach (ObjectID objectID in objectIDsInCorrectOrder)
       {
-        string entityName = objectID.ClassDefinition.GetEntityName ();
+        string entityName = objectID.ClassDefinition.GetEntityName();
         objectIDsPerEntityName[entityName].Add (objectID);
       }
       return objectIDsPerEntityName;
@@ -116,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      using (IDbCommand command = commandBuilder.Create ())
+      using (IDbCommand command = commandBuilder.Create())
       {
         using (IDataReader dataReader = Provider.ExecuteReader (command, CommandBehavior.SingleResult))
         {
@@ -137,11 +140,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw Provider.CreateRdbmsProviderException ("Class '{0}' does not contain property '{1}'.", classDefinition.ID, propertyName);
 
       if (propertyDefinition.StorageClass != StorageClass.Persistent)
-        return new DataContainerCollection ();
-      else if (classDefinition.GetEntityName () != null)
+        return new DataContainerCollection();
+      else if (classDefinition.GetEntityName() != null)
       {
         var commandBuilder = _loaderHelper.GetCommandBuilderForRelatedIDLookup (
-            Provider, classDefinition.GetEntityName(), propertyDefinition, relatedID, Provider.SqlDialect);
+            Provider, classDefinition.GetEntityName(), propertyDefinition, relatedID, Provider.SqlDialect, Provider.CreateDbCommand);
         return new DataContainerCollection (Provider.LoadDataContainers (commandBuilder, false), false);
       }
       else
@@ -149,7 +152,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ConcreteTableInheritanceRelationLoader loader = _loaderHelper.GetConcreteTableInheritanceRelationLoader (
             Provider, classDefinition, propertyDefinition, relatedID);
 
-        return loader.LoadDataContainers ();
+        return loader.LoadDataContainers();
       }
     }
   }

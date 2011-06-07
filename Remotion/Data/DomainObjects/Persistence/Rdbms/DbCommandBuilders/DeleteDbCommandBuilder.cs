@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -21,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
-  public class DeleteDbCommandBuilder: DbCommandBuilder
+  public class DeleteDbCommandBuilder : DbCommandBuilder
   {
     // types
 
@@ -33,8 +34,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // construction and disposing
 
-    public DeleteDbCommandBuilder (RdbmsProvider provider,  IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect)
-        : base (provider, storageNameProvider, sqlDialect)
+    public DeleteDbCommandBuilder (
+        RdbmsProvider provider,
+        IStorageNameProvider storageNameProvider,
+        DataContainer dataContainer,
+        ISqlDialect sqlDialect,
+        Func<IDbCommand> commandFactory)
+        : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -46,9 +52,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // methods and properties
 
-    public override IDbCommand Create()
+    public override IDbCommand Create ()
     {
-      IDbCommand command = Provider.CreateDbCommand();
+      IDbCommand command = CommandFactory();
 
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
       whereClauseBuilder.Add (StorageNameProvider.IDColumnName, _dataContainer.ID.Value);
@@ -58,14 +64,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       command.CommandText = string.Format (
           "DELETE FROM {0} WHERE {1}{2}",
-          Provider.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
+          SqlDialect.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
           whereClauseBuilder,
           SqlDialect.StatementDelimiter);
 
       return command;
     }
 
-    private bool MustAddTimestampToWhereClause()
+    private bool MustAddTimestampToWhereClause ()
     {
       foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
       {

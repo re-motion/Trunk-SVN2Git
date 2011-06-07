@@ -29,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
     public void ConstructorChecksForConnectedProvider ()
     {
-      Order order = Order.NewObject ();
-			new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect);
+      Order order = Order.NewObject();
+      new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider.CreateDbCommand);
     }
 
     [Test]
@@ -40,24 +40,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
-      Provider.Connect ();
-			new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect);
+      Provider.Connect();
+      new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider.CreateDbCommand);
     }
 
     [Test]
     public void Create ()
     {
-      Provider.Connect ();
+      Provider.Connect();
 
-      Order order = Order.NewObject ();
+      Order order = Order.NewObject();
       order.OrderNumber = 212;
-      order.DeliveryDate = new DateTime(2008, 7, 1);
+      order.DeliveryDate = new DateTime (2008, 7, 1);
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect);
-      using (IDbCommand command = builder.Create ())
+      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (
+          Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider.CreateDbCommand);
+      using (IDbCommand command = builder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (command.CommandText,
+        Assert.That (
+            command.CommandText,
             Is.EqualTo ("INSERT INTO [Order] ([ID], [ClassID], [OrderNo], [DeliveryDate]) VALUES (@ID, @ClassID, @OrderNo, @DeliveryDate);"));
 
         Assert.That (command.Parameters.Count, Is.EqualTo (4));
@@ -77,11 +79,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.Employee = Employee.NewObject();
       computer.SerialNumber = "123";
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect);
+      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (
+          Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect, Provider.CreateDbCommand);
       using (IDbCommand command = builder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (command.CommandText,
+        Assert.That (
+            command.CommandText,
             Is.EqualTo ("INSERT INTO [Computer] ([ID], [ClassID], [SerialNumber]) VALUES (@ID, @ClassID, @SerialNumber);"));
 
         Assert.That (command.Parameters.Count, Is.EqualTo (3));
@@ -91,15 +95,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Create_WithStorageClassTransactionPrropety ()
     {
-      Provider.Connect ();
+      Provider.Connect();
 
-      OrderTicket orderTicket = OrderTicket.NewObject ();
+      OrderTicket orderTicket = OrderTicket.NewObject();
       orderTicket.FileName = "fx.txt";
-      orderTicket.Order = Order.NewObject ();
+      orderTicket.Order = Order.NewObject();
       orderTicket.Int32TransactionProperty = 7;
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, orderTicket.InternalDataContainer, Provider.SqlDialect);
-      using (IDbCommand command = builder.Create ())
+      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (
+          Provider, StorageNameProvider, orderTicket.InternalDataContainer, Provider.SqlDialect, Provider.CreateDbCommand);
+      using (IDbCommand command = builder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
         Assert.That (command.CommandText, Is.EqualTo ("INSERT INTO [OrderTicket] ([ID], [ClassID], [FileName]) VALUES (@ID, @ClassID, @FileName);"));

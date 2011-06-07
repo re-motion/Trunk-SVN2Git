@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Data;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -40,8 +41,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         string checkedColumnName, 
         ObjectID expectedValue, 
         SortExpressionDefinition orderExpression,
-        ISqlDialect sqlDialect)
-      : base (provider, storageNameProvider, sqlDialect)
+        ISqlDialect sqlDialect,
+        Func<IDbCommand> commandFactory)
+      : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);

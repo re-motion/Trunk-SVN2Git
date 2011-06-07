@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void ConstructorChecksForConnectedProvider ()
     {
       var queryDefinition = new QueryDefinition ("TheQuery", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection);
-      new QueryDbCommandBuilder (Provider, StorageNameProvider, QueryFactory.CreateQuery (queryDefinition), Provider.SqlDialect);
+      new QueryDbCommandBuilder (Provider, StorageNameProvider, QueryFactory.CreateQuery (queryDefinition), Provider.SqlDialect, Provider.CreateDbCommand);
     }
   }
 }

@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var builder =
           (SingleIDLookupDbCommandBuilder)
-          _loaderHelper.GetCommandBuilderForRelatedIDLookup (Provider, "Order", relationProperty, DomainObjectIDs.Customer1, Provider.SqlDialect);
+          _loaderHelper.GetCommandBuilderForRelatedIDLookup (Provider, "Order", relationProperty, DomainObjectIDs.Customer1, Provider.SqlDialect, Provider.CreateDbCommand);
       Assert.That (builder.EntityName, Is.EqualTo ("Order"));
       Assert.That (builder.OrderExpression.ToString(), Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber ASC"));
       Assert.That (builder.SelectColumns, Is.EqualTo ("*"));
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var builder =
           (SingleIDLookupDbCommandBuilder)
-          _loaderHelper.GetCommandBuilderForIDLookup (Provider, "Order", Provider.SqlDialect, new[] { DomainObjectIDs.Customer1 });
+          _loaderHelper.GetCommandBuilderForIDLookup (Provider, "Order", Provider.SqlDialect, Provider.CreateDbCommand, new[] { DomainObjectIDs.Customer1 });
 
       Assert.That (builder.EntityName, Is.EqualTo ("Order"));
       Assert.That (builder.OrderExpression, Is.Null);
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Connect();
 
       var builder = (MultiIDLookupDbCommandBuilder) _loaderHelper.GetCommandBuilderForIDLookup (
-          Provider, "Order", Provider.SqlDialect, new[] { DomainObjectIDs.Customer1, DomainObjectIDs.Customer2 });
+          Provider, "Order", Provider.SqlDialect, Provider.CreateDbCommand, new[] { DomainObjectIDs.Customer1, DomainObjectIDs.Customer2 });
 
       Assert.That (builder.EntityName, Is.EqualTo ("Order"));
       Assert.That (builder.SelectColumns, Is.EqualTo ("*"));

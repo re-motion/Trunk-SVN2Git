@@ -33,13 +33,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
 
-      classWithAllDataTypes.Delete ();
+      classWithAllDataTypes.Delete();
       DataContainer deletedContainer = classWithAllDataTypes.InternalDataContainer;
 
-      Provider.Connect ();
-      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect);
+      Provider.Connect();
+      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
+          Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect, Provider.CreateDbCommand);
 
-      using (IDbCommand deleteCommand = commandBuilder.Create ())
+      using (IDbCommand deleteCommand = commandBuilder.Create())
       {
         string expectedCommandText = "DELETE FROM [TableWithAllDataTypes] WHERE [ID] = @ID AND [Timestamp] = @Timestamp;";
         Assert.AreEqual (expectedCommandText, deleteCommand.CommandText);
@@ -58,13 +59,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void CreateWithForeignKeyColumn ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      order.Delete ();
+      order.Delete();
       DataContainer deletedOrderContainer = order.InternalDataContainer;
-      
-      Provider.Connect ();
-      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (Provider, StorageNameProvider, deletedOrderContainer, Provider.SqlDialect);
 
-      using (IDbCommand deleteCommand = commandBuilder.Create ())
+      Provider.Connect();
+      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
+          Provider, StorageNameProvider, deletedOrderContainer, Provider.SqlDialect, Provider.CreateDbCommand);
+
+      using (IDbCommand deleteCommand = commandBuilder.Create())
       {
         string expectedCommandText = "DELETE FROM [Order] WHERE [ID] = @ID;";
         Assert.AreEqual (expectedCommandText, deleteCommand.CommandText);
@@ -81,7 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
     public void ConstructorChecksForConnectedProvider ()
     {
-      new DeleteDbCommandBuilder (Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer (), Provider.SqlDialect);
+      new DeleteDbCommandBuilder (
+          Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer(), Provider.SqlDialect, Provider.CreateDbCommand);
     }
 
     [Test]
@@ -89,21 +92,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
         "State of provided DataContainer must be 'Deleted', but is 'Unchanged'.\r\nParameter name: dataContainer")]
     public void InitializeWithDataContainerOfInvalidState ()
     {
-      Provider.Connect ();
-      new DeleteDbCommandBuilder (Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer (), Provider.SqlDialect);
+      Provider.Connect();
+      new DeleteDbCommandBuilder (
+          Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer(), Provider.SqlDialect, Provider.CreateDbCommand);
     }
 
     [Test]
     public void WhereClauseBuilder_CanBeMixed ()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      classWithAllDataTypes.Delete ();
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
+      classWithAllDataTypes.Delete();
+      using (
+          MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope(
+              
+              ))
       {
         DataContainer deletedContainer = classWithAllDataTypes.InternalDataContainer;
 
         Provider.Connect();
-        DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect);
+        DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
+            Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect, Provider.CreateDbCommand);
 
         using (IDbCommand deleteCommand = commandBuilder.Create())
         {

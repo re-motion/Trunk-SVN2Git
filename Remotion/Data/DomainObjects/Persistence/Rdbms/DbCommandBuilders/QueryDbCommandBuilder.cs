@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
@@ -21,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
-  public class QueryDbCommandBuilder: DbCommandBuilder
+  public class QueryDbCommandBuilder : DbCommandBuilder
   {
     // types
 
@@ -33,8 +34,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // construction and disposing
 
-    public QueryDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query, ISqlDialect sqlDialect)
-        : base (provider, storageNameProvider, sqlDialect)
+    public QueryDbCommandBuilder (
+        RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query, ISqlDialect sqlDialect, Func<IDbCommand> commandFactory)
+        : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -43,9 +45,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // methods and properties
 
-    public override IDbCommand Create()
+    public override IDbCommand Create ()
     {
-      IDbCommand command = Provider.CreateDbCommand();
+      IDbCommand command = CommandFactory();
 
       string statement = _query.Statement;
       foreach (QueryParameter parameter in _query.Parameters)

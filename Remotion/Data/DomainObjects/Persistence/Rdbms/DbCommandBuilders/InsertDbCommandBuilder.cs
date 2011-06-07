@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -23,7 +24,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
-  public class InsertDbCommandBuilder: DbCommandBuilder
+  public class InsertDbCommandBuilder : DbCommandBuilder
   {
     // types
 
@@ -35,8 +36,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // construction and disposing
 
-    public InsertDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect)
-        : base (provider, storageNameProvider, sqlDialect)
+    public InsertDbCommandBuilder (
+        RdbmsProvider provider,
+        IStorageNameProvider storageNameProvider,
+        DataContainer dataContainer,
+        ISqlDialect sqlDialect,
+        Func<IDbCommand> commandFactory)
+        : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -48,9 +54,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // methods and properties
 
-    public override IDbCommand Create()
+    public override IDbCommand Create ()
     {
-      IDbCommand command = Provider.CreateDbCommand();
+      IDbCommand command = CommandFactory();
 
       var columnBuilder = new StringBuilder();
       var valueBuilder = new StringBuilder();
@@ -68,7 +74,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       {
         if (propertyValue.Definition.StorageClass == StorageClass.Persistent && !propertyValue.Definition.IsObjectID)
         {
-          AppendColumn (columnBuilder, valueBuilder, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue.Definition.StoragePropertyDefinition.Name);
+          AppendColumn (
+              columnBuilder,
+              valueBuilder,
+              propertyValue.Definition.StoragePropertyDefinition.Name,
+              propertyValue.Definition.StoragePropertyDefinition.Name);
           AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue);
         }
       }

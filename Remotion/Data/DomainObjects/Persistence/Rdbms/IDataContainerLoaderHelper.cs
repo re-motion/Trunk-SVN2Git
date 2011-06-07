@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Data;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 
@@ -22,15 +24,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   // Required for mocking
   public interface IDataContainerLoaderHelper
   {
-    IDbCommandBuilder GetCommandBuilderForIDLookup (RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, ObjectID[] objectIDs);
-    IDbCommandBuilder GetCommandBuilderForRelatedIDLookup (
-        RdbmsProvider provider, 
-        string entityName, 
-        PropertyDefinition relationProperty, 
-        ObjectID relatedID,
-        ISqlDialect sqlDialect);
+    IDbCommandBuilder GetCommandBuilderForIDLookup (
+        RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, Func<IDbCommand> commandFactory, ObjectID[] objectIDs);
 
-    ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (RdbmsProvider provider, ClassDefinition classDefinition,
-        PropertyDefinition propertyDefinition, ObjectID relatedID);
+    IDbCommandBuilder GetCommandBuilderForRelatedIDLookup (
+        RdbmsProvider provider,
+        string entityName,
+        PropertyDefinition relationProperty,
+        ObjectID relatedID,
+        ISqlDialect sqlDialect,
+        Func<IDbCommand> commandFactory);
+
+    ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (
+        RdbmsProvider provider,
+        ClassDefinition classDefinition,
+        PropertyDefinition propertyDefinition,
+        ObjectID relatedID);
   }
 }

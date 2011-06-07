@@ -40,8 +40,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         string checkedColumnName,
         string checkedColumnTypeName,
         ISqlDialect sqlDialect,
+        Func<IDbCommand> commandFactory,
         ObjectID[] ids)
-      : base (provider, storageNameProvider, sqlDialect)
+      : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
@@ -85,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create()
     {
-      IDbCommand command = Provider.CreateDbCommand();
+      IDbCommand command = CommandFactory();
       var whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
       whereClauseBuilder.SetInExpression (_checkedColumnName, _checkedColumnTypeName, GetValueArrayForParameter (_expectedValues));

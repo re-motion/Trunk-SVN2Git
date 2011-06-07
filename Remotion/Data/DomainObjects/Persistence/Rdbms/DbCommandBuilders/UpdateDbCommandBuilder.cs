@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -26,9 +27,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   public class UpdateDbCommandBuilder : DbCommandBuilder
   {
     private readonly DataContainer _dataContainer;
-    
-    public UpdateDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect)
-        : base (provider, storageNameProvider, sqlDialect)
+
+    public UpdateDbCommandBuilder (
+        RdbmsProvider provider,
+        IStorageNameProvider storageNameProvider,
+        DataContainer dataContainer,
+        ISqlDialect sqlDialect,
+        Func<IDbCommand> commandFactory)
+        : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -40,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create ()
     {
-      IDbCommand command = Provider.CreateDbCommand();
+      IDbCommand command = CommandFactory();
       var updateSetBuilder = new StringBuilder();
 
       foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
@@ -118,7 +124,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, relatedIDValue);
 
-      if (classDefinition.StorageEntityDefinition.StorageProviderDefinition == relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition)
+      if (classDefinition.StorageEntityDefinition.StorageProviderDefinition
+          == relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition)
         AddClassIDParameter (updateSetBuilder, command, relatedClassDefinition, propertyValue);
     }
 
@@ -154,7 +161,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     private void AddPropertyValue (StringBuilder updateSetBuilder, IDbCommand command, PropertyValue propertyValue)
     {
-      AppendColumn (updateSetBuilder, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue.Definition.StoragePropertyDefinition.Name);
+      AppendColumn (
+          updateSetBuilder, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue.Definition.StoragePropertyDefinition.Name);
 
       if (!propertyValue.Definition.IsObjectID)
         AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue);

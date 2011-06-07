@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
@@ -35,7 +36,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ClassDefinition classDefinition, 
       PropertyDefinition propertyDefinition,
       ObjectID relatedID,
-      ISqlDialect sqlDialect)
+      ISqlDialect sqlDialect,
+      Func<IDbCommand> commandFactory)
   {
     ArgumentUtility.CheckNotNull ("provider", provider);
     ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
@@ -43,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
     ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-    return new UnionSelectDbCommandBuilder (provider, storageNameProvider, classDefinition, propertyDefinition, relatedID, sqlDialect);
+    return new UnionSelectDbCommandBuilder (provider, storageNameProvider, classDefinition, propertyDefinition, relatedID, sqlDialect, commandFactory);
   }
 
     // member fields
@@ -60,7 +62,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ClassDefinition classDefinition, 
         PropertyDefinition propertyDefinition,
         ObjectID relatedID,
-        ISqlDialect sqlDialect) : base (provider, storageNameProvider, sqlDialect)
+        ISqlDialect sqlDialect,
+        Func<IDbCommand> commandFactory)
+      : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -79,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       if (allConcreteEntityNames.Length == 0)
         return null;
 
-      IDbCommand command = Provider.CreateDbCommand ();
+      IDbCommand command = CommandFactory ();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
       whereClauseBuilder.Add (_propertyDefinition.StoragePropertyDefinition.Name, GetObjectIDValueForParameter (_relatedID));
 
