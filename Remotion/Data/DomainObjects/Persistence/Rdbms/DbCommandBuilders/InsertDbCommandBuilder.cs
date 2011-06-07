@@ -35,8 +35,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // construction and disposing
 
-    public InsertDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer)
-        : base (provider, storageNameProvider)
+    public InsertDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect)
+        : base (provider, storageNameProvider, sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -75,10 +75,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       command.CommandText = string.Format (
           "INSERT INTO {0} ({1}) VALUES ({2}){3}",
-          Provider.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
+          SqlDialect.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
           columnBuilder,
           valueBuilder,
-          Provider.StatementDelimiter);
+          SqlDialect.StatementDelimiter);
 
       return command;
     }
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       if (columnBuilder.Length > 0)
         columnBuilder.Append (", ");
 
-      columnBuilder.Append (Provider.DelimitIdentifier (columnName));
+      columnBuilder.Append (SqlDialect.DelimitIdentifier (columnName));
 
       if (valueBuilder.Length > 0)
         valueBuilder.Append (", ");

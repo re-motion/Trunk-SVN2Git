@@ -22,12 +22,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   // Required for mocking
   public interface IDataContainerLoaderHelper
   {
-    IDbCommandBuilder GetCommandBuilderForIDLookup (RdbmsProvider provider, string entityName, ObjectID[] objectIDs);
+    IDbCommandBuilder GetCommandBuilderForIDLookup (RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, ObjectID[] objectIDs);
     IDbCommandBuilder GetCommandBuilderForRelatedIDLookup (
         RdbmsProvider provider, 
         string entityName, 
         PropertyDefinition relationProperty, 
-        ObjectID relatedID);
+        ObjectID relatedID,
+        ISqlDialect sqlDialect);
 
     ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (RdbmsProvider provider, ClassDefinition classDefinition,
         PropertyDefinition propertyDefinition, ObjectID relatedID);

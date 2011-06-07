@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void ConstructorChecksForConnectedProvider ()
     {
       Order order = Order.NewObject ();
-			new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
+			new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect);
     }
 
     [Test]
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
       Provider.Connect ();
-			new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
+			new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect);
     }
 
     [Test]
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       order.OrderNumber = 212;
       order.DeliveryDate = new DateTime(2008, 7, 1);
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
+      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect);
       using (IDbCommand command = builder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.Employee = Employee.NewObject();
       computer.SerialNumber = "123";
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer);
+      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect);
       using (IDbCommand command = builder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       orderTicket.Order = Order.NewObject ();
       orderTicket.Int32TransactionProperty = 7;
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, orderTicket.InternalDataContainer);
+      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (Provider, StorageNameProvider, orderTicket.InternalDataContainer, Provider.SqlDialect);
       using (IDbCommand command = builder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));

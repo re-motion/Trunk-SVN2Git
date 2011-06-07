@@ -27,8 +27,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     private readonly DataContainer _dataContainer;
     
-    public UpdateDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer)
-        : base (provider, storageNameProvider)
+    public UpdateDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect)
+        : base (provider, storageNameProvider, sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -67,16 +67,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         // This occurs whenever the Timestamp should be incremented even though no property was changed. Used, e.g., via DomainObject.MarkAsChanged.
         updateSetBuilder.AppendFormat (
             "{0} = {1}",
-            Provider.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
-            Provider.DelimitIdentifier (StorageNameProvider.ClassIDColumnName));
+            SqlDialect.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
+            SqlDialect.DelimitIdentifier (StorageNameProvider.ClassIDColumnName));
       }
 
       command.CommandText = string.Format (
           "UPDATE {0} SET {1} WHERE {2}{3}",
-          Provider.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
+          SqlDialect.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
           updateSetBuilder,
           whereClauseBuilder,
-          Provider.StatementDelimiter);
+          SqlDialect.StatementDelimiter);
 
       return command;
     }
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       updateSetBuilder.AppendFormat (
           "{0} = {1}",
-          Provider.DelimitIdentifier (columnName),
+          SqlDialect.DelimitIdentifier (columnName),
           Provider.GetParameterName (parameterName));
     }
 

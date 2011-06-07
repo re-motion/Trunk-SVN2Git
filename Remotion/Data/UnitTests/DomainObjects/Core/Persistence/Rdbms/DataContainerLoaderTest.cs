@@ -168,22 +168,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (_mockRepository.Unordered())
       {
-        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null))
             .Constraints (
                 Mocks_Is.Same (Provider),
                 Mocks_Is.Equal ("Order"),
+                Mocks_Is.Same(Provider.SqlDialect),
                 Mocks_List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null))
             .Constraints (
                 Mocks_Is.Same (Provider),
                 Mocks_Is.Equal ("OrderItem"),
+                Mocks_Is.Same (Provider.SqlDialect),
                 Mocks_List.Equal (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null))
             .Constraints (
                 Mocks_Is.Same (Provider),
                 Mocks_Is.Equal ("Company"),
+                Mocks_Is.Same (Provider.SqlDialect),
                 Mocks_List.Equal (new[] { DomainObjectIDs.Company1, DomainObjectIDs.Company2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
       }
@@ -243,6 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "OrderItem",
           "ID",
           "uniqueidentifier",
+          Provider.SqlDialect,
           new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
       List<DataContainer> sortedContainers = GetSortedContainers (_loader.LoadDataContainersFromCommandBuilder (builder, false));
@@ -274,6 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                 "Order",
                 "ID",
                 "uniqueidentifier",
+                Provider.SqlDialect,
                 new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
             loader.LoadDataContainersFromCommandBuilder (builder, false);
           });
@@ -288,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query);
+      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect);
 
       var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
 
@@ -306,7 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query);
+      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect);
 
       _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }
@@ -371,7 +376,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               Provider,
               relatedClassDefinition.GetEntityName(),
               relationPropertyDefinition,
-              DomainObjectIDs.Order1)).IgnoreArguments().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+              DomainObjectIDs.Order1,
+              Provider.SqlDialect)).IgnoreArguments().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
 
       _mockRepository.ReplayAll();
 

@@ -33,8 +33,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // construction and disposing
 
-    public QueryDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query)
-        : base (provider, storageNameProvider)
+    public QueryDbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query, ISqlDialect sqlDialect)
+        : base (provider, storageNameProvider, sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 

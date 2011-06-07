@@ -39,8 +39,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         string entityName, 
         string checkedColumnName, 
         ObjectID expectedValue, 
-        SortExpressionDefinition orderExpression)
-      : base (provider, storageNameProvider)
+        SortExpressionDefinition orderExpression,
+        ISqlDialect sqlDialect)
+      : base (provider, storageNameProvider, sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
@@ -98,10 +99,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       command.CommandText = string.Format (
           "SELECT {0} FROM {1} WHERE {2}{3}{4}",
           _selectColumns,
-          Provider.DelimitIdentifier (_entityName),
+          SqlDialect.DelimitIdentifier (_entityName),
           whereClauseBuilder,
           GetOrderClause (_orderExpression),
-          Provider.StatementDelimiter);
+          SqlDialect.StatementDelimiter);
 
       return command;
     }

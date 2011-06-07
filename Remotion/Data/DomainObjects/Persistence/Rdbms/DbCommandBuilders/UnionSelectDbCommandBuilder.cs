@@ -34,7 +34,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       IStorageNameProvider storageNameProvider,
       ClassDefinition classDefinition, 
       PropertyDefinition propertyDefinition,
-      ObjectID relatedID)
+      ObjectID relatedID,
+      ISqlDialect sqlDialect)
   {
     ArgumentUtility.CheckNotNull ("provider", provider);
     ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
@@ -42,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
     ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-    return new UnionSelectDbCommandBuilder (provider, storageNameProvider, classDefinition, propertyDefinition, relatedID);
+    return new UnionSelectDbCommandBuilder (provider, storageNameProvider, classDefinition, propertyDefinition, relatedID, sqlDialect);
   }
 
     // member fields
@@ -58,7 +59,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         IStorageNameProvider storageNameProvider,
         ClassDefinition classDefinition, 
         PropertyDefinition propertyDefinition,
-        ObjectID relatedID) : base (provider, storageNameProvider)
+        ObjectID relatedID,
+        ISqlDialect sqlDialect) : base (provider, storageNameProvider, sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -94,10 +96,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
           commandTextStringBuilder.Append ("\nUNION ALL ");
 
         commandTextStringBuilder.AppendFormat (selectTemplate, 
-                  Provider.DelimitIdentifier (StorageNameProvider.IDColumnName),
-                  Provider.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
+                  SqlDialect.DelimitIdentifier (StorageNameProvider.IDColumnName),
+                  SqlDialect.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
                   columnsFromSortExpression, 
-                  Provider.DelimitIdentifier (entityName),
+                  SqlDialect.DelimitIdentifier (entityName),
                   whereClauseBuilder);
       }
 

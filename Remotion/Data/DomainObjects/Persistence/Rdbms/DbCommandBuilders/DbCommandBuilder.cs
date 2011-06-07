@@ -33,19 +33,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     private readonly RdbmsProvider _provider;
     private readonly IStorageNameProvider _storageNameProvider;
+    private readonly ISqlDialect _sqlDialect;
 
     // construction and disposing
 
-    protected DbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider)
+    protected DbCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       if (!provider.IsConnected)
         throw new ArgumentException ("Provider must be connected first.", "provider");
 
       _provider = provider;
       _storageNameProvider = storageNameProvider;
+      _sqlDialect = sqlDialect;
     }
 
     // abstract methods and properties
@@ -62,6 +65,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public IStorageNameProvider StorageNameProvider
     {
       get { return _storageNameProvider; }
+    }
+
+    public ISqlDialect SqlDialect
+    {
+      get { return _sqlDialect; }
     }
 
     public IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue)

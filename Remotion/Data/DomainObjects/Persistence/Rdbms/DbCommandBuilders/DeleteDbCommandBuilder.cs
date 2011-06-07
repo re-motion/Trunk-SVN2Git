@@ -33,8 +33,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // construction and disposing
 
-    public DeleteDbCommandBuilder (RdbmsProvider provider,  IStorageNameProvider storageNameProvider, DataContainer dataContainer)
-        : base (provider, storageNameProvider)
+    public DeleteDbCommandBuilder (RdbmsProvider provider,  IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect)
+        : base (provider, storageNameProvider, sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
           "DELETE FROM {0} WHERE {1}{2}",
           Provider.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
           whereClauseBuilder,
-          Provider.StatementDelimiter);
+          SqlDialect.StatementDelimiter);
 
       return command;
     }

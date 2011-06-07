@@ -30,28 +30,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
   [TestFixture]
   public class ValueConverterTest : SqlProviderBaseTest
   {
-    ValueConverter _converter;
+    private ValueConverter _converter;
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      Provider.Connect ();
-      _converter = new ValueConverter (Provider, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create ());
+      Provider.Connect();
+      _converter = new ValueConverter (Provider, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create());
     }
 
     [Test]
     public void GetObjectIDValue ()
     {
       ClassDefinition personClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Person));
-      PropertyDefinition clientProperty = personClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client");
+      PropertyDefinition clientProperty =
+          personClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client");
       ObjectID expectedID = DomainObjectIDs.Client;
 
       using (IDbCommand command = CreatePersonCommand ((Guid) DomainObjectIDs.Person.Value))
       {
-        using (IDataReader reader = command.ExecuteReader ())
+        using (IDataReader reader = command.ExecuteReader())
         {
-          Assert.IsTrue (reader.Read ());
+          Assert.IsTrue (reader.Read());
           Assert.AreEqual (expectedID, _converter.GetValue (personClass, clientProperty, reader));
         }
       }
@@ -60,12 +61,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void GetIDWithAbstractClassID ()
     {
-      using (IDbCommand command = Provider.Connection.CreateCommand ())
+      using (IDbCommand command = Provider.Connection.CreateCommand())
       {
         command.CommandText = string.Format ("SELECT '{0}' as ID, 'TI_DomainBase' as ClassID;", DomainObjectIDs.Person.Value);
-        using (IDataReader reader = command.ExecuteReader ())
+        using (IDataReader reader = command.ExecuteReader())
         {
-          Assert.IsTrue (reader.Read ());
+          Assert.IsTrue (reader.Read());
 
           try
           {
@@ -75,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           catch (RdbmsProviderException ex)
           {
             string expectedMessage = string.Format (
-                "Invalid database value encountered. Column 'ClassID' of row with ID '{0}' refers to abstract class 'TI_DomainBase'.", 
+                "Invalid database value encountered. Column 'ClassID' of row with ID '{0}' refers to abstract class 'TI_DomainBase'.",
                 DomainObjectIDs.Person.Value);
 
             Assert.AreEqual (expectedMessage, ex.Message);
@@ -88,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void GetTimestamp ()
     {
       var timestamp = "0x000000000001F77A";
-      using (IDbCommand command = Provider.Connection.CreateCommand ())
+      using (IDbCommand command = Provider.Connection.CreateCommand())
       {
         command.CommandText = string.Format ("SELECT '{0}' as Timestamp", timestamp);
         using (IDataReader reader = command.ExecuteReader())
@@ -103,12 +104,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void GetTimestamp_DBNullCOlumn ()
     {
-      using (IDbCommand command = Provider.Connection.CreateCommand ())
+      using (IDbCommand command = Provider.Connection.CreateCommand())
       {
         command.CommandText = "SELECT null as Timestamp";
-        using (IDataReader reader = command.ExecuteReader ())
+        using (IDataReader reader = command.ExecuteReader())
         {
-          Assert.IsTrue (reader.Read ());
+          Assert.IsTrue (reader.Read());
           var result = _converter.GetTimestamp (reader);
           Assert.That (result, Is.Null);
         }
@@ -125,16 +126,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
-      using (IDbCommand command = builder.Create ())
+      var builder = new SingleIDLookupDbCommandBuilder (
+          Provider, StorageNameProvider, "*", classDefinition.GetEntityName(), "ID", id, null, Provider.SqlDialect);
+      using (IDbCommand command = builder.Create())
       {
-        using (IDataReader reader = command.ExecuteReader ())
+        using (IDataReader reader = command.ExecuteReader())
         {
-          Assert.IsTrue (reader.Read ());
+          Assert.IsTrue (reader.Read());
 
           _converter.GetValue (
-              classDefinition, 
-              classDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.BaseClassWithInvalidRelationClassIDColumns.DomainBase"),
+              classDefinition,
+              classDefinition.GetMandatoryPropertyDefinition (
+                  "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.BaseClassWithInvalidRelationClassIDColumns.DomainBase"),
               reader);
         }
       }
@@ -150,23 +153,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
-      using (IDbCommand command = builder.Create ())
+      var builder = new SingleIDLookupDbCommandBuilder (
+          Provider, StorageNameProvider, "*", classDefinition.GetEntityName(), "ID", id, null, Provider.SqlDialect);
+      using (IDbCommand command = builder.Create())
       {
-        using (IDataReader reader = command.ExecuteReader ())
+        using (IDataReader reader = command.ExecuteReader())
         {
-          Assert.IsTrue (reader.Read ());
+          Assert.IsTrue (reader.Read());
 
           _converter.GetValue (
-              classDefinition, 
-              classDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.BaseClassWithInvalidRelationClassIDColumns.Client"),
+              classDefinition,
+              classDefinition.GetMandatoryPropertyDefinition (
+                  "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.BaseClassWithInvalidRelationClassIDColumns.Client"),
               reader);
         }
       }
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "Incorrect database value encountered. Column 'DomainBaseWithInvalidClassIDValueIDClassID' of entity"
         + " 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must not contain a value.")]
     public void GetValueWithInvalidRelationClassIDColumnValue ()
@@ -175,23 +180,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
-      using (IDbCommand command = builder.Create ())
+      var builder = new SingleIDLookupDbCommandBuilder (
+          Provider, StorageNameProvider, "*", classDefinition.GetEntityName(), "ID", id, null, Provider.SqlDialect);
+      using (IDbCommand command = builder.Create())
       {
-        using (IDataReader reader = command.ExecuteReader ())
+        using (IDataReader reader = command.ExecuteReader())
         {
-          Assert.IsTrue (reader.Read ());
+          Assert.IsTrue (reader.Read());
 
           _converter.GetValue (
-              classDefinition, 
-              classDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.BaseClassWithInvalidRelationClassIDColumns.DomainBaseWithInvalidClassIDValue"),
+              classDefinition,
+              classDefinition.GetMandatoryPropertyDefinition (
+                  "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.BaseClassWithInvalidRelationClassIDColumns.DomainBaseWithInvalidClassIDValue"),
               reader);
         }
       }
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "Incorrect database value encountered. Column 'DomainBaseWithInvalidClassIDNullValueIDClassID' of entity"
         + " 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must not contain null.")]
     public void GetValueWithInvalidRelationClassIDColumnNullValue ()
@@ -200,16 +207,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", classDefinition.GetEntityName (), "ID", id, null);
-      using (IDbCommand command = builder.Create ())
+      var builder = new SingleIDLookupDbCommandBuilder (
+          Provider, StorageNameProvider, "*", classDefinition.GetEntityName(), "ID", id, null, Provider.SqlDialect);
+      using (IDbCommand command = builder.Create())
       {
-        using (IDataReader reader = command.ExecuteReader ())
+        using (IDataReader reader = command.ExecuteReader())
         {
-          Assert.IsTrue (reader.Read ());
+          Assert.IsTrue (reader.Read());
 
           _converter.GetValue (
-              classDefinition, 
-              classDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.BaseClassWithInvalidRelationClassIDColumns.DomainBaseWithInvalidClassIDNullValue"),
+              classDefinition,
+              classDefinition.GetMandatoryPropertyDefinition (
+                  "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.BaseClassWithInvalidRelationClassIDColumns.DomainBaseWithInvalidClassIDNullValue"),
               reader);
         }
       }
