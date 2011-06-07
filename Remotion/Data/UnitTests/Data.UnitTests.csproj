@@ -1147,7 +1147,6 @@
     <Compile Include="DomainObjects\Core\Persistence\StorageProviderWithFixedGuidMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\UpdateDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\InsertDbCommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\QueryDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\CompositeCommandTest.cs" />
     <Compile Include="DomainObjects\Core\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="DomainObjects\Core\Serialization\CollectionEndPointTest.cs" />

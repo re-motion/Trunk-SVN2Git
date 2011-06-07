@@ -38,9 +38,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
 
-      if (!provider.IsConnected)
-        throw new ArgumentException ("Provider must be connected first.", "provider");
-
       _provider = provider;
       _storageNameProvider = storageNameProvider;
       _sqlDialect = sqlDialect;

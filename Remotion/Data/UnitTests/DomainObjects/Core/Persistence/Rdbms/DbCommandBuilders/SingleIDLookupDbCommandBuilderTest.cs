@@ -75,22 +75,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
-    public void ConstructorChecksForConnectedProvider ()
-    {
-      new SingleIDLookupDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
-          "*",
-          "Order",
-          "CustomerID",
-          DomainObjectIDs.Customer1,
-          SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"),
-          Provider.SqlDialect,
-          Provider);
-    }
-
-    [Test]
     public void WhereClauseBuilder_CanBeMixed ()
     {
       Provider.Connect ();

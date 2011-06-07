@@ -26,14 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class InsertDbCommandBuilderTest : SqlProviderBaseTest
   {
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
-    public void ConstructorChecksForConnectedProvider ()
-    {
-      Order order = Order.NewObject();
-      new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider);
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "State of provided DataContainer must be 'New', but is 'Unchanged'.\r\nParameter name: dataContainer")]
     public void InitializeWithDataContainerOfInvalidState ()

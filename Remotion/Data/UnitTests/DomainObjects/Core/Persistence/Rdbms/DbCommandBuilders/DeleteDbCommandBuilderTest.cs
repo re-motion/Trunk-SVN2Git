@@ -80,14 +80,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
-    public void ConstructorChecksForConnectedProvider ()
-    {
-      new DeleteDbCommandBuilder (
-          Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer(), Provider.SqlDialect, Provider);
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "State of provided DataContainer must be 'Deleted', but is 'Unchanged'.\r\nParameter name: dataContainer")]
     public void InitializeWithDataContainerOfInvalidState ()
