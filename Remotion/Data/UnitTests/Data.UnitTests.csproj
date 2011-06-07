@@ -949,7 +949,7 @@
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\CommandBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\DbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\StubDbCommandBuilder.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetchQueryCollectionTest.cs" />

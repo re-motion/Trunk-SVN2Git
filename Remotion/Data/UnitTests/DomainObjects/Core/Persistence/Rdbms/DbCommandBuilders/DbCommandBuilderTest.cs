@@ -25,7 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
-  public class CommandBuilderTest : SqlProviderBaseTest
+  public class DbCommandBuilderTest : SqlProviderBaseTest
   {
     private DbCommandBuilder _commandBuilder;
 
