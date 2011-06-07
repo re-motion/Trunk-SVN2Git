@@ -33,27 +33,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly SimpleColumnDefinition _objectIDColumn;
     private readonly SimpleColumnDefinition _classIDColumn;
     private readonly SimpleColumnDefinition _timestampColumn;
-    private readonly ReadOnlyCollection<SimpleColumnDefinition> _columns;
+    private readonly ReadOnlyCollection<SimpleColumnDefinition> _dataColumns;
 
     protected EntityDefinitionBase (
         EntityNameDefinition viewName,
         SimpleColumnDefinition objectIDColumn,
         SimpleColumnDefinition classIDColumn,
         SimpleColumnDefinition timstampColumn,
-        IEnumerable<SimpleColumnDefinition> columns,
+        IEnumerable<SimpleColumnDefinition> dataColumns,
         IEnumerable<EntityNameDefinition> synonyms)
     {
       ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
       ArgumentUtility.CheckNotNull ("classIDColumn", classIDColumn);
       ArgumentUtility.CheckNotNull ("timstampColumn", timstampColumn);
-      ArgumentUtility.CheckNotNull ("columns", columns);
+      ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
       ArgumentUtility.CheckNotNull ("synonyms", synonyms);
 
       _viewName = viewName;
       _objectIDColumn = objectIDColumn;
       _classIDColumn = classIDColumn;
       _timestampColumn = timstampColumn;
-      _columns = columns.ToList().AsReadOnly();
+      _dataColumns = dataColumns.ToList().AsReadOnly();
       _synonyms = synonyms.ToList().AsReadOnly();
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<SimpleColumnDefinition> DataColumns
     {
-      get { return _columns; }
+      get { return _dataColumns; }
     }
 
     public IEnumerable<SimpleColumnDefinition> GetAllColumns ()
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       yield return _classIDColumn;
       yield return _timestampColumn;
 
-      foreach (var column in _columns)
+      foreach (var column in _dataColumns)
         yield return column;
     }
 

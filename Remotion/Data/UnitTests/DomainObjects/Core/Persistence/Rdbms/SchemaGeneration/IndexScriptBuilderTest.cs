@@ -57,6 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _indexDefinition2 = MockRepository.GenerateStub<IIndexDefinition> ();
       _indexDefinition3 = MockRepository.GenerateStub<IIndexDefinition> ();
 
+      // TODO Review 4056: Add ColumnDefinitionObjectMethod class (in Remotion.Data.UnitTests.DomainObjects.Factories) with ObjectIDColumn, ClassIDColumn, and TimestampColumn properties
+      // TODO Review 4056: Use these properties in all tests where entities are created - instead of recreating these columns over and over again
+      // TODO Review 4056: Where possible, avoid fields to store the columns in the tests
       _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
       _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
       _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);

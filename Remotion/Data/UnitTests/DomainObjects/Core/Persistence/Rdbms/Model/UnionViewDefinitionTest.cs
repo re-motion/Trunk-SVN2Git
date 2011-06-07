@@ -154,6 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition[0]);
     }
 
+    // TODO Review 4056: Move these assertions to Initialization test (and also in TableDefTest and FilterViewDefTest) ...
     [Test]
     public void LegacyEntityName ()
     {
@@ -189,6 +190,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_unionViewDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column2, _column3 }));
     }
+
+    // TODO Review 4056: ...up to here
 
     [Test]
     public void GetAllColumns ()

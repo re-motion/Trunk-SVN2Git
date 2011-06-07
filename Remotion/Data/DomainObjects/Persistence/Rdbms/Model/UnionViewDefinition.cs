@@ -40,14 +40,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         SimpleColumnDefinition objectIDColumnDefinition,
         SimpleColumnDefinition classIDColumnDefinition,
         SimpleColumnDefinition timstampColumnDefinition,
-        IEnumerable<SimpleColumnDefinition> columns,
+        IEnumerable<SimpleColumnDefinition> dataColumns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, columns, synonyms)
+        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
-      ArgumentUtility.CheckNotNull ("columns", columns);
+      ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
       ArgumentUtility.CheckNotNull ("indexes", indexes);
 
       var unionedEntitiesList = unionedEntities.ToList().AsReadOnly();
