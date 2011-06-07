@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       PropertyDefinition propertyDefinition,
       ObjectID relatedID,
       ISqlDialect sqlDialect,
-      Func<IDbCommand> commandFactory)
+      IDbCommandFactory commandFactory)
   {
     ArgumentUtility.CheckNotNull ("provider", provider);
     ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         PropertyDefinition propertyDefinition,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        Func<IDbCommand> commandFactory)
+        IDbCommandFactory commandFactory)
       : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       if (allConcreteEntityNames.Length == 0)
         return null;
 
-      IDbCommand command = CommandFactory ();
+      IDbCommand command = CommandFactory.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
       whereClauseBuilder.Add (_propertyDefinition.StoragePropertyDefinition.Name, GetObjectIDValueForParameter (_relatedID));
 

@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     // construction and disposing
 
     public QueryDbCommandBuilder (
-        RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query, ISqlDialect sqlDialect, Func<IDbCommand> commandFactory)
+        RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query, ISqlDialect sqlDialect, IDbCommandFactory commandFactory)
         : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("query", query);
@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create ()
     {
-      IDbCommand command = CommandFactory();
+      IDbCommand command = CommandFactory.CreateDbCommand();
 
       string statement = _query.Statement;
       foreach (QueryParameter parameter in _query.Parameters)

@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
       PropertyDefinition propertyDefinition = classDefinition.GetMandatoryPropertyDefinition (ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order"));
       UnionSelectDbCommandBuilder builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (
-          Provider, StorageNameProvider, classDefinition, propertyDefinition, DomainObjectIDs.Order1, Provider.SqlDialect, Provider.CreateDbCommand);
+          Provider, StorageNameProvider, classDefinition, propertyDefinition, DomainObjectIDs.Order1, Provider.SqlDialect, Provider);
       List<ObjectID> objectIDs = _loader.LoadObjectIDsFromCommandBuilder (builder);
       Assert.That (objectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }));
     }

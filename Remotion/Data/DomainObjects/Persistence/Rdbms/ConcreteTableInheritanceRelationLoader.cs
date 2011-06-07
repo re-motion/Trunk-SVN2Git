@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private List<ObjectID> GetObjectIDsInCorrectOrder ()
     {
       var builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (
-          _provider, _storageNameProvider, _classDefinition, _propertyDefinition, _relatedID, _provider.SqlDialect, _provider.CreateDbCommand);
+          _provider, _storageNameProvider, _classDefinition, _propertyDefinition, _relatedID, _provider.SqlDialect, _provider);
 
       return _objectIDLoader.LoadObjectIDsFromCommandBuilder (builder);
     }

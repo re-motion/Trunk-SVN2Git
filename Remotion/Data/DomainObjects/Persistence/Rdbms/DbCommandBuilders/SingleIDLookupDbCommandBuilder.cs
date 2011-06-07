@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ObjectID expectedValue, 
         SortExpressionDefinition orderExpression,
         ISqlDialect sqlDialect,
-        Func<IDbCommand> commandFactory)
+        IDbCommandFactory commandFactory)
       : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create()
     {
-      IDbCommand command = Provider.CreateDbCommand();
+      IDbCommand command = CommandFactory.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
       whereClauseBuilder.Add (_checkedColumnName, GetObjectIDValueForParameter (_expectedValue));

@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         IStorageNameProvider storageNameProvider,
         DataContainer dataContainer,
         ISqlDialect sqlDialect,
-        Func<IDbCommand> commandFactory)
+        IDbCommandFactory commandFactory)
         : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create ()
     {
-      IDbCommand command = CommandFactory();
+      IDbCommand command = CommandFactory.CreateDbCommand();
       var updateSetBuilder = new StringBuilder();
 
       foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)

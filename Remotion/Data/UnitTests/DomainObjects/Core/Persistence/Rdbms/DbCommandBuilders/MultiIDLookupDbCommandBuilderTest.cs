@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           "ID", 
           "uniqueidentifier", 
           Provider.SqlDialect,
-          Provider.CreateDbCommand,
+          Provider,
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
       using (IDbCommand command = builder.Create ())
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           "ID",
           "uniqueidentifier",
           Provider.SqlDialect,
-          Provider.CreateDbCommand,
+          Provider,
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
     }
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           "ID",
           "uniqueidentifier",
           Provider.SqlDialect,
-          Provider.CreateDbCommand,
+          Provider,
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
         using (IDbCommand command = builder.Create())

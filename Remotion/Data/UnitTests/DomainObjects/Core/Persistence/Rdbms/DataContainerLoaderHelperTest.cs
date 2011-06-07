@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -43,7 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var builder =
           (SingleIDLookupDbCommandBuilder)
-          _loaderHelper.GetCommandBuilderForRelatedIDLookup (Provider, "Order", relationProperty, DomainObjectIDs.Customer1, Provider.SqlDialect, Provider.CreateDbCommand);
+          _loaderHelper.GetCommandBuilderForRelatedIDLookup (
+              Provider, "Order", relationProperty, DomainObjectIDs.Customer1, Provider.SqlDialect, Provider);
       Assert.That (builder.EntityName, Is.EqualTo ("Order"));
       Assert.That (builder.OrderExpression.ToString(), Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber ASC"));
       Assert.That (builder.SelectColumns, Is.EqualTo ("*"));
@@ -58,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var builder =
           (SingleIDLookupDbCommandBuilder)
-          _loaderHelper.GetCommandBuilderForIDLookup (Provider, "Order", Provider.SqlDialect, Provider.CreateDbCommand, new[] { DomainObjectIDs.Customer1 });
+          _loaderHelper.GetCommandBuilderForIDLookup (Provider, "Order", Provider.SqlDialect, Provider, new[] { DomainObjectIDs.Customer1 });
 
       Assert.That (builder.EntityName, Is.EqualTo ("Order"));
       Assert.That (builder.OrderExpression, Is.Null);
@@ -73,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Connect();
 
       var builder = (MultiIDLookupDbCommandBuilder) _loaderHelper.GetCommandBuilderForIDLookup (
-          Provider, "Order", Provider.SqlDialect, Provider.CreateDbCommand, new[] { DomainObjectIDs.Customer1, DomainObjectIDs.Customer2 });
+          Provider, "Order", Provider.SqlDialect, Provider, new[] { DomainObjectIDs.Customer1, DomainObjectIDs.Customer2 });
 
       Assert.That (builder.EntityName, Is.EqualTo ("Order"));
       Assert.That (builder.SelectColumns, Is.EqualTo ("*"));

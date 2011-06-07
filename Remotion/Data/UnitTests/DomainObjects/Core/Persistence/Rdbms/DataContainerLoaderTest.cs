@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "ID",
           "uniqueidentifier",
           Provider.SqlDialect,
-          Provider.CreateDbCommand,
+          Provider,
           new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
       List<DataContainer> sortedContainers = GetSortedContainers (_loader.LoadDataContainersFromCommandBuilder (builder, false));
@@ -283,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                 "ID",
                 "uniqueidentifier",
                 loader.Provider.SqlDialect,
-                loader.Provider.CreateDbCommand,
+                loader.Provider,
                 new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
             loader.LoadDataContainersFromCommandBuilder (builder, false);
           });
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect, Provider.CreateDbCommand);
+      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect, Provider);
 
       var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
 
@@ -316,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect, Provider.CreateDbCommand);
+      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect, Provider);
 
       _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }
@@ -383,7 +383,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               relationPropertyDefinition,
               DomainObjectIDs.Order1,
               Provider.SqlDialect,
-              Provider.CreateDbCommand)).IgnoreArguments().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+              Provider)).IgnoreArguments().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
 
       _mockRepository.ReplayAll();
 

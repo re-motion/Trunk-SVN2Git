@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     public virtual IDbCommandBuilder GetCommandBuilderForIDLookup (
-        RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, Func<IDbCommand> commandFactory, ObjectID[] objectIDs)
+        RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, IDbCommandFactory commandFactory, ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         PropertyDefinition relationProperty,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        Func<IDbCommand> commandFactory)
+        IDbCommandFactory commandFactory)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);

@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public interface IDataContainerLoaderHelper
   {
     IDbCommandBuilder GetCommandBuilderForIDLookup (
-        RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, Func<IDbCommand> commandFactory, ObjectID[] objectIDs);
+        RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, IDbCommandFactory commandFactory, ObjectID[] objectIDs);
 
     IDbCommandBuilder GetCommandBuilderForRelatedIDLookup (
         RdbmsProvider provider,
@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         PropertyDefinition relationProperty,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        Func<IDbCommand> commandFactory);
+        IDbCommandFactory commandFactory);
 
     ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (
         RdbmsProvider provider,

@@ -241,6 +241,7 @@
     <Compile Include="Mapping\RelationDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\IDbCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IndexOrder.cs" />
@@ -917,6 +918,9 @@
     <Compile Include="ValueTooLongException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
+      <Link>Remotion Core LGPL.licenseheader</Link>
+    </None>
     <None Include="Configuration\DomainObjectsConfiguration.xsd">
       <SubType>
       </SubType>

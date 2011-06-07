@@ -13,24 +13,14 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
-// 
-using System;
-using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
+using System;
+using System.Data;
+
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  [TestFixture]
-  public class QueryDbCommandBuilderTest: SqlProviderBaseTest
+  public interface IDbCommandFactory
   {
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
-    public void ConstructorChecksForConnectedProvider ()
-    {
-      var queryDefinition = new QueryDefinition ("TheQuery", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection);
-      new QueryDbCommandBuilder (Provider, StorageNameProvider, QueryFactory.CreateQuery (queryDefinition), Provider.SqlDialect, Provider);
-    }
+    IDbCommand CreateDbCommand ();
   }
 }

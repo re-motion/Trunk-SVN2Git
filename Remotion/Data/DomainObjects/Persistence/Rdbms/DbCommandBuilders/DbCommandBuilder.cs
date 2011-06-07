@@ -25,21 +25,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private readonly RdbmsProvider _provider;
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly ISqlDialect _sqlDialect;
-    private readonly Func<IDbCommand> _commandFactory;
-
-    // construction and disposing
+    private readonly IDbCommandFactory _commandFactory;
 
     protected DbCommandBuilder (
-        RdbmsProvider provider, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, Func<IDbCommand> commandFactory)
+        RdbmsProvider provider, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IDbCommandFactory commandFactory)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
@@ -55,11 +47,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _commandFactory = commandFactory;
     }
 
-    // abstract methods and properties
-
     public abstract IDbCommand Create ();
-
-    // methods and properties
 
     public RdbmsProvider Provider
     {
@@ -76,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _sqlDialect; }
     }
 
-    public Func<IDbCommand> CommandFactory
+    public IDbCommandFactory CommandFactory
     {
       get { return _commandFactory; }
     }

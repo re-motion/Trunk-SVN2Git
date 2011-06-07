@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         string checkedColumnName,
         string checkedColumnTypeName,
         ISqlDialect sqlDialect,
-        Func<IDbCommand> commandFactory,
+        IDbCommandFactory commandFactory,
         ObjectID[] ids)
       : base (provider, storageNameProvider, sqlDialect, commandFactory)
     {
@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create()
     {
-      IDbCommand command = CommandFactory();
+      IDbCommand command = CommandFactory.CreateDbCommand();
       var whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
       whereClauseBuilder.SetInExpression (_checkedColumnName, _checkedColumnTypeName, GetValueArrayForParameter (_expectedValues));
