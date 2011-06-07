@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Persistence
           return id;
       }
 
-      return new ObjectID (classDefinition.ID, dataValue);
+      return new ObjectID (classDefinition, dataValue);
     }
 
     public virtual object GetValue (ClassDefinition classDefinition, PropertyDefinition propertyDefinition, object dataValue)
