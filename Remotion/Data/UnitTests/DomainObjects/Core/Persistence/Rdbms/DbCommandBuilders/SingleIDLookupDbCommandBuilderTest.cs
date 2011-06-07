@@ -41,7 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           DomainObjectIDs.Customer1, 
           SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"),
           Provider.SqlDialect,
-          Provider);
+          Provider,
+          Provider.StorageProviderDefinition);
 
       using (IDbCommand command = builder.Create ())
       {
@@ -64,7 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           DomainObjectIDs.Customer1,
           null,
           Provider.SqlDialect,
-          Provider);
+          Provider,
+          Provider.StorageProviderDefinition);
 
       using (IDbCommand command = builder.Create ())
       {
@@ -89,7 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
             DomainObjectIDs.Customer1,
             SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"),
             Provider.SqlDialect,
-            Provider);
+            Provider,
+            Provider.StorageProviderDefinition);
 
         using (IDbCommand command = builder.Create())
         {

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -34,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
-    
+
     protected RdbmsProvider (
         RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IPersistenceListener persistenceListener)
         : base (definition, storageNameProvider, sqlDialect, persistenceListener)
@@ -199,7 +200,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (this, StorageNameProvider, query, SqlDialect, this);
+      var commandBuilder = new QueryDbCommandBuilder (this, StorageNameProvider, query, SqlDialect, this, StorageProviderDefinition);
       return LoadDataContainers (commandBuilder, true);
     }
 
@@ -212,7 +213,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (this, StorageNameProvider, query, SqlDialect, this);
+      var commandBuilder = new QueryDbCommandBuilder (this, StorageNameProvider, query, SqlDialect, this, StorageProviderDefinition);
       using (IDbCommand command = commandBuilder.Create())
       {
         try
@@ -278,16 +279,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Connect();
 
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.New))
-        Save (new InsertDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this), dataContainer.ID);
+        Save (new InsertDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this, StorageProviderDefinition), dataContainer.ID);
 
       foreach (DataContainer dataContainer in dataContainers)
       {
         if (dataContainer.State != StateType.Unchanged)
-          Save (new UpdateDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this), dataContainer.ID);
+          Save (new UpdateDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this, StorageProviderDefinition), dataContainer.ID);
       }
 
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.Deleted))
-        Save (new DeleteDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this), dataContainer.ID);
+        Save (new DeleteDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this, StorageProviderDefinition), dataContainer.ID);
     }
 
     public override void SetTimestamp (DataContainerCollection dataContainers)
@@ -368,7 +369,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       string columnName = DelimitIdentifier (StorageNameProvider.TimestampColumnName);
       string entityName = dataContainer.ClassDefinition.GetEntityName();
       var commandBuilder = new SingleIDLookupDbCommandBuilder (
-          this, StorageNameProvider, columnName, entityName, StorageNameProvider.IDColumnName, dataContainer.ID, null, SqlDialect, this);
+          this,
+          StorageNameProvider,
+          columnName,
+          entityName,
+          StorageNameProvider.IDColumnName,
+          dataContainer.ID,
+          null,
+          SqlDialect,
+          this,
+          StorageProviderDefinition);
 
       using (IDbCommand command = commandBuilder.Create())
       {
@@ -448,7 +458,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     IDbCommand IDbCommandFactory.CreateDbCommand ()
     {
-       return CreateDbCommand();
+      return CreateDbCommand();
     }
 
     protected internal RdbmsProviderException CreateRdbmsProviderException (string formatString, params object[] args)

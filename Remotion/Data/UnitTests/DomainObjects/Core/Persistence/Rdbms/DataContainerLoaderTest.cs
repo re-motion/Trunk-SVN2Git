@@ -168,28 +168,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (_mockRepository.Unordered())
       {
-        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null, null, null))
             .Constraints (
                 Mocks_Is.Same (Provider),
                 Mocks_Is.Equal ("Order"),
                 Mocks_Is.Same(Provider.SqlDialect),
-                Mocks_Is.NotNull (),
+                Mocks_Is.Same(Provider),
+                Mocks_Is.Same(Provider.StorageProviderDefinition),
                 Mocks_List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null, null, null))
             .Constraints (
                 Mocks_Is.Same (Provider),
                 Mocks_Is.Equal ("OrderItem"),
                 Mocks_Is.Same (Provider.SqlDialect),
-                Mocks_Is.NotNull (),
+                Mocks_Is.Same(Provider),
+                Mocks_Is.Same (Provider.StorageProviderDefinition),
                 Mocks_List.Equal (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null, null, null, null))
             .Constraints (
                 Mocks_Is.Same (Provider),
                 Mocks_Is.Equal ("Company"),
                 Mocks_Is.Same (Provider.SqlDialect),
-                Mocks_Is.NotNull (),
+                Mocks_Is.Same(Provider),
+                Mocks_Is.Same (Provider.StorageProviderDefinition),
                 Mocks_List.Equal (new[] { DomainObjectIDs.Company1, DomainObjectIDs.Company2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
       }
@@ -251,6 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "uniqueidentifier",
           Provider.SqlDialect,
           Provider,
+          Provider.StorageProviderDefinition,
           new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
       List<DataContainer> sortedContainers = GetSortedContainers (_loader.LoadDataContainersFromCommandBuilder (builder, false));
@@ -284,6 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                 "uniqueidentifier",
                 loader.Provider.SqlDialect,
                 loader.Provider,
+                loader.Provider.StorageProviderDefinition,
                 new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
             loader.LoadDataContainersFromCommandBuilder (builder, false);
           });
@@ -298,7 +303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect, Provider);
+      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
 
       var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
 
@@ -316,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect, Provider);
+      var builder = new QueryDbCommandBuilder (Provider, StorageNameProvider, query, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
 
       _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }
@@ -383,7 +388,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               relationPropertyDefinition,
               DomainObjectIDs.Order1,
               Provider.SqlDialect,
-              Provider)).IgnoreArguments().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+              Provider,
+              Provider.StorageProviderDefinition)).IgnoreArguments().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
 
       _mockRepository.ReplayAll();
 

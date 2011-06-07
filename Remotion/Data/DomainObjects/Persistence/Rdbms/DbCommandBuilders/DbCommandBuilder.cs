@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -29,19 +30,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly ISqlDialect _sqlDialect;
     private readonly IDbCommandFactory _commandFactory;
+    private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
 
     protected DbCommandBuilder (
-        RdbmsProvider provider, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IDbCommandFactory commandFactory)
+        RdbmsProvider provider,
+        IStorageNameProvider storageNameProvider,
+        ISqlDialect sqlDialect,
+        IDbCommandFactory commandFactory,
+        RdbmsProviderDefinition rdbmsProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       _provider = provider;
       _storageNameProvider = storageNameProvider;
       _sqlDialect = sqlDialect;
       _commandFactory = commandFactory;
+      _rdbmsProviderDefinition = rdbmsProviderDefinition;
     }
 
     public abstract IDbCommand Create ();
@@ -64,6 +72,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public IDbCommandFactory CommandFactory
     {
       get { return _commandFactory; }
+    }
+
+    public RdbmsProviderDefinition RdbmsProviderDefinition
+    {
+      get { return _rdbmsProviderDefinition; }
     }
 
     public IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue)
@@ -135,7 +148,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      return id.StorageProviderDefinition == _provider.StorageProviderDefinition;
+      return id.StorageProviderDefinition == RdbmsProviderDefinition;
     }
 
     protected string GetOrderClause (SortExpressionDefinition sortExpression)

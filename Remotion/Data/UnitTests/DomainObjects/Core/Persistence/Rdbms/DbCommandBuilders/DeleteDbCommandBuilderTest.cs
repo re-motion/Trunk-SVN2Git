@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Data;
 using NUnit.Framework;
@@ -38,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Provider.Connect();
       DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-          Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect, Provider);
+          Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
 
       using (IDbCommand deleteCommand = commandBuilder.Create())
       {
@@ -64,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Provider.Connect();
       DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-          Provider, StorageNameProvider, deletedOrderContainer, Provider.SqlDialect, Provider);
+          Provider, StorageNameProvider, deletedOrderContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
 
       using (IDbCommand deleteCommand = commandBuilder.Create())
       {
@@ -86,7 +87,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       Provider.Connect();
       new DeleteDbCommandBuilder (
-          Provider, StorageNameProvider, TestDataContainerFactory.CreateOrder1DataContainer(), Provider.SqlDialect, Provider);
+          Provider,
+          StorageNameProvider,
+          TestDataContainerFactory.CreateOrder1DataContainer(),
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition);
     }
 
     [Test]
@@ -103,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
         Provider.Connect();
         DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-            Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect, Provider);
+            Provider, StorageNameProvider, deletedContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
 
         using (IDbCommand deleteCommand = commandBuilder.Create())
         {

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Data;
 using NUnit.Framework;
@@ -31,23 +32,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void RelationClassIDColumnRefersToAbstractClass ()
     {
       var id = new ObjectID (typeof (Order), new Guid ("{F404FD2C-B92F-46d8-BEAC-F92C0599BFD3}"));
-      var builder = new SingleIDLookupDbCommandBuilder (Provider, StorageNameProvider, "*", "TableInheritance_Order", "ID", id, null, Provider.SqlDialect, Provider);
+      var builder = new SingleIDLookupDbCommandBuilder (
+          Provider,
+          StorageNameProvider,
+          "*",
+          "TableInheritance_Order",
+          "ID",
+          id,
+          null,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition);
 
-      using (IDbCommand command = builder.Create ())
+      using (IDbCommand command = builder.Create())
       {
-        using (IDataReader reader = command.ExecuteReader ())
+        using (IDataReader reader = command.ExecuteReader())
         {
           var factory = new DataContainerFactory (Provider, reader);
 
           try
           {
-            factory.CreateDataContainer ();
+            factory.CreateDataContainer();
             Assert.Fail ("RdbmsProviderException was expected.");
           }
           catch (RdbmsProviderException ex)
           {
             string expectedBeginOfMessage = string.Format (
-                "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Order.Customer' of object '{0}':", 
+                "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Order.Customer' of object '{0}':",
                 id);
             Assert.IsTrue (ex.Message.StartsWith (expectedBeginOfMessage));
           }

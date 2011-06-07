@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -73,7 +74,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private List<ObjectID> GetObjectIDsInCorrectOrder ()
     {
       var builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (
-          _provider, _storageNameProvider, _classDefinition, _propertyDefinition, _relatedID, _provider.SqlDialect, _provider);
+          _provider,
+          _storageNameProvider,
+          _classDefinition,
+          _propertyDefinition,
+          _relatedID,
+          _provider.SqlDialect,
+          _provider,
+          _provider.StorageProviderDefinition);
 
       return _objectIDLoader.LoadObjectIDsFromCommandBuilder (builder);
     }

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -54,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("id", id);
 
       var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (
-          Provider, id.ClassDefinition.GetEntityName(), _provider.SqlDialect, _provider, new[] { id });
+          Provider, id.ClassDefinition.GetEntityName(), _provider.SqlDialect, _provider, _provider.StorageProviderDefinition, new[] { id });
       using (IDbCommand command = commandBuilder.Create())
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleRow))
@@ -70,8 +71,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var objectIDsPerEntityName = GetObjectIDsPerEntityName (orderedIDs);
       var allDataContainers = new DataContainerCollection();
       foreach (string entityName in objectIDsPerEntityName.Keys)
+      {
         allDataContainers = DataContainerCollection.Join (
             allDataContainers, GetDataContainers (entityName, objectIDsPerEntityName[entityName].ToArray()));
+      }
 
       return GetOrderedDataContainers (orderedIDs, allDataContainers);
     }
@@ -92,7 +95,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private DataContainerCollection GetDataContainers (string entityName, ObjectID[] objectIDs)
     {
-      var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (Provider, entityName, Provider.SqlDialect, Provider, objectIDs);
+      var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (
+          Provider, entityName, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition, objectIDs);
 
       using (IDbCommand command = commandBuilder.Create())
       {
@@ -144,7 +148,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       else if (classDefinition.GetEntityName() != null)
       {
         var commandBuilder = _loaderHelper.GetCommandBuilderForRelatedIDLookup (
-            Provider, classDefinition.GetEntityName(), propertyDefinition, relatedID, Provider.SqlDialect, Provider);
+            Provider,
+            classDefinition.GetEntityName(),
+            propertyDefinition,
+            relatedID,
+            Provider.SqlDialect,
+            Provider,
+            Provider.StorageProviderDefinition);
         return new DataContainerCollection (Provider.LoadDataContainers (commandBuilder, false), false);
       }
       else

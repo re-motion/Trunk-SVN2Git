@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Data;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -35,18 +35,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     public virtual IDbCommandBuilder GetCommandBuilderForIDLookup (
-        RdbmsProvider provider, string entityName, ISqlDialect sqlDialect, IDbCommandFactory commandFactory, ObjectID[] objectIDs)
+        RdbmsProvider provider,
+        string entityName,
+        ISqlDialect sqlDialect,
+        IDbCommandFactory commandFactory,
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       if (objectIDs.Length == 1)
       {
         return new SingleIDLookupDbCommandBuilder (
-            provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, objectIDs[0], null, sqlDialect, commandFactory);
+            provider,
+            _storageNameProvider,
+            "*",
+            entityName,
+            _storageNameProvider.IDColumnName,
+            objectIDs[0],
+            null,
+            sqlDialect,
+            commandFactory,
+            rdbmsProviderDefinition);
       }
       else
       {
@@ -59,6 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             provider.GetIDColumnTypeName(),
             sqlDialect,
             commandFactory,
+            rdbmsProviderDefinition,
             objectIDs);
       }
     }
@@ -69,7 +85,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         PropertyDefinition relationProperty,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory)
+        IDbCommandFactory commandFactory,
+        RdbmsProviderDefinition rdbmsProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
@@ -77,6 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       var oppositeRelationEndPointDefinition =
           (VirtualRelationEndPointDefinition) relationProperty.ClassDefinition.GetMandatoryOppositeEndPointDefinition (relationProperty.PropertyName);
@@ -90,7 +108,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           relatedID,
           oppositeRelationEndPointDefinition.GetSortExpression(),
           sqlDialect,
-          commandFactory);
+          commandFactory,
+          rdbmsProviderDefinition);
     }
 
     public virtual ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (

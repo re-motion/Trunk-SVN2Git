@@ -41,8 +41,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         string checkedColumnTypeName,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
+        RdbmsProviderDefinition rdbmsProviderDefinition,
         ObjectID[] ids)
-      : base (provider, storageNameProvider, sqlDialect, commandFactory)
+      : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);

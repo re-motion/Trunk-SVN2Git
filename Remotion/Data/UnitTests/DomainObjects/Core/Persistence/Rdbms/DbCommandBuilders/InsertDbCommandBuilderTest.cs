@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Data;
 using NUnit.Framework;
@@ -33,7 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
       Provider.Connect();
-      new InsertDbCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider);
+      new InsertDbCommandBuilder (
+          Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
     }
 
     [Test]
@@ -46,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       order.DeliveryDate = new DateTime (2008, 7, 1);
 
       InsertDbCommandBuilder builder = new InsertDbCommandBuilder (
-          Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider);
+          Provider, StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
       using (IDbCommand command = builder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -72,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.SerialNumber = "123";
 
       InsertDbCommandBuilder builder = new InsertDbCommandBuilder (
-          Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect, Provider);
+          Provider, StorageNameProvider, computer.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
       using (IDbCommand command = builder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -95,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       orderTicket.Int32TransactionProperty = 7;
 
       InsertDbCommandBuilder builder = new InsertDbCommandBuilder (
-          Provider, StorageNameProvider, orderTicket.InternalDataContainer, Provider.SqlDialect, Provider);
+          Provider, StorageNameProvider, orderTicket.InternalDataContainer, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition);
       using (IDbCommand command = builder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -21,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -31,19 +31,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class ObjectIDLoaderTest : SqlProviderBaseTest
   {
     private ObjectIDLoader _loader;
-    
+
     public override void SetUp ()
     {
-      base.SetUp ();
-      Provider.Connect ();
+      base.SetUp();
+      Provider.Connect();
 
       _loader = new ObjectIDLoader (Provider);
     }
 
     public override void TearDown ()
     {
-      base.TearDown ();
-      Provider.Disconnect ();
+      base.TearDown();
+      Provider.Disconnect();
     }
 
     [Test]
@@ -56,9 +56,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadObjectIDsFromCommandBuilder ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
-      PropertyDefinition propertyDefinition = classDefinition.GetMandatoryPropertyDefinition (ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order"));
+      PropertyDefinition propertyDefinition =
+          classDefinition.GetMandatoryPropertyDefinition (ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order"));
       UnionSelectDbCommandBuilder builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (
-          Provider, StorageNameProvider, classDefinition, propertyDefinition, DomainObjectIDs.Order1, Provider.SqlDialect, Provider);
+          Provider,
+          StorageNameProvider,
+          classDefinition,
+          propertyDefinition,
+          DomainObjectIDs.Order1,
+          Provider.SqlDialect,
+          Provider,
+          Provider.StorageProviderDefinition);
       List<ObjectID> objectIDs = _loader.LoadObjectIDsFromCommandBuilder (builder);
       Assert.That (objectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }));
     }

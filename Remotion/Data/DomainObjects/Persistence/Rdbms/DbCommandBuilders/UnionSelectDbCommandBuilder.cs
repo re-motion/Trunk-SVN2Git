@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Data;
 using System.Text;
@@ -30,23 +31,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // static members and constants
 
-  public static UnionSelectDbCommandBuilder CreateForRelatedIDLookup (
-      RdbmsProvider provider, 
-      IStorageNameProvider storageNameProvider,
-      ClassDefinition classDefinition, 
-      PropertyDefinition propertyDefinition,
-      ObjectID relatedID,
-      ISqlDialect sqlDialect,
-      IDbCommandFactory commandFactory)
-  {
-    ArgumentUtility.CheckNotNull ("provider", provider);
-    ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-    ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-    ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-    ArgumentUtility.CheckNotNull ("relatedID", relatedID);
+    public static UnionSelectDbCommandBuilder CreateForRelatedIDLookup (
+        RdbmsProvider provider,
+        IStorageNameProvider storageNameProvider,
+        ClassDefinition classDefinition,
+        PropertyDefinition propertyDefinition,
+        ObjectID relatedID,
+        ISqlDialect sqlDialect,
+        IDbCommandFactory commandFactory,
+        RdbmsProviderDefinition rdbmsProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("relatedID", relatedID);
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
-    return new UnionSelectDbCommandBuilder (provider, storageNameProvider, classDefinition, propertyDefinition, relatedID, sqlDialect, commandFactory);
-  }
+      return new UnionSelectDbCommandBuilder (
+          provider, storageNameProvider, classDefinition, propertyDefinition, relatedID, sqlDialect, commandFactory, rdbmsProviderDefinition);
+    }
 
     // member fields
 
@@ -56,15 +62,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // construction and disposing
 
-    private UnionSelectDbCommandBuilder (      
-        RdbmsProvider provider, 
+    private UnionSelectDbCommandBuilder (
+        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
-        ClassDefinition classDefinition, 
+        ClassDefinition classDefinition,
         PropertyDefinition propertyDefinition,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory)
-      : base (provider, storageNameProvider, sqlDialect, commandFactory)
+        IDbCommandFactory commandFactory,
+        RdbmsProviderDefinition rdbmsProviderDefinition)
+        : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -79,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create ()
     {
-      string[] allConcreteEntityNames = _classDefinition.GetAllConcreteEntityNames ();
+      string[] allConcreteEntityNames = _classDefinition.GetAllConcreteEntityNames();
       if (allConcreteEntityNames.Length == 0)
         return null;
 
@@ -92,25 +99,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       string columnsFromSortExpression = GetColumnsFromSortExpression (oppositeRelationEndPointDefinition.GetSortExpression());
 
-      var commandTextStringBuilder = new StringBuilder ();
+      var commandTextStringBuilder = new StringBuilder();
       string selectTemplate = "SELECT {0}, {1}{2} FROM {3} WHERE {4}";
       foreach (string entityName in allConcreteEntityNames)
       {
         if (commandTextStringBuilder.Length > 0)
           commandTextStringBuilder.Append ("\nUNION ALL ");
 
-        commandTextStringBuilder.AppendFormat (selectTemplate, 
-                  SqlDialect.DelimitIdentifier (StorageNameProvider.IDColumnName),
-                  SqlDialect.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
-                  columnsFromSortExpression, 
-                  SqlDialect.DelimitIdentifier (entityName),
-                  whereClauseBuilder);
+        commandTextStringBuilder.AppendFormat (
+            selectTemplate,
+            SqlDialect.DelimitIdentifier (StorageNameProvider.IDColumnName),
+            SqlDialect.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
+            columnsFromSortExpression,
+            SqlDialect.DelimitIdentifier (entityName),
+            whereClauseBuilder);
       }
 
       commandTextStringBuilder.Append (GetOrderClause (oppositeRelationEndPointDefinition.GetSortExpression()));
       commandTextStringBuilder.Append (";");
-      
-      command.CommandText = commandTextStringBuilder.ToString ();
+
+      command.CommandText = commandTextStringBuilder.ToString();
 
       return command;
     }
@@ -120,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       if (sortExpression == null)
         return string.Empty;
 
-      var generator = Provider.GetSortExpressionSqlGenerator ();
+      var generator = Provider.GetSortExpressionSqlGenerator();
       return ", " + generator.GenerateColumnListString (sortExpression);
     }
   }
