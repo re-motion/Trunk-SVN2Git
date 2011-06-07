@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void Initialize ()
     {
-      Assert.That (_builder.Provider, Is.SameAs (Provider));
+      Assert.That (_builder.SqlDialect, Is.SameAs (Provider.SqlDialect));
     }
 
     [Test]

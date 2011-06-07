@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public interface IDbCommandBuilder
   {
-    RdbmsProvider Provider { get; }
+    ISqlDialect SqlDialect { get; }
 
     IDbCommand Create ();
     IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue);

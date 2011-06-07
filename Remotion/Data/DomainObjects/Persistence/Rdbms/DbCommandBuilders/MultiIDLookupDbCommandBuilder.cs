@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter,
         ObjectID[] ids)
-      : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
+      : base (storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);

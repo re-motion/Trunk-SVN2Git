@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
-    private readonly RdbmsProvider _provider;
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly ISqlDialect _sqlDialect;
     private readonly IDbCommandFactory _commandFactory;
@@ -34,21 +33,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly ValueConverter _valueConverter;
 
     protected DbCommandBuilder (
-        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
         ISqlDialect sqlDialect,
         IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
-      _provider = provider;
       _storageNameProvider = storageNameProvider;
       _sqlDialect = sqlDialect;
       _commandFactory = commandFactory;
@@ -57,11 +53,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     }
 
     public abstract IDbCommand Create ();
-
-    public RdbmsProvider Provider
-    {
-      get { return _provider; }
-    }
 
     public IStorageNameProvider StorageNameProvider
     {
@@ -121,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNullOrEmpty ("parameterName", parameterName);
 
       IDataParameter commandParameter = command.CreateParameter();
-      commandParameter.ParameterName = Provider.GetParameterName (parameterName);
+      commandParameter.ParameterName = SqlDialect.GetParameterName (parameterName);
 
       if (parameterValue is ObjectID)
         commandParameter.Value = ValueConverter.GetDBValue ((ObjectID) parameterValue, RdbmsProviderDefinition.Name);

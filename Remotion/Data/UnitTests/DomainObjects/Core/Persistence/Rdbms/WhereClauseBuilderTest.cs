@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _commandBuilderMock = MockRepository.GenerateStrictMock<IDbCommandBuilder> ();
       _commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
 
-      _commandBuilderMock.Stub (mock => mock.Provider).Return (Provider);
+      _commandBuilderMock.Stub (mock => mock.SqlDialect).Return (Provider.SqlDialect);
     }
 
     [Test]

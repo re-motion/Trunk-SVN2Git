@@ -68,10 +68,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (_whereClauseBuilder.Length > 0)
         _whereClauseBuilder.Append (" AND ");
 
-      string parameterName = _commandBuilder.Provider.GetParameterName (columnName);
+      string parameterName = _commandBuilder.SqlDialect.GetParameterName (columnName);
       _whereClauseBuilder.AppendFormat (
           "{0} = {1}",
-          _commandBuilder.Provider.DelimitIdentifier (columnName),
+          _commandBuilder.SqlDialect.DelimitIdentifier (columnName),
           parameterName);
       _commandBuilder.AddCommandParameter (_command, columnName, value);
     }
@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (_whereClauseBuilder.Length > 0)
         throw new InvalidOperationException ("SetInExpression can only be used with an empty WhereClauseBuilder.");
 
-      _whereClauseBuilder.AppendFormat ("{0} IN (", _commandBuilder.Provider.DelimitIdentifier (columnName));
+      _whereClauseBuilder.AppendFormat ("{0} IN (", _commandBuilder.SqlDialect.DelimitIdentifier (columnName));
 
       var xmlString = new StringBuilder ("<L>");
 
@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       xmlString.Append ("</L>");
       
-      string parameterName = _commandBuilder.Provider.GetParameterName (columnName);
+      string parameterName = _commandBuilder.SqlDialect.GetParameterName (columnName);
       var parameter = _commandBuilder.AddCommandParameter (_command, parameterName, xmlString.ToString());
       parameter.DbType = DbType.Xml;
 

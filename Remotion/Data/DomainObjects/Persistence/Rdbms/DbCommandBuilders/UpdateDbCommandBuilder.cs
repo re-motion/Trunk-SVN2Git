@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
-        : base (provider, storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
+        : base (storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       updateSetBuilder.AppendFormat (
           "{0} = {1}",
           SqlDialect.DelimitIdentifier (columnName),
-          Provider.GetParameterName (parameterName));
+          SqlDialect.GetParameterName (parameterName));
     }
 
     protected void AddObjectIDAndClassIDParameters (
