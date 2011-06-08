@@ -249,8 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainersFromCommandBuilder ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
-      var builder = new MultiIDLookupDbCommandBuilder (StorageNameProvider,
-          "*",
+      var builder = new MultiIDLookupDbCommandBuilder ("*",
           "OrderItem",
           "ID",
           "uniqueidentifier",
@@ -281,8 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           {
             loader.Provider.Connect();
 
-            var builder = new MultiIDLookupDbCommandBuilder (StorageNameProvider,
-                "*",
+            var builder = new MultiIDLookupDbCommandBuilder ("*",
                 "Order",
                 "ID",
                 "uniqueidentifier",
@@ -303,7 +301,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (StorageNameProvider, query, Provider.SqlDialect, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
+      var builder = new QueryDbCommandBuilder (query, Provider.SqlDialect, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
 
       var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
 
@@ -321,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (StorageNameProvider, query, Provider.SqlDialect, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
+      var builder = new QueryDbCommandBuilder (query, Provider.SqlDialect, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
 
       _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }

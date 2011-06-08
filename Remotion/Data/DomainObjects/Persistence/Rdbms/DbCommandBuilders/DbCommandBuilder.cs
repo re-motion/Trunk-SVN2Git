@@ -18,41 +18,28 @@ using System;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
-    private readonly IStorageNameProvider _storageNameProvider;
     private readonly ISqlDialect _sqlDialect;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ValueConverter _valueConverter;
 
-    protected DbCommandBuilder (
-        IStorageNameProvider storageNameProvider,
-        ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter)
+    protected DbCommandBuilder (ISqlDialect sqlDialect, RdbmsProviderDefinition rdbmsProviderDefinition, ValueConverter valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
-      _storageNameProvider = storageNameProvider;
       _sqlDialect = sqlDialect;
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
       _valueConverter = valueConverter;
     }
 
     public abstract IDbCommand Create (IDbCommandFactory commandFactory);
-
-    public IStorageNameProvider StorageNameProvider
-    {
-      get { return _storageNameProvider; }
-    }
 
     public ISqlDialect SqlDialect
     {

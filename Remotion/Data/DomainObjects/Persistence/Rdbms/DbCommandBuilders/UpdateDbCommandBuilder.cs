@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   public class UpdateDbCommandBuilder : DbCommandBuilder
   {
     private readonly DataContainer _dataContainer;
+    private readonly IStorageNameProvider _storageNameProvider;
 
     public UpdateDbCommandBuilder (
         IStorageNameProvider storageNameProvider,
@@ -34,14 +35,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ISqlDialect sqlDialect,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
-        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
+        : base (sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
       if (dataContainer.State == StateType.Unchanged)
         throw CreateArgumentException ("dataContainer", "State of provided DataContainer must not be 'Unchanged'.");
 
+      _storageNameProvider = storageNameProvider;
       _dataContainer = dataContainer;
+    }
+
+    public IStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
     }
 
     public override IDbCommand Create (IDbCommandFactory commandFactory)

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -24,30 +23,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public class QueryDbCommandBuilder : DbCommandBuilder
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private readonly IQuery _query;
 
-    // construction and disposing
-
     public QueryDbCommandBuilder (
-        IStorageNameProvider storageNameProvider,
-        IQuery query,
-        ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter)
-        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
+        IQuery query, ISqlDialect sqlDialect, RdbmsProviderDefinition rdbmsProviderDefinition, ValueConverter valueConverter)
+        : base (sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
       _query = query;
     }
-
-    // methods and properties
 
     public override IDbCommand Create (IDbCommandFactory commandFactory)
     {

@@ -126,9 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupDbCommandBuilder (
-          StorageNameProvider,
-          "*",
+      var builder = new SingleIDLookupDbCommandBuilder ("*",
           classDefinition.GetEntityName(),
           "ID",
           id,
@@ -161,9 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupDbCommandBuilder (
-          StorageNameProvider,
-          "*",
+      var builder = new SingleIDLookupDbCommandBuilder ("*",
           classDefinition.GetEntityName(),
           "ID",
           id,
@@ -196,9 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupDbCommandBuilder (
-          StorageNameProvider,
-          "*",
+      var builder = new SingleIDLookupDbCommandBuilder ("*",
           classDefinition.GetEntityName(),
           "ID",
           id,
@@ -231,9 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      var builder = new SingleIDLookupDbCommandBuilder (
-          StorageNameProvider,
-          "*",
+      var builder = new SingleIDLookupDbCommandBuilder ("*",
           classDefinition.GetEntityName(),
           "ID",
           id,

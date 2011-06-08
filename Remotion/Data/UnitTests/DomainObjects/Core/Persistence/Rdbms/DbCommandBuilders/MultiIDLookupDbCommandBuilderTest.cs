@@ -31,8 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create ()
     {
       Provider.Connect ();
-      var builder = new MultiIDLookupDbCommandBuilder (StorageNameProvider,
-          "*", 
+      var builder = new MultiIDLookupDbCommandBuilder ("*", 
           "Order", 
           "ID", 
           "uniqueidentifier", 
@@ -59,8 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
       {
-        var builder = new MultiIDLookupDbCommandBuilder (StorageNameProvider,
-          "*",
+        var builder = new MultiIDLookupDbCommandBuilder ("*",
           "Order",
           "ID",
           "uniqueidentifier",

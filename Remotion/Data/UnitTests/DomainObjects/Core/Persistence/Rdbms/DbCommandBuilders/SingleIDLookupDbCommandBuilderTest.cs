@@ -32,8 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create_WithOrderClause ()
     {
       Provider.Connect ();
-      var builder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
-          "*", 
+      var builder = new SingleIDLookupDbCommandBuilder ("*", 
           "Order", 
           "CustomerID", 
           DomainObjectIDs.Customer1, 
@@ -54,8 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create_WithoutOrderClause ()
     {
       Provider.Connect ();
-      var builder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
-          "*",
+      var builder = new SingleIDLookupDbCommandBuilder ("*",
           "Order",
           "CustomerID",
           DomainObjectIDs.Customer1,
@@ -78,8 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
       {
-        var builder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
-            "*",
+        var builder = new SingleIDLookupDbCommandBuilder ("*",
             "Order",
             "CustomerID",
             DomainObjectIDs.Customer1,

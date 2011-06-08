@@ -62,6 +62,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly ClassDefinition _classDefinition;
     private readonly PropertyDefinition _propertyDefinition;
     private readonly ObjectID _relatedID;
+    private readonly IStorageNameProvider _storageNameProvider;
 
     // construction and disposing
 
@@ -73,18 +74,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ISqlDialect sqlDialect,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
-        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
+        : base (sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
+      _storageNameProvider = storageNameProvider;
       _classDefinition = classDefinition;
       _propertyDefinition = propertyDefinition;
       _relatedID = relatedID;
     }
 
-    // methods and properties
+    public IStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
+    }
 
     public override IDbCommand Create (IDbCommandFactory commandFactory)
     {

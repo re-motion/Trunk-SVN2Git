@@ -53,8 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (objectIDs.Length == 1)
       {
-        return new SingleIDLookupDbCommandBuilder (_storageNameProvider,
-            "*",
+        return new SingleIDLookupDbCommandBuilder ("*",
             entityName,
             _storageNameProvider.IDColumnName,
             objectIDs[0],
@@ -65,8 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
       else
       {
-        return new MultiIDLookupDbCommandBuilder (_storageNameProvider,
-            "*",
+        return new MultiIDLookupDbCommandBuilder ("*",
             entityName,
             _storageNameProvider.IDColumnName,
             provider.GetIDColumnTypeName(),
@@ -99,8 +97,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var oppositeRelationEndPointDefinition =
           (VirtualRelationEndPointDefinition) relationProperty.ClassDefinition.GetMandatoryOppositeEndPointDefinition (relationProperty.PropertyName);
 
-      return new SingleIDLookupDbCommandBuilder (_storageNameProvider,
-          "*",
+      return new SingleIDLookupDbCommandBuilder ("*",
           entityName,
           relationProperty.StoragePropertyDefinition.Name,
           relatedID,

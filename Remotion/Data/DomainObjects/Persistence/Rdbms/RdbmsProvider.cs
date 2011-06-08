@@ -195,7 +195,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (StorageNameProvider, query, SqlDialect, StorageProviderDefinition, CreateValueConverter());
+      var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, StorageProviderDefinition, CreateValueConverter());
       return LoadDataContainers (commandBuilder, true);
     }
 
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (StorageNameProvider, query, SqlDialect, StorageProviderDefinition, CreateValueConverter());
+      var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, StorageProviderDefinition, CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create(this))
       {
         try
@@ -377,8 +377,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       string columnName = DelimitIdentifier (StorageNameProvider.TimestampColumnName);
       string entityName = dataContainer.ClassDefinition.GetEntityName();
-      var commandBuilder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
-          columnName,
+      var commandBuilder = new SingleIDLookupDbCommandBuilder (columnName,
           entityName,
           StorageNameProvider.IDColumnName,
           dataContainer.ID,
