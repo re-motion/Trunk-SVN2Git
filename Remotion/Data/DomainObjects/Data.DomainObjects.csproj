@@ -241,6 +241,9 @@
     <Compile Include="Mapping\RelationDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\AllSelectedColumnsSpecification.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\ISelectedColumnsSpecification.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\IDbCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />

@@ -289,6 +289,8 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CompositeScriptBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\AllSelectedColumnsSpecificationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityDefinitionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\FileGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ForeignKeyConstraintScriptBuilderTest.cs" />
