@@ -82,6 +82,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
+      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+
       IDbCommand command = commandFactory.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 

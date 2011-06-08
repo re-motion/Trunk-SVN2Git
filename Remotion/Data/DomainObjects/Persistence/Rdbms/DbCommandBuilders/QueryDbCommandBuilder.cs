@@ -36,6 +36,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
+      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+
       IDbCommand command = commandFactory.CreateDbCommand();
 
       string statement = _query.Statement;

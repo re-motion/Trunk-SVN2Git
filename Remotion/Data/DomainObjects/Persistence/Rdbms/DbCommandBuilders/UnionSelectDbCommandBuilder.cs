@@ -94,6 +94,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
+      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+
       string[] allConcreteEntityNames = _classDefinition.GetAllConcreteEntityNames();
       if (allConcreteEntityNames.Length == 0)
         return null;

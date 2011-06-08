@@ -24,6 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
+    protected readonly string DefaultSchema = "dbo";
     private readonly ISqlDialect _sqlDialect;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ValueConverter _valueConverter;

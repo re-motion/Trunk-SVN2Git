@@ -247,6 +247,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\ISelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\NonEmptyOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\IDbCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />
