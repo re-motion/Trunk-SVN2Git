@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// <summary>
   /// Builds a command that allows retrieving a set of records where a certain column matches a given <see cref="ObjectID"/> value.
   /// </summary>
-  public class SingleIDLookupDbCommandBuilder: DbCommandBuilder
+  public class SingleIDLookupDbCommandBuilder : DbCommandBuilder
   {
     private readonly string _selectColumns;
     private readonly string _entityName;
@@ -34,20 +34,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly SortExpressionDefinition _orderExpression;
 
     public SingleIDLookupDbCommandBuilder (
-        RdbmsProvider provider, 
         IStorageNameProvider storageNameProvider,
-        string selectColumns, 
-        string entityName, 
-        string checkedColumnName, 
-        ObjectID expectedValue, 
+        string selectColumns,
+        string entityName,
+        string checkedColumnName,
+        ObjectID expectedValue,
         SortExpressionDefinition orderExpression,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
-      : base (storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
+        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNullOrEmpty ("checkedColumnName", checkedColumnName);
@@ -85,9 +82,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _orderExpression; }
     }
 
-    public override IDbCommand Create()
+    public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
-      IDbCommand command = CommandFactory.CreateDbCommand();
+      IDbCommand command = commandFactory.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
       whereClauseBuilder.Add (_checkedColumnName, GetObjectIDValueForParameter (_expectedValue));

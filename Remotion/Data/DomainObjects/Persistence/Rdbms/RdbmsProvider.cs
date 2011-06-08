@@ -195,8 +195,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (
-          this, StorageNameProvider, query, SqlDialect, this, StorageProviderDefinition, CreateValueConverter());
+      var commandBuilder = new QueryDbCommandBuilder (StorageNameProvider, query, SqlDialect, StorageProviderDefinition, CreateValueConverter());
       return LoadDataContainers (commandBuilder, true);
     }
 
@@ -209,9 +208,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (
-          this, StorageNameProvider, query, SqlDialect, this, StorageProviderDefinition, CreateValueConverter());
-      using (IDbCommand command = commandBuilder.Create())
+      var commandBuilder = new QueryDbCommandBuilder (StorageNameProvider, query, SqlDialect, StorageProviderDefinition, CreateValueConverter());
+      using (IDbCommand command = commandBuilder.Create(this))
       {
         try
         {
@@ -280,7 +278,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.New))
       {
         Save (
-            new InsertDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this, StorageProviderDefinition, valueConverter),
+            new InsertDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, StorageProviderDefinition, valueConverter),
             dataContainer.ID);
       }
 
@@ -289,7 +287,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         if (dataContainer.State != StateType.Unchanged)
         {
           Save (
-              new UpdateDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this, StorageProviderDefinition, valueConverter),
+              new UpdateDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, StorageProviderDefinition, valueConverter),
               dataContainer.ID);
         }
       }
@@ -297,7 +295,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.Deleted))
       {
         Save (
-            new DeleteDbCommandBuilder (this, StorageNameProvider, dataContainer, SqlDialect, this, StorageProviderDefinition, valueConverter),
+            new DeleteDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, StorageProviderDefinition, valueConverter),
             dataContainer.ID);
       }
     }
@@ -379,20 +377,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       string columnName = DelimitIdentifier (StorageNameProvider.TimestampColumnName);
       string entityName = dataContainer.ClassDefinition.GetEntityName();
-      var commandBuilder = new SingleIDLookupDbCommandBuilder (
-          this,
-          StorageNameProvider,
+      var commandBuilder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
           columnName,
           entityName,
           StorageNameProvider.IDColumnName,
           dataContainer.ID,
           null,
           SqlDialect,
-          this,
           StorageProviderDefinition,
           CreateValueConverter());
 
-      using (IDbCommand command = commandBuilder.Create())
+      using (IDbCommand command = commandBuilder.Create(this))
       {
         object timestamp;
         try
@@ -416,7 +411,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("id", id);
       CheckStorageProviderID (id, "id");
 
-      using (IDbCommand command = commandBuilder.Create())
+      using (IDbCommand command = commandBuilder.Create(this))
       {
         if (command == null)
           return;

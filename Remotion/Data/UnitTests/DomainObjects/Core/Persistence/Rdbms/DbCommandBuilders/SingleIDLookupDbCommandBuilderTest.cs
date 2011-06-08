@@ -32,20 +32,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create_WithOrderClause ()
     {
       Provider.Connect ();
-      var builder = new SingleIDLookupDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
+      var builder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
           "*", 
           "Order", 
           "CustomerID", 
           DomainObjectIDs.Customer1, 
           SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"),
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
 
-      using (IDbCommand command = builder.Create ())
+      using (IDbCommand command = builder.Create (Provider))
       {
         Assert.AreEqual (
             "SELECT * FROM [Order] WHERE [CustomerID] = @CustomerID ORDER BY [OrderNo] ASC;",
@@ -57,20 +54,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create_WithoutOrderClause ()
     {
       Provider.Connect ();
-      var builder = new SingleIDLookupDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
+      var builder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
           "*",
           "Order",
           "CustomerID",
           DomainObjectIDs.Customer1,
           null,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
 
-      using (IDbCommand command = builder.Create ())
+      using (IDbCommand command = builder.Create (Provider))
       {
         Assert.AreEqual (
             "SELECT * FROM [Order] WHERE [CustomerID] = @CustomerID;",
@@ -84,20 +78,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
       {
-        var builder = new SingleIDLookupDbCommandBuilder (
-            Provider,
-            StorageNameProvider,
+        var builder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
             "*",
             "Order",
             "CustomerID",
             DomainObjectIDs.Customer1,
             SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"),
             Provider.SqlDialect,
-            Provider,
             Provider.StorageProviderDefinition,
             Provider.CreateValueConverter());
 
-        using (IDbCommand command = builder.Create())
+        using (IDbCommand command = builder.Create(Provider))
         {
           Assert.IsTrue (command.CommandText.Contains ("Mixed!"));
         }

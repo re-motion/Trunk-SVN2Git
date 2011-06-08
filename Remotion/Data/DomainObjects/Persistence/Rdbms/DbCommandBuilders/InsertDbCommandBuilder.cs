@@ -37,14 +37,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     // construction and disposing
 
     public InsertDbCommandBuilder (
-        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
         DataContainer dataContainer,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
-        : base (storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
+        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -56,9 +54,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // methods and properties
 
-    public override IDbCommand Create ()
+    public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
-      IDbCommand command = CommandFactory.CreateDbCommand();
+      IDbCommand command = commandFactory.CreateDbCommand();
 
       var columnBuilder = new StringBuilder();
       var valueBuilder = new StringBuilder();

@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using System.Data;
 using System.Text;
@@ -32,34 +31,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     // static members and constants
 
     public static UnionSelectDbCommandBuilder CreateForRelatedIDLookup (
-        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
         ClassDefinition classDefinition,
         PropertyDefinition propertyDefinition,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       return new UnionSelectDbCommandBuilder (
-          provider,
           storageNameProvider,
           classDefinition,
           propertyDefinition,
           relatedID,
           sqlDialect,
-          commandFactory,
           rdbmsProviderDefinition,
           valueConverter);
     }
@@ -73,16 +66,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     // construction and disposing
 
     private UnionSelectDbCommandBuilder (
-        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
         ClassDefinition classDefinition,
         PropertyDefinition propertyDefinition,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
-        : base (storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
+        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -95,13 +86,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // methods and properties
 
-    public override IDbCommand Create ()
+    public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
       string[] allConcreteEntityNames = _classDefinition.GetAllConcreteEntityNames();
       if (allConcreteEntityNames.Length == 0)
         return null;
 
-      IDbCommand command = CommandFactory.CreateDbCommand();
+      IDbCommand command = commandFactory.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
       whereClauseBuilder.Add (_propertyDefinition.StoragePropertyDefinition.Name, GetObjectIDValueForParameter (_relatedID));
 

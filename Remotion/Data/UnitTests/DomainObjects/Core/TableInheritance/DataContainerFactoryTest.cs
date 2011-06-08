@@ -32,20 +32,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void RelationClassIDColumnRefersToAbstractClass ()
     {
       var id = new ObjectID (typeof (Order), new Guid ("{F404FD2C-B92F-46d8-BEAC-F92C0599BFD3}"));
-      var builder = new SingleIDLookupDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
+      var builder = new SingleIDLookupDbCommandBuilder (StorageNameProvider,
           "*",
           "TableInheritance_Order",
           "ID",
           id,
           null,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
 
-      using (IDbCommand command = builder.Create())
+      using (IDbCommand command = builder.Create(Provider))
       {
         using (IDataReader reader = command.ExecuteReader())
         {

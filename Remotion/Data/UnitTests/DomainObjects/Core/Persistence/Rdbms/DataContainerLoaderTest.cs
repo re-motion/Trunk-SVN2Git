@@ -249,15 +249,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainersFromCommandBuilder ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
-      var builder = new MultiIDLookupDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
+      var builder = new MultiIDLookupDbCommandBuilder (StorageNameProvider,
           "*",
           "OrderItem",
           "ID",
           "uniqueidentifier",
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter(),
           new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
@@ -284,15 +281,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           {
             loader.Provider.Connect();
 
-            var builder = new MultiIDLookupDbCommandBuilder (
-                loader.Provider,
-                StorageNameProvider,
+            var builder = new MultiIDLookupDbCommandBuilder (StorageNameProvider,
                 "*",
                 "Order",
                 "ID",
                 "uniqueidentifier",
                 loader.Provider.SqlDialect,
-                loader.Provider,
                 loader.Provider.StorageProviderDefinition,
                 loader.Provider.CreateValueConverter(),
                 new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
@@ -309,8 +303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (
-          Provider, StorageNameProvider, query, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
+      var builder = new QueryDbCommandBuilder (StorageNameProvider, query, Provider.SqlDialect, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
 
       var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
 
@@ -328,8 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (
-          Provider, StorageNameProvider, query, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
+      var builder = new QueryDbCommandBuilder (StorageNameProvider, query, Provider.SqlDialect, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
 
       _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }

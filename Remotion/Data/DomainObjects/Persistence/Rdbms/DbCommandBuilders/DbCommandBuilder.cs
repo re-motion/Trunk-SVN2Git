@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -28,31 +27,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly ISqlDialect _sqlDialect;
-    private readonly IDbCommandFactory _commandFactory;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ValueConverter _valueConverter;
 
     protected DbCommandBuilder (
         IStorageNameProvider storageNameProvider,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       _storageNameProvider = storageNameProvider;
       _sqlDialect = sqlDialect;
-      _commandFactory = commandFactory;
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
       _valueConverter = valueConverter;
     }
 
-    public abstract IDbCommand Create ();
+    public abstract IDbCommand Create (IDbCommandFactory commandFactory);
 
     public IStorageNameProvider StorageNameProvider
     {
@@ -62,11 +57,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public ISqlDialect SqlDialect
     {
       get { return _sqlDialect; }
-    }
-
-    public IDbCommandFactory CommandFactory
-    {
-      get { return _commandFactory; }
     }
 
     public RdbmsProviderDefinition RdbmsProviderDefinition

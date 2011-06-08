@@ -29,14 +29,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly DataContainer _dataContainer;
 
     public UpdateDbCommandBuilder (
-        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
         DataContainer dataContainer,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
-        : base (storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
+        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -46,9 +44,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _dataContainer = dataContainer;
     }
 
-    public override IDbCommand Create ()
+    public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
-      IDbCommand command = CommandFactory.CreateDbCommand();
+      IDbCommand command = commandFactory.CreateDbCommand();
       var updateSetBuilder = new StringBuilder();
 
       foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)

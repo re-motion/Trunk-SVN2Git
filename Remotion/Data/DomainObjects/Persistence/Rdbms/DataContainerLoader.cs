@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _provider.StorageProviderDefinition,
           _provider.CreateValueConverter(),
           new[] { id });
-      using (IDbCommand command = commandBuilder.Create())
+      using (IDbCommand command = commandBuilder.Create(Provider))
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleRow))
         {
@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (
           Provider, entityName, Provider.SqlDialect, Provider, Provider.StorageProviderDefinition, Provider.CreateValueConverter(), objectIDs);
 
-      using (IDbCommand command = commandBuilder.Create())
+      using (IDbCommand command = commandBuilder.Create(Provider))
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleResult))
         {
@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      using (IDbCommand command = commandBuilder.Create())
+      using (IDbCommand command = commandBuilder.Create(Provider))
       {
         using (IDataReader dataReader = Provider.ExecuteReader (command, CommandBehavior.SingleResult))
         {

@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      using (IDbCommand command = commandBuilder.Create())
+      using (IDbCommand command = commandBuilder.Create(Provider))
       {
         if (command == null)
           return new List<ObjectID>();

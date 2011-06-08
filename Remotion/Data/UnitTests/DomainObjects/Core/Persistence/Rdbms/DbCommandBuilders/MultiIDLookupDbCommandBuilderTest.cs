@@ -31,20 +31,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create ()
     {
       Provider.Connect ();
-      var builder = new MultiIDLookupDbCommandBuilder (
-          Provider, 
-          StorageNameProvider,
+      var builder = new MultiIDLookupDbCommandBuilder (StorageNameProvider,
           "*", 
           "Order", 
           "ID", 
           "uniqueidentifier", 
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter(),
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
-      using (IDbCommand command = builder.Create ())
+      using (IDbCommand command = builder.Create (Provider))
       {
         string expectedCommandText = "SELECT * FROM [Order] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c));";
         Assert.AreEqual (expectedCommandText, command.CommandText);
@@ -62,20 +59,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
       {
-        var builder = new MultiIDLookupDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
+        var builder = new MultiIDLookupDbCommandBuilder (StorageNameProvider,
           "*",
           "Order",
           "ID",
           "uniqueidentifier",
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter(),
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
-        using (IDbCommand command = builder.Create())
+        using (IDbCommand command = builder.Create(Provider))
         {
           Assert.IsTrue (command.CommandText.Contains ("Mixed!"));
         }

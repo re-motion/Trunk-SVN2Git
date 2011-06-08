@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using System.Data;
 using NUnit.Framework;
@@ -128,7 +127,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
       var builder = new SingleIDLookupDbCommandBuilder (
-          Provider,
           StorageNameProvider,
           "*",
           classDefinition.GetEntityName(),
@@ -136,10 +134,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           id,
           null,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
-      using (IDbCommand command = builder.Create())
+      using (IDbCommand command = builder.Create (Provider))
       {
         using (IDataReader reader = command.ExecuteReader())
         {
@@ -165,7 +162,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
       var builder = new SingleIDLookupDbCommandBuilder (
-          Provider,
           StorageNameProvider,
           "*",
           classDefinition.GetEntityName(),
@@ -173,10 +169,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           id,
           null,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
-      using (IDbCommand command = builder.Create())
+      using (IDbCommand command = builder.Create (Provider))
       {
         using (IDataReader reader = command.ExecuteReader())
         {
@@ -202,7 +197,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
       var builder = new SingleIDLookupDbCommandBuilder (
-          Provider,
           StorageNameProvider,
           "*",
           classDefinition.GetEntityName(),
@@ -210,10 +204,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           id,
           null,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
-      using (IDbCommand command = builder.Create())
+      using (IDbCommand command = builder.Create (Provider))
       {
         using (IDataReader reader = command.ExecuteReader())
         {
@@ -239,7 +232,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
       var builder = new SingleIDLookupDbCommandBuilder (
-          Provider,
           StorageNameProvider,
           "*",
           classDefinition.GetEntityName(),
@@ -247,10 +239,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           id,
           null,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
-      using (IDbCommand command = builder.Create())
+      using (IDbCommand command = builder.Create (Provider))
       {
         using (IDataReader reader = command.ExecuteReader())
         {

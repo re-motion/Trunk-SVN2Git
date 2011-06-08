@@ -35,14 +35,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     // construction and disposing
 
     public DeleteDbCommandBuilder (
-        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
         DataContainer dataContainer,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
-        : base (storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
+        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -54,9 +52,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     // methods and properties
 
-    public override IDbCommand Create ()
+    public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
-      IDbCommand command = CommandFactory.CreateDbCommand();
+      IDbCommand command = commandFactory.CreateDbCommand();
 
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
       whereClauseBuilder.Add (StorageNameProvider.IDColumnName, _dataContainer.ID.Value);

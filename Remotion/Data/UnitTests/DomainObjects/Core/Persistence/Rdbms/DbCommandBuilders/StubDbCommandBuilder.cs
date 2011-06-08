@@ -28,13 +28,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public StubDbCommandBuilder (RdbmsProvider provider)
         : base (new ReflectionBasedStorageNameProvider(),
             provider.SqlDialect,
-            provider,
             provider.StorageProviderDefinition,
             provider.CreateValueConverter())
     {
     }
 
-    public override IDbCommand Create ()
+    public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
       throw new NotImplementedException();
     }

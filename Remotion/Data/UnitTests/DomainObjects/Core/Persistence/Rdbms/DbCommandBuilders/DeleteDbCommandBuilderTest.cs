@@ -38,16 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       DataContainer deletedContainer = classWithAllDataTypes.InternalDataContainer;
 
       Provider.Connect();
-      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
+      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
           deletedContainer,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
 
-      using (IDbCommand deleteCommand = commandBuilder.Create())
+      using (IDbCommand deleteCommand = commandBuilder.Create(Provider))
       {
         string expectedCommandText = "DELETE FROM [TableWithAllDataTypes] WHERE [ID] = @ID AND [Timestamp] = @Timestamp;";
         Assert.AreEqual (expectedCommandText, deleteCommand.CommandText);
@@ -70,16 +67,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       DataContainer deletedOrderContainer = order.InternalDataContainer;
 
       Provider.Connect();
-      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
+      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
           deletedOrderContainer,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
 
-      using (IDbCommand deleteCommand = commandBuilder.Create())
+      using (IDbCommand deleteCommand = commandBuilder.Create(Provider))
       {
         string expectedCommandText = "DELETE FROM [Order] WHERE [ID] = @ID;";
         Assert.AreEqual (expectedCommandText, deleteCommand.CommandText);
@@ -98,12 +92,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void InitializeWithDataContainerOfInvalidState ()
     {
       Provider.Connect();
-      new DeleteDbCommandBuilder (
-          Provider,
-          StorageNameProvider,
+      new DeleteDbCommandBuilder (StorageNameProvider,
           TestDataContainerFactory.CreateOrder1DataContainer(),
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
     }
@@ -121,16 +112,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
         DataContainer deletedContainer = classWithAllDataTypes.InternalDataContainer;
 
         Provider.Connect();
-        DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (
-            Provider,
-            StorageNameProvider,
+        DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
             deletedContainer,
             Provider.SqlDialect,
-            Provider,
             Provider.StorageProviderDefinition,
             Provider.CreateValueConverter());
 
-        using (IDbCommand deleteCommand = commandBuilder.Create())
+        using (IDbCommand deleteCommand = commandBuilder.Create(Provider))
         {
           Assert.IsTrue (deleteCommand.CommandText.Contains ("Mixed!"));
         }

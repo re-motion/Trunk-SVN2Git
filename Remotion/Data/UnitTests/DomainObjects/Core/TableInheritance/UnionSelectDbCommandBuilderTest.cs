@@ -39,14 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       base.SetUp();
 
       var domainBaseClass = MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase));
-      _builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (
-          Provider,
-          StorageNameProvider,
+      _builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (StorageNameProvider,
           domainBaseClass,
           domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"),
           DomainObjectIDs.Client,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
     }
@@ -92,18 +89,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       organizationalUnitClass.SetReadOnly();
       clientClass.SetReadOnly();
 
-      UnionSelectDbCommandBuilder builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (
-          Provider,
-          StorageNameProvider,
+      UnionSelectDbCommandBuilder builder = UnionSelectDbCommandBuilder.CreateForRelatedIDLookup (StorageNameProvider,
           domainBaseClass,
           domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"),
           DomainObjectIDs.Client,
           Provider.SqlDialect,
-          Provider,
           Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
 
-      using (IDbCommand command = builder.Create())
+      using (IDbCommand command = builder.Create(Provider))
       {
         string expectedCommandText =
             "SELECT [ID], [ClassID] FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID\n"
@@ -120,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void CreateWithSortExpression ()
     {
-      using (IDbCommand command = _builder.Create())
+      using (IDbCommand command = _builder.Create(Provider))
       {
         string expectedCommandText =
             "SELECT [ID], [ClassID], [CreatedAt] FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID\n"
@@ -142,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope(
               ))
       {
-        using (IDbCommand command = _builder.Create())
+        using (IDbCommand command = _builder.Create(Provider))
         {
           Assert.IsTrue (command.CommandText.Contains ("Mixed!"));
         }

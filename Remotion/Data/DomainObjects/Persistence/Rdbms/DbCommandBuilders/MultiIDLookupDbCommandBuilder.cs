@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// <summary>
   /// Builds a command that allows retrieving a set of records whose ID column is contained in a range of <see cref="ObjectID"/> values.
   /// </summary>
-  public class MultiIDLookupDbCommandBuilder: DbCommandBuilder
+  public class MultiIDLookupDbCommandBuilder : DbCommandBuilder
   {
     private readonly string _selectColumns;
     private readonly string _entityName;
@@ -33,20 +33,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly ObjectID[] _expectedValues;
 
     public MultiIDLookupDbCommandBuilder (
-        RdbmsProvider provider,
         IStorageNameProvider storageNameProvider,
-        string selectColumns, 
+        string selectColumns,
         string entityName,
         string checkedColumnName,
         string checkedColumnTypeName,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter,
         ObjectID[] ids)
-      : base (storageNameProvider, sqlDialect, commandFactory, rdbmsProviderDefinition, valueConverter)
+        : base (storageNameProvider, sqlDialect, rdbmsProviderDefinition, valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNullOrEmpty ("checkedColumnName", checkedColumnName);
@@ -86,9 +83,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _expectedValues; }
     }
 
-    public override IDbCommand Create()
+    public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
-      IDbCommand command = CommandFactory.CreateDbCommand();
+      IDbCommand command = commandFactory.CreateDbCommand();
       var whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
       whereClauseBuilder.SetInExpression (_checkedColumnName, _checkedColumnTypeName, GetValueArrayForParameter (_expectedValues));
