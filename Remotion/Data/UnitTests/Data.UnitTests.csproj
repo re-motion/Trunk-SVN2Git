@@ -296,6 +296,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\UnionRelationLookupSelectDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityDefinitionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\FileGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ForeignKeyConstraintScriptBuilderTest.cs" />
