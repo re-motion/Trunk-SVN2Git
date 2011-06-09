@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _specification.AppendOrderByClause (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString(), Is.EqualTo (" [Column1] ASC, [Column2] DESC, [Column3] ASC"));
+      Assert.That (sb.ToString(), Is.EqualTo (" ORDER BY [Column1] ASC, [Column2] DESC, [Column3] ASC"));
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _specification.AppendOrderByClause (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString (), Is.EqualTo ("Test [Column1] ASC, [Column2] DESC, [Column3] ASC"));
+      Assert.That (sb.ToString (), Is.EqualTo ("Test ORDER BY [Column1] ASC, [Column2] DESC, [Column3] ASC"));
     }
 
     [Test]

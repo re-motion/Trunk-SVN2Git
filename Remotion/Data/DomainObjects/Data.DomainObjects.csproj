@@ -249,6 +249,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\IDbCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />

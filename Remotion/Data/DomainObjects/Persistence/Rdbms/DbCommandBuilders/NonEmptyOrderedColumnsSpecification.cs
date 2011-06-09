@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      stringBuilder.Append(" " + SeparatedStringBuilder.Build (
+      stringBuilder.Append(" ORDER BY " + SeparatedStringBuilder.Build (
           ", ", _columns, tuple => sqlDialect.DelimitIdentifier (tuple.Item1.Name) + (tuple.Item2 == SortOrder.Ascending ? " ASC" : " DESC")));
     }
 
