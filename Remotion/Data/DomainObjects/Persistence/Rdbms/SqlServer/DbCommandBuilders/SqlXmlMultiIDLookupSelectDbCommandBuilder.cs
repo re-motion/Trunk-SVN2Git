@@ -17,10 +17,11 @@
 using System;
 using System.Data;
 using System.Text;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders
 {
   /// <summary>
   /// The <see cref="SqlXmlMultiIDLookupSelectDbCommandBuilder"/> builds a command that allows retrieving a set of records whose ID column is 
