@@ -27,7 +27,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
-  public class SingleIDLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
+  public class SqlXmlMultiIDLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
   {
     private SimpleColumnDefinition _objectIDColumnDefinition;
     private ISelectedColumnsSpecification _selectedColumnsStub;
@@ -36,18 +36,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
-    private Guid _guid;
+    private ObjectID _objectID1;
+    private ObjectID _objectID2;
+    private ObjectID _objectID3;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _objectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      
+
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _selectedColumnsStub
-        .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-        .WhenCalled(mi=> ((StringBuilder) mi.Arguments[0]).Append(" [Column1], [Column2], [Column3] "));
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" [Column1], [Column2], [Column3] "));
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("dbo")).Return ("[dbo]");
@@ -56,21 +58,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("ID")).Return ("[ID]");
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("ID")).Return ("@ID");
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("@ID")).Return ("@ID");
-      
+
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
 
-      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
-      _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return(1);
+      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
+      _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
       _dataParameterCollectionMock.Replay();
 
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
-      _dbCommandStub.Stub(stub => stub.CreateParameter()).Return (_dbDataParameterStub);
+      _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub);
       _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
-      
+
       _commandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
       _commandFactoryStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
 
-      _guid = Guid.NewGuid ();
+      _objectID1 = new ObjectID ("Order", Guid.NewGuid());
+      _objectID2 = new ObjectID ("Order", Guid.NewGuid());
+      _objectID3 = new ObjectID ("Order", Guid.NewGuid());
     }
 
     [Test]
@@ -88,18 +92,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 
-      var builder = new SingleIDLookupSelectDbCommandBuilder (
+      var builder = new SqlXmlMultiIDLookupSelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
-          new ObjectID ("Order", _guid),
+          new[] { _objectID1, _objectID2, _objectID3 },
           _sqlDialectStub,
           (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
-          Provider.CreateValueConverter ());
+          Provider.CreateValueConverter());
 
       var result = builder.Create (_commandFactoryStub);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table] WHERE [ID] = @ID"));
-      Assert.That (_dbDataParameterStub.Value, Is.EqualTo(_guid));
+      Assert.That (
+          result.CommandText,
+          Is.EqualTo (
+              "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c)"));
+
+      Assert.That (
+          _dbDataParameterStub.Value.ToString(),
+          Is.EqualTo (string.Format ("<L><I>{0}</I><I>{1}</I><I>{2}</I></L>", _objectID1.Value, _objectID2.Value, _objectID3.Value)));
       _dataParameterCollectionMock.VerifyAllExpectations();
     }
 
@@ -118,19 +128,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 
-      var builder = new SingleIDLookupSelectDbCommandBuilder (
+      var builder = new SqlXmlMultiIDLookupSelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
-          new ObjectID ("Order", _guid),
+          new[] { _objectID1, _objectID2, _objectID3 },
           _sqlDialectStub,
           (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
           Provider.CreateValueConverter ());
 
       var result = builder.Create (_commandFactoryStub);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [ID] = @ID"));
-      Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
-      _dataParameterCollectionMock.VerifyAllExpectations();
+      Assert.That (
+          result.CommandText,
+          Is.EqualTo (
+              "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c)"));
+
+      Assert.That (
+          _dbDataParameterStub.Value.ToString (),
+          Is.EqualTo (string.Format ("<L><I>{0}</I><I>{1}</I><I>{2}</I></L>", _objectID1.Value, _objectID2.Value, _objectID3.Value)));
+      _dataParameterCollectionMock.VerifyAllExpectations ();
     }
   }
 }
