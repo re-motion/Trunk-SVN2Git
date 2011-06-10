@@ -43,6 +43,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       _valueConverter = valueConverter;
     }
 
+    public IDbCommandBuilder DbCommandBuilder
+    {
+      get { return _dbCommandBuilder; }
+    }
+
+    public IDbCommandFactory DbCommandFactory
+    {
+      get { return _dbCommandFactory; }
+    }
+
+    public IDbCommandExecutor DbCommandExecutor
+    {
+      get { return _dbCommandExecutor; }
+    }
+
+    public ValueConverter ValueConverter
+    {
+      get { return _valueConverter; }
+    }
+
     public DataContainer Execute ()
     {
       using (var command = _dbCommandBuilder.Create (_dbCommandFactory))

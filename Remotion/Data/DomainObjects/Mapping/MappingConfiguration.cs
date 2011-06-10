@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("persistenceModelLoader", persistenceModelLoader);
 
       s_log.Info ("Building mapping configuration...");
-
+      
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
         var typeDefinitions = mappingLoader.GetClassDefinitions();

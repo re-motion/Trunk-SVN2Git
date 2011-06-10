@@ -38,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private MockRepository _mockRepository;
     private IDataReader _dataReaderMock;
     private SingleDataContainerLoadCommand _command;
+    private ValueConverter _valueConverter;
 
     public override void SetUp ()
     {
@@ -54,8 +55,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
       _dbCommandExecutorStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleRow)).Return(_dataReaderMock);
 
+      _valueConverter = Provider.CreateValueConverter();
       _command = new SingleDataContainerLoadCommand (
-          _dbCommandBuilderStub, _dbCommandFactory, _dbCommandExecutorStub, Provider.CreateValueConverter());
+          _dbCommandBuilderStub, _dbCommandFactory, _dbCommandExecutorStub, _valueConverter);
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      Assert.That (_command.DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
+      Assert.That (_command.DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
+      Assert.That (_command.DbCommandFactory, Is.SameAs (_dbCommandFactory));
+      Assert.That (_command.ValueConverter, Is.SameAs(_valueConverter));
     }
 
     [Test]
