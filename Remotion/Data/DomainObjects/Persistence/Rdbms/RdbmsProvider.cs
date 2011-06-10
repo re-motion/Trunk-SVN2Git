@@ -29,7 +29,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public abstract class RdbmsProvider : StorageProvider, IDbCommandFactory
+  public abstract class RdbmsProvider : StorageProvider, IDbCommandFactory, IDbCommandExecutor
   {
     private readonly DataContainerLoader _dataContainerLoader;
 

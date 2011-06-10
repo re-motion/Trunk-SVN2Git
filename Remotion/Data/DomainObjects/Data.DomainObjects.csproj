@@ -243,6 +243,7 @@
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />
+    <Compile Include="Persistence\Rdbms\DataContainerFactory2.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\AllSelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\EmptyOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\IDbCommandBuilderFactory.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\NonEmptyOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\IDbCommandExecutor.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilder.cs" />
@@ -419,6 +421,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SqlSecondaryXmlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlSecondaryXmlIndexKind.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlIndexDefinitionBase.cs" />
+    <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleDataContainerLoadCommand.cs" />
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />
