@@ -51,6 +51,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       _dataContainerFactory = dataContainerFactory;
     }
 
+    public IDbCommandBuilder[] DbCommandBuilders
+    {
+      get { return _dbCommandBuilders; }
+    }
+
+    public bool AllowNulls
+    {
+      get { return _allowNulls; }
+    }
+
+    public IDbCommandFactory DbCommandFactory
+    {
+      get { return _dbCommandFactory; }
+    }
+
+    public IDbCommandExecutor DbCommandExecutor
+    {
+      get { return _dbCommandExecutor; }
+    }
+
+    public IDataContainerFactory DataContainerFactory
+    {
+      get { return _dataContainerFactory; }
+    }
+
     public IEnumerable<DataContainer> Execute ()
     {
       return _dbCommandBuilders.SelectMany (builder => LoadDataContainersFromCommandBuilder (builder, _allowNulls)).ToArray();

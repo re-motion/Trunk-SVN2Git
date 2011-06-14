@@ -61,6 +61,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
+    public void Initialization ()
+    {
+      var command = new MultiDataContainerLoadCommand (
+          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
+
+      Assert.That (command.AllowNulls, Is.True);
+      Assert.That (command.DataContainerFactory, Is.SameAs (_dataContainerFactoryStub));
+      Assert.That (command.DbCommandBuilders, Is.EqualTo(new[]{_dbCommandBuilder1Stub, _dbCommandBuilder2Stub}));
+      Assert.That (command.DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
+      Assert.That (command.DbCommandFactory, Is.SameAs(_dbCommandFactoryStub));
+    }
+
+    [Test]
     public void Execute_SeveralCommandBuilders_AllowNullsFalse ()
     {
       _dataContainerFactoryStub.Stub (stub => stub.CreateCollection (_dataReaderStub, false)).Return (new[] { _container });

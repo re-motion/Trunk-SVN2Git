@@ -425,6 +425,7 @@
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\SingleDataContainerLookupCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLookupCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerLoadCommand.cs" />
+    <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\MultiDataContainerLookupCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleDataContainerLoadCommand.cs" />
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
