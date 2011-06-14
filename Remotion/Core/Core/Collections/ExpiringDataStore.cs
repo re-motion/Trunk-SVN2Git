@@ -22,11 +22,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
-  // TODO 3919: Add ExpiringDataStoreFactory class that has 6 factory methods:
-  //   - Create<TKey, TValue, TExpirationInfo> ([IEqualityComparer], IExpirationPolicy)
-  //   - CreateWithLocking<TKey, TValue, TExpirationInfo> ([IEqualityComparer], IExpirationPolicy)
-  //   - CreateWithLazyLocking<TKey, TValue, TExpirationInfo> where TValue : class ([IEqualityComparer], IExpirationPolicy)
-
   /// <summary>
   /// The <see cref="ExpiringDataStore{TKey,TValue,TExpirationInfo}"/> stores values that can be expire.
   /// </summary>
