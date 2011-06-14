@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommandFactory _dbCommandFactoryStub;
     private IDbCommandExecutor _dbCommandExecutorStub;
     private IDbCommandBuilder _dbCommandBuilderStub;
-    private ValueConverter _valueConverter;
+    private IDataContainerFactory _dataContainerFactoryStub;
 
     public override void SetUp ()
     {
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
       _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
       _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _valueConverter = Provider.CreateValueConverter();
+      _dataContainerFactoryStub = MockRepository.GenerateStub<IDataContainerFactory>();
 
       _factory = new SingleDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub);
     }
@@ -64,13 +64,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   ((TableDefinition) objectID.ClassDefinition.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-      var result = _factory.CreateCommand (objectID, _dbCommandFactoryStub, _dbCommandExecutorStub, _valueConverter);
+      var result = _factory.CreateCommand (objectID, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
 
       Assert.That (result, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandFactory, Is.SameAs (_dbCommandFactoryStub));
-      Assert.That (((SingleDataContainerLoadCommand) result).ValueConverter, Is.SameAs (_valueConverter));
+      Assert.That (((SingleDataContainerLoadCommand) result).DataContainerFactory, Is.SameAs (_dataContainerFactoryStub));
     }
 
     [Test]
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var objectID = new ObjectID (classDefinition, Guid.NewGuid ());
 
-      _factory.CreateCommand (objectID, _dbCommandFactoryStub, _dbCommandExecutorStub, _valueConverter);
+      _factory.CreateCommand (objectID, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
     }
 
     [Test]
@@ -123,13 +123,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   ((TableDefinition) objectID.ClassDefinition.BaseClass.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-      var result = _factory.CreateCommand (objectID, _dbCommandFactoryStub, _dbCommandExecutorStub, _valueConverter);
+      var result = _factory.CreateCommand (objectID, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
 
       Assert.That (result, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandFactory, Is.SameAs (_dbCommandFactoryStub));
-      Assert.That (((SingleDataContainerLoadCommand) result).ValueConverter, Is.SameAs (_valueConverter));
+      Assert.That (((SingleDataContainerLoadCommand) result).DataContainerFactory, Is.SameAs (_dataContainerFactoryStub));
     }
   }
 }

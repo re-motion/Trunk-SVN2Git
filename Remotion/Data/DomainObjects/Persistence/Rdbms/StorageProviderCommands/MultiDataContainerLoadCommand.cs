@@ -15,64 +15,56 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
-  public class SingleDataContainerLoadCommand : IStorageProviderCommand<DataContainer>
+  public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>>
   {
-    private readonly IDbCommandBuilder _dbCommandBuilder;
+    private readonly IDbCommandBuilder[] _dbCommandBuilders;
+    private readonly bool _allowNulls;
     private readonly IDbCommandFactory _dbCommandFactory;
     private readonly IDbCommandExecutor _dbCommandExecutor;
     private readonly IDataContainerFactory _dataContainerFactory;
 
-    public SingleDataContainerLoadCommand (
-        IDbCommandBuilder dbCommandBuilder,
+    public MultiDataContainerLoadCommand (
+        IEnumerable<IDbCommandBuilder> dbCommandBuilders,
+        bool allowNulls,
         IDbCommandFactory dbCommandFactory,
         IDbCommandExecutor dbCommandExecutor,
         IDataContainerFactory dataContainerFactory)
     {
-      ArgumentUtility.CheckNotNull ("dbCommandBuilder", dbCommandBuilder);
+      ArgumentUtility.CheckNotNull ("dbCommandBuilders", dbCommandBuilders);
       ArgumentUtility.CheckNotNull ("dbCommandFactory", dbCommandFactory);
       ArgumentUtility.CheckNotNull ("dbCommandExecutor", dbCommandExecutor);
       ArgumentUtility.CheckNotNull ("dataContainerFactory", dataContainerFactory);
 
-      _dbCommandBuilder = dbCommandBuilder;
+      _dbCommandBuilders = dbCommandBuilders.ToArray();
+      _allowNulls = allowNulls;
       _dbCommandFactory = dbCommandFactory;
       _dbCommandExecutor = dbCommandExecutor;
       _dataContainerFactory = dataContainerFactory;
     }
 
-    public IDbCommandBuilder DbCommandBuilder
+    public IEnumerable<DataContainer> Execute ()
     {
-      get { return _dbCommandBuilder; }
+      return _dbCommandBuilders.SelectMany (builder => LoadDataContainersFromCommandBuilder (builder, _allowNulls)).ToArray();
     }
 
-    public IDbCommandFactory DbCommandFactory
+    private IEnumerable<DataContainer> LoadDataContainersFromCommandBuilder (IDbCommandBuilder commandBuilder, bool allowNulls)
     {
-      get { return _dbCommandFactory; }
-    }
+      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-    public IDbCommandExecutor DbCommandExecutor
-    {
-      get { return _dbCommandExecutor; }
-    }
-
-    public IDataContainerFactory DataContainerFactory
-    {
-      get { return _dataContainerFactory; }
-    }
-
-    public DataContainer Execute ()
-    {
-      using (var command = _dbCommandBuilder.Create (_dbCommandFactory))
+      using (var command = commandBuilder.Create (_dbCommandFactory))
       {
-        using (var reader = _dbCommandExecutor.ExecuteReader (command, CommandBehavior.SingleRow))
+        using (var reader = _dbCommandExecutor.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          return _dataContainerFactory.CreateDataContainer(reader);
+          return _dataContainerFactory.CreateCollection (reader, allowNulls);
         }
       }
     }

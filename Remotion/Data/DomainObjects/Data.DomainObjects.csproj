@@ -252,6 +252,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\NonEmptyOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\IDataContainerFactory.cs" />
     <Compile Include="Persistence\Rdbms\IDbCommandExecutor.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilder.cs" />
@@ -423,6 +424,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SqlIndexDefinitionBase.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\SingleDataContainerLookupCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLookupCommand.cs" />
+    <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleDataContainerLoadCommand.cs" />
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />

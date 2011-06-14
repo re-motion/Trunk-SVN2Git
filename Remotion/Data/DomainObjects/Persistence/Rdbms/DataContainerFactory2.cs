@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -22,39 +23,60 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class DataContainerFactory2
+  public class DataContainerFactory2 : IDataContainerFactory
   {
-    private readonly IDataReader _dataReader;
     private readonly ValueConverter _valueConverter;
 
-    public DataContainerFactory2 (IDataReader dataReader, ValueConverter valueConverter)
+    public DataContainerFactory2 (ValueConverter valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
-      _dataReader = dataReader;
       _valueConverter = valueConverter;
     }
 
-    public virtual DataContainer CreateDataContainer ()
+    public virtual DataContainer CreateDataContainer (IDataReader dataReader)
     {
-      if (_dataReader.Read ())
-        return CreateDataContainerFromReader (false);
+      if (dataReader.Read())
+        return CreateDataContainerFromReader (dataReader, false);
       else
         return null;
     }
 
-    protected virtual DataContainer CreateDataContainerFromReader (bool allowNulls)
+    public virtual DataContainer[] CreateCollection ( IDataReader dataReader, bool allowNulls)
     {
-      var id = _valueConverter.GetID (_dataReader);
+      var collection = new List<DataContainer>();
+      var loadedIDs = new HashSet<ObjectID>();
+
+      while (dataReader.Read())
+      {
+        var dataContainer = CreateDataContainerFromReader (dataReader, allowNulls);
+        if (dataContainer != null)
+        {
+          if (loadedIDs.Contains (dataContainer.ID))
+          {
+            throw new RdbmsProviderException (
+                string.Format ("A database query returned duplicates of the domain object '{0}', which is not supported.", dataContainer.ID));
+          }
+          loadedIDs.Add (dataContainer.ID);
+        }
+
+        collection.Add (dataContainer);
+      }
+
+      return collection.ToArray();
+    }
+
+    protected virtual DataContainer CreateDataContainerFromReader (IDataReader dataReader, bool allowNulls)
+    {
+      var id = _valueConverter.GetID (dataReader);
       if (id != null)
       {
-        var timestamp = _valueConverter.GetTimestamp (_dataReader);
+        var timestamp = _valueConverter.GetTimestamp (dataReader);
 
         var dataContainer = DataContainer.CreateForExisting (
             id,
             timestamp,
-            propertyDefinition => GetDataValue (propertyDefinition, id, _valueConverter));
+            propertyDefinition => GetDataValue (dataReader, propertyDefinition, id, _valueConverter));
         return dataContainer;
       }
       else if (allowNulls)
@@ -63,17 +85,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw new RdbmsProviderException ("An object returned from the database had a NULL ID, which is not supported.");
     }
 
-    private object GetDataValue (PropertyDefinition propertyDefinition, ObjectID objectID, ValueConverter valueConverter)
+    private object GetDataValue (IDataReader dataReader, PropertyDefinition propertyDefinition, ObjectID objectID, ValueConverter valueConverter)
     {
       try
       {
-        return valueConverter.GetValue (objectID.ClassDefinition, propertyDefinition, _dataReader);
+        return valueConverter.GetValue (objectID.ClassDefinition, propertyDefinition, dataReader);
       }
       catch (Exception e)
       {
-        throw new RdbmsProviderException (string.Format ("Error while reading property '{0}' of object '{1}': {2}",
-            propertyDefinition.PropertyName, objectID, e.Message), e);
+        throw new RdbmsProviderException (
+            string.Format (
+                "Error while reading property '{0}' of object '{1}': {2}",
+                propertyDefinition.PropertyName,
+                objectID,
+                e.Message),
+            e);
       }
     }
   }
+  
 }

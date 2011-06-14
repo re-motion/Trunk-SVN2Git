@@ -40,7 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository = new MockRepository();
       _dataReaderMock = _mockRepository.StrictMock<IDataReader>();
-      _factory = new DataContainerFactory2 (_dataReaderMock, Provider.CreateValueConverter());
+      _factory = new DataContainerFactory2 (Provider.CreateValueConverter());
+      OppositeClassDefinitionRetriever.ResetCache ();
+    }
+
+    public override void TearDown ()
+    {
+      base.TearDown ();
+      OppositeClassDefinitionRetriever.ResetCache ();
     }
 
     [Test]
@@ -48,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       _dataReaderMock.Stub (stub => stub.Read()).Return (false);
 
-      var result = _factory.CreateDataContainer();
+      var result = _factory.CreateDataContainer(_dataReaderMock);
 
       Assert.That (result, Is.Null);
     }
@@ -59,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flop", DomainObjectIDs.Order1, true);
       _mockRepository.ReplayAll ();
 
-      var dataContainer = _factory.CreateDataContainer ();
+      var dataContainer = _factory.CreateDataContainer (_dataReaderMock);
       CheckTicketContainer (dataContainer, DomainObjectIDs.OrderTicket1, 123, "flop", DomainObjectIDs.Order1);
     }
     
@@ -71,10 +78,88 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       SetupOrderTicket (null, 123, "flop", DomainObjectIDs.Order1, true);
       _mockRepository.ReplayAll();
 
-      _factory.CreateDataContainer();
+      _factory.CreateDataContainer(_dataReaderMock);
     }
 
     //TODO RM-4068: add tests for allowNullsTrue and "error while reading property"-exception !?
+
+    [Test]
+    public void CreateCollection ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
+        SetupOrderTicket (DomainObjectIDs.OrderTicket2, 124, "flop", DomainObjectIDs.Order2, false);
+        SetupOrderTicket (DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3, false);
+        Expect.Call (_dataReaderMock.Read ()).Return (false);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var dataContainers = _factory.CreateCollection (_dataReaderMock, false);
+      Assert.AreEqual (3, dataContainers.Length);
+      CheckTicketContainer (dataContainers[0], DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1);
+      CheckTicketContainer (dataContainers[1], DomainObjectIDs.OrderTicket2, 124, "flop", DomainObjectIDs.Order2);
+      CheckTicketContainer (dataContainers[2], DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
+    public void CreateCollection_WithNullID_AllowNullsFalse ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
+        SetupOrderTicket (null, 124, "flop", DomainObjectIDs.Order2, false);
+        SetupOrderTicket (DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3, false);
+        Expect.Call (_dataReaderMock.Read ()).Return (false);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      _factory.CreateCollection (_dataReaderMock, false);
+    }
+
+    [Test]
+    public void CreateCollection_WithNullID_AllowNullsTrue ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
+        SetupOrderTicket (null, 124, "flop", DomainObjectIDs.Order2, false);
+        SetupOrderTicket (DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3, false);
+        Expect.Call (_dataReaderMock.Read ()).Return (false);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var collection = _factory.CreateCollection (_dataReaderMock, true);
+      Assert.That (collection.Length, Is.EqualTo (3));
+      Assert.That (collection[0].ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (collection[1], Is.Null);
+      Assert.That (collection[2].ID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "A database query returned duplicates of the domain object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', which is not supported.")]
+    public void CreateCollection_WithDuplicates ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
+        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, false);
+        Expect.Call (_dataReaderMock.Read ()).Return (false);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      _factory.CreateCollection (_dataReaderMock, false);
+
+      _mockRepository.VerifyAll ();
+    }
 
     private void SetupOrderTicket (ObjectID ticketID, int timestamp, string fileName, ObjectID relatedOrder, bool checkOrderIDClassIDNotExists)
     {

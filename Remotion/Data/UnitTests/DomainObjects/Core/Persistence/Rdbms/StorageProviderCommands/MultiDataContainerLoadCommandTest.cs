@@ -23,18 +23,19 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands
 {
   [TestFixture]
-  public class SingleDataContainerLoadCommandTest : SqlProviderBaseTest
+  public class MultiDataContainerLoadCommandTest : SqlProviderBaseTest
   {
-    private IDbCommandBuilder _dbCommandBuilderStub;
-    private IDbCommandFactory _dbCommandFactory;
+    private IDataReader _dataReaderStub;
+    private IDbCommandFactory _dbCommandFactoryStub;
     private IDbCommand _dbCommandStub;
+    private IDbCommandBuilder _dbCommandBuilder1Stub;
     private IDbCommandExecutor _dbCommandExecutorStub;
-    private IDataReader _dataReaderMock;
-    private SingleDataContainerLoadCommand _command;
+    private IDbCommandBuilder _dbCommandBuilder2Stub;
     private IDataContainerFactory _dataContainerFactoryStub;
     private DataContainer _container;
 
@@ -43,39 +44,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       base.SetUp();
 
       _container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
+      
+      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
 
-      _dataReaderMock = MockRepository.GenerateStub<IDataReader>();
-
-      _dbCommandFactory = MockRepository.GenerateStub<IDbCommandFactory>();
+      _dbCommandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
-      _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilderStub.Stub (stub => stub.Create (_dbCommandFactory)).Return (_dbCommandStub);
+      _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
+      _dbCommandBuilder1Stub.Stub (stub => stub.Create (_dbCommandFactoryStub)).Return (_dbCommandStub);
+      _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
+      _dbCommandBuilder2Stub.Stub (stub => stub.Create (_dbCommandFactoryStub)).Return (_dbCommandStub);
 
       _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
-      _dbCommandExecutorStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleRow)).Return(_dataReaderMock);
+      _dbCommandExecutorStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleResult)).Return (_dataReaderStub);
 
       _dataContainerFactoryStub = MockRepository.GenerateStub<IDataContainerFactory>();
-      _command = new SingleDataContainerLoadCommand (
-          _dbCommandBuilderStub, _dbCommandFactory, _dbCommandExecutorStub, _dataContainerFactoryStub);
-      _dataContainerFactoryStub.Stub (stub => stub.CreateDataContainer (_dataReaderMock)).Return (_container);
     }
 
     [Test]
-    public void Initialization ()
+    public void Execute_SeveralCommandBuilders_AllowNullsFalse ()
     {
-      Assert.That (_command.DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
-      Assert.That (_command.DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
-      Assert.That (_command.DbCommandFactory, Is.SameAs (_dbCommandFactory));
-      Assert.That (_command.DataContainerFactory, Is.SameAs(_dataContainerFactoryStub));
+      _dataContainerFactoryStub.Stub (stub => stub.CreateCollection (_dataReaderStub, false)).Return (new[] { _container });
+
+      var command = new MultiDataContainerLoadCommand (
+          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, false, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
+
+      var result = command.Execute().ToArray();
+
+      Assert.That (result, Is.EqualTo (new[] { _container, _container }));
     }
 
     [Test]
-    public void Execute ()
+    public void Execute_OneCommandBuilder_AllowNullsTrue ()
     {
-      var result = _command.Execute();
+      _dataContainerFactoryStub.Stub (stub => stub.CreateCollection (_dataReaderStub, true)).Return (new[] { _container });
 
-      Assert.That (result, Is.SameAs (_container));
+      var command = new MultiDataContainerLoadCommand (
+          new[] { _dbCommandBuilder1Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
+
+      var result = command.Execute ().ToArray ();
+
+      Assert.That (result, Is.EqualTo (new[] { _container }));
     }
-    
   }
 }

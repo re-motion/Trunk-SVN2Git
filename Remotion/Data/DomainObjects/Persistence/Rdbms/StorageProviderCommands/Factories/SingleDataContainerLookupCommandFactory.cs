@@ -64,19 +64,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     }
 
     public IStorageProviderCommand<DataContainer> CreateCommand (
-        ObjectID id, IDbCommandFactory factory, IDbCommandExecutor executor, ValueConverter valueConverter)
+        ObjectID id, IDbCommandFactory factory, IDbCommandExecutor executor, IDataContainerFactory dataContainerFactory)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("factory", factory);
       ArgumentUtility.CheckNotNull ("executor", executor);
-      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
+      ArgumentUtility.CheckNotNull ("dataContainerFactory", dataContainerFactory);
 
       var visitor = new EntityDefinitionVisitor();
       ((IEntityDefinition) id.ClassDefinition.StorageEntityDefinition).Accept (visitor);
 
       var commandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
           visitor.TableDefinition, AllSelectedColumnsSpecification.Instance, id);
-      return new SingleDataContainerLoadCommand (commandBuilder, factory, executor, valueConverter);
+      return new SingleDataContainerLoadCommand (commandBuilder, factory, executor, dataContainerFactory);
     }
   }
 }
