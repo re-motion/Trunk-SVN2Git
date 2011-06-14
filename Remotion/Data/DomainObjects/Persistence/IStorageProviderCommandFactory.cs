@@ -21,12 +21,11 @@ using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
-  public interface IStorageProviderCommandFactory<TStorageProvider>
+  public interface IStorageProviderCommandFactory
   {
-    IStorageProviderCommand<DataContainer> CreateForSingleIDLookup (ObjectID objectID, TStorageProvider storageProvider);
-    IStorageProviderCommand<DataContainer[]> CreateForMultiIDLookup (ObjectID[] objectIDs, TStorageProvider storageProvider);
-    IStorageProviderCommand<DataContainer[]> CreateForRelationLookup (
-        RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue, TStorageProvider storageProvider);
-    IStorageProviderCommand<DataContainer[]> CreateForDataContainerQuery (IQuery query, TStorageProvider storageProvider);
+    IStorageProviderCommand<DataContainer> CreateForSingleIDLookup (ObjectID objectID);
+    IStorageProviderCommand<DataContainer[]> CreateForMultiIDLookup (ObjectID[] objectIDs);
+    IStorageProviderCommand<DataContainer[]> CreateForRelationLookup (RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue);
+    IStorageProviderCommand<DataContainer[]> CreateForDataContainerQuery (IQuery query);
   }
 }
