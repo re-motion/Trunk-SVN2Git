@@ -19,6 +19,9 @@ using System.Data;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
+  /// <summary>
+  /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and converting it into <see cref="ObjectID"/> instances.
+  /// </summary>
   public interface IObjectIDFactory
   {
     ObjectID CreateObjectID (IDataReader dataReader);

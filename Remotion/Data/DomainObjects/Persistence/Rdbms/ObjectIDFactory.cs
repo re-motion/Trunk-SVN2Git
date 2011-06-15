@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
+  /// <summary>
+  /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="ObjectID"/> instances.
+  /// </summary>
   public class ObjectIDFactory : IObjectIDFactory
   {
     private readonly ValueConverter _valueConverter;
@@ -32,6 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _valueConverter = valueConverter;
     }
 
+    // TODO Review 4058: Rename to Read
     public ObjectID CreateObjectID (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
@@ -39,6 +43,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _valueConverter.GetID (dataReader);
     }
 
+    // TODO Review 4058: Rename to ReadSequence
+    // TODO Review 4058: Refactor to yield return
     public ObjectID[] CreateObjectIDCollection (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);

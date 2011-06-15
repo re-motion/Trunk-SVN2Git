@@ -20,6 +20,9 @@ using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
+  /// <summary>
+  /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and converting it into <see cref="DataContainer"/> instances.
+  /// </summary>
   public interface IDataContainerFactory
   {
     DataContainer CreateDataContainer (IDataReader dataReader);

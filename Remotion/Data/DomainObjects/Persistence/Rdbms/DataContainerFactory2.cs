@@ -23,6 +23,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
+  // TODO Review 4058: Rename to DataContainerReader and IDataContainerReader
+  // TODO Review 4058: Move this class + interface + ObjectFactory + interface to StorageProviderCommands\DataReaders
+  /// <summary>
+  /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="DataContainer"/> instances.
+  /// </summary>
   public class DataContainerFactory2 : IDataContainerFactory
   {
     private readonly ValueConverter _valueConverter;
@@ -34,16 +39,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _valueConverter = valueConverter;
     }
 
+    // TODO Review 4058: Rename to Read
     public virtual DataContainer CreateDataContainer (IDataReader dataReader)
     {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+
       if (dataReader.Read())
         return CreateDataContainerFromReader (dataReader, false);
       else
         return null;
     }
 
+    // TODO Review 4058: Refactor to IEnumerable<DataContainer>; use yield return (instead of List<DataContainer>)
+    // TODO Review 4058: Rename to ReadSequence
     public virtual DataContainer[] CreateCollection ( IDataReader dataReader, bool allowNulls)
     {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+
       var collection = new List<DataContainer>();
       var loadedIDs = new HashSet<ObjectID>();
 
@@ -68,6 +80,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     protected virtual DataContainer CreateDataContainerFromReader (IDataReader dataReader, bool allowNulls)
     {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+
       var id = _valueConverter.GetID (dataReader);
       if (id != null)
       {
@@ -76,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         var dataContainer = DataContainer.CreateForExisting (
             id,
             timestamp,
-            propertyDefinition => GetDataValue (dataReader, propertyDefinition, id, _valueConverter));
+            propertyDefinition => GetDataValue (dataReader, propertyDefinition, id));
         return dataContainer;
       }
       else if (allowNulls)
@@ -85,11 +99,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw new RdbmsProviderException ("An object returned from the database had a NULL ID, which is not supported.");
     }
 
-    private object GetDataValue (IDataReader dataReader, PropertyDefinition propertyDefinition, ObjectID objectID, ValueConverter valueConverter)
+    private object GetDataValue (IDataReader dataReader, PropertyDefinition propertyDefinition, ObjectID objectID)
     {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
       try
       {
-        return valueConverter.GetValue (objectID.ClassDefinition, propertyDefinition, dataReader);
+        return _valueConverter.GetValue (objectID.ClassDefinition, propertyDefinition, dataReader);
       }
       catch (Exception e)
       {
