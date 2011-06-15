@@ -223,6 +223,9 @@
     <Compile Include="TestDomain\File.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
+      <Link>Remotion Core LGPL.licenseheader</Link>
+    </None>
     <None Include="App.config" />
     <None Include="Database\CreateTestData.sql" />
     <None Include="Database\SetupDB.sql" />

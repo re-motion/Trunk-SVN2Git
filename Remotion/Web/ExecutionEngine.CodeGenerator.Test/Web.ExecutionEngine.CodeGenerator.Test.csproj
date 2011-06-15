@@ -108,6 +108,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
+      <Link>Remotion Core LGPL.licenseheader</Link>
+    </None>
     <None Include="Web.config" />
     <None Include="WxeHandler.ashx" />
   </ItemGroup>

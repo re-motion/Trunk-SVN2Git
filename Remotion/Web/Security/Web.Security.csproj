@@ -88,6 +88,9 @@
     <Compile Include="UI\DemandTargetPermissionAttribute.cs" />
     <Compile Include="UI\DemandTargetWxeFunctionPermissionAttribute.cs" />
     <Compile Include="UI\WebSecurityAdapter.cs" />
+    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
+      <Link>Remotion Core LGPL.licenseheader</Link>
+    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

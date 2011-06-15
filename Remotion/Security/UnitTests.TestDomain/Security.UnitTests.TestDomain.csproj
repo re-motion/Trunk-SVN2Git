@@ -74,6 +74,9 @@
     <Compile Include="SomeEnum.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="SpecialAbstractRoles.cs" />
+    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
+      <Link>Remotion Core LGPL.licenseheader</Link>
+    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
