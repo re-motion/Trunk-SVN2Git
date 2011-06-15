@@ -24,11 +24,17 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
+  /// <summary>
+  /// Extends <see cref="ValueConverterBase"/> with functionality for reading database values from an <see cref="IDataReader"/> and converting
+  /// them to .NET values, and for converting .NET values to database values.
+  /// </summary>
+  // TODO Review 4058: Extract interface, use in DB command builders, mock in DB command builder tests
   public class ValueConverter : ValueConverterBase
   {
     private readonly RdbmsProvider _provider;
     private readonly IStorageNameProvider _storageNameProvider;
 
+    // TODO Review 4058: Remove provider parameter, use provider definition instead
     public ValueConverter (RdbmsProvider provider, IStorageNameProvider storageNameProvider, TypeConversionProvider typeConversionProvider)
         : base (typeConversionProvider)
     {
@@ -44,6 +50,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (value == null)
         return DBNull.Value;
 
+      // TODO Review 4058: Check if ObjectID, if so, call GetDBValue overload for ObjectID
+
       Type type = value.GetType();
       if (type.IsEnum)
         return Convert.ChangeType (value, Enum.GetUnderlyingType (type), CultureInfo.InvariantCulture);
@@ -55,11 +63,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return value;
     }
 
+    // TODO Review 4058: Remove storageProviderID parameter, make private
     public virtual object GetDBValue (ObjectID id, string storageProviderID)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
 
+      // TODO Review 4058: Call IsOfSameStorageProvider here, moved from DbCommandBuilder
       if (id.StorageProviderDefinition.Name == storageProviderID)
         return id.Value;
       else
@@ -186,6 +196,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return GetObjectID (relatedClassDefinition, dataReader.GetValue (objectIDColumnOrdinal));
     }
 
+    // TODO Review 4058: Use _storageNameProvider instead, remove method
     private IStorageNameProvider GetStorageNameProvider ()
     {
       return _provider.StorageProviderDefinition.Factory.CreateStorageNameProvider();

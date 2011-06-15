@@ -39,6 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly ClassDefinition _relatedClassDefinition;
     private readonly string _classIDColumnName;
 
+    // TODO Review 4058: Remove provider parameter
     public OppositeClassDefinitionRetriever (
         RdbmsProvider provider,
         ClassDefinition classDefinition,

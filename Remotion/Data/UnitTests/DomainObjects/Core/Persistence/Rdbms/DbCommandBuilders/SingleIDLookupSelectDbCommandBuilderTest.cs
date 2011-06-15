@@ -26,6 +26,7 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
+  // TODO Review 4058: Derive this (and other DbCommandBuilder tests) from StandardMappingTest
   [TestFixture]
   public class SingleIDLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
   {
@@ -76,6 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Create_DefaultSchema ()
     {
+      // TODO Review 4058: Add object mother for TableDefinition with Create (string schema, string table), Create (schema, table, objectIDColumnDef, classIDColumnDef, timestampColumnDef, params otherColumns)
+      // TODO Review 4058: Also for UnionViewDefinition and FilterViewDefinition
       var tableDefinition = new TableDefinition (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Table"),

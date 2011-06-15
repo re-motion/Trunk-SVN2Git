@@ -24,11 +24,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
+    // TODO Review 4058: Remove DefaultSchema. In the db command builders, when no EntityDefinitionName.Schema is present, omit the schema part from the name.
     protected readonly string DefaultSchema = "dbo";
     private readonly ISqlDialect _sqlDialect;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ValueConverter _valueConverter;
 
+    // TODO Review 4058: Remove rdbmsProviderDefinition parameter after IsOfSameStorageProvider has been moved to ValueConverter
     protected DbCommandBuilder (ISqlDialect sqlDialect, RdbmsProviderDefinition rdbmsProviderDefinition, ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
@@ -47,6 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _sqlDialect; }
     }
 
+    // TODO Review 4058: Remove this after IsOfSameStorageProvider has been moved to ValueConverter
     public RdbmsProviderDefinition RdbmsProviderDefinition
     {
       get { return _rdbmsProviderDefinition; }
@@ -92,6 +95,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       IDataParameter commandParameter = command.CreateParameter();
       commandParameter.ParameterName = SqlDialect.GetParameterName (parameterName);
 
+      // TODO Review 4058: Remove this check when the two overloads have been collapsed into one
       if (parameterValue is ObjectID)
         commandParameter.Value = ValueConverter.GetDBValue ((ObjectID) parameterValue, RdbmsProviderDefinition.Name);
       else
@@ -101,6 +105,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       return commandParameter;
     }
 
+    // TODO Review 4058: Remove
     protected object GetValueForParameter (object value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -111,20 +116,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         return value;
     }
 
+    // TODO Review 4058: Remove
     protected object GetObjectIDValueForParameter (ObjectID id)
     {
-      ArgumentUtility.CheckNotNull ("id", id);
-
-      if (IsOfSameStorageProvider (id))
-        return id.Value;
-      else
-        return id.ToString();
+      return id;
     }
 
+    // TODO Review 4058: Move to ValueConverter
     protected bool IsOfSameStorageProvider (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
+      // TODO Review 4058: Use Provider.Definition when moved to ValueConverter
       return id.StorageProviderDefinition == RdbmsProviderDefinition;
     }
 
@@ -138,6 +141,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       return " " + orderByClause;
     }
 
+    // TODO Review 4058: Inline and remove
     protected ArgumentException CreateArgumentException (string parameterName, string message, params object[] args)
     {
       return new ArgumentException (string.Format (message, args), parameterName);

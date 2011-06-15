@@ -21,7 +21,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
-  public class ValueConverterBase
+  /// <summary>
+  /// Provides common functionality to convert data values into re-store property values.
+  /// </summary>
+  public abstract class ValueConverterBase
   {
     private readonly TypeConversionProvider _typeConversionProvider;
 
