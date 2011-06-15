@@ -21,7 +21,7 @@ using Remotion.Linq.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   /// <summary>
-  /// The <see cref="EmptyOrderedColumnsSpecification"/> defines that the selected columns are not ordered.
+  /// The <see cref="EmptyOrderedColumnsSpecification"/> defines that the selected data is not ordered.
   /// </summary>
   public class EmptyOrderedColumnsSpecification : IOrderedColumnsSpecification
   {

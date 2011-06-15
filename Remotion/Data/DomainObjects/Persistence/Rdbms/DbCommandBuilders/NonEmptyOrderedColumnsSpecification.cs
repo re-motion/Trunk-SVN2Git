@@ -27,10 +27,12 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   /// <summary>
-  /// The <see cref="NonEmptyOrderedColumnsSpecification"/> defines the ordering of the selected columns.
+  /// The <see cref="NonEmptyOrderedColumnsSpecification"/> defines that the selected data should be ordered by the given columns.
   /// </summary>
+  // TODO Review 4061: Rename to OrderedColumnsSpecification
   public class NonEmptyOrderedColumnsSpecification : IOrderedColumnsSpecification
   {
+    // TODO Review 4061: Save as array
     private readonly IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> _columns;
 
     public NonEmptyOrderedColumnsSpecification (IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> columns)
@@ -40,6 +42,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _columns = columns;
     }
 
+    // TODO Review 4061: ReadOnlyCollection
     public IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> Columns
     {
       get { return _columns; }
@@ -50,8 +53,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      stringBuilder.Append(" ORDER BY " + SeparatedStringBuilder.Build (
-          ", ", _columns, tuple => sqlDialect.DelimitIdentifier (tuple.Item1.Name) + (tuple.Item2 == SortOrder.Ascending ? " ASC" : " DESC")));
+      stringBuilder.Append (" ORDER BY ");
+      stringBuilder.Append (
+          SeparatedStringBuilder.Build (
+              ", ", 
+              _columns, tuple => sqlDialect.DelimitIdentifier (tuple.Item1.Name) + (tuple.Item2 == SortOrder.Ascending ? " ASC" : " DESC")));
     }
 
     public ISelectedColumnsSpecification UnionWithSelectedColumns (ISelectedColumnsSpecification selectedColumns)

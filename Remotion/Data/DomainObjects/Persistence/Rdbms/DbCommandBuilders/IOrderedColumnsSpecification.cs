@@ -20,7 +20,7 @@ using System.Text;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   /// <summary>
-  /// <see cref="IOrderedColumnsSpecification"/> defines the API for all implementations that specify the selected columns ordering. 
+  /// <see cref="IOrderedColumnsSpecification"/> defines the API for all implementations that specify the selected data ordering. 
   /// </summary>
   public interface IOrderedColumnsSpecification
   {
