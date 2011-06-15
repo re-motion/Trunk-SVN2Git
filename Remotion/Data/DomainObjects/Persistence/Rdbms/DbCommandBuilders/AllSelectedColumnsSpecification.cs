@@ -23,7 +23,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   /// <summary>
-  /// The <see cref="AllSelectedColumnsSpecification"/> specifies that all possible columns should be selected.
+  /// The <see cref="AllSelectedColumnsSpecification"/> specifies that all possible columns should be selected. It emits a '*' into the
+  /// projection list.
   /// </summary>
   public class AllSelectedColumnsSpecification : ISelectedColumnsSpecification
   {
@@ -38,6 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
+      // TODO Review 4060: move spacing to callers (also adapt SelectedColumnsSpecification)
       stringBuilder.Append (" * ");
     }
 

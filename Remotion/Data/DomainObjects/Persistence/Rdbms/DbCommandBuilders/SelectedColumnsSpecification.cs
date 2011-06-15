@@ -38,6 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _selectedColumns = selectedColumns.ToArray();
     }
 
+    // TODO Review 4060: ReadOnlyCollection
     public SimpleColumnDefinition[] SelectedColumns
     {
       get { return _selectedColumns; }
@@ -48,13 +49,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      stringBuilder.Append(" " + SeparatedStringBuilder.Build (", ", _selectedColumns, c => sqlDialect.DelimitIdentifier(c.Name)));
+      stringBuilder.Append (" ");
+      stringBuilder.Append (SeparatedStringBuilder.Build (", ", _selectedColumns, c => sqlDialect.DelimitIdentifier(c.Name)));
     }
 
     public ISelectedColumnsSpecification Union (IEnumerable<SimpleColumnDefinition> additionalColumns)
     {
       ArgumentUtility.CheckNotNull ("additionalColumns", additionalColumns);
 
+      // TODO Review 4060: Use Union instead of Concat and add a test showing that duplicate columns are ignored
       return new SelectedColumnsSpecification (_selectedColumns.Concat (additionalColumns));
     }
   }
