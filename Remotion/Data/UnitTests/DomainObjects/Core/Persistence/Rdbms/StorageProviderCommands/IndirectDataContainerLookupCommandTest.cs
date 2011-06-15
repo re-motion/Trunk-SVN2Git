@@ -57,6 +57,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
+    public void Initialization ()
+    {
+      Assert.That (_lookupCommand.ObjectIDLoadCommand, Is.SameAs (_objectIDLoadCommandStub));
+      Assert.That (_lookupCommand.StorageProviderCommandFactory, Is.SameAs (_storageProviderFactoryStub));
+    }
+
+    [Test]
     public void Execute ()
     {
       var result = _lookupCommand.Execute();

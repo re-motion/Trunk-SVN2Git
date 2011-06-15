@@ -40,6 +40,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _columns = columns;
     }
 
+    public IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> Columns
+    {
+      get { return _columns; }
+    }
+
     public void AppendOrderByClause (StringBuilder stringBuilder, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);

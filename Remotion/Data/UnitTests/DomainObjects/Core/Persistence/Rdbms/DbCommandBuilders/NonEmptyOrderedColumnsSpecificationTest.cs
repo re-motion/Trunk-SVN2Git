@@ -56,6 +56,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
+    public void Initialization ()
+    {
+      Assert.That (_specification.Columns, Is.EqualTo (new[]
+              {
+                  Tuple.Create (_column1, SortOrder.Ascending), Tuple.Create (_column2, SortOrder.Descending),
+                  Tuple.Create (_column3, SortOrder.Ascending)
+              }));
+    }
+
+    [Test]
     public void AppendOrderByClause_StringBuilderEmpty ()
     {
       var sb = new StringBuilder();

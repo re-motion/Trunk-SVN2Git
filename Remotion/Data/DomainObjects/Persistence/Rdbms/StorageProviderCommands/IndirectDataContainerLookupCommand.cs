@@ -38,6 +38,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       _storageProviderCommandFactory = storageProviderCommandFactory;
     }
 
+    public IStorageProviderCommand<IEnumerable<ObjectID>> ObjectIDLoadCommand
+    {
+      get { return _objectIDLoadCommand; }
+    }
+
+    public IStorageProviderCommandFactory StorageProviderCommandFactory
+    {
+      get { return _storageProviderCommandFactory; }
+    }
+
     public IEnumerable<DataContainer> Execute ()
     {
       var objectIds = _objectIDLoadCommand.Execute();
