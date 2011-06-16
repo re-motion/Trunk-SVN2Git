@@ -21,9 +21,8 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders
 {
-  // TODO Review 4058: Move this class + interface + ObjectFactory + interface to StorageProviderCommands\DataReaders
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="DataContainer"/> instances.
   /// </summary>

@@ -14,17 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Data;
+using Remotion.Data.DomainObjects.DataManagement;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders
 {
   /// <summary>
-  /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and converting it into <see cref="ObjectID"/> instances.
+  /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and converting it into <see cref="DataContainer"/> instances.
   /// </summary>
-  public interface IObjectIDFactory
+  public interface IDataContainerReader
   {
-    ObjectID CreateObjectID (IDataReader dataReader);
-    ObjectID[] CreateObjectIDCollection (IDataReader dataReader);
+    DataContainer CreateDataContainer (IDataReader dataReader);
+    DataContainer[] CreateCollection (IDataReader dataReader, bool allowNulls);
   }
 }
