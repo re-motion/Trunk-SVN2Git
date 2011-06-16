@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Logging.BridgeInterfaces;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Logging
@@ -35,7 +34,7 @@ namespace Remotion.Logging
     /// <returns>A logger for the <paramref name="name"/> specified.</returns>
     public static ILog GetLogger (string name)
     {
-      return SafeServiceLocator.Current.GetInstance<ILogManagerImplementation>().GetLogger (name);
+      return SafeServiceLocator.Current.GetInstance<ILogManager>().GetLogger (name);
     }
 
     /// <summary>
@@ -45,7 +44,7 @@ namespace Remotion.Logging
     /// <returns>A logger for the fully qualified name of the <paramref name="type"/> specified.</returns>
     public static ILog GetLogger (Type type)
     {
-      return SafeServiceLocator.Current.GetInstance<ILogManagerImplementation>().GetLogger(type);
+      return SafeServiceLocator.Current.GetInstance<ILogManager>().GetLogger(type);
     }
     
     /// <summary>
@@ -53,7 +52,7 @@ namespace Remotion.Logging
     /// </summary>
     public static void Initialize ()
     {
-      SafeServiceLocator.Current.GetInstance<ILogManagerImplementation>().Initialize ();
+      SafeServiceLocator.Current.GetInstance<ILogManager>().Initialize ();
     }
 
     /// <summary>
@@ -61,7 +60,16 @@ namespace Remotion.Logging
     /// </summary>
     public static void InitializeConsole ()
     {
-      SafeServiceLocator.Current.GetInstance<ILogManagerImplementation>().InitializeConsole ();
+      SafeServiceLocator.Current.GetInstance<ILogManager>().InitializeConsole ();
+    }
+
+    /// <summary>
+    /// Initializes the current logging framework to log to the console, configuring a given <see cref="LogLevel"/> as the threshold.
+    /// </summary>
+    /// <param name="threshold">The threshold for logging. Only log messages of at least this <see cref="LogLevel"/> are output to the console.</param>
+    public static void InitializeConsole (LogLevel threshold)
+    {
+      SafeServiceLocator.Current.GetInstance<ILogManager> ().InitializeConsole (threshold);
     }
   }
 }

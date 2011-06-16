@@ -225,7 +225,7 @@
     <Compile Include="Interfaces\BridgeInterfaces\IParamListCreateImplementationTest.cs" />
     <Compile Include="Interfaces\BridgeInterfaces\ITypeDiscoveryServiceFactoryImplementationTest.cs" />
     <Compile Include="Interfaces\Implementation\TypeNameTemplateResolverTest.cs" />
-    <Compile Include="Logging\ILogManagerImplementationTest.cs" />
+    <Compile Include="Logging\ILogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\CompleteInterfaceTest.cs" />

@@ -16,14 +16,13 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Logging.BridgeImplementations;
-using Remotion.Logging.BridgeInterfaces;
+using Remotion.Logging;
 using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.Logging
 {
   [TestFixture]
-  public class ILogManagerImplementationTest
+  public class ILogManagerTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -36,17 +35,17 @@ namespace Remotion.UnitTests.Logging
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<ILogManagerImplementation> ();
+      var factory = _serviceLocator.GetInstance<ILogManager> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (LogManagerImplementation)));
+      Assert.That (factory, Is.TypeOf (typeof (Log4NetLogManager)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<ILogManagerImplementation> ();
-      var factory2 = _serviceLocator.GetInstance<ILogManagerImplementation> ();
+      var factory1 = _serviceLocator.GetInstance<ILogManager> ();
+      var factory2 = _serviceLocator.GetInstance<ILogManager> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

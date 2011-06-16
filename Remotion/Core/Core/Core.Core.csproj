@@ -318,7 +318,6 @@
     <Compile Include="Context\CallContextStorageProvider.cs" />
     <Compile Include="Globalization\ResourceDefinition.cs" />
     <Compile Include="Globalization\ResourceManagerFactory.cs" />
-    <Compile Include="Logging\BridgeImplementations\LogManagerImplementation.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\GeneralTypeAssignArrayStatement.cs" />

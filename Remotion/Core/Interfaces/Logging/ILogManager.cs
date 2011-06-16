@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Logging
 {
@@ -22,6 +23,8 @@ namespace Remotion.Logging
   /// The <see cref="ILogManager"/> interface declares the methods available for retrieving a logger that implements
   /// <see cref="ILog"/> and initializing the respective logging framework.
   /// </summary>
+  [ConcreteImplementation ("Remotion.Logging.Log4NetLogManager, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    Lifetime = LifetimeKind.Singleton)]
   public interface ILogManager
   {
     /// <summary>
@@ -47,5 +50,11 @@ namespace Remotion.Logging
     /// Initializes the logging framework to log to the console.
     /// </summary>
     void InitializeConsole ();
+
+    /// <summary>
+    /// Initializes the current logging framework to log to the console, configuring a given <see cref="LogLevel"/> as the threshold.
+    /// </summary>
+    /// <param name="threshold">The threshold for logging. Only log messages of at least this <see cref="LogLevel"/> are output to the console.</param>
+    void InitializeConsole (LogLevel threshold);
   }
 }

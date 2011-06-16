@@ -64,9 +64,21 @@ namespace Remotion.Logging
 
     public void InitializeConsole ()
     {
+      CreateConsoleAppenderAndConfigure();
+    }
+
+    public void InitializeConsole (LogLevel threshold)
+    {
+      var appender = CreateConsoleAppenderAndConfigure();
+      appender.Threshold = Log4NetLog.Convert (threshold);
+    }
+
+    private ConsoleAppender CreateConsoleAppenderAndConfigure ()
+    {
       ConsoleAppender appender = new ConsoleAppender ();
       appender.Layout = new PatternLayout ("%-5level: %message%newline");
       BasicConfigurator.Configure (appender);
+      return appender;
     }
   }
 }

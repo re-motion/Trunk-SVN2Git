@@ -99,7 +99,6 @@
     <Compile Include="Implementation\FrameworkVersionRetriever.cs" />
     <Compile Include="Implementation\LifetimeKind.cs" />
     <Compile Include="INullObject.cs" />
-    <Compile Include="Logging\BridgeInterfaces\ILogManagerImplementation.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\ILogManager.cs" />
     <Compile Include="Logging\LogLevel.cs" />
