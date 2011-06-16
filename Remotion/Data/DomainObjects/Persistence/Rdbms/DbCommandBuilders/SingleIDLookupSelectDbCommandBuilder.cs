@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       statement.Append (" = ");
       statement.Append (SqlDialect.GetParameterName (_table.ObjectIDColumn.Name));
       
-      AddCommandParameter (command, SqlDialect.GetParameterName (_table.ObjectIDColumn.Name), GetObjectIDValueForParameter (_objectID));
+      AddCommandParameter (command, SqlDialect.GetParameterName (_table.ObjectIDColumn.Name), _objectID);
       
       command.CommandText = statement.ToString();
 

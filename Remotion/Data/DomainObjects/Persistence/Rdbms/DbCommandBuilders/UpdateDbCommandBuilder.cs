@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       {
         var relatedID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current);
         relatedClassDefinition = relatedID.ClassDefinition;
-        relatedIDValue = GetObjectIDValueForParameter (relatedID);
+        relatedIDValue = relatedID;
       }
       else
       {

@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       statement.Append (SqlDialect.GetParameterName (_foreignKeyColumn.Name));
       _orderedColumns.AppendOrderByClause (statement, SqlDialect);
 
-      AddCommandParameter (command, SqlDialect.GetParameterName (_foreignKeyColumn.Name), GetObjectIDValueForParameter (_foreignKeyValue));
+      AddCommandParameter (command, SqlDialect.GetParameterName (_foreignKeyColumn.Name), _foreignKeyValue);
 
       command.CommandText = statement.ToString ();
 

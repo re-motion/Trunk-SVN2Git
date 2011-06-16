@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       IDbCommand command = commandFactory.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
-      whereClauseBuilder.Add (_propertyDefinition.StoragePropertyDefinition.Name, GetObjectIDValueForParameter (_relatedID));
+      whereClauseBuilder.Add (_propertyDefinition.StoragePropertyDefinition.Name, _relatedID);
 
       var oppositeRelationEndPointDefinition =
           (VirtualRelationEndPointDefinition) _classDefinition.GetMandatoryOppositeEndPointDefinition (_propertyDefinition.PropertyName);

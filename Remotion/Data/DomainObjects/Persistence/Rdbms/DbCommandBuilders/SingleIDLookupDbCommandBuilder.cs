@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       IDbCommand command = commandFactory.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
-      whereClauseBuilder.Add (_checkedColumnName, GetObjectIDValueForParameter (_expectedValue));
+      whereClauseBuilder.Add (_checkedColumnName, _expectedValue);
 
       // TODO in case of integer primary keys: 
       // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,

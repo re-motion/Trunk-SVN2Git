@@ -103,23 +103,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       return commandParameter;
     }
 
-    // TODO Review 4058: Remove
-    protected object GetValueForParameter (object value)
-    {
-      ArgumentUtility.CheckNotNull ("value", value);
-
-      if (value is ObjectID)
-        return GetObjectIDValueForParameter ((ObjectID) value);
-      else
-        return value;
-    }
-
-    // TODO Review 4058: Remove
-    protected object GetObjectIDValueForParameter (ObjectID id)
-    {
-      return id;
-    }
-
     // TODO Review 4058: Move to ValueConverter
     protected bool IsOfSameStorageProvider (ObjectID id)
     {
