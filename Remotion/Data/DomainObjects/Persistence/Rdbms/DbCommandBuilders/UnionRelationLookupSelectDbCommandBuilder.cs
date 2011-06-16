@@ -37,8 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns,
         ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter)
+        IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
@@ -62,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       var fullProjection = _orderedColumns.UnionWithSelectedColumns (_selectedColumns);
 
-      var statement = new StringBuilder ();
+      var statement = new StringBuilder();
       statement.Append ("SELECT");
       fullProjection.AppendProjection (statement, SqlDialect);
       statement.Append ("FROM ");
@@ -90,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       AddCommandParameter (command, SqlDialect.GetParameterName (_foreignKeyColumn.Name), _foreignKeyValue);
 
-      command.CommandText = statement.ToString ();
+      command.CommandText = statement.ToString();
 
       return command;
     }

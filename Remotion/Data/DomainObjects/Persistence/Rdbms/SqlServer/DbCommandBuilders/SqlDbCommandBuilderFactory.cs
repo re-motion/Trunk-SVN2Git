@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return new SingleIDLookupSelectDbCommandBuilder (table, selectedColumns, objectID, _sqlDialect, _rdbmsProviderDefinition, _valueConverter);
+      return new SingleIDLookupSelectDbCommandBuilder (table, selectedColumns, objectID, _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForMultiIDLookupFromTable (
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       return new TableRelationLookupSelectDbCommandBuilder (
-          table, selectedColumns, foreignKeyColumn, foreignKeyValue, orderedColumns, _sqlDialect, _rdbmsProviderDefinition, _valueConverter);
+          table, selectedColumns, foreignKeyColumn, foreignKeyValue, orderedColumns, _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForRelationLookupFromUnionView (
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       return new UnionRelationLookupSelectDbCommandBuilder (
-          view, selectedColumns, foreignKeyColumn, foreignKeyValue, orderedColumns, _sqlDialect, _rdbmsProviderDefinition, _valueConverter);
+          view, selectedColumns, foreignKeyColumn, foreignKeyValue, orderedColumns, _sqlDialect, _valueConverter);
     }
   }
 }

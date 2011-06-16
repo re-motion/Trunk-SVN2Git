@@ -44,7 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"),
           DomainObjectIDs.Client,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
     }
 
@@ -94,7 +93,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"),
           DomainObjectIDs.Client,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
 
       using (IDbCommand command = builder.Create(Provider))

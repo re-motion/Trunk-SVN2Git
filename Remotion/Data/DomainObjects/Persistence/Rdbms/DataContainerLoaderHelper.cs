@@ -59,7 +59,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             objectIDs[0],
             null,
             sqlDialect,
-            rdbmsProviderDefinition,
             valueConverter);
       }
       else
@@ -69,7 +68,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             _storageNameProvider.IDColumnName,
             provider.GetIDColumnTypeName(),
             sqlDialect,
-            rdbmsProviderDefinition,
             valueConverter,
             objectIDs);
       }
@@ -103,7 +101,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           relatedID,
           oppositeRelationEndPointDefinition.GetSortExpression(),
           sqlDialect,
-          rdbmsProviderDefinition,
           valueConverter);
     }
 

@@ -25,8 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     private readonly IQuery _query;
 
-    public QueryDbCommandBuilder (
-        IQuery query, ISqlDialect sqlDialect, RdbmsProviderDefinition rdbmsProviderDefinition, ValueConverter valueConverter)
+    public QueryDbCommandBuilder (IQuery query, ISqlDialect sqlDialect, ValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("query", query);

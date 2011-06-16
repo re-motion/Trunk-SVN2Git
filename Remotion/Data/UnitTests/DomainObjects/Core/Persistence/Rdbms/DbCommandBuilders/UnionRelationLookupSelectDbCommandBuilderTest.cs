@@ -44,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private TableDefinition _table3;
     private SimpleColumnDefinition _classIDColumnDefinition;
     private SimpleColumnDefinition _timstampColumnDefinition;
+    private IValueConverter _valueConverterStub;
 
     public override void SetUp ()
     {
@@ -89,7 +90,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _commandFactoryStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
 
       _guid = Guid.NewGuid ();
-
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (_guid);
+      
       _table1 = new TableDefinition (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Table1"),
@@ -146,8 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           new ObjectID ("Order", _guid),
           _orderedColumnsStub,
           _sqlDialectStub,
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
-          Provider.CreateValueConverter ());
+          _valueConverterStub);
 
       var result = builder.Create (_commandFactoryStub);
 

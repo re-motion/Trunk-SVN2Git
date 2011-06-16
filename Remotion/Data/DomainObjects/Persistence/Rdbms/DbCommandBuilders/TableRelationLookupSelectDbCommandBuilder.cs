@@ -37,9 +37,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns,
         ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter)
-      : base (sqlDialect, valueConverter)
+        IValueConverter valueConverter)
+        : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
@@ -66,9 +65,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       //if (_whereClauseValueIsRelatedID && _expectedValue.ClassDefinition.IsPartOfInheritanceHierarchy && IsOfSameStorageProvider (_expectedValue))
       //  whereClauseBuilder.Add (RdbmsProvider.GetRelationClassIDColumnName (_checkedColumnName), _expectedValue.ClassID);
 
-      var command = commandFactory.CreateDbCommand ();
+      var command = commandFactory.CreateDbCommand();
 
-      var statement = new StringBuilder ();
+      var statement = new StringBuilder();
       statement.Append ("SELECT");
       _selectedColumns.AppendProjection (statement, SqlDialect);
       statement.Append ("FROM ");
@@ -86,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       AddCommandParameter (command, SqlDialect.GetParameterName (_foreignKeyColumn.Name), _foreignKeyValue);
 
-      command.CommandText = statement.ToString ();
+      command.CommandText = statement.ToString();
 
       return command;
     }

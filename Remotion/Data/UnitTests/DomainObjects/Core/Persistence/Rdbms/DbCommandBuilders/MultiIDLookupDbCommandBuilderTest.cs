@@ -18,35 +18,48 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Mixins;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
   public class MultiIDLookupDbCommandBuilderTest : SqlProviderBaseTest
   {
+    private IValueConverter _valueConverterStub;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+      _valueConverterStub.Stub (stub => stub.IsOfSameStorageProvider (Arg<ObjectID>.Is.Anything)).Return (true);
+    }
+
     [Test]
     public void Create ()
     {
+      var expectedCommandText = "SELECT * FROM [Order] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c));";
+      var expectedXml = "<L><I>" + DomainObjectIDs.Order1.Value + "</I><I>" + DomainObjectIDs.Order2.Value + "</I></L>";
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (expectedXml);
+
       Provider.Connect ();
       var builder = new MultiIDLookupDbCommandBuilder ("*", 
           "Order", 
           "ID", 
           "uniqueidentifier", 
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter(),
+          _valueConverterStub,
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
-      using (IDbCommand command = builder.Create (Provider))
+      using (var command = builder.Create (Provider))
       {
-        string expectedCommandText = "SELECT * FROM [Order] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c));";
         Assert.AreEqual (expectedCommandText, command.CommandText);
         Assert.AreEqual (1, command.Parameters.Count);
 
-        var expectedXml = "<L><I>" + DomainObjectIDs.Order1.Value + "</I><I>" + DomainObjectIDs.Order2.Value + "</I></L>";
         Assert.AreEqual (expectedXml, ((SqlParameter) command.Parameters["@ID"]).Value);
         Assert.AreEqual (SqlDbType.Xml, ((SqlParameter) command.Parameters["@ID"]).SqlDbType);
       }
@@ -63,8 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           "ID",
           "uniqueidentifier",
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter(),
+          _valueConverterStub,
           new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
         using (IDbCommand command = builder.Create(Provider))

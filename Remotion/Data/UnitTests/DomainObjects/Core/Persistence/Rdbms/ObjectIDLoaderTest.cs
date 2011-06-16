@@ -63,7 +63,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           propertyDefinition,
           DomainObjectIDs.Order1,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
       List<ObjectID> objectIDs = _loader.LoadObjectIDsFromCommandBuilder (builder);
       Assert.That (objectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }));

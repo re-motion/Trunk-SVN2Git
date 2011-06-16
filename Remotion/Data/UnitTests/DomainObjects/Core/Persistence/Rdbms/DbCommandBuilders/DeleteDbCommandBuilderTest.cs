@@ -23,55 +23,70 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
   public class DeleteDbCommandBuilderTest : SqlProviderBaseTest
   {
+    private IValueConverter _valueConverterStub;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+    }
+
     [Test]
     public void CreateWithoutForeignKeyColumn ()
     {
-      ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var timestamp = new object();
 
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (DomainObjectIDs.ClassWithAllDataTypes1.Value).Repeat.Once();
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (timestamp).Repeat.Once ();
+
+      var classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      
       classWithAllDataTypes.Delete();
-      DataContainer deletedContainer = classWithAllDataTypes.InternalDataContainer;
+      var deletedContainer = classWithAllDataTypes.InternalDataContainer;
 
       Provider.Connect();
-      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
+      var commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
           deletedContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
 
-      using (IDbCommand deleteCommand = commandBuilder.Create(Provider))
+      using (var deleteCommand = commandBuilder.Create(Provider))
       {
         string expectedCommandText = "DELETE FROM [TableWithAllDataTypes] WHERE [ID] = @ID AND [Timestamp] = @Timestamp;";
         Assert.AreEqual (expectedCommandText, deleteCommand.CommandText);
 
         Assert.AreEqual (2, deleteCommand.Parameters.Count);
 
-        IDataParameter idParameter = (IDataParameter) deleteCommand.Parameters["@ID"];
-        IDataParameter timestampParameter = (IDataParameter) deleteCommand.Parameters["@Timestamp"];
+        var idParameter = (IDataParameter) deleteCommand.Parameters["@ID"];
+        var timestampParameter = (IDataParameter) deleteCommand.Parameters["@Timestamp"];
 
-        Assert.AreEqual (deletedContainer.ID.Value, idParameter.Value);
-        Assert.AreEqual (deletedContainer.Timestamp, timestampParameter.Value);
+        Assert.That (idParameter.Value, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.Value));
+        Assert.That (timestampParameter.Value, Is.EqualTo(timestamp));
       }
     }
 
     [Test]
     public void CreateWithForeignKeyColumn ()
     {
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (DomainObjectIDs.ClassWithAllDataTypes1.Value).Repeat.Once ();
+      
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       order.Delete();
       DataContainer deletedOrderContainer = order.InternalDataContainer;
 
       Provider.Connect();
-      DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
+      var commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
           deletedOrderContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
 
       using (IDbCommand deleteCommand = commandBuilder.Create(Provider))
       {
@@ -80,9 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
         Assert.AreEqual (1, deleteCommand.Parameters.Count);
 
-        IDataParameter idParameter = (IDataParameter) deleteCommand.Parameters["@ID"];
-
-        Assert.AreEqual (deletedOrderContainer.ID.Value, idParameter.Value);
+        var idParameter = (IDataParameter) deleteCommand.Parameters["@ID"];
+        Assert.That (idParameter.Value, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.Value));
       }
     }
 
@@ -95,7 +109,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       new DeleteDbCommandBuilder (StorageNameProvider,
           TestDataContainerFactory.CreateOrder1DataContainer(),
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
     }
 
@@ -115,7 +128,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
         DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
             deletedContainer,
             Provider.SqlDialect,
-            Provider.StorageProviderDefinition,
             Provider.CreateValueConverter());
 
         using (IDbCommand deleteCommand = commandBuilder.Create(Provider))

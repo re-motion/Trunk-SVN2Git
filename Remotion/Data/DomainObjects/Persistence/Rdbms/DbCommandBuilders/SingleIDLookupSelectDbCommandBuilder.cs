@@ -33,12 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly ObjectID _objectID;
 
     public SingleIDLookupSelectDbCommandBuilder (
-        TableDefinition table,
-        ISelectedColumnsSpecification selectedColumns,
-        ObjectID objectID,
-        ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter)
+        TableDefinition table, ISelectedColumnsSpecification selectedColumns, ObjectID objectID, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("table", table);
@@ -70,9 +65,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       statement.Append (SqlDialect.DelimitIdentifier (_table.ObjectIDColumn.Name));
       statement.Append (" = ");
       statement.Append (SqlDialect.GetParameterName (_table.ObjectIDColumn.Name));
-      
+
       AddCommandParameter (command, SqlDialect.GetParameterName (_table.ObjectIDColumn.Name), _objectID);
-      
+
       command.CommandText = statement.ToString();
 
       return command;

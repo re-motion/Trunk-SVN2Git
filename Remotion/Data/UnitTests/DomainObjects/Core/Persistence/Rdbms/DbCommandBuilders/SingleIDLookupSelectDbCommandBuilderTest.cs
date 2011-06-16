@@ -38,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
     private Guid _guid;
+    private IValueConverter _valueConverterStub;
 
     public override void SetUp ()
     {
@@ -72,6 +73,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _commandFactoryStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
 
       _guid = Guid.NewGuid ();
+
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (_guid);
     }
 
     [Test]
@@ -96,8 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _selectedColumnsStub,
           new ObjectID ("Order", _guid),
           _sqlDialectStub,
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
-          Provider.CreateValueConverter ());
+          _valueConverterStub);
 
       var result = builder.Create (_commandFactoryStub);
 
@@ -126,8 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _selectedColumnsStub,
           new ObjectID ("Order", _guid),
           _sqlDialectStub,
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
-          Provider.CreateValueConverter ());
+          _valueConverterStub);
 
       var result = builder.Create (_commandFactoryStub);
 

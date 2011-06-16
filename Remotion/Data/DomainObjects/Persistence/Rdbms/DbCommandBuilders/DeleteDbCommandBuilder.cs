@@ -28,28 +28,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly IStorageNameProvider _storageNameProvider;
 
     public DeleteDbCommandBuilder (
-        IStorageNameProvider storageNameProvider,
-        DataContainer dataContainer,
-        ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter)
+        IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      
+
       if (dataContainer.State != StateType.Deleted)
-        throw CreateArgumentException ("dataContainer", "State of provided DataContainer must be 'Deleted', but is '{0}'.", dataContainer.State);
+      {
+        throw new ArgumentException (
+            string.Format ("State of provided DataContainer must be 'Deleted', but is '{0}'.", dataContainer.State), "dataContainer");
+      }
 
       _storageNameProvider = storageNameProvider;
       _dataContainer = dataContainer;
     }
-    
+
     public IStorageNameProvider StorageNameProvider
     {
       get { return _storageNameProvider; }
     }
-    
+
     public override IDbCommand Create (IDbCommandFactory commandFactory)
     {
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);

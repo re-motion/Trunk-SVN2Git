@@ -152,7 +152,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           id,
           null,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
       using (IDbCommand command = builder.Create (Provider))
       {
@@ -185,7 +184,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           id,
           null,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
       using (IDbCommand command = builder.Create (Provider))
       {
@@ -218,7 +216,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           id,
           null,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
       using (IDbCommand command = builder.Create (Provider))
       {
@@ -251,7 +248,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           id,
           null,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter());
       using (IDbCommand command = builder.Create (Provider))
       {

@@ -30,18 +30,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly IStorageNameProvider _storageNameProvider;
 
     public InsertDbCommandBuilder (
-        IStorageNameProvider storageNameProvider,
-        DataContainer dataContainer,
-        ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter)
+        IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
       if (dataContainer.State != StateType.New)
-        throw CreateArgumentException ("dataContainer", "State of provided DataContainer must be 'New', but is '{0}'.", dataContainer.State);
+      {
+        throw new ArgumentException (
+            string.Format ("State of provided DataContainer must be 'New', but is '{0}'.", dataContainer.State), "dataContainer");
+      }
 
       _storageNameProvider = storageNameProvider;
       _dataContainer = dataContainer;

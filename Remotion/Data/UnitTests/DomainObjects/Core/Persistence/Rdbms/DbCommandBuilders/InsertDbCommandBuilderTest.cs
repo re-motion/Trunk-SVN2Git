@@ -18,14 +18,25 @@
 using System;
 using System.Data;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
   public class InsertDbCommandBuilderTest : SqlProviderBaseTest
   {
+    private IValueConverter _valueConverterStub;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "State of provided DataContainer must be 'New', but is 'Unchanged'.\r\nParameter name: dataContainer")]
@@ -34,11 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
       Provider.Connect();
-      new InsertDbCommandBuilder (StorageNameProvider,
-          order.InternalDataContainer,
-          Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+      new InsertDbCommandBuilder (StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, _valueConverterStub);
     }
 
     [Test]
@@ -50,11 +57,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       order.OrderNumber = 212;
       order.DeliveryDate = new DateTime (2008, 7, 1);
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (StorageNameProvider,
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return(order.ID.Value).Repeat.Once();
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (order.ID.ClassID).Repeat.Once();
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (order.OrderNumber).Repeat.Once();
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (order.DeliveryDate).Repeat.Once();
+      
+      var builder = new InsertDbCommandBuilder (StorageNameProvider,
           order.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
       using (IDbCommand command = builder.Create(Provider))
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -82,9 +93,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       InsertDbCommandBuilder builder = new InsertDbCommandBuilder (StorageNameProvider,
           computer.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
-      using (IDbCommand command = builder.Create(Provider))
+          _valueConverterStub);
+      using (var command = builder.Create(Provider))
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
         Assert.That (
@@ -105,12 +115,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       orderTicket.Order = Order.NewObject();
       orderTicket.Int32TransactionProperty = 7;
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (StorageNameProvider,
+      var builder = new InsertDbCommandBuilder (StorageNameProvider,
           orderTicket.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
-      using (IDbCommand command = builder.Create(Provider))
+         _valueConverterStub);
+      using (var command = builder.Create(Provider))
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
         Assert.That (command.CommandText, Is.EqualTo ("INSERT INTO [OrderTicket] ([ID], [ClassID], [FileName]) VALUES (@ID, @ClassID, @FileName);"));

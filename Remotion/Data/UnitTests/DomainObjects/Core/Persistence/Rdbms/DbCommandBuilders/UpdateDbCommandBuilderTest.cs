@@ -22,12 +22,22 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
   public class UpdateDbCommandBuilderTest : SqlProviderBaseTest
   {
+    private IValueConverter _valueConverterStub;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "State of provided DataContainer must not be 'Unchanged'.\r\nParameter name: dataContainer")]
@@ -39,8 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       new UpdateDbCommandBuilder (StorageNameProvider,
           order.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
     }
 
     [Test]
@@ -57,8 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
         DbCommandBuilder commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
             order.InternalDataContainer,
             Provider.SqlDialect,
-            Provider.StorageProviderDefinition,
-            Provider.CreateValueConverter());
+            _valueConverterStub);
         using (IDbCommand command = commandBuilder.Create(Provider))
         {
           Assert.IsTrue (command.CommandText.Contains ("Mixed!"));
@@ -71,12 +79,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ++order.OrderNumber;
+
+      _valueConverterStub.Stub (stub => stub.GetDBValue (order.ID.Value)).Return (order.ID.Value);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (order.OrderNumber)).Return (order.OrderNumber);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (order.InternalDataContainer.Timestamp)).Return (order.InternalDataContainer.Timestamp);
+      
       Provider.Connect();
       var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
           order.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
       using (IDbCommand command = commandBuilder.Create(Provider))
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -93,12 +105,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Employee = Employee.NewObject();
+
+      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.ID.Value)).Return (computer.ID.Value);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.InternalDataContainer.Timestamp)).Return (computer.InternalDataContainer.Timestamp);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (computer.Employee.ID.Value);
+      
       Provider.Connect();
       var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
           computer.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
       using (IDbCommand command = commandBuilder.Create(Provider))
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -118,13 +134,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.Employee = Employee.NewObject();
       computer.SerialNumber = "12345";
 
+      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.ID.Value)).Return (computer.ID.Value);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (computer.Employee.ID.Value);
+
       Provider.Connect();
 
       var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
           computer.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
       using (IDbCommand command = commandBuilder.Create(Provider))
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -143,13 +161,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.SerialNumber = "12345";
       computer.Delete();
 
+      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.ID.Value)).Return (computer.ID.Value);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.InternalDataContainer.Timestamp)).Return (computer.InternalDataContainer.Timestamp);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (DBNull.Value);
+
       Provider.Connect();
 
       var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
           computer.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
       using (IDbCommand command = commandBuilder.Create(Provider))
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -171,8 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
           computer.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
       using (IDbCommand command = commandBuilder.Create(Provider))
       {
         Assert.That (command, Is.Null);
@@ -186,11 +206,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.MarkAsChanged();
       Provider.Connect();
 
+      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.ID.Value)).Return (computer.ID.Value);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.InternalDataContainer.Timestamp)).Return (computer.InternalDataContainer.Timestamp);
+
       var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
           computer.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
       using (IDbCommand command = commandBuilder.Create(Provider))
       {
         Assert.That (command, Is.Not.Null);
@@ -208,12 +230,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
       orderTicket.FileName = "new.txt";
       orderTicket.Int32TransactionProperty = 5;
+
+      _valueConverterStub.Stub (stub => stub.GetDBValue (orderTicket.ID.Value)).Return (orderTicket.ID.Value);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (orderTicket.FileName)).Return (orderTicket.FileName);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (orderTicket.InternalDataContainer.Timestamp)).Return (orderTicket.InternalDataContainer.Timestamp);
+
       Provider.Connect();
       var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
           orderTicket.InternalDataContainer,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
       using (IDbCommand command = commandBuilder.Create(Provider))
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));

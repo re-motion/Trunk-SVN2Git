@@ -36,7 +36,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         PropertyDefinition propertyDefinition,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
@@ -44,7 +43,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       return new UnionSelectDbCommandBuilder (
@@ -53,7 +51,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
           propertyDefinition,
           relatedID,
           sqlDialect,
-          rdbmsProviderDefinition,
           valueConverter);
     }
 
@@ -72,7 +69,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         PropertyDefinition propertyDefinition,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {

@@ -22,12 +22,22 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
   public class SingleIDLookupDbCommandBuilderTest : SqlProviderBaseTest
   {
+    private IValueConverter _valueConverterStub;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
+    }
+
     [Test]
     public void Create_WithOrderClause ()
     {
@@ -38,8 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           DomainObjectIDs.Customer1, 
           SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"),
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
 
       using (IDbCommand command = builder.Create (Provider))
       {
@@ -59,8 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           DomainObjectIDs.Customer1,
           null,
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
 
       using (IDbCommand command = builder.Create (Provider))
       {
@@ -82,8 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
             DomainObjectIDs.Customer1,
             SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"),
             Provider.SqlDialect,
-            Provider.StorageProviderDefinition,
-            Provider.CreateValueConverter());
+            _valueConverterStub);
 
         using (IDbCommand command = builder.Create(Provider))
         {

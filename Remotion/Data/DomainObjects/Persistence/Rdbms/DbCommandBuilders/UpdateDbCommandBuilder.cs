@@ -30,18 +30,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly IStorageNameProvider _storageNameProvider;
 
     public UpdateDbCommandBuilder (
-        IStorageNameProvider storageNameProvider,
-        DataContainer dataContainer,
-        ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter)
+        IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
       if (dataContainer.State == StateType.Unchanged)
-        throw CreateArgumentException ("dataContainer", "State of provided DataContainer must not be 'Unchanged'.");
+        throw new ArgumentException ("State of provided DataContainer must not be 'Unchanged'.", "dataContainer");
 
       _storageNameProvider = storageNameProvider;
       _dataContainer = dataContainer;

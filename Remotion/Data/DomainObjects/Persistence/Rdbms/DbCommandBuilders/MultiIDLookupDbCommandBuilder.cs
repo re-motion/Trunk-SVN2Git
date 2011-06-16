@@ -37,8 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         string checkedColumnName,
         string checkedColumnTypeName,
         ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter,
+        IValueConverter valueConverter,
         ObjectID[] ids)
         : base (sqlDialect, valueConverter)
     {

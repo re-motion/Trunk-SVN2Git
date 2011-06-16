@@ -254,7 +254,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "ID",
           "uniqueidentifier",
           Provider.SqlDialect,
-          Provider.StorageProviderDefinition,
           Provider.CreateValueConverter(),
           new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
@@ -285,7 +284,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                 "ID",
                 "uniqueidentifier",
                 loader.Provider.SqlDialect,
-                loader.Provider.StorageProviderDefinition,
                 loader.Provider.CreateValueConverter(),
                 new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
             loader.LoadDataContainersFromCommandBuilder (builder, false);
@@ -301,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (query, Provider.SqlDialect, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
+      var builder = new QueryDbCommandBuilder (query, Provider.SqlDialect, Provider.CreateValueConverter());
 
       var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
 
@@ -319,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryDbCommandBuilder (query, Provider.SqlDialect, Provider.StorageProviderDefinition, Provider.CreateValueConverter());
+      var builder = new QueryDbCommandBuilder (query, Provider.SqlDialect, Provider.CreateValueConverter());
 
       _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }

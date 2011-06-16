@@ -46,16 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _objectID = new ObjectID ("OrderTicket", Guid.NewGuid());
       _timestamp = new object();
-
-      // TODO Review 4058: Remove when value converter is mocked (here and in other tests)
-      OppositeClassDefinitionRetriever.ResetCache();
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown();
-      // TODO Review 4058: Remove when value converter is mocked
-      OppositeClassDefinitionRetriever.ResetCache();
     }
 
     [Test]

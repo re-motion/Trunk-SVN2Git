@@ -195,7 +195,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, StorageProviderDefinition, CreateValueConverter());
+      var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, CreateValueConverter());
       return LoadDataContainers (commandBuilder, true);
     }
 
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, StorageProviderDefinition, CreateValueConverter());
+      var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, CreateValueConverter());
       using (IDbCommand command = commandBuilder.Create(this))
       {
         try
@@ -278,7 +278,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.New))
       {
         Save (
-            new InsertDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, StorageProviderDefinition, valueConverter),
+            new InsertDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, valueConverter),
             dataContainer.ID);
       }
 
@@ -287,7 +287,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         if (dataContainer.State != StateType.Unchanged)
         {
           Save (
-              new UpdateDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, StorageProviderDefinition, valueConverter),
+              new UpdateDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, valueConverter),
               dataContainer.ID);
         }
       }
@@ -295,7 +295,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.Deleted))
       {
         Save (
-            new DeleteDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, StorageProviderDefinition, valueConverter),
+            new DeleteDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, valueConverter),
             dataContainer.ID);
       }
     }
@@ -383,7 +383,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           dataContainer.ID,
           null,
           SqlDialect,
-          StorageProviderDefinition,
           CreateValueConverter());
 
       using (IDbCommand command = commandBuilder.Create(this))

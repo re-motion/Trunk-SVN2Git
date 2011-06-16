@@ -25,9 +25,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
     private readonly ISqlDialect _sqlDialect;
-    private readonly ValueConverter _valueConverter;
+    private readonly IValueConverter _valueConverter;
 
-    protected DbCommandBuilder (ISqlDialect sqlDialect, ValueConverter valueConverter)
+    protected DbCommandBuilder (ISqlDialect sqlDialect, IValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _sqlDialect; }
     }
 
-    public ValueConverter ValueConverter
+    public IValueConverter ValueConverter
     {
       get { return _valueConverter; }
     }
@@ -97,11 +97,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var orderByClause = generator.GenerateOrderByClauseString (sortExpression);
       return " " + orderByClause;
     }
-
-    // TODO Review 4058: Inline and remove
-    protected ArgumentException CreateArgumentException (string parameterName, string message, params object[] args)
-    {
-      return new ArgumentException (string.Format (message, args), parameterName);
-    }
+    
   }
 }
