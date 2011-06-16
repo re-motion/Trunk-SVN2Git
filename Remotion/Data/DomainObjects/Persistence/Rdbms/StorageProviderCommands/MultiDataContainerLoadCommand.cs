@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = _dbCommandExecutor.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          return _dataContainerReader.CreateCollection (reader, allowNulls);
+          return _dataContainerReader.ReadSequence (reader, allowNulls);
         }
       }
     }

@@ -25,18 +25,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
     private readonly ISqlDialect _sqlDialect;
-    private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ValueConverter _valueConverter;
 
-    // TODO Review 4058: Remove rdbmsProviderDefinition parameter after IsOfSameStorageProvider has been moved to ValueConverter
-    protected DbCommandBuilder (ISqlDialect sqlDialect, RdbmsProviderDefinition rdbmsProviderDefinition, ValueConverter valueConverter)
+    protected DbCommandBuilder (ISqlDialect sqlDialect, ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       _sqlDialect = sqlDialect;
-      _rdbmsProviderDefinition = rdbmsProviderDefinition;
       _valueConverter = valueConverter;
     }
 
@@ -45,12 +41,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public ISqlDialect SqlDialect
     {
       get { return _sqlDialect; }
-    }
-
-    // TODO Review 4058: Remove this after IsOfSameStorageProvider has been moved to ValueConverter
-    public RdbmsProviderDefinition RdbmsProviderDefinition
-    {
-      get { return _rdbmsProviderDefinition; }
     }
 
     public ValueConverter ValueConverter
@@ -92,12 +82,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       IDataParameter commandParameter = command.CreateParameter();
       commandParameter.ParameterName = SqlDialect.GetParameterName (parameterName);
-
-      // TODO Review 4058: Remove this check when the two overloads have been collapsed into one
-      if (parameterValue is ObjectID)
-        commandParameter.Value = ValueConverter.GetDBValue ((ObjectID) parameterValue);
-      else
-        commandParameter.Value = ValueConverter.GetDBValue (parameterValue);
+      commandParameter.Value = ValueConverter.GetDBValue (parameterValue);
 
       command.Parameters.Add (commandParameter);
       return commandParameter;

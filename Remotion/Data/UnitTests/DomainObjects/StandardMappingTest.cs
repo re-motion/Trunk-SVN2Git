@@ -72,6 +72,17 @@ namespace Remotion.Data.UnitTests.DomainObjects
       get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_unitTestStorageProviderStubID]; }
     }
 
+    protected PropertyDefinition GetPropertyDefinition (Type declaringType, string shortPropertyName)
+    {
+      var propertyDefinition = Configuration
+          .GetTypeDefinition (declaringType)
+          .PropertyAccessorDataCache
+          .GetMandatoryPropertyAccessorData (declaringType, shortPropertyName)
+          .PropertyDefinition;
+      Assertion.IsNotNull (propertyDefinition, "Property '{0}.{1}' is not a mapped property.", declaringType, shortPropertyName);
+      return propertyDefinition;
+    }
+
     protected IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)
     {
       var endPointDefinition = Configuration

@@ -28,17 +28,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   /// </summary>
   public class DataContainerReader : IDataContainerReader
   {
-    private readonly ValueConverter _valueConverter;
+    private readonly IValueConverter _valueConverter;
 
-    public DataContainerReader (ValueConverter valueConverter)
+    public DataContainerReader (IValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       _valueConverter = valueConverter;
     }
 
-    // TODO Review 4058: Rename to Read
-    public virtual DataContainer CreateDataContainer (IDataReader dataReader)
+    public virtual DataContainer Read (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
@@ -48,13 +47,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         return null;
     }
 
-    // TODO Review 4058: Refactor to IEnumerable<DataContainer>; use yield return (instead of List<DataContainer>)
-    // TODO Review 4058: Rename to ReadSequence
-    public virtual DataContainer[] CreateCollection ( IDataReader dataReader, bool allowNulls)
+    public virtual IEnumerable<DataContainer> ReadSequence ( IDataReader dataReader, bool allowNulls)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      var collection = new List<DataContainer>();
       var loadedIDs = new HashSet<ObjectID>();
 
       while (dataReader.Read())
@@ -70,10 +66,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           loadedIDs.Add (dataContainer.ID);
         }
 
-        collection.Add (dataContainer);
+        yield return dataContainer;
       }
-
-      return collection.ToArray();
     }
 
     protected virtual DataContainer CreateDataContainerFromReader (IDataReader dataReader, bool allowNulls)

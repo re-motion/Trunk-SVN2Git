@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_SeveralCommandBuilders_AllowNullsFalse ()
     {
-      _dataContainerReaderStub.Stub (stub => stub.CreateCollection (_dataReaderStub, false)).Return (new[] { _container });
+      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, false)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
           new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, false, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_OneCommandBuilder_AllowNullsTrue ()
     {
-      _dataContainerReaderStub.Stub (stub => stub.CreateCollection (_dataReaderStub, true)).Return (new[] { _container });
+      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, true)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
           new[] { _dbCommandBuilder1Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 
@@ -24,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   /// </summary>
   public interface IDataContainerReader
   {
-    DataContainer CreateDataContainer (IDataReader dataReader);
-    DataContainer[] CreateCollection (IDataReader dataReader, bool allowNulls);
+    DataContainer Read (IDataReader dataReader);
+    IEnumerable<DataContainer> ReadSequence (IDataReader dataReader, bool allowNulls);
   }
 }

@@ -27,7 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   {
     public StubDbCommandBuilder (RdbmsProvider provider)
         : base (provider.SqlDialect,
-            provider.StorageProviderDefinition,
             provider.CreateValueConverter())
     {
     }

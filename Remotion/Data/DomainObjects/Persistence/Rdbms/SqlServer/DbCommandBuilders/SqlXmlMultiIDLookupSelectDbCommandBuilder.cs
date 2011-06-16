@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
         ObjectID[] objectIDs,
         ISqlDialect sqlDialect,
         RdbmsProviderDefinition rdbmsProviderDefinition,
-        ValueConverter valueConverter) : base (sqlDialect, rdbmsProviderDefinition, valueConverter)
+        ValueConverter valueConverter) : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);

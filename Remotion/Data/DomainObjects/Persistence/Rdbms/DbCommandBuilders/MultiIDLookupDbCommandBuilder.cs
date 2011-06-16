@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter,
         ObjectID[] ids)
-        : base (sqlDialect, rdbmsProviderDefinition, valueConverter)
+        : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);

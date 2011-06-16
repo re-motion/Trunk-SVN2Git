@@ -29,8 +29,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// Extends <see cref="ValueConverterBase"/> with functionality for reading database values from an <see cref="IDataReader"/> and converting
   /// them to .NET values, and for converting .NET values to database values.
   /// </summary>
-  // TODO Review 4058: Extract interface, use in DB command builders, mock in DB command builder tests
-  public class ValueConverter : ValueConverterBase
+  // TODO Review 4058: use interface in DB command builders, mock in DB command builder tests
+  public class ValueConverter : ValueConverterBase, IValueConverter
   {
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly StorageProviderDefinition _storageProviderDefinition;
@@ -71,16 +71,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return valueAsExtensibleEnum.ID;
 
       return value;
-    }
-
-    private object GetDBValue (ObjectID id)
-    {
-      ArgumentUtility.CheckNotNull ("id", id);
-      
-      if (IsOfSameStorageProvider (id))
-        return id.Value;
-      else
-        return id.ToString();
     }
 
     public int GetMandatoryOrdinal (IDataReader dataReader, string columnName)
@@ -152,6 +142,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         dataValue = null;
 
       return base.GetObjectID (classDefinition, dataValue);
+    }
+
+    private object GetDBValue (ObjectID id)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+
+      if (IsOfSameStorageProvider (id))
+        return id.Value;
+      else
+        return id.ToString ();
     }
 
     private object GetValue (IDataReader dataReader, string columnName)

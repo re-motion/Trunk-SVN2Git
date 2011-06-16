@@ -16,12 +16,11 @@
 // 
 using System;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -30,178 +29,185 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   [TestFixture]
   public class DataContainerReaderTest : SqlProviderBaseTest
   {
-    private IDataReader _dataReaderMock;
+    private IDataReader _dataReaderStub;
     private DataContainerReader _factory;
-    private MockRepository _mockRepository;
+    private IValueConverter _valueConverterStub;
+    private ObjectID _objectID;
+    private object _timestamp;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
 
-      _mockRepository = new MockRepository();
-      _dataReaderMock = _mockRepository.StrictMock<IDataReader>();
-      _factory = new DataContainerReader (Provider.CreateValueConverter());
+      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+      _factory = new DataContainerReader (_valueConverterStub);
+
+      _objectID = new ObjectID ("OrderTicket", Guid.NewGuid());
+      _timestamp = new object();
+
       // TODO Review 4058: Remove when value converter is mocked (here and in other tests)
-      OppositeClassDefinitionRetriever.ResetCache ();
+      OppositeClassDefinitionRetriever.ResetCache();
     }
 
     public override void TearDown ()
     {
-      base.TearDown ();
+      base.TearDown();
       // TODO Review 4058: Remove when value converter is mocked
-      OppositeClassDefinitionRetriever.ResetCache ();
+      OppositeClassDefinitionRetriever.ResetCache();
     }
 
     [Test]
-    public void CreateDataContainer_DataReaderReadFalse ()
+    public void Read_DataReaderReadFalse ()
     {
-      _dataReaderMock.Stub (stub => stub.Read()).Return (false);
+      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
 
-      var result = _factory.CreateDataContainer(_dataReaderMock);
+      var result = _factory.Read (_dataReaderStub);
 
       Assert.That (result, Is.Null);
     }
 
     [Test]
-    public void CreateDataContainer_DataReaderReadTrue_ValueIDNotNull ()
+    public void Read_DataReaderReadTrue_ValueIDNotNull ()
     {
-      SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flop", DomainObjectIDs.Order1, true);
-      _mockRepository.ReplayAll ();
+      _dataReaderStub.Stub (stub => stub.Read()).Return (true);
 
-      var dataContainer = _factory.CreateDataContainer (_dataReaderMock);
-      CheckTicketContainer (dataContainer, DomainObjectIDs.OrderTicket1, 123, "flop", DomainObjectIDs.Order1);
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID);
+      _valueConverterStub.Stub (stub => stub.GetTimestamp (_dataReaderStub)).Return (_timestamp);
+
+      StubValueConverterForProperty (typeof (OrderTicket), "FileName", _objectID);
+      StubValueConverterForProperty (typeof (OrderTicket), "Order", _objectID);
+
+      var dataContainer = _factory.Read (_dataReaderStub);
+
+      Assert.That (dataContainer, Is.Not.Null);
+      Assert.That (dataContainer.ID, Is.SameAs (_objectID));
     }
-    
+
     [Test]
     [ExpectedException (typeof (RdbmsProviderException),
         ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
-    public void CreateDataContainer_DataReaderReadFalse_ValueIDNull ()
+    public void Read_DataReaderReadTrue_ValueIDNull ()
     {
-      SetupOrderTicket (null, 123, "flop", DomainObjectIDs.Order1, true);
-      _mockRepository.ReplayAll();
+      _dataReaderStub.Stub (stub => stub.Read()).Return (true);
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (null);
 
-      _factory.CreateDataContainer(_dataReaderMock);
-    }
-
-    //TODO RM-4068: add tests for allowNullsTrue and "error while reading property"-exception !?
-
-    [Test]
-    public void CreateCollection ()
-    {
-      using (_mockRepository.Ordered ())
-      {
-        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
-        SetupOrderTicket (DomainObjectIDs.OrderTicket2, 124, "flop", DomainObjectIDs.Order2, false);
-        SetupOrderTicket (DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3, false);
-        Expect.Call (_dataReaderMock.Read ()).Return (false);
-      }
-
-      _mockRepository.ReplayAll ();
-
-      var dataContainers = _factory.CreateCollection (_dataReaderMock, false);
-      Assert.AreEqual (3, dataContainers.Length);
-      CheckTicketContainer (dataContainers[0], DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1);
-      CheckTicketContainer (dataContainers[1], DomainObjectIDs.OrderTicket2, 124, "flop", DomainObjectIDs.Order2);
-      CheckTicketContainer (dataContainers[2], DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3);
-
-      _mockRepository.VerifyAll ();
+      _factory.Read (_dataReaderStub);
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
-    public void CreateCollection_WithNullID_AllowNullsFalse ()
+    public void ReadSequence_DataReaderReadFalse ()
     {
-      using (_mockRepository.Ordered ())
-      {
-        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
-        SetupOrderTicket (null, 124, "flop", DomainObjectIDs.Order2, false);
-        SetupOrderTicket (DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3, false);
-        Expect.Call (_dataReaderMock.Read ()).Return (false);
-      }
+      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
 
-      _mockRepository.ReplayAll ();
+      var result = _factory.ReadSequence (_dataReaderStub, false);
 
-      _factory.CreateCollection (_dataReaderMock, false);
+      Assert.That (result, Is.Empty);
     }
 
     [Test]
-    public void CreateCollection_WithNullID_AllowNullsTrue ()
+    public void ReadSequence_DataReaderReadTrue()
     {
-      using (_mockRepository.Ordered ())
-      {
-        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
-        SetupOrderTicket (null, 124, "flop", DomainObjectIDs.Order2, false);
-        SetupOrderTicket (DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3, false);
-        Expect.Call (_dataReaderMock.Read ()).Return (false);
-      }
+      StubValueConverterForProperty (typeof (OrderTicket), "FileName", DomainObjectIDs.OrderTicket1);
+      StubValueConverterForProperty (typeof (OrderTicket), "Order", DomainObjectIDs.OrderTicket1);
+      StubValueConverterForProperty (typeof (OrderTicket), "FileName", DomainObjectIDs.OrderTicket2);
+      StubValueConverterForProperty (typeof (OrderTicket), "Order", DomainObjectIDs.OrderTicket2);
+      StubValueConverterForProperty (typeof (OrderTicket), "FileName", DomainObjectIDs.OrderTicket3);
+      StubValueConverterForProperty (typeof (OrderTicket), "Order", DomainObjectIDs.OrderTicket3);
 
-      _mockRepository.ReplayAll ();
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (DomainObjectIDs.OrderTicket1).Repeat.Once();
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (DomainObjectIDs.OrderTicket2).Repeat.Once ();
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (DomainObjectIDs.OrderTicket3).Repeat.Once ();
+      _valueConverterStub.Stub (stub => stub.GetTimestamp (_dataReaderStub)).Return (_timestamp);
 
-      var collection = _factory.CreateCollection (_dataReaderMock, true);
-      Assert.That (collection.Length, Is.EqualTo (3));
-      Assert.That (collection[0].ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (collection[1], Is.Null);
-      Assert.That (collection[2].ID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
+      var count = 0;
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).WhenCalled (
+          mi =>
+          {
+            count++;
+            if (count > 2)
+            {
+              _dataReaderStub.BackToRecord ();
+              _dataReaderStub.Stub (stub => stub.Read ()).Return (false);
+            }
+          });
+
+      var result = _factory.ReadSequence (_dataReaderStub, true).ToArray ();
+      Assert.That (result.Length, Is.EqualTo (3));
+      Assert.That (result[0].ID, Is.EqualTo(DomainObjectIDs.OrderTicket1));
+      Assert.That (result[1].ID, Is.EqualTo(DomainObjectIDs.OrderTicket2));
+      Assert.That (result[2].ID, Is.EqualTo(DomainObjectIDs.OrderTicket3));
     }
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "A database query returned duplicates of the domain object "
-        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', which is not supported.")]
-    public void CreateCollection_WithDuplicates ()
+                                                                           +
+                                                                           "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', which is not supported."
+        )]
+    public void ReadSequence_DataReaderReadTrue_Duplicates ()
     {
-      using (_mockRepository.Ordered ())
-      {
-        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
-        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, false);
-        Expect.Call (_dataReaderMock.Read ()).Return (false);
-      }
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (DomainObjectIDs.OrderTicket1);
+      _valueConverterStub.Stub (stub => stub.GetTimestamp (_dataReaderStub)).Return (_timestamp);
 
-      _mockRepository.ReplayAll ();
+      StubValueConverterForProperty (typeof (OrderTicket), "FileName", _objectID);
+      StubValueConverterForProperty (typeof (OrderTicket), "Order", _objectID);
 
-      _factory.CreateCollection (_dataReaderMock, false);
+      var count = 0;
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).WhenCalled (
+          mi =>
+          {
+            count++;
+            if (count > 2)
+            {
+              _dataReaderStub.BackToRecord();
+              _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+            }
+          });
 
-      _mockRepository.VerifyAll ();
+      _factory.ReadSequence (_dataReaderStub, true).ToArray ();
     }
 
-    private void SetupOrderTicket (ObjectID ticketID, int timestamp, string fileName, ObjectID relatedOrder, bool checkOrderIDClassIDNotExists)
+    [Test]
+    public void ReadSequence_DataReaderReadTrue_NullIDIsReturned_Supported ()
     {
-      using (_mockRepository.Unordered())
-      {
-        Expect.Call (_dataReaderMock.Read()).Return (true);
-        Expect.Call (_dataReaderMock.GetOrdinal ("ID")).Return (0);
-        Expect.Call (_dataReaderMock.GetValue (0)).Return (ticketID != null ? ticketID.Value : DBNull.Value);
-        if (ticketID != null)
-        {
-          Expect.Call (_dataReaderMock.GetOrdinal ("ClassID")).Return (1);
-          Expect.Call (_dataReaderMock.IsDBNull (1)).Return (false);
-          Expect.Call (_dataReaderMock.GetString (1)).Return (ticketID.ClassID);
-          Expect.Call (_dataReaderMock.GetOrdinal ("Timestamp")).Return (2);
-          Expect.Call (_dataReaderMock.GetValue (2)).Return (timestamp);
-          Expect.Call (_dataReaderMock.GetOrdinal ("FileName")).Return (3);
-          Expect.Call (_dataReaderMock.GetValue (3)).Return (fileName);
-          Expect.Call (_dataReaderMock.GetOrdinal ("OrderID")).Return (4);
-          Expect.Call (_dataReaderMock.IsDBNull (4)).Return (false);
-          if (checkOrderIDClassIDNotExists)
-            Expect.Call (_dataReaderMock.GetOrdinal ("OrderIDClassID")).Throw (new IndexOutOfRangeException());
-          Expect.Call (_dataReaderMock.GetValue (4)).Return (relatedOrder.Value);
-        }
-      }
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).WhenCalled (
+          mi =>
+          {
+            _dataReaderStub.BackToRecord ();
+            _dataReaderStub.Stub (stub => stub.Read ()).Return (false);
+          });
+
+      var result = _factory.ReadSequence (_dataReaderStub, true).ToArray ();
+
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (result[0], Is.Null);
     }
 
-    private void CheckTicketContainer (
-        DataContainer dataContainer,
-        ObjectID expectedTicketID,
-        int expectedTimeStamp,
-        string expectedFileName,
-        ObjectID expectedRelatedOrderID)
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException),
+        ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
+    public void ReadSequence_DataReaderReadTrue_NullIDIsReturned_NotSupported ()
     {
-      Assert.AreEqual (expectedTicketID, dataContainer.ID);
-      Assert.AreEqual (expectedTimeStamp, dataContainer.Timestamp);
-      Assert.AreEqual (
-          expectedFileName, dataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (OrderTicket), "FileName")].Value);
-      Assert.AreEqual (
-          expectedRelatedOrderID, dataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (OrderTicket), "Order")].Value);
+      _dataReaderStub.Stub (stub => stub.Read()).Return (true).WhenCalled (
+          mi =>
+          {
+            _dataReaderStub.BackToRecord();
+            _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+          });
+
+      var result = _factory.ReadSequence (_dataReaderStub, false);
+
+      Assert.That (result, Is.Empty);
     }
+
+    public void StubValueConverterForProperty (Type declaringType, string shortPropertyName, ObjectID objectID)
+    {
+      var propertyDefinition = GetPropertyDefinition (declaringType, shortPropertyName);
+      _valueConverterStub
+          .Stub (stub => stub.GetValue (objectID.ClassDefinition, propertyDefinition, _dataReaderStub))
+          .Return (propertyDefinition.DefaultValue);
+    }
+    
   }
 }

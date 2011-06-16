@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _command = new SingleDataContainerLoadCommand (
           _dbCommandBuilderStub, _dbCommandFactory, _dbCommandExecutorStub, _dataContainerReaderStub);
-      _dataContainerReaderStub.Stub (stub => stub.CreateDataContainer (_dataReaderMock)).Return (_container);
+      _dataContainerReaderStub.Stub (stub => stub.Read (_dataReaderMock)).Return (_container);
     }
 
     [Test]
