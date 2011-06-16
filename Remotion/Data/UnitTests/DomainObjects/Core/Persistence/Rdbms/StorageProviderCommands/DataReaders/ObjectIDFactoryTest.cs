@@ -14,80 +14,74 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.DataReaders
 {
   [TestFixture]
   public class ObjectIDFactoryTest : SqlProviderBaseTest
   {
-    private MockRepository _mockRepository;
-    private IDataReader _dataReaderMock;
+    private IDataReader _dataReaderStub;
     private ObjectIDFactory _factory;
+    private IValueConverter _valueConverterStub;
+    private ObjectID _objectID;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _mockRepository = new MockRepository ();
-      _dataReaderMock = _mockRepository.StrictMock<IDataReader> ();
-      _factory = new ObjectIDFactory (Provider.CreateValueConverter ());
+      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+
+      _factory = new ObjectIDFactory (_valueConverterStub);
+
+      _objectID = new ObjectID ("Order", Guid.NewGuid());
     }
 
     [Test]
-    public void CreateObjectID ()
+    public void Read ()
     {
-      SetupObject (DomainObjectIDs.OrderTicket1, null);
-      _mockRepository.ReplayAll();
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID); 
 
-      var result = _factory.CreateObjectID (_dataReaderMock);
+      var result = _factory.Read (_dataReaderStub);
 
-      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      _mockRepository.VerifyAll();
+      Assert.That (result, Is.SameAs(_objectID));
     }
 
     [Test]
-    public void CreateOrderObjectIDCollection ()
+    public void ReadSequence ()
     {
-      SetupObject (DomainObjectIDs.OrderTicket1, true);
-      SetupObject (DomainObjectIDs.OrderTicket2, true);
-      SetupObject (DomainObjectIDs.OrderTicket3, false);
+      var objectID2 = new ObjectID ("OrderItem", Guid.NewGuid ());
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Twice ();
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID).Repeat.Once ();
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (objectID2).Repeat.Once ();
 
-      _mockRepository.ReplayAll ();
+      var result = _factory.ReadSequence (_dataReaderStub).ToArray ();
 
-      var result = _factory.CreateObjectIDCollection (_dataReaderMock);
-
-      Assert.That (result, Is.EqualTo(new[]{DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2}));
-      _mockRepository.VerifyAll ();
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (result[0], Is.SameAs (_objectID));
+      Assert.That (result[1], Is.SameAs (objectID2));
     }
 
     [Test]
-    public void CreateOrderObjectIDCollection_NoData ()
+    public void ReadSequence_NoData ()
     {
-      var result = _factory.CreateObjectIDCollection (_dataReaderMock);
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
+
+      var result = _factory.ReadSequence (_dataReaderStub);
 
       Assert.That (result, Is.Empty);
     }
 
-    private void SetupObject (ObjectID id, bool? readData)
-    {
-      using (_mockRepository.Unordered ())
-      {
-        if (readData.HasValue)
-        {
-          Expect.Call (_dataReaderMock.Read ()).Return (readData.Value);
-          if(!readData.Value) return;
-        }
-        Expect.Call (_dataReaderMock.GetOrdinal ("ID")).Return (0);
-        Expect.Call (_dataReaderMock.GetOrdinal ("ClassID")).Return (1);
-        Expect.Call (_dataReaderMock.IsDBNull (1)).Return (false);
-        Expect.Call (_dataReaderMock.GetString (1)).Return (id.ClassID);
-        Expect.Call (_dataReaderMock.GetValue (0)).Return (id.Value);
-      }
-    }
+    
+    
   }
 }

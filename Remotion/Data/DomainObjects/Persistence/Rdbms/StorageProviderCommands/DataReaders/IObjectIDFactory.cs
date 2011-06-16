@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Data;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders
@@ -23,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   /// </summary>
   public interface IObjectIDFactory
   {
-    ObjectID CreateObjectID (IDataReader dataReader);
-    ObjectID[] CreateObjectIDCollection (IDataReader dataReader);
+    ObjectID Read (IDataReader dataReader);
+    IEnumerable<ObjectID> ReadSequence (IDataReader dataReader);
   }
 }

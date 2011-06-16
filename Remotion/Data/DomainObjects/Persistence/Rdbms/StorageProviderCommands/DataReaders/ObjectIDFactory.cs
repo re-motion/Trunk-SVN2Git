@@ -25,33 +25,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   /// </summary>
   public class ObjectIDFactory : IObjectIDFactory
   {
-    private readonly ValueConverter _valueConverter;
+    private readonly IValueConverter _valueConverter;
 
-    public ObjectIDFactory (ValueConverter valueConverter)
+    public ObjectIDFactory (IValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       _valueConverter = valueConverter;
     }
 
-    // TODO Review 4058: Rename to Read
-    public ObjectID CreateObjectID (IDataReader dataReader)
+    public ObjectID Read (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       return _valueConverter.GetID (dataReader);
     }
 
-    // TODO Review 4058: Rename to ReadSequence
-    // TODO Review 4058: Refactor to yield return
-    public ObjectID[] CreateObjectIDCollection (IDataReader dataReader)
+    public IEnumerable<ObjectID> ReadSequence (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      var objectIDsInCorrectOrder = new List<ObjectID> ();
       while (dataReader.Read ())
-        objectIDsInCorrectOrder.Add (CreateObjectID(dataReader));
-      return objectIDsInCorrectOrder.ToArray();
+        yield return Read(dataReader);
     }
   }
 }

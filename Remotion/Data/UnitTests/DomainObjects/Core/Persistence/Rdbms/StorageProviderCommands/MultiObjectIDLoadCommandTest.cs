@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       _dbCommandBuilder1Stub.Stub (stub => stub.Create (_dbCommandFactoryStub)).Return (_dbCommandStub);
       _dbCommandExecutor.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleResult)).Return (_dataReaderStub);
-      _objectIDFactoryStub.Stub (stub => stub.CreateObjectIDCollection (_dataReaderStub)).Return (_fakeResult);
+      _objectIDFactoryStub.Stub (stub => stub.ReadSequence (_dataReaderStub)).Return (_fakeResult);
 
       var command = new MultiObjectIDLoadCommand (new[] { _dbCommandBuilder1Stub }, _dbCommandFactoryStub, _dbCommandExecutor, _objectIDFactoryStub);
 
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilder1Stub.Stub (stub => stub.Create (_dbCommandFactoryStub)).Return (_dbCommandStub);
       _dbCommandBuilder2Stub.Stub (stub => stub.Create (_dbCommandFactoryStub)).Return (_dbCommandStub);
       _dbCommandExecutor.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleResult)).Return (_dataReaderStub);
-      _objectIDFactoryStub.Stub (stub => stub.CreateObjectIDCollection (_dataReaderStub)).Return (_fakeResult);
+      _objectIDFactoryStub.Stub (stub => stub.ReadSequence (_dataReaderStub)).Return (_fakeResult);
 
       var command = new MultiObjectIDLoadCommand (
           new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, _dbCommandFactoryStub, _dbCommandExecutor, _objectIDFactoryStub);

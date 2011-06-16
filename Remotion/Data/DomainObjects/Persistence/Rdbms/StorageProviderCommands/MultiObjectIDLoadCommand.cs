@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = _dbCommandExecutor.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          return _objectIDFactory.CreateObjectIDCollection (reader);
+          return _objectIDFactory.ReadSequence (reader);
         }
       }
     }
