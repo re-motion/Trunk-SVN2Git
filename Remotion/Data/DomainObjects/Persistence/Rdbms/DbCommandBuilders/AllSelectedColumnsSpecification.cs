@@ -39,8 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      // TODO Review 4060: move spacing to callers (also adapt SelectedColumnsSpecification)
-      stringBuilder.Append (" * ");
+      stringBuilder.Append ("*");
     }
 
     public ISelectedColumnsSpecification Union (IEnumerable<SimpleColumnDefinition> additionalColumns)

@@ -59,17 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _specification.AppendProjection (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString(), Is.EqualTo (" [Column1], [Column2], [Column3]"));
-    }
-
-    [Test]
-    public void AppendProjection_StringBuilderIsNotEmpty ()
-    {
-      var sb = new StringBuilder ("OtherString");
-
-      _specification.AppendProjection (sb, _sqlDialectStub);
-
-      Assert.That (sb.ToString (), Is.EqualTo ("OtherString [Column1], [Column2], [Column3]"));
+      Assert.That (sb.ToString(), Is.EqualTo ("[Column1], [Column2], [Column3]"));
     }
 
     [Test]
@@ -81,6 +71,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column5 });
 
       Assert.That (result.SelectedColumns, Is.EqualTo (new[] { _column1, _column2, _column3, column4, column5 }));
+    }
+
+    [Test]
+    public void Union_DuplicatedColumns()
+    {
+      var column4 = new SimpleColumnDefinition ("Column4", typeof (string), "varchar", true, false);
+      
+      var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column4 });
+
+      Assert.That (result.SelectedColumns, Is.EqualTo (new[] { _column1, _column2, _column3, column4 }));
     }
   }
 }

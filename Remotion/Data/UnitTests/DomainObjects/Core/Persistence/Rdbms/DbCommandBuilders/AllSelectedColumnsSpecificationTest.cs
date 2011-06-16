@@ -34,17 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       AllSelectedColumnsSpecification.Instance.AppendProjection (sb, MockRepository.GenerateStub<ISqlDialect>());
 
-      Assert.That (sb.ToString(), Is.EqualTo (" * "));
-    }
-
-    [Test]
-    public void AppendProjection_StringBuilderNotEmpty ()
-    {
-      var sb = new StringBuilder ("Test1234");
-
-      AllSelectedColumnsSpecification.Instance.AppendProjection (sb, MockRepository.GenerateStub<ISqlDialect> ());
-
-      Assert.That (sb.ToString (), Is.EqualTo ("Test1234 * "));
+      Assert.That (sb.ToString(), Is.EqualTo ("*"));
     }
 
     [Test]

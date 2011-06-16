@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -38,10 +39,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _selectedColumns = selectedColumns.ToArray();
     }
 
-    // TODO Review 4060: ReadOnlyCollection
-    public SimpleColumnDefinition[] SelectedColumns
+    public ReadOnlyCollection<SimpleColumnDefinition> SelectedColumns
     {
-      get { return _selectedColumns; }
+      get { return Array.AsReadOnly(_selectedColumns); }
     }
 
     public void AppendProjection (StringBuilder stringBuilder, ISqlDialect sqlDialect)
@@ -49,7 +49,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      stringBuilder.Append (" ");
       stringBuilder.Append (SeparatedStringBuilder.Build (", ", _selectedColumns, c => sqlDialect.DelimitIdentifier(c.Name)));
     }
 
@@ -57,8 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     {
       ArgumentUtility.CheckNotNull ("additionalColumns", additionalColumns);
 
-      // TODO Review 4060: Use Union instead of Concat and add a test showing that duplicate columns are ignored
-      return new SelectedColumnsSpecification (_selectedColumns.Concat (additionalColumns));
+      return new SelectedColumnsSpecification (_selectedColumns.Union (additionalColumns));
     }
   }
 }
