@@ -138,7 +138,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new EntityNameDefinition (null, "TestView"),
-          new SimpleColumnDefinition[] { },
+          new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true),
+          new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false),
+          new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false),
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
 

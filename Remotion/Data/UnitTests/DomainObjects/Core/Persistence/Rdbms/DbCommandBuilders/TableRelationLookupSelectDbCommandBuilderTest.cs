@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -88,17 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Create_DefaultSchema ()
     {
-      var tableDefinition = new TableDefinition (
-          TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table"),
-          null,
-          _objectIDColumnDefinition,
-          new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false),
-          new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false),
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+      var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
 
       var builder = new TableRelationLookupSelectDbCommandBuilder (
           tableDefinition,
@@ -120,17 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Create_CustomSchema ()
     {
-      var tableDefinition = new TableDefinition (
-          TestDomainStorageProviderDefinition,
-          new EntityNameDefinition ("customSchema", "Table"),
-          null,
-          _objectIDColumnDefinition,
-          new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false),
-          new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false),
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+      var tableDefinition = TableDefinitionObjectMother.Create(TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
 
       var builder = new TableRelationLookupSelectDbCommandBuilder (
           tableDefinition,

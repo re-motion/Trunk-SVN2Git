@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -93,39 +94,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
       _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (_guid);
       
-      _table1 = new TableDefinition (
-          TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table1"),
-          null,
-          _objectIDColumnDefinition,
-          _classIDColumnDefinition,
-          _timstampColumnDefinition,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _table2 = new TableDefinition (
-         TestDomainStorageProviderDefinition,
-         new EntityNameDefinition (null, "Table2"),
-         null,
-         _objectIDColumnDefinition,
-         _classIDColumnDefinition,
-         _timstampColumnDefinition,
-         new SimpleColumnDefinition[0],
-         new ITableConstraintDefinition[0],
-         new IIndexDefinition[0],
-         new EntityNameDefinition[0]);
-      _table3 = new TableDefinition (
-         TestDomainStorageProviderDefinition,
-         new EntityNameDefinition ("customSchema", "Table3"),
-         null,
-         _objectIDColumnDefinition,
-         _classIDColumnDefinition,
-         _timstampColumnDefinition,
-         new SimpleColumnDefinition[0],
-         new ITableConstraintDefinition[0],
-         new IIndexDefinition[0],
-         new EntityNameDefinition[0]);
+      _table1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
+      _table2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));
+      _table3 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table3"));
     }
 
     [Test]

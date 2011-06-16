@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Reflection;
@@ -54,17 +55,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var foreignKeyColumn = new SimpleColumnDefinition ("ForeignKey", typeof (int), "integer", false, false);
       var simpleColumn = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
-      var tableDefinition = new TableDefinition (
+      var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
-          null,
           primaryKeyColumn,
           classIDColumn,
           timestampColumn,
-          new[] { foreignKeyColumn, simpleColumn },
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          foreignKeyColumn,
+          simpleColumn);
       _classDefinition.SetStorageEntity (tableDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");

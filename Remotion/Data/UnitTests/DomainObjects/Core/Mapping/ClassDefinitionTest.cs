@@ -27,6 +27,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -55,9 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition _personClass;
     private ClassDefinition _customerClass;
     private ClassDefinition _organizationalUnitClass;
-    private SimpleColumnDefinition _objectIDColunmn;
-    private SimpleColumnDefinition _classIDCOlumn;
-    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
@@ -88,10 +86,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           FakeMappingConfiguration.Current.TypeDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
           FakeMappingConfiguration.Current.TypeDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
-
-      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
-      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
-      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
     }
 
     [Test]
@@ -171,17 +165,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetStorageEntityDefinition ()
     {
-      var tableDefinition = new TableDefinition (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Tablename"),
-          new EntityNameDefinition (null, "Viewname"),
-          _objectIDColunmn,
-          _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
-
+      var tableDefinition = TableDefinitionObjectMother.Create (_storageProviderDefinition, new EntityNameDefinition (null, "Tablename"));
+      
       _domainBaseClass.SetStorageEntity (tableDefinition);
 
       Assert.That (_domainBaseClass.StorageEntityDefinition, Is.SameAs (tableDefinition));
@@ -191,16 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
     public void SetStorageEntityDefinition_ClassIsReadOnly ()
     {
-      var tableDefinition = new TableDefinition (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Tablename"),
-          new EntityNameDefinition (null, "Viewname"),
-          _objectIDColunmn,
-          _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+      var tableDefinition = TableDefinitionObjectMother.Create (_storageProviderDefinition, new EntityNameDefinition (null, "Tablename"));
       _domainBaseClass.SetReadOnly();
 
       _domainBaseClass.SetStorageEntity (tableDefinition);

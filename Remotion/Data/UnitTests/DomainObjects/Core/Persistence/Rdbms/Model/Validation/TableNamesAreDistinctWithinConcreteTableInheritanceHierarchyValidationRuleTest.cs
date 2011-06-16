@@ -74,41 +74,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
 
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
-      _tableDefinition1 = new TableDefinition (
+      _tableDefinition1 = TableDefinitionObjectMother.Create (
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName1"),
-          null,
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
-      _tableDefinition2 = new TableDefinition (
+          _timestampColumn);
+      _tableDefinition2 = TableDefinitionObjectMother.Create (
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
-          null,
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          _timestampColumn);
       _unionViewDefinition = new UnionViewDefinition (
           storageProviderDefinition,
           null,
           new IEntityDefinition[]
           {
-              new TableDefinition (
+              TableDefinitionObjectMother.Create (
               storageProviderDefinition,
               new EntityNameDefinition (null, "Test"),
-              null,
               _objectIDColunmn,
               _classIDCOlumn,
-              _timestampColumn,
-              new SimpleColumnDefinition[0],
-              new ITableConstraintDefinition[0],
-              new IIndexDefinition[0], new EntityNameDefinition[0])
+              _timestampColumn)
           },
           _objectIDColunmn,
           _classIDCOlumn,

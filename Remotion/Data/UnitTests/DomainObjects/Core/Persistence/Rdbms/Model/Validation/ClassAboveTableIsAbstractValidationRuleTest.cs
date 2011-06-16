@@ -59,31 +59,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           typeof (DerivedValidationDomainObjectClass),
           false);
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
-      _tableDefinition = new TableDefinition (
+      _tableDefinition = TableDefinitionObjectMother.Create (
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName"),
-          null,
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          _timestampColumn);
       _unionViewDefinition = new UnionViewDefinition (
           storageProviderDefinition,
           null,
           new IEntityDefinition[]
           {
-              new TableDefinition (
+              TableDefinitionObjectMother.Create (
               storageProviderDefinition,
               new EntityNameDefinition (null, "Test"),
-              null,
               _objectIDColunmn,
               _classIDCOlumn,
-              _timestampColumn,
-              new SimpleColumnDefinition[0],
-              new ITableConstraintDefinition[0],
-              new IIndexDefinition[0], new EntityNameDefinition[0])
+              _timestampColumn)
           },
           _objectIDColunmn,
           _classIDCOlumn,

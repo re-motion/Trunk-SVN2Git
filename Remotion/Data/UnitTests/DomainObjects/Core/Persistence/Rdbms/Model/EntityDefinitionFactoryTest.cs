@@ -34,7 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactoryMock;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private SimpleColumnDefinition _fakeColumnDefinition1;
-    private IDColumnDefinition _fakeIDColumnDefinition;
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
     private SimpleColumnDefinition _fakeObjectIDColumnDefinition;
     private ForeignKeyConstraintDefinition _fakeForeignKeyConstraint;
@@ -63,7 +62,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _fakeObjectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
       _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
-      _fakeIDColumnDefinition = new IDColumnDefinition (_fakeObjectIDColumnDefinition, _fakeColumnDefinition1);
       _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false, false);
 
       _fakeForeignKeyConstraint = new ForeignKeyConstraintDefinition (
@@ -134,16 +132,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFilterViewDefinition_DerivedClassWithoutDerivations ()
     {
-      var fakeBaseEntityDefiniton = new TableDefinition (
-          _storageProviderDefinition,
+      var fakeBaseEntityDefiniton = TableDefinitionObjectMother.Create (
+          _storageProviderDefinition, 
           new EntityNameDefinition (null, "Test"),
-          new EntityNameDefinition (null, "TestView"),
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          _timestampColumn);
 
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.DerivedClassDefinition1))
@@ -180,16 +174,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFilterViewDefinition_DerivedClassWithDerivations ()
     {
-      var fakeBaseEntityDefiniton = new TableDefinition (
+      var fakeBaseEntityDefiniton = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
-          new EntityNameDefinition (null, "TestView"),
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          _timestampColumn);
 
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.DerivedClassDefinition2))
@@ -226,26 +216,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateUnionViewDefinition ()
     {
-      var fakeUnionEntity1 = new TableDefinition (
+      var fakeUnionEntity1 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test1"),
-          new EntityNameDefinition (null, "TestView1"),
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
-      var fakeUnionEntity2 = new TableDefinition (
+          _timestampColumn);
+      var fakeUnionEntity2 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test2"),
-          new EntityNameDefinition (null, "TestView2"),
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          _timestampColumn);
 
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.BaseBaseClassDefinition))

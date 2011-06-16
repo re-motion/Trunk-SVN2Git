@@ -27,7 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private SimpleColumnDefinition _column1;
     private SimpleColumnDefinition _column2;
-    private SimpleColumnDefinition _column3;
     private TableDefinition _entityDefinition;
     private FilterViewDefinition _filterViewDefinition;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
@@ -45,21 +44,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
       _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
       _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
-      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
-      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
+      _column2 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
-      _entityDefinition = new TableDefinition (
+      _entityDefinition = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table"),
-          new EntityNameDefinition (null, "View"),
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new[] { _column1, _column2, _column3 },
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          _timestampColumn);
 
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _filterViewDefinition = new FilterViewDefinition (
@@ -70,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _objectIDColunmn,
           _classIDCOlumn,
           _timestampColumn,
-          new[] { _column1, _column3 },
+          new[] { _column1, _column2 },
           _indexes,
           _synonyms);
     }
@@ -96,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _filterViewDefinition,
           new[] { "x" },
           _objectIDColunmn,
-          _classIDCOlumn, 
+          _classIDCOlumn,
           _timestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
@@ -113,17 +106,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "TestUnion"),
           new IEntityDefinition[]
           {
-              new TableDefinition (
-              _storageProviderDefinition,
-              new EntityNameDefinition (null, "Test"),
-              null,
-              _objectIDColunmn,
-              _classIDCOlumn,
-              _timestampColumn,
-              new SimpleColumnDefinition[0],
-              new ITableConstraintDefinition[0],
-              new IIndexDefinition[0],
-              new EntityNameDefinition[0])
+              TableDefinitionObjectMother.Create (
+                  _storageProviderDefinition, new EntityNameDefinition (null, "Test"), _objectIDColunmn, _classIDCOlumn, _timestampColumn)
           },
           _objectIDColunmn,
           _classIDCOlumn,
@@ -194,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void DataColumns ()
     {
-      Assert.That (_filterViewDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column3 }));
+      Assert.That (_filterViewDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column2 }));
     }
 
     [Test]
@@ -202,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var result = _filterViewDefinition.GetAllColumns();
 
-      Assert.That (result, Is.EqualTo (new[] { _objectIDColunmn, _classIDCOlumn, _timestampColumn, _column1, _column3 }));
+      Assert.That (result, Is.EqualTo (new[] { _objectIDColunmn, _classIDCOlumn, _timestampColumn, _column1, _column2 }));
     }
 
     [Test]

@@ -52,28 +52,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
-      _tableDefinition1 = new TableDefinition (
+      _tableDefinition1 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table1"),
-          new EntityNameDefinition (null, "View1"),
           _objectIDColunmn,
           _classIDCOlumn,
           _timestampColumn,
-          new[] { _column1 },
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _tableDefinition2 = new TableDefinition (
+          _column1);
+      _tableDefinition2 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
-          new EntityNameDefinition (null, "View2"),
           _objectIDColunmn,
           _classIDCOlumn,
           _timestampColumn,
-          new[] { _column2, _column3 },
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          _column2, _column3);
       _unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
@@ -284,17 +276,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetAllTables_IndirectTables ()
     {
-      var tableDefinition3 = new TableDefinition (
+      var tableDefinition3 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table3"),
-          new EntityNameDefinition (null, "View"),
           _objectIDColunmn,
           _classIDCOlumn,
-          _timestampColumn,
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          _timestampColumn);
       var baseUnionDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),

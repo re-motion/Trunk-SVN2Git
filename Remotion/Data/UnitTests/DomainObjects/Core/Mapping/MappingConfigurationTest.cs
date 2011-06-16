@@ -34,8 +34,8 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointNamesAreConsistentValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Development.UnitTesting;
-using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -49,11 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private MockRepository _mockRepository;
     private IMappingLoader _mockMappingLoader;
     private ReflectionBasedNameResolver _nameResolver;
-
     private TableDefinition _fakeStorageEntityDefinition;
-    private SimpleColumnDefinition _objectIDColunmn;
-    private SimpleColumnDefinition _classIDCOlumn;
-    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
@@ -66,20 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository = new MockRepository();
       _mockMappingLoader = _mockRepository.StrictMock<IMappingLoader>();
 
-      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
-      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
-      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
-
-      _fakeStorageEntityDefinition = new TableDefinition (
-        DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
-        new EntityNameDefinition (null, "Test"),
-        new EntityNameDefinition (null, "Test"),
-        _objectIDColunmn,
-        _classIDCOlumn,
-        _timestampColumn,
-        new SimpleColumnDefinition[0],
-        new ITableConstraintDefinition[0],
-        new IIndexDefinition[0], new EntityNameDefinition[0]);
+      _fakeStorageEntityDefinition = TableDefinitionObjectMother.Create (
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, new EntityNameDefinition (null, "Test"));
     }
 
     [Test]
@@ -370,20 +354,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new EntityNameDefinition (null, "Test"),
           new IEntityDefinition[]
           {
-              new TableDefinition (
-              UnitTestDomainStorageProviderDefinition,
-              new EntityNameDefinition (null, "Test"),
-              new EntityNameDefinition (null, "TestView"),
-              _objectIDColunmn,
-              _classIDCOlumn,
-              _timestampColumn,
-              new SimpleColumnDefinition[0],
-              new ITableConstraintDefinition[0],
-              new IIndexDefinition[0], new EntityNameDefinition[0])
+              TableDefinitionObjectMother.Create (UnitTestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Test"))
           },
-          _objectIDColunmn,
-          _classIDCOlumn,
-          _timestampColumn,
+          _fakeStorageEntityDefinition.ObjectIDColumn,
+          _fakeStorageEntityDefinition.ClassIDColumn,
+          _fakeStorageEntityDefinition.TimestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (

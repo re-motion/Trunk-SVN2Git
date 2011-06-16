@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.DbCommandBuilders
@@ -81,17 +82,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void Create_DefaultSchema ()
     {
-      var tableDefinition = new TableDefinition (
+      var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Table"),
-          null,
           _objectIDColumnDefinition,
           new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false),
-          new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false),
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false));
 
       var builder = new SqlXmlMultiIDLookupSelectDbCommandBuilder (
           tableDefinition,
@@ -117,17 +113,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void Create_CustomSchema ()
     {
-      var tableDefinition = new TableDefinition (
+      var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition ("customSchema", "Table"),
-          null,
           _objectIDColumnDefinition,
           new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false),
-          new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false),
-          new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false));
 
       var builder = new SqlXmlMultiIDLookupSelectDbCommandBuilder (
           tableDefinition,
