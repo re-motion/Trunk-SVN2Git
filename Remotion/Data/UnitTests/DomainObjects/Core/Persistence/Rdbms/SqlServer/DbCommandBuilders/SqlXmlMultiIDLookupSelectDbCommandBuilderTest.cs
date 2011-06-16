@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (
           result.CommandText,
           Is.EqualTo (
-              "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c)"));
+              "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c)"));
 
       Assert.That (
           _dbDataParameterStub.Value.ToString(),

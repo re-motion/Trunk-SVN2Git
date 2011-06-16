@@ -65,8 +65,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       statement.Append ("SELECT");
       _selectedColumns.AppendProjection (statement, SqlDialect);
       statement.Append ("FROM ");
-      statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.SchemaName ?? DefaultSchema));
-      statement.Append (".");
+      if (_table.TableName.SchemaName != null)
+      {
+        statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.SchemaName));
+        statement.Append (".");
+      }
       statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.EntityName));
       statement.Append (" WHERE ");
       statement.Append (SqlDialect.DelimitIdentifier (_table.ObjectIDColumn.Name));

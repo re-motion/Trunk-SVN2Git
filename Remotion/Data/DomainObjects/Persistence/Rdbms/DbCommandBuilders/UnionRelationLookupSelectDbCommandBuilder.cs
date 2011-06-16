@@ -73,8 +73,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         if (!first)
           statement.Append (" UNION ALL ");
 
-        statement.Append (SqlDialect.DelimitIdentifier (table.TableName.SchemaName ?? DefaultSchema));
-        statement.Append (".");
+        if (table.TableName.SchemaName != null)
+        {
+          statement.Append (SqlDialect.DelimitIdentifier (table.TableName.SchemaName));
+          statement.Append (".");
+        }
         statement.Append (SqlDialect.DelimitIdentifier (table.TableName.EntityName));
         statement.Append (" WHERE ");
         statement.Append (SqlDialect.DelimitIdentifier (_foreignKeyColumn.Name));

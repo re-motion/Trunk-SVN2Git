@@ -24,8 +24,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
-    // TODO Review 4058: Remove DefaultSchema. In the db command builders, when no EntityDefinitionName.Schema is present, omit the schema part from the name.
-    protected readonly string DefaultSchema = "dbo";
     private readonly ISqlDialect _sqlDialect;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ValueConverter _valueConverter;

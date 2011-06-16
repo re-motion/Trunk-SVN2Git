@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       var result = builder.Create (_commandFactoryStub);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table] WHERE [ID] = @ID"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [ID] = @ID"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo(_guid));
       _dataParameterCollectionMock.VerifyAllExpectations();
     }

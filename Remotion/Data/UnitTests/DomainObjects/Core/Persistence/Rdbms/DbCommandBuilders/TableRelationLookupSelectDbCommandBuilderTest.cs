@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var result = builder.Create (_commandFactoryStub);
 
       Assert.That (result.CommandText, Is.EqualTo (
-        "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));
+        "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
       _dataParameterCollectionMock.VerifyAllExpectations ();
     }
