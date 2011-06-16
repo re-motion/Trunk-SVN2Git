@@ -106,7 +106,7 @@ namespace Remotion.Mixins.MixerTools
     {
       using (ConsoleUtility.EnterColorScope (ConsoleColor.Red, null))
       {
-        Console.WriteLine (e.ToString ());
+        Console.WriteLine (e.Exception.ToString ());
       }
     }
   }
