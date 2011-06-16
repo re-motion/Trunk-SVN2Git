@@ -95,21 +95,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       // TODO Review 4058: Remove this check when the two overloads have been collapsed into one
       if (parameterValue is ObjectID)
-        commandParameter.Value = ValueConverter.GetDBValue ((ObjectID) parameterValue, RdbmsProviderDefinition.Name);
+        commandParameter.Value = ValueConverter.GetDBValue ((ObjectID) parameterValue);
       else
         commandParameter.Value = ValueConverter.GetDBValue (parameterValue);
 
       command.Parameters.Add (commandParameter);
       return commandParameter;
-    }
-
-    // TODO Review 4058: Move to ValueConverter
-    protected bool IsOfSameStorageProvider (ObjectID id)
-    {
-      ArgumentUtility.CheckNotNull ("id", id);
-
-      // TODO Review 4058: Use Provider.Definition when moved to ValueConverter
-      return id.StorageProviderDefinition == RdbmsProviderDefinition;
     }
 
     protected string GetOrderClause (SortExpressionDefinition sortExpression)

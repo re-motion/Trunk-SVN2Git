@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _connection = provider.Connection;
 
       _ceoDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Ceo));
-      _converter = new ValueConverter (provider, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create ());
+      _converter = new ValueConverter (provider.StorageProviderDefinition, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create ());
     }
 
     public override void TearDown ()

@@ -26,36 +26,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class OppositeClassDefinitionRetriever
   {
     private static readonly LockingCacheDecorator<Tuple<ClassDefinition, PropertyDefinition>, bool> s_hasClassIDColumnCache =
-        CacheFactory.CreateWithLocking<Tuple<ClassDefinition, PropertyDefinition>, bool>(); 
+        CacheFactory.CreateWithLocking<Tuple<ClassDefinition, PropertyDefinition>, bool>();
 
     public static void ResetCache ()
     {
       s_hasClassIDColumnCache.Clear();
     }
 
-    private readonly RdbmsProvider _provider;
     private readonly ClassDefinition _classDefinition;
     private readonly PropertyDefinition _propertyDefinition;
     private readonly ClassDefinition _relatedClassDefinition;
     private readonly string _classIDColumnName;
 
-    // TODO Review 4058: Remove provider parameter
     public OppositeClassDefinitionRetriever (
-        RdbmsProvider provider,
-        ClassDefinition classDefinition,
-        PropertyDefinition propertyDefinition,
-        IStorageNameProvider storageNameProvider)
+        ClassDefinition classDefinition, PropertyDefinition propertyDefinition, IStorageNameProvider storageNameProvider)
     {
-      ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
-      _provider = provider;
       _classDefinition = classDefinition;
       _propertyDefinition = propertyDefinition;
       _relatedClassDefinition = _classDefinition.GetMandatoryOppositeClassDefinition (_propertyDefinition.PropertyName);
-      
+
       _classIDColumnName = storageNameProvider.GetRelationClassIDColumnName (_propertyDefinition);
     }
 
@@ -66,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (_relatedClassDefinition.IsPartOfInheritanceHierarchy && sourceStorageProviderDefinition == relatedStorageProviderDefinition)
       {
         Assertion.IsTrue (
-            _propertyDefinition.StoragePropertyDefinition is IDColumnDefinition 
+            _propertyDefinition.StoragePropertyDefinition is IDColumnDefinition
             && ((IDColumnDefinition) _propertyDefinition.StoragePropertyDefinition).HasClassIDColumn);
         return GetOppositeClassDefinitionInInheritanceHierarchy (dataReader, objectIDColumnOrdinal, _classIDColumnName);
       }
@@ -77,7 +70,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    private ClassDefinition GetOppositeClassDefinitionInInheritanceHierarchy (IDataReader dataReader, int objectIDColumnOrdinal, string classIDColumnName)
+    private ClassDefinition GetOppositeClassDefinitionInInheritanceHierarchy (
+        IDataReader dataReader, int objectIDColumnOrdinal, string classIDColumnName)
     {
       int classIDColumnOrdinal = TryGetClassIDColumnOrdinal (dataReader, classIDColumnName);
       CheckConsistentIDs (dataReader, objectIDColumnOrdinal, classIDColumnName, classIDColumnOrdinal);
@@ -95,12 +89,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (!hasClassIDColumn)
       {
-        throw _provider.CreateRdbmsProviderException (
+        throw new RdbmsProviderException(string.Format(
             "Incorrect database format encountered."
             + " Entity '{0}' must have column '{1}' defined, because opposite class '{2}' is part of an inheritance hierarchy.",
             _classDefinition.GetEntityName(),
             classIDColumnName,
-            _relatedClassDefinition.ID);
+            _relatedClassDefinition.ID));
       }
 
       return classIDColumnOrdinal;
@@ -110,18 +104,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       if (dataReader.IsDBNull (objectIDColumnOrdinal) && !dataReader.IsDBNull (classIDColumnOrdinal))
       {
-        throw _provider.CreateRdbmsProviderException (
+        throw new RdbmsProviderException(string.Format(
             "Incorrect database value encountered. Column '{0}' of entity '{1}' must not contain a value.",
             classIDColumnName,
-            _classDefinition.GetEntityName());
+            _classDefinition.GetEntityName()));
       }
 
       if (!dataReader.IsDBNull (objectIDColumnOrdinal) && dataReader.IsDBNull (classIDColumnOrdinal))
       {
-        throw _provider.CreateRdbmsProviderException (
+        throw new RdbmsProviderException(string.Format(
             "Incorrect database value encountered. Column '{0}' of entity '{1}' must not contain null.",
             classIDColumnName,
-            _classDefinition.GetEntityName());
+            _classDefinition.GetEntityName()));
       }
     }
 
@@ -142,12 +136,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (hasClassIDColumn)
       {
-        throw _provider.CreateRdbmsProviderException (
+        throw new RdbmsProviderException(string.Format(
             "Incorrect database format encountered."
             + " Entity '{0}' must not contain column '{1}', because opposite class '{2}' is not part of an inheritance hierarchy.",
             _classDefinition.GetEntityName(),
             classIDColumnName,
-            _relatedClassDefinition.ID);
+            _relatedClassDefinition.ID));
       }
     }
 

@@ -531,7 +531,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     /// <summary> Gets a value converter that converts database types to .NET types according to the providers type mapping rules. </summary>
     public virtual ValueConverter CreateValueConverter ()
     {
-      return new ValueConverter (this, StorageNameProvider, TypeConversionProvider);
+      return new ValueConverter (StorageProviderDefinition, StorageNameProvider, TypeConversionProvider);
     }
   }
 }

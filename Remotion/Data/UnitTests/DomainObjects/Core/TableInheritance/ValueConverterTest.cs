@@ -37,7 +37,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       base.SetUp();
 
       Provider.Connect();
-      _converter = new ValueConverter (Provider, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create());
+      _converter = new ValueConverter (Provider.StorageProviderDefinition, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create());
+    }
+
+    [Test]
+    public void IsOfSameStorageProvider_True ()
+    {
+      var objectID = new ObjectID (typeof(Client), Guid.NewGuid());
+
+      var result = _converter.IsOfSameStorageProvider (objectID);
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void IsOfSameStorageProvider_False ()
+    {
+      var objectID = new ObjectID ("Order", Guid.NewGuid ());
+
+      var result = _converter.IsOfSameStorageProvider (objectID);
+
+      Assert.That (result, Is.False);
     }
 
     [Test]

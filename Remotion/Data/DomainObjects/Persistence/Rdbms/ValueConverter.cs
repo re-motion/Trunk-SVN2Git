@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using System.Globalization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
@@ -31,18 +32,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   // TODO Review 4058: Extract interface, use in DB command builders, mock in DB command builder tests
   public class ValueConverter : ValueConverterBase
   {
-    private readonly RdbmsProvider _provider;
     private readonly IStorageNameProvider _storageNameProvider;
+    private readonly StorageProviderDefinition _storageProviderDefinition;
 
-    // TODO Review 4058: Remove provider parameter, use provider definition instead
-    public ValueConverter (RdbmsProvider provider, IStorageNameProvider storageNameProvider, TypeConversionProvider typeConversionProvider)
+    public ValueConverter (
+        StorageProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, TypeConversionProvider typeConversionProvider)
         : base (typeConversionProvider)
     {
-      ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
-      _provider = provider;
+      _storageProviderDefinition = storageProviderDefinition;
       _storageNameProvider = storageNameProvider;
+    }
+
+    public bool IsOfSameStorageProvider (ObjectID id)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+
+      return id.StorageProviderDefinition == _storageProviderDefinition;
     }
 
     public virtual object GetDBValue (object value)
@@ -50,9 +58,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (value == null)
         return DBNull.Value;
 
-      // TODO Review 4058: Check if ObjectID, if so, call GetDBValue overload for ObjectID
+      var valueAsObjectID = value as ObjectID;
+      if (valueAsObjectID != null)
+        return GetDBValue (valueAsObjectID);
 
-      Type type = value.GetType();
+      var type = value.GetType();
       if (type.IsEnum)
         return Convert.ChangeType (value, Enum.GetUnderlyingType (type), CultureInfo.InvariantCulture);
 
@@ -63,14 +73,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return value;
     }
 
-    // TODO Review 4058: Remove storageProviderID parameter, make private
-    public virtual object GetDBValue (ObjectID id, string storageProviderID)
+    private object GetDBValue (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
-
-      // TODO Review 4058: Call IsOfSameStorageProvider here, moved from DbCommandBuilder
-      if (id.StorageProviderDefinition.Name == storageProviderID)
+      
+      if (IsOfSameStorageProvider (id))
         return id.Value;
       else
         return id.ToString();
@@ -87,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
       catch (IndexOutOfRangeException)
       {
-        throw _provider.CreateRdbmsProviderException ("The mandatory column '{0}' could not be found.", columnName);
+        throw new RdbmsProviderException (string.Format ("The mandatory column '{0}' could not be found.", columnName));
       }
     }
 
@@ -158,15 +165,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var classDefinition = MappingConfiguration.Current.GetClassDefinition (
           classID,
-          delegate { return _provider.CreateRdbmsProviderException ("Invalid ClassID '{0}' for ID '{1}' encountered.", classID, idValue); });
+          delegate
+          {
+            return new RdbmsProviderException (string.Format("Invalid ClassID '{0}' for ID '{1}' encountered.", classID, idValue)); });
 
       if (classDefinition.IsAbstract)
       {
-        throw _provider.CreateRdbmsProviderException (
-            "Invalid database value encountered. Column '{0}' of row with ID '{1}' refers to abstract class '{2}'.",
-            _storageNameProvider.ClassIDColumnName,
-            idValue,
-            classDefinition.ID);
+        throw new RdbmsProviderException (
+            string.Format (
+                "Invalid database value encountered. Column '{0}' of row with ID '{1}' refers to abstract class '{2}'.",
+                _storageNameProvider.ClassIDColumnName,
+                idValue,
+                classDefinition.ID));
       }
 
       return classDefinition;
@@ -176,7 +186,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       int classIDColumnOrdinal = GetMandatoryOrdinal (dataReader, _storageNameProvider.ClassIDColumnName);
       if (dataReader.IsDBNull (classIDColumnOrdinal))
-        throw _provider.CreateRdbmsProviderException ("Invalid database value encountered. Column 'ClassID' must not contain null.");
+        throw new RdbmsProviderException("Invalid database value encountered. Column 'ClassID' must not contain null.");
 
       return dataReader.GetString (classIDColumnOrdinal);
     }
@@ -191,15 +201,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       CheckObjectIDColumn (classDefinition, propertyDefinition, dataReader, objectIDColumnOrdinal);
 
-      var retriever = new OppositeClassDefinitionRetriever (_provider, classDefinition, propertyDefinition, GetStorageNameProvider());
+      var retriever = new OppositeClassDefinitionRetriever (classDefinition, propertyDefinition, _storageNameProvider);
       ClassDefinition relatedClassDefinition = retriever.GetMandatoryOppositeClassDefinition (dataReader, objectIDColumnOrdinal);
       return GetObjectID (relatedClassDefinition, dataReader.GetValue (objectIDColumnOrdinal));
-    }
-
-    // TODO Review 4058: Use _storageNameProvider instead, remove method
-    private IStorageNameProvider GetStorageNameProvider ()
-    {
-      return _provider.StorageProviderDefinition.Factory.CreateStorageNameProvider();
     }
 
     private void CheckObjectIDColumn (

@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
 
       for (int i = 0; i < objectIDs.Length; i++)
       {
-        if (!IsOfSameStorageProvider (objectIDs[i]))
+        if (!ValueConverter.IsOfSameStorageProvider (objectIDs[i]))
           throw new ArgumentException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.", "objectIDs");
         values[i] = objectIDs[i].Value;
       }
