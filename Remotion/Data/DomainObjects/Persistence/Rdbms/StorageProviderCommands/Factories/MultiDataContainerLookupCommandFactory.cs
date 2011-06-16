@@ -72,12 +72,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>> CreateCommand (
-        IEnumerable<ObjectID> ids, IDbCommandFactory factory, IDbCommandExecutor executor, IDataContainerFactory dataContainerFactory)
+        IEnumerable<ObjectID> ids, IDbCommandFactory factory, IDbCommandExecutor executor, IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("ids", ids);
       ArgumentUtility.CheckNotNull ("factory", factory);
       ArgumentUtility.CheckNotNull ("executor", executor);
-      ArgumentUtility.CheckNotNull ("dataContainerFactory", dataContainerFactory);
+      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       var objectIDsPerTableDefinition = new MultiDictionary<TableDefinition, ObjectID>();
       var visitor = new EntityDefinitionVisitor();
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
               _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (group.Key, AllSelectedColumnsSpecification.Instance, group.Value[0]));
       }
 
-      return new MultiDataContainerLoadCommand (commandBuilders, false, factory, executor, dataContainerFactory);
+      return new MultiDataContainerLoadCommand (commandBuilders, false, factory, executor, dataContainerReader);
     }
   }
 }

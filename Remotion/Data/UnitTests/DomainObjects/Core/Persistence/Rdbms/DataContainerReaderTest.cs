@@ -27,10 +27,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class DataContainerFactory2Test : SqlProviderBaseTest
+  public class DataContainerReaderTest : SqlProviderBaseTest
   {
     private IDataReader _dataReaderMock;
-    private DataContainerFactory2 _factory;
+    private DataContainerReader _factory;
     private MockRepository _mockRepository;
 
     [SetUp]
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository = new MockRepository();
       _dataReaderMock = _mockRepository.StrictMock<IDataReader>();
-      _factory = new DataContainerFactory2 (Provider.CreateValueConverter());
+      _factory = new DataContainerReader (Provider.CreateValueConverter());
       // TODO Review 4058: Remove when value converter is mocked (here and in other tests)
       OppositeClassDefinitionRetriever.ResetCache ();
     }

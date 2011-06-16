@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private RelatedDataContainerLookupCommandFactory _factory;
     private IDbCommandFactory _dbCommandFactoryStub;
     private IDbCommandExecutor _dbCommandExecutorStub;
-    private IDataContainerFactory _dataContainerFactoryStub;
+    private IDataContainerReader _dataContainerReaderStub;
     private IObjectIDFactory _objectIDFactoryStub;
     private IDbCommandBuilder _dbCommandBuilderStub;
     private SimpleColumnDefinition _objectIDColumnDefinition;
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _dbCommandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
       _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
-      _dataContainerFactoryStub = MockRepository.GenerateStub<IDataContainerFactory>();
+      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _objectIDFactoryStub = MockRepository.GenerateStub<IObjectIDFactory>();
 
       _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -122,13 +122,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           null,
           _dbCommandFactoryStub,
           _dbCommandExecutorStub,
-          _dataContainerFactoryStub,
+          _dataContainerReaderStub,
           _objectIDFactoryStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
-      Assert.That (((MultiDataContainerLoadCommand) result).DataContainerFactory, Is.SameAs (_dataContainerFactoryStub));
+      Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandFactory, Is.SameAs (_dbCommandFactoryStub));
     }
@@ -173,13 +173,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }),
           _dbCommandFactoryStub,
           _dbCommandExecutorStub,
-          _dataContainerFactoryStub,
+          _dataContainerReaderStub,
           _objectIDFactoryStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
-      Assert.That (((MultiDataContainerLoadCommand) result).DataContainerFactory, Is.SameAs (_dataContainerFactoryStub));
+      Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandFactory, Is.SameAs (_dbCommandFactoryStub));
     }
@@ -215,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           null,
           _dbCommandFactoryStub,
           _dbCommandExecutorStub,
-          _dataContainerFactoryStub,
+          _dataContainerReaderStub,
           _objectIDFactoryStub);
 
       Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLookupCommand)));
@@ -276,7 +276,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }),
           _dbCommandFactoryStub,
           _dbCommandExecutorStub,
-          _dataContainerFactoryStub,
+          _dataContainerReaderStub,
           _objectIDFactoryStub);
 
       Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLookupCommand)));

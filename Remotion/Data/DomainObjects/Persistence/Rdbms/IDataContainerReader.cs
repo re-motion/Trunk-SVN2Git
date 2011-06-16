@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// <summary>
   /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and converting it into <see cref="DataContainer"/> instances.
   /// </summary>
-  public interface IDataContainerFactory
+  public interface IDataContainerReader
   {
     DataContainer CreateDataContainer (IDataReader dataReader);
     DataContainer[] CreateCollection (IDataReader dataReader, bool allowNulls);

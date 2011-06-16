@@ -30,25 +30,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     private readonly bool _allowNulls;
     private readonly IDbCommandFactory _dbCommandFactory;
     private readonly IDbCommandExecutor _dbCommandExecutor;
-    private readonly IDataContainerFactory _dataContainerFactory;
+    private readonly IDataContainerReader _dataContainerReader;
 
     public MultiDataContainerLoadCommand (
         IEnumerable<IDbCommandBuilder> dbCommandBuilders,
         bool allowNulls,
         IDbCommandFactory dbCommandFactory,
         IDbCommandExecutor dbCommandExecutor,
-        IDataContainerFactory dataContainerFactory)
+        IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilders", dbCommandBuilders);
       ArgumentUtility.CheckNotNull ("dbCommandFactory", dbCommandFactory);
       ArgumentUtility.CheckNotNull ("dbCommandExecutor", dbCommandExecutor);
-      ArgumentUtility.CheckNotNull ("dataContainerFactory", dataContainerFactory);
+      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       _dbCommandBuilders = dbCommandBuilders.ToArray();
       _allowNulls = allowNulls;
       _dbCommandFactory = dbCommandFactory;
       _dbCommandExecutor = dbCommandExecutor;
-      _dataContainerFactory = dataContainerFactory;
+      _dataContainerReader = dataContainerReader;
     }
 
     public IDbCommandBuilder[] DbCommandBuilders
@@ -71,9 +71,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandExecutor; }
     }
 
-    public IDataContainerFactory DataContainerFactory
+    public IDataContainerReader DataContainerReader
     {
-      get { return _dataContainerFactory; }
+      get { return _dataContainerReader; }
     }
 
     public IEnumerable<DataContainer> Execute ()
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = _dbCommandExecutor.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          return _dataContainerFactory.CreateCollection (reader, allowNulls);
+          return _dataContainerReader.CreateCollection (reader, allowNulls);
         }
       }
     }

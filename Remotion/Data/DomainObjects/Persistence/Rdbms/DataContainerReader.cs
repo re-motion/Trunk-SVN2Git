@@ -23,16 +23,15 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  // TODO Review 4058: Rename to DataContainerReader and IDataContainerReader
   // TODO Review 4058: Move this class + interface + ObjectFactory + interface to StorageProviderCommands\DataReaders
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="DataContainer"/> instances.
   /// </summary>
-  public class DataContainerFactory2 : IDataContainerFactory
+  public class DataContainerReader : IDataContainerReader
   {
     private readonly ValueConverter _valueConverter;
 
-    public DataContainerFactory2 (ValueConverter valueConverter)
+    public DataContainerReader (ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 

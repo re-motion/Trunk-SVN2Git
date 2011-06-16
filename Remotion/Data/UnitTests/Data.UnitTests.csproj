@@ -289,7 +289,7 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CompositeScriptBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerFactory2Test.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\AllSelectedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\EmptyOrderedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\NonEmptyOrderedColumnsSpecificationTest.cs" />

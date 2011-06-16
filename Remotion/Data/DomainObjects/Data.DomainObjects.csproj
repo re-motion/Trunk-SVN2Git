@@ -243,7 +243,7 @@
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />
-    <Compile Include="Persistence\Rdbms\DataContainerFactory2.cs" />
+    <Compile Include="Persistence\Rdbms\DataContainerReader.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\AllSelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\EmptyOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\IDbCommandBuilderFactory.cs" />
@@ -252,7 +252,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\NonEmptyOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\IDataContainerFactory.cs" />
+    <Compile Include="Persistence\Rdbms\IDataContainerReader.cs" />
     <Compile Include="Persistence\Rdbms\IDbCommandExecutor.cs" />
     <Compile Include="Persistence\Rdbms\IObjectIDFactory.cs" />
     <Compile Include="Persistence\Rdbms\ObjectIDFactory.cs" />

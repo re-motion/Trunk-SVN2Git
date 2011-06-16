@@ -27,23 +27,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     private readonly IDbCommandBuilder _dbCommandBuilder;
     private readonly IDbCommandFactory _dbCommandFactory;
     private readonly IDbCommandExecutor _dbCommandExecutor;
-    private readonly IDataContainerFactory _dataContainerFactory;
+    private readonly IDataContainerReader _dataContainerReader;
 
     public SingleDataContainerLoadCommand (
         IDbCommandBuilder dbCommandBuilder,
         IDbCommandFactory dbCommandFactory,
         IDbCommandExecutor dbCommandExecutor,
-        IDataContainerFactory dataContainerFactory)
+        IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilder", dbCommandBuilder);
       ArgumentUtility.CheckNotNull ("dbCommandFactory", dbCommandFactory);
       ArgumentUtility.CheckNotNull ("dbCommandExecutor", dbCommandExecutor);
-      ArgumentUtility.CheckNotNull ("dataContainerFactory", dataContainerFactory);
+      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       _dbCommandBuilder = dbCommandBuilder;
       _dbCommandFactory = dbCommandFactory;
       _dbCommandExecutor = dbCommandExecutor;
-      _dataContainerFactory = dataContainerFactory;
+      _dataContainerReader = dataContainerReader;
     }
 
     public IDbCommandBuilder DbCommandBuilder
@@ -61,9 +61,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandExecutor; }
     }
 
-    public IDataContainerFactory DataContainerFactory
+    public IDataContainerReader DataContainerReader
     {
-      get { return _dataContainerFactory; }
+      get { return _dataContainerReader; }
     }
 
     public DataContainer Execute ()
@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = _dbCommandExecutor.ExecuteReader (command, CommandBehavior.SingleRow))
         {
-          return _dataContainerFactory.CreateDataContainer(reader);
+          return _dataContainerReader.CreateDataContainer(reader);
         }
       }
     }

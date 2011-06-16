@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommandExecutor _dbCommandExecutorStub;
     private IDataReader _dataReaderMock;
     private SingleDataContainerLoadCommand _command;
-    private IDataContainerFactory _dataContainerFactoryStub;
+    private IDataContainerReader _dataContainerReaderStub;
     private DataContainer _container;
 
     public override void SetUp ()
@@ -54,10 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
       _dbCommandExecutorStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleRow)).Return(_dataReaderMock);
 
-      _dataContainerFactoryStub = MockRepository.GenerateStub<IDataContainerFactory>();
+      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _command = new SingleDataContainerLoadCommand (
-          _dbCommandBuilderStub, _dbCommandFactory, _dbCommandExecutorStub, _dataContainerFactoryStub);
-      _dataContainerFactoryStub.Stub (stub => stub.CreateDataContainer (_dataReaderMock)).Return (_container);
+          _dbCommandBuilderStub, _dbCommandFactory, _dbCommandExecutorStub, _dataContainerReaderStub);
+      _dataContainerReaderStub.Stub (stub => stub.CreateDataContainer (_dataReaderMock)).Return (_container);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (_command.DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
       Assert.That (_command.DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
       Assert.That (_command.DbCommandFactory, Is.SameAs (_dbCommandFactory));
-      Assert.That (_command.DataContainerFactory, Is.SameAs(_dataContainerFactoryStub));
+      Assert.That (_command.DataContainerReader, Is.SameAs(_dataContainerReaderStub));
     }
 
     [Test]

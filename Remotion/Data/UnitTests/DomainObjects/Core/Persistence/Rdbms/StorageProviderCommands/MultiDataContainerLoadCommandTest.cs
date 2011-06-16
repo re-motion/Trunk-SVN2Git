@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommandBuilder _dbCommandBuilder1Stub;
     private IDbCommandExecutor _dbCommandExecutorStub;
     private IDbCommandBuilder _dbCommandBuilder2Stub;
-    private IDataContainerFactory _dataContainerFactoryStub;
+    private IDataContainerReader _dataContainerReaderStub;
     private DataContainer _container;
 
     public override void SetUp ()
@@ -57,17 +57,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
       _dbCommandExecutorStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleResult)).Return (_dataReaderStub);
 
-      _dataContainerFactoryStub = MockRepository.GenerateStub<IDataContainerFactory>();
+      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
     }
 
     [Test]
     public void Initialization ()
     {
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
+          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
 
       Assert.That (command.AllowNulls, Is.True);
-      Assert.That (command.DataContainerFactory, Is.SameAs (_dataContainerFactoryStub));
+      Assert.That (command.DataContainerReader, Is.SameAs (_dataContainerReaderStub));
       Assert.That (command.DbCommandBuilders, Is.EqualTo(new[]{_dbCommandBuilder1Stub, _dbCommandBuilder2Stub}));
       Assert.That (command.DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
       Assert.That (command.DbCommandFactory, Is.SameAs(_dbCommandFactoryStub));
@@ -76,10 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_SeveralCommandBuilders_AllowNullsFalse ()
     {
-      _dataContainerFactoryStub.Stub (stub => stub.CreateCollection (_dataReaderStub, false)).Return (new[] { _container });
+      _dataContainerReaderStub.Stub (stub => stub.CreateCollection (_dataReaderStub, false)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, false, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
+          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, false, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
 
       var result = command.Execute().ToArray();
 
@@ -89,10 +89,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_OneCommandBuilder_AllowNullsTrue ()
     {
-      _dataContainerFactoryStub.Stub (stub => stub.CreateCollection (_dataReaderStub, true)).Return (new[] { _container });
+      _dataContainerReaderStub.Stub (stub => stub.CreateCollection (_dataReaderStub, true)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerFactoryStub);
+          new[] { _dbCommandBuilder1Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
 
       var result = command.Execute ().ToArray ();
 

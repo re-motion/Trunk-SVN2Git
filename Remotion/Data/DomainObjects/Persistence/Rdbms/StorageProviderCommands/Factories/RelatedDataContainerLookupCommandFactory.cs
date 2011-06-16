@@ -92,14 +92,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         SortExpressionDefinition sortExpression,
         IDbCommandFactory factory,
         IDbCommandExecutor executor,
-        IDataContainerFactory dataContainerFactory,
+        IDataContainerReader dataContainerReader,
         IObjectIDFactory objectIDFactory)
     {
       ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("factory", factory);
       ArgumentUtility.CheckNotNull ("executor", executor);
-      ArgumentUtility.CheckNotNull ("dataContainerFactory", dataContainerFactory);
+      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
       ArgumentUtility.CheckNotNull ("objectIDFactory", objectIDFactory);
 
       var visitor = new EntityDefinitionVisitor();
@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
             ((SimpleColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
             foreignKeyValue,
             GetOrderedColumns (sortExpression));
-        return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, factory, executor, dataContainerFactory); //TODO 4074: AllowNulls False/True ?
+        return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, factory, executor, dataContainerReader); //TODO 4074: AllowNulls False/True ?
       }
       else
       {
