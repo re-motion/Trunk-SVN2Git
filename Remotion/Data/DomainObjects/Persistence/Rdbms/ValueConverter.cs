@@ -29,7 +29,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// Extends <see cref="ValueConverterBase"/> with functionality for reading database values from an <see cref="IDataReader"/> and converting
   /// them to .NET values, and for converting .NET values to database values.
   /// </summary>
-  // TODO Review 4058: use interface in DB command builders, mock in DB command builder tests
   public class ValueConverter : ValueConverterBase, IValueConverter
   {
     private readonly IStorageNameProvider _storageNameProvider;
