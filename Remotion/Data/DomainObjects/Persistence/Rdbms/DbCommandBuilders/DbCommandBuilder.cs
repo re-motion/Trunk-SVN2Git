@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Data;
+using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
@@ -97,6 +99,35 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var orderByClause = generator.GenerateOrderByClauseString (sortExpression);
       return " " + orderByClause;
     }
-    
+
+    protected void AppendSelectClause (StringBuilder statement, ISelectedColumnsSpecification selectedColumns)
+    {
+      statement.Append ("SELECT");
+      selectedColumns.AppendProjection (statement, SqlDialect);
+    }
+
+    protected void AppendFromClause (StringBuilder statement, TableDefinition tableDefinition)
+    {
+      statement.Append ("FROM ");
+      AppendTableName (statement, tableDefinition);
+    }
+
+    protected void AppendTableName (StringBuilder statement, TableDefinition tableDefinition)
+    {
+      if (tableDefinition.TableName.SchemaName != null)
+      {
+        statement.Append (SqlDialect.DelimitIdentifier (tableDefinition.TableName.SchemaName));
+        statement.Append (".");
+      }
+      statement.Append (SqlDialect.DelimitIdentifier (tableDefinition.TableName.EntityName));
+    }
+
+    protected void AppendComparingWhereClause (StringBuilder statement, SimpleColumnDefinition comparedColumn, IDataParameter expectedValue)
+    {
+      statement.Append (" WHERE ");
+      statement.Append (SqlDialect.DelimitIdentifier (comparedColumn.Name));
+      statement.Append (" = ");
+      statement.Append (expectedValue.ParameterName);
+    }
   }
 }

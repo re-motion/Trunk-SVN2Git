@@ -51,6 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp ();
 
+      // TODO Review 4065: Same refactorings as in TableRelationLookupSelectDbCommandBuilder
+
       _objectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
       _foreignKeyColumnDefinition = new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false);
       _classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
@@ -62,6 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
         .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" [Column1], [Column2], [Column3] "));
 
       _orderedColumnsStub = MockRepository.GenerateStub<IOrderedColumnsSpecification> ();
+      // TODO Review 4065: Use two different column sets (original set, full set) => the full set should be appended to the stringbuilder, not the original one
       _orderedColumnsStub.Stub (stub => stub.UnionWithSelectedColumns (_selectedColumnsStub)).Return (_selectedColumnsStub);
       _orderedColumnsStub
           .Stub (stub => stub.AppendOrderByClause (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
@@ -124,6 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       var result = builder.Create (_commandFactoryStub);
 
+      // TODO Review 4065: UNION ALL should be followed by SELECT ... FROM
       Assert.That (result.CommandText, Is.EqualTo (
         "SELECT [Column1], [Column2], [Column3] FROM [Table1] WHERE [FKID] = @FKID UNION ALL [Table2] WHERE [FKID] = @FKID UNION ALL "
         +"[customSchema].[Table3] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));

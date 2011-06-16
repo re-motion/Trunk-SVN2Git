@@ -86,6 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
     }
 
+    // TODO Review 4064: Change type to IDColumnDefinition
     protected virtual IColumnDefinition CreateRelationColumnDefinition (
         PropertyDefinition propertyDefinition,
         IStorageProviderDefinitionFinder providerDefinitionFinder,

@@ -22,6 +22,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
+  /// <summary>
+  /// The <see cref="UnionRelationLookupSelectDbCommandBuilder"/> builds a command that allows retrieving a set of records where a foreign key column
+  /// matches a given <see cref="ObjectID"/> value from a set of unioned tables.
+  /// </summary>
   public class UnionRelationLookupSelectDbCommandBuilder : DbCommandBuilder
   {
     private readonly UnionViewDefinition _unionViewDefinition;
@@ -33,6 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public UnionRelationLookupSelectDbCommandBuilder (
         UnionViewDefinition unionViewDefinition,
         ISelectedColumnsSpecification selectedColumns,
+        // TODO Review 4064: IDColumnDefinition  
         SimpleColumnDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns,
@@ -62,10 +67,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var fullProjection = _orderedColumns.UnionWithSelectedColumns (_selectedColumns);
 
       var statement = new StringBuilder();
+
+      // TODO Review 4064: Use base methods (Append...)
+
       statement.Append ("SELECT");
       fullProjection.AppendProjection (statement, SqlDialect);
-      statement.Append ("FROM ");
 
+      var parameter = AddCommandParameter (command, _foreignKeyColumn.Name, _foreignKeyValue);
+
+      statement.Append ("FROM ");
       bool first = true;
       foreach (var table in _unionViewDefinition.GetAllTables())
       {
@@ -78,17 +88,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
           statement.Append (".");
         }
         statement.Append (SqlDialect.DelimitIdentifier (table.TableName.EntityName));
+
         statement.Append (" WHERE ");
         statement.Append (SqlDialect.DelimitIdentifier (_foreignKeyColumn.Name));
         statement.Append (" = ");
-        statement.Append (SqlDialect.GetParameterName (_foreignKeyColumn.Name));
+        statement.Append (parameter.ParameterName);
 
         first = false;
       }
       _orderedColumns.AppendOrderByClause (statement, SqlDialect);
-
-      AddCommandParameter (command, SqlDialect.GetParameterName (_foreignKeyColumn.Name), _foreignKeyValue);
-
+      
       command.CommandText = statement.ToString();
 
       return command;

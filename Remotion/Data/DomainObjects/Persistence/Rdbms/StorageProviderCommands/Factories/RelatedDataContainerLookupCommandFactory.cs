@@ -111,6 +111,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
             visitor.TableDefinition,
             AllSelectedColumnsSpecification.Instance,
+            // TODO Review 4064: should be IDColumnDefinition
             ((SimpleColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
             foreignKeyValue,
             GetOrderedColumns (sortExpression));
@@ -121,6 +122,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
             visitor.UnionViewDefinition,
             new SelectedColumnsSpecification (new[] { visitor.UnionViewDefinition.ObjectIDColumn, visitor.UnionViewDefinition.ClassIDColumn }),
+            // TODO Review 4064: should be IDColumnDefinition
             (SimpleColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition,
             foreignKeyValue,
             GetOrderedColumns (sortExpression));

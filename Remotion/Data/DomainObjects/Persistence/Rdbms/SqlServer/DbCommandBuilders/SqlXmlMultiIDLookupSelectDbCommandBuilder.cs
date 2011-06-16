@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
@@ -38,7 +39,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
         ISelectedColumnsSpecification selectedColumns,
         ObjectID[] objectIDs,
         ISqlDialect sqlDialect,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter) : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("table", table);
@@ -56,48 +56,37 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
 
       var command = commandFactory.CreateDbCommand();
 
+      var statement = new StringBuilder ();
+      AppendSelectClause (statement, _selectedColumns);
+      AppendFromClause (statement, _table);
+
       var xmlString = new StringBuilder ("<L>");
-      foreach (var value in GetValueArrayForParameter(_objectIDs))
+      foreach (var value in GetObjectIDValueStrings (_objectIDs))
         xmlString.Append ("<I>").Append (value).Append ("</I>");
       xmlString.Append ("</L>");
+      var xmlStringParameter = AddCommandParameter (command, _table.ObjectIDColumn.Name, xmlString);
+      xmlStringParameter.DbType = DbType.Xml;
 
-      var statement = new StringBuilder ();
-      statement.Append ("SELECT");
-      _selectedColumns.AppendProjection (statement, SqlDialect);
-      statement.Append ("FROM ");
-      if (_table.TableName.SchemaName != null)
-      {
-        statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.SchemaName));
-        statement.Append (".");
-      }
-      statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.EntityName));
       statement.Append (" WHERE ");
       statement.Append (SqlDialect.DelimitIdentifier (_table.ObjectIDColumn.Name));
       statement.Append (" IN (");
-      statement.Append ("SELECT T.c.value('.', '").Append (_table.ObjectIDColumn.StorageType).Append ("') FROM ");
-      statement.Append (SqlDialect.GetParameterName (_table.ObjectIDColumn.Name));
-      statement.Append (".nodes('/L/I') T(c)");
-
-      var parameter = AddCommandParameter (command, SqlDialect.GetParameterName (_table.ObjectIDColumn.Name), xmlString);
-      parameter.DbType = DbType.Xml;
-
+      statement.Append ("SELECT T.c.value('.', '").Append (_table.ObjectIDColumn.StorageType).Append ("')");
+      statement.Append (" FROM ");
+      statement.Append (xmlStringParameter.ParameterName);
+      statement.Append (".nodes('/L/I') T(c))");
+      
       command.CommandText = statement.ToString ();
-
       return command;
     }
 
-    private object[] GetValueArrayForParameter (ObjectID[] objectIDs)
+    private IEnumerable<string> GetObjectIDValueStrings (IEnumerable<ObjectID> objectIDs)
     {
-      var values = new object[objectIDs.Length];
-
-      for (int i = 0; i < objectIDs.Length; i++)
+      foreach (ObjectID t in objectIDs)
       {
-        if (!ValueConverter.IsOfSameStorageProvider (objectIDs[i]))
+        if (!ValueConverter.IsOfSameStorageProvider (t))
           throw new ArgumentException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.", "objectIDs");
-        values[i] = objectIDs[i].Value;
+        yield return t.Value.ToString();
       }
-
-      return values;
     }
   }
 }

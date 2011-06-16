@@ -64,13 +64,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      return new SqlXmlMultiIDLookupSelectDbCommandBuilder (table, selectedColumns, objectIDs, _sqlDialect, _rdbmsProviderDefinition, _valueConverter);
+      return new SqlXmlMultiIDLookupSelectDbCommandBuilder (table, selectedColumns, objectIDs, _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        SimpleColumnDefinition foreignKeyColumn,
+        SimpleColumnDefinition foreignKeyColumn, // TODO Review 4064: IDColumnDefinition
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns)
     {

@@ -22,6 +22,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
+  /// <summary>
+  /// The <see cref="TableRelationLookupSelectDbCommandBuilder"/> builds a command that allows retrieving a set of records where a foreign key column
+  /// matches a given <see cref="ObjectID"/> value.
+  /// </summary>
   public class TableRelationLookupSelectDbCommandBuilder : DbCommandBuilder
   {
     private readonly TableDefinition _table;
@@ -33,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public TableRelationLookupSelectDbCommandBuilder (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        SimpleColumnDefinition foreignKeyColumn,
+        SimpleColumnDefinition foreignKeyColumn, // TODO Review 4064: change to IDColumnDefinition
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns,
         ISqlDialect sqlDialect,
@@ -57,36 +61,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     {
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
 
+      var command = commandFactory.CreateDbCommand();
+
+      var statement = new StringBuilder();
+      AppendSelectClause (statement, _selectedColumns);
+      AppendFromClause (statement, _table);
+      var foreignKeyParameter = AddCommandParameter (command, _foreignKeyColumn.Name, _foreignKeyValue);
+      AppendComparingWhereClause (statement, _foreignKeyColumn, foreignKeyParameter);
+
       // TODO in case of integer primary keys: 
       // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,
       // the code below must be selectively actived to run only for integer primary keys.
       // Note: This behaviour is not desired in case of GUID primary keys, because two same foreign key GUIDs pointing 
       //       to different classIDs must be an error! In this case PersistenceManager.CheckClassIDForVirtualEndPoint raises an exception. 
-      //if (_whereClauseValueIsRelatedID && _expectedValue.ClassDefinition.IsPartOfInheritanceHierarchy && IsOfSameStorageProvider (_expectedValue))
-      //  whereClauseBuilder.Add (RdbmsProvider.GetRelationClassIDColumnName (_checkedColumnName), _expectedValue.ClassID);
+      //if (_foreignKeyValue.ClassDefinition.IsPartOfInheritanceHierarchy && ValueProvider.IsOfSameStorageProvider (_foreignKeyValue))
+      //  statement.Append (" AND ").Append (Delimit(_foreignKeyColumn.ClassIDColumn.Name)).Append (" = ").Append (ParameterOf (_foreignKeyValue.ClassID));
 
-      var command = commandFactory.CreateDbCommand();
-
-      var statement = new StringBuilder();
-      statement.Append ("SELECT");
-      _selectedColumns.AppendProjection (statement, SqlDialect);
-      statement.Append ("FROM ");
-      if (_table.TableName.SchemaName != null)
-      {
-        statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.SchemaName));
-        statement.Append (".");
-      }
-      statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.EntityName));
-      statement.Append (" WHERE ");
-      statement.Append (SqlDialect.DelimitIdentifier (_foreignKeyColumn.Name));
-      statement.Append (" = ");
-      statement.Append (SqlDialect.GetParameterName (_foreignKeyColumn.Name));
       _orderedColumns.AppendOrderByClause (statement, SqlDialect);
 
-      AddCommandParameter (command, SqlDialect.GetParameterName (_foreignKeyColumn.Name), _foreignKeyValue);
-
       command.CommandText = statement.ToString();
-
       return command;
     }
   }

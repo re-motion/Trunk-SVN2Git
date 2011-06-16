@@ -30,7 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class TableRelationLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
   {
-    private SimpleColumnDefinition _objectIDColumnDefinition;
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private ISqlDialect _sqlDialectStub;
     private IDbCommandFactory _commandFactoryStub;
@@ -46,7 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp ();
 
-      _objectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
       _foreignKeyColumnDefinition = new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false);
 
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification> ();
@@ -59,6 +57,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Stub (stub => stub.AppendOrderByClause (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" ORDER BY [Column1] ASC, [Column2] DESC"));
 
+      // TODO Review 4064:
+      //   - _sqlDialectStub => mock, move expectations down to tests, only expect what's really needed
+      //   - _sqlDialectStub => mock
+
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("dbo")).Return ("[dbo]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
@@ -70,6 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
 
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
+
+      // TODO Review 4064: Move down to tests
       _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
       _dataParameterCollectionMock.Replay ();
 
@@ -82,6 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
 
+      // TODO Review 4064: Like in SingleIDLookupSelectCommandBuilderTest, use _objectID and stub the value converter for exactly this _objectID
       _guid = Guid.NewGuid ();
       _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (_guid);
     }
@@ -102,10 +107,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       var result = builder.Create (_commandFactoryStub);
 
+      _dataParameterCollectionMock.VerifyAllExpectations ();
+
       Assert.That (result.CommandText, Is.EqualTo (
         "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
-      _dataParameterCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -124,10 +130,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       var result = builder.Create (_commandFactoryStub);
 
+      _dataParameterCollectionMock.VerifyAllExpectations ();
+
       Assert.That (result.CommandText, Is.EqualTo (
         "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
-      _dataParameterCollectionMock.VerifyAllExpectations ();
     }
   }
 }

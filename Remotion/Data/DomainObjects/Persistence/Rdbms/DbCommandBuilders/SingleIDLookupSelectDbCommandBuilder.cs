@@ -52,22 +52,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var command = commandFactory.CreateDbCommand();
 
       var statement = new StringBuilder();
-      statement.Append ("SELECT");
-      _selectedColumns.AppendProjection (statement, SqlDialect);
-      statement.Append ("FROM ");
-      if (_table.TableName.SchemaName != null)
-      {
-        statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.SchemaName));
-        statement.Append (".");
-      }
-      statement.Append (SqlDialect.DelimitIdentifier (_table.TableName.EntityName));
-      statement.Append (" WHERE ");
-      statement.Append (SqlDialect.DelimitIdentifier (_table.ObjectIDColumn.Name));
-      statement.Append (" = ");
-      statement.Append (SqlDialect.GetParameterName (_table.ObjectIDColumn.Name));
+      AppendSelectClause (statement, _selectedColumns);
+      AppendFromClause(statement, _table);
 
-      AddCommandParameter (command, SqlDialect.GetParameterName (_table.ObjectIDColumn.Name), _objectID);
-
+      var parameter = AddCommandParameter (command, _table.ObjectIDColumn.Name, _objectID);
+      AppendComparingWhereClause (statement, _table.ObjectIDColumn, parameter);
+      
       command.CommandText = statement.ToString();
 
       return command;
