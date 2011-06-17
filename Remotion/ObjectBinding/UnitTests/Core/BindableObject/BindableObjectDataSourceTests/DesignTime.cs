@@ -22,8 +22,7 @@ using NUnit.Framework;
 using Remotion.Context;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
-using Remotion.Implementation;
-using Remotion.Logging.BridgeImplementations;
+using Remotion.Logging;
 using Remotion.Mixins.BridgeImplementations;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -72,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
       SetupResult.For (serviceStub.GetTypes (null, false)).IgnoreArguments ().Return (Assembly.GetExecutingAssembly ().GetTypes ());
       SetupResult.For (host.GetService (typeof (ITypeDiscoveryService))).Return (serviceStub);
       SetupResult.For (host.GetType (typeof (CallContextStorageProvider).AssemblyQualifiedName)).Return (typeof (CallContextStorageProvider));
-      SetupResult.For (host.GetType (typeof (LogManagerImplementation).AssemblyQualifiedName)).Return (typeof (LogManagerImplementation));
+      SetupResult.For (host.GetType (typeof (ILogManager).AssemblyQualifiedName)).Return (typeof (Log4NetLogManager));
     }
 
     [TearDown]

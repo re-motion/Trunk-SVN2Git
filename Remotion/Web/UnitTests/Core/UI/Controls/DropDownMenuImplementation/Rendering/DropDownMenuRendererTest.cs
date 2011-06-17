@@ -20,8 +20,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
-using Remotion.Logging.BridgeInterfaces;
-using Remotion.ServiceLocation;
 using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;

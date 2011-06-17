@@ -21,8 +21,7 @@ using Remotion.BridgeImplementations;
 using Remotion.BridgeInterfaces;
 using Remotion.Collections;
 using Remotion.Context;
-using Remotion.Logging.BridgeImplementations;
-using Remotion.Logging.BridgeInterfaces;
+using Remotion.Logging;
 using Remotion.Mixins.BridgeImplementations;
 using Remotion.Mixins.BridgeInterfaces;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
@@ -111,7 +110,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IParamListCreateImplementation), new ParamListCreateImplementation());
       _instances.Add (typeof (IObjectFactoryImplementation), new ObjectFactoryImplementation());
       _instances.Add (typeof (ITypeFactoryImplementation), new TypeFactoryImplementation());
-      _instances.Add (typeof (ILogManagerImplementation), new LogManagerImplementation());
+      _instances.Add (typeof (ILogManager), new Log4NetLogManager());
       _instances.Add (typeof (IBootstrapStorageProvider), new BootstrapStorageProvider());
       _instances.Add (typeof (ITypeDiscoveryServiceFactoryImplementation), new TypeDiscoveryServiceFactoryImplementation());
       _instances.Add (typeof (IAdapterRegistryImplementation), new AdapterRegistryImplementation());
