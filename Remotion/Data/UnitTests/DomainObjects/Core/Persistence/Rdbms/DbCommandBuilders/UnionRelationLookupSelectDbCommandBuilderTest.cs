@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -30,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class UnionRelationLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
   {
-    private SimpleColumnDefinition _objectIDColumnDefinition;
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private ISqlDialect _sqlDialectMock;
     private IDbCommandFactory _commandFactoryStub;
@@ -43,8 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private TableDefinition _table1;
     private TableDefinition _table2;
     private TableDefinition _table3;
-    private SimpleColumnDefinition _classIDColumnDefinition;
-    private SimpleColumnDefinition _timstampColumnDefinition;
     private IValueConverter _valueConverterStub;
     private ISelectedColumnsSpecification _unionedColumnsStub;
     private ObjectID _objectID;
@@ -53,12 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp();
 
-      _objectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
       _foreignKeyColumnDefinition = new IDColumnDefinition (
-          new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false), _objectIDColumnDefinition);
-      _classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
-      _timstampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
-
+          new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false), ColumnDefinitionObjectMother.ObjectIDColumn);
+      
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _selectedColumnsStub
           .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
@@ -114,9 +109,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           TestDomainStorageProviderDefinition,
           null,
           new[] { _table1, _table2, _table3 },
-          _objectIDColumnDefinition,
-          _classIDColumnDefinition,
-          _timstampColumnDefinition,
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

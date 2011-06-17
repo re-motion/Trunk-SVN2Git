@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -24,16 +25,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     public static TableDefinition Create (StorageProviderDefinition storageProviderDefinition, EntityNameDefinition tableName)
     {
-      var objectIdColumnDefinition = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
-      var timestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
-
       return TableDefinitionObjectMother.Create (
           storageProviderDefinition,
           tableName,
-          objectIdColumnDefinition,
-          classIdColumnDefinition,
-          timestampColumnDefinition);
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
     }
 
     public static TableDefinition Create (

@@ -29,6 +29,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Data
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -46,9 +47,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDataContainerReader _dataContainerReaderStub;
     private IObjectIDFactory _objectIDFactoryStub;
     private IDbCommandBuilder _dbCommandBuilderStub;
-    private SimpleColumnDefinition _objectIDColumnDefinition;
-    private SimpleColumnDefinition _classIDColumnDefinition;
-    private SimpleColumnDefinition _timstampColumnDefinition;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
 
@@ -66,23 +64,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
 
-      _objectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      _classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
-      _timstampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
-
       _tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Table"),
-          _objectIDColumnDefinition,
-          _classIDColumnDefinition,
-          _timstampColumnDefinition);
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
       _unionViewDefinition = new UnionViewDefinition (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "ViewName"),
           new[] { _tableDefinition },
-          _objectIDColumnDefinition,
-          _classIDColumnDefinition,
-          _timstampColumnDefinition,
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

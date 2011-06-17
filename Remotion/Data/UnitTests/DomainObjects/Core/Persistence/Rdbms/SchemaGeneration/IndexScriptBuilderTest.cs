@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -41,104 +42,94 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private IIndexDefinition _indexDefinition1;
     private IIndexDefinition _indexDefinition2;
     private IIndexDefinition _indexDefinition3;
-    private SimpleColumnDefinition _objectIDColunmn;
-    private SimpleColumnDefinition _classIDCOlumn;
-    private SimpleColumnDefinition _timestampColumn;
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _indexScriptElementFactoryStub = MockRepository.GenerateStub<IIndexScriptElementFactory> ();
+      _indexScriptElementFactoryStub = MockRepository.GenerateStub<IIndexScriptElementFactory>();
 
-      _builder = new IndexScriptBuilder (_indexScriptElementFactoryStub, new SqlCommentScriptElementFactory ());
+      _builder = new IndexScriptBuilder (_indexScriptElementFactoryStub, new SqlCommentScriptElementFactory());
 
       _indexDefinition1 = MockRepository.GenerateStub<IIndexDefinition>();
-      _indexDefinition2 = MockRepository.GenerateStub<IIndexDefinition> ();
-      _indexDefinition3 = MockRepository.GenerateStub<IIndexDefinition> ();
+      _indexDefinition2 = MockRepository.GenerateStub<IIndexDefinition>();
+      _indexDefinition3 = MockRepository.GenerateStub<IIndexDefinition>();
 
-      // TODO Review 4056: Add ColumnDefinitionObjectMethod class (in Remotion.Data.UnitTests.DomainObjects.Factories) with ObjectIDColumn, ClassIDColumn, and TimestampColumn properties
-      // TODO Review 4056: Use these properties in all tests where entities are created - instead of recreating these columns over and over again
-      // TODO Review 4056: Where possible, avoid fields to store the columns in the tests
-      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
-      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
-      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
-      
       _tableDefinition1 = new TableDefinition (
-         SchemaGenerationFirstStorageProviderDefinition,
-         new EntityNameDefinition (null, "Table1"),
-         new EntityNameDefinition (null, "TableView1"),
-         _objectIDColunmn,
-         _classIDCOlumn,
-         _timestampColumn,
-         new SimpleColumnDefinition[0],
-         new ITableConstraintDefinition[0],
-         new[]{_indexDefinition1},
-         new EntityNameDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Table1"),
+          new EntityNameDefinition (null, "TableView1"),
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new SimpleColumnDefinition[0],
+          new ITableConstraintDefinition[0],
+          new[] { _indexDefinition1 },
+          new EntityNameDefinition[0]);
       _tableDefinition2 = new TableDefinition (
-         SchemaGenerationFirstStorageProviderDefinition,
-         new EntityNameDefinition (null, "Table2"),
-         new EntityNameDefinition (null, "TableView2"),
-         _objectIDColunmn,
-         _classIDCOlumn,
-         _timestampColumn,
-         new SimpleColumnDefinition[0],
-         new ITableConstraintDefinition[0],
-         new[]{_indexDefinition2, _indexDefinition3},
-         new EntityNameDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Table2"),
+          new EntityNameDefinition (null, "TableView2"),
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new SimpleColumnDefinition[0],
+          new ITableConstraintDefinition[0],
+          new[] { _indexDefinition2, _indexDefinition3 },
+          new EntityNameDefinition[0]);
       _unionViewDefinition1 = new UnionViewDefinition (
-         SchemaGenerationFirstStorageProviderDefinition,
-         new EntityNameDefinition (null, "UnionView1"),
-         new[] { _tableDefinition1 },
-         _objectIDColunmn,
-         _classIDCOlumn,
-         _timestampColumn,
-         new SimpleColumnDefinition[0],
-         new[] {_indexDefinition1},
-         new EntityNameDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "UnionView1"),
+          new[] { _tableDefinition1 },
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new SimpleColumnDefinition[0],
+          new[] { _indexDefinition1 },
+          new EntityNameDefinition[0]);
       _unionViewDefinition2 = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView2"),
           new[] { _tableDefinition2 },
-          _objectIDColunmn,
-          _timestampColumn,
-          _classIDCOlumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new SimpleColumnDefinition[0],
-          new[]{_indexDefinition2, _indexDefinition3},
+          new[] { _indexDefinition2, _indexDefinition3 },
           new EntityNameDefinition[0]);
       _filterViewDefinition1 = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "FilterView1"),
           _tableDefinition1,
           new[] { "ClassID" },
-          _objectIDColunmn,
-          _classIDCOlumn,
-          _timestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new SimpleColumnDefinition[0],
           new[] { _indexDefinition1 },
           new EntityNameDefinition[0]);
       _filterViewDefinition2 = new FilterViewDefinition (
-           SchemaGenerationFirstStorageProviderDefinition,
-           new EntityNameDefinition (null, "FilterView2"),
-           _tableDefinition2,
-           new[] { "ClassID" },
-           _objectIDColunmn,
-           _classIDCOlumn,
-           _timestampColumn,
-           new SimpleColumnDefinition[0],
-           new[] { _indexDefinition2, _indexDefinition3},
-           new EntityNameDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "FilterView2"),
+          _tableDefinition2,
+          new[] { "ClassID" },
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new SimpleColumnDefinition[0],
+          new[] { _indexDefinition2, _indexDefinition3 },
+          new EntityNameDefinition[0]);
 
-      _fakeElement1 = MockRepository.GenerateStub<IScriptElement> ();
-      _fakeElement2 = MockRepository.GenerateStub<IScriptElement> ();
-      _fakeElement3 = MockRepository.GenerateStub<IScriptElement> ();
+      _fakeElement1 = MockRepository.GenerateStub<IScriptElement>();
+      _fakeElement2 = MockRepository.GenerateStub<IScriptElement>();
+      _fakeElement3 = MockRepository.GenerateStub<IScriptElement>();
     }
 
     [Test]
     public void GetCreateScript_GetDropScript_NoEntitiesAdded ()
     {
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
@@ -154,8 +145,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_tableDefinition1);
 
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
@@ -179,8 +170,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
 
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
@@ -203,8 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_unionViewDefinition1);
 
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
@@ -228,8 +219,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_unionViewDefinition2);
 
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
@@ -252,8 +243,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
@@ -277,8 +268,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_filterViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition2);
 
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
@@ -299,8 +290,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var entityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));

@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -34,17 +35,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
     private ClassDefinition _noAbstractClassDefinition;
-    private SimpleColumnDefinition _objectIDColunmn;
-    private SimpleColumnDefinition _classIDCOlumn;
-    private SimpleColumnDefinition _timestampColumn;
 
     [SetUp]
     public void SetUp ()
     {
-      _objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
-      _classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
-      _timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
-
       _validationRule = new ClassAboveTableIsAbstractValidationRule();
       _abstractClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
@@ -62,9 +56,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _tableDefinition = TableDefinitionObjectMother.Create (
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName"),
-          _objectIDColunmn,
-          _classIDCOlumn,
-          _timestampColumn);
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
       _unionViewDefinition = new UnionViewDefinition (
           storageProviderDefinition,
           null,
@@ -73,13 +67,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
               TableDefinitionObjectMother.Create (
               storageProviderDefinition,
               new EntityNameDefinition (null, "Test"),
-              _objectIDColunmn,
-              _classIDCOlumn,
-              _timestampColumn)
+              ColumnDefinitionObjectMother.ObjectIDColumn,
+              ColumnDefinitionObjectMother.ClassIDColumn,
+              ColumnDefinitionObjectMother.TimestampColumn)
           },
-          _objectIDColunmn,
-          _classIDCOlumn,
-          _timestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
     }

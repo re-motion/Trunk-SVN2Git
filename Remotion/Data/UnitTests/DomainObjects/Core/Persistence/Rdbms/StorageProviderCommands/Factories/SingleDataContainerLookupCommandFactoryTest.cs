@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Data
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -79,23 +80,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a UnionViewDefinition.")]
     public void CreateCommand_UnionViewDefinition ()
     {
-      var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
-      var timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
-
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Table"),
-          objectIDColumn,
-          classIDColumn,
-          timestampColumn);
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
       var unionViewDefinition = new UnionViewDefinition (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "ViewName"),
           new[] { tableDefinition },
-          objectIDColumn,
-          classIDColumn,
-          timestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
