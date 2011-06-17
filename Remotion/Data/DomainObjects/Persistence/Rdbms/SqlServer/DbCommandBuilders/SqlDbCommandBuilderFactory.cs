@@ -27,14 +27,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
   public class SqlDbCommandBuilderFactory : IDbCommandBuilderFactory
   {
     private readonly ISqlDialect _sqlDialect;
-    private readonly ValueConverter _valueConverter;
+    private readonly IValueConverter _valueConverter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlDbCommandBuilderFactory"/> class.
     /// </summary>
     /// <param name="sqlDialect">The SQL dialect.</param>
     /// <param name="valueConverter">The value converter.</param>
-    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, ValueConverter valueConverter)
+    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, IValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);

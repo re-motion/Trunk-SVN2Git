@@ -28,6 +28,7 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.DbCommandBuilders
 {
+  // TODO Review 4066: Derive from StandardMappingTest and use an IValueConverter stub
   [TestFixture]
   public class SqlXmlMultiIDLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
   {

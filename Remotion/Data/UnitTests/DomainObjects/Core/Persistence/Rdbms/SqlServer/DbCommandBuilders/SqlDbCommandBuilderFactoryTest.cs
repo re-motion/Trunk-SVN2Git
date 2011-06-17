@@ -22,22 +22,19 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.DbCommandBuilders
 {
   [TestFixture]
-  public class SqlDbCommandBuilderFactoryTest : SqlProviderBaseTest
+  public class SqlDbCommandBuilderFactoryTest : StandardMappingTest
   {
     private ISqlDialect _sqlDialectStub;
-    private ValueConverter _valueConverter;
+    private IValueConverter _valueConverterStub;
     private SqlDbCommandBuilderFactory _factory;
-    private SimpleColumnDefinition _objectIDColumnDefinition;
     private IDColumnDefinition _foreignKeyColumnDefinition;
-    private SimpleColumnDefinition _classIDColumnDefinition;
-    private SimpleColumnDefinition _timstampColumnDefinition;
     private TableDefinition _tableDefinition;
-    private UnionViewDefinition _unionViewDefinition;
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private IOrderedColumnsSpecification _orderedColumnStub;
     private ObjectID _objectID;
@@ -47,30 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _valueConverter = Provider.CreateValueConverter();
-      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverter);
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub);
 
-      _objectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      _foreignKeyColumnDefinition = new IDColumnDefinition (
-          new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false), _objectIDColumnDefinition);
-      _classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
-      _timstampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
-      _tableDefinition = TableDefinitionObjectMother.Create (
-          TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table"),
-          _objectIDColumnDefinition,
-          _classIDColumnDefinition,
-          _timstampColumnDefinition);
-      _unionViewDefinition = new UnionViewDefinition (
-          TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "UnionEntity"),
-          new[] { _tableDefinition },
-          _objectIDColumnDefinition,
-          _classIDColumnDefinition,
-          _timstampColumnDefinition,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+      _foreignKeyColumnDefinition = new IDColumnDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+      _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
 
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _orderedColumnStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
@@ -106,8 +84,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateForRelationLookupFromUnionView ()
     {
+      var unionViewDefinition = new UnionViewDefinition (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "UnionEntity"),
+          new[] { _tableDefinition },
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+
       var result = _factory.CreateForRelationLookupFromUnionView (
-          _unionViewDefinition, _selectedColumnsStub, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
+          unionViewDefinition, _selectedColumnsStub, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
 
       Assert.That (result, Is.TypeOf (typeof (UnionRelationLookupSelectDbCommandBuilder)));
     }

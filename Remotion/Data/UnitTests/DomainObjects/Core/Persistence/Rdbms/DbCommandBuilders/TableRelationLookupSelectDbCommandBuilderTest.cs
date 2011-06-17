@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
-  public class TableRelationLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
+  public class TableRelationLookupSelectDbCommandBuilderTest : StandardMappingTest
   {
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private ISqlDialect _sqlDialectMock;
