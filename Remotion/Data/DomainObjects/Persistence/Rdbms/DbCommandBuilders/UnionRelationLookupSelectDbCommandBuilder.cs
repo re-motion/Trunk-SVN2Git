@@ -66,14 +66,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var fullProjection = _orderedColumns.UnionWithSelectedColumns (_selectedColumns);
 
       var statement = new StringBuilder();
-      AppendSelectClause (statement, fullProjection);
       var parameter = AddCommandParameter (command, _foreignKeyColumn.ObjectIDColumn.Name, _foreignKeyValue);
-      statement.Append ("FROM ");
       bool first = true;
       foreach (var table in _unionViewDefinition.GetAllTables())
       {
         if (!first)
           statement.Append (" UNION ALL ");
+        
+        AppendSelectClause (statement, fullProjection);
+        statement.Append ("FROM ");
 
         if (table.TableName.SchemaName != null)
         {
