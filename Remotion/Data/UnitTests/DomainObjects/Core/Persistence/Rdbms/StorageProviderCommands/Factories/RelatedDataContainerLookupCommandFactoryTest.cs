@@ -152,11 +152,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   Arg.Is (AllSelectedColumnsSpecification.Instance),
                   Arg.Is (simpleColumnDefinition),
                   Arg.Is (foreignKeyValue),
-                  Arg<NonEmptyOrderedColumnsSpecification>.Matches (o => o.Columns.ToList().Count == 2)))
+                  Arg<OrderedColumnsSpecification>.Matches (o => o.Columns.ToList().Count == 2)))
           .WhenCalled (
               mi =>
               {
-                var orderSpecificationColumns = ((NonEmptyOrderedColumnsSpecification) mi.Arguments[4]).Columns.ToList();
+                var orderSpecificationColumns = ((OrderedColumnsSpecification) mi.Arguments[4]).Columns.ToList();
                 Assert.That (orderSpecificationColumns[0].Item1, Is.SameAs (simpleColumnDefinition));
                 Assert.That (orderSpecificationColumns[0].Item2, Is.EqualTo (SortOrder.Descending));
                 Assert.That (orderSpecificationColumns[1].Item1, Is.SameAs (simpleColumnDefinition));
@@ -256,11 +256,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   //TODO 4074: List.Equal (new[] { objectIDColumn, classIDColumn } ?
                   Arg.Is (simpleColumnDefinition),
                   Arg.Is (foreignKeyValue),
-                  Arg<NonEmptyOrderedColumnsSpecification>.Matches (o => o.Columns.ToList().Count == 2)))
+                  Arg<OrderedColumnsSpecification>.Matches (o => o.Columns.ToList().Count == 2)))
           .WhenCalled (
               mi =>
               {
-                var orderSpecificationColumns = ((NonEmptyOrderedColumnsSpecification) mi.Arguments[4]).Columns.ToList();
+                var orderSpecificationColumns = ((OrderedColumnsSpecification) mi.Arguments[4]).Columns.ToList();
                 Assert.That (orderSpecificationColumns[0].Item1, Is.SameAs (simpleColumnDefinition));
                 Assert.That (orderSpecificationColumns[0].Item2, Is.EqualTo (SortOrder.Descending));
                 Assert.That (orderSpecificationColumns[1].Item1, Is.SameAs (simpleColumnDefinition));

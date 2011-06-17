@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
@@ -27,25 +28,22 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   /// <summary>
-  /// The <see cref="NonEmptyOrderedColumnsSpecification"/> defines that the selected data should be ordered by the given columns.
+  /// The <see cref="OrderedColumnsSpecification"/> defines that the selected data should be ordered by the given columns.
   /// </summary>
-  // TODO Review 4061: Rename to OrderedColumnsSpecification
-  public class NonEmptyOrderedColumnsSpecification : IOrderedColumnsSpecification
+  public class OrderedColumnsSpecification : IOrderedColumnsSpecification
   {
-    // TODO Review 4061: Save as array
-    private readonly IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> _columns;
+    private readonly Tuple<SimpleColumnDefinition, SortOrder>[] _columns;
 
-    public NonEmptyOrderedColumnsSpecification (IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> columns)
+    public OrderedColumnsSpecification (IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> columns)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
 
-      _columns = columns;
+      _columns = columns.ToArray();
     }
 
-    // TODO Review 4061: ReadOnlyCollection
-    public IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> Columns
+    public ReadOnlyCollection<Tuple<SimpleColumnDefinition, SortOrder>> Columns
     {
-      get { return _columns; }
+      get { return Array.AsReadOnly(_columns); }
     }
 
     public void AppendOrderByClause (StringBuilder stringBuilder, ISqlDialect sqlDialect)

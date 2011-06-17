@@ -144,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
                     from simpleColumn in SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { column })
                     select Tuple.Create (simpleColumn, spec.Order);
 
-      return new NonEmptyOrderedColumnsSpecification (columns);
+      return new OrderedColumnsSpecification (columns);
     }
   }
 }

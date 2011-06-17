@@ -250,7 +250,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\IDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\IOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\ISelectedColumnsSpecification.cs" />
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\NonEmptyOrderedColumnsSpecification.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\OrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\DataReaders\IDataContainerReader.cs" />

@@ -28,12 +28,12 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
-  public class NonEmptyOrderedColumnsSpecificationTest
+  public class OrderedColumnsSpecificationTest
   {
     private SimpleColumnDefinition _column1;
     private SimpleColumnDefinition _column2;
     private SimpleColumnDefinition _column3;
-    private NonEmptyOrderedColumnsSpecification _specification;
+    private OrderedColumnsSpecification _specification;
     private ISqlDialect _sqlDialectStub;
 
     [SetUp]
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
       _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
       _specification =
-          new NonEmptyOrderedColumnsSpecification (
+          new OrderedColumnsSpecification (
               new[]
               {
                   Tuple.Create (_column1, SortOrder.Ascending), Tuple.Create (_column2, SortOrder.Descending),
