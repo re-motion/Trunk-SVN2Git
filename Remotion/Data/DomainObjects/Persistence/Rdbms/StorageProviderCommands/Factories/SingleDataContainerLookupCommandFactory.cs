@@ -64,6 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
     }
 
+    // TODO Review 4069: Move the dataContainerReader to the ctor of this class (same in other factories)
     public IStorageProviderCommand<DataContainer> CreateCommand (
         ObjectID id, IDbCommandFactory factory, IDbCommandExecutor executor, IDataContainerReader dataContainerReader)
     {
@@ -76,7 +77,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       ((IEntityDefinition) id.ClassDefinition.StorageEntityDefinition).Accept (visitor);
 
       var commandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
-          visitor.TableDefinition, AllSelectedColumnsSpecification.Instance, id);
+          visitor.TableDefinition, 
+          AllSelectedColumnsSpecification.Instance,
+          id);
       return new SingleDataContainerLoadCommand (commandBuilder, factory, executor, dataContainerReader);
     }
   }
