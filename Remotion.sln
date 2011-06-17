@@ -207,14 +207,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripting.Core", "Remotion\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripting.UnitTests", "Remotion\Scripting\UnitTests\Scripting.UnitTests.csproj", "{4A626E26-F384-451A-A966-C90B961D9C8D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_LicenseFiles", "_LicenseFiles", "{042DF63D-44D0-44B9-AE33-B7AFBE1BE011}"
-	ProjectSection(SolutionItems) = preProject
-		license-headers\Relinq MSPL.licenseheader = license-headers\Relinq MSPL.licenseheader
-		license-headers\Remotion Core LGPL.licenseheader = license-headers\Remotion Core LGPL.licenseheader
-		license-headers\Restrict AGPL.licenseheader = license-headers\Restrict AGPL.licenseheader
-		license-headers\Revision AGPL.licenseheader = license-headers\Revision AGPL.licenseheader
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

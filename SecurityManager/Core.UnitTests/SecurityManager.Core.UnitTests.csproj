@@ -262,8 +262,8 @@
     <Compile Include="TestDomain\PremiumOrder.cs" />
     <Compile Include="TestDomain\SecurityStates.cs" />
     <Compile Include="TestDomain\SpecialOrder.cs" />
-    <None Include="..\..\license-headers\Restrict AGPL.licenseheader">
-      <Link>Restrict AGPL.licenseheader</Link>
+    <None Include="..\SecurityManager AGPL.licenseheader">
+      <Link>SecurityManager AGPL.licenseheader</Link>
     </None>
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>

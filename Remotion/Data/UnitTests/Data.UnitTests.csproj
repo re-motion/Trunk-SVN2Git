@@ -1812,8 +1812,8 @@
     <Compile Include="DomainObjects\Web\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollection.IListTest.cs" />
-    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
-      <Link>Remotion Core LGPL.licenseheader</Link>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithHierarchy.cd" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\TestDomain.cd" />

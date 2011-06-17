@@ -456,8 +456,8 @@
     <Compile Include="Web\UI\Controls\StubServiceLocator.cs" />
     <Compile Include="Web\UI\Controls\RendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\XmlNodeExtensions.cs" />
-    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
-      <Link>Remotion Core LGPL.licenseheader</Link>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

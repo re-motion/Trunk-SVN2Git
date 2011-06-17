@@ -161,8 +161,8 @@
     <Compile Include="Utilities\ReSharperAnnotations\AssertionMethodAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\InvokerParameterNameAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\StringFormatMethodAttribute.cs" />
-    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
-      <Link>Remotion Core LGPL.licenseheader</Link>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

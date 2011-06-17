@@ -84,8 +84,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ISecurityPrincipalRole.cs" />
     <Compile Include="SecurityStateAttribute.cs" />
-    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
-      <Link>Remotion Core LGPL.licenseheader</Link>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

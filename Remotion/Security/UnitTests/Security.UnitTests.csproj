@@ -213,8 +213,8 @@
     <Compile Include="Core\XmlAsserter\NodeStackToXPathConverterTest.cs" />
     <Compile Include="Core\XmlAsserter\XmlAssert.cs" />
     <Compile Include="Core\XmlAsserter\XmlnsAttributeFilter.cs" />
-    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
-      <Link>Remotion Core LGPL.licenseheader</Link>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

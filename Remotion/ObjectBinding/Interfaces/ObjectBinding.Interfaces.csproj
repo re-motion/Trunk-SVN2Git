@@ -85,8 +85,8 @@
     <Compile Include="IListInfo.cs" />
     <Compile Include="ISearchAvailableObjectsArguments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="..\..\..\license-headers\Remotion Core LGPL.licenseheader">
-      <Link>Remotion Core LGPL.licenseheader</Link>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

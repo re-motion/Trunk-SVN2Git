@@ -75,8 +75,8 @@
       <SubType>
       </SubType>
     </EmbeddedResource>
-    <None Include="..\..\license-headers\Restrict AGPL.licenseheader">
-      <Link>Restrict AGPL.licenseheader</Link>
+    <None Include="..\SecurityManager AGPL.licenseheader">
+      <Link>SecurityManager AGPL.licenseheader</Link>
     </None>
     <None Include="Database\SecurityManagerCreateDB.sql">
     </None>

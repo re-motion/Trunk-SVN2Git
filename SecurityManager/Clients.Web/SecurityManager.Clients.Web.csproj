@@ -78,8 +78,8 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\license-headers\Restrict AGPL.licenseheader">
-      <Link>Restrict AGPL.licenseheader</Link>
+    <None Include="..\SecurityManager AGPL.licenseheader">
+      <Link>SecurityManager AGPL.licenseheader</Link>
     </None>
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
