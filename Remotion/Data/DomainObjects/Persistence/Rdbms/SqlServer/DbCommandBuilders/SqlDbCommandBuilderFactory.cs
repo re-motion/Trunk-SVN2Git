@@ -27,23 +27,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
   public class SqlDbCommandBuilderFactory : IDbCommandBuilderFactory
   {
     private readonly ISqlDialect _sqlDialect;
-    private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ValueConverter _valueConverter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlDbCommandBuilderFactory"/> class.
     /// </summary>
     /// <param name="sqlDialect">The SQL dialect.</param>
-    /// <param name="rdbmsProviderDefinition">The RDBMS provider definition.</param>
     /// <param name="valueConverter">The value converter.</param>
-    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, RdbmsProviderDefinition rdbmsProviderDefinition, ValueConverter valueConverter)
+    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, ValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       _sqlDialect = sqlDialect;
-      _rdbmsProviderDefinition = rdbmsProviderDefinition;
       _valueConverter = valueConverter;
     }
 
@@ -70,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        SimpleColumnDefinition foreignKeyColumn, // TODO Review 4064: IDColumnDefinition
+        IDColumnDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns)
     {
@@ -87,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         ISelectedColumnsSpecification selectedColumns,
-        SimpleColumnDefinition foreignKeyColumn,
+        IDColumnDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns)
     {

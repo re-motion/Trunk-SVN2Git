@@ -111,8 +111,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
             visitor.TableDefinition,
             AllSelectedColumnsSpecification.Instance,
-            // TODO Review 4064: should be IDColumnDefinition
-            ((SimpleColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
+            ((IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
             foreignKeyValue,
             GetOrderedColumns (sortExpression));
         return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, factory, executor, dataContainerReader); //TODO 4074: AllowNulls False/True ?
@@ -122,8 +121,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
             visitor.UnionViewDefinition,
             new SelectedColumnsSpecification (new[] { visitor.UnionViewDefinition.ObjectIDColumn, visitor.UnionViewDefinition.ClassIDColumn }),
-            // TODO Review 4064: should be IDColumnDefinition
-            (SimpleColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition,
+            (IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition,
             foreignKeyValue,
             GetOrderedColumns (sortExpression));
 

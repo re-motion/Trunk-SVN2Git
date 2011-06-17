@@ -30,14 +30,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     private readonly TableDefinition _table;
     private readonly ISelectedColumnsSpecification _selectedColumns;
-    private readonly SimpleColumnDefinition _foreignKeyColumn;
+    private readonly IDColumnDefinition _foreignKeyColumn;
     private readonly ObjectID _foreignKeyValue;
     private readonly IOrderedColumnsSpecification _orderedColumns;
 
     public TableRelationLookupSelectDbCommandBuilder (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        SimpleColumnDefinition foreignKeyColumn, // TODO Review 4064: change to IDColumnDefinition
+        IDColumnDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns,
         ISqlDialect sqlDialect,
@@ -66,8 +66,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var statement = new StringBuilder();
       AppendSelectClause (statement, _selectedColumns);
       AppendFromClause (statement, _table);
-      var foreignKeyParameter = AddCommandParameter (command, _foreignKeyColumn.Name, _foreignKeyValue);
-      AppendComparingWhereClause (statement, _foreignKeyColumn, foreignKeyParameter);
+      var foreignKeyParameter = AddCommandParameter (command, _foreignKeyColumn.ObjectIDColumn.Name, _foreignKeyValue);
+      AppendComparingWhereClause (statement, _foreignKeyColumn.ObjectIDColumn, foreignKeyParameter);
 
       // TODO in case of integer primary keys: 
       // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,

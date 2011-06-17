@@ -30,15 +30,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     private readonly UnionViewDefinition _unionViewDefinition;
     private readonly ISelectedColumnsSpecification _selectedColumns;
-    private readonly SimpleColumnDefinition _foreignKeyColumn;
+    private readonly IDColumnDefinition _foreignKeyColumn;
     private readonly ObjectID _foreignKeyValue;
     private readonly IOrderedColumnsSpecification _orderedColumns;
 
     public UnionRelationLookupSelectDbCommandBuilder (
         UnionViewDefinition unionViewDefinition,
         ISelectedColumnsSpecification selectedColumns,
-        // TODO Review 4064: IDColumnDefinition  
-        SimpleColumnDefinition foreignKeyColumn,
+        IDColumnDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns,
         ISqlDialect sqlDialect,
@@ -73,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       statement.Append ("SELECT");
       fullProjection.AppendProjection (statement, SqlDialect);
 
-      var parameter = AddCommandParameter (command, _foreignKeyColumn.Name, _foreignKeyValue);
+      var parameter = AddCommandParameter (command, _foreignKeyColumn.ObjectIDColumn.Name, _foreignKeyValue);
 
       statement.Append ("FROM ");
       bool first = true;
@@ -90,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         statement.Append (SqlDialect.DelimitIdentifier (table.TableName.EntityName));
 
         statement.Append (" WHERE ");
-        statement.Append (SqlDialect.DelimitIdentifier (_foreignKeyColumn.Name));
+        statement.Append (SqlDialect.DelimitIdentifier (_foreignKeyColumn.ObjectIDColumn.Name));
         statement.Append (" = ");
         statement.Append (parameter.ParameterName);
 

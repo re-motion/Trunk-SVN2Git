@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
     private Guid _guid;
-    private SimpleColumnDefinition _foreignKeyColumnDefinition;
+    private IDColumnDefinition _foreignKeyColumnDefinition;
     private IOrderedColumnsSpecification _orderedColumnsStub;
     private IValueConverter _valueConverterStub;
 
@@ -45,7 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp ();
 
-      _foreignKeyColumnDefinition = new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false);
+      var foreignKeyColumn = new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false);
+      _foreignKeyColumnDefinition = new IDColumnDefinition(foreignKeyColumn, foreignKeyColumn);
 
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification> ();
       _selectedColumnsStub

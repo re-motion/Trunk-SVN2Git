@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private ValueConverter _valueConverter;
     private SqlDbCommandBuilderFactory _factory;
     private SimpleColumnDefinition _objectIDColumnDefinition;
-    private SimpleColumnDefinition _foreignKeyColumnDefinition;
+    private IDColumnDefinition _foreignKeyColumnDefinition;
     private SimpleColumnDefinition _classIDColumnDefinition;
     private SimpleColumnDefinition _timstampColumnDefinition;
     private TableDefinition _tableDefinition;
@@ -48,10 +48,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _valueConverter = Provider.CreateValueConverter();
-      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _valueConverter);
+      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverter);
 
       _objectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      _foreignKeyColumnDefinition = new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false);
+      _foreignKeyColumnDefinition = new IDColumnDefinition (
+          new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false), _objectIDColumnDefinition);
       _classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
       _timstampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
       _tableDefinition = TableDefinitionObjectMother.Create (
