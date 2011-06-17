@@ -21,6 +21,10 @@ using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
+  /// <summary>
+  /// Defines an interface for classes instantiating <see cref="IStorageProviderCommand{T} "/> instances for the basic storage provider operations.
+  /// <see cref="StorageProvider"/> uses this factory interface when the respective provider methods are called.
+  /// </summary>
   public interface IStorageProviderCommandFactory
   {
     IStorageProviderCommand<DataContainer> CreateForSingleIDLookup (ObjectID objectID);

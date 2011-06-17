@@ -18,11 +18,17 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
+  /// <summary>
+  /// Represents a command without a return value to be executed by a storage provider.
+  /// </summary>
   public interface IStorageProviderCommand
   {
     void Execute ();
   }
 
+  /// <summary>
+  /// Represents a command with a return value to be executed by a storage provider.
+  /// </summary>
   public interface IStorageProviderCommand<T>
   {
     T Execute ();
