@@ -66,14 +66,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var fullProjection = _orderedColumns.UnionWithSelectedColumns (_selectedColumns);
 
       var statement = new StringBuilder();
-
-      // TODO Review 4064: Use base methods (Append...)
-
-      statement.Append ("SELECT");
-      fullProjection.AppendProjection (statement, SqlDialect);
-
+      AppendSelectClause (statement, fullProjection);
       var parameter = AddCommandParameter (command, _foreignKeyColumn.ObjectIDColumn.Name, _foreignKeyValue);
-
       statement.Append ("FROM ");
       bool first = true;
       foreach (var table in _unionViewDefinition.GetAllTables())

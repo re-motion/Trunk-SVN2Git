@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class TableRelationLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
   {
     private ISelectedColumnsSpecification _selectedColumnsStub;
-    private ISqlDialect _sqlDialectStub;
+    private ISqlDialect _sqlDialectMock;
     private IDbCommandFactory _commandFactoryStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
@@ -40,6 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IDColumnDefinition _foreignKeyColumnDefinition;
     private IOrderedColumnsSpecification _orderedColumnsStub;
     private IValueConverter _valueConverterStub;
+    private ObjectID _objectID;
 
     public override void SetUp ()
     {
@@ -58,25 +59,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Stub (stub => stub.AppendOrderByClause (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" ORDER BY [Column1] ASC, [Column2] DESC"));
 
-      // TODO Review 4064:
-      //   - _sqlDialectStub => mock, move expectations down to tests, only expect what's really needed
-      //   - _sqlDialectStub => mock
-
-      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("dbo")).Return ("[dbo]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[Table]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
-      _sqlDialectStub.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
-      _sqlDialectStub.Stub (stub => stub.GetParameterName ("@FKID")).Return ("@FKID");
-
+      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect> ();
+      
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
 
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
-
-      // TODO Review 4064: Move down to tests
-      _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
-      _dataParameterCollectionMock.Replay ();
 
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand> ();
       _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub);
@@ -87,9 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
 
-      // TODO Review 4064: Like in SingleIDLookupSelectCommandBuilderTest, use _objectID and stub the value converter for exactly this _objectID
       _guid = Guid.NewGuid ();
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (_guid);
+      _objectID = new ObjectID ("Order", _guid);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg.Is(_objectID))).Return (_guid);
     }
 
     [Test]
@@ -101,14 +88,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           tableDefinition,
           _selectedColumnsStub,
           _foreignKeyColumnDefinition,
-          new ObjectID ("Order", _guid),
+          _objectID,
           _orderedColumnsStub,
-          _sqlDialectStub,
+          _sqlDialectMock,
           _valueConverterStub);
+
+      _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("Table")).Return ("[Table]");
+      _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
+      _sqlDialectMock.Expect (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
+      _sqlDialectMock.Replay();
+
+      _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
+      _dataParameterCollectionMock.Replay ();
 
       var result = builder.Create (_commandFactoryStub);
 
       _dataParameterCollectionMock.VerifyAllExpectations ();
+      _sqlDialectMock.VerifyAllExpectations();
 
       Assert.That (result.CommandText, Is.EqualTo (
         "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));
@@ -124,14 +120,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           tableDefinition,
           _selectedColumnsStub,
           _foreignKeyColumnDefinition,
-          new ObjectID ("Order", _guid),
+          _objectID,
           _orderedColumnsStub,
-          _sqlDialectStub,
+          _sqlDialectMock,
           _valueConverterStub);
+
+      _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
+      _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("Table")).Return ("[Table]");
+      _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
+      _sqlDialectMock.Expect (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
+      _sqlDialectMock.Replay();
+
+      _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
+      _dataParameterCollectionMock.Replay ();
 
       var result = builder.Create (_commandFactoryStub);
 
       _dataParameterCollectionMock.VerifyAllExpectations ();
+      _sqlDialectMock.VerifyAllExpectations();
 
       Assert.That (result.CommandText, Is.EqualTo (
         "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));
