@@ -48,11 +48,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _storageNameProvider; }
     }
 
-    public override IDbCommand Create (IDbCommandFactory commandFactory)
+    public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
-      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
-      IDbCommand command = commandFactory.CreateDbCommand();
+      IDbCommand command = commandExecutionContext.CreateDbCommand ();
       var updateSetBuilder = new StringBuilder();
 
       foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)

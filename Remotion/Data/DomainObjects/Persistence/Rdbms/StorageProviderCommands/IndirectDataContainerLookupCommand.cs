@@ -16,20 +16,20 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
-  public class IndirectDataContainerLookupCommand : IStorageProviderCommand<IEnumerable<DataContainer>>
+  public class IndirectDataContainerLookupCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
-    private readonly IStorageProviderCommand<IEnumerable<ObjectID>> _objectIDLoadCommand;
-    private readonly IStorageProviderCommandFactory _storageProviderCommandFactory;
+    private readonly IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> _objectIDLoadCommand;
+    private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
 
     public IndirectDataContainerLookupCommand (
-        IStorageProviderCommand<IEnumerable<ObjectID>> objectIDLoadCommand,
-        IStorageProviderCommandFactory storageProviderCommandFactory)
+        IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> objectIDLoadCommand,
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
     {
       ArgumentUtility.CheckNotNull ("objectIDLoadCommand", objectIDLoadCommand);
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
@@ -38,20 +38,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       _storageProviderCommandFactory = storageProviderCommandFactory;
     }
 
-    public IStorageProviderCommand<IEnumerable<ObjectID>> ObjectIDLoadCommand
+    public IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> ObjectIDLoadCommand
     {
       get { return _objectIDLoadCommand; }
     }
 
-    public IStorageProviderCommandFactory StorageProviderCommandFactory
+    public IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> StorageProviderCommandFactory
     {
       get { return _storageProviderCommandFactory; }
     }
 
-    public IEnumerable<DataContainer> Execute ()
+    public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
-      var objectIds = _objectIDLoadCommand.Execute();
-      return _storageProviderCommandFactory.CreateForMultiIDLookup (objectIds.ToArray()).Execute();
+      var objectIds = _objectIDLoadCommand.Execute(executionContext);
+      return _storageProviderCommandFactory.CreateForMultiIDLookup (objectIds.ToArray()).Execute(executionContext);
     }
   }
 }

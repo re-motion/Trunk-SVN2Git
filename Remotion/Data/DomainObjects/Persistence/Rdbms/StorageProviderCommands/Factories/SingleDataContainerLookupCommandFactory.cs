@@ -65,12 +65,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     }
 
     // TODO Review 4069: Move the dataContainerReader to the ctor of this class (same in other factories)
-    public IStorageProviderCommand<DataContainer> CreateCommand (
-        ObjectID id, IDbCommandFactory factory, IDbCommandExecutor executor, IDataContainerReader dataContainerReader)
+    public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateCommand (
+        ObjectID id, IRdbmsProviderCommandExecutionContext commandExecutionContext, IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      ArgumentUtility.CheckNotNull ("factory", factory);
-      ArgumentUtility.CheckNotNull ("executor", executor);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       var visitor = new EntityDefinitionVisitor();
@@ -80,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           visitor.TableDefinition, 
           AllSelectedColumnsSpecification.Instance,
           id);
-      return new SingleDataContainerLoadCommand (commandBuilder, factory, executor, dataContainerReader);
+      return new SingleDataContainerLoadCommand (commandBuilder, commandExecutionContext, dataContainerReader);
     }
   }
 }

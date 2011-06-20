@@ -40,25 +40,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   public class RelatedDataContainerLookupCommandFactoryTest : SqlProviderBaseTest
   {
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStub;
-    private IStorageProviderCommandFactory _storageProviderCommandFactory;
+    private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
     private RelatedDataContainerLookupCommandFactory _factory;
-    private IDbCommandFactory _dbCommandFactoryStub;
-    private IDbCommandExecutor _dbCommandExecutorStub;
     private IDataContainerReader _dataContainerReaderStub;
     private IObjectIDFactory _objectIDFactoryStub;
     private IDbCommandBuilder _dbCommandBuilderStub;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
-      _storageProviderCommandFactory = MockRepository.GenerateStub<IStorageProviderCommandFactory>();
+      _storageProviderCommandFactory = MockRepository.GenerateStub<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
 
-      _dbCommandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
-      _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
+
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _objectIDFactoryStub = MockRepository.GenerateStub<IObjectIDFactory>();
 
@@ -114,8 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           relationEndPointDefinition,
           foreignKeyValue,
           null,
-          _dbCommandFactoryStub,
-          _dbCommandExecutorStub,
+          _commandExecutionContextStub,
           _dataContainerReaderStub,
           _objectIDFactoryStub);
 
@@ -123,8 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
       Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandFactory, Is.SameAs (_dbCommandFactoryStub));
+      Assert.That (((MultiDataContainerLoadCommand) result).CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
     }
 
     [Test]
@@ -169,8 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           relationEndPointDefinition,
           foreignKeyValue,
           new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }),
-          _dbCommandFactoryStub,
-          _dbCommandExecutorStub,
+          _commandExecutionContextStub,
           _dataContainerReaderStub,
           _objectIDFactoryStub);
 
@@ -178,8 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
       Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandFactory, Is.SameAs (_dbCommandFactoryStub));
+      Assert.That (((MultiDataContainerLoadCommand) result).CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
     }
 
     [Test]
@@ -213,8 +208,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           relationEndPointDefinition,
           foreignKeyValue,
           null,
-          _dbCommandFactoryStub,
-          _dbCommandExecutorStub,
+          _commandExecutionContextStub,
           _dataContainerReaderStub,
           _objectIDFactoryStub);
 
@@ -224,11 +218,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).DbCommandBuilders,
           Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).DbCommandExecutor,
-          Is.SameAs (_dbCommandExecutorStub));
-      Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).DbCommandFactory,
-          Is.SameAs (_dbCommandFactoryStub));
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
+          Is.SameAs (_commandExecutionContextStub));
       Assert.That (
           ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).ObjectIDFactory,
           Is.SameAs (_objectIDFactoryStub));
@@ -282,8 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           relationEndPointDefinition,
           foreignKeyValue,
           new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }),
-          _dbCommandFactoryStub,
-          _dbCommandExecutorStub,
+          _commandExecutionContextStub,
           _dataContainerReaderStub,
           _objectIDFactoryStub);
 
@@ -293,11 +283,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).DbCommandBuilders,
           Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).DbCommandExecutor,
-          Is.SameAs (_dbCommandExecutorStub));
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
+          Is.SameAs (_commandExecutionContextStub));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).DbCommandFactory,
-          Is.SameAs (_dbCommandFactoryStub));
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
+          Is.SameAs (_commandExecutionContextStub));
       Assert.That (
           ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).ObjectIDFactory,
           Is.SameAs (_objectIDFactoryStub));

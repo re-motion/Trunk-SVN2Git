@@ -79,11 +79,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _orderExpression; }
     }
 
-    public override IDbCommand Create (IDbCommandFactory commandFactory)
+    public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
-      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
-      IDbCommand command = commandFactory.CreateDbCommand();
+      IDbCommand command = commandExecutionContext.CreateDbCommand ();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
       whereClauseBuilder.Add (_checkedColumnName, _expectedValue);

@@ -31,13 +31,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   public class SingleDataContainerLoadCommandTest : SqlProviderBaseTest
   {
     private IDbCommandBuilder _dbCommandBuilderStub;
-    private IDbCommandFactory _dbCommandFactory;
     private IDbCommand _dbCommandStub;
-    private IDbCommandExecutor _dbCommandExecutorStub;
     private IDataReader _dataReaderMock;
     private SingleDataContainerLoadCommand _command;
     private IDataContainerReader _dataContainerReaderStub;
     private DataContainer _container;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
@@ -47,17 +46,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _dataReaderMock = MockRepository.GenerateStub<IDataReader>();
 
-      _dbCommandFactory = MockRepository.GenerateStub<IDbCommandFactory>();
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
+
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilderStub.Stub (stub => stub.Create (_dbCommandFactory)).Return (_dbCommandStub);
+      _dbCommandBuilderStub.Stub (stub => stub.Create (_commandExecutionContextStub)).Return (_dbCommandStub);
 
-      _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
-      _dbCommandExecutorStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleRow)).Return(_dataReaderMock);
+      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleRow)).Return (_dataReaderMock);
 
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _command = new SingleDataContainerLoadCommand (
-          _dbCommandBuilderStub, _dbCommandFactory, _dbCommandExecutorStub, _dataContainerReaderStub);
+          _dbCommandBuilderStub, _commandExecutionContextStub, _dataContainerReaderStub);
       _dataContainerReaderStub.Stub (stub => stub.Read (_dataReaderMock)).Return (_container);
     }
 
@@ -65,15 +64,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void Initialization ()
     {
       Assert.That (_command.DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
-      Assert.That (_command.DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
-      Assert.That (_command.DbCommandFactory, Is.SameAs (_dbCommandFactory));
+      Assert.That (_command.CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
       Assert.That (_command.DataContainerReader, Is.SameAs(_dataContainerReaderStub));
     }
 
     [Test]
     public void Execute ()
     {
-      var result = _command.Execute();
+      var result = _command.Execute(_commandExecutionContextStub);
 
       Assert.That (result, Is.SameAs (_container));
     }

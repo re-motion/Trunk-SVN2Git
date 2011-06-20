@@ -33,7 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   {
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private ISqlDialect _sqlDialectMock;
-    private IDbCommandFactory _commandFactoryStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
@@ -46,6 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IValueConverter _valueConverterStub;
     private ISelectedColumnsSpecification _unionedColumnsStub;
     private ObjectID _objectID;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
@@ -81,8 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub);
       _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
 
-      _commandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
-      _commandFactoryStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
 
       _guid = Guid.NewGuid();
       _objectID = new ObjectID ("Order", _guid);
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _sqlDialectMock,
           _valueConverterStub);
       
-      var result = builder.Create (_commandFactoryStub);
+      var result = builder.Create (_commandExecutionContextStub);
 
       Assert.That (
           result.CommandText,

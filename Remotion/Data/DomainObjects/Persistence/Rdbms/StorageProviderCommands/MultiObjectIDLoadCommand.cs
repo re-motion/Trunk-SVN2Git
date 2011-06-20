@@ -24,27 +24,23 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
-  public class MultiObjectIDLoadCommand : IStorageProviderCommand<IEnumerable<ObjectID>>
+  public class MultiObjectIDLoadCommand : IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IEnumerable<IDbCommandBuilder> _dbCommandBuilders;
-    private readonly IDbCommandFactory _dbCommandFactory;
-    private readonly IDbCommandExecutor _dbCommandExecutor;
     private readonly IObjectIDFactory _objectIDFactory;
-    
+    private readonly IRdbmsProviderCommandExecutionContext _commandExecutionReader;
+
     public MultiObjectIDLoadCommand (
         IEnumerable<IDbCommandBuilder> dbCommandBuilders,
-        IDbCommandFactory dbCommandFactory,
-        IDbCommandExecutor dbCommandExecutor,
+        IRdbmsProviderCommandExecutionContext commandExecutionContext,
         IObjectIDFactory objectIDFactory)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilders", dbCommandBuilders);
-      ArgumentUtility.CheckNotNull ("dbCommandFactory", dbCommandFactory);
-      ArgumentUtility.CheckNotNull ("dbCommandExecutor", dbCommandExecutor);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
       ArgumentUtility.CheckNotNull ("objectIDFactory", objectIDFactory);
 
       _dbCommandBuilders = dbCommandBuilders;
-      _dbCommandFactory = dbCommandFactory;
-      _dbCommandExecutor = dbCommandExecutor;
+      _commandExecutionReader = commandExecutionContext;
       _objectIDFactory = objectIDFactory;
     }
 
@@ -53,14 +49,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandBuilders; }
     }
 
-    public IDbCommandFactory DbCommandFactory
+    public IRdbmsProviderCommandExecutionContext CommandExecutionContext
     {
-      get { return _dbCommandFactory; }
-    }
-
-    public IDbCommandExecutor DbCommandExecutor
-    {
-      get { return _dbCommandExecutor; }
+      get { return _commandExecutionReader; }
     }
 
     public IObjectIDFactory ObjectIDFactory
@@ -68,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _objectIDFactory; }
     }
 
-    public IEnumerable<ObjectID> Execute ()
+    public IEnumerable<ObjectID> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       return _dbCommandBuilders.SelectMany (LoadObjectIDsFromCommandBuilder);
     }
@@ -77,9 +68,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      using (var command = commandBuilder.Create (_dbCommandFactory))
+      using (var command = commandBuilder.Create (_commandExecutionReader))
       {
-        using (var reader = _dbCommandExecutor.ExecuteReader (command, CommandBehavior.SingleResult))
+        using (var reader = _commandExecutionReader.ExecuteReader (command, CommandBehavior.SingleResult))
         {
           return _objectIDFactory.ReadSequence (reader);
         }

@@ -32,12 +32,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   {
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private ISqlDialect _sqlDialectMock;
-    private IDbCommandFactory _commandFactoryStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
     private IValueConverter _valueConverterStub;
     private ObjectID _objectID;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
@@ -56,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dbCommandStub.Stub(stub => stub.CreateParameter()).Return (_dbDataParameterStub);
       _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
       
-      _commandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
-      _commandFactoryStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
 
       var guid = Guid.NewGuid ();
       _objectID = new ObjectID ("Order", guid);
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 
-      var result = builder.Create (_commandFactoryStub);
+      var result = builder.Create (_commandExecutionContextStub);
 
       _sqlDialectMock.VerifyAllExpectations();
       _dataParameterCollectionMock.VerifyAllExpectations ();
@@ -116,8 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dataParameterCollectionMock.Replay ();
 
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
-      
-      var result = builder.Create (_commandFactoryStub);
+
+      var result = builder.Create (_commandExecutionContextStub);
 
       _sqlDialectMock.VerifyAllExpectations ();
       _dataParameterCollectionMock.VerifyAllExpectations ();

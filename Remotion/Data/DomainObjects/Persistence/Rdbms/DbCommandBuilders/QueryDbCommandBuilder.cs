@@ -33,11 +33,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _query = query;
     }
 
-    public override IDbCommand Create (IDbCommandFactory commandFactory)
+    public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
-      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
-      IDbCommand command = commandFactory.CreateDbCommand();
+      IDbCommand command = commandExecutionContext.CreateDbCommand ();
 
       string statement = _query.Statement;
       foreach (QueryParameter parameter in _query.Parameters)

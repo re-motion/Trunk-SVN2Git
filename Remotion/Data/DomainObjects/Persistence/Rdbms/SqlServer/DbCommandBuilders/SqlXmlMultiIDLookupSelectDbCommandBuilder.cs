@@ -50,11 +50,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       _objectIDs = objectIDs;
     }
 
-    public override IDbCommand Create (IDbCommandFactory commandFactory)
+    public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
-      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
-      var command = commandFactory.CreateDbCommand();
+      var command = commandExecutionContext.CreateDbCommand ();
 
       var statement = new StringBuilder ();
       AppendSelectClause (statement, _selectedColumns);

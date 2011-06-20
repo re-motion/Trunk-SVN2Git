@@ -88,15 +88,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _storageNameProvider; }
     }
 
-    public override IDbCommand Create (IDbCommandFactory commandFactory)
+    public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
-      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
       string[] allConcreteEntityNames = _classDefinition.GetAllConcreteEntityNames();
       if (allConcreteEntityNames.Length == 0)
         return null;
 
-      IDbCommand command = commandFactory.CreateDbCommand();
+      IDbCommand command = commandExecutionContext.CreateDbCommand ();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
       whereClauseBuilder.Add (_propertyDefinition.StoragePropertyDefinition.Name, _relatedID);
 

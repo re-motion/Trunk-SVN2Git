@@ -32,7 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   {
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private ISqlDialect _sqlDialectMock;
-    private IDbCommandFactory _commandFactoryStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
@@ -41,6 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IOrderedColumnsSpecification _orderedColumnsStub;
     private IValueConverter _valueConverterStub;
     private ObjectID _objectID;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
@@ -69,8 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub);
       _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
 
-      _commandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory> ();
-      _commandFactoryStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
 
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
       _dataParameterCollectionMock.Replay ();
 
-      var result = builder.Create (_commandFactoryStub);
+      var result = builder.Create (_commandExecutionContextStub);
 
       _dataParameterCollectionMock.VerifyAllExpectations ();
       _sqlDialectMock.VerifyAllExpectations();
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
       _dataParameterCollectionMock.Replay ();
 
-      var result = builder.Create (_commandFactoryStub);
+      var result = builder.Create (_commandExecutionContextStub);
 
       _dataParameterCollectionMock.VerifyAllExpectations ();
       _sqlDialectMock.VerifyAllExpectations();

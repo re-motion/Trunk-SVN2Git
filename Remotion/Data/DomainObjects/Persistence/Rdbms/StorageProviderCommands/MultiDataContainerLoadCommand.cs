@@ -25,30 +25,26 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
-  public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>>
+  public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilder[] _dbCommandBuilders;
     private readonly bool _allowNulls;
-    private readonly IDbCommandFactory _dbCommandFactory;
-    private readonly IDbCommandExecutor _dbCommandExecutor;
+    private readonly IRdbmsProviderCommandExecutionContext _commandExecutionContext;
     private readonly IDataContainerReader _dataContainerReader;
 
     public MultiDataContainerLoadCommand (
         IEnumerable<IDbCommandBuilder> dbCommandBuilders,
         bool allowNulls,
-        IDbCommandFactory dbCommandFactory,
-        IDbCommandExecutor dbCommandExecutor,
+        IRdbmsProviderCommandExecutionContext commandExecutionContext,
         IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilders", dbCommandBuilders);
-      ArgumentUtility.CheckNotNull ("dbCommandFactory", dbCommandFactory);
-      ArgumentUtility.CheckNotNull ("dbCommandExecutor", dbCommandExecutor);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       _dbCommandBuilders = dbCommandBuilders.ToArray();
       _allowNulls = allowNulls;
-      _dbCommandFactory = dbCommandFactory;
-      _dbCommandExecutor = dbCommandExecutor;
+      _commandExecutionContext = commandExecutionContext;
       _dataContainerReader = dataContainerReader;
     }
 
@@ -62,14 +58,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _allowNulls; }
     }
 
-    public IDbCommandFactory DbCommandFactory
+    public IRdbmsProviderCommandExecutionContext CommandExecutionContext
     {
-      get { return _dbCommandFactory; }
-    }
-
-    public IDbCommandExecutor DbCommandExecutor
-    {
-      get { return _dbCommandExecutor; }
+      get { return _commandExecutionContext; }
     }
 
     public IDataContainerReader DataContainerReader
@@ -77,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dataContainerReader; }
     }
 
-    public IEnumerable<DataContainer> Execute ()
+    public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       return _dbCommandBuilders.SelectMany (builder => LoadDataContainersFromCommandBuilder (builder, _allowNulls)).ToArray();
     }
@@ -86,9 +77,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      using (var command = commandBuilder.Create (_dbCommandFactory))
+      using (var command = commandBuilder.Create (_commandExecutionContext))
       {
-        using (var reader = _dbCommandExecutor.ExecuteReader (command, CommandBehavior.SingleResult))
+        using (var reader = _commandExecutionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
           return _dataContainerReader.ReadSequence (reader, allowNulls);
         }

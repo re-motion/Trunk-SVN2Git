@@ -40,11 +40,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private ObjectID _objectID3;
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStub;
     private MultiDataContainerLookupCommandFactory _factory;
-    private IDbCommandFactory _dbCommandFactoryStub;
-    private IDbCommandExecutor _dbCommandExecutorStub;
     private IDataContainerReader _dataContainerReaderStub;
     private IDbCommandBuilder _dbCommandBuilder1Stub;
     private IDbCommandBuilder _dbCommandBuilder2Stub;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
@@ -57,8 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
       _factory = new MultiDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub);
 
-      _dbCommandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
-      _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
 
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -74,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
               ((TableDefinition) _objectID1.ClassDefinition.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, _objectID1)).Return (
                   _dbCommandBuilder1Stub);
 
-      var result = _factory.CreateCommand (new[] { _objectID1 }, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
+      var result = _factory.CreateCommand (new[] { _objectID1 }, _commandExecutionContextStub, _dataContainerReaderStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
@@ -92,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   _dbCommandBuilder1Stub);
 
       var result = _factory.CreateCommand (
-          new[] { _objectID1, _objectID2 }, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
+          new[] { _objectID1, _objectID2 }, _commandExecutionContextStub, _dataContainerReaderStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
@@ -115,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   _dbCommandBuilder1Stub);
 
       var result = _factory.CreateCommand (
-          new[] { _objectID1, _objectID2, _objectID3 }, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
+          new[] { _objectID1, _objectID2, _objectID3 }, _commandExecutionContextStub, _dataContainerReaderStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }));
@@ -132,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
               ((TableDefinition) objectID.ClassDefinition.BaseClass.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, objectID)).Return (
                   _dbCommandBuilder1Stub);
 
-      var result = _factory.CreateCommand (new[] { objectID }, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
+      var result = _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub, _dataContainerReaderStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
@@ -164,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var objectID = new ObjectID (classDefinition, Guid.NewGuid ());
 
-      _factory.CreateCommand (new[] { objectID }, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
+      _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub, _dataContainerReaderStub);
     }
   }
 }

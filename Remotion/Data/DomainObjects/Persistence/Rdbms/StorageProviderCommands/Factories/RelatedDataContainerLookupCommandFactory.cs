@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   public class RelatedDataContainerLookupCommandFactory
   {
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
-    private readonly IStorageProviderCommandFactory _storageProviderCommandFactory;
+    private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
 
     private class EntityDefinitionVisitor : IEntityDefinitionVisitor
     {
@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     }
 
     public RelatedDataContainerLookupCommandFactory (
-        IDbCommandBuilderFactory dbCommandBuilderFactory, IStorageProviderCommandFactory storageProviderCommandFactory)
+        IDbCommandBuilderFactory dbCommandBuilderFactory, IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
@@ -87,19 +87,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _storageProviderCommandFactory = storageProviderCommandFactory;
     }
 
-    public IStorageProviderCommand<IEnumerable<DataContainer>> CreateCommand (
+    public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (
         RelationEndPointDefinition foreignKeyEndPoint,
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression,
-        IDbCommandFactory factory,
-        IDbCommandExecutor executor,
+        IRdbmsProviderCommandExecutionContext commandExecutionContext,
         IDataContainerReader dataContainerReader,
         IObjectIDFactory objectIDFactory)
     {
       ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
-      ArgumentUtility.CheckNotNull ("factory", factory);
-      ArgumentUtility.CheckNotNull ("executor", executor);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
+      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
       ArgumentUtility.CheckNotNull ("objectIDFactory", objectIDFactory);
 
@@ -114,7 +113,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
             ((IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
             foreignKeyValue,
             GetOrderedColumns (sortExpression));
-        return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, factory, executor, dataContainerReader); //TODO 4074: AllowNulls False/True ?
+        return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, commandExecutionContext, dataContainerReader); //TODO 4074: AllowNulls False/True ?
       }
       else
       {
@@ -125,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
             foreignKeyValue,
             GetOrderedColumns (sortExpression));
 
-        var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, factory, executor, objectIDFactory);
+        var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, commandExecutionContext, objectIDFactory);
         return new IndirectDataContainerLookupCommand (objectIDLoadCommand, _storageProviderCommandFactory);
       }
     }

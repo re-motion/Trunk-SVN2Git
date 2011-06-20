@@ -14,26 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using System.Data;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class StubDbCommandBuilder : DbCommandBuilder
+  /// <summary>
+  /// <see cref="IRdbmsProviderCommandExecutionContext"/> defines the API for all implementations that provides methods for the provider command 
+  /// execution.
+  /// </summary>
+  public interface IRdbmsProviderCommandExecutionContext : IDbCommandExecutor, IDbCommandFactory
   {
-    public StubDbCommandBuilder (RdbmsProvider provider)
-        : base (provider.SqlDialect,
-            provider.CreateValueConverter())
-    {
-    }
-
-    public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
-    {
-      throw new NotImplementedException();
-    }
   }
 }

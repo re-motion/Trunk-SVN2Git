@@ -32,13 +32,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   public class MultiDataContainerLoadCommandTest : SqlProviderBaseTest
   {
     private IDataReader _dataReaderStub;
-    private IDbCommandFactory _dbCommandFactoryStub;
     private IDbCommand _dbCommandStub;
     private IDbCommandBuilder _dbCommandBuilder1Stub;
-    private IDbCommandExecutor _dbCommandExecutorStub;
     private IDbCommandBuilder _dbCommandBuilder2Stub;
     private IDataContainerReader _dataContainerReaderStub;
     private DataContainer _container;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
@@ -48,15 +47,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
 
-      _dbCommandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
+      
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilder1Stub.Stub (stub => stub.Create (_dbCommandFactoryStub)).Return (_dbCommandStub);
+      _dbCommandBuilder1Stub.Stub (stub => stub.Create (_commandExecutionContextStub)).Return (_dbCommandStub);
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilder2Stub.Stub (stub => stub.Create (_dbCommandFactoryStub)).Return (_dbCommandStub);
-
-      _dbCommandExecutorStub = MockRepository.GenerateStub<IDbCommandExecutor>();
-      _dbCommandExecutorStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleResult)).Return (_dataReaderStub);
+      _dbCommandBuilder2Stub.Stub (stub => stub.Create (_commandExecutionContextStub)).Return (_dbCommandStub);
+      
+      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleResult)).Return (_dataReaderStub);
 
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
     }
@@ -65,13 +64,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void Initialization ()
     {
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
+          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, true, _commandExecutionContextStub, _dataContainerReaderStub);
 
       Assert.That (command.AllowNulls, Is.True);
       Assert.That (command.DataContainerReader, Is.SameAs (_dataContainerReaderStub));
       Assert.That (command.DbCommandBuilders, Is.EqualTo(new[]{_dbCommandBuilder1Stub, _dbCommandBuilder2Stub}));
-      Assert.That (command.DbCommandExecutor, Is.SameAs (_dbCommandExecutorStub));
-      Assert.That (command.DbCommandFactory, Is.SameAs(_dbCommandFactoryStub));
+      Assert.That (command.CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
     }
 
     [Test]
@@ -80,9 +78,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, false)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, false, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
+          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, false, _commandExecutionContextStub, _dataContainerReaderStub);
 
-      var result = command.Execute().ToArray();
+      var result = command.Execute(_commandExecutionContextStub).ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { _container, _container }));
     }
@@ -93,9 +91,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, true)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub }, true, _dbCommandFactoryStub, _dbCommandExecutorStub, _dataContainerReaderStub);
+          new[] { _dbCommandBuilder1Stub }, true, _commandExecutionContextStub, _dataContainerReaderStub);
 
-      var result = command.Execute ().ToArray ();
+      var result = command.Execute (_commandExecutionContextStub).ToArray ();
 
       Assert.That (result, Is.EqualTo (new[] { _container }));
     }

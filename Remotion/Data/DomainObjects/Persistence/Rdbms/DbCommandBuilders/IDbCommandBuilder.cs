@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     ISqlDialect SqlDialect { get; }
 
-    IDbCommand Create (IDbCommandFactory commandFactory);
+    IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext);
     IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue);
 
     /// <remarks>
