@@ -590,12 +590,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         sqlProvider.BeginTransaction();
 
-        var relationEndPointDefinition =
-            MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket)).GetRelationEndPointDefinition (
-                "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+        var relationEndPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
         var orderTicketContainers = sqlProvider.LoadDataContainersByRelatedID (
             (RelationEndPointDefinition) relationEndPointDefinition,
-            ((VirtualRelationEndPointDefinition)relationEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
+            null,
             DomainObjectIDs.Order1);
 
         ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, orderTicketContainers[0]);

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.Data.SqlClient;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
@@ -62,6 +63,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     protected DomainObjectIDs DomainObjectIDs
     {
       get { return TableInheritanceConfiguration.Instance.GetDomainObjectIDs (); }
+    }
+
+    protected MappingConfiguration Configuration
+    {
+      get { return MappingConfiguration.Current; }
+    }
+
+    protected PropertyDefinition GetPropertyDefinition (Type declaringType, string shortPropertyName)
+    {
+      var propertyDefinition = Configuration
+          .GetTypeDefinition (declaringType)
+          .PropertyAccessorDataCache
+          .GetMandatoryPropertyAccessorData (declaringType, shortPropertyName)
+          .PropertyDefinition;
+      Assertion.IsNotNull (propertyDefinition, "Property '{0}.{1}' is not a mapped property.", declaringType, shortPropertyName);
+      return propertyDefinition;
+    }
+
+    protected IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)
+    {
+      var endPointDefinition = Configuration
+          .GetTypeDefinition (declaringType)
+          .PropertyAccessorDataCache
+          .GetMandatoryPropertyAccessorData (declaringType, shortPropertyName)
+          .RelationEndPointDefinition;
+      Assertion.IsNotNull (endPointDefinition, "Property '{0}.{1}' is not a relation end-point.", declaringType, shortPropertyName);
+      return endPointDefinition;
     }
   }
 }

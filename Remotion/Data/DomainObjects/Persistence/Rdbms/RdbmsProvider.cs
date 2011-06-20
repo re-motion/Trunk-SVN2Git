@@ -253,7 +253,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _dataContainerLoader.LoadDataContainersFromCommandBuilder (commandBuilder, allowNulls);
     }
 
-    public override DataContainerCollection LoadDataContainersByRelatedID (RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID)
+    public override DataContainerCollection LoadDataContainersByRelatedID (
+        RelationEndPointDefinition relationEndPointDefinition, 
+        SortExpressionDefinition sortExpressionDefinition, 
+        ObjectID relatedID)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);

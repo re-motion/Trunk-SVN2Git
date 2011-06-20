@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
@@ -43,13 +44,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void LoadDataContainersByRelatedIDWithAbstractBaseClass ()
     {
-      var relationEndPointDefinition =
-          MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase)).GetRelationEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client");
+      var relationEndPointDefinition = GetEndPointDefinition (typeof (DomainBase), "Client");
+      var createdAtProperty = GetPropertyDefinition (typeof (DomainBase), "CreatedAt");
+      var sortExpression = new SortExpressionDefinition (new[] { new SortedPropertySpecification (createdAtProperty, SortOrder.Ascending) });
 
       var loadedDataContainers = Provider.LoadDataContainersByRelatedID (
           (RelationEndPointDefinition) relationEndPointDefinition,
-          ((VirtualRelationEndPointDefinition)relationEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
+          sortExpression,
           DomainObjectIDs.Client);
 
       Assert.IsNotNull (loadedDataContainers);
