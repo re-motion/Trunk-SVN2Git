@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   // TODO Review 4066: Derive from StandardMappingTest and use an IValueConverter stub
   [TestFixture]
-  public class SqlXmlMultiIDLookupSelectDbCommandBuilderTest : SqlProviderBaseTest
+  public class SqlXmlMultiIDLookupSelectDbCommandBuilderTest : StandardMappingTest
   {
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private ISqlDialect _sqlDialectMock;
@@ -41,6 +41,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private ObjectID _objectID1;
     private ObjectID _objectID2;
     private ObjectID _objectID3;
+    private IValueConverter _valueConverterStub;
+    private Guid _guid1;
+    private Guid _guid2;
+    private Guid _guid3;
 
     public override void SetUp ()
     {
@@ -63,9 +67,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _commandFactoryStub = MockRepository.GenerateStub<IDbCommandFactory>();
       _commandFactoryStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
 
-      _objectID1 = new ObjectID ("Order", Guid.NewGuid());
-      _objectID2 = new ObjectID ("Order", Guid.NewGuid());
-      _objectID3 = new ObjectID ("Order", Guid.NewGuid());
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+      _valueConverterStub.Stub (stub => stub.IsOfSameStorageProvider (Arg<ObjectID>.Is.Anything)).Return(true);
+
+      _guid1 = Guid.NewGuid();
+      _guid2 = Guid.NewGuid ();
+      _guid3 = Guid.NewGuid ();
+      _objectID1 = new ObjectID ("Order", _guid1);
+      _objectID2 = new ObjectID ("Order", _guid2);
+      _objectID3 = new ObjectID ("Order", _guid3);
     }
 
     [Test]
@@ -77,8 +87,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _selectedColumnsStub,
           new[] { _objectID1, _objectID2, _objectID3 },
           _sqlDialectMock,
-          Provider.CreateValueConverter());
+          _valueConverterStub);
+      var expectedXmlString = string.Format ("<L><I>{0}</I><I>{1}</I><I>{2}</I></L>", _objectID1.Value, _objectID2.Value, _objectID3.Value);
+      var fakeParameterValue = "Test";
 
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Matches(mi=>mi.ToString()==expectedXmlString))).Return (fakeParameterValue);
+      
       _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
       _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("ID")).Return ("[ID]");
       _sqlDialectMock.Expect (mock => mock.GetParameterName ("ID")).Return ("@ID");
@@ -96,8 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "SELECT [Column1], [Column2], [Column3] FROM [Table] "
           + "WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c))"));
 
-      var expectedXmlString = string.Format ("<L><I>{0}</I><I>{1}</I><I>{2}</I></L>", _objectID1.Value, _objectID2.Value, _objectID3.Value);
-      Assert.That (_dbDataParameterStub.Value.ToString(), Is.EqualTo (expectedXmlString));
+      Assert.That (_dbDataParameterStub.Value, Is.SameAs(fakeParameterValue));
       Assert.That (_dbDataParameterStub.DbType, Is.EqualTo (DbType.Xml));
     }
 
@@ -110,7 +123,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _selectedColumnsStub,
           new[] { _objectID1, _objectID2, _objectID3 },
           _sqlDialectMock,
-          Provider.CreateValueConverter ());
+          _valueConverterStub);
+
+      var expectedXmlString = string.Format ("<L><I>{0}</I><I>{1}</I><I>{2}</I></L>", _objectID1.Value, _objectID2.Value, _objectID3.Value);
+      var fakeParameterValue = "Test";
+
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Matches (mi => mi.ToString () == expectedXmlString))).Return (fakeParameterValue);
 
       _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
       _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
@@ -129,9 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (result.CommandText, Is.EqualTo (
           "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] "
           + "WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c))"));
-
-      var expectedXmlString = string.Format ("<L><I>{0}</I><I>{1}</I><I>{2}</I></L>", _objectID1.Value, _objectID2.Value, _objectID3.Value);
-      Assert.That (_dbDataParameterStub.Value.ToString (), Is.EqualTo (expectedXmlString));
+      Assert.That (_dbDataParameterStub.Value, Is.SameAs(fakeParameterValue));
     }
   }
 }
