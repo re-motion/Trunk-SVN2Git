@@ -30,11 +30,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   public class IndirectDataContainerLookupCommandTest : SqlProviderBaseTest
   {
     private IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> _objectIDLoadCommandStub;
+    private IStorageProviderCommand<DataContainer[], IRdbmsProviderCommandExecutionContext> _dataContainerLoadCommandStub;
     private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderFactoryStub;
+
     private IndirectDataContainerLookupCommand _lookupCommand;
     private ObjectID _objectID1;
     private ObjectID _objectID2;
-    private IStorageProviderCommand<DataContainer[], IRdbmsProviderCommandExecutionContext> _fakeStorageProviderCommandStub;
     private DataContainer[] _fakeResult;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
@@ -43,20 +44,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       base.SetUp();
 
       _fakeResult = new DataContainer[0];
-      _objectID1 = new ObjectID ("Order", Guid.NewGuid());
-      _objectID2 = new ObjectID ("OrderItem", Guid.NewGuid());
+      _objectID1 = DomainObjectIDs.Order1;
+      _objectID2 = DomainObjectIDs.Order2;
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
       
-      _fakeStorageProviderCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<DataContainer[], IRdbmsProviderCommandExecutionContext>>();
-      _fakeStorageProviderCommandStub.Stub (stub => stub.Execute(_commandExecutionContextStub)).Return (_fakeResult);
-
       _objectIDLoadCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext>>();
       _objectIDLoadCommandStub.Stub (stub => stub.Execute(_commandExecutionContextStub)).Return (new[] { _objectID1, _objectID2 });
 
+      _dataContainerLoadCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<DataContainer[], IRdbmsProviderCommandExecutionContext>> ();
+      _dataContainerLoadCommandStub.Stub (stub => stub.Execute (_commandExecutionContextStub)).Return (_fakeResult);
+
       _storageProviderFactoryStub = MockRepository.GenerateStub<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
-      _storageProviderFactoryStub.Stub (stub => stub.CreateForMultiIDLookup (Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 }))).Return (
-          _fakeStorageProviderCommandStub);
+      _storageProviderFactoryStub
+          .Stub (stub => stub.CreateForMultiIDLookup (Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 })))
+          .Return (_dataContainerLoadCommandStub);
 
       _lookupCommand = new IndirectDataContainerLookupCommand (_objectIDLoadCommandStub, _storageProviderFactoryStub);
     }

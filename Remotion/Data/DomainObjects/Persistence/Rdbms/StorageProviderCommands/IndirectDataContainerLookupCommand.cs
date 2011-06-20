@@ -22,6 +22,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
+  /// <summary>
+  /// Executes the given <see cref="IStorageProviderCommand{T, TExecutionContext}"/> to retrieve a sequence of <see cref="ObjectID"/> values, then
+  /// looks up those values via the given <see cref="IStorageProviderCommandFactory{TExecutionContext}"/>. This command can be used to indirectly
+  /// load <see cref="DataContainer"/> instances via two queries, where the first yields only IDs, for example for concrete table inheritance 
+  /// relation lookup.
+  /// </summary>
   public class IndirectDataContainerLookupCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> _objectIDLoadCommand;
@@ -52,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
       var objectIds = _objectIDLoadCommand.Execute (executionContext);
-      return _storageProviderCommandFactory.CreateForMultiIDLookup (objectIds.ToArray()).Execute(executionContext);
+      return _storageProviderCommandFactory.CreateForMultiIDLookup (objectIds.ToArray()).Execute (executionContext);
     }
   }
 }
