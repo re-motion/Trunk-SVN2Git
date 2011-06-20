@@ -80,6 +80,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       var objectIDsPerTableDefinition = new MultiDictionary<TableDefinition, ObjectID>();
+      // TODO 4090: Replace visitor with InlineEntityDefinitionVisitor
+      // TODO 4090: Remove nested EntityDefinitionVisitor
       var visitor = new EntityDefinitionVisitor();
       foreach (var objectID in ids)
       {

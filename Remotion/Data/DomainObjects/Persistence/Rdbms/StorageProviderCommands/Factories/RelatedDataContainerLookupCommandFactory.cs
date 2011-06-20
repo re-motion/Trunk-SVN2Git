@@ -33,50 +33,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
 
-    private class EntityDefinitionVisitor : IEntityDefinitionVisitor
-    {
-      private TableDefinition _tableDefinition;
-      private UnionViewDefinition _unionViewDefinition;
-
-      public TableDefinition TableDefinition
-      {
-        get { return _tableDefinition; }
-      }
-
-      public UnionViewDefinition UnionViewDefinition
-      {
-        get { return _unionViewDefinition; }
-      }
-
-      public void VisitTableDefinition (TableDefinition tableDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
-
-        _tableDefinition = tableDefinition;
-      }
-
-      public void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
-
-        _unionViewDefinition = unionViewDefinition;
-      }
-
-      public void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
-
-        filterViewDefinition.BaseEntity.Accept (this);
-      }
-
-      public void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("nullEntityDefinition", nullEntityDefinition);
-
-        //Nothing to do here
-      }
-    }
-
     public RelatedDataContainerLookupCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory, IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
     {
@@ -102,31 +58,61 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
       ArgumentUtility.CheckNotNull ("objectIDFactory", objectIDFactory);
 
-      var visitor = new EntityDefinitionVisitor();
-      ((IEntityDefinition) foreignKeyEndPoint.ClassDefinition.StorageEntityDefinition).Accept (visitor);
+      return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> (
+          (IEntityDefinition) foreignKeyEndPoint.ClassDefinition.StorageEntityDefinition,
+          (table, continuation) => CreateMultiDataContainerLoadCommand (
+              table,
+              foreignKeyEndPoint,
+              foreignKeyValue,
+              sortExpression,
+              commandExecutionContext,
+              dataContainerReader),
+          (filterView, continuation) => continuation (filterView.BaseEntity),
+          (unionView, continuation) => CreateIndirectDataContainerLoadCommand (
+              unionView,
+              foreignKeyEndPoint,
+              foreignKeyValue,
+              sortExpression,
+              commandExecutionContext,
+              objectIDFactory),
+          (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
+    }
 
-      if (visitor.TableDefinition != null)
-      {
-        var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
-            visitor.TableDefinition,
-            AllSelectedColumnsSpecification.Instance,
-            ((IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
-            foreignKeyValue,
-            GetOrderedColumns (sortExpression));
-        return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, commandExecutionContext, dataContainerReader); //TODO 4074: AllowNulls False/True ?
-      }
-      else
-      {
-        var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
-            visitor.UnionViewDefinition,
-            new SelectedColumnsSpecification (new[] { visitor.UnionViewDefinition.ObjectIDColumn, visitor.UnionViewDefinition.ClassIDColumn }),
-            (IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition,
-            foreignKeyValue,
-            GetOrderedColumns (sortExpression));
+    private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateMultiDataContainerLoadCommand (
+        TableDefinition tableDefinition,
+        RelationEndPointDefinition foreignKeyEndPoint,
+        ObjectID foreignKeyValue,
+        SortExpressionDefinition sortExpression,
+        IRdbmsProviderCommandExecutionContext executionContext,
+        IDataContainerReader dataContainerReader)
+    {
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
+          tableDefinition,
+          AllSelectedColumnsSpecification.Instance,
+          ((IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
+          foreignKeyValue,
+          GetOrderedColumns (sortExpression));
+      //TODO 4074: AllowNulls False/True ?
+      return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, executionContext, dataContainerReader);
+    }
 
-        var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, commandExecutionContext, objectIDFactory);
-        return new IndirectDataContainerLoadCommand (objectIDLoadCommand, _storageProviderCommandFactory);
-      }
+    private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateIndirectDataContainerLoadCommand (
+        UnionViewDefinition unionViewDefinition,
+        RelationEndPointDefinition foreignKeyEndPoint,
+        ObjectID foreignKeyValue,
+        SortExpressionDefinition sortExpression,
+        IRdbmsProviderCommandExecutionContext executionConext,
+        IObjectIDFactory objectIDFactory)
+    {
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
+          unionViewDefinition,
+          new SelectedColumnsSpecification (new[] { unionViewDefinition.ObjectIDColumn, unionViewDefinition.ClassIDColumn }),
+          (IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition,
+          foreignKeyValue,
+          GetOrderedColumns (sortExpression));
+
+      var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, executionConext, objectIDFactory);
+      return new IndirectDataContainerLoadCommand (objectIDLoadCommand, _storageProviderCommandFactory);
     }
 
     private IOrderedColumnsSpecification GetOrderedColumns (SortExpressionDefinition sortExpression)
