@@ -27,13 +27,13 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands
 {
   [TestFixture]
-  public class IndirectDataContainerLookupCommandTest : SqlProviderBaseTest
+  public class IndirectDataContainerLoadCommandTest : SqlProviderBaseTest
   {
     private IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> _objectIDLoadCommandStub;
     private IStorageProviderCommand<DataContainer[], IRdbmsProviderCommandExecutionContext> _dataContainerLoadCommandStub;
     private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderFactoryStub;
 
-    private IndirectDataContainerLookupCommand _lookupCommand;
+    private IndirectDataContainerLoadCommand _loadCommand;
     private ObjectID _objectID1;
     private ObjectID _objectID2;
     private DataContainer[] _fakeResult;
@@ -60,20 +60,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (stub => stub.CreateForMultiIDLookup (Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 })))
           .Return (_dataContainerLoadCommandStub);
 
-      _lookupCommand = new IndirectDataContainerLookupCommand (_objectIDLoadCommandStub, _storageProviderFactoryStub);
+      _loadCommand = new IndirectDataContainerLoadCommand (_objectIDLoadCommandStub, _storageProviderFactoryStub);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_lookupCommand.ObjectIDLoadCommand, Is.SameAs (_objectIDLoadCommandStub));
-      Assert.That (_lookupCommand.StorageProviderCommandFactory, Is.SameAs (_storageProviderFactoryStub));
+      Assert.That (_loadCommand.ObjectIDLoadCommand, Is.SameAs (_objectIDLoadCommandStub));
+      Assert.That (_loadCommand.StorageProviderCommandFactory, Is.SameAs (_storageProviderFactoryStub));
     }
 
     [Test]
     public void Execute ()
     {
-      var result = _lookupCommand.Execute(_commandExecutionContextStub);
+      var result = _loadCommand.Execute(_commandExecutionContextStub);
 
       Assert.That (result, Is.SameAs (_fakeResult));
     }

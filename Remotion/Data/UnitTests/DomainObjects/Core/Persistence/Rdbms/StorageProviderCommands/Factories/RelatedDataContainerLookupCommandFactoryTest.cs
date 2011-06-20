@@ -212,18 +212,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _dataContainerReaderStub,
           _objectIDFactoryStub);
 
-      Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLookupCommand)));
-      Assert.That (((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
+      Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
+      Assert.That (((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).DbCommandBuilders,
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).DbCommandBuilders,
           Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
           Is.SameAs (_commandExecutionContextStub));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).ObjectIDFactory,
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).ObjectIDFactory,
           Is.SameAs (_objectIDFactoryStub));
-      Assert.That (((IndirectDataContainerLookupCommand) result).StorageProviderCommandFactory, Is.SameAs (_storageProviderCommandFactory));
+      Assert.That (((IndirectDataContainerLoadCommand) result).StorageProviderCommandFactory, Is.SameAs (_storageProviderCommandFactory));
     }
 
     [Test]
@@ -277,21 +277,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _dataContainerReaderStub,
           _objectIDFactoryStub);
 
-      Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLookupCommand)));
-      Assert.That (((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
+      Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
+      Assert.That (((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).DbCommandBuilders,
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).DbCommandBuilders,
           Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
           Is.SameAs (_commandExecutionContextStub));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
           Is.SameAs (_commandExecutionContextStub));
       Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLookupCommand) result).ObjectIDLoadCommand).ObjectIDFactory,
+          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).ObjectIDFactory,
           Is.SameAs (_objectIDFactoryStub));
-      Assert.That (((IndirectDataContainerLookupCommand) result).StorageProviderCommandFactory, Is.SameAs (_storageProviderCommandFactory));
+      Assert.That (((IndirectDataContainerLoadCommand) result).StorageProviderCommandFactory, Is.SameAs (_storageProviderCommandFactory));
     }
   }
 }

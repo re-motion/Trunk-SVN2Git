@@ -346,7 +346,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\MultiDataContainerLookupCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\RelatedDataContainerLookupCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\SingleDataContainerLookupCommandFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLookupCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiDataContainerLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\SingleDataContainerLoadCommandTest.cs" />

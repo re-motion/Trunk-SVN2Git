@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
             GetOrderedColumns (sortExpression));
 
         var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, commandExecutionContext, objectIDFactory);
-        return new IndirectDataContainerLookupCommand (objectIDLoadCommand, _storageProviderCommandFactory);
+        return new IndirectDataContainerLoadCommand (objectIDLoadCommand, _storageProviderCommandFactory);
       }
     }
 
