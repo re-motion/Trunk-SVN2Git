@@ -217,12 +217,12 @@ namespace Remotion.Data.DomainObjects.Persistence
       }
 
       var oppositeEndPointDefinition = relationEndPointID.Definition.GetOppositeEndPointDefinition();
-
+      
       var oppositeProvider = _storageProviderManager.GetMandatory (oppositeEndPointDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name);
-
+      
       var oppositeDataContainers = oppositeProvider.LoadDataContainersByRelatedID (
-          oppositeEndPointDefinition.ClassDefinition,
-          oppositeEndPointDefinition.PropertyName,
+          (RelationEndPointDefinition) oppositeEndPointDefinition,
+          ((VirtualRelationEndPointDefinition)oppositeEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
           relationEndPointID.ObjectID);
 
       if (relationEndPointID.Definition.IsMandatory && oppositeDataContainers.Count == 0)
@@ -259,12 +259,12 @@ namespace Remotion.Data.DomainObjects.Persistence
             relationEndPointID.Definition.RelationDefinition.ID);
       }
 
-      StorageProvider oppositeProvider = _storageProviderManager.GetMandatory (
+      var oppositeProvider = _storageProviderManager.GetMandatory (
           relationEndPointID.Definition.GetOppositeEndPointDefinition ().ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name);
 
-      DataContainerCollection oppositeDataContainers = oppositeProvider.LoadDataContainersByRelatedID (
-          relationEndPointID.Definition.GetOppositeEndPointDefinition ().ClassDefinition,
-          relationEndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName,
+      var oppositeDataContainers = oppositeProvider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointID.Definition.GetOppositeEndPointDefinition(),
+          ((VirtualRelationEndPointDefinition)relationEndPointID.Definition).GetSortExpression(),
           relationEndPointID.ObjectID);
 
       if (oppositeDataContainers.Count > 1)

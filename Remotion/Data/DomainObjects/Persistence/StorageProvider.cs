@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -99,9 +100,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     public abstract DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids);
 
     public abstract DataContainerCollection LoadDataContainersByRelatedID (
-        ClassDefinition classDefinition,
-        string propertyName,
-        ObjectID relatedID);
+        RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID);
 
     public abstract void Save (DataContainerCollection dataContainers);
     public abstract void SetTimestamp (DataContainerCollection dataContainers);

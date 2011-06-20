@@ -582,8 +582,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
       }
     }
-
-
+    
     [Test]
     public void TransactionalLoadDataContainersByRelatedIDAndSave ()
     {
@@ -591,9 +590,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         sqlProvider.BeginTransaction();
 
-        DataContainerCollection orderTicketContainers = sqlProvider.LoadDataContainersByRelatedID (
-            MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket)),
-            "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order",
+        var relationEndPointDefinition =
+            MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket)).GetRelationEndPointDefinition (
+                "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+        var orderTicketContainers = sqlProvider.LoadDataContainersByRelatedID (
+            (RelationEndPointDefinition) relationEndPointDefinition,
+            ((VirtualRelationEndPointDefinition)relationEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
             DomainObjectIDs.Order1);
 
         ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, orderTicketContainers[0]);

@@ -31,17 +31,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       DataContainer customerContainer = Provider.LoadDataContainer (DomainObjectIDs.Customer);
       Assert.IsNotNull (customerContainer);
       Assert.AreEqual (DomainObjectIDs.Customer, customerContainer.ID);
-      Assert.AreEqual ("UnitTests", customerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.CreatedBy"));
-      Assert.AreEqual ("Zaphod", customerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName"));
-      Assert.AreEqual (CustomerType.Premium, customerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Customer.CustomerType"));
+      Assert.AreEqual (
+          "UnitTests", customerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.CreatedBy"));
+      Assert.AreEqual (
+          "Zaphod", customerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName"));
+      Assert.AreEqual (
+          CustomerType.Premium,
+          customerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Customer.CustomerType"));
     }
 
     [Test]
     public void LoadDataContainersByRelatedIDWithAbstractBaseClass ()
     {
-      ClassDefinition domainBaseClass = MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase));
+      var relationEndPointDefinition =
+          MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase)).GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client");
 
-      DataContainerCollection loadedDataContainers = Provider.LoadDataContainersByRelatedID (domainBaseClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client", DomainObjectIDs.Client);
+      var loadedDataContainers = Provider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointDefinition,
+          ((VirtualRelationEndPointDefinition)relationEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
+          DomainObjectIDs.Client);
 
       Assert.IsNotNull (loadedDataContainers);
       Assert.AreEqual (4, loadedDataContainers.Count);

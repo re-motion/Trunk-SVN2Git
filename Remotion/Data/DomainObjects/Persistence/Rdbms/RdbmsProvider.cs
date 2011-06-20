@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
@@ -209,7 +209,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Connect();
 
       var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, CreateValueConverter());
-      using (IDbCommand command = commandBuilder.Create(this))
+      using (IDbCommand command = commandBuilder.Create (this))
       {
         try
         {
@@ -253,17 +253,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _dataContainerLoader.LoadDataContainersFromCommandBuilder (commandBuilder, allowNulls);
     }
 
-    public override DataContainerCollection LoadDataContainersByRelatedID (ClassDefinition classDefinition, string propertyName, ObjectID relatedID)
+    public override DataContainerCollection LoadDataContainersByRelatedID (RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID)
     {
       CheckDisposed();
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
-      CheckClassDefinition (classDefinition, "classDefinition");
+      CheckClassDefinition (relationEndPointDefinition.ClassDefinition, "classDefinition");
 
       Connect();
 
-      return _dataContainerLoader.LoadDataContainersByRelatedID (classDefinition, propertyName, relatedID);
+      return _dataContainerLoader.LoadDataContainersByRelatedID (
+          relationEndPointDefinition.ClassDefinition, relationEndPointDefinition.PropertyName, relatedID);
     }
 
     public override void Save (DataContainerCollection dataContainers)
@@ -377,7 +377,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       string columnName = DelimitIdentifier (StorageNameProvider.TimestampColumnName);
       string entityName = dataContainer.ClassDefinition.GetEntityName();
-      var commandBuilder = new SingleIDLookupDbCommandBuilder (columnName,
+      var commandBuilder = new SingleIDLookupDbCommandBuilder (
+          columnName,
           entityName,
           StorageNameProvider.IDColumnName,
           dataContainer.ID,
@@ -385,7 +386,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           SqlDialect,
           CreateValueConverter());
 
-      using (IDbCommand command = commandBuilder.Create(this))
+      using (IDbCommand command = commandBuilder.Create (this))
       {
         object timestamp;
         try
@@ -409,7 +410,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("id", id);
       CheckStorageProviderID (id, "id");
 
-      using (IDbCommand command = commandBuilder.Create(this))
+      using (IDbCommand command = commandBuilder.Create (this))
       {
         if (command == null)
           return;

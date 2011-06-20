@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -28,9 +27,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void Loading ()
     {
-      DataContainerCollection collection = Provider.LoadDataContainersByRelatedID (
-          MappingConfiguration.Current.GetTypeDefinition (typeof (Order)),
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer",
+      var relationEndPointDefinition =
+          MappingConfiguration.Current.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
+      var collection = Provider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointDefinition,
+          ((VirtualRelationEndPointDefinition) relationEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
           DomainObjectIDs.Customer1);
 
       Assert.IsNotNull (collection);
@@ -42,11 +44,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadOverInheritedProperty ()
     {
-      DataContainer personContainer = Provider.LoadDataContainer (DomainObjectIDs.Person6);
+      var relationEndPointDefinition =
+          MappingConfiguration.Current.GetTypeDefinition (typeof (Distributor)).GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson");
 
-      DataContainerCollection collection = Provider.LoadDataContainersByRelatedID (
-          MappingConfiguration.Current.GetTypeDefinition (typeof (Distributor)),
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson",
+      var collection = Provider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointDefinition,
+          ((VirtualRelationEndPointDefinition) relationEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
           DomainObjectIDs.Person6);
 
       Assert.AreEqual (1, collection.Count);
@@ -56,10 +60,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadWithOrderBy ()
     {
-      ClassDefinition orderDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
+      var relationEndPointDefinition =
+          MappingConfiguration.Current.GetClassDefinition ("Order").GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
 
-      DataContainerCollection orderContainers = Provider.LoadDataContainersByRelatedID (
-          orderDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", DomainObjectIDs.Customer1);
+      var orderContainers = Provider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointDefinition,
+          ((VirtualRelationEndPointDefinition) relationEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
+          DomainObjectIDs.Customer1);
 
       Assert.AreEqual (2, orderContainers.Count);
       Assert.AreEqual (DomainObjectIDs.Order1, orderContainers[0].ID);
@@ -69,9 +77,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedIDOfDifferentStorageProvider ()
     {
-      ClassDefinition orderDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
+      var relationEndPointDefinition =
+          MappingConfiguration.Current.GetClassDefinition ("Order").GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official");
 
-      DataContainerCollection orderContainers = Provider.LoadDataContainersByRelatedID (orderDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official", DomainObjectIDs.Official1);
+      var orderContainers = Provider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointDefinition,
+          ((VirtualRelationEndPointDefinition) relationEndPointDefinition.GetOppositeEndPointDefinition()).GetSortExpression(),
+          DomainObjectIDs.Official1);
       Assert.IsNotNull (orderContainers);
       Assert.AreEqual (5, orderContainers.Count);
     }

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
@@ -156,10 +157,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         InnerProvider.SetTimestamp (dataContainers);
     }
 
-    public override DataContainerCollection LoadDataContainersByRelatedID (ClassDefinition classDefinition, string propertyName, ObjectID relatedID)
+    public override DataContainerCollection LoadDataContainersByRelatedID (RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID)
     {
       if (InnerProvider != null)
-        return InnerProvider.LoadDataContainersByRelatedID (classDefinition, propertyName, relatedID);
+        return InnerProvider.LoadDataContainersByRelatedID (relationEndPointDefinition, sortExpressionDefinition, relatedID);
       else
         return null;
     }
