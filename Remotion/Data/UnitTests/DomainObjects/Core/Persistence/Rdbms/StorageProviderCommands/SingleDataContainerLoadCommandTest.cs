@@ -52,6 +52,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilderStub.Stub (stub => stub.Create (_commandExecutionContextStub)).Return (_dbCommandStub);
 
+      // TODO Review 4068: use mocks for _commandExecutionContextStub, _dataContainerReaderStub, _dbCommandBuilder, _command
+      // TODO Review 4068: move expectations down to Execute test
+      // TODO Review 4068: also test for _command.Dispose and _dataContainerReaderStub.Dispose
+      // TODO Review 4068: (for all command tests)
       _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleRow)).Return (_dataReaderMock);
 
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();

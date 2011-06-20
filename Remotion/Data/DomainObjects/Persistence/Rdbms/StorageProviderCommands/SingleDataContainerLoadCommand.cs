@@ -23,15 +23,19 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
+  /// <summary>
+  /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a single <see cref="DataContainer"/>.
+  /// </summary>
   public class SingleDataContainerLoadCommand : IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilder _dbCommandBuilder;
     private readonly IDataContainerReader _dataContainerReader;
     private readonly IRdbmsProviderCommandExecutionContext _commandExecutionContext;
 
+    // TODO Review 4068: Remove IRdbmsProviderCommandExecutionContext parameter (here and for all commands)
     public SingleDataContainerLoadCommand (
         IDbCommandBuilder dbCommandBuilder,
-       IRdbmsProviderCommandExecutionContext commandExecutionContext,
+        IRdbmsProviderCommandExecutionContext commandExecutionContext,
         IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilder", dbCommandBuilder);
