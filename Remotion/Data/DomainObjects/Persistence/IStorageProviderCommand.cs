@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// <summary>
   /// Represents a command without a return value to be executed by a storage provider.
   /// </summary>
-  public interface IStorageProviderCommand<TExecutionContext>
+  public interface IStorageProviderCommand<in TExecutionContext>
   {
     void Execute (TExecutionContext executionContext);
   }
@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// <summary>
   /// Represents a command with a return value to be executed by a storage provider.
   /// </summary>
-  public interface IStorageProviderCommand<T, TExecutionContext>
+  public interface IStorageProviderCommand<out T, in TExecutionContext>
   {
     T Execute (TExecutionContext executionContext);
   }
