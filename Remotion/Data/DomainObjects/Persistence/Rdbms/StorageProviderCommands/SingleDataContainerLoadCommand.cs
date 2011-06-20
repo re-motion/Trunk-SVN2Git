@@ -64,6 +64,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 
     public DataContainer Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
+
       using (var command = _dbCommandBuilder.Create (_commandExecutionContext))
       {
         using (var reader = _commandExecutionContext.ExecuteReader (command, CommandBehavior.SingleRow))

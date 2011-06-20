@@ -24,6 +24,10 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
+  /// <summary>
+  /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a sequence of <see cref="ObjectID"/>
+  /// instances.
+  /// </summary>
   public class MultiObjectIDLoadCommand : IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IEnumerable<IDbCommandBuilder> _dbCommandBuilders;
@@ -61,6 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 
     public IEnumerable<ObjectID> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
       return _dbCommandBuilders.SelectMany (LoadObjectIDsFromCommandBuilder);
     }
 

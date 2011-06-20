@@ -25,6 +25,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
+  /// <summary>
+  /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a sequence of <see cref="DataContainer"/>
+  /// instances.
+  /// </summary>
   public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilder[] _dbCommandBuilders;
@@ -70,10 +74,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 
     public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
-      return _dbCommandBuilders.SelectMany (builder => LoadDataContainersFromCommandBuilder (builder, _allowNulls)).ToArray();
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
+      return _dbCommandBuilders.SelectMany (LoadDataContainersFromCommandBuilder).ToArray();
     }
 
-    private IEnumerable<DataContainer> LoadDataContainersFromCommandBuilder (IDbCommandBuilder commandBuilder, bool allowNulls)
+    private IEnumerable<DataContainer> LoadDataContainersFromCommandBuilder (IDbCommandBuilder commandBuilder)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
@@ -81,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = _commandExecutionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          return _dataContainerReader.ReadSequence (reader, allowNulls);
+          return _dataContainerReader.ReadSequence (reader, _allowNulls);
         }
       }
     }

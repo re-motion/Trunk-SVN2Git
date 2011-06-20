@@ -50,6 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
       
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
+      // TODO Review 4070: Use two commands (also in MultiObjectIDLoadCommandTest)
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilder1Stub.Stub (stub => stub.Create (_commandExecutionContextStub)).Return (_dbCommandStub);
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -73,6 +74,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
+    public void Execute_OneCommandBuilder_AllowNullsTrue ()
+    {
+      var command = new MultiDataContainerLoadCommand (
+          new[] { _dbCommandBuilder1Stub }, true, _commandExecutionContextStub, _dataContainerReaderStub);
+
+      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, true)).Return (new[] { _container });
+      var result = command.Execute (_commandExecutionContextStub).ToArray ();
+
+      Assert.That (result, Is.EqualTo (new[] { _container }));
+    }
+
+
+    [Test]
     public void Execute_SeveralCommandBuilders_AllowNullsFalse ()
     {
       _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, false)).Return (new[] { _container });
@@ -83,19 +97,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = command.Execute(_commandExecutionContextStub).ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { _container, _container }));
-    }
-
-    [Test]
-    public void Execute_OneCommandBuilder_AllowNullsTrue ()
-    {
-      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, true)).Return (new[] { _container });
-
-      var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub }, true, _commandExecutionContextStub, _dataContainerReaderStub);
-
-      var result = command.Execute (_commandExecutionContextStub).ToArray ();
-
-      Assert.That (result, Is.EqualTo (new[] { _container }));
     }
   }
 }

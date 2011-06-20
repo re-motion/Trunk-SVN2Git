@@ -50,7 +50,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 
     public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
-      var objectIds = _objectIDLoadCommand.Execute(executionContext);
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
+      var objectIds = _objectIDLoadCommand.Execute (executionContext);
       return _storageProviderCommandFactory.CreateForMultiIDLookup (objectIds.ToArray()).Execute(executionContext);
     }
   }
