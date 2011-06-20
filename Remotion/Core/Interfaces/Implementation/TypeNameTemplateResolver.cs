@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Implementation
@@ -41,6 +42,7 @@ namespace Remotion.Implementation
     private static string GetPublicKeyTokenString ()
     {
       byte[] bytes = typeof (TypeNameTemplateResolver).Assembly.GetName ().GetPublicKeyToken ();
+      Trace.Assert (bytes != null && bytes.Length > 0, "Remotion.Interfaces definitely has a strong name.");
       return string.Format ("{0:x2}{1:x2}{2:x2}{3:x2}{4:x2}{5:x2}{6:x2}{7:x2}",
           bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]);
     }
