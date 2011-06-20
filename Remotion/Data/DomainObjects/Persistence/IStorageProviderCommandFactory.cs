@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// Defines an interface for classes instantiating <see cref="IStorageProviderCommand{T} "/> instances for the basic storage provider operations.
   /// <see cref="StorageProvider"/> uses this factory interface when the respective provider methods are called.
   /// </summary>
-  public interface IStorageProviderCommandFactory<TExecutionContext>
+  public interface IStorageProviderCommandFactory<in TExecutionContext>
   {
     IStorageProviderCommand<DataContainer, TExecutionContext> CreateForSingleIDLookup (ObjectID objectID);
     IStorageProviderCommand<DataContainer[], TExecutionContext> CreateForMultiIDLookup (ObjectID[] objectIDs);
