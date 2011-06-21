@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
@@ -79,30 +80,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
-      var objectIDsPerTableDefinition = new MultiDictionary<TableDefinition, ObjectID>();
       // TODO 4090: Replace visitor with InlineEntityDefinitionVisitor
       // TODO 4090: Remove nested EntityDefinitionVisitor
       var visitor = new EntityDefinitionVisitor();
-      foreach (var objectID in ids)
-      {
-        ((IEntityDefinition) objectID.ClassDefinition.StorageEntityDefinition).Accept (visitor);
-        objectIDsPerTableDefinition[visitor.TableDefinition].Add (objectID);
-      }
+      
+      var dbCommandBuilders = from id in ids
+                              let tableDefinition = GetTableDefinition (id, visitor)
+                              group id by tableDefinition
+                              into idsByTable
+                              select CreateDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
+      return new MultiDataContainerLoadCommand (dbCommandBuilders, false, commandExecutionContext, dataContainerReader);
+    }
 
-      var commandBuilders = new List<IDbCommandBuilder>();
-      foreach (var group in objectIDsPerTableDefinition)
-      {
-        if (group.Value.Count > 1)
-        {
-          commandBuilders.Add (
-              _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (group.Key, AllSelectedColumnsSpecification.Instance, group.Value.ToArray()));
-        }
-        else
-          commandBuilders.Add (
-              _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (group.Key, AllSelectedColumnsSpecification.Instance, group.Value[0]));
-      }
+    private TableDefinition GetTableDefinition (ObjectID objectID, EntityDefinitionVisitor visitor)
+    {
+      ((IEntityDefinition) objectID.ClassDefinition.StorageEntityDefinition).Accept (visitor);
+      return visitor.TableDefinition;
+    }  
 
-      return new MultiDataContainerLoadCommand (commandBuilders, false, commandExecutionContext, dataContainerReader);
+    private IDbCommandBuilder CreateDbCommandBuilder (TableDefinition tableDefinition, ObjectID[] objectIDs)
+    {
+      if (objectIDs.Length > 1)
+        return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs);
+      else
+        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs[0]);
     }
   }
 }
