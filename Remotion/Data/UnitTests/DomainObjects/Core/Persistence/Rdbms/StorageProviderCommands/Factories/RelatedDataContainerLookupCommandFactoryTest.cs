@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
@@ -83,12 +85,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _factory = new RelatedDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub, _storageProviderCommandFactory);
     }
 
+    // TODO Review 4074: Refactor the same way as below
     [Test]
     public void CreateCommand_TableDefinition_NoSortExpression ()
     {
       var foreignKeyValue = new ObjectID ("OrderTicket", Guid.NewGuid());
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      var simpleColumnDefinition =
+      var foreignKeyColumn =
           new IDColumnDefinition (
               new SimpleColumnDefinition ("OrderTicketID", typeof (Guid), "uniqueidentifier", true, false),
               new SimpleColumnDefinition ("OrderTicketID", typeof (Guid), "uniqueidentifier", true, false));
@@ -96,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
-          simpleColumnDefinition);
+          foreignKeyColumn);
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
 
       _dbCommandBuilderFactoryStub
@@ -104,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
               stub => stub.CreateForRelationLookupFromTable (
                   (TableDefinition) classDefinition.StorageEntityDefinition,
                   AllSelectedColumnsSpecification.Instance,
-                  simpleColumnDefinition,
+                  foreignKeyColumn,
                   foreignKeyValue,
                   EmptyOrderedColumnsSpecification.Instance))
           .Return (_dbCommandBuilderStub);
@@ -127,22 +130,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateCommand_TableDefinition_WithSortExpression ()
     {
+      // TODO Review 4074: Move to Setup, use CreateObjectID from SingleDataContainerLookupCommandFactoryTest
       var foreignKeyValue = new ObjectID ("OrderTicket", Guid.NewGuid());
+
+      // TODO Review 4074: Create _tableDefinition in SetUp, add a CreateClassDefinition (IEntityDefinition) method that creates a class definition and sets the entity (extract from CreateObjectID)
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
+
+      // TODO Review 4074: Create idColumnDefinition in Setup, rename to foreignKeyColumnDefinition
       var objectIDColumn = new SimpleColumnDefinition ("OrderTicketID", typeof (Guid), "uniqueidentifier", true, false);
       var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
       var idColumnDefinition = new IDColumnDefinition (objectIDColumn, classIDColumn);
+
+      // TODO Review 4074: Move to CreateForeignKeyEndPointDefinition method
       var idPropertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
           idColumnDefinition);
-      var sortPropertyDefinition = PropertyDefinitionFactory.Create (
-          classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), objectIDColumn);
       var relationEndPointDefinition = new RelationEndPointDefinition (idPropertyDefinition, false);
-      var sortedPropertySpecification1 = new SortedPropertySpecification (sortPropertyDefinition, SortOrder.Descending);
-      var sortedPropertySpecification2 = new SortedPropertySpecification (sortPropertyDefinition, SortOrder.Ascending);
 
+      // TODO Review 4074: Extract to CreateSortedPropertyDefinition (SimpleColumnDefinition, SortOrder)
+      var sortedPropertyDefinition = PropertyDefinitionFactory.Create (
+          classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), objectIDColumn);
+      var sortedPropertySpecification1 = new SortedPropertySpecification (sortedPropertyDefinition, SortOrder.Descending);
+
+      var sortedPropertySpecification2 = new SortedPropertySpecification (sortedPropertyDefinition, SortOrder.Ascending);
+
+      // TODO Review 4074: also refactor other tests to use expectedOrderedColumns
+      var expectedOrderedColumns = new[] { Tuple.Create (objectIDColumn, SortOrder.Descending), Tuple.Create (objectIDColumn, SortOrder.Ascending) };
       _dbCommandBuilderFactoryStub
           .Stub (
               stub => stub.CreateForRelationLookupFromTable (
@@ -150,16 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   Arg.Is (AllSelectedColumnsSpecification.Instance),
                   Arg.Is(idColumnDefinition),
                   Arg.Is (foreignKeyValue),
-                  Arg<OrderedColumnsSpecification>.Matches (o => o.Columns.ToList().Count == 2)))
-          .WhenCalled (
-              mi =>
-              {
-                var orderSpecificationColumns = ((OrderedColumnsSpecification) mi.Arguments[4]).Columns.ToList();
-                Assert.That (orderSpecificationColumns[0].Item1, Is.SameAs (objectIDColumn));
-                Assert.That (orderSpecificationColumns[0].Item2, Is.EqualTo (SortOrder.Descending));
-                Assert.That (orderSpecificationColumns[1].Item1, Is.SameAs (objectIDColumn));
-                Assert.That (orderSpecificationColumns[1].Item2, Is.EqualTo (SortOrder.Ascending));
-              })
+                  Arg<OrderedColumnsSpecification>.Matches (o => o.Columns.SequenceEqual (expectedOrderedColumns))))
           .Return (_dbCommandBuilderStub);
 
       var result = _factory.CreateCommand (
@@ -180,9 +186,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateCommand_UnionViewDefinition_NoSortExpression ()
     {
-      var foreignKeyValue = new ObjectID ("OrderTicket", Guid.NewGuid());
+      var foreignKeyValue = new ObjectID ("OrderTicket", Guid.NewGuid ());
+      // TODO Review 4074: Manually create UnionViewDefinition, using UnionViewObjectMother, then use CreateClassDefinition
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
       PrivateInvoke.SetNonPublicField (classDefinition, "_storageEntityDefinition", _unionViewDefinition);
+      var unionViewDefinition = (UnionViewDefinition) classDefinition.StorageEntityDefinition;
+
       var simpleColumnDefinition =
           new IDColumnDefinition (
               new SimpleColumnDefinition ("OrderTicketID", typeof (Guid), "uniqueidentifier", true, false),
@@ -194,11 +203,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           simpleColumnDefinition);
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
 
+      var expectedSelectedColumns = new[] { unionViewDefinition.ObjectIDColumn, unionViewDefinition.ClassIDColumn };
       _dbCommandBuilderFactoryStub
           .Stub (
               stub => stub.CreateForRelationLookupFromUnionView (
-                  Arg.Is ((UnionViewDefinition) classDefinition.StorageEntityDefinition),
-                  Arg<SelectedColumnsSpecification>.Is.Anything,
+                  Arg.Is (unionViewDefinition),
+                  Arg<SelectedColumnsSpecification>.Matches (spec => spec.SelectedColumns.SequenceEqual (expectedSelectedColumns)),
                   Arg.Is (simpleColumnDefinition),
                   Arg.Is (foreignKeyValue),
                   Arg.Is (EmptyOrderedColumnsSpecification.Instance)))
@@ -212,6 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _dataContainerReaderStub,
           _objectIDFactoryStub);
 
+      // TODO Review 4074: Extract variable
       Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
       Assert.That (((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
       Assert.That (
@@ -226,6 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (((IndirectDataContainerLoadCommand) result).StorageProviderCommandFactory, Is.SameAs (_storageProviderCommandFactory));
     }
 
+    // TODO Review 4074: Refactor the same way as above
     [Test]
     public void CreateCommand_UnionViewDefinition_WithSortExpression ()
     {
@@ -255,6 +267,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (
               stub => stub.CreateForRelationLookupFromUnionView (
                   Arg.Is ((UnionViewDefinition) classDefinition.StorageEntityDefinition),
+                // TODO Review 4074: use expectedSelectedColumns
                   Arg<SelectedColumnsSpecification>.Is.Anything,
                   Arg.Is (idColumnDefinition),
                   Arg.Is (foreignKeyValue),

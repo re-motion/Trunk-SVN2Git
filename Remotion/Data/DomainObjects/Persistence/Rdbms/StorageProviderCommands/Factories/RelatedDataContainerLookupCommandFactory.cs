@@ -43,6 +43,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _storageProviderCommandFactory = storageProviderCommandFactory;
     }
 
+    // TODO Review 4074: Move objectIDFactory to ctor
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (
         RelationEndPointDefinition foreignKeyEndPoint,
         ObjectID foreignKeyValue,
@@ -60,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
       return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> (
           (IEntityDefinition) foreignKeyEndPoint.ClassDefinition.StorageEntityDefinition,
-          (table, continuation) => CreateMultiDataContainerLoadCommand (
+          (table, continuation) => CreateDirectDataContainerLoadCommand (
               table,
               foreignKeyEndPoint,
               foreignKeyValue,
@@ -78,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
     }
 
-    private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateMultiDataContainerLoadCommand (
+    private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateDirectDataContainerLoadCommand (
         TableDefinition tableDefinition,
         RelationEndPointDefinition foreignKeyEndPoint,
         ObjectID foreignKeyValue,

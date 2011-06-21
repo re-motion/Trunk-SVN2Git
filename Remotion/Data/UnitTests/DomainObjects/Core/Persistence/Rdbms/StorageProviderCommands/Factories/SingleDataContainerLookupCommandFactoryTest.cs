@@ -121,6 +121,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (((SingleDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
     }
 
+    // TODO Review 4074: Add test with NullEntityDefinition (also with Multi...Lookup and Related...Lookup)
+
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
