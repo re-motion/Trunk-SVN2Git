@@ -105,16 +105,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
       _sqlDialectMock.Replay();
       
-      var unionViewDefinition = new UnionViewDefinition (
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           null,
-          new[] { _table1, _table2, _table3 },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          _table1, 
+          _table2, 
+          _table3);
 
       var builder = new UnionRelationLookupSelectDbCommandBuilder (
           unionViewDefinition,

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
@@ -154,17 +155,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_FilterViewDefinitionAdded ()
     {
-      var entityDefinition = new FilterViewDefinition (
+      var entityDefinition = FilterViewDefinitionObjectMother.Create(
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "FilterView"),
-          _tableDefinition1,
-          new[] { "ClassID" },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          _tableDefinition1);
       _builder.AddEntityDefinition (entityDefinition);
 
       var createScriptResult = _builder.GetCreateScript();
@@ -182,16 +176,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_UnionViewDefinitionAdded ()
     {
-      var entityDefinition = new UnionViewDefinition (
+      var entityDefinition = UnionViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),
-          new[] { _tableDefinition1 },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+           _tableDefinition1);
       _builder.AddEntityDefinition (entityDefinition);
 
       var createScriptResult = _builder.GetCreateScript();

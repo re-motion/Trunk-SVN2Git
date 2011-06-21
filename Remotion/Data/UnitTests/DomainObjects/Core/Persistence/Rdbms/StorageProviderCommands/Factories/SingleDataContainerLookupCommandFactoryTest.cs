@@ -75,16 +75,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a UnionViewDefinition.")]
     public void CreateCommand_UnionViewDefinition ()
     {
-      var unionViewDefinition = new UnionViewDefinition (
-          TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "ViewName"),
-          new[] { _tableDefinition },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition, 
+          new EntityNameDefinition (null, "ViewName"), 
+          _tableDefinition);
 
       var objectID = CreateObjectID (unionViewDefinition);
 
@@ -94,17 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateCommand_FilterViewDefinition ()
     {
-      var filterViewDefinition = new FilterViewDefinition (
+      var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "ViewName"),
-          _tableDefinition,
-          new[] { "Test" },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          _tableDefinition);
 
       var objectID = CreateObjectID (filterViewDefinition);
 

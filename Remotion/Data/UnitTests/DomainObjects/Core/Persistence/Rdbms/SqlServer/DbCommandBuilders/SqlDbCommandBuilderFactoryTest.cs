@@ -84,16 +84,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateForRelationLookupFromUnionView ()
     {
-      var unionViewDefinition = new UnionViewDefinition (
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionEntity"),
-          new[] { _tableDefinition },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          _tableDefinition);
 
       var result = _factory.CreateForRelationLookupFromUnionView (
           unionViewDefinition, _selectedColumnsStub, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);

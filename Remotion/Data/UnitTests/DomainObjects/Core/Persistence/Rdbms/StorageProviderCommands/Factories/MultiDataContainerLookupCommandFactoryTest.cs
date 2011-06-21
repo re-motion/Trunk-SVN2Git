@@ -28,7 +28,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
@@ -61,13 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectID2 = CreateObjectID (_tableDefinition1);
       _objectID3 = CreateObjectID (_tableDefinition2);
 
-      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
-      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader> ();
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
+      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
 
-      _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-
-      // TODO Review 4071: In the tests, instead of _objectID1/2/3.ClassDefinition.StorageEntityDefinition => _tableDefinition1/2
+      _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
+      _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
       _factory = new MultiDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerReaderStub);
@@ -80,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (
               stub =>
               stub.CreateForSingleIDLookupFromTable (
-                  ((TableDefinition) _objectID1.ClassDefinition.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, _objectID1))
+                  _tableDefinition1, AllSelectedColumnsSpecification.Instance, _objectID1))
           .Return (_dbCommandBuilder1Stub);
 
       var result = _factory.CreateCommand (new[] { _objectID1 }, _commandExecutionContextStub);
@@ -92,17 +89,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateCommand_MultiIDLookup_TableDefinition ()
     {
-      // TODO Review 4071: Reformat
-      _dbCommandBuilderFactoryStub.Stub (
-          stub =>
-          stub.CreateForMultiIDLookupFromTable (
-              ((TableDefinition) _objectID1.ClassDefinition.StorageEntityDefinition),
-              AllSelectedColumnsSpecification.Instance,
-              new[] { _objectID1, _objectID2 })).Return (
-                  _dbCommandBuilder1Stub);
+      _dbCommandBuilderFactoryStub
+          .Stub (
+              stub => stub.CreateForMultiIDLookupFromTable (
+                  _tableDefinition1,
+                  AllSelectedColumnsSpecification.Instance,
+                  new[] { _objectID1, _objectID2 }))
+          .Return (_dbCommandBuilder1Stub);
 
-      var result = _factory.CreateCommand (
-          new[] { _objectID1, _objectID2 }, _commandExecutionContextStub);
+      var result = _factory.CreateCommand (new[] { _objectID1, _objectID2 }, _commandExecutionContextStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
@@ -114,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilderFactoryStub.Stub (
           stub =>
           stub.CreateForSingleIDLookupFromTable (
-              ((TableDefinition) _objectID3.ClassDefinition.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, _objectID3)).Return (
+              _tableDefinition2, AllSelectedColumnsSpecification.Instance, _objectID3)).Return (
                   _dbCommandBuilder2Stub);
       _dbCommandBuilderFactoryStub.Stub (
           stub =>
@@ -134,14 +129,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateCommand_FilterViewDefinition ()
     {
-      // TODO Review 4071: Add FilterViewDefinitionObjectMother (also use in SingleDataContainerLookupCommandFactoryTest and other tests)
-      // TODO Review 4071: Explicitly create FilterViewDefinition, use CreateObjectID
-      var objectID = new ObjectID ("File", Guid.NewGuid());
+      var filterViewDefinition = FilterViewDefinitionObjectMother.Create(
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "FileView"),
+          _tableDefinition1);
+
+      var objectID = CreateObjectID (filterViewDefinition);
 
       _dbCommandBuilderFactoryStub.Stub (
           stub =>
-          stub.CreateForSingleIDLookupFromTable (
-              ((TableDefinition) objectID.ClassDefinition.BaseClass.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, objectID)).
+          stub.CreateForSingleIDLookupFromTable (_tableDefinition1, AllSelectedColumnsSpecification.Instance, objectID)).
           Return (
               _dbCommandBuilder1Stub);
 
@@ -155,30 +152,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a UnionViewDefinition.")]
     public void CreateCommand_UnionViewDefinition ()
     {
-      // TODO Review 4071: Add UnionViewDefinitionObjectMother (also use in SingleDataContainerLookupCommandFactoryTest and other tests)
-      // TODO Review 4071: Use shorter overload
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table"),
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      var unionViewDefinition = new UnionViewDefinition (
-          TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "ViewName"),
-          new[] { tableDefinition },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new EntityNameDefinition (null, "Table"));
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"), tableDefinition);
 
-      // TODO Review 4071: Use CreateObjectID
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      PrivateInvoke.SetNonPublicField (classDefinition, "_storageEntityDefinition", unionViewDefinition);
-
-      var objectID = new ObjectID (classDefinition, Guid.NewGuid());
+      var objectID = CreateObjectID (unionViewDefinition);
 
       _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub);
     }

@@ -66,20 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table"),
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      _unionViewDefinition = new UnionViewDefinition (
+          new EntityNameDefinition (null, "Table"));
+      _unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "ViewName"),
-          new[] { _tableDefinition },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          _tableDefinition);
 
       _factory = new RelatedDataContainerLookupCommandFactory (
           _dbCommandBuilderFactoryStub, _storageProviderCommandFactory, _dataContainerReaderStub, _objectIDReaderStub);
