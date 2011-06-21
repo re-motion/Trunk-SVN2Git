@@ -31,7 +31,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly IEntityDefinition _baseEntity;
     private readonly ReadOnlyCollection<string> _classIDs;
     private readonly StorageProviderDefinition _storageProviderDefinition;
-    private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
     public FilterViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
@@ -44,12 +43,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEnumerable<SimpleColumnDefinition> dataColumns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, synonyms)
+        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, indexes, synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
       ArgumentUtility.CheckNotNullOrEmpty ("classIDs", classIDs);
-      ArgumentUtility.CheckNotNull ("indexes", indexes);
 
       if (!(baseEntity is TableDefinition || baseEntity is FilterViewDefinition))
       {
@@ -63,7 +61,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _storageProviderDefinition = storageProviderDefinition;
       _baseEntity = baseEntity;
       _classIDs = classIDs.ToList().AsReadOnly();
-      _indexes = indexes.ToList().AsReadOnly();
     }
 
     public override string StorageProviderID
@@ -89,11 +86,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public override string LegacyEntityName
     {
       get { return null; }
-    }
-
-    public override ReadOnlyCollection<IIndexDefinition> Indexes
-    {
-      get { return _indexes; }
     }
 
     // Always returns a table

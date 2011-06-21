@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   public class ObjectIDFactoryTest : SqlProviderBaseTest
   {
     private IDataReader _dataReaderStub;
-    private ObjectIDFactory _factory;
+    private ObjectIDReader _reader;
     private IValueConverter _valueConverterStub;
     private ObjectID _objectID;
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
 
-      _factory = new ObjectIDFactory (_valueConverterStub);
+      _reader = new ObjectIDReader (_valueConverterStub);
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
     }
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID); 
 
-      var result = _factory.Read (_dataReaderStub);
+      var result = _reader.Read (_dataReaderStub);
 
       Assert.That (result, Is.SameAs(_objectID));
     }
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID).Repeat.Once ();
       _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (objectID2).Repeat.Once ();
 
-      var result = _factory.ReadSequence (_dataReaderStub).ToArray ();
+      var result = _reader.ReadSequence (_dataReaderStub).ToArray ();
 
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (result[0], Is.SameAs (_objectID));
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
 
-      var result = _factory.ReadSequence (_dataReaderStub);
+      var result = _reader.ReadSequence (_dataReaderStub);
 
       Assert.That (result, Is.Empty);
     }

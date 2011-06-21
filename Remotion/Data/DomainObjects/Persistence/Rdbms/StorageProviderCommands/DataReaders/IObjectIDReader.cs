@@ -19,11 +19,10 @@ using System.Data;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders
 {
-  // TODO Review 4069: Rename to IObjectIDReader
   /// <summary>
   /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and converting it into <see cref="ObjectID"/> instances.
   /// </summary>
-  public interface IObjectIDFactory
+  public interface IObjectIDReader
   {
     ObjectID Read (IDataReader dataReader);
     IEnumerable<ObjectID> ReadSequence (IDataReader dataReader);

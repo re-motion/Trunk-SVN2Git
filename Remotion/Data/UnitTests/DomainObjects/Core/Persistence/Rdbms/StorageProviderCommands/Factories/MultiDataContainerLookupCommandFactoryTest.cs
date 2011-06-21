@@ -61,16 +61,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectID2 = CreateObjectID (_tableDefinition1);
       _objectID3 = CreateObjectID (_tableDefinition2);
 
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
+      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader> ();
+
+      _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+
       // TODO Review 4071: In the tests, instead of _objectID1/2/3.ClassDefinition.StorageEntityDefinition => _tableDefinition1/2
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
-      _factory = new MultiDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub);
-
-      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
-      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
-
-      _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
+      _factory = new MultiDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerReaderStub);
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   ((TableDefinition) _objectID1.ClassDefinition.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, _objectID1))
           .Return (_dbCommandBuilder1Stub);
 
-      var result = _factory.CreateCommand (new[] { _objectID1 }, _commandExecutionContextStub, _dataContainerReaderStub);
+      var result = _factory.CreateCommand (new[] { _objectID1 }, _commandExecutionContextStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   _dbCommandBuilder1Stub);
 
       var result = _factory.CreateCommand (
-          new[] { _objectID1, _objectID2 }, _commandExecutionContextStub, _dataContainerReaderStub);
+          new[] { _objectID1, _objectID2 }, _commandExecutionContextStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   _dbCommandBuilder1Stub);
 
       var result = _factory.CreateCommand (
-          new[] { _objectID1, _objectID2, _objectID3 }, _commandExecutionContextStub, _dataContainerReaderStub);
+          new[] { _objectID1, _objectID2, _objectID3 }, _commandExecutionContextStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }));
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           Return (
               _dbCommandBuilder1Stub);
 
-      var result = _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub, _dataContainerReaderStub);
+      var result = _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var objectID = new ObjectID (classDefinition, Guid.NewGuid());
 
-      _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub, _dataContainerReaderStub);
+      _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub);
     }
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)

@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private MultiObjectIDLoadCommand _command;
     private IDbCommand _dbCommandMock;
     private IDataReader _dataReaderMock;
-    private IObjectIDFactory _objectIDFactoryStub;
+    private IObjectIDReader _objectIDReaderStub;
     private ObjectID[] _fakeResult;
     private ObjectID _objectID1;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
@@ -48,12 +48,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilder2Mock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
 
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
-      _objectIDFactoryStub = MockRepository.GenerateStub<IObjectIDFactory> ();
+      _objectIDReaderStub = MockRepository.GenerateStub<IObjectIDReader> ();
 
       _dbCommandMock = MockRepository.GenerateStrictMock<IDbCommand>();
       _dataReaderMock = MockRepository.GenerateStrictMock<IDataReader>();
       
-      _command = new MultiObjectIDLoadCommand (new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, _objectIDFactoryStub);
+      _command = new MultiObjectIDLoadCommand (new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, _objectIDReaderStub);
 
       _objectID1 = new ObjectID ("Order", Guid.NewGuid());
       _fakeResult = new[] { _objectID1 };
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void Initialization ()
     {
       Assert.That (_command.DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }));
-      Assert.That (_command.ObjectIDFactory, Is.SameAs (_objectIDFactoryStub));
+      Assert.That (_command.ObjectIDReader, Is.SameAs (_objectIDReaderStub));
     }
 
     [Test]
@@ -79,9 +79,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataReaderMock.Replay();
 
       _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock, CommandBehavior.SingleResult)).Return (_dataReaderMock);
-      _objectIDFactoryStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (_fakeResult);
+      _objectIDReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (_fakeResult);
 
-      var command = new MultiObjectIDLoadCommand (new[] { _dbCommandBuilder1Mock }, _objectIDFactoryStub);
+      var command = new MultiObjectIDLoadCommand (new[] { _dbCommandBuilder1Mock }, _objectIDReaderStub);
 
       var result = command.Execute(_commandExecutionContextStub).ToArray();
 
@@ -106,10 +106,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataReaderMock.Replay ();
 
       _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock, CommandBehavior.SingleResult)).Return (_dataReaderMock);
-      _objectIDFactoryStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (_fakeResult);
+      _objectIDReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (_fakeResult);
 
       var command = new MultiObjectIDLoadCommand (
-          new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, _objectIDFactoryStub);
+          new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, _objectIDReaderStub);
 
       var result = command.Execute(_commandExecutionContextStub).ToArray();
 

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -29,6 +28,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   public class MultiDataContainerLookupCommandFactory
   {
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
+    private readonly IDataContainerReader _dataContainerReader;
 
     private class EntityDefinitionVisitor : IEntityDefinitionVisitor
     {
@@ -66,19 +66,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       }
     }
 
-    public MultiDataContainerLookupCommandFactory (IDbCommandBuilderFactory dbCommandBuilderFactory)
+    public MultiDataContainerLookupCommandFactory (IDbCommandBuilderFactory dbCommandBuilderFactory, IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
+      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
+      _dataContainerReader = dataContainerReader;
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (
-        IEnumerable<ObjectID> ids, IRdbmsProviderCommandExecutionContext commandExecutionContext, IDataContainerReader dataContainerReader)
+        IEnumerable<ObjectID> ids, IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("ids", ids);
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
-      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       // TODO 4090: Replace visitor with InlineEntityDefinitionVisitor
       // TODO 4090: Remove nested EntityDefinitionVisitor
@@ -89,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
                               group id by tableDefinition
                               into idsByTable
                               select CreateDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
-      return new MultiDataContainerLoadCommand (dbCommandBuilders, false, dataContainerReader);
+      return new MultiDataContainerLoadCommand (dbCommandBuilders, false, _dataContainerReader);
     }
 
     private TableDefinition GetTableDefinition (ObjectID objectID, EntityDefinitionVisitor visitor)

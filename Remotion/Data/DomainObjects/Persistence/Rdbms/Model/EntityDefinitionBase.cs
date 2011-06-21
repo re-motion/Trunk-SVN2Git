@@ -34,6 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly SimpleColumnDefinition _classIDColumn;
     private readonly SimpleColumnDefinition _timestampColumn;
     private readonly ReadOnlyCollection<SimpleColumnDefinition> _dataColumns;
+    private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
     protected EntityDefinitionBase (
         EntityNameDefinition viewName,
@@ -41,6 +42,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         SimpleColumnDefinition classIDColumn,
         SimpleColumnDefinition timstampColumn,
         IEnumerable<SimpleColumnDefinition> dataColumns,
+        IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
     {
       ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
@@ -54,6 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _classIDColumn = classIDColumn;
       _timestampColumn = timstampColumn;
       _dataColumns = dataColumns.ToList().AsReadOnly();
+      _indexes = indexes.ToList().AsReadOnly();
       _synonyms = synonyms.ToList().AsReadOnly();
     }
 
@@ -62,8 +65,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public abstract string StorageProviderID { get; }
 
     public abstract StorageProviderDefinition StorageProviderDefinition { get; }
-
-    public abstract ReadOnlyCollection<IIndexDefinition> Indexes { get; }
 
     public abstract bool IsNull { get; }
 
@@ -102,6 +103,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       foreach (var column in _dataColumns)
         yield return column;
+    }
+
+    public ReadOnlyCollection<IIndexDefinition> Indexes
+    {
+      get { return _indexes; }
     }
 
     public ReadOnlyCollection<EntityNameDefinition> Synonyms

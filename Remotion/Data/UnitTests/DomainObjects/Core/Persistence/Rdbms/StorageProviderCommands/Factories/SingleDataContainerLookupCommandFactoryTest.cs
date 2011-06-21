@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
 
-      _factory = new SingleDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub);
+      _factory = new SingleDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerReaderStub);
 
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
     }
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-      var result = _factory.CreateCommand (objectID, _commandExecutionContextStub, _dataContainerReaderStub);
+      var result = _factory.CreateCommand (objectID, _commandExecutionContextStub);
 
       Assert.That (result, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var objectID = CreateObjectID (unionViewDefinition);
 
-      _factory.CreateCommand (objectID, _commandExecutionContextStub, _dataContainerReaderStub);
+      _factory.CreateCommand (objectID, _commandExecutionContextStub);
     }
 
     [Test]
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-      var result = _factory.CreateCommand (objectID, _commandExecutionContextStub, _dataContainerReaderStub);
+      var result = _factory.CreateCommand (objectID, _commandExecutionContextStub);
 
       Assert.That (result, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));

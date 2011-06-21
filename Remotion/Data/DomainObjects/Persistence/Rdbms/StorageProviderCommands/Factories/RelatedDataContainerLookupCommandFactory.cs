@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -24,7 +25,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories
 {
@@ -32,32 +32,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   {
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
+    private readonly IDataContainerReader _dataContainerReader;
+    private readonly IObjectIDReader _objectIDReader;
 
     public RelatedDataContainerLookupCommandFactory (
-        IDbCommandBuilderFactory dbCommandBuilderFactory, IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
+        IDbCommandBuilderFactory dbCommandBuilderFactory,
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
+        IDataContainerReader dataContainerReader,
+        IObjectIDReader objectIDReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
+      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
+      ArgumentUtility.CheckNotNull ("objectIDReader", objectIDReader);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _storageProviderCommandFactory = storageProviderCommandFactory;
+      _dataContainerReader = dataContainerReader;
+      _objectIDReader = objectIDReader;
     }
 
-    // TODO Review 4074: Move objectIDFactory to ctor
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (
         RelationEndPointDefinition foreignKeyEndPoint,
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression,
-        IRdbmsProviderCommandExecutionContext commandExecutionContext,
-        IDataContainerReader dataContainerReader,
-        IObjectIDFactory objectIDFactory)
+        IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
-      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
-      ArgumentUtility.CheckNotNull ("objectIDFactory", objectIDFactory);
 
       return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> (
           (IEntityDefinition) foreignKeyEndPoint.ClassDefinition.StorageEntityDefinition,
@@ -66,16 +70,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
               foreignKeyEndPoint,
               foreignKeyValue,
               sortExpression,
-              commandExecutionContext,
-              dataContainerReader),
+              _dataContainerReader),
           (filterView, continuation) => continuation (filterView.BaseEntity),
           (unionView, continuation) => CreateIndirectDataContainerLoadCommand (
               unionView,
               foreignKeyEndPoint,
               foreignKeyValue,
               sortExpression,
-              commandExecutionContext,
-              objectIDFactory),
+              _objectIDReader),
           (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
     }
 
@@ -84,7 +86,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         RelationEndPointDefinition foreignKeyEndPoint,
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression,
-        IRdbmsProviderCommandExecutionContext executionContext,
         IDataContainerReader dataContainerReader)
     {
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
@@ -93,7 +94,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           ((IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
-      //TODO 4074: AllowNulls False/True ?
       return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, dataContainerReader);
     }
 
@@ -102,8 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         RelationEndPointDefinition foreignKeyEndPoint,
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression,
-        IRdbmsProviderCommandExecutionContext executionConext,
-        IObjectIDFactory objectIDFactory)
+        IObjectIDReader objectIDReader)
     {
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
           unionViewDefinition,
@@ -112,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
 
-      var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, objectIDFactory);
+      var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, objectIDReader);
       return new IndirectDataContainerLoadCommand (objectIDLoadCommand, _storageProviderCommandFactory);
     }
 
@@ -124,7 +123,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       Assertion.IsTrue (sortExpression.SortedProperties.Count > 0, "The sort-epression must have at least one sorted property.");
 
       var columns = from spec in sortExpression.SortedProperties
-                    let column = (IColumnDefinition) spec.PropertyDefinition.StoragePropertyDefinition 
+                    let column = (IColumnDefinition) spec.PropertyDefinition.StoragePropertyDefinition
                     from simpleColumn in SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { column })
                     select Tuple.Create (simpleColumn, spec.Order);
 

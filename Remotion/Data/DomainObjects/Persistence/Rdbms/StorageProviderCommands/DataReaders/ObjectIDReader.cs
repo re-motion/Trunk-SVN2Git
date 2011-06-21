@@ -23,11 +23,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="ObjectID"/> instances.
   /// </summary>
-  public class ObjectIDFactory : IObjectIDFactory
+  public class ObjectIDReader : IObjectIDReader
   {
     private readonly IValueConverter _valueConverter;
 
-    public ObjectIDFactory (IValueConverter valueConverter)
+    public ObjectIDReader (IValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 

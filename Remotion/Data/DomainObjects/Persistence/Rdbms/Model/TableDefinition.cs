@@ -31,7 +31,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly EntityNameDefinition _tableName;
     private readonly ReadOnlyCollection<ITableConstraintDefinition> _constraints;
-    private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
     public TableDefinition (
         StorageProviderDefinition storageProviderDefinition,
@@ -44,18 +43,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEnumerable<ITableConstraintDefinition> constraints,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, synonyms)
+      : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, indexes, synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("tableName", tableName);
       ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
       ArgumentUtility.CheckNotNull ("constraints", constraints);
-      ArgumentUtility.CheckNotNull ("indexes", indexes);
 
       _storageProviderDefinition = storageProviderDefinition;
       _tableName = tableName;
       _constraints = constraints.ToList().AsReadOnly();
-      _indexes = indexes.ToList().AsReadOnly();
     }
 
     public override string StorageProviderID
@@ -81,11 +78,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public override string LegacyEntityName
     {
       get { return _tableName.EntityName; }
-    }
-
-    public override ReadOnlyCollection<IIndexDefinition> Indexes
-    {
-      get { return _indexes; }
     }
 
     public override void Accept (IEntityDefinitionVisitor visitor)

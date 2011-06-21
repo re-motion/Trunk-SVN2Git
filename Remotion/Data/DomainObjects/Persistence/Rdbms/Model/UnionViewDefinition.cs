@@ -24,7 +24,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  // TODO Review 4069: Move indexes up to EntityDefinitionBase
   /// <summary>
   /// <see cref="UnionViewDefinition"/> defines a union view in a relational database.
   /// </summary>
@@ -44,13 +43,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEnumerable<SimpleColumnDefinition> dataColumns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, synonyms)
+        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, indexes, synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
-      ArgumentUtility.CheckNotNull ("indexes", indexes);
-
+ 
       var unionedEntitiesList = unionedEntities.ToList().AsReadOnly();
       for (int i = 0; i < unionedEntitiesList.Count; ++i)
       {
@@ -89,11 +87,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public override string LegacyEntityName
     {
       get { return null; }
-    }
-
-    public override ReadOnlyCollection<IIndexDefinition> Indexes
-    {
-      get { return _indexes; }
     }
 
     public SimpleColumnDefinition[] CreateFullColumnList (IEnumerable<SimpleColumnDefinition> availableColumns)

@@ -31,15 +31,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   public class MultiObjectIDLoadCommand : IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IEnumerable<IDbCommandBuilder> _dbCommandBuilders;
-    private readonly IObjectIDFactory _objectIDFactory;
+    private readonly IObjectIDReader _objectIDReader;
 
-    public MultiObjectIDLoadCommand (IEnumerable<IDbCommandBuilder> dbCommandBuilders, IObjectIDFactory objectIDFactory)
+    public MultiObjectIDLoadCommand (IEnumerable<IDbCommandBuilder> dbCommandBuilders, IObjectIDReader objectIDReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilders", dbCommandBuilders);
-      ArgumentUtility.CheckNotNull ("objectIDFactory", objectIDFactory);
+      ArgumentUtility.CheckNotNull ("objectIDReader", objectIDReader);
 
       _dbCommandBuilders = dbCommandBuilders;
-      _objectIDFactory = objectIDFactory;
+      _objectIDReader = objectIDReader;
     }
 
     public IEnumerable<IDbCommandBuilder> DbCommandBuilders
@@ -47,9 +47,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandBuilders; }
     }
 
-    public IObjectIDFactory ObjectIDFactory
+    public IObjectIDReader ObjectIDReader
     {
-      get { return _objectIDFactory; }
+      get { return _objectIDReader; }
     }
 
     public IEnumerable<ObjectID> Execute (IRdbmsProviderCommandExecutionContext executionContext)
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          return _objectIDFactory.ReadSequence (reader);
+          return _objectIDReader.ReadSequence (reader);
         }
       }
     }

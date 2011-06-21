@@ -30,38 +30,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   public class SingleDataContainerLookupCommandFactory
   {
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
-    
-    public SingleDataContainerLookupCommandFactory (IDbCommandBuilderFactory dbCommandBuilderFactory)
+    private readonly IDataContainerReader _dataContainerReader;
+
+    public SingleDataContainerLookupCommandFactory (IDbCommandBuilderFactory dbCommandBuilderFactory, IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
+      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
+      _dataContainerReader = dataContainerReader;
     }
 
-    // TODO Review 4069: Move the dataContainerReader to the ctor of this class (same in other factories)
     public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateCommand (
-        ObjectID id, IRdbmsProviderCommandExecutionContext commandExecutionContext, IDataContainerReader dataContainerReader)
+        ObjectID id, IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
-      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>> (
           (IEntityDefinition) id.ClassDefinition.StorageEntityDefinition,
-          (table, continuation) => CreateSingleDataContainerLoadCommand (table, id, commandExecutionContext, dataContainerReader),
+          (table, continuation) => CreateSingleDataContainerLoadCommand (table, id, _dataContainerReader),
           (filterView, continuation) => continuation (filterView.BaseEntity),
           (unionView, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a UnionViewDefinition."); },
           (nullEntity, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a NullEntityDefinition."); });
     }
 
     private IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateSingleDataContainerLoadCommand (
-        TableDefinition tableDefinition,
-        ObjectID id,
-        IRdbmsProviderCommandExecutionContext commandExecutionContext,
-        IDataContainerReader dataContainerReader)
+        TableDefinition tableDefinition, ObjectID id, IDataContainerReader dataContainerReader)
     {
       var commandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
-          tableDefinition, 
+          tableDefinition,
           AllSelectedColumnsSpecification.Instance,
           id);
       return new SingleDataContainerLoadCommand (commandBuilder, dataContainerReader);
