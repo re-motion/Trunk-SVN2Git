@@ -106,7 +106,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (((SingleDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
     }
 
-    // TODO Review 4074: Add test with NullEntityDefinition (also with Multi...Lookup and Related...Lookup)
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a NullEntityDefinition.")]
+    public void CreateCommand_NullEntityDefinition ()
+    {
+      var nullEntityDefintion = new NullEntityDefinition (TestDomainStorageProviderDefinition);
+
+      var objectID = CreateObjectID (nullEntityDefintion);
+
+      _dbCommandBuilderFactoryStub
+          .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
+          .Return (_dbCommandBuilderStub);
+
+     _factory.CreateCommand (objectID, _commandExecutionContextStub);
+    }
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
     {

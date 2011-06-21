@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Data
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -160,6 +159,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var objectID = CreateObjectID (unionViewDefinition);
 
+      _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub);
+    }
+
+    [Ignore("TODO RM-4090")]
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a NullEntityDefinition.")]
+    public void CreateCommand_NullEntityDefinition ()
+    {
+      var nullEntityDefintion = new NullEntityDefinition (TestDomainStorageProviderDefinition);
+
+      var objectID = CreateObjectID (nullEntityDefintion);
+      
       _factory.CreateCommand (new[] { objectID }, _commandExecutionContextStub);
     }
 
