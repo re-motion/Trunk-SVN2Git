@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         RdbmsProvider provider,
         string entityName,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
+        IRdbmsProviderCommandExecutionContext commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter,
         ObjectID[] objectIDs)
@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         PropertyDefinition relationProperty,
         ObjectID relatedID,
         ISqlDialect sqlDialect,
-        IDbCommandFactory commandFactory,
+        IRdbmsProviderCommandExecutionContext commandFactory,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         ValueConverter valueConverter)
     {

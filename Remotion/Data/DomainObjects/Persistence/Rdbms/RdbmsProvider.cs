@@ -465,7 +465,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return command;
     }
 
-    IDbCommand IDbCommandFactory.CreateDbCommand ()
+    IDbCommand IRdbmsProviderCommandExecutionContext.CreateDbCommand ()
     {
       return CreateDbCommand();
     }

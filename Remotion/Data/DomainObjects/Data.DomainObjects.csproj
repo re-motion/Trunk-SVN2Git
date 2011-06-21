@@ -255,14 +255,12 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\DataReaders\IDataContainerReader.cs" />
-    <Compile Include="Persistence\Rdbms\IDbCommandExecutor.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\DataReaders\IObjectIDReader.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\DataReaders\ObjectIDReader.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\UnionRelationLookupSelectDbCommandBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\IDbCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IndexOrder.cs" />
