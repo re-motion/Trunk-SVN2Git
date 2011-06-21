@@ -703,9 +703,6 @@
     <None Include="Configuration\WebConfiguration.xsx">
       <DependentUpon>WebConfiguration.xsd</DependentUpon>
     </None>
-    <None Include="Doc\Bugs and ToDos.xls" />
-    <None Include="Doc\FormGridManager.doc" />
-    <None Include="Doc\Globalization.doc" />
     <None Include="ExecutionEngine\UrlMapping\UrlMapping.xsx">
       <DependentUpon>UrlMapping.xsd</DependentUpon>
     </None>
