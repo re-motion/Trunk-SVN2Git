@@ -772,7 +772,6 @@
     <Content Include="Doc\include\Utilities\UrlUtility.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Doc\WhatsNew_Remotion.Web.txt" />
     <Content Include="Res\HTML\jquery.iFrameShim.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\DatePicker.css" />
     <Content Include="Res\HTML\DatePicker.js" />

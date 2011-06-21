@@ -457,7 +457,6 @@
     <Content Include="Doc\include\UI\Controls\BocTreeView.xml" />
     <Content Include="Doc\include\UI\Controls\BocLiteral.xml" />
     <Content Include="Doc\include\UI\Controls\IBusinessObjectDataSourceControl.xml" />
-    <Content Include="Doc\WhatsNew_Remotion.ObjectBinding.Web.txt" />
     <Content Include="Res\Themes\ClassicBlue\HTML\BocBooleanValue.css" />
     <Content Include="Res\HTML\BocBooleanValue.js" />
     <Content Include="Res\HTML\BocCheckBox.js" />

@@ -743,7 +743,6 @@
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Utilities\EqualityUtility.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
-    <Content Include="doc\WhatsNew_Remotion.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
