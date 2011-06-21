@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
@@ -32,30 +32,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   {
     private readonly IEnumerable<IDbCommandBuilder> _dbCommandBuilders;
     private readonly IObjectIDFactory _objectIDFactory;
-    private readonly IRdbmsProviderCommandExecutionContext _commandExecutionReader;
 
-    public MultiObjectIDLoadCommand (
-        IEnumerable<IDbCommandBuilder> dbCommandBuilders,
-        IRdbmsProviderCommandExecutionContext commandExecutionContext,
-        IObjectIDFactory objectIDFactory)
+    public MultiObjectIDLoadCommand (IEnumerable<IDbCommandBuilder> dbCommandBuilders, IObjectIDFactory objectIDFactory)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilders", dbCommandBuilders);
-      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
       ArgumentUtility.CheckNotNull ("objectIDFactory", objectIDFactory);
 
       _dbCommandBuilders = dbCommandBuilders;
-      _commandExecutionReader = commandExecutionContext;
       _objectIDFactory = objectIDFactory;
     }
 
     public IEnumerable<IDbCommandBuilder> DbCommandBuilders
     {
       get { return _dbCommandBuilders; }
-    }
-
-    public IRdbmsProviderCommandExecutionContext CommandExecutionContext
-    {
-      get { return _commandExecutionReader; }
     }
 
     public IObjectIDFactory ObjectIDFactory
@@ -66,16 +55,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     public IEnumerable<ObjectID> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
-      return _dbCommandBuilders.SelectMany (LoadObjectIDsFromCommandBuilder);
+      return _dbCommandBuilders.SelectMany (b => LoadObjectIDsFromCommandBuilder (b, executionContext));
     }
 
-    private IEnumerable<ObjectID> LoadObjectIDsFromCommandBuilder (IDbCommandBuilder commandBuilder)
+    private IEnumerable<ObjectID> LoadObjectIDsFromCommandBuilder (
+        IDbCommandBuilder commandBuilder, IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      using (var command = commandBuilder.Create (_commandExecutionReader))
+      using (var command = commandBuilder.Create (executionContext))
       {
-        using (var reader = _commandExecutionReader.ExecuteReader (command, CommandBehavior.SingleResult))
+        using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
           return _objectIDFactory.ReadSequence (reader);
         }

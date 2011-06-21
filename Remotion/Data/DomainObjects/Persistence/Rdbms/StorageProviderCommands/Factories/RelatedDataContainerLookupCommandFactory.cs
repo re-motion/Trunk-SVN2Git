@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
       //TODO 4074: AllowNulls False/True ?
-      return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, executionContext, dataContainerReader);
+      return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, dataContainerReader);
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateIndirectDataContainerLoadCommand (
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
 
-      var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, executionConext, objectIDFactory);
+      var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, objectIDFactory);
       return new IndirectDataContainerLoadCommand (objectIDLoadCommand, _storageProviderCommandFactory);
     }
 

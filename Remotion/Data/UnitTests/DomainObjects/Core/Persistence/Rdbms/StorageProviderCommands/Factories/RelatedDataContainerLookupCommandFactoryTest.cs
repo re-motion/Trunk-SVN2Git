@@ -124,7 +124,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
       Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
-      Assert.That (((MultiDataContainerLoadCommand) result).CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
     }
 
     [Test]
@@ -180,7 +179,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilderStub }));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
       Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
-      Assert.That (((MultiDataContainerLoadCommand) result).CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
     }
 
     [Test]
@@ -228,9 +226,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (
           ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).DbCommandBuilders,
           Is.EqualTo (new[] { _dbCommandBuilderStub }));
-      Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
-          Is.SameAs (_commandExecutionContextStub));
       Assert.That (
           ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).ObjectIDFactory,
           Is.SameAs (_objectIDFactoryStub));
@@ -295,12 +290,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (
           ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).DbCommandBuilders,
           Is.EqualTo (new[] { _dbCommandBuilderStub }));
-      Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
-          Is.SameAs (_commandExecutionContextStub));
-      Assert.That (
-          ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).CommandExecutionContext,
-          Is.SameAs (_commandExecutionContextStub));
       Assert.That (
           ((MultiObjectIDLoadCommand) ((IndirectDataContainerLoadCommand) result).ObjectIDLoadCommand).ObjectIDFactory,
           Is.SameAs (_objectIDFactoryStub));

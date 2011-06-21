@@ -30,31 +30,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   {
     private readonly IDbCommandBuilder _dbCommandBuilder;
     private readonly IDataContainerReader _dataContainerReader;
-    private readonly IRdbmsProviderCommandExecutionContext _commandExecutionContext;
-
-    // TODO Review 4068: Remove IRdbmsProviderCommandExecutionContext parameter (here and for all commands)
-    public SingleDataContainerLoadCommand (
-        IDbCommandBuilder dbCommandBuilder,
-        IRdbmsProviderCommandExecutionContext commandExecutionContext,
-        IDataContainerReader dataContainerReader)
+    
+    public SingleDataContainerLoadCommand (IDbCommandBuilder dbCommandBuilder, IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilder", dbCommandBuilder);
-      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
 
       _dbCommandBuilder = dbCommandBuilder;
-      _commandExecutionContext = commandExecutionContext;
       _dataContainerReader = dataContainerReader;
     }
 
     public IDbCommandBuilder DbCommandBuilder
     {
       get { return _dbCommandBuilder; }
-    }
-
-    public IRdbmsProviderCommandExecutionContext CommandExecutionContext
-    {
-      get { return _commandExecutionContext; }
     }
 
     public IDataContainerReader DataContainerReader
@@ -66,9 +54,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      using (var command = _dbCommandBuilder.Create (_commandExecutionContext))
+      using (var command = _dbCommandBuilder.Create (executionContext))
       {
-        using (var reader = _commandExecutionContext.ExecuteReader (command, CommandBehavior.SingleRow))
+        using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleRow))
         {
           return _dataContainerReader.Read(reader);
         }

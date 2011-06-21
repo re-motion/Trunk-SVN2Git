@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
                               group id by tableDefinition
                               into idsByTable
                               select CreateDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
-      return new MultiDataContainerLoadCommand (dbCommandBuilders, false, commandExecutionContext, dataContainerReader);
+      return new MultiDataContainerLoadCommand (dbCommandBuilders, false, dataContainerReader);
     }
 
     private TableDefinition GetTableDefinition (ObjectID objectID, EntityDefinitionVisitor visitor)

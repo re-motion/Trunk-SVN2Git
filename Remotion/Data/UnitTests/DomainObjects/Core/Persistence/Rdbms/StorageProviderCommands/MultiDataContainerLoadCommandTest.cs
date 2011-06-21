@@ -31,10 +31,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   [TestFixture]
   public class MultiDataContainerLoadCommandTest : SqlProviderBaseTest
   {
-    private IDataReader _dataReaderStub;
-    private IDbCommand _dbCommandStub;
-    private IDbCommandBuilder _dbCommandBuilder1Stub;
-    private IDbCommandBuilder _dbCommandBuilder2Stub;
+    private IDataReader _dataReaderMock;
+    private IDbCommand _dbCommandMock;
+    private IDbCommandBuilder _dbCommandBuilder1Mock;
+    private IDbCommandBuilder _dbCommandBuilder2Mock;
     private IDataContainerReader _dataContainerReaderStub;
     private DataContainer _container;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
@@ -45,18 +45,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
       
-      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
+      _dataReaderMock = MockRepository.GenerateStrictMock<IDataReader>();
 
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
       
-      _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
+      _dbCommandMock = MockRepository.GenerateStrictMock<IDbCommand>();
       // TODO Review 4070: Use two commands (also in MultiObjectIDLoadCommandTest)
-      _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilder1Stub.Stub (stub => stub.Create (_commandExecutionContextStub)).Return (_dbCommandStub);
-      _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilder2Stub.Stub (stub => stub.Create (_commandExecutionContextStub)).Return (_dbCommandStub);
+      _dbCommandBuilder1Mock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
+      _dbCommandBuilder2Mock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
       
-      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleResult)).Return (_dataReaderStub);
+      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock, CommandBehavior.SingleResult)).Return (_dataReaderMock);
 
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
     }
@@ -65,37 +63,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void Initialization ()
     {
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, true, _commandExecutionContextStub, _dataContainerReaderStub);
+          new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, true, _dataContainerReaderStub);
 
       Assert.That (command.AllowNulls, Is.True);
       Assert.That (command.DataContainerReader, Is.SameAs (_dataContainerReaderStub));
-      Assert.That (command.DbCommandBuilders, Is.EqualTo(new[]{_dbCommandBuilder1Stub, _dbCommandBuilder2Stub}));
-      Assert.That (command.CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
+      Assert.That (command.DbCommandBuilders, Is.EqualTo(new[]{_dbCommandBuilder1Mock, _dbCommandBuilder2Mock}));
     }
 
     [Test]
     public void Execute_OneCommandBuilder_AllowNullsTrue ()
     {
-      var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub }, true, _commandExecutionContextStub, _dataContainerReaderStub);
+      _dbCommandBuilder1Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock);
+      _dbCommandBuilder1Mock.Replay();
+      
+      _dbCommandMock.Expect (mock => mock.Dispose());
+      _dbCommandMock.Replay();
 
-      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, true)).Return (new[] { _container });
+      _dataReaderMock.Expect (mock => mock.Dispose ());
+      _dataReaderMock.Replay ();
+
+      var command = new MultiDataContainerLoadCommand (
+          new[] { _dbCommandBuilder1Mock }, true, _dataContainerReaderStub);
+
+      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock, true)).Return (new[] { _container });
       var result = command.Execute (_commandExecutionContextStub).ToArray ();
 
+      _dbCommandBuilder1Mock.VerifyAllExpectations();
+      _dbCommandBuilder2Mock.VerifyAllExpectations();
+      _dbCommandMock.VerifyAllExpectations();
+      _dataReaderMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo (new[] { _container }));
     }
-
-
+    
     [Test]
     public void Execute_SeveralCommandBuilders_AllowNullsFalse ()
     {
-      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderStub, false)).Return (new[] { _container });
+      _dbCommandBuilder1Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock);
+      _dbCommandBuilder1Mock.Replay ();
+      _dbCommandBuilder2Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock);
+      _dbCommandBuilder2Mock.Replay ();
+
+      _dbCommandMock.Expect (mock => mock.Dispose ()).Repeat.Twice();
+      _dbCommandMock.Replay ();
+
+      _dataReaderMock.Expect (mock => mock.Dispose ()).Repeat.Twice();
+      _dataReaderMock.Replay ();
+
+      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock, false)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }, false, _commandExecutionContextStub, _dataContainerReaderStub);
+          new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, false, _dataContainerReaderStub);
 
       var result = command.Execute(_commandExecutionContextStub).ToArray();
 
+      _dbCommandBuilder1Mock.VerifyAllExpectations ();
+      _dbCommandBuilder2Mock.VerifyAllExpectations ();
+      _dbCommandMock.VerifyAllExpectations ();
+      _dataReaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (new[] { _container, _container }));
     }
   }

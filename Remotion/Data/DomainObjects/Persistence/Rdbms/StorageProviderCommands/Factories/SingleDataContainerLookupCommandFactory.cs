@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           tableDefinition, 
           AllSelectedColumnsSpecification.Instance,
           id);
-      return new SingleDataContainerLoadCommand (commandBuilder, commandExecutionContext, dataContainerReader);
+      return new SingleDataContainerLoadCommand (commandBuilder, dataContainerReader);
     }
   }
 }

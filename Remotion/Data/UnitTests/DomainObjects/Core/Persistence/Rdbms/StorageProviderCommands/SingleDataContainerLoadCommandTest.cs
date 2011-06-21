@@ -30,13 +30,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   [TestFixture]
   public class SingleDataContainerLoadCommandTest : SqlProviderBaseTest
   {
-    private IDbCommandBuilder _dbCommandBuilderStub;
-    private IDbCommand _dbCommandStub;
+    private IDbCommandBuilder _dbCommandBuilderMock;
+    private IDbCommand _dbCommandMock;
     private IDataReader _dataReaderMock;
     private SingleDataContainerLoadCommand _command;
-    private IDataContainerReader _dataContainerReaderStub;
+    private IDataContainerReader _dataContainerReaderMock;
     private DataContainer _container;
-    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextMock;
 
     public override void SetUp ()
     {
@@ -45,38 +45,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
 
       _dataReaderMock = MockRepository.GenerateStub<IDataReader>();
+      _commandExecutionContextMock = MockRepository.GenerateStrictMock<IRdbmsProviderCommandExecutionContext>();
+      _dbCommandMock = MockRepository.GenerateStrictMock<IDbCommand>();
+      _dbCommandBuilderMock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
+      _dataContainerReaderMock = MockRepository.GenerateStrictMock<IDataContainerReader> ();
 
-      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
-
-      _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
-      _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilderStub.Stub (stub => stub.Create (_commandExecutionContextStub)).Return (_dbCommandStub);
-
-      // TODO Review 4068: use mocks for _commandExecutionContextStub, _dataContainerReaderStub, _dbCommandBuilder, _command
-      // TODO Review 4068: move expectations down to Execute test
-      // TODO Review 4068: also test for _command.Dispose and _dataContainerReaderStub.Dispose
-      // TODO Review 4068: (for all command tests)
-      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandStub, CommandBehavior.SingleRow)).Return (_dataReaderMock);
-
-      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
-      _command = new SingleDataContainerLoadCommand (
-          _dbCommandBuilderStub, _commandExecutionContextStub, _dataContainerReaderStub);
-      _dataContainerReaderStub.Stub (stub => stub.Read (_dataReaderMock)).Return (_container);
+      _command = new SingleDataContainerLoadCommand (_dbCommandBuilderMock, _dataContainerReaderMock);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_command.DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
-      Assert.That (_command.CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
-      Assert.That (_command.DataContainerReader, Is.SameAs(_dataContainerReaderStub));
+      Assert.That (_command.DbCommandBuilder, Is.SameAs (_dbCommandBuilderMock));
+      Assert.That (_command.DataContainerReader, Is.SameAs(_dataContainerReaderMock));
     }
 
     [Test]
     public void Execute ()
     {
-      var result = _command.Execute(_commandExecutionContextStub);
+      _commandExecutionContextMock.Expect (mock => mock.ExecuteReader (_dbCommandMock, CommandBehavior.SingleRow)).Return (_dataReaderMock);
+      _commandExecutionContextMock.Replay();
 
+      _dataContainerReaderMock.Expect (mock => mock.Read (_dataReaderMock)).Return (_container);
+      _dataContainerReaderMock.Replay();
+
+      _dbCommandBuilderMock.Expect (mock => mock.Create (_commandExecutionContextMock)).Return (_dbCommandMock);
+      _dbCommandBuilderMock.Replay();
+
+      _dbCommandMock.Expect (mock => mock.Dispose());
+      _dbCommandMock.Replay();
+      
+      var result = _command.Execute(_commandExecutionContextMock);
+
+      _commandExecutionContextMock.VerifyAllExpectations();
+      _dataContainerReaderMock.VerifyAllExpectations();
+      _dbCommandBuilderMock.VerifyAllExpectations();
+      _dbCommandMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_container));
     }
     
