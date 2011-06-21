@@ -33,7 +33,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   [TestFixture]
-  public class MultiDataContainerLookupCommandFactoryTest : SqlProviderBaseTest
+  public class MultiDataContainerLookupCommandFactoryTest : StandardMappingTest
   {
     private ObjectID _objectID1;
     private ObjectID _objectID2;

@@ -24,6 +24,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  // TODO Review 4069: Move indexes up to EntityDefinitionBase
   /// <summary>
   /// <see cref="UnionViewDefinition"/> defines a union view in a relational database.
   /// </summary>

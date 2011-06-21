@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -27,19 +28,19 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   [TestFixture]
-  public class SingleDataContainerLookupCommandFactoryTest : SqlProviderBaseTest
+  public class SingleDataContainerLookupCommandFactoryTest : StandardMappingTest
   {
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStub;
     private SingleDataContainerLookupCommandFactory _factory;
     private IDbCommandBuilder _dbCommandBuilderStub;
     private IDataContainerReader _dataContainerReaderStub;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
+    private TableDefinition _tableDefinition;
 
     public override void SetUp ()
     {
@@ -51,18 +52,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
 
       _factory = new SingleDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub);
+
+      _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
     }
 
     [Test]
     public void CreateCommand_TableDefinition ()
     {
-      var objectID = DomainObjectIDs.Order1;
-
+      var objectID = CreateObjectID (_tableDefinition);
       _dbCommandBuilderFactoryStub
-          .Stub (
-              stub =>
-              stub.CreateForSingleIDLookupFromTable (
-                  ((TableDefinition) objectID.ClassDefinition.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, objectID))
+          .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
       var result = _factory.CreateCommand (objectID, _commandExecutionContextStub, _dataContainerReaderStub);
@@ -77,16 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a UnionViewDefinition.")]
     public void CreateCommand_UnionViewDefinition ()
     {
-      var tableDefinition = TableDefinitionObjectMother.Create (
-          TestDomainStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table"),
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
       var unionViewDefinition = new UnionViewDefinition (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "ViewName"),
-          new[] { tableDefinition },
+          new[] { _tableDefinition },
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
@@ -94,24 +87,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      PrivateInvoke.SetNonPublicField (classDefinition, "_storageEntityDefinition", unionViewDefinition);
+      var objectID = CreateObjectID (unionViewDefinition);
 
-      var objectID = new ObjectID (classDefinition, Guid.NewGuid ());
-
-      _factory.CreateCommand (objectID,_commandExecutionContextStub, _dataContainerReaderStub);
+      _factory.CreateCommand (objectID, _commandExecutionContextStub, _dataContainerReaderStub);
     }
 
     [Test]
     public void CreateCommand_FilterViewDefinition ()
     {
-      var objectID = new ObjectID ("File", Guid.NewGuid());
+      var filterViewDefinition = new FilterViewDefinition (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "ViewName"),
+          _tableDefinition,
+          new[] { "Test" },
+          ColumnDefinitionObjectMother.ObjectIDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+
+      var objectID = CreateObjectID (filterViewDefinition);
 
       _dbCommandBuilderFactoryStub
-          .Stub (
-              stub =>
-              stub.CreateForSingleIDLookupFromTable (
-                  ((TableDefinition) objectID.ClassDefinition.BaseClass.StorageEntityDefinition), AllSelectedColumnsSpecification.Instance, objectID))
+          .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
       var result = _factory.CreateCommand (objectID, _commandExecutionContextStub, _dataContainerReaderStub);
@@ -120,6 +119,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
       Assert.That (((SingleDataContainerLoadCommand) result).CommandExecutionContext, Is.SameAs (_commandExecutionContextStub));
       Assert.That (((SingleDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
+    }
+
+    private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      classDefinition.SetStorageEntity (entityDefinition);
+
+      return new ObjectID (classDefinition, Guid.NewGuid());
     }
   }
 }

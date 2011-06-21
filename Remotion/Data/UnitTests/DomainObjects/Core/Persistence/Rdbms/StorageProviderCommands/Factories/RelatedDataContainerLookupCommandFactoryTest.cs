@@ -37,7 +37,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   [TestFixture]
-  public class RelatedDataContainerLookupCommandFactoryTest : SqlProviderBaseTest
+  public class RelatedDataContainerLookupCommandFactoryTest : StandardMappingTest
   {
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStub;
     private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
