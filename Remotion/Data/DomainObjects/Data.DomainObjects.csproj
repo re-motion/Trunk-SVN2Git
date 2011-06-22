@@ -245,6 +245,7 @@
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
+    <Compile Include="Persistence\Rdbms\RdbmsProviderCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\DataReaders\DataContainerReader.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\AllSelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\EmptyOrderedColumnsSpecification.cs" />

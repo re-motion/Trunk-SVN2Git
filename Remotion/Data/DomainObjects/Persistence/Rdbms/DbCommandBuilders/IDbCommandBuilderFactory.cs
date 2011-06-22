@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
@@ -39,5 +40,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         IDColumnDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns);
+    IDbCommandBuilder CreateForQuery (IQuery query);
   }
 }

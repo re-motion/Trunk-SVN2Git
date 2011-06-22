@@ -41,12 +41,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _dataContainerReader = dataContainerReader;
     }
 
-    public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateCommand (
-        ObjectID id, IRdbmsProviderCommandExecutionContext commandExecutionContext)
+    public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateCommand (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
-
+      
       return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>> (
           (IEntityDefinition) id.ClassDefinition.StorageEntityDefinition,
           (table, continuation) => CreateSingleDataContainerLoadCommand (table, id, _dataContainerReader),

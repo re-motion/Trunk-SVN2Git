@@ -75,11 +75,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _dataContainerReader = dataContainerReader;
     }
 
-    public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (
-        IEnumerable<ObjectID> ids, IRdbmsProviderCommandExecutionContext commandExecutionContext)
+    public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (IEnumerable<ObjectID> ids)
     {
       ArgumentUtility.CheckNotNull ("ids", ids);
-      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
       // TODO 4090: Replace visitor with InlineEntityDefinitionVisitor
       // TODO 4090: Remove nested EntityDefinitionVisitor

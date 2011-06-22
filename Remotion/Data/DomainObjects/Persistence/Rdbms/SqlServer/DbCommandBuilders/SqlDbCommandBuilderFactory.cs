@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders
@@ -95,6 +96,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
 
       return new UnionRelationLookupSelectDbCommandBuilder (
           view, selectedColumns, foreignKeyColumn, foreignKeyValue, orderedColumns, _sqlDialect, _valueConverter);
+    }
+
+    public IDbCommandBuilder CreateForQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      return new QueryDbCommandBuilder (query, _sqlDialect, _valueConverter);
     }
   }
 }

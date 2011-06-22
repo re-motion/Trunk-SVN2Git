@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
@@ -93,6 +94,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           unionViewDefinition, _selectedColumnsStub, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
 
       Assert.That (result, Is.TypeOf (typeof (UnionRelationLookupSelectDbCommandBuilder)));
+    }
+
+    [Test]
+    public void CreateForQuery ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery>();
+
+      var result = _factory.CreateForQuery (queryStub);
+
+      Assert.That (result, Is.TypeOf (typeof (QueryDbCommandBuilder)));
+      Assert.That (((QueryDbCommandBuilder) result).Query, Is.SameAs (queryStub));
+      Assert.That (((QueryDbCommandBuilder) result).SqlDialect, Is.SameAs(_sqlDialectStub));
+      Assert.That (((QueryDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
     }
   }
 }

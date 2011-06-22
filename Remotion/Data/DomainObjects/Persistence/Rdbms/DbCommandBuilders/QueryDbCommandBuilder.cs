@@ -21,16 +21,24 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
+  /// <summary>
+  /// Builds an <see cref="IDbCommand"/> for a given <see cref="IQuery"/>.
+  /// </summary>
   public class QueryDbCommandBuilder : DbCommandBuilder
   {
     private readonly IQuery _query;
 
-    public QueryDbCommandBuilder (IQuery query, ISqlDialect sqlDialect, ValueConverter valueConverter)
+    public QueryDbCommandBuilder (IQuery query, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
       _query = query;
+    }
+
+    public IQuery Query
+    {
+      get { return _query; }
     }
 
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)

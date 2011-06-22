@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Persistence
@@ -28,9 +30,8 @@ namespace Remotion.Data.DomainObjects.Persistence
   public interface IStorageProviderCommandFactory<in TExecutionContext>
   {
     IStorageProviderCommand<DataContainer, TExecutionContext> CreateForSingleIDLookup (ObjectID objectID);
-    IStorageProviderCommand<DataContainer[], TExecutionContext> CreateForMultiIDLookup (ObjectID[] objectIDs);
-    IStorageProviderCommand<DataContainer[], TExecutionContext> CreateForRelationLookup (
-        RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue);
-    IStorageProviderCommand<DataContainer[], TExecutionContext> CreateForDataContainerQuery (IQuery query);
+    IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForMultiIDLookup (ObjectID[] objectIDs);
+    IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForRelationLookup (RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue, SortExpressionDefinition sortExpressionDefinition);
+    IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForDataContainerQuery (IQuery query);
   }
 }

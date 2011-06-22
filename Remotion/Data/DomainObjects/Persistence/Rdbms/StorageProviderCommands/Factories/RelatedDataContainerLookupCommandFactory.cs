@@ -55,13 +55,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (
         RelationEndPointDefinition foreignKeyEndPoint,
         ObjectID foreignKeyValue,
-        SortExpressionDefinition sortExpression,
-        IRdbmsProviderCommandExecutionContext commandExecutionContext)
+        SortExpressionDefinition sortExpression)
     {
       ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
-      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
-      ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
       return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> (
           (IEntityDefinition) foreignKeyEndPoint.ClassDefinition.StorageEntityDefinition,

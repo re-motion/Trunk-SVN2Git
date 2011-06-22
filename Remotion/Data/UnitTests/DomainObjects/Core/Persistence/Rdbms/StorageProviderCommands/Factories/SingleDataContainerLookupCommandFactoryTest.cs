@@ -39,7 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private SingleDataContainerLookupCommandFactory _factory;
     private IDbCommandBuilder _dbCommandBuilderStub;
     private IDataContainerReader _dataContainerReaderStub;
-    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
     private TableDefinition _tableDefinition;
 
     public override void SetUp ()
@@ -47,7 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       base.SetUp();
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
-      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
       _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
 
@@ -64,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-      var result = _factory.CreateCommand (objectID, _commandExecutionContextStub);
+      var result = _factory.CreateCommand (objectID);
 
       Assert.That (result, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
@@ -82,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var objectID = CreateObjectID (unionViewDefinition);
 
-      _factory.CreateCommand (objectID, _commandExecutionContextStub);
+      _factory.CreateCommand (objectID);
     }
 
     [Test]
@@ -99,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-      var result = _factory.CreateCommand (objectID, _commandExecutionContextStub);
+      var result = _factory.CreateCommand (objectID);
 
       Assert.That (result, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilderStub));
@@ -118,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-     _factory.CreateCommand (objectID, _commandExecutionContextStub);
+     _factory.CreateCommand (objectID);
     }
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)

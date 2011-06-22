@@ -49,7 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommandBuilder _dbCommandBuilderStub;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
     private ObjectID _foreignKeyValue;
     private IDColumnDefinition _foreignKeyColumnDefinition;
 
@@ -59,8 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
       _storageProviderCommandFactory = MockRepository.GenerateStub<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
-
-      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
 
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _objectIDReaderStub = MockRepository.GenerateStub<IObjectIDReader>();
@@ -99,11 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   EmptyOrderedColumnsSpecification.Instance))
           .Return (_dbCommandBuilderStub);
 
-      var result = _factory.CreateCommand (
-          relationEndPointDefinition,
-          _foreignKeyValue,
-          null,
-          _commandExecutionContextStub);
+      var result = _factory.CreateCommand (relationEndPointDefinition, _foreignKeyValue, null);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilderStub }));
@@ -141,8 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = _factory.CreateCommand (
           relationEndPointDefinition,
           _foreignKeyValue,
-          new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }),
-          _commandExecutionContextStub);
+          new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }));
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilderStub }));
@@ -172,11 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   Arg.Is (EmptyOrderedColumnsSpecification.Instance)))
           .Return (_dbCommandBuilderStub);
 
-      var result = _factory.CreateCommand (
-          relationEndPointDefinition,
-          _foreignKeyValue,
-          null,
-          _commandExecutionContextStub);
+      var result = _factory.CreateCommand (relationEndPointDefinition, _foreignKeyValue, null);
 
       Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
       var command = (IndirectDataContainerLoadCommand) result;
@@ -222,8 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = _factory.CreateCommand (
           relationEndPointDefinition,
           _foreignKeyValue,
-          new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }),
-          _commandExecutionContextStub);
+          new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }));
 
       Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
       var command = (IndirectDataContainerLoadCommand) result;
@@ -252,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-      _factory.CreateCommand (relationEndPointDefinition, _foreignKeyValue, null, _commandExecutionContextStub);
+      _factory.CreateCommand (relationEndPointDefinition, _foreignKeyValue, null);
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (
