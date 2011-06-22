@@ -14,36 +14,173 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.IO;
+using log4net.Core;
 using NUnit.Framework;
 using Remotion.Logging;
+using System.Linq;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Logging
 {
   [TestFixture]
   public class Log4NetLogManagerTest
   {
+    private TextWriter _originalConsoleOut;
+    private StringWriter _fakeConsoleOut;
+    private Log4NetLogManager _logManager;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _originalConsoleOut = Console.Out;
+      _fakeConsoleOut = new StringWriter();
+      Console.SetOut (_fakeConsoleOut);
+
+      _logManager = new Log4NetLogManager ();
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      log4net.LogManager.ResetConfiguration();
+      Console.SetOut (_originalConsoleOut);
+    }
+
     [Test]
     public void GetLogger_WithNameAsString ()
     {
-      ILogManager logManager = new Log4NetLogManager ();
-      
-      ILog log = logManager.GetLogger ("The Name");
+      var log = _logManager.GetLogger ("The Name");
 
       Assert.IsInstanceOf (typeof (Log4NetLog), log);
-      Log4NetLog log4NetLog = (Log4NetLog) log;
+      var log4NetLog = (Log4NetLog) log;
       Assert.AreEqual ("The Name", log4NetLog.Logger.Name);
     }
 
     [Test]
     public void GetLogger_WithNameFromType ()
     {
-      ILogManager logManager = new Log4NetLogManager ();
-
-      ILog log = logManager.GetLogger (typeof (SampleType));
+      var log = _logManager.GetLogger (typeof (SampleType));
 
       Assert.IsInstanceOf (typeof (Log4NetLog), log);
-      Log4NetLog log4NetLog = (Log4NetLog) log;
+     
+      var log4NetLog = (Log4NetLog) log;
       Assert.AreEqual ("Remotion.UnitTests.Logging.SampleType", log4NetLog.Logger.Name);
     }
+
+    [Test]
+    public void InitializeConsole_CausesLogsToBeWrittenToConsole ()
+    {
+      var log = _logManager.GetLogger (typeof (SampleType));
+
+      log.Log (LogLevel.Debug, "Test before InitializeConsole");
+      CheckConsoleOutput ();
+
+      _logManager.InitializeConsole();
+
+      log.Log (LogLevel.Debug, "Test after InitializeConsole");
+      CheckConsoleOutput ("DEBUG: Test after InitializeConsole");
+    }
+
+    [Test]
+    public void InitializeConsole_LogsAllLogLevels ()
+    {
+      _logManager.InitializeConsole ();
+
+      var log = _logManager.GetLogger (typeof (SampleType));
+      log.Log (LogLevel.Debug, "Test Debug");
+      log.Log (LogLevel.Info, "Test Info");
+      log.Log (LogLevel.Warn, "Test Warn");
+      log.Log (LogLevel.Error, "Test Error");
+      log.Log (LogLevel.Fatal, "Test Fatal");
+
+      CheckConsoleOutput (
+          "DEBUG: Test Debug",
+          "INFO : Test Info",
+          "WARN : Test Warn",
+          "ERROR: Test Error",
+          "FATAL: Test Fatal");
+    }
+
+    [Test]
+    public void InitializeConsole_WithThreshold_SetsDefaultThreshold ()
+    {
+      _logManager.InitializeConsole (LogLevel.Warn);
+      
+      var log = _logManager.GetLogger (typeof (SampleType));
+      log.Log (LogLevel.Debug, "Test Debug");
+      log.Log (LogLevel.Info, "Test Info");
+      log.Log (LogLevel.Warn, "Test Warn");
+      log.Log (LogLevel.Error, "Test Error");
+      log.Log (LogLevel.Fatal, "Test Fatal");
+
+      CheckConsoleOutput (
+          "WARN : Test Warn",
+          "ERROR: Test Error",
+          "FATAL: Test Fatal");
+    }
+
+    [Test]
+    public void InitializeConsole_WithSpecificThresholds_SetsDefaultThreshold_AndSpecificThresholds ()
+    {
+      var log1 = _logManager.GetLogger (typeof (SampleType));
+      var log2 = _logManager.GetLogger ("other");
+
+      _logManager.InitializeConsole (LogLevel.Warn, new LogThreshold (log2, LogLevel.Info));
+
+      log1.Log (LogLevel.Debug, "1: Test Debug");
+      log1.Log (LogLevel.Info, "1: Test Info");
+      log1.Log (LogLevel.Warn, "1: Test Warn");
+      log1.Log (LogLevel.Error, "1: Test Error");
+      log1.Log (LogLevel.Fatal, "1: Test Fatal");
+
+      log2.Log (LogLevel.Debug, "2: Test Debug");
+      log2.Log (LogLevel.Info, "2: Test Info");
+      log2.Log (LogLevel.Warn, "2: Test Warn");
+      log2.Log (LogLevel.Error, "2: Test Error");
+      log2.Log (LogLevel.Fatal, "2: Test Fatal");
+
+      CheckConsoleOutput (
+          "WARN : 1: Test Warn",
+          "ERROR: 1: Test Error",
+          "FATAL: 1: Test Fatal",
+          "INFO : 2: Test Info",
+          "WARN : 2: Test Warn",
+          "ERROR: 2: Test Error",
+          "FATAL: 2: Test Fatal");
+    }
+
+    [Test]
+    public void InitializeConsole_WithSpecificThresholds_InvalidLoggerType ()
+    {
+      var logger = MockRepository.GenerateStub<ILog>();
+      Assert.That (
+          () => _logManager.InitializeConsole (LogLevel.Debug, new LogThreshold (logger, LogLevel.Error)),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "This LogManager only supports ILog implementations of type Log4NetLog.\r\nParameter name: logThresholds"));
+    }
+
+    [Test]
+    public void InitializeConsole_WithSpecificThresholds_InvalidLog4NetLoggerType ()
+    {
+      var logger = MockRepository.GenerateStub<ILogger> ();
+      logger.Stub (stub => stub.Repository).Return (LoggerManager.GetRepository (GetType ().Assembly));
+      logger.Stub (stub => stub.Name).Return ("Foo");
+      Assert.That (
+          () => _logManager.InitializeConsole (LogLevel.Debug, new LogThreshold (new Log4NetLog (logger), LogLevel.Error)),
+          Throws.ArgumentException.With.Message.Matches (
+              @"Log-specific thresholds can only be set for log4net loggers of type 'log4net\.Repository\.Hierarchy\.Logger'\. "
+              + @"The specified logger 'Foo' is of type 'ILoggerProxy.*'\."
+              + "\r\nParameter name: logThresholds"));
+
+    }
+
+    private void CheckConsoleOutput (params string[] expectedLines)
+    {
+      var fullString = string.Concat (expectedLines.Select (line => line + Environment.NewLine).ToArray());
+      Assert.That (_fakeConsoleOut.ToString (), Is.EqualTo (fullString));
+    }
+
   }
 }

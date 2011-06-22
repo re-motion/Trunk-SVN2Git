@@ -20,6 +20,7 @@ using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
 using log4net.Layout;
+using log4net.Repository.Hierarchy;
 using Remotion.Utilities;
 
 namespace Remotion.Logging
@@ -64,20 +65,59 @@ namespace Remotion.Logging
 
     public void InitializeConsole ()
     {
-      CreateConsoleAppenderAndConfigure();
-    }
-
-    public void InitializeConsole (LogLevel threshold)
-    {
-      var appender = CreateConsoleAppenderAndConfigure();
-      appender.Threshold = Log4NetLog.Convert (threshold);
-    }
-
-    private ConsoleAppender CreateConsoleAppenderAndConfigure ()
-    {
-      ConsoleAppender appender = new ConsoleAppender ();
-      appender.Layout = new PatternLayout ("%-5level: %message%newline");
+      var appender = CreateConsoleAppender ();
       BasicConfigurator.Configure (appender);
+    }
+
+    public void InitializeConsole (LogLevel defaultThreshold, params LogThreshold[] logThresholds)
+    {
+      ArgumentUtility.CheckNotNull ("logThresholds", logThresholds);
+
+      var appender = CreateConsoleAppender();
+
+      var repositoryAssembly = Assembly.GetCallingAssembly ();
+      var loggerRepository = log4net.LogManager.GetRepository (repositoryAssembly);
+      var hierarchy = loggerRepository as Hierarchy;
+      if (hierarchy == null)
+      {
+        var message = string.Format (
+            "Cannot set a default threshold for the logger repository of type '{1}' configured for assembly '{0}'. The repository does not derive "
+            + "from the '{2}' class.", 
+            repositoryAssembly.GetName().Name,
+            loggerRepository.GetType(),
+            typeof (Hierarchy));
+        throw new InvalidOperationException (message);
+      }
+
+      hierarchy.Root.Level = Log4NetLog.Convert (defaultThreshold);
+      hierarchy.Root.AddAppender (appender);
+      hierarchy.Configured = true;
+
+      foreach (var logThreshold in logThresholds)
+      {
+        var log4netLog = logThreshold.Logger as Log4NetLog;
+        if (log4netLog == null)
+          throw new ArgumentException ("This LogManager only supports ILog implementations of type Log4NetLog.", "logThresholds");
+
+        var log4netLogger = log4netLog.Logger as Logger;
+        if (log4netLogger == null)
+        {
+          var message = string.Format (
+              "Log-specific thresholds can only be set for log4net loggers of type '{0}'. The specified logger '{1}' is of type '{2}'.",
+              typeof (Logger),
+              log4netLog.Logger.Name,
+              log4netLog.Logger.GetType());
+          throw new ArgumentException (message, "logThresholds");
+        }
+
+        log4netLogger.Level = Log4NetLog.Convert (logThreshold.Threshold);
+      }
+    }
+
+    private ConsoleAppender CreateConsoleAppender ()
+    {
+      var appender = new ConsoleAppender ();
+      appender.Layout = new PatternLayout ("%-5level: %message%newline");
       return appender;
     }
   }

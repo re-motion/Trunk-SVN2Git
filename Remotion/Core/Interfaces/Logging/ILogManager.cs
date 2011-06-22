@@ -52,9 +52,12 @@ namespace Remotion.Logging
     void InitializeConsole ();
 
     /// <summary>
-    /// Initializes the current logging framework to log to the console, configuring a given <see cref="LogLevel"/> as the threshold.
+    /// Initializes the current logging framework to log to the console, configuring a given <see cref="LogLevel"/> as the default threshold as well
+    /// as specific thresholds for specific loggers.
     /// </summary>
-    /// <param name="threshold">The threshold for logging. Only log messages of at least this <see cref="LogLevel"/> are output to the console.</param>
-    void InitializeConsole (LogLevel threshold);
+    /// <param name="defaultThreshold">The threshold for logging. Only log messages of at least this <see cref="LogLevel"/> are output to the console
+    /// for all loggers not specifically configured via <paramref name="logThresholds"/>.</param>
+    /// <param name="logThresholds">The thresholds for specific loggers.</param>
+    void InitializeConsole (LogLevel defaultThreshold, params LogThreshold[] logThresholds);
   }
 }

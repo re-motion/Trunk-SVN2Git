@@ -103,6 +103,7 @@
     <Compile Include="Logging\ILogManager.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Logging\LogThreshold.cs" />
     <Compile Include="Mixins\AcceptsAlphabeticOrderingAttribute.cs" />
     <Compile Include="Mixins\BindToTargetTypeAttribute.cs" />
     <Compile Include="Mixins\BridgeInterfaces\IObjectFactoryImplementation.cs" />
