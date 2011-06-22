@@ -63,13 +63,13 @@ namespace Remotion.Mixins.MixerTools
     {
       if (context.Type.IsGenericTypeDefinition)
       {
-        s_log.WarnFormat ("Type {0} is a generic type definition and is thus ignored.", context.Type);
+        s_log.DebugFormat ("Type {0} is a generic type definition and is thus ignored.", context.Type);
         return false;
       }
 
       if (context.Type.IsInterface)
       {
-        s_log.WarnFormat ("Type {0} is an interface and is thus ignored.", context.Type);
+        s_log.DebugFormat ("Type {0} is an interface and is thus ignored.", context.Type);
         return false;
       }
 

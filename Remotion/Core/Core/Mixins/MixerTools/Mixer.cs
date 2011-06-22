@@ -123,9 +123,11 @@ namespace Remotion.Mixins.MixerTools
 
         var builder = ConcreteTypeBuilderFactory.CreateTypeBuilder (AssemblyOutputDirectory);
 
+        s_log.InfoFormat ("Generating types...");
         foreach (var classContext in ClassContextFinder.FindClassContexts (configuration))
           Generate (classContext, builder);
 
+        s_log.InfoFormat ("Saving assemblies...");
         Save (builder);
       }
       LogStatistics();
