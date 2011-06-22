@@ -18,7 +18,10 @@ using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -26,13 +29,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   {
     private SqlProvider _provider;
     private ReflectionBasedStorageNameProvider _storageNameProvider;
+    private ValueConverter _valueConverter;
+    private RdbmsProviderCommandFactory _commandFactory;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _storageNameProvider = new ReflectionBasedStorageNameProvider ();
-      _provider = new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance);
+      _storageNameProvider = new ReflectionBasedStorageNameProvider();
+      _valueConverter = new ValueConverter (TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
+      _commandFactory = new RdbmsProviderCommandFactory (
+          new SqlDbCommandBuilderFactory (
+              SqlDialect.Instance,
+              _valueConverter),
+          new DataContainerReader (_valueConverter),
+          new ObjectIDReader (_valueConverter));
+
+      _provider = new SqlProvider (
+          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, _commandFactory);
     }
 
     public override void TearDown ()
@@ -40,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _provider.Dispose();
       base.TearDown();
     }
-    
+
     protected SqlProvider Provider
     {
       get { return _provider; }
@@ -49,6 +63,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     protected ReflectionBasedStorageNameProvider StorageNameProvider
     {
       get { return _storageNameProvider; }
+    }
+
+    public ValueConverter ValueConverter
+    {
+      get { return _valueConverter; }
+    }
+
+    public RdbmsProviderCommandFactory CommandFactory
+    {
+      get { return _commandFactory; }
     }
   }
 }

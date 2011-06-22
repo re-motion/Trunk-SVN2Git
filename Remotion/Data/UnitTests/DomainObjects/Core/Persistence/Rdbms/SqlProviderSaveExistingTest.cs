@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (
           SqlProvider sqlProvider = new SqlProvider (
-              (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, StorageNameProvider, NullPersistenceListener.Instance))
+              (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, StorageNameProvider, NullPersistenceListener.Instance, CommandFactory))
       {
         DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
@@ -582,7 +582,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
       }
     }
-    
+
     [Test]
     public void TransactionalLoadDataContainersByRelatedIDAndSave ()
     {
@@ -846,7 +846,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private SqlProvider CreateSqlProvider ()
     {
-      return new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, StorageNameProvider, NullPersistenceListener.Instance);
+      return new SqlProvider (
+          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, StorageNameProvider, NullPersistenceListener.Instance, CommandFactory);
     }
   }
 }

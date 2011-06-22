@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class RdbmsProviderTest : StandardMappingTest
+  public class RdbmsProviderTest : SqlProviderBaseTest
   {
     private TestRdbmsProvider _provider;
     private RdbmsProviderDefinition _definition;
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
-          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance);
+          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance, CommandFactory);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
-          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance);
+          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance, CommandFactory);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));

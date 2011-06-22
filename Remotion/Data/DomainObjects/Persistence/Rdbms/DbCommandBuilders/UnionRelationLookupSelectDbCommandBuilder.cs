@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
           statement.Append (" UNION ALL ");
         
         AppendSelectClause (statement, fullProjection);
-        statement.Append ("FROM ");
+        statement.Append (" FROM ");
 
         if (table.TableName.SchemaName != null)
         {
@@ -91,7 +91,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         first = false;
       }
       _orderedColumns.AppendOrderByClause (statement, SqlDialect);
-      
+      statement.Append (SqlDialect.StatementDelimiter);
+
       command.CommandText = statement.ToString();
 
       return command;

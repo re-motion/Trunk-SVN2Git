@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification> ();
       _selectedColumnsStub
         .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-        .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" [Column1], [Column2], [Column3] "));
+        .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       _orderedColumnsStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
       _orderedColumnsStub
@@ -60,6 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" ORDER BY [Column1] ASC, [Column2] DESC"));
 
       _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect> ();
+      _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
       
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
 
@@ -107,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.VerifyAllExpectations();
 
       Assert.That (result.CommandText, Is.EqualTo (
-        "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));
+        "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
     }
 
@@ -140,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.VerifyAllExpectations();
 
       Assert.That (result.CommandText, Is.EqualTo (
-        "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC"));
+        "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
     }
   }

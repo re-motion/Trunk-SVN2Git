@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       AppendFromClause (statement, _table);
       var foreignKeyParameter = AddCommandParameter (command, _foreignKeyColumn.ObjectIDColumn.Name, _foreignKeyValue);
       AppendComparingWhereClause (statement, _foreignKeyColumn.ObjectIDColumn, foreignKeyParameter);
-
+      
       // TODO in case of integer primary keys: 
       // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,
       // the code below must be selectively actived to run only for integer primary keys.
@@ -78,6 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       //  statement.Append (" AND ").Append (Delimit(_foreignKeyColumn.ClassIDColumn.Name)).Append (" = ").Append (ParameterOf (_foreignKeyValue.ClassID));
 
       _orderedColumns.AppendOrderByClause (statement, SqlDialect);
+      statement.Append (SqlDialect.StatementDelimiter);
 
       command.CommandText = statement.ToString();
       return command;

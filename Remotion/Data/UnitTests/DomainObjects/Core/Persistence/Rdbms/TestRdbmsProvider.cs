@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   {
     public TestRdbmsProvider (
         RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect dialect, IPersistenceListener persistenceListener)
-        : base (definition, storageNameProvider, dialect, persistenceListener)
+        : base (definition, storageNameProvider, dialect, persistenceListener, null)
     {
     }
 

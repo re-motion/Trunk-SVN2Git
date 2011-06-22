@@ -28,7 +28,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class SqlProviderDeleteTest : ClientTransactionBaseTest
+  public class SqlProviderDeleteTest : SqlProviderBaseTest
   {
     private SqlProvider _provider;
     private ReflectionBasedStorageNameProvider _storageNameProvider;
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _provider = new SqlProvider (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance);
+          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, CommandFactory);
     }
 
     public override void TearDown ()

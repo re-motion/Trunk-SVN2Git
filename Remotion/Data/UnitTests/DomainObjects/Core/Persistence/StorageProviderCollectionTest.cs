@@ -22,11 +22,12 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
   [TestFixture]
-  public class StorageProviderCollectionTest : StandardMappingTest
+  public class StorageProviderCollectionTest : SqlProviderBaseTest
   {
     private StorageProviderCollection _collection;
     private StorageProvider _provider;
@@ -40,7 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       _provider = new SqlProvider (
           new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString"),
           _storageNameProvider,
-          NullPersistenceListener.Instance);
+          NullPersistenceListener.Instance,
+          CommandFactory);
       _collection = new StorageProviderCollection();
     }
 
@@ -57,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       _collection.Add (_provider);
 
       StorageProvider copy = new SqlProvider (
-          (RdbmsProviderDefinition) _provider.StorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance);
+          (RdbmsProviderDefinition) _provider.StorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, CommandFactory);
       Assert.IsFalse (_collection.Contains (copy));
     }
   }

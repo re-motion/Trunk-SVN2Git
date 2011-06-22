@@ -57,7 +57,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       var parameter = AddCommandParameter (command, _table.ObjectIDColumn.Name, _objectID);
       AppendComparingWhereClause (statement, _table.ObjectIDColumn, parameter);
-      
+      statement.Append (SqlDialect.StatementDelimiter);
+
       command.CommandText = statement.ToString();
 
       return command;

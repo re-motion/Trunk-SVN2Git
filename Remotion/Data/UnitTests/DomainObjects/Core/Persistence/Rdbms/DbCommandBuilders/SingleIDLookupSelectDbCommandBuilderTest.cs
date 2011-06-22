@@ -46,9 +46,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _selectedColumnsStub
         .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-        .WhenCalled(mi=> ((StringBuilder) mi.Arguments[0]).Append(" [Column1], [Column2], [Column3] "));
+        .WhenCalled(mi=> ((StringBuilder) mi.Arguments[0]).Append("[Column1], [Column2], [Column3]"));
 
       _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
+      _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
 
@@ -91,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.VerifyAllExpectations();
       _dataParameterCollectionMock.VerifyAllExpectations ();
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [ID] = @ID"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [ID] = @ID;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_objectID.Value));
     }
 
@@ -122,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.VerifyAllExpectations ();
       _dataParameterCollectionMock.VerifyAllExpectations ();
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [ID] = @ID"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [ID] = @ID;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_objectID.Value));
     }
   }

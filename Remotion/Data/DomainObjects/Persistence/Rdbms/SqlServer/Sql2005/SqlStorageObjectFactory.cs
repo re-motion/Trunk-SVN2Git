@@ -21,8 +21,10 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Implementation;
 using Remotion.Linq;
@@ -45,24 +47,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
         IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
-      var rdbmsProviderDefinition = 
-          ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition",  storageProviderDefinition);
+      var rdbmsProviderDefinition =
+          ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition", storageProviderDefinition);
 
       var storageNameProvider = CreateStorageNameProvider();
-
-      return CreateStorageProvider(persistenceListener, rdbmsProviderDefinition, storageNameProvider);
+      var commandFactory = CreateStorageProviderCommandFactory(rdbmsProviderDefinition, storageNameProvider);
+      return CreateStorageProvider (persistenceListener, rdbmsProviderDefinition, storageNameProvider, commandFactory);
     }
 
     protected virtual StorageProvider CreateStorageProvider (
-        IPersistenceListener persistenceListener, 
-        RdbmsProviderDefinition rdbmsProviderDefinition, 
-        IStorageNameProvider storageNameProvider)
+        IPersistenceListener persistenceListener,
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        IStorageNameProvider storageNameProvider, 
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
 
-      return ObjectFactory.Create <SqlProvider> (ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener));
+      return ObjectFactory.Create<SqlProvider> (ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener, commandFactory));
     }
 
     public virtual TypeConversionProvider CreateTypeConversionProvider ()
@@ -119,11 +123,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var compositeScriptBuilder = new CompositeScriptBuilder (
           storageProviderDefinition,
-          CreateTableBuilder (),
-          CreateConstraintBuilder (),
-          CreateViewBuilder (),
-          CreateIndexBuilder (),
-          CreateSynonymBuilder ());
+          CreateTableBuilder(),
+          CreateConstraintBuilder(),
+          CreateViewBuilder(),
+          CreateIndexBuilder(),
+          CreateSynonymBuilder());
 
       return new SqlDatabaseSelectionScriptElementBuilder (compositeScriptBuilder, storageProviderDefinition.ConnectionString);
     }
@@ -215,6 +219,38 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           new SqlSynonymScriptElementFactory(),
           new SqlSynonymScriptElementFactory(),
           new SqlCommentScriptElementFactory());
+    }
+
+    protected virtual IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (
+        RdbmsProviderDefinition storageProviderDefinition, 
+        IStorageNameProvider storageNameProvider)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+
+      var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory(valueConverter);
+
+      var dataContainerReader = new DataContainerReader (valueConverter);
+      var objectIDReader = new ObjectIDReader (valueConverter);
+      return new RdbmsProviderCommandFactory (dbCommandBuilderFactory, dataContainerReader, objectIDReader);
+    }
+
+    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (IValueConverter valueConverter)
+    {
+      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
+
+      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, valueConverter);
+    }
+
+    protected virtual IValueConverter CreateValueConverter (
+        StorageProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, TypeConversionProvider typeConversionProvider)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
+
+      return new ValueConverter (storageProviderDefinition, storageNameProvider, typeConversionProvider);
     }
   }
 }

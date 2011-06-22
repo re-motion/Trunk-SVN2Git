@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
@@ -35,12 +36,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
+    private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
 
     protected RdbmsProvider (
-        RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IPersistenceListener persistenceListener)
+        RdbmsProviderDefinition definition,
+        IStorageNameProvider storageNameProvider,
+        ISqlDialect sqlDialect,
+        IPersistenceListener persistenceListener,
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
         : base (definition, storageNameProvider, sqlDialect, persistenceListener)
     {
       _dataContainerLoader = new DataContainerLoader (this);
+      _storageProviderCommandFactory = storageProviderCommandFactory;
     }
 
     protected override void Dispose (bool disposing)
@@ -197,6 +204,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, CreateValueConverter());
       return LoadDataContainers (commandBuilder, true);
+      // TODO 4078
+      //return _storageProviderCommandFactory.CreateForDataContainerQuery (query).Execute (this).ToArray();
     }
 
     public override object ExecuteScalarQuery (IQuery query)
@@ -230,7 +239,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      return _dataContainerLoader.LoadDataContainerFromID (id);
+      return _storageProviderCommandFactory.CreateForSingleIDLookup (id).Execute (this);
     }
 
     public override DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids)
@@ -243,6 +252,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Connect();
 
       return _dataContainerLoader.LoadDataContainersFromIDs (ids);
+      // TODO 4078
+      //var dataContainers = _storageProviderCommandFactory.CreateForMultiIDLookup (ids.ToArray()).Execute (this);
+      //return new DataContainerCollection (dataContainers, true);
     }
 
     protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
@@ -253,9 +265,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _dataContainerLoader.LoadDataContainersFromCommandBuilder (commandBuilder, allowNulls);
     }
 
+
+    // TODO 4078
+    //[Obsolete ("This method has been superseded by MultiDataContainerLoadCommand. Use that instead. (1.13.111)", true)]
+    //protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
+    //{
+    //  throw new NotImplementedException();
+    //}
+
     public override DataContainerCollection LoadDataContainersByRelatedID (
-        RelationEndPointDefinition relationEndPointDefinition, 
-        SortExpressionDefinition sortExpressionDefinition, 
+        RelationEndPointDefinition relationEndPointDefinition,
+        SortExpressionDefinition sortExpressionDefinition,
         ObjectID relatedID)
     {
       CheckDisposed();
@@ -267,6 +287,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       return _dataContainerLoader.LoadDataContainersByRelatedID (
           relationEndPointDefinition.ClassDefinition, relationEndPointDefinition.PropertyName, relatedID);
+
+      // TODO 4078
+      //var storageProviderCommand = _storageProviderCommandFactory.CreateForRelationLookup (relationEndPointDefinition, relatedID, sortExpressionDefinition);
+      //var dataContainers = storageProviderCommand.Execute (this);
+      //return
+      //    new DataContainerCollection (
+      //        dataContainers,
+      //        true);
     }
 
     public override void Save (DataContainerCollection dataContainers)
@@ -354,6 +382,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public virtual DataContainerLoader DataContainerLoader
     {
       get { return _dataContainerLoader; }
+    }
+
+    public IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> StorageProviderCommandFactory
+    {
+      get { return _storageProviderCommandFactory; }
     }
 
     public override ObjectID CreateNewObjectID (ClassDefinition classDefinition)

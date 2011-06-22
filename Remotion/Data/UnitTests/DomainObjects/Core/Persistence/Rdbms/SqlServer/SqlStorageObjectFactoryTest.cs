@@ -66,6 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (result, Is.TypeOf (typeof (SqlProvider)));
       Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
       Assert.That (result.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
+      Assert.That (((SqlProvider) result).StorageProviderCommandFactory, Is.TypeOf (typeof (RdbmsProviderCommandFactory)));
     }
 
     [Test]
@@ -209,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void ExtendedSqlStorageObjectFactory ()
+    public void ExtendedSqlStorageObjectFactory_CreateSchemaScriptBuilder ()
     {
       var storageObjectFactory = new ExtendedSqlStorageObjectFactory();
 

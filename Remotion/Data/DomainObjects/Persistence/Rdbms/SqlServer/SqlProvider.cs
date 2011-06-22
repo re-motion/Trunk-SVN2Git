@@ -14,55 +14,47 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
-
-public class SqlProvider : RdbmsProvider
-{
-  // types
-
-  // static members and constants
-
-  // member fields
-
-  // construction and disposing
-
-  public SqlProvider (RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceListener persistenceListener)
-    : base (definition, storageNameProvider, SqlServer.SqlDialect.Instance, persistenceListener)
+  public class SqlProvider : RdbmsProvider
   {
-  }
-
-  // methods and properties
-
-  protected override TracingDbConnection CreateConnection ()
-  {
-    CheckDisposed ();
-    
-    return new TracingDbConnection  (new SqlConnection (), PersistenceListener);
-  }
-  
-  public new SqlConnection Connection
-  {
-    get
+    public SqlProvider (
+        RdbmsProviderDefinition definition,
+        IStorageNameProvider storageNameProvider,
+        IPersistenceListener persistenceListener,
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
+        : base (definition, storageNameProvider, SqlServer.SqlDialect.Instance, persistenceListener, storageProviderCommandFactory)
     {
-      CheckDisposed ();
-      return (SqlConnection) (base.Connection == null ? null : base.Connection.WrappedInstance);
+    }
+
+    protected override TracingDbConnection CreateConnection ()
+    {
+      CheckDisposed();
+
+      return new TracingDbConnection (new SqlConnection(), PersistenceListener);
+    }
+
+    public new SqlConnection Connection
+    {
+      get
+      {
+        CheckDisposed();
+        return (SqlConnection) (base.Connection == null ? null : base.Connection.WrappedInstance);
+      }
+    }
+
+    public new SqlTransaction Transaction
+    {
+      get
+      {
+        CheckDisposed();
+        return (SqlTransaction) (base.Transaction == null ? null : base.Transaction.WrappedInstance);
+      }
     }
   }
-
-  public new SqlTransaction Transaction
-  {
-    get
-    {
-      CheckDisposed ();
-      return (SqlTransaction) (base.Transaction == null ? null : base.Transaction.WrappedInstance);
-    }
-  }
-
-  
-}
 }

@@ -31,7 +31,10 @@ namespace Remotion.Data.DomainObjects.Persistence
   {
     IStorageProviderCommand<DataContainer, TExecutionContext> CreateForSingleIDLookup (ObjectID objectID);
     IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForMultiIDLookup (ObjectID[] objectIDs);
-    IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForRelationLookup (RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue, SortExpressionDefinition sortExpressionDefinition);
+
+    IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForRelationLookup (
+        RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue, SortExpressionDefinition sortExpressionDefinition);
+
     IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForDataContainerQuery (IQuery query);
   }
 }

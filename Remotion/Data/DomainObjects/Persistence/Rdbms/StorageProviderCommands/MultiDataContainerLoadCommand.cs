@@ -75,6 +75,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
+          // TODO 4078: Write a test like the following:
+          // Ordered() {
+          // commandBuilderMock.Expect (Create).Return (commandMock)
+          // executionContextMock.Expect (ExecuteReader (commandMock, ...)).Return (readerMock)
+          // dataContainerReaderMock.Expect (ReadSequence (readerMock, ...)).Return (enumerableStub)
+          // enumerableStub.Stub (GetEnumerator).Return (enumeratorMock)
+          // enumeratorMock.Expect (MoveNext).Return (false)
+          // enumeratorMock.Expect (Dispose)
+          // readerMock.Expect (Dispose)
+          // command.Expect (Dispose)
+          // }
+          // ReplayAll();
+          // var result = LoadDataContainersFromCommandBuilder (commandBuilderMock, executionContext);
+          // result.ToArray();
+          // VerifyAll();
+          // TODO 4078: This test should fail with the current implementation. Uncomment the implementation below. Now the test should work.
+          // Note: Use yield return to ensure Dispose
+          //foreach (var dataContainer in _dataContainerReader.ReadSequence (reader, _allowNulls))
+          //  yield return dataContainer;
           return _dataContainerReader.ReadSequence (reader, _allowNulls);
         }
       }

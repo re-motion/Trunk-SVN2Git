@@ -150,18 +150,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw Provider.CreateRdbmsProviderException ("Class '{0}' does not contain property '{1}'.", classDefinition.ID, propertyName);
 
       if (propertyDefinition.StorageClass != StorageClass.Persistent)
-        return new DataContainerCollection();
-      else if (classDefinition.GetEntityName() != null)
+        return new DataContainerCollection ();
+      else if (classDefinition.GetEntityName () != null)
       {
         var commandBuilder = _loaderHelper.GetCommandBuilderForRelatedIDLookup (
             Provider,
-            classDefinition.GetEntityName(),
+            classDefinition.GetEntityName (),
             propertyDefinition,
             relatedID,
             Provider.SqlDialect,
             Provider,
             Provider.StorageProviderDefinition,
-            Provider.CreateValueConverter());
+            Provider.CreateValueConverter ());
         return new DataContainerCollection (Provider.LoadDataContainers (commandBuilder, false), false);
       }
       else
@@ -169,7 +169,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ConcreteTableInheritanceRelationLoader loader = _loaderHelper.GetConcreteTableInheritanceRelationLoader (
             Provider, classDefinition, propertyDefinition, relatedID);
 
-        return loader.LoadDataContainers();
+        return loader.LoadDataContainers ();
       }
     }
   }

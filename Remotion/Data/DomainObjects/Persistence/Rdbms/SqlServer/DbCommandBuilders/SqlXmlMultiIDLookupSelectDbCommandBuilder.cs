@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       foreach (var value in GetObjectIDValueStrings (_objectIDs))
         xmlString.Append ("<I>").Append (value).Append ("</I>");
       xmlString.Append ("</L>");
-      var xmlStringParameter = AddCommandParameter (command, _table.ObjectIDColumn.Name, xmlString);
+      var xmlStringParameter = AddCommandParameter (command, _table.ObjectIDColumn.Name, xmlString.ToString());
       xmlStringParameter.DbType = DbType.Xml;
 
       statement.Append (" WHERE ");
@@ -74,7 +74,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       statement.Append (" FROM ");
       statement.Append (xmlStringParameter.ParameterName);
       statement.Append (".nodes('/L/I') T(c))");
-      
+      statement.Append (SqlDialect.StatementDelimiter);
+
       command.CommandText = statement.ToString ();
       return command;
     }

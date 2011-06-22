@@ -102,13 +102,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     protected void AppendSelectClause (StringBuilder statement, ISelectedColumnsSpecification selectedColumns)
     {
-      statement.Append ("SELECT");
+      statement.Append ("SELECT ");
       selectedColumns.AppendProjection (statement, SqlDialect);
     }
 
     protected void AppendFromClause (StringBuilder statement, TableDefinition tableDefinition)
     {
-      statement.Append ("FROM ");
+      statement.Append (" FROM ");
       AppendTableName (statement, tableDefinition);
     }
 

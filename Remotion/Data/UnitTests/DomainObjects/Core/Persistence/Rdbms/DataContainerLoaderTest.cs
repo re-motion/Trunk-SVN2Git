@@ -418,7 +418,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       using (RdbmsProvider provider = new SqlProvider (
           (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain"),
           StorageNameProvider,
-          NullPersistenceListener.Instance))
+          NullPersistenceListener.Instance,
+          CommandFactory))
       {
         provider.Connect();
 
@@ -448,7 +449,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       using (RdbmsProvider provider = new SqlProvider (
           (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain"),
           StorageNameProvider,
-          NullPersistenceListener.Instance))
+          NullPersistenceListener.Instance,
+          CommandFactory))
       {
         provider.Connect();
 
@@ -481,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (
           RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (
-              TestDomainStorageProviderDefinition, storageNameProvider, NullPersistenceListener.Instance))
+              TestDomainStorageProviderDefinition, storageNameProvider, NullPersistenceListener.Instance, CommandFactory))
       {
         var loader = new DataContainerLoader (providerMock);
 
