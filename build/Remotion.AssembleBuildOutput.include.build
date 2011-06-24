@@ -18,7 +18,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Target Name="AssembleBuildOutput" 
-          DependsOnTargets="CopyReleaseProjectsToBinariesDirectory;CopyResourcesToBinariesDirectory;CopySchemasToBinariesDirectory;CopyDocFilesToBinariesDirectory;CopyChmFilesToBinariesDirectory" />
+          DependsOnTargets="CopyReleaseProjectsToBinariesDirectory;CopyResourcesToBinariesDirectory;CopySchemasToBinariesDirectory;CopyDocFilesToBinariesDirectory" />
 
   <Target Name="CopyReleaseProjectsToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateActiveConfiguration;BuildReleaseProjects;">
     <ItemGroup>
@@ -28,8 +28,7 @@
     </ItemGroup>
 
     <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationOutputDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
-          Condition="$(ActiveConfigurationIncludeBinaries) == 'True'"/>
+          DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationOutputDirectory)%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <Target Name="CopyResourcesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
@@ -104,20 +103,6 @@
       <StandardExcludes Include="$(SolutionDirectory)**\.svn\**"/>
       <StandardExcludes Include="$(SolutionDirectory)**\_svn\**"/>
     </ItemGroup>
-  </Target>
-
-  <Target Name="CopyChmFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateActiveConfiguration;CreateDocumentationProperties">
-    <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
-        
-    <ItemGroup>
-      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
-      <_completeOutputFiles Include="$(DocumentationBaseDirectory)*.chm"
-                            Exclude="@(StandardExcludes)"/>
-    </ItemGroup>
-
-    <Copy SourceFiles="@(_completeOutputFiles)"
-      DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationOutputDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
-      Condition="$(ActiveConfigurationGenerateDocumentation) == 'True'"/>
   </Target>
   
   </Project>

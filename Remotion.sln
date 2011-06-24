@@ -53,7 +53,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		build\Remotion.Documentation.Relinq.build = build\Remotion.Documentation.Relinq.build
 		build\Remotion.Documentation.Remix.build = build\Remotion.Documentation.Remix.build
 		build\Remotion.Documentation.SecurityManager.build = build\Remotion.Documentation.SecurityManager.build
-		build\Remotion.Documentation2.include.build = build\Remotion.Documentation2.include.build
 		build\Remotion.Packages.include.build = build\Remotion.Packages.include.build
 		build\Remotion.Packaging.Core.build = build\Remotion.Packaging.Core.build
 		build\Remotion.Packaging.Dms.build = build\Remotion.Packaging.Dms.build

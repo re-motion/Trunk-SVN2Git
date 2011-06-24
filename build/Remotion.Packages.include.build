@@ -27,7 +27,6 @@
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
       <ProductNameShort>re-motion</ProductNameShort>
-      <DocumentationRootPageTemplateFile>Remotion\Core\Core\doc\include\GettingStartedTemplate.html</DocumentationRootPageTemplateFile>
     </AllPackages>
     
     <AllPackages Include="Relinq">

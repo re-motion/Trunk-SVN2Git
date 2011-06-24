@@ -24,19 +24,6 @@
       <Framework>net-3.5</Framework>
       <OutputDirectory>net-3.5\bin\release\</OutputDirectory>
       <AssemblyRevision>1</AssemblyRevision>
-      <RunTests>True</RunTests>
-      <IncludeBinaries>True</IncludeBinaries>
-      <GenerateDocumentation>False</GenerateDocumentation>
-    </AllConfigurations>
-    
-    <AllConfigurations Include="Doc">
-      <Name>Release</Name>
-      <Framework>net-3.5</Framework>
-      <OutputDirectory>net-3.5\doc\</OutputDirectory>
-      <AssemblyRevision>0</AssemblyRevision>
-      <RunTests>False</RunTests>
-      <IncludeBinaries>False</IncludeBinaries>
-      <GenerateDocumentation>True</GenerateDocumentation>
     </AllConfigurations>
 
     <AllConfigurations Include="Debug">
@@ -44,9 +31,6 @@
       <Framework>net-3.5</Framework>
       <OutputDirectory>net-3.5\bin\debug\</OutputDirectory>
       <AssemblyRevision>2</AssemblyRevision>
-      <RunTests>True</RunTests>
-      <IncludeBinaries>True</IncludeBinaries>
-      <GenerateDocumentation>False</GenerateDocumentation>
     </AllConfigurations>
 
   </ItemGroup>

@@ -26,30 +26,9 @@
 
     <PropertyGroup>
       <ActiveConfigurationName>%(_activeConfiguration.Name)</ActiveConfigurationName>
-      <ActiveConfigurationRunTests>%(_activeConfiguration.RunTests)</ActiveConfigurationRunTests>
-      <ActiveConfigurationGenerateDocumentation>%(_activeConfiguration.GenerateDocumentation)</ActiveConfigurationGenerateDocumentation>
-      <ActiveConfigurationIncludeBinaries>%(_activeConfiguration.IncludeBinaries)</ActiveConfigurationIncludeBinaries>
       <ActiveConfigurationOutputDirectory>$(BinariesDirectory)%(_activeConfiguration.OutputDirectory)</ActiveConfigurationOutputDirectory>
       <ActiveConfigurationFramework>%(_activeConfiguration.Framework)</ActiveConfigurationFramework>
       <ActiveConfigurationAssemblyRevision>%(_activeConfiguration.AssemblyRevision)</ActiveConfigurationAssemblyRevision>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="CreateActivePackage">
-    <Error Text="The property 'PackageID' is not set." Condition="'$(PackageID)' == ''" />
-    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
-
-    <ItemGroup>
-      <_activePackage Include="@(AllPackages)" Condition="%(AllPackages.Identity) == $(PackageID)"/>
-    </ItemGroup>
-
-    <PropertyGroup>
-      <ActivePackageCompanyName>%(_activePackage.CompanyName)</ActivePackageCompanyName>
-      <ActivePackageCompanyUrl>%(_activePackage.CompanyUrl)</ActivePackageCompanyUrl>
-      <ActivePackageCopyright>%(_activePackage.Copyright)</ActivePackageCopyright>
-      <ActivePackageProductName>%(_activePackage.ProductName)</ActivePackageProductName>
-      <ActivePackageProductNameShort>%(_activePackage.ProductNameShort)</ActivePackageProductNameShort>
-      <ActivePackageDocumentationRootPageTemplateFile>$(SolutionDirectory)%(_activePackage.DocumentationRootPageTemplateFile)</ActivePackageDocumentationRootPageTemplateFile>
     </PropertyGroup>
   </Target>
 
@@ -154,15 +133,13 @@
 
     <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)"
                                    OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
-                                   ToolPath="$(NUnitToolPath)"
-                                   Condition="$(ActiveConfigurationRunTests) == 'True'"/>
+                                   ToolPath="$(NUnitToolPath)" />
     
     <!--Does not output test results to console-->
     <!--<MSBuild.ExtensionPack.CodeQuality.NUnit ToolPath="$(NUnitToolPath)"
                                              Assemblies="%(TestOutputFiles.FullPath)"
                                              Use32Bit="True"
-                                             OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
-                                             Condition="$(ActiveConfigurationRunTests) == 'True'"/>-->
+                                             OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml" />-->
 
     <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>

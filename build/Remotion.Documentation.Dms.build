@@ -17,7 +17,7 @@
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="Remotion.Documentation2.include.build" />
+  <Import Project="Remotion.Documentation.include.build" />
 
   <Target Name="CreateDocumentationProperties">
     <PropertyGroup>
