@@ -53,5 +53,9 @@ namespace Remotion.Mixins.MixerTools
         Description = "Specifies that the mixer should not use GUIDs to name the generated types, but instead keep the type names of the target "
         + "types. To get unique names, the mixer will put the generated types in a dedicated namespace.")]
     public bool KeepTypeNames;
+
+    [CommandLineFlagArgument ("verbose", false,
+        Description = "Enables verbose output. Verbose output will include all messages from all loggers in the framework.")]
+    public bool Verbose;
   }
 }

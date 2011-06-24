@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.IO;
 using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration;
@@ -61,7 +62,7 @@ namespace Remotion.Mixins.MixerTools
 
     protected override void CrossAppDomainCallbackHandler ()
     {
-      LogManager.InitializeConsole ();
+      ConfigureLogging();
 
       Mixer mixer = CreateMixer();
 
@@ -76,6 +77,23 @@ namespace Remotion.Mixins.MixerTools
         {
           Console.WriteLine (ex.Message);
         }
+      }
+    }
+
+    private void ConfigureLogging ()
+    {
+      if (_parameters.Verbose)
+      {
+        LogManager.InitializeConsole();
+      }
+      else
+      {
+        var mixerLoggers = from t in typeof (Mixer).Assembly.GetTypes ()
+                           where t.Namespace == typeof (Mixer).Namespace
+                           select LogManager.GetLogger (t);
+        var logThresholds = from l in mixerLoggers
+                            select new LogThreshold (l, LogLevel.Info);
+        LogManager.InitializeConsole (LogLevel.Warn, logThresholds.ToArray ());
       }
     }
 

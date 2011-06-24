@@ -28,6 +28,7 @@ using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.MixerTools
 {
@@ -123,8 +124,10 @@ namespace Remotion.Mixins.MixerTools
 
         var builder = ConcreteTypeBuilderFactory.CreateTypeBuilder (AssemblyOutputDirectory);
 
+        var classContexts = ClassContextFinder.FindClassContexts (configuration).ToArray ();
+
         s_log.InfoFormat ("Generating types...");
-        foreach (var classContext in ClassContextFinder.FindClassContexts (configuration))
+        foreach (var classContext in classContexts)
           Generate (classContext, builder);
 
         s_log.InfoFormat ("Saving assemblies...");
