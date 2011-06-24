@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _parentTransaction = new ClientTransactionMock ();
       _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      _factory = new SubClientTransactionComponentFactory (_parentTransaction, _parentInvalidDomainObjectManagerStub);
+      _factory = SubClientTransactionComponentFactory.Create (_parentTransaction, _parentInvalidDomainObjectManagerStub);
     }
 
     [Test]

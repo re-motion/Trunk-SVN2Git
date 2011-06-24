@@ -59,7 +59,7 @@ public class ClientTransaction
   /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootPersistenceStrategy"/> to a mixin class.</remarks>
   public static ClientTransaction CreateRootTransaction ()
   {
-    var componentFactory = new RootClientTransactionComponentFactory();
+    var componentFactory = RootClientTransactionComponentFactory.Create();
     return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
   }
 
@@ -80,7 +80,7 @@ public class ClientTransaction
   /// </remarks>
   public static ClientTransaction CreateBindingTransaction ()
   {
-    var componentFactory = new RootClientTransactionComponentFactory (); // binding transactions behave like root transactions
+    var componentFactory = RootClientTransactionComponentFactory.Create(); // binding transactions behave like root transactions
     return ObjectFactory.Create<BindingClientTransaction> (true, ParamList.Create (componentFactory));
   }
 
@@ -724,7 +724,7 @@ public class ClientTransaction
   {
     return CreateSubTransaction ((parentTx, invalidDomainObjectManager) =>
     {
-      var componentFactory = ObjectFactory.Create<SubClientTransactionComponentFactory> (ParamList.Create (parentTx, invalidDomainObjectManager));
+      var componentFactory = SubClientTransactionComponentFactory.Create (parentTx, invalidDomainObjectManager);
       return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
     });
   }

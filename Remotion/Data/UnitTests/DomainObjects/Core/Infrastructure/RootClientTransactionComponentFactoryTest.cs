@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [SetUp]
     public void SetUp ()
     {
-      _factory = new RootClientTransactionComponentFactory ();
+      _factory = RootClientTransactionComponentFactory.Create();
     }
 
     [Test]

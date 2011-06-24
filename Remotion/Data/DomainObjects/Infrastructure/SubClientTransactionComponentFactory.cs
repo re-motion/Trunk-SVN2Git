@@ -38,10 +38,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class SubClientTransactionComponentFactory : IClientTransactionComponentFactory
   {
+    public static SubClientTransactionComponentFactory Create (ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
+    {
+      return ObjectFactory.Create<SubClientTransactionComponentFactory> (true, ParamList.Create (parentTransaction, parentInvalidDomainObjectManager));
+    }
+
     private readonly ClientTransaction _parentTransaction;
     private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
 
-    public SubClientTransactionComponentFactory (ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
+    protected SubClientTransactionComponentFactory (ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
       ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);

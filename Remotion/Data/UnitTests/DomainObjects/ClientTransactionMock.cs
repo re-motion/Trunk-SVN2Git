@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     // construction and disposing
 
-    public ClientTransactionMock () : this (new RootClientTransactionComponentFactory())
+    public ClientTransactionMock () : this (RootClientTransactionComponentFactory.Create())
     {
     }
 

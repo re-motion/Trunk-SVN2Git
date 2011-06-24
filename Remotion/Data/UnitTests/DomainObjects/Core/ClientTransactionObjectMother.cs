@@ -20,7 +20,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static ClientTransaction CreatePartialMock (MockRepository mockRepository)
     {
-      var componentFactory = new RootClientTransactionComponentFactory ();
+      var componentFactory = RootClientTransactionComponentFactory.Create();
       return mockRepository.PartialMock<ClientTransaction> (componentFactory);
     }
 
@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static ClientTransaction CreateStrictMock (MockRepository mockRepository)
     {
-      var componentFactory = new RootClientTransactionComponentFactory ();
+      var componentFactory = RootClientTransactionComponentFactory.Create();
       return mockRepository.StrictMock<ClientTransaction> (componentFactory);
     }
 
