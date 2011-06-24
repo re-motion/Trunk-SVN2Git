@@ -53,12 +53,15 @@
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpander.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\SecurityManager*.xml" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\*.chm" />
     </ItemGroup>
 
     <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
       <BinaryFiles Include="$(BinariesDirectory)**"
                    Exclude="@(StandardExcludes);@(_excludedBinaryFiles)"/>
+      <BinaryFiles Include="$(BinariesDirectory)**\re-vision.chm"
+                   Exclude="@(StandardExcludes);"/>
     </ItemGroup>
   </Target>
 

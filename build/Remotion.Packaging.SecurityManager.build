@@ -54,12 +54,15 @@
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\DocumentEventMonitor.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\ApplicationMappings.config" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\ICSharpCode.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\*.chm" />
     </ItemGroup>
 
     <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
       <BinaryFiles Include="$(BinariesDirectory)**"
                    Exclude="@(StandardExcludes);@(_excludedBinaryFiles)"/>
+      <BinaryFiles Include="$(BinariesDirectory)**\re-strict.chm"
+                   Exclude="@(StandardExcludes);"/>
     </ItemGroup>
   </Target>
 

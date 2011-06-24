@@ -67,6 +67,7 @@
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Castle.*" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\log4net.*" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Microsoft.Practices.*" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\re-mix.chm" />
     </ItemGroup>
 
     <ItemGroup>

@@ -54,6 +54,8 @@
       <BinaryFiles Remove="@(BinaryFiles)"/>
       <BinaryFiles Include="$(BinariesDirectory)**\Remotion.Linq.*" 
                    Exclude="@(StandardExcludes)"/>
+      <BinaryFiles Include="$(BinariesDirectory)**\re-linq.chm"
+                   Exclude="@(StandardExcludes);"/>
     </ItemGroup>
   </Target>
 
