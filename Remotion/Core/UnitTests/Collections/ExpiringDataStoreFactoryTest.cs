@@ -28,13 +28,13 @@ namespace Remotion.UnitTests.Collections
   public class ExpiringDataStoreFactoryTest
   {
     private StringComparer _comparer;
-    private IExpirationPolicy<object, DateTime> _expirationPolicy;
+    private IExpirationPolicy<object, DateTime, DateTime> _expirationPolicy;
 
     [SetUp]
     public void SetUp ()
     {
       _comparer = StringComparer.InvariantCultureIgnoreCase;
-      _expirationPolicy = MockRepository.GenerateStub<IExpirationPolicy<object, DateTime>> ();
+      _expirationPolicy = MockRepository.GenerateStub<IExpirationPolicy<object, DateTime, DateTime>> ();
     }
 
     [Test]
@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Collections
     {
       var result = ExpiringDataStoreFactory.Create (_expirationPolicy, _comparer);
 
-      Assert.That (result, Is.TypeOf (typeof (ExpiringDataStore<string, object, DateTime>)));
+      Assert.That (result, Is.TypeOf (typeof (ExpiringDataStore<string, object, DateTime, DateTime>)));
       var expirationPolicy = PrivateInvoke.GetNonPublicField (result, "_expirationPolicy");
       Assert.That (expirationPolicy, Is.SameAs (_expirationPolicy));
       var innerDataStore = PrivateInvoke.GetNonPublicField (result, "_innerDataStore");
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Collections
 
       Assert.That (result, Is.TypeOf (typeof (LockingDataStoreDecorator<string, object>)));
       var innerStore = PrivateInvoke.GetNonPublicField (result, "_innerStore");
-      Assert.That (innerStore, Is.TypeOf (typeof (ExpiringDataStore<string, object, DateTime>)));
+      Assert.That (innerStore, Is.TypeOf (typeof (ExpiringDataStore<string, object, DateTime, DateTime>)));
       var expirationPolicy = PrivateInvoke.GetNonPublicField (innerStore, "_expirationPolicy");
       Assert.That (expirationPolicy, Is.SameAs (_expirationPolicy));
       var innerDataStore = PrivateInvoke.GetNonPublicField (innerStore, "_innerDataStore");
@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void CreateWithLazyLocking ()
     {
-      var policy = MockRepository.GenerateStub<IExpirationPolicy<DoubleCheckedLockingContainer<object>, DateTime>> ();
+      var policy = MockRepository.GenerateStub<IExpirationPolicy<DoubleCheckedLockingContainer<object>, DateTime, DateTime>> ();
 
       var result = ExpiringDataStoreFactory.CreateWithLazyLocking (policy,  _comparer);
 
@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.Collections
       var innerDataStore = PrivateInvoke.GetNonPublicField (result, "_innerDataStore");
       Assert.That (innerDataStore, Is.TypeOf (typeof (LockingDataStoreDecorator<string, DoubleCheckedLockingContainer<object>>)));
       var innerStore = PrivateInvoke.GetNonPublicField (innerDataStore, "_innerStore");
-      Assert.That (innerStore, Is.TypeOf (typeof (ExpiringDataStore<string, DoubleCheckedLockingContainer<object>, DateTime>)));
+      Assert.That (innerStore, Is.TypeOf (typeof (ExpiringDataStore<string, DoubleCheckedLockingContainer<object>, DateTime, DateTime>)));
       var expirationPolicy = PrivateInvoke.GetNonPublicField (innerStore, "_expirationPolicy");
       Assert.That (expirationPolicy, Is.SameAs (expirationPolicy));
       var innerInnerDataStore = PrivateInvoke.GetNonPublicField (innerStore, "_innerDataStore");

@@ -38,21 +38,9 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    public void Initialization ()
+    public void GetNextScanInfo ()
     {
-      Assert.That (_policy.NextScan.Ticks, Is.EqualTo (6));
-      
-    }
-
-    [Test]
-    public void ItemsScanned ()
-    {
-      Assert.That (_policy.NextScan.Ticks, Is.EqualTo (6));
-      SetCurrentTime (new DateTime (9));
-
-      _policy.ItemsScanned();
-
-      Assert.That (_policy.NextScan.Ticks, Is.EqualTo (10));
+      Assert.That (_policy.GetNextScanInfo(), Is.EqualTo (new DateTime (6)));
     }
 
     [Test]
@@ -60,7 +48,7 @@ namespace Remotion.UnitTests.Collections
     {
       var result = _policy.GetExpirationInfo ("Test");
 
-      Assert.That (result.Ticks, Is.EqualTo (6));
+      Assert.That (result, Is.EqualTo (new DateTime (6)));
     }
 
     [Test]
@@ -90,7 +78,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void ShouldScanForExpiredItems_False ()
     {
-      Assert.That (_policy.ShouldScanForExpiredItems(), Is.False);
+      Assert.That (_policy.ShouldScanForExpiredItems (new DateTime (6)), Is.False);
     }
 
     [Test]
@@ -98,7 +86,7 @@ namespace Remotion.UnitTests.Collections
     {
       SetCurrentTime (new DateTime (7));
 
-      Assert.That (_policy.ShouldScanForExpiredItems (), Is.True);
+      Assert.That (_policy.ShouldScanForExpiredItems (new DateTime (6)), Is.True);
     }
 
     [Test]
@@ -106,7 +94,7 @@ namespace Remotion.UnitTests.Collections
     {
       SetCurrentTime (new DateTime (6));
 
-      Assert.That (_policy.ShouldScanForExpiredItems(), Is.True);
+      Assert.That (_policy.ShouldScanForExpiredItems (new DateTime (6)), Is.True);
     }
 
     private void SetCurrentTime (DateTime time)

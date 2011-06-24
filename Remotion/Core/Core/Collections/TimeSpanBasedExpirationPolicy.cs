@@ -22,29 +22,22 @@ namespace Remotion.Collections
   /// <summary>
   /// The <see cref="TimeSpanBasedExpirationPolicy{TValue}"/> handles values which can be expire based on <see cref="TimeSpan"/> periods.
   /// </summary>
-  public class TimeSpanBasedExpirationPolicy<TValue> : IExpirationPolicy<TValue, DateTime>
+  public class TimeSpanBasedExpirationPolicy<TValue> : IExpirationPolicy<TValue, DateTime, DateTime>
   {
     private readonly TimeSpan _period;
     private readonly IUtcNowProvider _utcNowProvider;
-    private DateTime _nextScan;
 
     public TimeSpanBasedExpirationPolicy (TimeSpan period, IUtcNowProvider utcNowProvider)
     {
       ArgumentUtility.CheckNotNull ("utcNowProvider", utcNowProvider);
 
       _period = period;
-      _nextScan = utcNowProvider.UtcNow + period;
       _utcNowProvider = utcNowProvider;
     }
 
-    public DateTime NextScan
+    public DateTime GetNextScanInfo ()
     {
-      get { return _nextScan; }
-    }
-
-    public void ItemsScanned ()
-    {
-      _nextScan = _utcNowProvider.UtcNow + _period;
+      return _utcNowProvider.UtcNow + _period;
     }
 
     public DateTime GetExpirationInfo (TValue value)
@@ -62,9 +55,9 @@ namespace Remotion.Collections
       return expirationInfo <= _utcNowProvider.UtcNow;
     }
 
-    public bool ShouldScanForExpiredItems ()
+    public bool ShouldScanForExpiredItems (DateTime nextScanInfo)
     {
-      return _nextScan <= _utcNowProvider.UtcNow;
+      return nextScanInfo <= _utcNowProvider.UtcNow;
     }
   }
 }

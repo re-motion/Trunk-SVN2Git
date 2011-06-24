@@ -23,20 +23,28 @@ using Remotion.Utilities;
 namespace Remotion.Collections
 {
   /// <summary>
-  /// The <see cref="ExpiringDataStore{TKey,TValue,TExpirationInfo}"/> stores values that can be expire.
+  /// The <see cref="ExpiringDataStore{TKey,TValue,TExpirationInfo,TScanInfo}"/> stores values that can be expire.
   /// </summary>
-  public class ExpiringDataStore<TKey, TValue, TExpirationInfo> : IDataStore<TKey, TValue>
+  public class ExpiringDataStore<TKey, TValue, TExpirationInfo, TScanInfo> : IDataStore<TKey, TValue>
   {
     private readonly SimpleDataStore<TKey, Tuple<TValue, TExpirationInfo>> _innerDataStore;
-    private readonly IExpirationPolicy<TValue, TExpirationInfo> _expirationPolicy;
+    private readonly IExpirationPolicy<TValue, TExpirationInfo, TScanInfo> _expirationPolicy;
 
-    public ExpiringDataStore (IExpirationPolicy<TValue, TExpirationInfo> expirationPolicy, IEqualityComparer<TKey> equalityComparer)
+    private TScanInfo _nextScanInfo;
+
+    public ExpiringDataStore (IExpirationPolicy<TValue, TExpirationInfo, TScanInfo> expirationPolicy, IEqualityComparer<TKey> equalityComparer)
     {
       ArgumentUtility.CheckNotNull ("expirationPolicy", expirationPolicy);
       ArgumentUtility.CheckNotNull ("equalityComparer", equalityComparer);
 
       _innerDataStore = new SimpleDataStore<TKey, Tuple<TValue, TExpirationInfo>> (equalityComparer);
       _expirationPolicy = expirationPolicy;
+      _nextScanInfo = _expirationPolicy.GetNextScanInfo();
+    }
+
+    public TScanInfo NextScanInfo
+    {
+      get { return _nextScanInfo; }
     }
 
     bool INullObject.IsNull
@@ -147,7 +155,7 @@ namespace Remotion.Collections
 
     private void RemoveExpiredItems ()
     {
-      if (_expirationPolicy.ShouldScanForExpiredItems())
+      if (_expirationPolicy.ShouldScanForExpiredItems (_nextScanInfo))
       {
         var expiredKeys = (
             from kvp in _innerDataStore 
@@ -157,7 +165,7 @@ namespace Remotion.Collections
         foreach (var key in expiredKeys)
           RemoveWithoutScanning (key);
 
-        _expirationPolicy.ItemsScanned();
+        _nextScanInfo = _expirationPolicy.GetNextScanInfo ();
       }
     }
   }

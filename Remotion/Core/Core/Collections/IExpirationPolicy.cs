@@ -19,16 +19,20 @@ using System;
 namespace Remotion.Collections
 {
   /// <summary>
-  /// <see cref="IExpirationPolicy{TValue,TExpirationInfo}"/> defines the API for all implementations that handle values which can be expire.
+  /// <see cref="IExpirationPolicy{TValue,TExpirationInfo,TScanInfo}"/> defines the API for implementations that handle value expiration. This is
+  /// used by <see cref="ExpiringDataStore{TKey,TValue,TExpirationInfo,TScanInfo}"/>. 
   /// </summary>
-  public interface IExpirationPolicy<TValue, TExpirationInfo>
+  /// <typeparam name="TValue">The type of the values that can expire.</typeparam>
+  /// <typeparam name="TExpirationInfo">The type of expiration metadata required by the concrete implementation. Implementations use expiration
+  /// metadata to decide whether a value is expired.</typeparam>
+  /// <typeparam name="TScanInfo">The type of scan metadata required by the concrete implementation. Implementations use scan metadata to decide
+  /// whether all values should be rescanned for expiration.</typeparam>
+  public interface IExpirationPolicy<TValue, TExpirationInfo, TScanInfo>
   {
-    void ItemsScanned ();
-
-    // TODO: Use this to get the expiration info to store together with the value
     TExpirationInfo GetExpirationInfo (TValue value);
+    TScanInfo GetNextScanInfo ();
 
     bool IsExpired (TValue value, TExpirationInfo expirationInfo);
-    bool ShouldScanForExpiredItems ();
+    bool ShouldScanForExpiredItems (TScanInfo nextScanInfo);
   }
 }
