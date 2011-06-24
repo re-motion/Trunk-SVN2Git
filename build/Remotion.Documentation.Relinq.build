@@ -22,7 +22,7 @@
   <Target Name="CreateDocumentationProperties">
     <PropertyGroup>
       <PackageID>Relinq</PackageID>
-      <DocumentationRootPageTemplateFile>Remotion\Core\Core\doc\include\GettingStartedTemplate.html</DocumentationRootPageTemplateFile>
+      <DocumentationRootPageTemplateFile>Relinq\Core\Doc\include\GettingStartedWithRelinqTemplate.html</DocumentationRootPageTemplateFile>
     </PropertyGroup>
   </Target>
 
