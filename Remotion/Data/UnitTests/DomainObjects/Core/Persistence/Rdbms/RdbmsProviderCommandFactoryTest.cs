@@ -37,12 +37,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class RdbmsProviderCommandFactoryTest : StandardMappingTest
   {
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStub;
-    private IDataContainerReader _dataContainerStub;
+    private IDataContainerReader _dataContainerReaderStub;
     private IObjectIDReader _objectIDReaderStub;
-    private IRdbmsProviderCommandExecutionContext _executionContextStub;
+
     private RdbmsProviderCommandFactory _factory;
-    private IDbCommandBuilder _commandBuilderStub;
+
     private TableDefinition _entityDefinition;
+    private IDbCommandBuilder _dbCommandBuilderStub;
     private ObjectID _objectID;
 
     public override void SetUp ()
@@ -50,14 +51,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
-      _dataContainerStub = MockRepository.GenerateStub<IDataContainerReader>();
+      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader> ();
       _objectIDReaderStub = MockRepository.GenerateStub<IObjectIDReader>();
-      _executionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
-      _commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _entityDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
-      _objectID = CreateObjectID (_entityDefinition);
 
-      _factory = new RdbmsProviderCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerStub, _objectIDReaderStub);
+      _factory = new RdbmsProviderCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerReaderStub, _objectIDReaderStub);
+
+      _entityDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
+      _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _objectID = CreateObjectID (_entityDefinition);
     }
 
     [Test]
@@ -65,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       _dbCommandBuilderFactoryStub
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_entityDefinition, AllSelectedColumnsSpecification.Instance, _objectID))
-          .Return (_commandBuilderStub);
+          .Return (_dbCommandBuilderStub);
 
       var result = _factory.CreateForSingleIDLookup (_objectID);
 
@@ -77,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       _dbCommandBuilderFactoryStub
           .Stub (stub => stub.CreateForMultiIDLookupFromTable (_entityDefinition, AllSelectedColumnsSpecification.Instance, new[] { _objectID }))
-          .Return (_commandBuilderStub);
+          .Return (_dbCommandBuilderStub);
 
       var result = _factory.CreateForMultiIDLookup (new[] { _objectID });
 
@@ -97,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void CreateForDataContainerQuery ()
+    public void CreateForQuery ()
     {
       var queryStub = MockRepository.GenerateStub<IQuery> ();
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -108,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo(new[]{commandBuilderStub}));
-      Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs(_dataContainerStub));
+      Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs(_dataContainerReaderStub));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.True);
     }
 

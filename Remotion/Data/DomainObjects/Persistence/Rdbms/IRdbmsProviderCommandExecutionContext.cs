@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public interface IRdbmsProviderCommandExecutionContext
   {
-    IDataReader ExecuteReader (IDbCommand command, CommandBehavior behavior);
     IDbCommand CreateDbCommand ();
+    IDataReader ExecuteReader (IDbCommand command, CommandBehavior behavior);
   }
 }

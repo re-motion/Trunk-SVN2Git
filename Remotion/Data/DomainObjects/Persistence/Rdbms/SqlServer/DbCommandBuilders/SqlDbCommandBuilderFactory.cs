@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders
 {
   /// <summary>
-  /// The <see cref="SqlDbCommandBuilderFactory"/> creates sql-specific <see cref="IDbCommandBuilderFactory"/> instances.
+  /// The <see cref="SqlDbCommandBuilderFactory"/> creates SQL Server-specific <see cref="IDbCommandBuilder"/> instances.
   /// </summary>
   public class SqlDbCommandBuilderFactory : IDbCommandBuilderFactory
   {

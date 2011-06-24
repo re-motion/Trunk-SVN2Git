@@ -28,42 +28,35 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
+  /// <summary>
+  /// Creates <see cref="IStorageProviderCommand{TExecutionContext}"/> instances for use with <see cref="RdbmsProvider"/>.
+  /// </summary>
   public class RdbmsProviderCommandFactory : IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>
   {
     private readonly SingleDataContainerLookupCommandFactory _singleDataContainerLookupCommandFactory;
     private readonly MultiDataContainerLookupCommandFactory _multiDataContainerLookupCommandFactory;
     private readonly RelatedDataContainerLookupCommandFactory _relatedDataContainerLookupCommandFactory;
-    private readonly IDbCommandBuilderFactory _commandBuilderFactory;
+    private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IDataContainerReader _dataContainerReader;
 
     public RdbmsProviderCommandFactory (
-        IDbCommandBuilderFactory commandBuilderFactory, IDataContainerReader dataContainerReader, IObjectIDReader objectIDReader)
+        IDbCommandBuilderFactory dbCommandBuilderFactory, 
+        IDataContainerReader dataContainerReader, 
+        IObjectIDReader objectIDReader)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilderFactory", commandBuilderFactory);
+      ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
       ArgumentUtility.CheckNotNull ("objectIDReader", objectIDReader);
 
-      _commandBuilderFactory = commandBuilderFactory;
+      _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _dataContainerReader = dataContainerReader;
-      _singleDataContainerLookupCommandFactory = new SingleDataContainerLookupCommandFactory (commandBuilderFactory, dataContainerReader);
-      _multiDataContainerLookupCommandFactory = new MultiDataContainerLookupCommandFactory (commandBuilderFactory, dataContainerReader);
+      _singleDataContainerLookupCommandFactory = new SingleDataContainerLookupCommandFactory (dbCommandBuilderFactory, dataContainerReader);
+      _multiDataContainerLookupCommandFactory = new MultiDataContainerLookupCommandFactory (dbCommandBuilderFactory, dataContainerReader);
       _relatedDataContainerLookupCommandFactory = new RelatedDataContainerLookupCommandFactory (
-          commandBuilderFactory, this, dataContainerReader, objectIDReader);
-    }
-
-    public SingleDataContainerLookupCommandFactory SingleDataContainerLookupCommandFactory
-    {
-      get { return _singleDataContainerLookupCommandFactory; }
-    }
-
-    public MultiDataContainerLookupCommandFactory MultiDataContainerLookupCommandFactory
-    {
-      get { return _multiDataContainerLookupCommandFactory; }
-    }
-
-    public RelatedDataContainerLookupCommandFactory RelatedDataContainerLookupCommandFactory
-    {
-      get { return _relatedDataContainerLookupCommandFactory; }
+          dbCommandBuilderFactory,
+          this,
+          dataContainerReader,
+          objectIDReader);
     }
 
     public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
@@ -93,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      return new MultiDataContainerLoadCommand (new[] { _commandBuilderFactory.CreateForQuery (query) }, true, _dataContainerReader);
+      return new MultiDataContainerLoadCommand (new[] { _dbCommandBuilderFactory.CreateForQuery (query) }, true, _dataContainerReader);
     }
   }
 }
