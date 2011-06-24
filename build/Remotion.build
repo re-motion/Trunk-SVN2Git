@@ -50,7 +50,7 @@
   <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;GeneratePublicDocumentation;AssembleBuildOutput;"
+             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"
              Properties="ConfigurationID=%(AllConfigurations.Identity);SolutionKeyFile=$(SolutionKeyFile)"/>
   </Target>
 
@@ -75,7 +75,7 @@
              Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);ArchiveDirectory=$(ArchiveDirectory);WebShareDirectory=$(WebShareDirectory);CodeplexUserName=$(CodePlexUsername);CodeplexPassword=$(CodePlexPassword)"/>
   </Target>
 
-  <Target Name="FullBuild" DependsOnTargets="BuildAll;PackageAll" />
+  <Target Name="FullBuild" DependsOnTargets="BuildAll;DocumentAll;PackageAll" />
 
   <Target Name="TestBuild" DependsOnTargets="CleanFolders" >
     <MSBuild Projects="$(MSBuildProjectFile)"
