@@ -50,8 +50,15 @@
   <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Properties="ConfigurationID=%(AllConfigurations.Identity);SolutionKeyFile=$(SolutionKeyFile)"
-             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;GeneratePublicDocumentation;AssembleBuildOutput;"/>
+             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;GeneratePublicDocumentation;AssembleBuildOutput;"
+             Properties="ConfigurationID=%(AllConfigurations.Identity);SolutionKeyFile=$(SolutionKeyFile)"/>
+  </Target>
+
+  <Target Name="DocumentAll">
+    <MSBuild Projects="%(AllPackages.DocumentationDeclaration)"
+             BuildInParallel="false"
+             Targets="GeneratePublicDocumentation;CopyChmFilesToBinariesDirectory;"
+             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
   </Target>
 
   <Target Name="PackageAll">
@@ -73,8 +80,8 @@
   <Target Name="TestBuild" DependsOnTargets="CleanFolders" >
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"
-             Targets="CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"/>
+             Targets="CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"
+             Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
   </Target>
 
 </Project>

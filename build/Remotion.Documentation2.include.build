@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file is part of the re-motion Core Framework (www.re-motion.org)
+ ! Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+ ! 
+ ! The re-motion Core Framework is free software; you can redistribute it 
+ ! and/or modify it under the terms of the GNU Lesser General Public License 
+ ! as published by the Free Software Foundation; either version 2.1 of the 
+ ! License, or (at your option) any later version.
+ ! 
+ ! re-motion is distributed in the hope that it will be useful, 
+ ! but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ ! GNU Lesser General Public License for more details.
+ ! 
+ ! You should have received a copy of the GNU Lesser General Public License
+ ! along with re-motion; if not, see http://www.gnu.org/licenses.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="CreateDocumentationProperties">
+    <Error Text="The target 'CreateDocumentationProperties' is not implemented." />
+  </Target>
+  
+    <Target Name="CreateBinaryFiles">
+    <Error Text="The target 'CreateBinaryFiles' is not implemented." />
+  </Target>
+
+  <Target Name="CreateNamespaceSummaryFiles">
+    <Error Text="The target 'CreateNamespaceSummaryFiles' is not implemented." />
+  </Target>
+
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(SolutionDirectory)prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
+    <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
+    <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
+    <NDocToolPath>$(SolutionDirectory)prereq\Tools\NDoc2\</NDocToolPath>
+  </PropertyGroup>
+
+  <Import Project="Remotion.Tasks.include.build" />
+  <Import Project="Remotion.Packages.include.build" />
+
+  <Target Name="GeneratePublicDocumentation"  DependsOnTargets="GeneratePublicDocumentationInternal;" >
+    
+    
+  </Target>
+
+
+  <Target Name="GeneratePublicDocumentationInternal"
+        DependsOnTargets="CreateNDocProperties;CreateDocumentationProperties;CreateDocumentationRootPage;CreateNDocProjectFile;">
+
+    <Message Text="Generating public documentation for $(PackageID)" Importance="High"/>
+
+    <Error Text="The property 'DocumentationNDocProjectFile' is not set." Condition="'$(DocumentationNDocProjectFile)' == ''" />
+
+    <MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
+                                  Documenter="MSDN-CHM"
+                                  ProjectFilePath="$(DocumentationNDocProjectFile)"/>
+
+    <Message Text="Done generating public documentation" Importance="High"/>
+  </Target>
+
+  <Target Name="CreateNDocProperties">
+    <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
+
+    <PropertyGroup>
+      <DocumentationOutputDirectory>$(BinariesDirectory)net-3.5\doc\</DocumentationOutputDirectory>
+      <DocumentationBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DocumentationBinariesDirectory>
+      <DocumentationBaseDirectory>$(TempDirectory)doc\</DocumentationBaseDirectory>
+      <DocumentationRootPageFile>$(DocumentationBaseDirectory)GettingStarted.html</DocumentationRootPageFile>
+      <DocumentationNDocProjectFile>$(DocumentationBaseDirectory)documentation.ndoc</DocumentationNDocProjectFile>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateNDocProjectFile" DependsOnTargets="CreatePackageProperties;CreateNDocProperties;CreateBinaryFiles;CreateNamespaceSummaryFiles">
+    <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
+    <Error Text="The property 'DocumentationNDocProjectFile' is not set." Condition="'$(DocumentationNDocProjectFile)' == ''" />
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
+    <PropertyGroup>
+      <_standardDocumenterPropertiesFileName>$(MSBuildProjectDirectory)\doc.public.xml</_standardDocumenterPropertiesFileName>
+      <_documenterPropertiesFile>$(DocumentationBaseDirectory)documenterProperties.xml</_documenterPropertiesFile>
+    </PropertyGroup>
+
+    <MakeDir Directories="$(DocumentationBaseDirectory)" />
+    <Copy SourceFiles="$(_standardDocumenterPropertiesFileName)" DestinationFiles="$(_documenterPropertiesFile)" />
+
+    <ItemGroup>
+      <_documenterProperties Remove="@(_documenterProperties)" />
+      <_documenterProperties Include="HtmlHelpName">
+        <Value>$(ProductNameShort)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="OutputDirectory">
+        <Value>$(DocumentationBaseDirectory)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="FooterHtml">
+        <Value><![CDATA[<p><a href="$(CompanyUrl)">$(Copyright)</a></p><p>Version: $(Version)</p>]]></Value>
+      </_documenterProperties>
+      <_documenterProperties Include="RootPageFileName">
+        <Value>$(DocumentationRootPageFile)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="Title">
+        <Value>$(ProductName)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="CopyrightHref">
+        <Value>$(CompanyUrl)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="CopyrightText">
+        <Value>$(Copyright)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="Version">
+        <Value>$(Version)</Value>
+      </_documenterProperties>
+    </ItemGroup>
+
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
+                                       File="$(_documenterPropertiesFile)"
+                                       XPath="/documenters/documenter[@name='MSDN-CHM']"
+                                       Element="property"
+                                       Key="name"
+                                       Value="%(_documenterProperties.Identity)"/>
+
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute"
+                                       File="$(_documenterPropertiesFile)"
+                                       XPath="/documenters/documenter[@name='MSDN-CHM']/property[@name='%(_documenterProperties.Identity)']"
+                                       Key="value"
+                                       Value="%(_documenterProperties.Value)"/>
+
+    <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(DocumentationNDocProjectFile)"
+                                                         DocumenterFiles="$(_documenterPropertiesFile)"
+                                                         Assemblies="@(BinaryFiles)"
+                                                         NamespaceSummaryFiles="@(NamespaceSummaryFiles)" />
+  </Target>
+
+  <Target Name="CreateDocumentationRootPage" DependsOnTargets="CreateDocumentationProperties;CreatePackageProperties;CreateNDocProperties">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+    <Error Text="The property 'DocumentationRootPageTemplateFile' is not set." Condition="'$(DocumentationRootPageTemplateFile)' == ''" />
+    <Error Text="The property 'DocumentationRootPageFile' is not set." Condition="'$(DocumentationRootPageFile)' == ''" />
+
+    <!-- TODO: Use CommunityTasks.TemplateFile -->
+    <ItemGroup>
+      <_fileReplacements Remove="@(_fileReplacements)" />
+      <_fileReplacements Include="companyurl">
+        <Value>$(CompanyName)</Value>
+      </_fileReplacements>
+      <_fileReplacements Include="copyright">
+        <Value>$(Copyright)</Value>
+      </_fileReplacements>
+      <_fileReplacements Include="productname">
+        <Value>$(ProductName)</Value>
+      </_fileReplacements>
+      <_fileReplacements Include="productnameshort">
+        <Value>$(ProductNameShort)</Value>
+      </_fileReplacements>
+      <_fileReplacements Include="versionnumber">
+        <Value>$(Version)</Value>
+      </_fileReplacements>
+    </ItemGroup>
+
+    <Copy SourceFiles="$(SolutionDirectory)$(DocumentationRootPageTemplateFile)" DestinationFiles="$(DocumentationRootPageFile)" />
+
+    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace"
+                                           Files="$(DocumentationRootPageFile)"
+                                           RegexPattern="@%(_fileReplacements.Identity)@"
+                                           Replacement="%(_fileReplacements.Value)"/>
+  </Target>
+
+  <Target Name="CreatePackageProperties" DependsOnTargets="CreateDocumentationProperties">
+    <Error Text="The property 'PackageID' is not set." Condition="'$(PackageID)' == ''" />
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <_activePackage Include="@(AllPackages)" Condition="%(AllPackages.Identity) == $(PackageID)"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <CompanyName>%(_activePackage.CompanyName)</CompanyName>
+      <CompanyUrl>%(_activePackage.CompanyUrl)</CompanyUrl>
+      <Copyright>%(_activePackage.Copyright)</Copyright>
+      <ProductName>%(_activePackage.ProductName)</ProductName>
+      <ProductNameShort>%(_activePackage.ProductNameShort)</ProductNameShort>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CopyChmFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateNDocProperties;CreateDocumentationProperties">
+    <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
+    <Error Text="The property 'DocumentationOutputDirectory' is not set." Condition="'$(DocumentationOutputDirectory)' == ''" />
+
+    <Copy SourceFiles="$(DocumentationBaseDirectory)$(ProductNameShort).chm" DestinationFolder="$(DocumentationOutputDirectory)" />
+  </Target>
+
+  <Target Name="CreateStandardExcludes">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <StandardExcludes Include="$(SolutionDirectory)**\.svn\**"/>
+      <StandardExcludes Include="$(SolutionDirectory)**\_svn\**"/>
+    </ItemGroup>
+  </Target>
+</Project>

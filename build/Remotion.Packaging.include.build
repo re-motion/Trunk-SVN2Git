@@ -33,8 +33,6 @@
     <Error Text="The target 'CreateLicenseFiles' is not implemented." />
   </Target>
 
-  <Import Project="Remotion.Tasks.include.build" />
-
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(SolutionDirectory)\prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
@@ -42,6 +40,8 @@
     <CodeplexReleaseToolPath>$(SolutionDirectory)\prereq\Tools\CodeplexReleaseTool\</CodeplexReleaseToolPath>
     <CodeplexTasksPath>$(SolutionDirectory)prereq\Tools\Codeplex.MSBuildTasks\</CodeplexTasksPath>
   </PropertyGroup>
+
+  <Import Project="Remotion.Tasks.include.build" />
 
   <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage;"/>
 
