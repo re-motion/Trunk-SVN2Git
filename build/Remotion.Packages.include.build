@@ -36,7 +36,7 @@
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
-      <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
+      <ProductName>re-linq project (relinq.codeplex.com)</ProductName>
       <ProductNameShort>re-linq</ProductNameShort>
     </AllPackages>
     
