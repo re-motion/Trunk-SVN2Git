@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
 {
@@ -27,8 +28,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
     private BocTextValueMock _bocTextValue;
     private IBusinessObject _businessObject;
     private BindableObjectDataSourceControl _dataSource;
+    private CultureScope _cultureScope;
 
-    [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
@@ -41,6 +42,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
       _dataSource = new BindableObjectDataSourceControl();
       _dataSource.Type = typeof (TypeWithAllDataTypes);
       _dataSource.BusinessObject = _businessObject;
+
+      _cultureScope = new CultureScope("");
+    }
+
+    public override void TearDown ()
+    {
+      base.TearDown();
+      _cultureScope.Dispose();
     }
 
     [Test]
@@ -56,9 +65,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
     }
 
     [Test]
+    public void LoadAndSaveValue_WithByte_NumberFormat ()
+    {
+      LoadAndSaveValue ("Byte", (Byte) 1, (Byte) 100, " +100 ");
+    }
+
+    [Test]
     public void LoadAndSaveValue_WithInt16 ()
     {
       LoadAndSaveValue ("Int16", (Int16) 1, (Int16) 2);
+    }
+
+    [Test]
+    public void LoadAndSaveValue_WithInt16_NumberFormat ()
+    {
+      LoadAndSaveValue ("Int16", (Int16) 1, (Int16) 20000, " +20,000 ");
     }
 
     [Test]
@@ -68,9 +89,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
     }
 
     [Test]
+    public void LoadAndSaveValue_WithInt23_NumberFormat ()
+    {
+      LoadAndSaveValue ("Int32", 1, 20000, " +20,000 ");
+    }
+
+    [Test]
     public void LoadAndSaveValue_WithInt64 ()
     {
       LoadAndSaveValue ("Int64", 1L, 2L);
+    }
+
+    [Test]
+    public void LoadAndSaveValue_WithInt64_NumberFormat ()
+    {
+      LoadAndSaveValue ("Int64", 1L, 20000001L, " +20,000,001 ");
     }
 
     [Test]
@@ -80,15 +113,45 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
     }
 
     [Test]
+    public void LoadAndSaveValue_WithDecimal_NumberFormat ()
+    {
+      LoadAndSaveValue ("Decimal", 1m, 20000001.456m, " +20,000,001.456 ");
+    }
+
+    [Test]
     public void LoadAndSaveValue_WithDouble ()
     {
       LoadAndSaveValue ("Double", 1.1, 2.1);
     }
 
     [Test]
+    public void LoadAndSaveValue_WithDouble_NumberFormat ()
+    {
+      LoadAndSaveValue ("Double", 1.1, 20000001.456, " +20,000,001.456 ");
+    }
+
+    [Test]
+    public void LoadAndSaveValue_WithDouble_Exponent ()
+    {
+      LoadAndSaveValue ("Single", 1.1f, 20234001.45E3f, " +20,234,001.45E3 ");
+    }
+
+    [Test]
     public void LoadAndSaveValue_WithSingle ()
     {
       LoadAndSaveValue ("Single", 1.1f, 2.1f);
+    }
+
+    [Test]
+    public void LoadAndSaveValue_WithSingle_NumberFormat ()
+    {
+      LoadAndSaveValue ("Single", 1.1f, 20001.456f, " +20,001.456 ");
+    }
+
+    [Test]
+    public void LoadAndSaveValue_WithSingle_Exponent ()
+    {
+      LoadAndSaveValue ("Single", 1.1f, 20001.45E3f, " +20,001.45E3 ");
     }
 
     [Test]
@@ -103,7 +166,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
       LoadAndSaveValue ("DateTime", new DateTime (2000, 1, 1, 1, 1, 0), new DateTime (2000, 1, 2, 1, 1, 0));
     }
     
-    private void LoadAndSaveValue<T> (string propertyidentifier, T initialValue, T newValue)
+    private void LoadAndSaveValue<T> (string propertyidentifier, T initialValue, T newValue, string newValueAsString = null)
     {
       _businessObject.SetProperty (propertyidentifier, initialValue);
       _bocTextValue.DataSource = _dataSource;
@@ -113,7 +176,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
       Assert.AreEqual (initialValue, _bocTextValue.Value);
       Assert.IsFalse (_bocTextValue.IsDirty);
 
-      _bocTextValue.Text = newValue.ToString();
+      _bocTextValue.Text = newValueAsString ?? newValue.ToString();
       Assert.IsTrue (_bocTextValue.IsDirty);
 
       _bocTextValue.SaveValue (false);

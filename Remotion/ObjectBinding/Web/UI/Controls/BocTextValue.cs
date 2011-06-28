@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web;
+using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -175,22 +175,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (StringUtility.IsNullOrEmpty (text))
           return null;
 
-        switch (ActualValueType)
+        var valueType = ActualValueType;
+        switch (valueType)
         {
           case BocTextValueType.String:
             return text;
 
           case BocTextValueType.Byte:
-            return byte.Parse (text);
+            return byte.Parse (text, GetNumberStyle (valueType));
 
           case BocTextValueType.Int16:
-            return short.Parse (text);
+            return short.Parse (text, GetNumberStyle (valueType));
 
           case BocTextValueType.Int32:
-            return int.Parse (text);
+            return int.Parse (text, GetNumberStyle (valueType));
 
           case BocTextValueType.Int64:
-            return long.Parse (text);
+            return long.Parse (text, GetNumberStyle (valueType));
 
           case BocTextValueType.Date:
             return DateTime.Parse (text).Date;
@@ -199,13 +200,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             return DateTime.Parse (text);
 
           case BocTextValueType.Decimal:
-            return decimal.Parse (text);
+            return decimal.Parse (text, GetNumberStyle (valueType));
 
           case BocTextValueType.Double:
-            return double.Parse (text);
+            return double.Parse (text, GetNumberStyle (valueType));
 
           case BocTextValueType.Single:
-            return float.Parse (text);
+            return float.Parse (text, GetNumberStyle (valueType));
         }
         return text;
       }
@@ -507,6 +508,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (Property != null)
             typeValidator.AllowNegative = ((IBusinessObjectNumericProperty) Property).AllowNegative;
           typeValidator.DataType = GetNumericValidatorDataType (valueType);
+          typeValidator.NumberStyle = GetNumberStyle (valueType);
           if (StringUtility.IsNullOrEmpty (ErrorMessage))
             typeValidator.ErrorMessage = resourceManager.GetString (GetNumericValidatorErrorMessage (GetNumericValidatorDataType (valueType)));
           else
@@ -572,8 +574,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         case BocTextValueType.Single:
           return NumericValidationDataType.Single;
+
+        default:
+          throw new ArgumentOutOfRangeException ("valueType", valueType, "Only numeric value types are supported.");
       }
-      throw new ArgumentOutOfRangeException ("valueType", valueType, "Only numeric value types are supported.");
     }
 
     private ResourceIdentifier GetNumericValidatorErrorMessage (NumericValidationDataType dataType)
@@ -600,8 +604,33 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         case NumericValidationDataType.Single:
           return ResourceIdentifier.InvalidDoubleErrorMessage;
+        
+        default:
+          throw new ArgumentOutOfRangeException ("dataType", dataType, "Only numeric value types are supported.");
       }
-      throw new ArgumentOutOfRangeException ("dataType", dataType, "Only numeric value types are supported.");
+    }
+
+
+    private NumberStyles GetNumberStyle (BocTextValueType valueType)
+    {
+      switch (valueType)
+      {
+        case BocTextValueType.Byte:
+        case BocTextValueType.Int16:
+        case BocTextValueType.Int32:
+        case BocTextValueType.Int64:
+          return NumberStyles.Number & ~NumberStyles.AllowDecimalPoint;
+
+        case BocTextValueType.Decimal:
+          return NumberStyles.Number;
+
+        case BocTextValueType.Double:
+        case BocTextValueType.Single:
+          return NumberStyles.Number | NumberStyles.AllowExponent;
+
+        default:
+          throw new ArgumentOutOfRangeException ("valueType", valueType, "Only numeric value types are supported.");
+      }
     }
 
     /// <summary> Handles refreshing the bound control. </summary>
