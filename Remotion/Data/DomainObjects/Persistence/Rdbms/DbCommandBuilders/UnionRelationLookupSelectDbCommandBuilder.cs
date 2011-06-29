@@ -74,20 +74,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
           statement.Append (" UNION ALL ");
         
         AppendSelectClause (statement, fullProjection);
-        statement.Append (" FROM ");
-
-        if (table.TableName.SchemaName != null)
-        {
-          statement.Append (SqlDialect.DelimitIdentifier (table.TableName.SchemaName));
-          statement.Append (".");
-        }
-        statement.Append (SqlDialect.DelimitIdentifier (table.TableName.EntityName));
-
-        statement.Append (" WHERE ");
-        statement.Append (SqlDialect.DelimitIdentifier (_foreignKeyColumn.ObjectIDColumn.Name));
-        statement.Append (" = ");
-        statement.Append (parameter.ParameterName);
-
+        AppendFromClause (statement, table);
+        AppendComparingWhereClause (statement, _foreignKeyColumn.ObjectIDColumn, parameter);
+        
         first = false;
       }
       _orderedColumns.AppendOrderByClause (statement, SqlDialect);
