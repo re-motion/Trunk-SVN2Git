@@ -95,6 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _table3 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table3"));
     }
 
+    // TODO Review 4065: Add a test with only one unioned table.
+
     [Test]
     public void Create ()
     {
