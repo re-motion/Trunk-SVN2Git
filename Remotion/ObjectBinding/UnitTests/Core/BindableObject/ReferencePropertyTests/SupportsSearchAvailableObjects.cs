@@ -28,19 +28,19 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
   public class SupportsSearchAvailableObjects : TestBase
   {
     private MockRepository _mockRepository;
-    private BindableObjectProvider _bindableObjectProvider;
-    private BindableObjectProvider _bindableObjectWithIdentityProvider;
+    private BindableObjectProvider _bindableObjectProviderForDeclaringType;
+    private BindableObjectProvider _bindableObjectProviderForPropertyType;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _mockRepository = new MockRepository();
-      _bindableObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
-      _bindableObjectWithIdentityProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
+      _bindableObjectProviderForDeclaringType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
+      _bindableObjectProviderForPropertyType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
 
-      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
-      BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectWithIdentityProvider);
+      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProviderForDeclaringType);
+      BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectProviderForPropertyType);
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       Expect.Call (serviceMock.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
-      _bindableObjectWithIdentityProvider.AddService (serviceMock);
+      _bindableObjectProviderForPropertyType.AddService (serviceMock);
       bool actual = property.SupportsSearchAvailableObjects;
 
       _mockRepository.VerifyAll();
@@ -69,8 +69,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       Expect.Call (serviceMock.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
-      _bindableObjectWithIdentityProvider.AddService (stubSearchServiceOnType);
-      _bindableObjectProvider.AddService (serviceMock);
+      _bindableObjectProviderForPropertyType.AddService (stubSearchServiceOnType);
+      _bindableObjectProviderForDeclaringType.AddService (serviceMock);
       bool actual = property.SupportsSearchAvailableObjects;
 
       _mockRepository.VerifyAll();
@@ -94,7 +94,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       Expect.Call (searchAvailableObjectsServiceMock.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
-      _bindableObjectProvider.AddService (searchAvailableObjectsServiceMock);
+      _bindableObjectProviderForDeclaringType.AddService (searchAvailableObjectsServiceMock);
       bool actual = property.SupportsSearchAvailableObjects;
 
       _mockRepository.VerifyAll();
@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       Expect.Call (searchAvailableObjectsServiceMock.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll ();
 
-      _bindableObjectProvider.AddService (businessObjectClassServiceMock);
+      _bindableObjectProviderForDeclaringType.AddService (businessObjectClassServiceMock);
       bool actual = property.SupportsSearchAvailableObjects;
 
       _mockRepository.VerifyAll ();
@@ -153,7 +153,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
           .Return (businessObjectClassWithIdentityMock);
       _mockRepository.ReplayAll ();
       
-      _bindableObjectProvider.AddService (businessObjectClassServiceMock);
+      _bindableObjectProviderForDeclaringType.AddService (businessObjectClassServiceMock);
 
       _mockRepository.VerifyAll ();
       Assert.That (property.SupportsSearchAvailableObjects, Is.False);
@@ -177,7 +177,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     private PropertyBase.Parameters GetPropertyParameters (string propertyName)
     {
-      return GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _bindableObjectProvider);
+      return GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _bindableObjectProviderForDeclaringType);
     }
   }
 }

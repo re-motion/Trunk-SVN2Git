@@ -29,19 +29,19 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
   public class SearchAvailableObjects : TestBase
   {
     private MockRepository _mockRepository;
-    private BindableObjectProvider _bindableObjectProvider;
-    private BindableObjectProvider _bindableObjectWithIdentityProvider;
+    private BindableObjectProvider _bindableObjectProviderForDeclaringType;
+    private BindableObjectProvider _bindableObjectProviderForPropertyType;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _mockRepository = new MockRepository();
-      _bindableObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
-      _bindableObjectWithIdentityProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
+      _bindableObjectProviderForDeclaringType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
+      _bindableObjectProviderForPropertyType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
 
-      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
-      BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectWithIdentityProvider);
+      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProviderForDeclaringType);
+      BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectProviderForPropertyType);
     }
 
     [Test]
@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       }
       _mockRepository.ReplayAll();
 
-      _bindableObjectProvider.AddService (mockService);
+      _bindableObjectProviderForDeclaringType.AddService (mockService);
       IBusinessObject[] actual = property.SearchAvailableObjects (stubBusinessObject, _searchArgumentsStub);
 
       _mockRepository.VerifyAll();
@@ -82,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       }
       _mockRepository.ReplayAll ();
 
-      _bindableObjectWithIdentityProvider.AddService (mockService);
+      _bindableObjectProviderForPropertyType.AddService (mockService);
       IBusinessObject[] actual = property.SearchAvailableObjects (null, _searchArgumentsStub);
 
       _mockRepository.VerifyAll ();
@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       Expect.Call (mockService.SupportsProperty (property)).Return (false);
       _mockRepository.ReplayAll();
 
-      _bindableObjectProvider.AddService (mockService);
+      _bindableObjectProviderForDeclaringType.AddService (mockService);
       try
       {
         property.SearchAvailableObjects (businessObject, _searchArgumentsStub);
@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     private ReferenceProperty CreateProperty (string propertyName)
     {
       PropertyBase.Parameters propertyParameters = 
-          GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _bindableObjectProvider);
+          GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _bindableObjectProviderForDeclaringType);
       ReferenceProperty property = new ReferenceProperty (propertyParameters);
       property.SetReflectedClass (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithBusinessObjectProperties)));
 
