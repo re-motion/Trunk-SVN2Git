@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var allClassDefinitions = new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>());
+      var allClassDefinitions = new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses());
       EnsureAllStoragePropertiesCreated (allClassDefinitions);
       EnsureAllStorageEntitiesCreated (allClassDefinitions);
     }
