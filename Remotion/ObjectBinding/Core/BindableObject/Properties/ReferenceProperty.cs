@@ -22,7 +22,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 {
   public class ReferenceProperty : PropertyBase, IBusinessObjectReferenceProperty
   {
-    private enum SearchServiceProvider
+    private enum ServiceProvider
     {
       PropertyType,
       DeclaringType
@@ -30,7 +30,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private readonly Type _concreteType;
     private readonly DoubleCheckedLockingContainer<IBusinessObjectClass> _referenceClass;
-    private readonly Tuple<SearchServiceProvider, Type> _searchServiceDefinition;
+    private readonly Tuple<ServiceProvider, Type> _searchServiceDefinition;
+    private readonly Tuple<ServiceProvider, Type> _createObjectServiceDefinition;
 
     public ReferenceProperty (Parameters parameters)
         : base (parameters)
@@ -40,7 +41,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
       _concreteType = parameters.ConcreteType;
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
-      _searchServiceDefinition = GetSearchServiceType();
+      _searchServiceDefinition = GetServiceDeclaration<SearchAvailableObjectsServiceTypeAttribute, ISearchAvailableObjectsService>();
+      _createObjectServiceDefinition = GetServiceDeclaration<CreateObjectServiceTypeAttribute, ICreateObjectService>();
     }
 
     /// <summary> Gets the class information for elements of this property. </summary>
@@ -101,7 +103,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// </summary>
     public bool CreateIfNull
     {
-      get { return false; }
+      get
+      {
+        ICreateObjectService createObjectService = GetCreateObjectService ();
+        if (createObjectService == null)
+          return false;
+
+        return createObjectService.SupportsProperty (this);
+      }
     }
 
     /// <summary>
@@ -167,33 +176,46 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private ISearchAvailableObjectsService GetSearchService ()
     {
+      return GetService < ISearchAvailableObjectsService> (_searchServiceDefinition);
+    }
+
+    private ICreateObjectService GetCreateObjectService ()
+    {
+      return GetService<ICreateObjectService> (_createObjectServiceDefinition);
+    }
+
+    private TService GetService<TService> (Tuple<ServiceProvider, Type> serviceDefinition)
+        where TService : IBusinessObjectService
+    {
       IBusinessObjectProvider provider;
-      switch (_searchServiceDefinition.Item1)
+      switch (serviceDefinition.Item1)
       {
-        case SearchServiceProvider.DeclaringType:
+        case ServiceProvider.DeclaringType:
           provider = BusinessObjectProvider;
           break;
-        case SearchServiceProvider.PropertyType:
+        case ServiceProvider.PropertyType:
           provider = ReferenceClass.BusinessObjectProvider;
           break;
         default:
           throw new InvalidOperationException();
       }
 
-      return (ISearchAvailableObjectsService) provider.GetService (_searchServiceDefinition.Item2);
+      return (TService) provider.GetService (serviceDefinition.Item2);
     }
 
-    private Tuple<SearchServiceProvider, Type> GetSearchServiceType ()
+    private Tuple<ServiceProvider, Type> GetServiceDeclaration<TServiceTypeAttribute, TService> () 
+        where TServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
+        where TService : IBusinessObjectService
     {
-      var attributeFromDeclaringType = PropertyInfo.GetCustomAttribute<SearchAvailableObjectsServiceTypeAttribute> (true);
+      var attributeFromDeclaringType = PropertyInfo.GetCustomAttribute<TServiceTypeAttribute> (true);
       if (attributeFromDeclaringType != null)
-        return new Tuple<SearchServiceProvider, Type> (SearchServiceProvider.DeclaringType, attributeFromDeclaringType.Type);
+        return new Tuple<ServiceProvider, Type> (ServiceProvider.DeclaringType, attributeFromDeclaringType.Type);
 
-      var attributeFromPropertyType = AttributeUtility.GetCustomAttribute<SearchAvailableObjectsServiceTypeAttribute> (_concreteType, true);
+      var attributeFromPropertyType = AttributeUtility.GetCustomAttribute<TServiceTypeAttribute> (_concreteType, true);
       if (attributeFromPropertyType != null)
-        return new Tuple<SearchServiceProvider, Type> (SearchServiceProvider.PropertyType, attributeFromPropertyType.Type);
+        return new Tuple<ServiceProvider, Type> (ServiceProvider.PropertyType, attributeFromPropertyType.Type);
 
-      return new Tuple<SearchServiceProvider, Type> (SearchServiceProvider.DeclaringType, typeof (ISearchAvailableObjectsService));
+      return new Tuple<ServiceProvider, Type> (ServiceProvider.DeclaringType, typeof (TService));
     }
   }
 }

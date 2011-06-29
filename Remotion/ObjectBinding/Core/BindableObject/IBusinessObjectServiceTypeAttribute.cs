@@ -15,25 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  //TODO: doc
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public sealed class SearchAvailableObjectsServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
+  public interface IBusinessObjectServiceTypeAttribute
   {
-    private readonly Type _type;
-
-    public SearchAvailableObjectsServiceTypeAttribute (Type type)
-    {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ISearchAvailableObjectsService));
-      _type = type;
-    }
-
-    public Type Type
-    {
-      get { return _type; }
-    }
+    Type Type { get; }
   }
 }

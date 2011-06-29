@@ -26,11 +26,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     {
     }
 
+
     public ClassWithIdentityAndSearchServiceTypeAttribute SearchServiceFromPropertyType { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (ISearchServiceOnProperty))]
     public ClassWithIdentityAndSearchServiceTypeAttribute SearchServiceFromPropertyDeclaration { get; set; }
 
     public ClassFromOtherBusinessObjectImplementation NoSearchService { get; set; }
+
+
+    public ClassWithCreateObjectServiceTypeAttribute CreateObjectServiceFromPropertyType { get; set; }
+
+    [CreateObjectServiceType (typeof (ICreateObjectServiceOnProperty))]
+    public ClassWithCreateObjectServiceTypeAttribute CreateObjectServiceFromPropertyDeclaration { get; set; }
+
+    public ClassFromOtherBusinessObjectImplementation NoCreateObjectService { get; set; }
   }
 }

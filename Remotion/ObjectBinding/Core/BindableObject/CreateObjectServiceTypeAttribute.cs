@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -21,13 +21,13 @@ namespace Remotion.ObjectBinding.BindableObject
 {
   //TODO: doc
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public sealed class SearchAvailableObjectsServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
+  public sealed class CreateObjectServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
   {
     private readonly Type _type;
 
-    public SearchAvailableObjectsServiceTypeAttribute (Type type)
+    public CreateObjectServiceTypeAttribute (Type type)
     {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ISearchAvailableObjectsService));
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ICreateObjectService));
       _type = type;
     }
 
