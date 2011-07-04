@@ -134,9 +134,6 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     ///   The relation property denoted by <paramref name="endPointID"/> has not yet been fully loaded into the given <paramref name="clientTransaction"/>.
     /// </exception>
     /// <remarks>
-    /// <para>
-    ///   In the current implementation, 1:1 relations are always synchronized.
-    /// </para>
     /// </remarks>
     public static bool IsSynchronized (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
@@ -164,7 +161,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </exception>
     /// <remarks>
     /// <para>
-    ///   If <paramref name="endPointID"/> denotes an object-valued end-point that is out-of-sync (eg., OrderItem.Order), the opposite collection 
+    ///   If <paramref name="endPointID"/> denotes an object-valued end-point that is out-of-sync with an opposite collection (eg., OrderItem.Order), 
+    ///   the opposite collection 
     ///   (eg., Order.OrderItems) is adjusted to match the foreign key value. This results in the item being added to the collection.
     ///   If <paramref name="endPointID"/> denotes a collection-valued end-point that is out-of-sync (eg., Order.OrderItems), the collection is 
     ///   synchronized with the opposite foreign key values. This results in all items being removed from the collection that do not have a foreign 
@@ -172,9 +170,6 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </para>
     /// <para>
     ///   If the relation is already synchronized, this method does nothing.
-    /// </para>
-    /// <para>
-    ///   In the current implementation, 1:1 relations are always synchronized.
     /// </para>
     /// <para> 
     ///   When a relation involving a <see cref="DomainObjectCollection"/> is synchronized, its current and original contents may be changed.
