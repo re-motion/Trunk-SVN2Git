@@ -227,7 +227,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     private static IRelationEndPoint GetEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       var endPoint = clientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
-      return endPoint != null && !endPoint.IsDataComplete ? null : endPoint;
+      return endPoint == null || !endPoint.IsDataComplete ? null : endPoint;
     }
   }
 }
