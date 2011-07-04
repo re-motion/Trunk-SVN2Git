@@ -82,13 +82,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       // TODO 4090: Replace visitor with InlineEntityDefinitionVisitor
       // TODO 4090: Remove nested EntityDefinitionVisitor
       var visitor = new EntityDefinitionVisitor();
-      
-      var dbCommandBuilders = from id in ids
+
+      var objectIDs = ids.ToList();
+      var dbCommandBuilders = from id in objectIDs
                               let tableDefinition = GetTableDefinition (id, visitor)
                               group id by tableDefinition
                               into idsByTable
                               select CreateDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
-      return new MultiDataContainerLoadCommand (dbCommandBuilders, false, _dataContainerReader);
+      var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders, false, _dataContainerReader);
+      return new MultiDataContainerSortCommand (objectIDs, multiDataContainerLoadCommand);
     }
 
     private TableDefinition GetTableDefinition (ObjectID objectID, EntityDefinitionVisitor visitor)

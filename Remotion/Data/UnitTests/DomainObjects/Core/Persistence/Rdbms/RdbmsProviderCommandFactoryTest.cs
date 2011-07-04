@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForMultiIDLookup (new[] { _objectID });
 
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
+      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
     }
 
     [Test]

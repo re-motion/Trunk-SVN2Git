@@ -81,8 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var result = _factory.CreateCommand (new[] { _objectID1 });
 
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
+      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
+      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
+      Assert.That (
+          ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuilders,
+          Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
     }
 
     [Test]
@@ -98,8 +101,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var result = _factory.CreateCommand (new[] { _objectID1, _objectID2 });
 
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
+      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
+      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
+      Assert.That (
+          ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuilders,
+          Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
     }
 
     [Test]
@@ -120,14 +126,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var result = _factory.CreateCommand (new[] { _objectID1, _objectID2, _objectID3 });
 
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }));
+      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
+      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
+      Assert.That (
+          ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuilders,
+          Is.EqualTo (new[] { _dbCommandBuilder1Stub, _dbCommandBuilder2Stub }));
     }
 
     [Test]
     public void CreateCommand_FilterViewDefinition ()
     {
-      var filterViewDefinition = FilterViewDefinitionObjectMother.Create(
+      var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "FileView"),
           _tableDefinition1);
@@ -142,8 +151,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var result = _factory.CreateCommand (new[] { objectID });
 
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
+      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
+      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
+      Assert.That (
+          ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuilders,
+          Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
     }
 
     [Test]
@@ -161,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _factory.CreateCommand (new[] { objectID });
     }
 
-    [Ignore("TODO RM-4090")]
+    [Ignore ("TODO RM-4090")]
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a NullEntityDefinition.")]
     public void CreateCommand_NullEntityDefinition ()
@@ -169,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var nullEntityDefintion = new NullEntityDefinition (TestDomainStorageProviderDefinition);
 
       var objectID = CreateObjectID (nullEntityDefintion);
-      
+
       _factory.CreateCommand (new[] { objectID });
     }
 
