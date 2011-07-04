@@ -108,20 +108,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void EnsureDataComplete ()
-    {
-      var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
-      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, associatedCollection.AssociatedEndPointID);
-
-      var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
-      Assert.That (associatedCollection.IsDataComplete, Is.False);
-
-      readOnlyAdapter.EnsureDataComplete ();
-
-      Assert.That (associatedCollection.IsDataComplete, Is.True);
-    }
-
-    [Test]
     public void Contains_ID ()
     {
       StubInnerData (_order1, _order2, _order3);

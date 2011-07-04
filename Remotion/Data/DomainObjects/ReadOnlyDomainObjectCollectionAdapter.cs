@@ -59,11 +59,6 @@ namespace Remotion.Data.DomainObjects
       get { return _wrappedData.Count; }
     }
 
-    public void EnsureDataComplete ()
-    {
-      _wrappedData.EnsureDataComplete();
-    }
-
     public IEnumerator<T> GetEnumerator ()
     {
       return _wrappedData.Cast<T>().GetEnumerator();
