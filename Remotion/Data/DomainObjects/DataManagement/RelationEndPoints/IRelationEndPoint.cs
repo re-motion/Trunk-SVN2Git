@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     bool IsDataComplete { get; }
     void EnsureDataComplete ();
 
-    bool IsSynchronized { get; }
+    bool? IsSynchronized { get; }
     void Synchronize ();
 
     void Touch ();

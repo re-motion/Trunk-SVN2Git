@@ -181,10 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void IsSynchronized ()
     {
-      CheckOperationDelegatesToCompleteState (
-         s => s.IsSynchronized (_virtualEndPointMock),
-         s => s.IsSynchronized,
-         true);
+      Assert.That (_loadState.IsSynchronized (_virtualEndPointMock), Is.Null);
     }
 
     [Test]

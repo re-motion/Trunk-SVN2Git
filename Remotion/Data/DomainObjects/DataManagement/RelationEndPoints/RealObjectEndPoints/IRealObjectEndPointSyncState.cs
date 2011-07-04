@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
   /// </summary>
   public interface IRealObjectEndPointSyncState : IFlattenedSerializable
   {
-    bool IsSynchronized (IRealObjectEndPoint endPoint);
+    bool? IsSynchronized (IRealObjectEndPoint endPoint);
     void Synchronize (IRealObjectEndPoint endPoint, IVirtualEndPoint oppositeEndPoint);
 
     IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action oppositeObjectNullSetter);

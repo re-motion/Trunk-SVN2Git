@@ -125,24 +125,23 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <param name="endPointID">The ID of the relation property to check. This contains the ID of the originating object and the
     /// relation property to check. The relation property must have been loaded into the given <paramref name="clientTransaction"/>.</param>
     /// <returns>
-    /// 	<see langword="true"/> if the specified relation property is synchronized; otherwise, <see langword="false"/>.
+    /// 	<see langword="true"/> if the specified relation property is synchronized; <see langword="false"/> if it is out-of-sync.
+    ///   If the relation has not been completely loaded, the result is <see langword="null" />.
     /// </returns>
     /// <exception cref="ArgumentException">
     ///   <paramref name="endPointID"/> denotes a unidirectional (or anonymous) relation property.
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    ///   The relation property denoted by <paramref name="endPointID"/> has not yet been fully loaded into the given <paramref name="clientTransaction"/>.
-    /// </exception>
-    /// <remarks>
-    /// </remarks>
-    public static bool IsSynchronized (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public static bool? IsSynchronized (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       CheckNotUnidirectional (endPointID, "endPointID");
 
-      var endPoint = GetAndCheckLoadedEndPoint (endPointID, clientTransaction.RootTransaction);
+      var endPoint = GetEndPoint (clientTransaction.RootTransaction, endPointID);
+      if (endPoint == null)
+        return null;
+
       return endPoint.IsSynchronized;
     }
 

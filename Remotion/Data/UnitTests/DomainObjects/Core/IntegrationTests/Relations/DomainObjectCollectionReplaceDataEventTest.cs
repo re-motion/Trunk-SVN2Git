@@ -152,8 +152,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       dataContainer.SetDomainObject (unsynchronizedOrder);
       ClientTransactionMock.DataManager.RegisterDataContainer (dataContainer);
 
-      var endPoint = (IRealObjectEndPoint)
-                     ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (unsynchronizedOrder, o => o.Customer));
+      var endPointID = RelationEndPointID.Create (unsynchronizedOrder, o => o.Customer);
+      var endPoint = (IRealObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+
+      var oppositeID = RelationEndPointID.CreateOpposite (endPoint.Definition, relatedCustomerID);
+      var oppositeEndPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithMinimumLoading (oppositeID);
+      oppositeEndPoint.EnsureDataComplete ();
+
       Assert.That (endPoint.IsSynchronized, Is.False);
       return unsynchronizedOrder;
     }

@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       get { throw new NotImplementedException(); }
     }
 
-    public override bool IsSynchronized
+    public override bool? IsSynchronized
     {
       get { throw new NotImplementedException(); }
     }

@@ -262,7 +262,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _loadState.UnregisterCurrentOppositeEndPoint (this, oppositeEndPoint);
     }
 
-    public override bool IsSynchronized
+    public override bool? IsSynchronized
     {
       get { return _loadState.IsSynchronized (this); }
     }

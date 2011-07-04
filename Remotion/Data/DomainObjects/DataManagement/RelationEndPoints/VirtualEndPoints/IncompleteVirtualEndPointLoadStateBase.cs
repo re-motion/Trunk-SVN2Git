@@ -133,12 +133,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       endPoint.UnregisterCurrentOppositeEndPoint (oppositeEndPoint);
     }
 
-    public bool IsSynchronized (TEndPoint endPoint)
+    public bool? IsSynchronized (TEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      endPoint.EnsureDataComplete ();
-      return endPoint.IsSynchronized;
+      return null;
     }
 
     public void Synchronize (TEndPoint endPoint)

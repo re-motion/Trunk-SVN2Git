@@ -608,43 +608,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasUnsynchronizedCurrentOppositeEndPoints_False_NoEndPoint ()
-    {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
-      _dataKeeperMock.Replay ();
-
-      var result = (bool) PrivateInvoke.InvokeNonPublicMethod (_loadState, "HasUnsynchronizedCurrentOppositeEndPoints");
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void HasUnsynchronizedCurrentOppositeEndPoints_False_OnlySynchronizedEndPoints ()
-    {
-      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (true);
-
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new[] { _relatedEndPointStub });
-      _dataKeeperMock.Replay ();
-
-      var result = (bool) PrivateInvoke.InvokeNonPublicMethod (_loadState, "HasUnsynchronizedCurrentOppositeEndPoints");
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void HasUnsynchronizedCurrentOppositeEndPoints_True ()
-    {
-      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (false);
-
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new[] { _relatedEndPointStub });
-      _dataKeeperMock.Replay ();
-
-      var result = (bool) PrivateInvoke.InvokeNonPublicMethod (_loadState, "HasUnsynchronizedCurrentOppositeEndPoints");
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
     public void FlattenedSerializable ()
     {
       var dataKeeper = new SerializableCollectionEndPointDataKeeperFake ();

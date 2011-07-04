@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _loadState.IsDataComplete(); }
     }
 
-    public override bool IsSynchronized
+    public override bool? IsSynchronized
     {
       get { return _loadState.IsSynchronized (this); }
     }

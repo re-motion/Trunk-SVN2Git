@@ -160,11 +160,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return DataKeeper.OriginalItemWithoutEndPoint == null ? new DomainObject[0] : new[] { DataKeeper.OriginalItemWithoutEndPoint };
     }
 
-    protected override bool HasUnsynchronizedCurrentOppositeEndPoints ()
-    {
-      return DataKeeper.CurrentOppositeEndPoint != null && !DataKeeper.CurrentOppositeEndPoint.IsSynchronized;
-    }
-
     private void CheckAddedObject (DomainObject domainObject)
     {
       if (ContainsUnsynchronizedOppositeEndPoint (domainObject.ID))

@@ -59,17 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void IsSynchronized ()
     {
-      using (_mockRepository.Ordered ())
-      {
-        ExpectLoadOpposite();
-        _endPointMock.Expect (mock => mock.IsSynchronized).Return (true);
-      }
-      _mockRepository.ReplayAll ();
-
       var result = _state.IsSynchronized (_endPointMock);
-
-      _mockRepository.VerifyAll();
-      Assert.That (result, Is.True);
+      Assert.That (result, Is.Null);
     }
 
     [Test]

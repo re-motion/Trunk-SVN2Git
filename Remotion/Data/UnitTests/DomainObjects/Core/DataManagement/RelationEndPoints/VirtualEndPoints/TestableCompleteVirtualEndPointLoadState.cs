@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -67,11 +66,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     protected override IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ()
     {
       return _stubbedOriginalItemsWithoutEndPoints;
-    }
-
-    protected override bool HasUnsynchronizedCurrentOppositeEndPoints ()
-    {
-      return false;
     }
 
     #region Serialization

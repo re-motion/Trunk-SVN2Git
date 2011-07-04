@@ -43,19 +43,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       get { return _endPointProvider; }
     }
 
-    public bool IsSynchronized (IRealObjectEndPoint endPoint)
+    public bool? IsSynchronized (IRealObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      if (s_log.IsWarnEnabled)
-      {
-        s_log.WarnFormat (
-            "Opposite end-point of ObjectEndPoint '{0}' is lazily loaded due to a call to IsSynchronized.", endPoint.ID);
-      }
-
-      LoadOppositeEndPoint (endPoint);
-
-      return endPoint.IsSynchronized;
+      return null;
     }
 
     public void Synchronize (IRealObjectEndPoint endPoint, IVirtualEndPoint oppositeEndPoint)

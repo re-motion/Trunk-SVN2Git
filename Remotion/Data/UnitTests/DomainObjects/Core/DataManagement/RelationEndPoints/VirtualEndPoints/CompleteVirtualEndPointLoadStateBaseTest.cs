@@ -276,15 +276,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot register end-points that are out-of-sync.")]
-    public void RegisterCurrentOppositeEndPoint_WithOutOfSyncEndPoint ()
-    {
-      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (false);
-
-      _loadState.RegisterCurrentOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub);
-    }
-
-    [Test]
     public void UnregisterCurrentOppositeEndPoint ()
     {
       _dataKeeperMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub));

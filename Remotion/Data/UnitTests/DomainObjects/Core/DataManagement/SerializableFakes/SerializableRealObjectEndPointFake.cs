@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       get { throw new NotImplementedException(); }
     }
 
-    public bool IsSynchronized
+    public bool? IsSynchronized
     {
       get { throw new NotImplementedException(); }
     }

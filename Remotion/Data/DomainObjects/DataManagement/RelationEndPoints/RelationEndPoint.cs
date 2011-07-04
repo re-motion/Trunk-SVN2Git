@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public abstract bool HasBeenTouched { get; }
 
     public abstract bool IsDataComplete { get; }
-    public abstract bool IsSynchronized { get; }
+    public abstract bool? IsSynchronized { get; }
 
     public abstract void EnsureDataComplete ();
     public abstract void Synchronize ();

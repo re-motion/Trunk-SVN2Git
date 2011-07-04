@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { throw new InvalidOperationException ("It is not possible to get the OriginalOppositeObjectID from a NullObjectEndPoint."); }
     }
 
-    public bool IsSynchronized
+    public bool? IsSynchronized
     {
       get { return true; }
     }

@@ -48,7 +48,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
     protected abstract IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ();
-    protected abstract bool HasUnsynchronizedCurrentOppositeEndPoints ();
 
     public static ILog Log
     {
@@ -189,9 +188,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (!oppositeEndPoint.IsSynchronized)
-        throw new InvalidOperationException ("Cannot register end-points that are out-of-sync.");
-
       _dataKeeper.RegisterCurrentOppositeEndPoint (oppositeEndPoint);
     }
 
@@ -208,6 +204,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
       return !GetOriginalItemsWithoutEndPoints ().Any();
+    }
+
+    bool? IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>.IsSynchronized (TEndPoint endPoint)
+    {
+      return IsSynchronized (endPoint);
     }
 
     public virtual void Synchronize (TEndPoint endPoint)
@@ -247,9 +248,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     public virtual void Commit (TEndPoint endPoint)
     {
-      Assertion.IsFalse (
-          HasUnsynchronizedCurrentOppositeEndPoints(),
-          "We assume that it is not possible to register opposite end-points that are out-of-sync.");
       _dataKeeper.Commit ();
     }
 

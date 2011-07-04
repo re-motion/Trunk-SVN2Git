@@ -218,7 +218,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
     }
 
-    public bool IsSynchronized
+    public bool? IsSynchronized
     {
       get { return true; }
     }

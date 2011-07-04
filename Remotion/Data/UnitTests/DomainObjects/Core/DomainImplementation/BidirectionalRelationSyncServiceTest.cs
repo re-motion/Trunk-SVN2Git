@@ -79,28 +79,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been fully loaded into the given ClientTransaction.")]
     public void IsSynchronized_EndPointNotRegistered ()
     {
-      BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket"));
+      var result = BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket"));
+      Assert.That (result, Is.Null);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been fully loaded into the given ClientTransaction.")]
-    public void IsSynchronized_EndPointIncomplete ()
+    public void IsSynchronized_EndPointReturnsNull ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
       var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       endPointStub.Stub (stub => stub.ID).Return (endPointID);
       endPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
-      endPointStub.Stub (stub => stub.IsDataComplete).Return (false);
+      endPointStub.Stub (stub => stub.IsSynchronized).Return (null);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub);
 
-      BidirectionalRelationSyncService.IsSynchronized (_transaction, endPointID);
+      var result = BidirectionalRelationSyncService.IsSynchronized (_transaction, endPointID);
+      Assert.That (result, Is.Null);
     }
 
     [Test]

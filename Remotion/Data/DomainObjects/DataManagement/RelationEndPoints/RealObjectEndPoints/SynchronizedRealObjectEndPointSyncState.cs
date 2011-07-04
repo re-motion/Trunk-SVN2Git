@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       get { return _endPointProvider; }
     }
 
-    public bool IsSynchronized (IRealObjectEndPoint endPoint)
+    public bool? IsSynchronized (IRealObjectEndPoint endPoint)
     {
       return true;
     }
