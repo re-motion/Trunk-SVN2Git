@@ -284,16 +284,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      return _dataContainerLoader.LoadDataContainersByRelatedID (
-          relationEndPointDefinition.ClassDefinition, relationEndPointDefinition.PropertyName, relatedID);
-      //// TODO 4078
+      if (relationEndPointDefinition.PropertyDefinition.StorageClass == StorageClass.Transaction)
+        return new DataContainerCollection();
 
-      //if (relationEndPointDefinition.PropertyDefinition.StorageClass == StorageClass.Transaction)
-      //  return new DataContainerCollection();
-
-      //var storageProviderCommand = _storageProviderCommandFactory.CreateForRelationLookup (relationEndPointDefinition, relatedID, sortExpressionDefinition);
-      //var dataContainers = storageProviderCommand.Execute (this);
-      //return new DataContainerCollection (dataContainers, true);
+      var storageProviderCommand = _storageProviderCommandFactory.CreateForRelationLookup (relationEndPointDefinition, relatedID, sortExpressionDefinition);
+      var dataContainers = storageProviderCommand.Execute (this);
+      return new DataContainerCollection (dataContainers, true);
     }
 
     public override void Save (DataContainerCollection dataContainers)

@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForMultiIDLookup (ObjectID[] objectIDs)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("objectIDs", objectIDs);
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       return _multiDataContainerLookupCommandFactory.CreateCommand (objectIDs);
     }
