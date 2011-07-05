@@ -250,7 +250,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
-      return new ValueConverter (storageProviderDefinition, storageNameProvider, typeConversionProvider);
+      return new ValueConverter ((RdbmsProviderDefinition) storageProviderDefinition, storageNameProvider, typeConversionProvider);
     }
   }
 }

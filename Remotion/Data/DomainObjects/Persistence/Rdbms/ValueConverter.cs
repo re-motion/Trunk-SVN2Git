@@ -18,7 +18,6 @@ using System;
 using System.Data;
 using System.Globalization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
@@ -32,11 +31,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class ValueConverter : ValueConverterBase, IValueConverter
   {
     private readonly IStorageNameProvider _storageNameProvider;
-    private readonly StorageProviderDefinition _storageProviderDefinition;
+    private readonly RdbmsProviderDefinition _storageProviderDefinition;
 
-    // TODO 4078: RdbmsProviderDefinition
     public ValueConverter (
-        StorageProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, TypeConversionProvider typeConversionProvider)
+        RdbmsProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, TypeConversionProvider typeConversionProvider)
         : base (typeConversionProvider)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);

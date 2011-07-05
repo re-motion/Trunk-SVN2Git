@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _valueConverter = new ValueConverter (TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
+      _valueConverter = new ValueConverter ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
       _commandFactory = new RdbmsProviderCommandFactory (
           new SqlDbCommandBuilderFactory (
               SqlDialect.Instance,
