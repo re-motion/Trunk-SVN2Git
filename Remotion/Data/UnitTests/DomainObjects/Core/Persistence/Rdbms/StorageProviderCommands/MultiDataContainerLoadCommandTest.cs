@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -23,8 +25,8 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands
 {
@@ -39,26 +41,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDataContainerReader _dataContainerReaderStub;
     private DataContainer _container;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
+    private MockRepository _repository;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
-      _dataReaderMock = MockRepository.GenerateStrictMock<IDataReader>();
+      _repository = new MockRepository();
 
-      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
-      
-      _dbCommandMock1 = MockRepository.GenerateStrictMock<IDbCommand>();
-      _dbCommandMock2 = MockRepository.GenerateStrictMock<IDbCommand> ();
-      
-      _dbCommandBuilder1Mock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
-      _dbCommandBuilder2Mock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
-      
-      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock1, CommandBehavior.SingleResult)).Return (_dataReaderMock);
-      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock2, CommandBehavior.SingleResult)).Return (_dataReaderMock);
-      
-      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
+      _container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
+      _dataReaderMock = _repository.StrictMock<IDataReader>();
+
+      _commandExecutionContextStub = _repository.Stub<IRdbmsProviderCommandExecutionContext>();
+
+      _dbCommandMock1 = _repository.StrictMock<IDbCommand>();
+      _dbCommandMock2 = _repository.StrictMock<IDbCommand>();
+
+      _dbCommandBuilder1Mock = _repository.StrictMock<IDbCommandBuilder>();
+      _dbCommandBuilder2Mock = _repository.StrictMock<IDbCommandBuilder>();
+
+      _dataContainerReaderStub = _repository.Stub<IDataContainerReader>();
     }
 
     [Test]
@@ -69,64 +71,80 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       Assert.That (command.AllowNulls, Is.True);
       Assert.That (command.DataContainerReader, Is.SameAs (_dataContainerReaderStub));
-      Assert.That (command.DbCommandBuilders, Is.EqualTo(new[]{_dbCommandBuilder1Mock, _dbCommandBuilder2Mock}));
+      Assert.That (command.DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }));
     }
 
     [Test]
     public void Execute_OneCommandBuilder_AllowNullsTrue ()
     {
+      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock1, CommandBehavior.SingleResult)).Return (_dataReaderMock);
       _dbCommandBuilder1Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock1);
-      _dbCommandBuilder1Mock.Replay();
-      
       _dbCommandMock1.Expect (mock => mock.Dispose());
-      _dbCommandMock1.Replay();
-
-      _dataReaderMock.Expect (mock => mock.Dispose ());
-      _dataReaderMock.Replay ();
+      _dataReaderMock.Expect (mock => mock.Dispose());
+      _repository.ReplayAll();
 
       var command = new MultiDataContainerLoadCommand (
           new[] { _dbCommandBuilder1Mock }, true, _dataContainerReaderStub);
-
+      
       _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock, true)).Return (new[] { _container });
-      var result = command.Execute (_commandExecutionContextStub).ToArray ();
+      var result = command.Execute (_commandExecutionContextStub).ToArray();
 
-      _dbCommandBuilder1Mock.VerifyAllExpectations ();
-      _dbCommandBuilder2Mock.VerifyAllExpectations ();
-      _dbCommandMock1.VerifyAllExpectations ();
-      _dbCommandMock2.VerifyAllExpectations ();
-      _dataReaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (new[] { _container }));
+      _repository.VerifyAll();
     }
-    
+
     [Test]
     public void Execute_SeveralCommandBuilders_AllowNullsFalse ()
     {
+      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock1, CommandBehavior.SingleResult)).Return (_dataReaderMock);
+      _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock2, CommandBehavior.SingleResult)).Return (_dataReaderMock);
       _dbCommandBuilder1Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock1);
-      _dbCommandBuilder1Mock.Replay ();
       _dbCommandBuilder2Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock2);
-      _dbCommandBuilder2Mock.Replay ();
-
-      _dbCommandMock1.Expect (mock => mock.Dispose ());
-      _dbCommandMock1.Replay ();
-      _dbCommandMock2.Expect (mock => mock.Dispose ());
-      _dbCommandMock2.Replay ();
-
-      _dataReaderMock.Expect (mock => mock.Dispose ()).Repeat.Twice();
-      _dataReaderMock.Replay ();
+      _dbCommandMock1.Expect (mock => mock.Dispose());
+      _dbCommandMock2.Expect (mock => mock.Dispose());
+      _dataReaderMock.Expect (mock => mock.Dispose()).Repeat.Twice();
+      _repository.ReplayAll();
 
       _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock, false)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
           new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, false, _dataContainerReaderStub);
 
-      var result = command.Execute(_commandExecutionContextStub).ToArray();
+      var result = command.Execute (_commandExecutionContextStub).ToArray();
 
-      _dbCommandBuilder1Mock.VerifyAllExpectations ();
-      _dbCommandBuilder2Mock.VerifyAllExpectations ();
-      _dbCommandMock1.VerifyAllExpectations ();
-      _dbCommandMock2.VerifyAllExpectations ();
-      _dataReaderMock.VerifyAllExpectations ();
+      _repository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _container, _container }));
+    }
+
+    [Test]
+    public void LoadDataContainersFromCommandBuilder ()
+    {
+      var enumerableStub = _repository.Stub<IEnumerable<DataContainer>>();
+      var enumeratorMock = _repository.StrictMock<IEnumerator<DataContainer>>();
+
+      using (_repository.Ordered())
+      {
+        _dbCommandBuilder1Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock1);
+        _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock1, CommandBehavior.SingleResult)).Return (_dataReaderMock);
+        _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock, false)).Return (enumerableStub);
+        enumerableStub.Stub (stub => stub.GetEnumerator()).Return (enumeratorMock);
+        enumeratorMock.Expect (mock => mock.MoveNext()).Return (false);
+        enumeratorMock.Expect (mock => mock.Dispose());
+        _dataReaderMock.Expect (mock => mock.Dispose());
+        _dbCommandMock1.Expect (mock => mock.Dispose());
+      }
+
+      _repository.ReplayAll();
+
+      var command = new MultiDataContainerLoadCommand (
+          new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, false, _dataContainerReaderStub);
+
+      var result =
+          (IEnumerable<DataContainer>)
+          PrivateInvoke.InvokeNonPublicMethod (command, "LoadDataContainersFromCommandBuilder", _dbCommandBuilder1Mock, _commandExecutionContextStub);
+      result.ToArray();
+
+      _repository.VerifyAll();
     }
   }
 }

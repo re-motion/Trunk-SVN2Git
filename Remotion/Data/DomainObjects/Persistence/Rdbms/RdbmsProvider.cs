@@ -287,7 +287,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       return _dataContainerLoader.LoadDataContainersByRelatedID (
           relationEndPointDefinition.ClassDefinition, relationEndPointDefinition.PropertyName, relatedID);
-
       // TODO 4078
       //var storageProviderCommand = _storageProviderCommandFactory.CreateForRelationLookup (relationEndPointDefinition, relatedID, sortExpressionDefinition);
       //var dataContainers = storageProviderCommand.Execute (this);
