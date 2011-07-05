@@ -202,7 +202,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      return _storageProviderCommandFactory.CreateForDataContainerQuery (query).Execute (this).ToArray();
+      var command = _storageProviderCommandFactory.CreateForDataContainerQuery (query);
+      return command.Execute (this).ToArray();
     }
 
     public override object ExecuteScalarQuery (IQuery query)
@@ -236,22 +237,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      return _storageProviderCommandFactory.CreateForSingleIDLookup (id).Execute (this);
+      var command = _storageProviderCommandFactory.CreateForSingleIDLookup (id);
+      return command.Execute (this);
     }
 
     public override DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("ids", ids);
-      foreach (ObjectID id in ids)
+      foreach (var id in ids)
         CheckStorageProviderID (id, "ids");
 
       Connect();
 
-      return _dataContainerLoader.LoadDataContainersFromIDs (ids);
-      // TODO 4078
-      //var dataContainers = _storageProviderCommandFactory.CreateForMultiIDLookup (ids.ToArray()).Execute (this);
-      //return new DataContainerCollection (dataContainers, true);
+      // We ignore any ObjectIDs for which we didn't find any DataContainers.
+      var command = _storageProviderCommandFactory.CreateForMultiIDLookup (ids.ToArray());
+      var dataContainers = command.Execute (this).Where (dc => dc != null);
+      return new DataContainerCollection (dataContainers, true);
     }
 
     protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
