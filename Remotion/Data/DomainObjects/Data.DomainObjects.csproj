@@ -577,10 +577,6 @@
     <Compile Include="Tracing\CompoundPersistenceListener.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\DataContainerLoader.cs" />
-    <Compile Include="Persistence\Rdbms\DataContainerLoaderHelper.cs" />
-    <Compile Include="Persistence\Rdbms\IDataContainerLoaderHelper.cs" />
-    <Compile Include="Persistence\Rdbms\ObjectIDLoader.cs" />
     <Compile Include="Persistence\Rdbms\OppositeClassDefinitionRetriever.cs" />
     <Compile Include="Tracing\TracingDataReader.cs" />
     <Compile Include="Tracing\TracingDbCommand.cs" />
@@ -830,7 +826,6 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\DbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\ConcreteTableInheritanceRelationLoader.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerFactory.cs">
       <SubType>Code</SubType>
     </Compile>

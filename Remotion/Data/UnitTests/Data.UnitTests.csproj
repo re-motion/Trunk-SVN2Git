@@ -888,7 +888,6 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedDerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForBehavioralMixin.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerLoaderHelperTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\MultiIDLookupDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\TestRdbmsProvider.cs" />
@@ -1165,8 +1164,6 @@
     <Compile Include="DomainObjects\Core\Persistence\MixedStorageProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlProviderLoadDataContainersTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerLoaderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\ObjectIDLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\StorageProviderWithFixedGuidMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\UpdateDbCommandBuilderTest.cs" />
@@ -1516,9 +1513,6 @@
     </Compile>
     <Compile Include="DomainObjects\SetupFixture.cs" />
     <Compile Include="DomainObjects\Factories\StandardConfiguration.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\ConcreteTableInheritanceRelationLoaderTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\DataContainerFactoryTest.cs">
       <SubType>Code</SubType>
     </Compile>

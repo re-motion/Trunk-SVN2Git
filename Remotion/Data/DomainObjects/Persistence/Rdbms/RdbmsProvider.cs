@@ -32,8 +32,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public abstract class RdbmsProvider : StorageProvider, IRdbmsProviderCommandExecutionContext
   {
-    private readonly DataContainerLoader _dataContainerLoader;
-
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
@@ -46,7 +44,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
         : base (definition, storageNameProvider, sqlDialect, persistenceListener)
     {
-      _dataContainerLoader = new DataContainerLoader (this);
       _storageProviderCommandFactory = storageProviderCommandFactory;
     }
 
@@ -256,21 +253,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new DataContainerCollection (dataContainers, true);
     }
 
+    [Obsolete ("This method has been superseded by MultiDataContainerLoadCommand. Use that instead. (1.13.111)", true)]
     protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
     {
-      CheckDisposed();
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-
-      return _dataContainerLoader.LoadDataContainersFromCommandBuilder (commandBuilder, allowNulls);
+      throw new NotImplementedException ();
     }
-
-
-    // TODO 4078
-    //[Obsolete ("This method has been superseded by MultiDataContainerLoadCommand. Use that instead. (1.13.111)", true)]
-    //protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
-    //{
-    //  throw new NotImplementedException();
-    //}
 
     public override DataContainerCollection LoadDataContainersByRelatedID (
         RelationEndPointDefinition relationEndPointDefinition,
@@ -372,11 +359,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         CheckDisposed();
         return _transaction;
       }
-    }
-
-    public virtual DataContainerLoader DataContainerLoader
-    {
-      get { return _dataContainerLoader; }
     }
 
     public IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> StorageProviderCommandFactory
