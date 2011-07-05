@@ -202,10 +202,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, CreateValueConverter());
-      return LoadDataContainers (commandBuilder, true);
-      // TODO 4078
-      //return _storageProviderCommandFactory.CreateForDataContainerQuery (query).Execute (this).ToArray();
+      return _storageProviderCommandFactory.CreateForDataContainerQuery (query).Execute (this).ToArray();
     }
 
     public override object ExecuteScalarQuery (IQuery query)
