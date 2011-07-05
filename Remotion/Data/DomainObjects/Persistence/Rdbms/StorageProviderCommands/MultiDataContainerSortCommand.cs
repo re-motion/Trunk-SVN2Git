@@ -23,13 +23,18 @@ using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
+  /// <summary>
+  /// Executes a given <see cref="IStorageProviderCommand{T,TExecutionContext}"/> and sorts the resulting <see cref="DataContainer"/> instances
+  /// according to a given list of <see cref="ObjectID"/> values.
+  /// </summary>
   public class MultiDataContainerSortCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly ObjectID[] _objectIDs;
     private readonly IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> _command;
 
     public MultiDataContainerSortCommand (
-        IEnumerable<ObjectID> objectIDs, IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> command)
+        IEnumerable<ObjectID> objectIDs, 
+        IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> command)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
       ArgumentUtility.CheckNotNull ("command", command);
@@ -52,8 +57,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      var dictionary = _command.Execute (executionContext).ToDictionary (c => c.ID);
-      return _objectIDs.Select (id => dictionary.GetValueOrDefault (id));
+      // TODO Review 4096: Add a test with duplicate ObjectIDs
+      // TODO Review 4096: Add a test with duplicate DataContainers. This should lead to a InvalidOperationException. Then change the implementation to manually iterate over the DataContainers and add them to a Dictionary via dataContainersByID[dc.ID] = dc.
+
+      var dataContainersByID = _command.Execute (executionContext).ToDictionary (c => c.ID);
+      return _objectIDs.Select (id => dataContainersByID.GetValueOrDefault (id));
     }
   }
 }

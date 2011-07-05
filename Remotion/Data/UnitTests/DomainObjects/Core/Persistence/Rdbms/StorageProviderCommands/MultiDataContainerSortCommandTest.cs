@@ -30,7 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   public class MultiDataContainerSortCommandTest : StandardMappingTest
   {
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> _commandStub;
-    private MultiDataContainerSortCommand _command;
     private IRdbmsProviderCommandExecutionContext _executionContext;
     private DataContainer _order1Container;
     private DataContainer _order2Container;
@@ -44,16 +43,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _order1Container = DataContainer.CreateNew (DomainObjectIDs.Order1);
       _order2Container = DataContainer.CreateNew (DomainObjectIDs.Order2);
-
-      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, _order2Container });
-
-      _command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 }, _commandStub);
     }
 
     [Test]
     public void Execute ()
     {
-      var result = _command.Execute (_executionContext).ToList();
+      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 }, _commandStub);
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, _order2Container });
+
+      var result = command.Execute (_executionContext).ToList ();
 
       Assert.That (result, Is.EqualTo(new[] { _order1Container, _order2Container, null }));
     }
