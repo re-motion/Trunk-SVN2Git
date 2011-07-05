@@ -59,6 +59,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 
       // TODO Review 4096: Add a test with duplicate ObjectIDs
       // TODO Review 4096: Add a test with duplicate DataContainers. This should lead to a InvalidOperationException. Then change the implementation to manually iterate over the DataContainers and add them to a Dictionary via dataContainersByID[dc.ID] = dc.
+      // TODO Review 4096: Add a test with null DataContainers. This should not cause an exception, the DataContainers are ignored.
+      // TODO Review 4096: Add a test with a null ObjectID. The result stream should contain null for this ID.
+      // TODO Review 4096: Add a test where an ObjectID has no matching DataContainer. The result stream should contain null for this ID.
 
       var dataContainersByID = _command.Execute (executionContext).ToDictionary (c => c.ID);
       return _objectIDs.Select (id => dataContainersByID.GetValueOrDefault (id));
