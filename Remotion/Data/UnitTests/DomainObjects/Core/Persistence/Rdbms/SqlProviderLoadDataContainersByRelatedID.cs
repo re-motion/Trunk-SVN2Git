@@ -83,5 +83,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.IsNotNull (orderContainers);
       Assert.AreEqual (5, orderContainers.Count);
     }
+
+    [Test]
+    public void LoadDataContainersByRelatedID_WithStorageClassTransactionProperty ()
+    {
+      var relationEndPointDefinition = GetEndPointDefinition (typeof (Computer), "EmployeeTransactionProperty");
+
+      var result = Provider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointDefinition,
+          null,
+          DomainObjectIDs.Employee1);
+      Assert.IsNotNull (result);
+      Assert.AreEqual (0, result.Count);
+    }
   }
 }
