@@ -67,6 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
+          // TODO 4078: Add a test with mocks and use yield return to fix the test - see MultiDataContainerLoadCommand.
           return _objectIDReader.ReadSequence (reader);
         }
       }
