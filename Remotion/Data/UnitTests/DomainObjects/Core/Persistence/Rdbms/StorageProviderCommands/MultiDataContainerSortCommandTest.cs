@@ -55,5 +55,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       Assert.That (result, Is.EqualTo(new[] { _order1Container, _order2Container, null }));
     }
+
+    [Test]
+    public void Execute_DuplicatedObjectID ()
+    {
+      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
+
+      var order3Container = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, order3Container });
+
+      var result = command.Execute (_executionContext).ToList ();
+
+      Assert.That (result, Is.EqualTo (new[] { order3Container })); //TODO 4078: correct??
+    }
+
+    [Test]
+    public void Execute_DuplicatedDataContainer ()
+    {
+      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
+
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, _order1Container });
+
+      var result = command.Execute (_executionContext).ToList ();
+
+      Assert.That (result, Is.EqualTo (new[] { _order1Container }));
+    }
+
+    [Test]
+    public void Execute_NullDataContainer ()
+    {
+      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
+
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, null });
+
+      var result = command.Execute (_executionContext).ToList ();
+
+      Assert.That (result, Is.EqualTo (new[] { _order1Container }));
+    }
+
+    [Test]
+    public void Execute_NullObjectID ()
+    {
+      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1, null }, _commandStub);
+
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container });
+
+      var result = command.Execute (_executionContext).ToList ();
+
+      Assert.That (result, Is.EqualTo (new[] { _order1Container, null }));
+    }
   }
 }
