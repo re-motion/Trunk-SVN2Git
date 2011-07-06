@@ -16,10 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
@@ -33,11 +36,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public class RdbmsProviderCommandFactory : IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>
   {
-    private readonly SingleDataContainerLookupCommandFactory _singleDataContainerLookupCommandFactory;
-    private readonly MultiDataContainerLookupCommandFactory _multiDataContainerLookupCommandFactory;
-    private readonly RelatedDataContainerLookupCommandFactory _relatedDataContainerLookupCommandFactory;
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IDataContainerReader _dataContainerReader;
+    private readonly IObjectIDReader _objectIDReader;
+    private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public RdbmsProviderCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
@@ -52,30 +54,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _dataContainerReader = dataContainerReader;
-      _singleDataContainerLookupCommandFactory = new SingleDataContainerLookupCommandFactory (
-          dbCommandBuilderFactory, dataContainerReader, rdbmsPersistenceModelProvider);
-      _multiDataContainerLookupCommandFactory = new MultiDataContainerLookupCommandFactory (
-          dbCommandBuilderFactory, dataContainerReader, rdbmsPersistenceModelProvider);
-      _relatedDataContainerLookupCommandFactory = new RelatedDataContainerLookupCommandFactory (
-          dbCommandBuilderFactory,
-          this,
-          dataContainerReader,
-          objectIDReader,
-          rdbmsPersistenceModelProvider);
+      _objectIDReader = objectIDReader;
+      _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
     public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return _singleDataContainerLookupCommandFactory.CreateCommand (objectID);
+      var table = GetTableDefinition (objectID);
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
+          table,
+          AllSelectedColumnsSpecification.Instance,
+          objectID);
+      return new SingleDataContainerLoadCommand (dbCommandBuilder, _dataContainerReader);
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForMultiIDLookup (ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      return _multiDataContainerLookupCommandFactory.CreateCommand (objectIDs);
+      var dbCommandBuilders = from id in objectIDs
+                              let tableDefinition = GetTableDefinition (id)
+                              group id by tableDefinition
+                                into idsByTable
+                                select CreateIDLookupDbCommandBuilder (idsByTable.Key, idsByTable.ToArray ());
+      var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders, false, _dataContainerReader);
+      return new MultiDataContainerSortCommand (objectIDs, multiDataContainerLoadCommand);
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForRelationLookup (
@@ -84,7 +89,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
 
-      return _relatedDataContainerLookupCommandFactory.CreateCommand (foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition);
+      return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> (
+         _rdbmsPersistenceModelProvider.GetEntityDefinition (foreignKeyEndPoint.ClassDefinition),
+         (table, continuation) => CreateForDirectRelationLookup (table, foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition),
+         (filterView, continuation) => continuation (filterView.BaseEntity),
+         (unionView, continuation) => CreateForIndirectRelationLookup (unionView, foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition),
+         (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)
@@ -92,6 +102,71 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("query", query);
 
       return new MultiDataContainerLoadCommand (new[] { _dbCommandBuilderFactory.CreateForQuery (query) }, true, _dataContainerReader);
+    }
+
+    private TableDefinition GetTableDefinition (ObjectID objectID)
+    {
+      return InlineEntityDefinitionVisitor.Visit<TableDefinition> (
+          _rdbmsPersistenceModelProvider.GetEntityDefinition (objectID.ClassDefinition),
+          (table, continuation) => table,
+          (filterView, continuation) => continuation (filterView.BaseEntity),
+          (unionView, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a UnionViewDefinition."); },
+          (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
+    }
+
+    private IDbCommandBuilder CreateIDLookupDbCommandBuilder (TableDefinition tableDefinition, ObjectID[] objectIDs)
+    {
+      if (objectIDs.Length > 1)
+        return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs);
+      else
+        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs[0]);
+    }
+
+    private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDirectRelationLookup (
+        TableDefinition tableDefinition,
+        RelationEndPointDefinition foreignKeyEndPoint,
+        ObjectID foreignKeyValue,
+        SortExpressionDefinition sortExpression)
+    {
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
+          tableDefinition,
+          AllSelectedColumnsSpecification.Instance,
+          _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
+          foreignKeyValue,
+          GetOrderedColumns (sortExpression));
+      return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, _dataContainerReader);
+    }
+
+    private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForIndirectRelationLookup (
+        UnionViewDefinition unionViewDefinition,
+        RelationEndPointDefinition foreignKeyEndPoint,
+        ObjectID foreignKeyValue,
+        SortExpressionDefinition sortExpression)
+    {
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
+          unionViewDefinition,
+          new SelectedColumnsSpecification (new[] { unionViewDefinition.ObjectIDColumn, unionViewDefinition.ClassIDColumn }),
+          _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
+          foreignKeyValue,
+          GetOrderedColumns (sortExpression));
+
+      var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, _objectIDReader);
+      return new IndirectDataContainerLoadCommand (objectIDLoadCommand, this);
+    }
+
+    private IOrderedColumnsSpecification GetOrderedColumns (SortExpressionDefinition sortExpression)
+    {
+      if (sortExpression == null)
+        return EmptyOrderedColumnsSpecification.Instance;
+
+      Assertion.IsTrue (sortExpression.SortedProperties.Count > 0, "The sort-epression must have at least one sorted property.");
+
+      var columns = from spec in sortExpression.SortedProperties
+                    let column = _rdbmsPersistenceModelProvider.GetColumnDefinition (spec.PropertyDefinition)
+                    from simpleColumn in SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { column })
+                    select Tuple.Create (simpleColumn, spec.Order);
+
+      return new OrderedColumnsSpecification (columns);
     }
   }
 }
