@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (relationEndPointDefinition == null)
         return columnDefinition;
 
-      return CreateRelationColumnDefinition (propertyDefinition, _providerDefinitionFinder, relationEndPointDefinition, columnDefinition);
+      return CreateRelationColumnDefinition (propertyDefinition, relationEndPointDefinition, columnDefinition);
     }
 
     public SimpleColumnDefinition CreateObjectIDColumnDefinition ()
@@ -88,18 +88,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     protected virtual IDColumnDefinition CreateRelationColumnDefinition (
         PropertyDefinition propertyDefinition,
-        IStorageProviderDefinitionFinder providerDefinitionFinder,
         IRelationEndPointDefinition relationEndPointDefinition,
         SimpleColumnDefinition foreignKeyColumnDefinition)
     {
-      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
-      ClassDefinition classDefinition = oppositeEndPointDefinition.ClassDefinition;
-      var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (classDefinition.StorageGroupType, null);
-      ClassDefinition classDefinition1 = propertyDefinition.ClassDefinition;
-      var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (classDefinition1.StorageGroupType, null);
+      var leftProvider = _providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition.StorageGroupType,  null);
+      var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+      var rightProvider = _providerDefinitionFinder.GetStorageProviderDefinition (rightEndPointDefinition.ClassDefinition.StorageGroupType, null);
 
-      if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
-          && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)
+      if (rightEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy && leftProvider.Name == rightProvider.Name)
       {
         var classIdColumnDefinition = new SimpleColumnDefinition (
             _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
@@ -111,7 +107,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         return new IDColumnDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
       }
       else
+      {
         return new IDColumnDefinition (foreignKeyColumnDefinition, null);
+      }
     }
 
     protected virtual bool MustBeNullable (PropertyDefinition propertyDefinition)
