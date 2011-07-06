@@ -243,8 +243,10 @@
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />
+    <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
+    <Compile Include="Persistence\Rdbms\RdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\RdbmsProviderCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\DataReaders\DataContainerReader.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\AllSelectedColumnsSpecification.cs" />
