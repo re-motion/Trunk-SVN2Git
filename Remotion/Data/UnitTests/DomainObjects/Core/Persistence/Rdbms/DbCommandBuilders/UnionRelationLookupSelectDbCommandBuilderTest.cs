@@ -95,10 +95,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _table3 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table3"));
     }
 
-    // TODO Review 4065: Add a test with only one unioned table.
+    [Test]
+    public void Create_WithOneUnionedTable ()
+    {
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
+      _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
+      _sqlDialectMock.Replay ();
+
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, null, _table1);
+
+      var builder = new UnionRelationLookupSelectDbCommandBuilder (
+          unionViewDefinition,
+          _selectedColumnsStub,
+          _foreignKeyColumnDefinition,
+          _objectID,
+          _orderedColumnsStub,
+          _sqlDialectMock,
+          _valueConverterStub);
+
+      var result = builder.Create (_commandExecutionContextStub);
+
+      Assert.That (
+          result.CommandText,
+          Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [Table1] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
+      Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
+      _dataParameterCollectionMock.VerifyAllExpectations ();
+      _sqlDialectMock.VerifyAllExpectations ();
+    }
 
     [Test]
-    public void Create ()
+    public void Create_WithSeveralUnionedTables ()
     {
       _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
       _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
