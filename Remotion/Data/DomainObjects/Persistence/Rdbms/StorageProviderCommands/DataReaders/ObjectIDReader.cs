@@ -34,12 +34,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _valueConverter = valueConverter;
     }
 
-    // TODO Review 4072: Make this symmetric to DataContainerReader: return null when no data can be read. (ReadSequence cannot call Read any longer.)
     public ObjectID Read (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      return _valueConverter.GetID (dataReader);
+      if (dataReader.Read ())
+        return _valueConverter.GetID (dataReader);
+      else
+        return null;
     }
 
     public IEnumerable<ObjectID> ReadSequence (IDataReader dataReader)
@@ -47,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       while (dataReader.Read ())
-        yield return Read(dataReader);
+        yield return _valueConverter.GetID (dataReader);
     }
   }
 }

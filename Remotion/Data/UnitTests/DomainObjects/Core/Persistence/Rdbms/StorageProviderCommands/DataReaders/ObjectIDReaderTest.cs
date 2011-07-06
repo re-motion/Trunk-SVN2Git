@@ -26,7 +26,7 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.DataReaders
 {
   [TestFixture]
-  public class ObjectIDFactoryTest : SqlProviderBaseTest
+  public class ObjectIDReaderTest : SqlProviderBaseTest
   {
     private IDataReader _dataReaderStub;
     private ObjectIDReader _reader;
@@ -46,20 +46,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
-    public void Read ()
+    public void Read_DataReaderReadFalse ()
     {
+      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+
       _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID); 
 
       var result = _reader.Read (_dataReaderStub);
 
-      Assert.That (result, Is.SameAs(_objectID));
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void Read_DataReaderReadTrue ()
+    {
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once();
+
+      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID);
+
+      var result = _reader.Read (_dataReaderStub);
+
+      Assert.That (result, Is.SameAs (_objectID));
     }
 
     [Test]
     public void ReadSequence ()
     {
       var objectID2 = new ObjectID ("OrderItem", Guid.NewGuid ());
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Twice ();
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Twice();
       _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
       _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID).Repeat.Once ();
       _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (objectID2).Repeat.Once ();
@@ -80,8 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       Assert.That (result, Is.Empty);
     }
-
-    
     
   }
 }
