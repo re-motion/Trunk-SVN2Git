@@ -29,43 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   {
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IDataContainerReader _dataContainerReader;
-
-    private class EntityDefinitionVisitor : IEntityDefinitionVisitor
-    {
-      private TableDefinition _tableDefinition;
-
-      public TableDefinition TableDefinition
-      {
-        get { return _tableDefinition; }
-      }
-
-      public void VisitTableDefinition (TableDefinition tableDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
-
-        _tableDefinition = tableDefinition;
-      }
-
-      public void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
-
-        throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a UnionViewDefinition.");
-      }
-
-      public void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
-
-        filterViewDefinition.BaseEntity.Accept (this);
-      }
-
-      public void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
-      {
-        //Nothing to do here
-      }
-    }
-
+    
     public MultiDataContainerLookupCommandFactory (IDbCommandBuilderFactory dbCommandBuilderFactory, IDataContainerReader dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
@@ -79,13 +43,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     {
       ArgumentUtility.CheckNotNull ("ids", ids);
 
-      // TODO 4090: Replace visitor with InlineEntityDefinitionVisitor
-      // TODO 4090: Remove nested EntityDefinitionVisitor
-      var visitor = new EntityDefinitionVisitor();
-
       var objectIDs = ids.ToList();
       var dbCommandBuilders = from id in objectIDs
-                              let tableDefinition = GetTableDefinition (id, visitor)
+                              let tableDefinition = GetTableDefinition (id)
                               group id by tableDefinition
                               into idsByTable
                               select CreateDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
@@ -93,10 +53,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       return new MultiDataContainerSortCommand (objectIDs, multiDataContainerLoadCommand);
     }
 
-    private TableDefinition GetTableDefinition (ObjectID objectID, EntityDefinitionVisitor visitor)
+    private TableDefinition GetTableDefinition (ObjectID objectID)
     {
-      ((IEntityDefinition) objectID.ClassDefinition.StorageEntityDefinition).Accept (visitor);
-      return visitor.TableDefinition;
+      return InlineEntityDefinitionVisitor.Visit<TableDefinition> (
+          (IEntityDefinition) objectID.ClassDefinition.StorageEntityDefinition,
+          (table, continuation) => table,
+          (filterView, continuation) => continuation (filterView.BaseEntity),
+          (unionView, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a UnionViewDefinition."); },
+          (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
     }  
 
     private IDbCommandBuilder CreateDbCommandBuilder (TableDefinition tableDefinition, ObjectID[] objectIDs)
