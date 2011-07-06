@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 

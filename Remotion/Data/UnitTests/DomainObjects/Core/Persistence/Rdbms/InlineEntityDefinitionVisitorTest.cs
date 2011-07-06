@@ -16,11 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
   public class InlineEntityDefinitionVisitorTest : StandardMappingTest

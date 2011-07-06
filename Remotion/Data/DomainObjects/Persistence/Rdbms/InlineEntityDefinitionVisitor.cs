@@ -18,9 +18,8 @@ using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  // TODO 4090: Tests
   /// <summary>
   /// Visits the given <see cref="IEntityDefinition"/> and executes a handler based on the entity's type.
   /// </summary>

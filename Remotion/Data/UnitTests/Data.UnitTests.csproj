@@ -347,10 +347,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptGeneratorDatabaseIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptGeneratorIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestableSqlStorageObjectFactory.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\InlineEntityDefinitionVisitorTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\MultiDataContainerLookupCommandFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\RelatedDataContainerLookupCommandFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\SingleDataContainerLookupCommandFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\InlineEntityDefinitionVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiDataContainerLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSortCommandTest.cs" />

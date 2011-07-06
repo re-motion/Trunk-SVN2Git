@@ -427,12 +427,9 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SqlSecondaryXmlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlSecondaryXmlIndexKind.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlIndexDefinitionBase.cs" />
-    <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\InlineEntityDefinitionVisitor.cs" />
-    <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\RelatedDataContainerLookupCommandFactory.cs" />
-    <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\SingleDataContainerLookupCommandFactory.cs" />
+    <Compile Include="Persistence\Rdbms\InlineEntityDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerLoadCommand.cs" />
-    <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\MultiDataContainerLookupCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSortCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleDataContainerLoadCommand.cs" />
