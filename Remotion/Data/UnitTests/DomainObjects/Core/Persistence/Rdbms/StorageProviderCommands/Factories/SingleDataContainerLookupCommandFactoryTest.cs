@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Data
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -49,7 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
 
-      _factory = new SingleDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerReaderStub);
+      _factory = new SingleDataContainerLookupCommandFactory (
+          _dbCommandBuilderFactoryStub, _dataContainerReaderStub, new RdbmsPersistenceModelProvider());
 
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
     }
@@ -74,8 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void CreateCommand_UnionViewDefinition ()
     {
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
-          TestDomainStorageProviderDefinition, 
-          new EntityNameDefinition (null, "ViewName"), 
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "ViewName"),
           _tableDefinition);
 
       var objectID = CreateObjectID (unionViewDefinition);
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilderStub);
 
-     _factory.CreateCommand (objectID);
+      _factory.CreateCommand (objectID);
     }
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)

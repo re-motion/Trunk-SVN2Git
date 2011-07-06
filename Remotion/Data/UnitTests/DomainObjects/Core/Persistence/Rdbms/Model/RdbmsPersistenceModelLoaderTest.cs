@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -87,7 +88,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition1)).Return (_testModel.TableClassDefinition1.ID);
       _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition2)).Return (_testModel.TableClassDefinition2.ID);
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
-          _entityDefinitionFactoryMock, _columnDefinitionFactoryMock, _storageProviderDefinition, _storageNameProviderStub);
+          _entityDefinitionFactoryMock,
+          _columnDefinitionFactoryMock,
+          _storageProviderDefinition,
+          _storageNameProviderStub,
+          new RdbmsPersistenceModelProvider());
     }
 
     [Test]

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 
@@ -71,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageNameProvider,
           _storageProviderDefinition);
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
-          _entityDefinitionFactory, _columnDefinitionFactory, _storageProviderDefinition, _storageNameProvider);
+          _entityDefinitionFactory, _columnDefinitionFactory, _storageProviderDefinition, _storageNameProvider, new RdbmsPersistenceModelProvider());
 
       _fakeBaseBaseColumnDefinition = new SimpleColumnDefinition ("BaseBaseProperty", typeof (string), "nvarchar (max)", true, false);
       _fakeBaseColumnDefinition = new SimpleColumnDefinition ("BaseProperty", typeof (string), "nvarchar (max)", true, false);

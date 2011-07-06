@@ -73,7 +73,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _tableDefinition);
 
       _factory = new RelatedDataContainerLookupCommandFactory (
-          _dbCommandBuilderFactoryStub, _storageProviderCommandFactory, _dataContainerReaderStub, _objectIDReaderStub);
+          _dbCommandBuilderFactoryStub,
+          _storageProviderCommandFactory,
+          _dataContainerReaderStub,
+          _objectIDReaderStub,
+          new RdbmsPersistenceModelProvider());
 
       _foreignKeyValue = CreateObjectID (_tableDefinition);
       _foreignKeyColumnDefinition = new IDColumnDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
@@ -115,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           classDefinition, typeof (Order).GetProperty ("OrderNumber"), ColumnDefinitionObjectMother.ObjectIDColumn, SortOrder.Descending);
       var sortedPropertySpecification2 = CreateSortedPropertySpecification (
           classDefinition, typeof (Order).GetProperty ("OrderNumber"), ColumnDefinitionObjectMother.ObjectIDColumn, SortOrder.Ascending);
-      
+
       var expectedOrderedColumns = new[]
                                    {
                                        Tuple.Create (ColumnDefinitionObjectMother.ObjectIDColumn, SortOrder.Descending),
@@ -194,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var relationEndPointDefinition = new RelationEndPointDefinition (idPropertyDefinition, false);
       var sortedPropertySpecification1 = new SortedPropertySpecification (sortPropertyDefinition, SortOrder.Descending);
       var sortedPropertySpecification2 = new SortedPropertySpecification (sortPropertyDefinition, SortOrder.Ascending);
-      
+
       var expectedSelectedColumns = new[] { _unionViewDefinition.ObjectIDColumn, _unionViewDefinition.ClassIDColumn };
       var expectedOrderedColumns = new[] { Tuple.Create (objectIDColumn, SortOrder.Descending), Tuple.Create (objectIDColumn, SortOrder.Ascending) };
       _dbCommandBuilderFactoryStub

@@ -34,22 +34,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
     private readonly IDataContainerReader _dataContainerReader;
     private readonly IObjectIDReader _objectIDReader;
+    private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public RelatedDataContainerLookupCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
         IDataContainerReader dataContainerReader,
-        IObjectIDReader objectIDReader)
+        IObjectIDReader objectIDReader,
+        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
       ArgumentUtility.CheckNotNull ("objectIDReader", objectIDReader);
+      ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _storageProviderCommandFactory = storageProviderCommandFactory;
       _dataContainerReader = dataContainerReader;
       _objectIDReader = objectIDReader;
+      _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (
@@ -61,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
 
       return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> (
-          (IEntityDefinition) foreignKeyEndPoint.ClassDefinition.StorageEntityDefinition,
+          _rdbmsPersistenceModelProvider.GetEntityDefinition(foreignKeyEndPoint.ClassDefinition),
           (table, continuation) => CreateDirectDataContainerLoadCommand (
               table,
               foreignKeyEndPoint,
@@ -88,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
           tableDefinition,
           AllSelectedColumnsSpecification.Instance,
-          ((IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition),
+          _rdbmsPersistenceModelProvider.GetIDColumnDefinition(foreignKeyEndPoint),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
       return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, dataContainerReader);
@@ -104,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
           unionViewDefinition,
           new SelectedColumnsSpecification (new[] { unionViewDefinition.ObjectIDColumn, unionViewDefinition.ClassIDColumn }),
-          (IDColumnDefinition) foreignKeyEndPoint.PropertyDefinition.StoragePropertyDefinition,
+          _rdbmsPersistenceModelProvider.GetIDColumnDefinition(foreignKeyEndPoint),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
 
@@ -120,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       Assertion.IsTrue (sortExpression.SortedProperties.Count > 0, "The sort-epression must have at least one sorted property.");
 
       var columns = from spec in sortExpression.SortedProperties
-                    let column = (IColumnDefinition) spec.PropertyDefinition.StoragePropertyDefinition
+                    let column = _rdbmsPersistenceModelProvider.GetColumnDefinition(spec.PropertyDefinition)
                     from simpleColumn in SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { column })
                     select Tuple.Create (simpleColumn, spec.Order);
 

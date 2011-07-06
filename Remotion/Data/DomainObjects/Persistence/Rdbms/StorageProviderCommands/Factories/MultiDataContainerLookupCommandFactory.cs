@@ -29,14 +29,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   {
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IDataContainerReader _dataContainerReader;
-    
-    public MultiDataContainerLookupCommandFactory (IDbCommandBuilderFactory dbCommandBuilderFactory, IDataContainerReader dataContainerReader)
+    private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
+
+    public MultiDataContainerLookupCommandFactory (
+        IDbCommandBuilderFactory dbCommandBuilderFactory,
+        IDataContainerReader dataContainerReader,
+        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
+      ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _dataContainerReader = dataContainerReader;
+      _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateCommand (IEnumerable<ObjectID> ids)
@@ -56,12 +62,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private TableDefinition GetTableDefinition (ObjectID objectID)
     {
       return InlineEntityDefinitionVisitor.Visit<TableDefinition> (
-          (IEntityDefinition) objectID.ClassDefinition.StorageEntityDefinition,
+          _rdbmsPersistenceModelProvider.GetEntityDefinition(objectID.ClassDefinition),
           (table, continuation) => table,
           (filterView, continuation) => continuation (filterView.BaseEntity),
           (unionView, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a UnionViewDefinition."); },
           (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
-    }  
+    }
 
     private IDbCommandBuilder CreateDbCommandBuilder (TableDefinition tableDefinition, ObjectID[] objectIDs)
     {

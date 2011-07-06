@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Tracing;
@@ -46,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var providerDefiniton = ArgumentUtility.CheckNotNullAndType<UnitTestStorageProviderStubDefinition> (
           "storageProviderDefinition", storageProviderDefinition);
-      var storageNameProvider = new ReflectionBasedStorageNameProvider ();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
 
       return new UnitTestStorageProviderStub (providerDefiniton, storageNameProvider, persistenceListener);
     }
@@ -80,18 +81,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           storageNameProvider,
           storageProviderDefinition);
 
-      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider);
+      return new RdbmsPersistenceModelLoader (
+          entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider, new RdbmsPersistenceModelProvider());
     }
 
-    public IQueryExecutor CreateLinqQueryExecutor (ClassDefinition startingClassDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    public IQueryExecutor CreateLinqQueryExecutor (
+        ClassDefinition startingClassDefinition,
+        IMethodCallTransformerProvider methodCallTransformerProvider,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
       ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
-      var generator = new UniqueIdentifierGenerator ();
+      var generator = new UniqueIdentifierGenerator();
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider), storageNameProvider);
+      var resolver = new MappingResolver (
+          new StorageSpecificExpressionResolver (storageNameProvider, new RdbmsPersistenceModelProvider()), storageNameProvider);
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));

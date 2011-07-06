@@ -51,13 +51,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
-      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader> ();
+      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _objectIDReaderStub = MockRepository.GenerateStub<IObjectIDReader>();
 
-      _factory = new RdbmsProviderCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerReaderStub, _objectIDReaderStub);
+      _factory = new RdbmsProviderCommandFactory (
+          _dbCommandBuilderFactoryStub, _dataContainerReaderStub, _objectIDReaderStub, new RdbmsPersistenceModelProvider());
 
       _entityDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
-      _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _objectID = CreateObjectID (_entityDefinition);
     }
 
@@ -100,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateForQuery ()
     {
-      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      var queryStub = MockRepository.GenerateStub<IQuery>();
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
 
       _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForQuery (queryStub)).Return (commandBuilderStub);
@@ -108,8 +109,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForDataContainerQuery (queryStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo(new[]{commandBuilderStub}));
-      Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs(_dataContainerReaderStub));
+      Assert.That (((MultiDataContainerLoadCommand) result).DbCommandBuilders, Is.EqualTo (new[] { commandBuilderStub }));
+      Assert.That (((MultiDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.True);
     }
 

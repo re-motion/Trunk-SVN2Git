@@ -40,23 +40,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IDataContainerReader _dataContainerReader;
 
     public RdbmsProviderCommandFactory (
-        IDbCommandBuilderFactory dbCommandBuilderFactory, 
-        IDataContainerReader dataContainerReader, 
-        IObjectIDReader objectIDReader)
+        IDbCommandBuilderFactory dbCommandBuilderFactory,
+        IDataContainerReader dataContainerReader,
+        IObjectIDReader objectIDReader,
+        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
       ArgumentUtility.CheckNotNull ("objectIDReader", objectIDReader);
+      ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _dataContainerReader = dataContainerReader;
-      _singleDataContainerLookupCommandFactory = new SingleDataContainerLookupCommandFactory (dbCommandBuilderFactory, dataContainerReader);
-      _multiDataContainerLookupCommandFactory = new MultiDataContainerLookupCommandFactory (dbCommandBuilderFactory, dataContainerReader);
+      _singleDataContainerLookupCommandFactory = new SingleDataContainerLookupCommandFactory (
+          dbCommandBuilderFactory, dataContainerReader, rdbmsPersistenceModelProvider);
+      _multiDataContainerLookupCommandFactory = new MultiDataContainerLookupCommandFactory (
+          dbCommandBuilderFactory, dataContainerReader, rdbmsPersistenceModelProvider);
       _relatedDataContainerLookupCommandFactory = new RelatedDataContainerLookupCommandFactory (
           dbCommandBuilderFactory,
           this,
           dataContainerReader,
-          objectIDReader);
+          objectIDReader,
+          rdbmsPersistenceModelProvider);
     }
 
     public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)

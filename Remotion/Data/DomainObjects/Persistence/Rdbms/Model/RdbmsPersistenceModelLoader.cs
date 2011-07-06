@@ -36,22 +36,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IEntityDefinitionFactory _entityDefinitionFactory;
     private readonly IStorageNameProvider _storageNameProvider;
+    private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public RdbmsPersistenceModelLoader (
         IEntityDefinitionFactory entityDefinitionFactory,
         IColumnDefinitionFactory columnDefinitionFactory,
         StorageProviderDefinition storageProviderDefinition,
-        IStorageNameProvider storageNameProvider)
+        IStorageNameProvider storageNameProvider,
+        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
       ArgumentUtility.CheckNotNull ("entityDefinitionFactory", entityDefinitionFactory);
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
 
       _entityDefinitionFactory = entityDefinitionFactory;
       _columnDefinitionFactory = columnDefinitionFactory;
       _storageProviderDefinition = storageProviderDefinition;
       _storageNameProvider = storageNameProvider;
+      _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
     public string StorageProviderID
@@ -192,7 +196,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       EnsureStorageEntitiesCreated (classDefinition);
 
-      return (IEntityDefinition) classDefinition.StorageEntityDefinition;
+      return _rdbmsPersistenceModelProvider.GetEntityDefinition(classDefinition);
     }
   }
 }

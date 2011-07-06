@@ -31,22 +31,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   {
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IDataContainerReader _dataContainerReader;
+    private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
-    public SingleDataContainerLookupCommandFactory (IDbCommandBuilderFactory dbCommandBuilderFactory, IDataContainerReader dataContainerReader)
+    public SingleDataContainerLookupCommandFactory (
+        IDbCommandBuilderFactory dbCommandBuilderFactory,
+        IDataContainerReader dataContainerReader,
+        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
+      ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _dataContainerReader = dataContainerReader;
+      _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
     public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateCommand (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      
+
       return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>> (
-          (IEntityDefinition) id.ClassDefinition.StorageEntityDefinition,
+          _rdbmsPersistenceModelProvider.GetEntityDefinition(id.ClassDefinition),
           (table, continuation) => CreateSingleDataContainerLoadCommand (table, id, _dataContainerReader),
           (filterView, continuation) => continuation (filterView.BaseEntity),
           (unionView, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a UnionViewDefinition."); },

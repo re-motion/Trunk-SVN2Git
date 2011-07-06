@@ -66,7 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
-      _factory = new MultiDataContainerLookupCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerReaderStub);
+      _factory = new MultiDataContainerLookupCommandFactory (
+          _dbCommandBuilderFactoryStub, _dataContainerReaderStub, new RdbmsPersistenceModelProvider());
     }
 
     [Test]

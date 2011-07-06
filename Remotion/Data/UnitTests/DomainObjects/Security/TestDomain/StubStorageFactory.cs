@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Tracing;
@@ -78,7 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       var entityDefinitionFactory = new EntityDefinitionFactory (
           columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitonResolver, storageNameProvider, storageProviderDefinition);
 
-      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider);
+      return new RdbmsPersistenceModelLoader (
+          entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider, new RdbmsPersistenceModelProvider());
     }
 
     public IQueryExecutor CreateLinqQueryExecutor (
@@ -92,7 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
       var generator = new UniqueIdentifierGenerator();
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider), storageNameProvider);
+      var resolver = new MappingResolver (
+          new StorageSpecificExpressionResolver (storageNameProvider, new RdbmsPersistenceModelProvider()), storageNameProvider);
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
@@ -120,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     private TableScriptBuilder CreateTableBuilder ()
     {
-      return new TableScriptBuilder (new SqlTableScriptElementFactory (), new SqlCommentScriptElementFactory ());
+      return new TableScriptBuilder (new SqlTableScriptElementFactory(), new SqlCommentScriptElementFactory());
     }
 
     private ViewScriptBuilder CreateViewBuilder ()

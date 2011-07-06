@@ -43,6 +43,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   [ConcreteImplementation (typeof (SqlStorageObjectFactory))]
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
+    private readonly RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
+
+    public SqlStorageObjectFactory ()
+    {
+      _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
+    }
+
     public StorageProvider CreateStorageProvider (
         IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
@@ -51,14 +58,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition", storageProviderDefinition);
 
       var storageNameProvider = CreateStorageNameProvider();
-      var commandFactory = CreateStorageProviderCommandFactory(rdbmsProviderDefinition, storageNameProvider);
+      var commandFactory = CreateStorageProviderCommandFactory (rdbmsProviderDefinition, storageNameProvider);
       return CreateStorageProvider (persistenceListener, rdbmsProviderDefinition, storageNameProvider, commandFactory);
     }
 
     protected virtual StorageProvider CreateStorageProvider (
         IPersistenceListener persistenceListener,
         RdbmsProviderDefinition rdbmsProviderDefinition,
-        IStorageNameProvider storageNameProvider, 
+        IStorageNameProvider storageNameProvider,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
@@ -93,7 +100,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
           columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver, storageNameProvider, storageProviderDefinition);
 
-      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider);
+      return new RdbmsPersistenceModelLoader (
+          entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider, _rdbmsPersistenceModelProvider);
     }
 
     public virtual IQueryExecutor CreateLinqQueryExecutor (
@@ -107,7 +115,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var generator = new UniqueIdentifierGenerator();
       var storageNameProvider = CreateStorageNameProvider();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider), storageNameProvider);
+      var resolver = new MappingResolver (
+          new StorageSpecificExpressionResolver (storageNameProvider, _rdbmsPersistenceModelProvider), storageNameProvider);
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
@@ -222,18 +231,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     }
 
     protected virtual IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (
-        RdbmsProviderDefinition storageProviderDefinition, 
+        RdbmsProviderDefinition storageProviderDefinition,
         IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
-      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory(valueConverter);
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter);
 
       var dataContainerReader = new DataContainerReader (valueConverter);
       var objectIDReader = new ObjectIDReader (valueConverter);
-      return new RdbmsProviderCommandFactory (dbCommandBuilderFactory, dataContainerReader, objectIDReader);
+      return new RdbmsProviderCommandFactory (dbCommandBuilderFactory, dataContainerReader, objectIDReader, _rdbmsPersistenceModelProvider);
     }
 
     protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (IValueConverter valueConverter)

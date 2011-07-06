@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
@@ -42,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       base.SetUp();
       _storageNameProvider = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProvider.Stub (stub => stub.IDColumnName).Return ("ID");
-      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_storageNameProvider);
+      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_storageNameProvider, new RdbmsPersistenceModelProvider());
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
     }
 
