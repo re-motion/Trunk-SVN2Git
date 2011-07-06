@@ -28,7 +28,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public void Accept (IColumnDefinitionVisitor visitor)
     {
-      throw new InvalidOperationException ("Unsupported properties cannot be visited.");
     }
 
     public bool Equals (IColumnDefinition other)
