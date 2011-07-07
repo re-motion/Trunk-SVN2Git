@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -397,33 +396,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    protected void Save (DbCommandBuilder commandBuilder, ObjectID id)
-    {
-      CheckDisposed();
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("id", id);
-      CheckStorageProviderID (id, "id");
-
-      using (IDbCommand command = commandBuilder.Create (this))
-      {
-        if (command == null)
-          return;
-
-        int recordsAffected;
-        try
-        {
-          recordsAffected = command.ExecuteNonQuery();
-        }
-        catch (Exception e)
-        {
-          throw CreateRdbmsProviderException (e, "Error while saving object '{0}'.", id);
-        }
-
-        if (recordsAffected != 1)
-          throw CreateConcurrencyViolationException ("Concurrency violation encountered. Object '{0}' has already been changed by someone else.", id);
-      }
-    }
-
     public new RdbmsProviderDefinition StorageProviderDefinition
     {
       get
@@ -530,6 +502,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     [Obsolete ("This method has been superseded by MultiDataContainerLoadCommand. Use that instead. (1.13.112)", true)]
     protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete ("This method has been superseded by MultiDataContainerSaveCommand. Use that instead. (1.13.113)", true)]
+    protected void Save (DbCommandBuilder commandBuilder, ObjectID id)
     {
       throw new NotImplementedException ();
     }
