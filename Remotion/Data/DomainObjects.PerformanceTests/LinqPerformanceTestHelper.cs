@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
@@ -57,7 +58,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
       var mappingResolutionStage =
-          new DefaultMappingResolutionStage (new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider), storageNameProvider), generator);
+          new DefaultMappingResolutionStage (
+              new MappingResolver (
+                  new StorageSpecificExpressionResolver (storageNameProvider, new RdbmsPersistenceModelProvider()), storageNameProvider),
+              generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       var mappingResolutionContext = new MappingResolutionContext();
 
