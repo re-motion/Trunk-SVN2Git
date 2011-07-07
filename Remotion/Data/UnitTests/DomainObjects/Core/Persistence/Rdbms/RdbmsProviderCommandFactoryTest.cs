@@ -34,7 +34,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -58,20 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private ObjectID _foreignKeyValue;
     private IDColumnDefinition _foreignKeyColumnDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private DataContainer _dataContainer1;
-    private DataContainer _dataContainer2;
-    private DataContainer _dataContainer3;
-    private DataContainer _dataContainer4;
-    private DataContainer _dataContainer5;
-    private DataContainer _dataContainer6;
-    private IDbCommandBuilder _dbCommandBuilder3Stub;
-    private IDbCommandBuilder _dbCommandBuilder4Stub;
-    private IDbCommandBuilder _dbCommandBuilder5Stub;
-    private IDbCommandBuilder _dbCommandBuilder6Stub;
-    private IDbCommandBuilder _dbCommandBuilder7Stub;
-    private IDbCommandBuilder _dbCommandBuilder8Stub;
-    private IDbCommandBuilder _dbCommandBuilder9Stub;
-    private IDbCommandBuilder _dbCommandBuilder10Stub;
 
     public override void SetUp ()
     {
@@ -86,14 +71,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilder3Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _dbCommandBuilder4Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _dbCommandBuilder5Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _dbCommandBuilder6Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _dbCommandBuilder7Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _dbCommandBuilder8Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _dbCommandBuilder9Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _dbCommandBuilder10Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
       
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
       _tableDefinition2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));
@@ -108,13 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _objectID1 = CreateObjectID (_tableDefinition1);
       _objectID2 = CreateObjectID (_tableDefinition1);
       _objectID3 = CreateObjectID (_tableDefinition2);
-
-      _dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
-      _dataContainer3 = DataContainer.CreateNew (DomainObjectIDs.Order3);
-      _dataContainer4 = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
-      _dataContainer5 = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
-      _dataContainer6 = DataContainer.CreateNew (DomainObjectIDs.OrderItem3);
     }
 
     [Test]
@@ -478,50 +448,74 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateForSave ()
     {
-      PrivateInvoke.SetNonPublicField (_dataContainer2, "_state", 0);
-      PrivateInvoke.SetNonPublicField (_dataContainer5, "_state", 0);
-      PrivateInvoke.SetNonPublicField (_dataContainer3, "_state", 2);
-      PrivateInvoke.SetNonPublicField (_dataContainer4, "_state", 2);
-      _dataContainer2.MarkAsChanged();
-      _dataContainer5.MarkAsChanged();
+      var dataContainerNew1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var dataContainerNew2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      var dataContainerUnchanged = DataContainer.CreateForExisting (DomainObjectIDs.Order3, null, pd => pd.DefaultValue);
+      var dataContainerChanged1 = DataContainer.CreateForExisting (DomainObjectIDs.Order4, null, pd => pd.DefaultValue);
+      dataContainerChanged1.MarkAsChanged();
+      var dataContainerChanged2 = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem1, null, pd => pd.DefaultValue);
+      dataContainerChanged2.MarkAsChanged();
+      var dataContainerDeleted1 = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem2, null, pd => pd.DefaultValue);
+      dataContainerDeleted1.Delete();
+      var dataContainerDeleted2 = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem3, null, pd => pd.DefaultValue);
+      dataContainerDeleted2.Delete ();
 
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForInsert (_dataContainer1)).Return (_dbCommandBuilder1Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForInsert (_dataContainer6)).Return (_dbCommandBuilder2Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer1)).Return (_dbCommandBuilder3Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer6)).Return (_dbCommandBuilder4Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer2)).Return (_dbCommandBuilder5Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer5)).Return (_dbCommandBuilder6Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer3)).Return (_dbCommandBuilder7Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer4)).Return (_dbCommandBuilder8Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForDelete (_dataContainer3)).Return (_dbCommandBuilder9Stub);
-      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForDelete (_dataContainer4)).Return (_dbCommandBuilder10Stub);
+      var insertDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var insertDbCommandBuilderNew2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var updateDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var updateDbCommandBuilderNew2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var updateDbCommandBuilderChanged1 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var updateDbCommandBuilderChanged2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var updateDbCommandBuilderDeleted1 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var updateDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var deleteDbCommandBuilderDeleted1 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var deleteDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForInsert (dataContainerNew1)).Return (insertDbCommandBuilderNew1);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForInsert (dataContainerNew2)).Return (insertDbCommandBuilderNew2);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (dataContainerNew1)).Return (updateDbCommandBuilderNew1);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (dataContainerNew2)).Return (updateDbCommandBuilderNew2);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (dataContainerChanged1)).Return (updateDbCommandBuilderChanged1);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (dataContainerChanged2)).Return (updateDbCommandBuilderChanged2);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (dataContainerDeleted1)).Return (updateDbCommandBuilderDeleted1);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (dataContainerDeleted2)).Return (updateDbCommandBuilderDeleted2);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForDelete (dataContainerDeleted1)).Return (deleteDbCommandBuilderDeleted1);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForDelete (dataContainerDeleted2)).Return (deleteDbCommandBuilderDeleted2);
 
-      var result =
-          _factory.CreateForSave (new[] { _dataContainer1, _dataContainer2, _dataContainer3, _dataContainer4, _dataContainer5, _dataContainer6 });
+      var result = _factory.CreateForSave (
+          new[] { 
+              dataContainerNew1, 
+              dataContainerChanged1, 
+              dataContainerDeleted1, 
+              dataContainerDeleted2, 
+              dataContainerUnchanged,
+              dataContainerChanged2, 
+              dataContainerNew2 });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
       var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
+      
       Assert.That (tuples.Count, Is.EqualTo (10));
-      Assert.That (tuples[0].Item1, Is.EqualTo(DomainObjectIDs.Order1));
-      Assert.That (tuples[0].Item2, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (tuples[1].Item1, Is.EqualTo (DomainObjectIDs.OrderItem3));
-      Assert.That (tuples[1].Item2, Is.SameAs(_dbCommandBuilder2Stub));
-      Assert.That (tuples[2].Item1, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (tuples[2].Item2, Is.SameAs (_dbCommandBuilder3Stub));
-      Assert.That (tuples[3].Item1, Is.EqualTo (DomainObjectIDs.OrderItem3));
-      Assert.That (tuples[3].Item2, Is.SameAs (_dbCommandBuilder4Stub));
-      Assert.That (tuples[4].Item1, Is.EqualTo(DomainObjectIDs.Order2));
-      Assert.That (tuples[4].Item2, Is.SameAs (_dbCommandBuilder5Stub));
-      Assert.That (tuples[5].Item1, Is.EqualTo (DomainObjectIDs.OrderItem2));
-      Assert.That (tuples[5].Item2, Is.SameAs (_dbCommandBuilder6Stub));
-      Assert.That (tuples[6].Item1, Is.EqualTo (DomainObjectIDs.Order3));
-      Assert.That (tuples[6].Item2, Is.SameAs (_dbCommandBuilder7Stub));
-      Assert.That (tuples[7].Item1, Is.EqualTo (DomainObjectIDs.OrderItem1));
-      Assert.That (tuples[7].Item2, Is.SameAs (_dbCommandBuilder8Stub));
-      Assert.That (tuples[8].Item1, Is.EqualTo (DomainObjectIDs.Order3));
-      Assert.That (tuples[8].Item2, Is.SameAs (_dbCommandBuilder9Stub));
-      Assert.That (tuples[9].Item1, Is.EqualTo (DomainObjectIDs.OrderItem1));
-      Assert.That (tuples[9].Item2, Is.SameAs (_dbCommandBuilder10Stub));
+      Assert.That (tuples[0].Item1, Is.EqualTo(dataContainerNew1.ID));
+      Assert.That (tuples[0].Item2, Is.SameAs (insertDbCommandBuilderNew1));
+      Assert.That (tuples[1].Item1, Is.EqualTo (dataContainerNew2.ID));
+      Assert.That (tuples[1].Item2, Is.SameAs(insertDbCommandBuilderNew2));
+      Assert.That (tuples[2].Item1, Is.EqualTo (dataContainerNew1.ID));
+      Assert.That (tuples[2].Item2, Is.SameAs (updateDbCommandBuilderNew1));
+      Assert.That (tuples[3].Item1, Is.EqualTo (dataContainerNew2.ID));
+      Assert.That (tuples[3].Item2, Is.SameAs (updateDbCommandBuilderNew2));
+      Assert.That (tuples[4].Item1, Is.EqualTo (dataContainerChanged1.ID));
+      Assert.That (tuples[4].Item2, Is.SameAs (updateDbCommandBuilderChanged1));
+      Assert.That (tuples[5].Item1, Is.EqualTo (dataContainerChanged2.ID));
+      Assert.That (tuples[5].Item2, Is.SameAs (updateDbCommandBuilderChanged2));
+      Assert.That (tuples[6].Item1, Is.EqualTo (dataContainerDeleted1.ID));
+      Assert.That (tuples[6].Item2, Is.SameAs (updateDbCommandBuilderDeleted1));
+      Assert.That (tuples[7].Item1, Is.EqualTo (dataContainerDeleted2.ID));
+      Assert.That (tuples[7].Item2, Is.SameAs (updateDbCommandBuilderDeleted2));
+      Assert.That (tuples[8].Item1, Is.EqualTo (dataContainerDeleted1.ID));
+      Assert.That (tuples[8].Item2, Is.SameAs (deleteDbCommandBuilderDeleted1));
+      Assert.That (tuples[9].Item1, Is.EqualTo (dataContainerDeleted2.ID));
+      Assert.That (tuples[9].Item2, Is.SameAs (deleteDbCommandBuilderDeleted2));
     }
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
