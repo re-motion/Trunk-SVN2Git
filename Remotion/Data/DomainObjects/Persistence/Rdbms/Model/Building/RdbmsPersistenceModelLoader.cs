@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           new OnlyOneTablePerHierarchyValidationRule(),
           new TableNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule(),
           new ClassAboveTableIsAbstractValidationRule(),
-          new ColumnNamesAreUniqueWithinInheritanceTreeValidationRule(),
+          new ColumnNamesAreUniqueWithinInheritanceTreeValidationRule(_rdbmsPersistenceModelProvider),
           new PropertyTypeIsSupportedByStorageProviderValidationRule());
     }
 

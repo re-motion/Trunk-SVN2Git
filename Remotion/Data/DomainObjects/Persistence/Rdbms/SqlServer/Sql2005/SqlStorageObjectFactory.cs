@@ -19,11 +19,9 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
@@ -45,14 +43,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   [ConcreteImplementation (typeof (SqlStorageObjectFactory))]
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
-    // TODO Review 4091: Make protected virtual Create method, call from the respective methods
-    private readonly RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
-
-    public SqlStorageObjectFactory ()
-    {
-      _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
-    }
-
     public StorageProvider CreateStorageProvider (
         IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
@@ -104,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver, storageNameProvider, storageProviderDefinition);
 
       return new RdbmsPersistenceModelLoader (
-          entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider, _rdbmsPersistenceModelProvider);
+          entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider, CreateRdbmsPersistenceModelProvider());
     }
 
     public virtual IQueryExecutor CreateLinqQueryExecutor (
@@ -119,7 +109,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var generator = new UniqueIdentifierGenerator();
       var storageNameProvider = CreateStorageNameProvider();
       var resolver = new MappingResolver (
-          new StorageSpecificExpressionResolver (storageNameProvider, _rdbmsPersistenceModelProvider), storageNameProvider);
+          new StorageSpecificExpressionResolver (storageNameProvider, CreateRdbmsPersistenceModelProvider()), storageNameProvider);
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
@@ -245,7 +235,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var dataContainerReader = new DataContainerReader (valueConverter);
       var objectIDReader = new ObjectIDReader (valueConverter);
-      return new RdbmsProviderCommandFactory (dbCommandBuilderFactory, dataContainerReader, objectIDReader, _rdbmsPersistenceModelProvider);
+      return new RdbmsProviderCommandFactory (dbCommandBuilderFactory, dataContainerReader, objectIDReader, CreateRdbmsPersistenceModelProvider());
     }
 
     protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (IValueConverter valueConverter, IStorageNameProvider storageNameProvider)
@@ -263,6 +253,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
       return new ValueConverter ((RdbmsProviderDefinition) storageProviderDefinition, storageNameProvider, typeConversionProvider);
+    }
+
+    protected virtual IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider ()
+    {
+      return new RdbmsPersistenceModelProvider();
     }
   }
 }

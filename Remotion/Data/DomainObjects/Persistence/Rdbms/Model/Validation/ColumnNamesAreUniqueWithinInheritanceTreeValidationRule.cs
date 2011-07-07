@@ -31,14 +31,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
   {
     private class ColumnDefinitionVisitor : IColumnDefinitionVisitor
     {
-      public static IEnumerable<KeyValuePair<string, List<PropertyDefinition>>> GroupByName (IEnumerable<PropertyDefinition> propertyDefinitions)
+      public static IEnumerable<KeyValuePair<string, List<PropertyDefinition>>> GroupByName (
+          IEnumerable<PropertyDefinition> propertyDefinitions, IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
       {
         var visitor = new ColumnDefinitionVisitor();
         foreach (var propertyDefinition in propertyDefinitions)
         {
           visitor._currentProperty = propertyDefinition;
-          // TODO Review 4091: Inject and use model provider
-          ((IColumnDefinition) propertyDefinition.StoragePropertyDefinition).Accept (visitor);
+          rdbmsPersistenceModelProvider.GetColumnDefinition (propertyDefinition).Accept (visitor);
         }
 
         return visitor._propertyDefinitionsByName;
@@ -69,8 +69,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
       }
     }
 
-    public ColumnNamesAreUniqueWithinInheritanceTreeValidationRule ()
+    private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
+
+    public ColumnNamesAreUniqueWithinInheritanceTreeValidationRule (IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
+      ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
+
+      _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
@@ -83,11 +88,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
         var derivedPropertyDefinitions = classDefinition.GetAllDerivedClasses()
             .SelectMany (cd => cd.MyPropertyDefinitions);
         var allPropertyDefinitions =
-            classDefinition.MyPropertyDefinitions.Concat(derivedPropertyDefinitions).Where (pd => pd.StorageClass == StorageClass.Persistent);
+            classDefinition.MyPropertyDefinitions.Concat (derivedPropertyDefinitions).Where (pd => pd.StorageClass == StorageClass.Persistent);
 
-        var groupedPropertyDefinitionsByName = ColumnDefinitionVisitor.GroupByName (allPropertyDefinitions);
+        var groupedPropertyDefinitionsByName = ColumnDefinitionVisitor.GroupByName (allPropertyDefinitions, _rdbmsPersistenceModelProvider);
         foreach (var keyValuePair in groupedPropertyDefinitionsByName)
-          validationResults.AddRange(ValidatePropertyGroup (keyValuePair.Key, keyValuePair.Value));
+          validationResults.AddRange (ValidatePropertyGroup (keyValuePair.Key, keyValuePair.Value));
       }
       return validationResults;
     }
@@ -114,9 +119,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
           }
         }
         else
-        {
-          yield return MappingValidationResult.CreateValidResult ();
-        }
+          yield return MappingValidationResult.CreateValidResult();
       }
     }
   }
