@@ -286,31 +286,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var valueConverter = CreateValueConverter();
-
-      foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.New))
-      {
-        Save (
-            new InsertDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, valueConverter),
-            dataContainer.ID);
-      }
-
-      foreach (DataContainer dataContainer in dataContainers)
-      {
-        if (dataContainer.State != StateType.Unchanged)
-        {
-          Save (
-              new UpdateDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, valueConverter),
-              dataContainer.ID);
-        }
-      }
-
-      foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.Deleted))
-      {
-        Save (
-            new DeleteDbCommandBuilder (StorageNameProvider, dataContainer, SqlDialect, valueConverter),
-            dataContainer.ID);
-      }
+      var saveCommand = _storageProviderCommandFactory.CreateForSave (dataContainers.ToArray());
+      saveCommand.Execute (this);
     }
 
     public override void SetTimestamp (DataContainerCollection dataContainers)
