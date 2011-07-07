@@ -37,6 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
         foreach (var propertyDefinition in propertyDefinitions)
         {
           visitor._currentProperty = propertyDefinition;
+          // TODO Review 4091: Inject and use model provider
           ((IColumnDefinition) propertyDefinition.StoragePropertyDefinition).Accept (visitor);
         }
 

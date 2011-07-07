@@ -45,6 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   [ConcreteImplementation (typeof (SqlStorageObjectFactory))]
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
+    // TODO Review 4091: Make protected virtual Create method, call from the respective methods
     private readonly RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public SqlStorageObjectFactory ()
