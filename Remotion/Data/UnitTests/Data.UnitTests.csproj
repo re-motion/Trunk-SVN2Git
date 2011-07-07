@@ -318,7 +318,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TableScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ViewScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\ExtendedSqlStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedScriptElementBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedSqlFilterViewScriptElementFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedSqlTableViewScriptElementFactory.cs" />
@@ -346,7 +345,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlSecondaryXmlIndexDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptGeneratorDatabaseIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptGeneratorIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestableSqlStorageObjectFactory.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Sql2005\TestableSqlStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InlineEntityDefinitionVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiDataContainerLoadCommandTest.cs" />
@@ -855,7 +854,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlDialectTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PersistenceModelLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTestMixin.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlStorageObjectFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Sql2005\SqlStorageObjectFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CountingObjectLoaderDecorator.cs" />
     <Compile Include="DomainObjects\Core\UnitTestStorageObjectFactoryStub.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationConfiguration.cs" />
@@ -892,9 +891,9 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\TestRdbmsProvider.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestMappingResolutionStageMixin.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestSqlGenerationStageMixin.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestSqlPreparationStageMixin.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Sql2005\TestMappingResolutionStageMixin.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Sql2005\TestSqlGenerationStageMixin.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Sql2005\TestSqlPreparationStageMixin.cs" />
     <Compile Include="DomainObjects\Core\ReadOnlyDomainObjectCollectionAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommandTest.cs" />

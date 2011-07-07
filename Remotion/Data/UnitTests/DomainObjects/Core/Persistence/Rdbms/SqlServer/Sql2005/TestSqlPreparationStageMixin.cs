@@ -21,7 +21,7 @@ using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Sql2005
 {
   public class TestSqlPreparationStageMixin
   {

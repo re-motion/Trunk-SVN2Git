@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
@@ -31,7 +30,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Linq.SqlBackend.MappingResolution;
@@ -41,7 +39,7 @@ using Remotion.Mixins;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Sql2005
 {
   [TestFixture]
   public class SqlStorageObjectFactoryTest
@@ -209,16 +207,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         Assert.That (Mixin.Get<TestMappingResolutionStageMixin> (executor.ResolutionStage), Is.Not.Null);
         Assert.That (Mixin.Get<TestSqlGenerationStageMixin> (executor.GenerationStage), Is.Not.Null);
       }
-    }
-
-    [Test]
-    public void ExtendedSqlStorageObjectFactory_CreateSchemaScriptBuilder ()
-    {
-      var storageObjectFactory = new ExtendedSqlStorageObjectFactory();
-
-      var schemaScriptBuilder = storageObjectFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
-
-      Assert.That (schemaScriptBuilder, Is.TypeOf (typeof (ExtendedScriptElementBuilder)));
     }
   }
 }
