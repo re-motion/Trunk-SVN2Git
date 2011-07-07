@@ -87,82 +87,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _voidReceiverMock.VerifyAllExpectations();
     }
 
-    // TODO Review 4090: Adapt other tests to use mocks
-
     [Test]
     public void Visit_WithoutResult_FilterViewDefinition ()
     {
-      var count = 0;
-      InlineEntityDefinitionVisitor.Visit (
-          _filterViewDefinition,
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (fv, continuation) =>
-          {
-            count++;
-            Assert.That (fv.ViewName.EntityName, Is.EqualTo ("FilterView"));
-          },
-          (uv, continuation) => { throw new InvalidOperationException(); },
-          (ne, continuation) => { throw new InvalidOperationException(); });
-
-      Assert.That (count, Is.EqualTo (1));
-    }
-
-    [Test]
-    public void Visit_WithoutResult_FilterViewDefinition_WithContinuation ()
-    {
-      var filterCount = 0;
-      var tableCount = 0;
+      _voidReceiverMock.Expect (mock => mock.HandleFilterViewDefinition (Arg.Is (_filterViewDefinition), Arg<Action<IEntityDefinition>>.Is.Anything));
+      _voidReceiverMock.Replay ();
 
       InlineEntityDefinitionVisitor.Visit (
           _filterViewDefinition,
-          (td, continuation) =>
-          {
-            tableCount++;
-            Assert.That (td.TableName.EntityName, Is.EqualTo ("Table"));
-          },
-          (fv, continuation) =>
-          {
-            filterCount++;
-            Assert.That (fv.ViewName.EntityName, Is.EqualTo ("FilterView"));
-            continuation (fv.BaseEntity);
-          },
-          (uv, continuation) => { throw new InvalidOperationException(); },
-          (ne, continuation) => { throw new InvalidOperationException(); });
+          _voidReceiverMock.HandleTableDefinition,
+          _voidReceiverMock.HandleFilterViewDefinition,
+          _voidReceiverMock.HandleUnionViewDefinition,
+          _voidReceiverMock.HandleNullEntityDefinition);
 
-      Assert.That (filterCount, Is.EqualTo (1));
-      Assert.That (tableCount, Is.EqualTo (1));
+      _voidReceiverMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void Visit_WithoutResult_UnionViewDefinition ()
     {
-      var count = 0;
+      _voidReceiverMock.Expect (mock => mock.HandleUnionViewDefinition (Arg.Is (_unionViewDefinition), Arg<Action<IEntityDefinition>>.Is.Anything));
+      _voidReceiverMock.Replay ();
+ 
       InlineEntityDefinitionVisitor.Visit (
           _unionViewDefinition,
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (fv, continuation) => { throw new InvalidOperationException(); },
-          (uv, continuation) =>
-          {
-            count++;
-            Assert.That (uv.ViewName.EntityName, Is.EqualTo ("UnionView"));
-          },
-          (ne, continuation) => { throw new InvalidOperationException(); });
+          _voidReceiverMock.HandleTableDefinition,
+          _voidReceiverMock.HandleFilterViewDefinition,
+          _voidReceiverMock.HandleUnionViewDefinition,
+          _voidReceiverMock.HandleNullEntityDefinition);
 
-      Assert.That (count, Is.EqualTo (1));
+      _voidReceiverMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void Visit_WithoutResult_NullEntityDefinition ()
     {
-      var count = 0;
+      _voidReceiverMock.Expect (mock => mock.HandleNullEntityDefinition (Arg.Is (_nullEntityDefinition), Arg<Action<IEntityDefinition>>.Is.Anything));
+      _voidReceiverMock.Replay ();
+
       InlineEntityDefinitionVisitor.Visit (
           _nullEntityDefinition,
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (fv, continuation) => { throw new InvalidOperationException(); },
-          (uv, continuation) => { throw new InvalidOperationException(); },
-          (ne, continuation) => { count++; });
+          _voidReceiverMock.HandleTableDefinition,
+          _voidReceiverMock.HandleFilterViewDefinition,
+          _voidReceiverMock.HandleUnionViewDefinition,
+          _voidReceiverMock.HandleNullEntityDefinition);
 
-      Assert.That (count, Is.EqualTo (1));
+      _voidReceiverMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -220,107 +190,77 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void Visit_WithResult_TableDefinition ()
     {
-      var count = 0;
-      var result = InlineEntityDefinitionVisitor.Visit<object> (
-          _tableDefinition,
-          (td, continuation) =>
-          {
-            count++;
-            Assert.That (td.TableName.EntityName, Is.EqualTo ("Table"));
-            return _fakeResult;
-          },
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (td, continuation) => { throw new InvalidOperationException(); });
+      _nonVoidReceiverMock
+        .Expect (mock => mock.HandleTableDefinition(Arg.Is (_tableDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+        .Return("test");
+      _nonVoidReceiverMock.Replay ();
 
-      Assert.That (count, Is.EqualTo (1));
-      Assert.That (result, Is.SameAs (_fakeResult));
+      var result = InlineEntityDefinitionVisitor.Visit<string> (
+          _tableDefinition,
+          _nonVoidReceiverMock.HandleTableDefinition,
+          _nonVoidReceiverMock.HandleFilterViewDefinition,
+          _nonVoidReceiverMock.HandleUnionViewDefinition,
+          _nonVoidReceiverMock.HandleNullEntityDefinition);
+
+      _nonVoidReceiverMock.VerifyAllExpectations();
+      Assert.That (result, Is.EqualTo ("test"));
     }
 
     [Test]
     public void Visit_WithResult_FilterViewDefinition ()
     {
-      var count = 0;
-      var result = InlineEntityDefinitionVisitor.Visit<object> (
+      _nonVoidReceiverMock
+        .Expect (mock => mock.HandleFilterViewDefinition (Arg.Is (_filterViewDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+        .Return ("test");
+      _nonVoidReceiverMock.Replay();
+
+      var result = InlineEntityDefinitionVisitor.Visit<string> (
           _filterViewDefinition,
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (fv, continuation) =>
-          {
-            count++;
-            Assert.That (fv.ViewName.EntityName, Is.EqualTo ("FilterView"));
-            return _fakeResult;
-          },
-          (uv, continuation) => { throw new InvalidOperationException(); },
-          (ne, continuation) => { throw new InvalidOperationException(); });
+          _nonVoidReceiverMock.HandleTableDefinition,
+          _nonVoidReceiverMock.HandleFilterViewDefinition,
+          _nonVoidReceiverMock.HandleUnionViewDefinition,
+          _nonVoidReceiverMock.HandleNullEntityDefinition);
 
-      Assert.That (count, Is.EqualTo (1));
-      Assert.That (result, Is.SameAs (_fakeResult));
-    }
-
-    [Test]
-    public void Visit_WithResult_FilterViewDefinition_WithContinuation ()
-    {
-      var tableCount = 0;
-      var filterCount = 0;
-      var result = InlineEntityDefinitionVisitor.Visit<object> (
-          _filterViewDefinition,
-          (td, continuation) =>
-          {
-            tableCount++;
-            Assert.That (td.TableName.EntityName, Is.EqualTo ("Table"));
-            return _fakeResult;
-          },
-          (fv, continuation) =>
-          {
-            filterCount++;
-            Assert.That (fv.ViewName.EntityName, Is.EqualTo ("FilterView"));
-            return continuation(fv.BaseEntity);
-          },
-          (uv, continuation) => { throw new InvalidOperationException (); },
-          (ne, continuation) => { throw new InvalidOperationException (); });
-
-      Assert.That (filterCount, Is.EqualTo (1));
-      Assert.That (tableCount, Is.EqualTo (1));
-      Assert.That (result, Is.SameAs (_fakeResult));
+      _nonVoidReceiverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo ("test"));
     }
 
     [Test]
     public void Visit_WithResult_UnionViewDefinition ()
     {
-      var count = 0;
-      var result = InlineEntityDefinitionVisitor.Visit<object> (
-          _unionViewDefinition,
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (fv, continuation) => { throw new InvalidOperationException(); },
-          (uv, continuation) =>
-          {
-            count++;
-            Assert.That (uv.ViewName.EntityName, Is.EqualTo ("UnionView"));
-            return _fakeResult;
-          },
-          (ne, continuation) => { throw new InvalidOperationException(); });
+      _nonVoidReceiverMock
+        .Expect (mock => mock.HandleUnionViewDefinition (Arg.Is (_unionViewDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+        .Return ("test");
+      _nonVoidReceiverMock.Replay ();
 
-      Assert.That (count, Is.EqualTo (1));
-      Assert.That (result, Is.SameAs (_fakeResult));
+      var result = InlineEntityDefinitionVisitor.Visit<string> (
+          _unionViewDefinition,
+          _nonVoidReceiverMock.HandleTableDefinition,
+          _nonVoidReceiverMock.HandleFilterViewDefinition,
+          _nonVoidReceiverMock.HandleUnionViewDefinition,
+          _nonVoidReceiverMock.HandleNullEntityDefinition);
+
+      _nonVoidReceiverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo ("test"));
     }
 
     [Test]
     public void Visit_WithResult_NullEntityDefinition ()
     {
-      var count = 0;
-      var result = InlineEntityDefinitionVisitor.Visit<object> (
-          _nullEntityDefinition,
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (fv, continuation) => { throw new InvalidOperationException(); },
-          (uv, continuation) => { throw new InvalidOperationException(); },
-          (ne, continuation) =>
-          {
-            count++;
-            return _fakeResult;
-          });
+      _nonVoidReceiverMock
+        .Expect (mock => mock.HandleNullEntityDefinition (Arg.Is (_nullEntityDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+        .Return ("test");
+      _nonVoidReceiverMock.Replay ();
 
-      Assert.That (count, Is.EqualTo (1));
-      Assert.That (result, Is.SameAs (_fakeResult));
+      var result = InlineEntityDefinitionVisitor.Visit<string> (
+          _nullEntityDefinition,
+          _nonVoidReceiverMock.HandleTableDefinition,
+          _nonVoidReceiverMock.HandleFilterViewDefinition,
+          _nonVoidReceiverMock.HandleUnionViewDefinition,
+          _nonVoidReceiverMock.HandleNullEntityDefinition);
+
+      _nonVoidReceiverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo ("test"));
     }
 
     [Test]
