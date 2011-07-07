@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -23,6 +24,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
@@ -407,8 +409,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [Ignore ("TODO Review 4078: Fix test for null entity")]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The ClassDefinition must not have a NullEntityDefinition.")]
     public void CreateForRelationLookup_NullEntityDefinition ()
     {
       var nullEntityDefintion = new NullEntityDefinition (TestDomainStorageProviderDefinition);
@@ -426,7 +426,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition1, AllSelectedColumnsSpecification.Instance, objectID))
           .Return (_dbCommandBuilder1Stub);
 
-      _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
+      var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
+
+      Assert.That (result, Is.TypeOf (typeof (FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>)));
     }
 
     [Test]
