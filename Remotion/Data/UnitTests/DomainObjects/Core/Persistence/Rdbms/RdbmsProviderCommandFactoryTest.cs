@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The ClassDefinition must not have a NullEntityDefinition.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a NullEntityDefinition.")]
     public void CreateForSingleIDLookup_NullEntityDefinition ()
     {
       var nullEntityDefintion = new NullEntityDefinition (TestDomainStorageProviderDefinition);
@@ -286,7 +286,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _factory.CreateForMultiIDLookup (new[] { objectID });
     }
 
-    [Ignore ("TODO RM-4090")]
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a NullEntityDefinition.")]
     public void CreateForMultiIDLookup_NullEntityDefinition ()
@@ -438,6 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
+    [Ignore ("TODO Review 4078: Fix test for null entity")]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The ClassDefinition must not have a NullEntityDefinition.")]
     public void CreateForRelationLookup_NullEntityDefinition ()
     {

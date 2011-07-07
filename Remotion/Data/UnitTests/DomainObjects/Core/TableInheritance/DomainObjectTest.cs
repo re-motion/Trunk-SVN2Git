@@ -57,7 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [Ignore ("TODO 4078: fix test")]
     public void RelationsFromConcreteSingle ()
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer);
@@ -164,7 +163,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [Ignore("TODO 4078: fix test")]
     public void DeleteConcreteSingle ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer);

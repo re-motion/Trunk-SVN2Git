@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    public void LoadDataContainersByRelatedIDWithAbstractBaseClass ()
+    public void LoadDataContainersByRelatedID_WithAbstractBaseClass ()
     {
       var relationEndPointDefinition = GetEndPointDefinition (typeof (DomainBase), "Client");
       var createdAtProperty = GetPropertyDefinition (typeof (DomainBase), "CreatedAt");
@@ -59,6 +59,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       Assert.AreEqual (DomainObjectIDs.Person, loadedDataContainers[1].ID);
       Assert.AreEqual (DomainObjectIDs.PersonForUnidirectionalRelationTest, loadedDataContainers[2].ID);
       Assert.AreEqual (DomainObjectIDs.Customer, loadedDataContainers[3].ID);
+    }
+
+    [Test]
+    public void LoadDataContainersByRelatedID_WithAbstractClassWithoutDerivations ()
+    {
+      var relationEndPointDefinition = GetEndPointDefinition (typeof (AbstractClassWithoutDerivations), "DomainBase");
+
+      var result = Provider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointDefinition,
+          null,
+          DomainObjectIDs.Customer);
+      Assert.IsNotNull (result);
+      Assert.AreEqual (0, result.Count);
     }
   }
 }
