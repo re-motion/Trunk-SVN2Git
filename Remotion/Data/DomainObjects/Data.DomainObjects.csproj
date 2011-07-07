@@ -854,7 +854,6 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SqlProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\UnionSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\UpdateDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>

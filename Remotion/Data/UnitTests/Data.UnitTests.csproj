@@ -1599,9 +1599,6 @@
     </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\TableInheritanceTestDomainAttribute.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\UnidirectionalRelationTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\UnionSelectDbCommandBuilderTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\ValueConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>
