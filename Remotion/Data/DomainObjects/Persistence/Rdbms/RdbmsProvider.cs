@@ -246,14 +246,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("ids", ids);
-      foreach (var id in ids)
-        CheckStorageProviderID (id, "ids");
 
       Connect();
 
-      // TODO Review 4078: Refactor CreateForMultiIDLookup to take an IEnumerable<ObjectID>
-      // TODO Review 4078: Change CheckStorageProviderID to return the ID, pass in ids.Select (CheckStorageProviderID) instead of ids.ToArray, remove loop and checks above
-      var command = _storageProviderCommandFactory.CreateForMultiIDLookup (ids.ToArray());
+      var command = _storageProviderCommandFactory.CreateForMultiIDLookup (ids.Select (id => CheckStorageProviderID(id, "ids")));
       // We ignore any ObjectIDs for which we didn't find any DataContainers.
       var dataContainers = command.Execute (this).Where (dc => dc != null);
       return new DataContainerCollection (dataContainers, true);
@@ -469,7 +465,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _connection = null;
     }
 
-    private void CheckStorageProviderID (ObjectID id, string argumentName)
+    private ObjectID CheckStorageProviderID (ObjectID id, string argumentName)
     {
       if (id.StorageProviderDefinition != StorageProviderDefinition)
       {
@@ -480,6 +476,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             id,
             StorageProviderDefinition.Name);
       }
+      return id;
     }
 
     private void CheckClassDefinition (ClassDefinition classDefinition, string argumentName)
