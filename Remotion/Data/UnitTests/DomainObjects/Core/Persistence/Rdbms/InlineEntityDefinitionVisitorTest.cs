@@ -19,17 +19,39 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
   public class InlineEntityDefinitionVisitorTest : StandardMappingTest
   {
+    public interface IVisitorCallReceiver
+    {
+      void HandleTableDefinition (TableDefinition table, Action<IEntityDefinition> continuation);
+      void HandleFilterViewDefinition (FilterViewDefinition filterView, Action<IEntityDefinition> continuation);
+      void HandleUnionViewDefinition (UnionViewDefinition unionView, Action<IEntityDefinition> continuation);
+      void HandleNullEntityDefinition (NullEntityDefinition nullEntity, Action<IEntityDefinition> continuation);
+    }
+
+    public interface IVisitorCallReceiver<T>
+    {
+      T HandleTableDefinition (TableDefinition table, Func<IEntityDefinition, T> continuation);
+      T HandleFilterViewDefinition (FilterViewDefinition filterView, Func<IEntityDefinition, T> continuation);
+      T HandleUnionViewDefinition (UnionViewDefinition unionView, Func<IEntityDefinition, T> continuation);
+      T HandleNullEntityDefinition (NullEntityDefinition nullEntity, Func<IEntityDefinition, T> continuation);
+    }
+
     private TableDefinition _tableDefinition;
     private FilterViewDefinition _filterViewDefinition;
     private UnionViewDefinition _unionViewDefinition;
     private NullEntityDefinition _nullEntityDefinition;
+
     private object _fakeResult;
+
+    private MockRepository _mockRepository;
+    private IVisitorCallReceiver _voidReceiverMock;
+    private IVisitorCallReceiver<string> _nonVoidReceiverMock;
 
     public override void SetUp ()
     {
@@ -43,28 +65,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _nullEntityDefinition = new NullEntityDefinition (TestDomainStorageProviderDefinition);
 
       _fakeResult = new object();
+
+      _mockRepository = new MockRepository();
+      _voidReceiverMock = _mockRepository.StrictMock<IVisitorCallReceiver> ();
+      _nonVoidReceiverMock = _mockRepository.StrictMock<IVisitorCallReceiver<string>> ();
     }
 
     [Test]
-    public void Visit_NonGeneric_TableDefinition ()
+    public void Visit_WithoutResult_TableDefinition ()
     {
-      var count = 0;
+      _voidReceiverMock.Expect (mock => mock.HandleTableDefinition (Arg.Is (_tableDefinition), Arg<Action<IEntityDefinition>>.Is.Anything));
+      _voidReceiverMock.Replay();
+
       InlineEntityDefinitionVisitor.Visit (
           _tableDefinition,
-          (td, continuation) =>
-          {
-            count++;
-            Assert.That (td.TableName.EntityName, Is.EqualTo ("Table"));
-          },
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (td, continuation) => { throw new InvalidOperationException(); },
-          (td, continuation) => { throw new InvalidOperationException(); });
+          _voidReceiverMock.HandleTableDefinition,
+          _voidReceiverMock.HandleFilterViewDefinition,
+          _voidReceiverMock.HandleUnionViewDefinition,
+          _voidReceiverMock.HandleNullEntityDefinition);
 
-      Assert.That (count, Is.EqualTo (1));
+      _voidReceiverMock.VerifyAllExpectations();
     }
 
+    // TODO Review 4090: Adapt other tests to use mocks
+
     [Test]
-    public void Visit_NonGeneric_FilterViewDefinition ()
+    public void Visit_WithoutResult_FilterViewDefinition ()
     {
       var count = 0;
       InlineEntityDefinitionVisitor.Visit (
@@ -82,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void Visit_NonGeneric_FilterViewDefinition_WithContinuation ()
+    public void Visit_WithoutResult_FilterViewDefinition_WithContinuation ()
     {
       var filterCount = 0;
       var tableCount = 0;
@@ -108,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void Visit_NonGeneric_UnionViewDefinition ()
+    public void Visit_WithoutResult_UnionViewDefinition ()
     {
       var count = 0;
       InlineEntityDefinitionVisitor.Visit (
@@ -126,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void Visit_NonGeneric_NullEntityDefinition ()
+    public void Visit_WithoutResult_NullEntityDefinition ()
     {
       var count = 0;
       InlineEntityDefinitionVisitor.Visit (
@@ -140,7 +166,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void Visit_Generic_TableDefinition ()
+    public void Visit_WithoutResult_Continuation ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _voidReceiverMock
+            .Expect (mock => mock.HandleTableDefinition (Arg.Is (_tableDefinition), Arg<Action<IEntityDefinition>>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var continuation = (Action<IEntityDefinition>) mi.Arguments[1];
+                  continuation (_filterViewDefinition);
+                });
+        _voidReceiverMock
+            .Expect (mock => mock.HandleFilterViewDefinition (Arg.Is (_filterViewDefinition), Arg<Action<IEntityDefinition>>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var continuation = (Action<IEntityDefinition>) mi.Arguments[1];
+                  continuation (_unionViewDefinition);
+                });
+        _voidReceiverMock
+            .Expect (mock => mock.HandleUnionViewDefinition (Arg.Is (_unionViewDefinition), Arg<Action<IEntityDefinition>>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var continuation = (Action<IEntityDefinition>) mi.Arguments[1];
+                  continuation (_nullEntityDefinition);
+                });
+        _voidReceiverMock
+            .Expect (mock => mock.HandleNullEntityDefinition (Arg.Is (_nullEntityDefinition), Arg<Action<IEntityDefinition>>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var continuation = (Action<IEntityDefinition>) mi.Arguments[1];
+                  continuation (_tableDefinition);
+                });
+        _voidReceiverMock.Expect (mock => mock.HandleTableDefinition (Arg.Is (_tableDefinition), Arg<Action<IEntityDefinition>>.Is.Anything));
+      }
+
+      _voidReceiverMock.Replay ();
+
+      InlineEntityDefinitionVisitor.Visit (
+          _tableDefinition,
+          _voidReceiverMock.HandleTableDefinition,
+          _voidReceiverMock.HandleFilterViewDefinition,
+          _voidReceiverMock.HandleUnionViewDefinition,
+          _voidReceiverMock.HandleNullEntityDefinition);
+
+      _voidReceiverMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Visit_WithResult_TableDefinition ()
     {
       var count = 0;
       var result = InlineEntityDefinitionVisitor.Visit<object> (
@@ -160,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void Visit_Generic_FilterViewDefinition ()
+    public void Visit_WithResult_FilterViewDefinition ()
     {
       var count = 0;
       var result = InlineEntityDefinitionVisitor.Visit<object> (
@@ -180,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void Visit_Generic_FilterViewDefinition_WithContinuation ()
+    public void Visit_WithResult_FilterViewDefinition_WithContinuation ()
     {
       var tableCount = 0;
       var filterCount = 0;
@@ -207,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void Visit_Generic_UnionViewDefinition ()
+    public void Visit_WithResult_UnionViewDefinition ()
     {
       var count = 0;
       var result = InlineEntityDefinitionVisitor.Visit<object> (
@@ -227,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void Visit_Generic_NullEntityDefinition ()
+    public void Visit_WithResult_NullEntityDefinition ()
     {
       var count = 0;
       var result = InlineEntityDefinitionVisitor.Visit<object> (
@@ -243,6 +321,69 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (count, Is.EqualTo (1));
       Assert.That (result, Is.SameAs (_fakeResult));
+    }
+
+    [Test]
+    public void Visit_WithResult_Continuation ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _nonVoidReceiverMock
+            .Expect (mock => mock.HandleTableDefinition (Arg.Is (_tableDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var continuation = (Func<IEntityDefinition, string>) mi.Arguments[1];
+                  var value = continuation (_filterViewDefinition);
+                  Assert.That (value, Is.EqualTo ("3"));
+                })
+            .Return ("4");
+        _nonVoidReceiverMock
+            .Expect (mock => mock.HandleFilterViewDefinition (Arg.Is (_filterViewDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var continuation = (Func<IEntityDefinition, string>) mi.Arguments[1];
+                  var value = continuation (_unionViewDefinition);
+                  Assert.That (value, Is.EqualTo ("2"));
+                })
+            .Return ("3");
+        _nonVoidReceiverMock
+            .Expect (mock => mock.HandleUnionViewDefinition (Arg.Is (_unionViewDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var continuation = (Func<IEntityDefinition, string>) mi.Arguments[1];
+                  var value = continuation (_nullEntityDefinition);
+                  Assert.That (value, Is.EqualTo ("1"));
+                })
+            .Return ("2");
+        _nonVoidReceiverMock
+            .Expect (mock => mock.HandleNullEntityDefinition (Arg.Is (_nullEntityDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var continuation = (Func<IEntityDefinition, string>) mi.Arguments[1];
+                  var value = continuation (_tableDefinition);
+                  Assert.That (value, Is.EqualTo ("0"));
+                })
+            .Return ("1");
+        _nonVoidReceiverMock
+            .Expect (mock => mock.HandleTableDefinition (Arg.Is (_tableDefinition), Arg<Func<IEntityDefinition, string>>.Is.Anything))
+            .Return ("0");
+      }
+
+      _nonVoidReceiverMock.Replay ();
+
+      var result = InlineEntityDefinitionVisitor.Visit<string> (
+          _tableDefinition,
+          _nonVoidReceiverMock.HandleTableDefinition,
+          _nonVoidReceiverMock.HandleFilterViewDefinition,
+          _nonVoidReceiverMock.HandleUnionViewDefinition,
+          _nonVoidReceiverMock.HandleNullEntityDefinition);
+
+      _nonVoidReceiverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo ("4"));
     }
   }
 }
