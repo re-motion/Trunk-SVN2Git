@@ -15,25 +15,39 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using System.Data.SqlClient;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
-  public class TestRdbmsProvider : RdbmsProvider
+  public class TestableRdbmsProvider : RdbmsProvider
   {
-    public TestRdbmsProvider (
-        RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect dialect, IPersistenceListener persistenceListener)
-        : base (definition, storageNameProvider, dialect, persistenceListener, null)
+    private readonly IConnectionCreator _connectionCreator;
+
+    public interface IConnectionCreator
     {
+      IDbConnection CreateConnection ();
+    }
+
+    public TestableRdbmsProvider (
+        RdbmsProviderDefinition definition,
+        IStorageNameProvider storageNameProvider,
+        ISqlDialect dialect,
+        IPersistenceListener persistenceListener,
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
+        IConnectionCreator connectionCreator)
+        : base (definition, storageNameProvider, dialect, persistenceListener, commandFactory)
+    {
+      _connectionCreator = connectionCreator;
     }
 
     protected override TracingDbConnection CreateConnection ()
     {
-      return new TracingDbConnection (new SqlConnection(), PersistenceListener);
+      return new TracingDbConnection (_connectionCreator.CreateConnection(), PersistenceListener);
     }
   }
 }

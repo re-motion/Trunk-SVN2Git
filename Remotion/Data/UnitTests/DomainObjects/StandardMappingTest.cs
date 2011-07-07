@@ -20,6 +20,8 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Utilities;
@@ -62,14 +64,14 @@ namespace Remotion.Data.UnitTests.DomainObjects
       get { return MappingConfiguration.Current; }
     }
 
-    protected StorageProviderDefinition TestDomainStorageProviderDefinition
+    protected RdbmsProviderDefinition TestDomainStorageProviderDefinition
     {
-      get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_testDomainProviderID]; }
+      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_testDomainProviderID]; }
     }
 
-    protected StorageProviderDefinition UnitTestStorageProviderDefinition
+    protected UnitTestStorageProviderStubDefinition UnitTestStorageProviderDefinition
     {
-      get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_unitTestStorageProviderStubID]; }
+      get { return (UnitTestStorageProviderStubDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_unitTestStorageProviderStubID]; }
     }
 
     protected PropertyDefinition GetPropertyDefinition (Type declaringType, string shortPropertyName)

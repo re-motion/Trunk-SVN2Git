@@ -889,7 +889,7 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForBehavioralMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\MultiIDLookupDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\TestRdbmsProvider.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\TestableRdbmsProvider.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Sql2005\TestMappingResolutionStageMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Sql2005\TestSqlGenerationStageMixin.cs" />

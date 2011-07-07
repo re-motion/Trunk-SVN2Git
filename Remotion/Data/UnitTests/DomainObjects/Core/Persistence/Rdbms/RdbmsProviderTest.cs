@@ -16,12 +16,14 @@
 // 
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -31,39 +33,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   [TestFixture]
   public class RdbmsProviderTest : SqlProviderBaseTest
   {
-    private TestRdbmsProvider _provider;
     private RdbmsProviderDefinition _definition;
+    
+    private MockRepository _mockRepository;
+
     private ISqlDialect _dialectStub;
     private IStorageNameProvider _storageNameProviderStub;
+    private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _commandFactoryMock;
+    private IDbConnection _connectionStub;
+
+    private TestableRdbmsProvider _providerWithSqlConnection;
+
+    private TestableRdbmsProvider.IConnectionCreator _connectionCreatorMock;
+    private TestableRdbmsProvider _provider;
 
     public override void SetUp ()
     {
       base.SetUp();
-      _definition = new RdbmsProviderDefinition (c_testDomainProviderID, new SqlStorageObjectFactory(), TestDomainConnectionString);
-      _dialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
+      _definition = TestDomainStorageProviderDefinition;
+
+      _mockRepository = new MockRepository();
+      
+      _dialectStub = _mockRepository.Stub<ISqlDialect>();
+
+      _storageNameProviderStub = _mockRepository.Stub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
       _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
       _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
-      _provider = new TestRdbmsProvider (_definition, _storageNameProviderStub, _dialectStub, NullPersistenceListener.Instance);
+      _storageNameProviderStub.Replay();
+
+      _commandFactoryMock = _mockRepository.StrictMock<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>> ();
+
+      _connectionStub = _mockRepository.Stub<IDbConnection> ();
+
+      var sqlConnectionCreatorStub = _mockRepository.Stub<TestableRdbmsProvider.IConnectionCreator>();
+      sqlConnectionCreatorStub.Stub (stub => stub.CreateConnection()).Return (new SqlConnection());
+      sqlConnectionCreatorStub.Replay();
+
+      _providerWithSqlConnection = new TestableRdbmsProvider (
+          _definition,
+          _storageNameProviderStub,
+          _dialectStub,
+          NullPersistenceListener.Instance,
+          _commandFactoryMock,
+          sqlConnectionCreatorStub);
+
+      _connectionCreatorMock = _mockRepository.StrictMock<TestableRdbmsProvider.IConnectionCreator> ();
+
+      _provider = new TestableRdbmsProvider (
+          _definition,
+          _storageNameProviderStub,
+          _dialectStub,
+          NullPersistenceListener.Instance,
+          _commandFactoryMock,
+          _connectionCreatorMock);
     }
 
     public override void TearDown ()
     {
-      base.TearDown();
-      _provider.Dispose();
+      _providerWithSqlConnection.Dispose();
+      base.TearDown ();
     }
 
     [Test]
     public void CreateDbCommand_CreatesCommand ()
     {
-      _provider.Connect();
-      _provider.BeginTransaction();
+      _providerWithSqlConnection.Connect();
+      _providerWithSqlConnection.BeginTransaction();
 
-      using (var command = _provider.CreateDbCommand())
+      using (var command = _providerWithSqlConnection.CreateDbCommand())
       {
-        Assert.That (command.WrappedInstance.Connection, Is.SameAs (_provider.Connection.WrappedInstance));
-        Assert.That (command.WrappedInstance.Transaction, Is.SameAs (_provider.Transaction.WrappedInstance));
+        Assert.That (command.WrappedInstance.Connection, Is.SameAs (_providerWithSqlConnection.Connection.WrappedInstance));
+        Assert.That (command.WrappedInstance.Transaction, Is.SameAs (_providerWithSqlConnection.Transaction.WrappedInstance));
       }
     }
 
@@ -144,23 +185,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Connect must be called before a command can be created.")]
     public void CreateDbCommand_NotConnected ()
     {
-      _provider.CreateDbCommand();
+      _providerWithSqlConnection.CreateDbCommand();
     }
 
     [Test]
     [ExpectedException (typeof (ObjectDisposedException))]
     public void CreateDbCommand_ChecksDisposed ()
     {
-      _provider.Dispose();
-      _provider.CreateDbCommand();
+      _providerWithSqlConnection.Dispose();
+      _providerWithSqlConnection.CreateDbCommand();
     }
 
     [Test]
     public void StatementDelimiter_UsesDialect ()
     {
       _dialectStub.Stub (stub => stub.StatementDelimiter).Return ("&");
+      _dialectStub.Replay ();
 
-      var result = _provider.StatementDelimiter;
+      var result = _providerWithSqlConnection.StatementDelimiter;
       Assert.That (result, Is.EqualTo ("&"));
     }
 
@@ -168,8 +210,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void DelimitIdentifier_UsesDialect ()
     {
       _dialectStub.Stub (stub => stub.DelimitIdentifier ("xy")).Return ("!xy!");
+      _dialectStub.Replay();
 
-      var result = _provider.DelimitIdentifier ("xy");
+      var result = _providerWithSqlConnection.DelimitIdentifier ("xy");
       Assert.That (result, Is.EqualTo ("!xy!"));
     }
 
@@ -177,9 +220,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetParameterName_UsesDialect ()
     {
       _dialectStub.Stub (stub => stub.GetParameterName ("xy")).Return ("#1");
+      _dialectStub.Replay ();
 
-      var result = _provider.GetParameterName ("xy");
+      var result = _providerWithSqlConnection.GetParameterName ("xy");
       Assert.That (result, Is.EqualTo ("#1"));
+    }
+
+    [Test]
+    public void LoadDataContainer ()
+    {
+      var objectID = DomainObjectIDs.Order1;
+      var fakeResult = DataContainer.CreateNew (objectID);
+
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>> ();
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForSingleIDLookup (objectID))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (fakeResult);
+      }
+      _mockRepository.ReplayAll();
+
+      var result = _provider.LoadDataContainer (objectID);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void LoadDataContainer_InvalidID ()
+    {
+      var objectID = DomainObjectIDs.Official1;
+      _mockRepository.ReplayAll ();
+
+      Assert.That (() => _provider.LoadDataContainer (objectID), Throws.ArgumentException.With.Message.EqualTo (
+          "The StorageProviderID 'UnitTestStorageProviderStub' of the provided ObjectID 'Official|1|System.Int32' does not match with this "
+           + "StorageProvider's ID 'TestDomain'.\r\nParameter name: id"));
+    }
+
+    [Test]
+    public void LoadDataContainer_Disposed ()
+    {
+      var objectID = DomainObjectIDs.Order1;
+      _mockRepository.ReplayAll ();
+
+      _provider.Dispose();
+
+      Assert.That (() => _provider.LoadDataContainer (objectID), Throws.Exception.TypeOf<ObjectDisposedException>().With.Message.EqualTo (
+          "A disposed StorageProvider cannot be accessed.\r\nObject name: 'StorageProvider'."));
     }
   }
 }
