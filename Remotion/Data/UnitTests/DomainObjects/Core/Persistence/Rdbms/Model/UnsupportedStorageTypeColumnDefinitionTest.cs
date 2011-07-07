@@ -33,7 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Unsupported properties cannot be visited.")]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<IColumnDefinitionVisitor>();

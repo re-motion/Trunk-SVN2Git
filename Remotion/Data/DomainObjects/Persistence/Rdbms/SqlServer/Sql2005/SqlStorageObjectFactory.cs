@@ -238,18 +238,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
-      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter);
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter, storageNameProvider);
 
       var dataContainerReader = new DataContainerReader (valueConverter);
       var objectIDReader = new ObjectIDReader (valueConverter);
       return new RdbmsProviderCommandFactory (dbCommandBuilderFactory, dataContainerReader, objectIDReader, _rdbmsPersistenceModelProvider);
     }
 
-    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (IValueConverter valueConverter)
+    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (IValueConverter valueConverter, IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
-      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, valueConverter);
+      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, valueConverter, storageNameProvider);
     }
 
     protected virtual IValueConverter CreateValueConverter (

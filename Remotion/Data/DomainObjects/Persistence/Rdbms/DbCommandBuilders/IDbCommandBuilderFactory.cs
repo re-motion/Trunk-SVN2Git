@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 
@@ -41,5 +42,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns);
     IDbCommandBuilder CreateForQuery (IQuery query);
+
+    IDbCommandBuilder CreateForInsert (DataContainer dataContainer);
+    IDbCommandBuilder CreateForUpdate (DataContainer dataContainer);
+    IDbCommandBuilder CreateForDelete (DataContainer dataContainer);
   }
 }

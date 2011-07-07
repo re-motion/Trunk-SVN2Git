@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -24,6 +25,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.DbCommandBuilders
@@ -39,6 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private IOrderedColumnsSpecification _orderedColumnStub;
     private ObjectID _objectID;
+    private IStorageNameProvider _storageNameProviderStub;
+    private DataContainer _dataContainer;
 
     public override void SetUp ()
     {
@@ -46,7 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
-      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub);
+      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
+      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub, _storageNameProviderStub);
 
       _foreignKeyColumnDefinition = new IDColumnDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
@@ -55,6 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _orderedColumnStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
+      _dataContainer = DataContainer.CreateNew (_objectID);
     }
 
     [Test]
@@ -107,6 +113,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (((QueryDbCommandBuilder) result).Query, Is.SameAs (queryStub));
       Assert.That (((QueryDbCommandBuilder) result).SqlDialect, Is.SameAs(_sqlDialectStub));
       Assert.That (((QueryDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+    }
+
+    [Test]
+    public void CreateForInsert ()
+    {
+      var result = _factory.CreateForInsert (_dataContainer);
+
+      Assert.That (result, Is.TypeOf (typeof (InsertDbCommandBuilder)));
+      Assert.That (((InsertDbCommandBuilder) result).SqlDialect, Is.SameAs(_sqlDialectStub));
+      Assert.That (((InsertDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+      Assert.That (((InsertDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
+    }
+
+    [Test]
+    public void CreateForUpdate ()
+    {
+      var result = _factory.CreateForUpdate (_dataContainer);
+
+      Assert.That (result, Is.TypeOf (typeof (UpdateDbCommandBuilder)));
+      Assert.That (((UpdateDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
+      Assert.That (((UpdateDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+      Assert.That (((UpdateDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
+    }
+
+    [Test]
+    public void CreateForDelete ()
+    {
+      PrivateInvoke.SetNonPublicField (_dataContainer, "_state", 2);
+      var result = _factory.CreateForDelete (_dataContainer);
+
+      Assert.That (result, Is.TypeOf (typeof (DeleteDbCommandBuilder)));
+      Assert.That (((DeleteDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
+      Assert.That (((DeleteDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+      Assert.That (((DeleteDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
     }
   }
 }
