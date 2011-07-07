@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     private readonly ISqlDialect _sqlDialect;
     private readonly IValueConverter _valueConverter;
 
-    [Obsolete("TODO: Remove as soon as the command builders have been rewritten.")]
+    // TODO: Remove as soon as command builders have been rewritten
     private readonly IStorageNameProvider _storageNameProvider;
 
     /// <summary>
@@ -49,9 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
 
       _sqlDialect = sqlDialect;
       _valueConverter = valueConverter;
-#pragma warning disable 612,618
       _storageNameProvider = storageNameProvider;
-#pragma warning restore 612,618
     }
 
     public IDbCommandBuilder CreateForSingleIDLookupFromTable (
@@ -118,28 +116,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForInsert (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-#pragma warning disable 612,618
       return new InsertDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
-#pragma warning restore 612,618
     }
 
     public IDbCommandBuilder CreateForUpdate (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-#pragma warning disable 612,618
       return new UpdateDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
-#pragma warning restore 612,618
     }
 
     public IDbCommandBuilder CreateForDelete (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-#pragma warning disable 612,618
       return new DeleteDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
-#pragma warning restore 612,618
     }
   }
 }
