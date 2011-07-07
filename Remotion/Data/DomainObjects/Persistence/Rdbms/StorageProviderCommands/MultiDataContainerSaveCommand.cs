@@ -19,13 +19,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
   /// <summary>
-  /// The <see cref="MultiDataContainerSaveCommand"/> creates an <see cref="IDbCommand"/> and executes it for all given tuples.
+  /// The <see cref="MultiDataContainerSaveCommand"/> saves a sequence of <see cref="DataContainer"/> instances by executing the given
+  /// <see cref="IDbCommand"/> instances.
   /// </summary>
   public class MultiDataContainerSaveCommand : IStorageProviderCommand<IRdbmsProviderCommandExecutionContext>
   {
