@@ -19,6 +19,7 @@ using System.Data;
 using System.Globalization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 

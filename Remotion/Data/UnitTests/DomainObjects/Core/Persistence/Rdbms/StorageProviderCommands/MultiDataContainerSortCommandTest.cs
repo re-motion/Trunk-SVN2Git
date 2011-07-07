@@ -59,14 +59,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_DuplicatedObjectID ()
     {
-      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
+      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order1 }, _commandStub);
 
-      var order3Container = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, order3Container });
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, _order2Container });
 
       var result = command.Execute (_executionContext).ToList ();
 
-      Assert.That (result, Is.EqualTo (new[] { order3Container })); //TODO 4078: correct??
+      Assert.That (result, Is.EqualTo (new[] { _order1Container, _order1Container }));
     }
 
     [Test]
@@ -74,11 +73,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
 
-      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, _order1Container });
+      var otherOrder1DataContainer = DataContainer.CreateNew (_order1Container.ID);
+
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, otherOrder1DataContainer });
 
       var result = command.Execute (_executionContext).ToList ();
 
-      Assert.That (result, Is.EqualTo (new[] { _order1Container }));
+      Assert.That (result, Is.EqualTo (new[] { otherOrder1DataContainer }));
     }
 
     [Test]

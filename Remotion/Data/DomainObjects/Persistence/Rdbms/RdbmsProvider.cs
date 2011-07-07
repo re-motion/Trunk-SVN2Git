@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
@@ -32,9 +33,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public abstract class RdbmsProvider : StorageProvider, IRdbmsProviderCommandExecutionContext
   {
+    private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
+
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
-    private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
 
     protected RdbmsProvider (
         RdbmsProviderDefinition definition,
@@ -44,6 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
         : base (definition, storageNameProvider, sqlDialect, persistenceListener)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
       _storageProviderCommandFactory = storageProviderCommandFactory;
     }
 
@@ -195,6 +198,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public override DataContainer[] ExecuteCollectionQuery (IQuery query)
     {
       CheckDisposed();
+      ArgumentUtility.CheckNotNull ("query", query);
       CheckQuery (query, QueryType.Collection, "query");
 
       Connect();
@@ -208,6 +212,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       // TODO: ExecuteScalarQuery must not return DBNull.Value, but null instead. Verify this with a unit test.
 
       CheckDisposed();
+      ArgumentUtility.CheckNotNull ("query", query);
       CheckQuery (query, QueryType.Scalar, "query");
 
       Connect();
@@ -247,16 +252,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      // We ignore any ObjectIDs for which we didn't find any DataContainers.
+      // TODO Review 4078: Refactor CreateForMultiIDLookup to take an IEnumerable<ObjectID>
+      // TODO Review 4078: Change CheckStorageProviderID to return the ID, pass in ids.Select (CheckStorageProviderID) instead of ids.ToArray, remove loop and checks above
       var command = _storageProviderCommandFactory.CreateForMultiIDLookup (ids.ToArray());
+      // We ignore any ObjectIDs for which we didn't find any DataContainers.
       var dataContainers = command.Execute (this).Where (dc => dc != null);
       return new DataContainerCollection (dataContainers, true);
-    }
-
-    [Obsolete ("This method has been superseded by MultiDataContainerLoadCommand. Use that instead. (1.13.112)", true)]
-    protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
-    {
-      throw new NotImplementedException ();
     }
 
     public override DataContainerCollection LoadDataContainersByRelatedID (
@@ -274,7 +275,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (relationEndPointDefinition.PropertyDefinition.StorageClass == StorageClass.Transaction)
         return new DataContainerCollection();
 
-      var storageProviderCommand = _storageProviderCommandFactory.CreateForRelationLookup (relationEndPointDefinition, relatedID, sortExpressionDefinition);
+      var storageProviderCommand = _storageProviderCommandFactory.CreateForRelationLookup (
+          relationEndPointDefinition, 
+          relatedID, 
+          sortExpressionDefinition);
       var dataContainers = storageProviderCommand.Execute (this);
       return new DataContainerCollection (dataContainers, true);
     }
@@ -522,6 +526,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public virtual ValueConverter CreateValueConverter ()
     {
       return new ValueConverter (StorageProviderDefinition, StorageNameProvider, TypeConversionProvider);
+    }
+
+    [Obsolete ("This method has been superseded by MultiDataContainerLoadCommand. Use that instead. (1.13.112)", true)]
+    protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
+    {
+      throw new NotImplementedException ();
     }
   }
 }
