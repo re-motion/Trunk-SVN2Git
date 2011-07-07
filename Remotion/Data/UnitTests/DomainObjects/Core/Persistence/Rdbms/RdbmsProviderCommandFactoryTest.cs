@@ -20,6 +20,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -33,6 +34,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -46,10 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private RdbmsProviderCommandFactory _factory;
 
-    private TableDefinition _entityDefinition;
     private IDbCommandBuilder _dbCommandBuilder1Stub;
     private IDbCommandBuilder _dbCommandBuilder2Stub;
-    private ObjectID _objectID;
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
     private ObjectID _objectID1;
@@ -58,6 +58,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private ObjectID _foreignKeyValue;
     private IDColumnDefinition _foreignKeyColumnDefinition;
     private UnionViewDefinition _unionViewDefinition;
+    private DataContainer _dataContainer1;
+    private DataContainer _dataContainer2;
+    private DataContainer _dataContainer3;
+    private DataContainer _dataContainer4;
+    private DataContainer _dataContainer5;
+    private DataContainer _dataContainer6;
+    private IDbCommandBuilder _dbCommandBuilder3Stub;
+    private IDbCommandBuilder _dbCommandBuilder4Stub;
+    private IDbCommandBuilder _dbCommandBuilder5Stub;
+    private IDbCommandBuilder _dbCommandBuilder6Stub;
+    private IDbCommandBuilder _dbCommandBuilder7Stub;
+    private IDbCommandBuilder _dbCommandBuilder8Stub;
+    private IDbCommandBuilder _dbCommandBuilder9Stub;
+    private IDbCommandBuilder _dbCommandBuilder10Stub;
 
     public override void SetUp ()
     {
@@ -70,11 +84,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _factory = new RdbmsProviderCommandFactory (
           _dbCommandBuilderFactoryStub, _dataContainerReaderStub, _objectIDReaderStub, new RdbmsPersistenceModelProvider());
 
-      _entityDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      _objectID = CreateObjectID (_entityDefinition);
-
+      _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
+      _dbCommandBuilder3Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilder4Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilder5Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilder6Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilder7Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilder8Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilder9Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      _dbCommandBuilder10Stub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
       _tableDefinition2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (
@@ -88,8 +108,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _objectID1 = CreateObjectID (_tableDefinition1);
       _objectID2 = CreateObjectID (_tableDefinition1);
       _objectID3 = CreateObjectID (_tableDefinition2);
+
+      _dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      _dataContainer3 = DataContainer.CreateNew (DomainObjectIDs.Order3);
+      _dataContainer4 = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
+      _dataContainer5 = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
+      _dataContainer6 = DataContainer.CreateNew (DomainObjectIDs.OrderItem3);
     }
-    
+
     [Test]
     public void CreateForSingleIDLookup_TableDefinition ()
     {
@@ -154,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _factory.CreateForSingleIDLookup (objectID);
     }
-    
+
     [Test]
     public void CreateForMultiIDLookup_SingleIDLookup_TableDefinition ()
     {
@@ -448,6 +475,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.True);
     }
 
+    [Test]
+    public void CreateForSave ()
+    {
+      PrivateInvoke.SetNonPublicField (_dataContainer2, "_state", 0);
+      PrivateInvoke.SetNonPublicField (_dataContainer5, "_state", 0);
+      PrivateInvoke.SetNonPublicField (_dataContainer3, "_state", 2);
+      PrivateInvoke.SetNonPublicField (_dataContainer4, "_state", 2);
+      _dataContainer2.MarkAsChanged();
+      _dataContainer5.MarkAsChanged();
+
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForInsert (_dataContainer1)).Return (_dbCommandBuilder1Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForInsert (_dataContainer6)).Return (_dbCommandBuilder2Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer1)).Return (_dbCommandBuilder3Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer6)).Return (_dbCommandBuilder4Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer2)).Return (_dbCommandBuilder5Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer5)).Return (_dbCommandBuilder6Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer3)).Return (_dbCommandBuilder7Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForUpdate (_dataContainer4)).Return (_dbCommandBuilder8Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForDelete (_dataContainer3)).Return (_dbCommandBuilder9Stub);
+      _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForDelete (_dataContainer4)).Return (_dbCommandBuilder10Stub);
+
+      var result =
+          _factory.CreateForSave (new[] { _dataContainer1, _dataContainer2, _dataContainer3, _dataContainer4, _dataContainer5, _dataContainer6 });
+
+      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
+      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
+      Assert.That (tuples.Count, Is.EqualTo (10));
+      Assert.That (tuples[0].Item1, Is.EqualTo(DomainObjectIDs.Order1));
+      Assert.That (tuples[0].Item2, Is.SameAs (_dbCommandBuilder1Stub));
+      Assert.That (tuples[1].Item1, Is.EqualTo (DomainObjectIDs.OrderItem3));
+      Assert.That (tuples[1].Item2, Is.SameAs(_dbCommandBuilder2Stub));
+      Assert.That (tuples[2].Item1, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (tuples[2].Item2, Is.SameAs (_dbCommandBuilder3Stub));
+      Assert.That (tuples[3].Item1, Is.EqualTo (DomainObjectIDs.OrderItem3));
+      Assert.That (tuples[3].Item2, Is.SameAs (_dbCommandBuilder4Stub));
+      Assert.That (tuples[4].Item1, Is.EqualTo(DomainObjectIDs.Order2));
+      Assert.That (tuples[4].Item2, Is.SameAs (_dbCommandBuilder5Stub));
+      Assert.That (tuples[5].Item1, Is.EqualTo (DomainObjectIDs.OrderItem2));
+      Assert.That (tuples[5].Item2, Is.SameAs (_dbCommandBuilder6Stub));
+      Assert.That (tuples[6].Item1, Is.EqualTo (DomainObjectIDs.Order3));
+      Assert.That (tuples[6].Item2, Is.SameAs (_dbCommandBuilder7Stub));
+      Assert.That (tuples[7].Item1, Is.EqualTo (DomainObjectIDs.OrderItem1));
+      Assert.That (tuples[7].Item2, Is.SameAs (_dbCommandBuilder8Stub));
+      Assert.That (tuples[8].Item1, Is.EqualTo (DomainObjectIDs.Order3));
+      Assert.That (tuples[8].Item2, Is.SameAs (_dbCommandBuilder9Stub));
+      Assert.That (tuples[9].Item1, Is.EqualTo (DomainObjectIDs.OrderItem1));
+      Assert.That (tuples[9].Item2, Is.SameAs (_dbCommandBuilder10Stub));
+    }
+
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
@@ -473,7 +549,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (
-    ClassDefinition classDefinition, PropertyInfo propertyInfo, SimpleColumnDefinition simpleColumnDefinition, SortOrder sortOrder)
+        ClassDefinition classDefinition, PropertyInfo propertyInfo, SimpleColumnDefinition simpleColumnDefinition, SortOrder sortOrder)
     {
       var sortedPropertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, propertyInfo, simpleColumnDefinition);

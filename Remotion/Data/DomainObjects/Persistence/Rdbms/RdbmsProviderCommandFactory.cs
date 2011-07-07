@@ -76,8 +76,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var dbCommandBuilders = from id in objectIDs
                               let tableDefinition = GetTableDefinition (id)
                               group id by tableDefinition
-                                into idsByTable
-                                select CreateIDLookupDbCommandBuilder (idsByTable.Key, idsByTable.ToArray ());
+                              into idsByTable
+                              select CreateIDLookupDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
       var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders, false, _dataContainerReader);
       return new MultiDataContainerSortCommand (objectIDs, multiDataContainerLoadCommand);
     }
@@ -89,11 +89,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
 
       return InlineEntityDefinitionVisitor.Visit<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> (
-         _rdbmsPersistenceModelProvider.GetEntityDefinition (foreignKeyEndPoint.ClassDefinition),
-         (table, continuation) => CreateForDirectRelationLookup (table, foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition),
-         (filterView, continuation) => continuation (filterView.BaseEntity),
-         (unionView, continuation) => CreateForIndirectRelationLookup (unionView, foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition),
-         (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
+          _rdbmsPersistenceModelProvider.GetEntityDefinition (foreignKeyEndPoint.ClassDefinition),
+          (table, continuation) => CreateForDirectRelationLookup (table, foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition),
+          (filterView, continuation) => continuation (filterView.BaseEntity),
+          (unionView, continuation) => CreateForIndirectRelationLookup (unionView, foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition),
+          (nullEntity, continuation) => { throw new InvalidOperationException ("The ClassDefinition must not have a NullEntityDefinition."); });
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)
@@ -101,6 +101,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("query", query);
 
       return new MultiDataContainerLoadCommand (new[] { _dbCommandBuilderFactory.CreateForQuery (query) }, true, _dataContainerReader);
+    }
+
+    public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (DataContainer[] dataContainers)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
+
+      return new MultiDataContainerSaveCommand (CreateDbCommandsForSave (dataContainers));
+    }
+
+    private IEnumerable<Tuple<ObjectID, IDbCommandBuilder>> CreateDbCommandsForSave (IEnumerable<DataContainer> dataContainers)
+    {
+      var dataContainersByState = dataContainers.ToLookup (dc => dc.State);
+
+      foreach (var dataContainer in dataContainersByState[StateType.New])
+        yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForInsert (dataContainer));
+
+      var changedContainers =
+          dataContainersByState[StateType.New].Concat (dataContainersByState[StateType.Changed]).Concat (dataContainersByState[StateType.Deleted]);
+      foreach (var dataContainer in changedContainers)
+        yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForUpdate (dataContainer));
+
+      foreach (var dataContainer in dataContainersByState[StateType.Deleted])
+        yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForDelete (dataContainer));
     }
 
     private TableDefinition GetTableDefinition (ObjectID objectID)

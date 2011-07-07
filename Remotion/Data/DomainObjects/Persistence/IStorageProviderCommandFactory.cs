@@ -36,5 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence
         RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue, SortExpressionDefinition sortExpressionDefinition);
 
     IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForDataContainerQuery (IQuery query);
+
+    IStorageProviderCommand<TExecutionContext> CreateForSave (DataContainer[] dataContainers);
   }
 }

@@ -38,6 +38,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       _tuples = tuples.ToArray();
     }
 
+    public Tuple<ObjectID, IDbCommandBuilder>[] Tuples
+    {
+      get { return _tuples; }
+    }
+
     public void Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
