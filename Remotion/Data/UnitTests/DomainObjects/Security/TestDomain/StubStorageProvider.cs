@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       throw new NotImplementedException ();
     }
 
-    public override DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids)
+    public override IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       throw new NotImplementedException ();
     }

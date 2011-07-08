@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       }
     }
 
-    public override DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids)
+    public override IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       if (InnerProvider != null)
         return InnerProvider.LoadDataContainers (ids);

@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     public abstract DataContainer LoadDataContainer (ObjectID id);
 
-    public abstract DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids);
+    public abstract IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids);
 
     public abstract DataContainerCollection LoadDataContainersByRelatedID (
         RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID);

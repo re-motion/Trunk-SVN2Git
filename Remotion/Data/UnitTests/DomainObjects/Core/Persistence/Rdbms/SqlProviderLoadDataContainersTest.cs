@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -29,9 +30,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadMultipleDataContainers ()
     {
-      ObjectID[] ids = new ObjectID[] { DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order1, DomainObjectIDs.OrderItem2};
+      var ids = new[] { DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order1, DomainObjectIDs.OrderItem2};
 
-      DataContainerCollection containers = Provider.LoadDataContainers (ids);
+      var containers = Provider.LoadDataContainers (ids).ToArray();
 
       Assert.IsNotNull (containers);
       Assert.AreEqual (ids[0], containers[0].ID);
@@ -43,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersWithGuidID ()
     {
-      ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
+      var id = new ObjectID ("ClassWithGuidKey", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
 
-      DataContainer container = Provider.LoadDataContainers (new ObjectID[] { id })[0];
+      var container = Provider.LoadDataContainers (new[] { id }).ToArray()[0];
 
       Assert.IsNotNull (container);
       Assert.AreEqual (container.ID, id);
@@ -55,11 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
     public void LoadDataContainersWithInvalidIDType ()
     {
-      ObjectID id = new ObjectID ("ClassWithKeyOfInvalidType", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
+      var id = new ObjectID ("ClassWithKeyOfInvalidType", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
 
       try
       {
-        DataContainer container = Provider.LoadDataContainers (new ObjectID[] { id })[0];
+        var container = Provider.LoadDataContainers (new[] { id }).ToArray()[0];
       }
       catch (RdbmsProviderException e)
       {
@@ -72,11 +73,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
     public void LoadDataContainersWithoutIDColumn ()
     {
-      ObjectID id = new ObjectID ("ClassWithoutIDColumn", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
+      var id = new ObjectID ("ClassWithoutIDColumn", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
 
       try
       {
-        DataContainer container = Provider.LoadDataContainers (new ObjectID[] { id })[0];
+        var container = Provider.LoadDataContainers (new[] { id }).ToArray()[0];
       }
       catch (RdbmsProviderException e)
       {
@@ -89,18 +90,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "The mandatory column 'ClassID' could not be found.")]
     public void LoadDataContainersWithoutClassIDColumn ()
     {
-      ObjectID id = new ObjectID ("ClassWithoutClassIDColumn", new Guid ("{DDD02092-355B-4820-90B6-7F1540C0547E}"));
+      var id = new ObjectID ("ClassWithoutClassIDColumn", new Guid ("{DDD02092-355B-4820-90B6-7F1540C0547E}"));
 
-      Provider.LoadDataContainers (new ObjectID[] { id });
+      Provider.LoadDataContainers (new[] { id });
     }
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "The mandatory column 'Timestamp' could not be found.")]
     public void LoadDataContainersWithoutTimestampColumn ()
     {
-      ObjectID id = new ObjectID ("ClassWithoutTimestampColumn", new Guid ("{027DCBD7-ED68-461d-AE80-B8E145A7B816}"));
+      var id = new ObjectID ("ClassWithoutTimestampColumn", new Guid ("{027DCBD7-ED68-461d-AE80-B8E145A7B816}"));
 
-      Provider.LoadDataContainers (new ObjectID[] { id });
+      Provider.LoadDataContainers (new[] { id });
     }
 
     [Test]
@@ -108,9 +109,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ExpectedMessage = "Invalid ClassID 'NonExistingClassID' for ID 'c9f16f93-cf42-4357-b87b-7493882aaeaf' encountered.")]
     public void LoadDataContainersWithNonExistingClassID ()
     {
-      ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{C9F16F93-CF42-4357-B87B-7493882AAEAF}"));
+      var id = new ObjectID ("ClassWithGuidKey", new Guid ("{C9F16F93-CF42-4357-B87B-7493882AAEAF}"));
 
-      Provider.LoadDataContainers (new ObjectID[] { id });
+      Provider.LoadDataContainers (new[] { id });
     }
 
     //TODO: Improove this message to state that the passed ClassID and the ClassID in the database to not match.
@@ -120,60 +121,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + "'Order|895853eb-06cd-4291-b467-160560ae8ec1|System.Guid': The mandatory column 'OrderNo' could not be found.")]
     public void LoadDataContainersWithClassIDFromOtherClass ()
     {
-      ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{895853EB-06CD-4291-B467-160560AE8EC1}"));
+      var id = new ObjectID ("ClassWithGuidKey", new Guid ("{895853EB-06CD-4291-B467-160560AE8EC1}"));
 
-      Provider.LoadDataContainers (new ObjectID[] { id });
+      Provider.LoadDataContainers (new[] { id });
     }
 
     [Test]
     public void LoadDataContainersByNonExistingID ()
     {
-      ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{E067A627-BA3F-4ee5-8B61-1F46DC28DFC3}"));
+      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{E067A627-BA3F-4ee5-8B61-1F46DC28DFC3}"));
 
-      Assert.IsEmpty (Provider.LoadDataContainers (new ObjectID[] { id }));
+      var result = Provider.LoadDataContainers (new[] { id }).ToList();
+
+      Assert.That (result, Is.EqualTo(new DataContainer[]{null}));
     }
 
     [Test]
     public void LoadDataContainersByID ()
     {
-      ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      DataContainer actualContainer = Provider.LoadDataContainers (new ObjectID[] { id })[0];
+      var actualContainer = Provider.LoadDataContainers (new[] { id }).ToArray()[0];
 
-      DataContainer expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      var expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
 
-      DataContainerChecker checker = new DataContainerChecker ();
+      var checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainer);
     }
 
     [Test]
     public void LoadDerivedDataContainerByID ()
     {
-      DataContainer actualContainer = Provider.LoadDataContainers (new ObjectID[] { DomainObjectIDs.Partner1 })[0];
-      DataContainer expectedContainer = TestDataContainerFactory.CreatePartner1DataContainer ();
+      var actualContainer = Provider.LoadDataContainers (new[] { DomainObjectIDs.Partner1 }).ToArray()[0];
+      var expectedContainer = TestDataContainerFactory.CreatePartner1DataContainer ();
 
-      DataContainerChecker checker = new DataContainerChecker ();
+      var checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainer);
     }
 
     [Test]
     public void LoadTwiceDerivedDataContainerByID ()
     {
-      DataContainer actualContainer = Provider.LoadDataContainers (new ObjectID[] { DomainObjectIDs.Distributor2 })[0];
-      DataContainer expectedContainer = TestDataContainerFactory.CreateDistributor2DataContainer ();
+      var actualContainer = Provider.LoadDataContainers (new[] { DomainObjectIDs.Distributor2 }).ToArray()[0];
+      var expectedContainer = TestDataContainerFactory.CreateDistributor2DataContainer ();
 
-      DataContainerChecker checker = new DataContainerChecker ();
+      var checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainer);
     }
 
     [Test]
     public void LoadDataContainersWithNullForeignKey ()
     {
-      ObjectID id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
+      var id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
-      DataContainer container = Provider.LoadDataContainers (new ObjectID[] { id })[0];
+      var container = Provider.LoadDataContainers (new[] { id }).ToArray()[0];
 
-      PropertyValue actualPropertyValue = container.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"];
+      var actualPropertyValue = container.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"];
 
       Assert.IsNotNull (actualPropertyValue, "PropertyValue");
       Assert.IsNull (actualPropertyValue.Value, "PropertyValue.Value");
@@ -182,14 +185,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersWithRelation ()
     {
-      DataContainer orderTicketContainer = Provider.LoadDataContainers (new ObjectID[] { DomainObjectIDs.OrderTicket1 })[0];
+      var orderTicketContainer = Provider.LoadDataContainers (new[] { DomainObjectIDs.OrderTicket1 }).ToArray()[0];
       Assert.AreEqual (DomainObjectIDs.Order1, orderTicketContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
     }
 
     [Test]
     public void LoadDataContainersWithRelationAndInheritance ()
     {
-      DataContainer ceoContainer = Provider.LoadDataContainers (new ObjectID[] { DomainObjectIDs.Ceo7 })[0];
+      var ceoContainer = Provider.LoadDataContainers (new[] { DomainObjectIDs.Ceo7 }).ToArray()[0];
       Assert.AreEqual (DomainObjectIDs.Partner2, ceoContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"));
     }
 
@@ -201,9 +204,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + " Entity 'TableWithoutRelatedClassIDColumn' must have column 'DistributorIDClassID' defined, because opposite class 'Distributor' is part of an inheritance hierarchy.")]
     public void LoadDataContainersWithoutRelatedIDColumn ()
     {
-      ObjectID id = new ObjectID ("ClassWithoutRelatedClassIDColumn", new Guid ("{CD3BE83E-FBB7-4251-AAE4-B216485C5638}"));
+      var id = new ObjectID ("ClassWithoutRelatedClassIDColumn", new Guid ("{CD3BE83E-FBB7-4251-AAE4-B216485C5638}"));
 
-      Provider.LoadDataContainers (new ObjectID[] { id });
+      Provider.LoadDataContainers (new[] { id });
     }
 
     [Test]
@@ -214,10 +217,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + " Entity 'TableWithoutRelatedClassIDColumnAndDerivation' must have column 'CompanyIDClassID' defined, because opposite class 'Company' is part of an inheritance hierarchy.")]
     public void LoadDataContainersWithoutRelatedIDColumnAndDerivation ()
     {
-      ObjectID id = new ObjectID ("ClassWithoutRelatedClassIDColumnAndDerivation",
+      var id = new ObjectID ("ClassWithoutRelatedClassIDColumnAndDerivation",
           new Guid ("{4821D7F7-B586-4435-B572-8A96A44B113E}"));
 
-      Provider.LoadDataContainers (new ObjectID[] { id });
+      Provider.LoadDataContainers (new[] { id });
     }
 
     [Test]
@@ -226,9 +229,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + "StorageProvider's ID 'TestDomain'.\r\nParameter name: ids")]
     public void LoadDataContainersWithObjectIDWithWrongStorageProviderID ()
     {
-      ObjectID invalidID = new ObjectID (DomainObjectIDs.Official1.ClassID, (int) DomainObjectIDs.Official1.Value);
+      var invalidID = new ObjectID (DomainObjectIDs.Official1.ClassID, (int) DomainObjectIDs.Official1.Value);
 
-      Provider.LoadDataContainers (new ObjectID[] { invalidID });
+      Provider.LoadDataContainers (new[] { invalidID });
     }
 
     [Test]
@@ -240,9 +243,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + " because opposite class 'ClassWithGuidKey' is not part of an inheritance hierarchy.")]
     public void LoadDataContainersWithRelatedClassIDColumnAndNoInheritance ()
     {
-      ObjectID id = new ObjectID ("ClassWithRelatedClassIDColumnAndNoInheritance", new Guid ("{CB72715D-F419-4ab9-8D49-ABCBA4E9EDB4}"));
+      var id = new ObjectID ("ClassWithRelatedClassIDColumnAndNoInheritance", new Guid ("{CB72715D-F419-4ab9-8D49-ABCBA4E9EDB4}"));
 
-      Provider.LoadDataContainers (new ObjectID[] { id });
+      Provider.LoadDataContainers (new[] { id });
     }
   }
 }

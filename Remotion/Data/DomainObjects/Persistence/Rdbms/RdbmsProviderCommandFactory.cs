@@ -57,6 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
+    // TODO 4113: Refactor to return IStorageProviderCommand<DataContainerLookupResult, ...>
     public IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
@@ -69,6 +70,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new SingleDataContainerLoadCommand (dbCommandBuilder, _dataContainerReader);
     }
 
+    // TODO 4113: Refactor to return IEnumerable<DataContainerLookupResult>
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForMultiIDLookup (IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
@@ -173,6 +175,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           GetOrderedColumns (sortExpression));
 
       var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, _objectIDReader);
+      // TODO 4113: Wrap into Select command: result => { Assertion.IsNotNull (result.LocatedDataContainer, "Because ID lookup and DataContainer lookup are executed within the same database transaction, the DataContainer can never be null."); return tuple.LocatedDataContainer; }
       return new IndirectDataContainerLoadCommand (objectIDLoadCommand, this);
     }
 

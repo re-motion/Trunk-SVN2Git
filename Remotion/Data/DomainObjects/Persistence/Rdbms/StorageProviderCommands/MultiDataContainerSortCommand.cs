@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// Executes a given <see cref="IStorageProviderCommand{T,TExecutionContext}"/> and sorts the resulting <see cref="DataContainer"/> instances
   /// according to a given list of <see cref="ObjectID"/> values.
   /// </summary>
+  // TODO 4113: Refactor to return IEnumerable<DataContainerLookupResult>
   public class MultiDataContainerSortCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly ObjectID[] _objectIDs;

@@ -30,6 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   public interface IStorageProviderCommandFactory<in TExecutionContext>
   {
     IStorageProviderCommand<DataContainer, TExecutionContext> CreateForSingleIDLookup (ObjectID objectID);
+    // TODO 4113: Refactor to return IEnumerable<DataContainerLookupResult>
     IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForMultiIDLookup (IEnumerable<ObjectID> objectIDs);
 
     IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForRelationLookup (

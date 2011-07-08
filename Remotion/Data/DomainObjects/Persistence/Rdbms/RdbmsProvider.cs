@@ -230,6 +230,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
+    // TODO 4113: Refactor to return DataContainerLookupResult
     public override DataContainer LoadDataContainer (ObjectID id)
     {
       CheckDisposed();
@@ -242,7 +243,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return command.Execute (this);
     }
 
-    public override DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids)
+    // TODO 4113: Refactor to return IEnumerable<DataContainerLookupResult>
+    public override IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("ids", ids);
@@ -250,9 +252,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Connect();
 
       var command = _storageProviderCommandFactory.CreateForMultiIDLookup (ids.Select (id => CheckStorageProviderID(id, "ids")));
-      // We ignore any ObjectIDs for which we didn't find any DataContainers.
-      var dataContainers = command.Execute (this).Where (dc => dc != null);
-      return new DataContainerCollection (dataContainers, true);
+      return command.Execute (this);
     }
 
     public override DataContainerCollection LoadDataContainersByRelatedID (

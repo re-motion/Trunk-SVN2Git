@@ -117,7 +117,8 @@ namespace Remotion.Data.DomainObjects.Persistence
       StorageProvider provider = _storageProviderManager.GetMandatory (id.StorageProviderDefinition.Name);
       DataContainer dataContainer = provider.LoadDataContainer (id);
 
-      Exception exception = CheckLoadedDataContainer(id, dataContainer, true);
+      // TODO 4113: Use .LocatedDataContainer
+      Exception exception = CheckLoadedDataContainer (id, dataContainer, true);
       if (exception != null)
         throw exception;
 
@@ -149,25 +150,36 @@ namespace Remotion.Data.DomainObjects.Persistence
       CheckDisposed ();
       ArgumentUtility.CheckNotNull ("ids", ids);
 
-      MultiDictionary<string, ObjectID> idsByProvider = GroupIDsByProvider (ids);
+      var idsByProvider = GroupIDsByProvider (ids);
+      var exceptions = new List<Exception>();
 
-      List<Exception> exceptions = new List<Exception>();
-
-      DataContainerCollection unorderedResultCollection = new DataContainerCollection();
-      foreach (KeyValuePair<string, List<ObjectID>> idGroup in idsByProvider)
+      var unorderedResultCollection = new DataContainerCollection();
+      foreach (var idGroup in idsByProvider)
       {
-        StorageProvider provider = _storageProviderManager.GetMandatory (idGroup.Key);
-        DataContainerCollection dataContainers = provider.LoadDataContainers (idGroup.Value);
-        
-        foreach (ObjectID id in idGroup.Value)
+        var provider = _storageProviderManager.GetMandatory (idGroup.Key);
+        var dataContainersByID = provider.LoadDataContainers (idGroup.Value).Where(dc=>dc!=null).ToDictionary (dc => dc.ID);
+        foreach (var id in idGroup.Value)
         {
-          DataContainer dataContainer = dataContainers[id];
-          Exception exception = CheckLoadedDataContainer (id, dataContainer, throwOnNotFound);
+          var dataContainer = dataContainersByID.GetValueOrDefault(id);
+          var exception = CheckLoadedDataContainer (id, dataContainer, throwOnNotFound);
           if (exception != null)
             exceptions.Add (exception);
           else if (dataContainer != null)
             unorderedResultCollection.Add (dataContainer);
         }
+
+
+        //foreach (var dataContainer in dataContainersByID)
+        //{
+        //  // TODO 4113: Use .LocatedDataContainer and .ObjectID
+        //  var exception = CheckLoadedDataContainer (null, dataContainer, throwOnNotFound);
+        //  if (exception != null)
+        //    exceptions.Add (exception);
+        //  else if(dataContainer!=null)
+        //    unorderedResultCollection.Add (dataContainer);
+        //}
+        
+        
       }
 
       if (exceptions.Count > 0)
@@ -188,10 +200,10 @@ namespace Remotion.Data.DomainObjects.Persistence
       return orderedResultCollection;
     }
 
-    private MultiDictionary<string, ObjectID> GroupIDsByProvider (IEnumerable<ObjectID> ids)
+    private IEnumerable<KeyValuePair<string, List<ObjectID>>> GroupIDsByProvider (IEnumerable<ObjectID> ids)
     {
       MultiDictionary<string, ObjectID> result = new MultiDictionary<string, ObjectID>();
-      foreach (ObjectID id in ids)
+      foreach (var id in ids)
         result[id.StorageProviderDefinition.Name].Add (id);
       return result;
     }
@@ -272,6 +284,7 @@ namespace Remotion.Data.DomainObjects.Persistence
         return GetNullDataContainerWithRelationCheck (relationEndPointID);
 
       StorageProvider oppositeProvider = _storageProviderManager.GetMandatory (oppositeID.StorageProviderDefinition.Name);
+      // TODO 4113: Use .LocatedDataContainer
       DataContainer oppositeDataContainer = oppositeProvider.LoadDataContainer (oppositeID);
       if (oppositeDataContainer != null)
       {
