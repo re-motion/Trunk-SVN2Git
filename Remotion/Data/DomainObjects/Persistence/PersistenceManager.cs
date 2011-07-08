@@ -153,28 +153,14 @@ namespace Remotion.Data.DomainObjects.Persistence
       foreach (var idGroup in idsByProvider)
       {
         var provider = _storageProviderManager.GetMandatory (idGroup.Key);
-        var dataContainersByID =
-            provider.LoadDataContainers (idGroup.Value).Where (dclr => dclr.LocatedDataContainer != null).ToDictionary (
-                dclr => dclr.LocatedDataContainer.ID);
-        foreach (var id in idGroup.Value)
+        foreach (var dataContainerLookupResult in provider.LoadDataContainers (idGroup.Value))
         {
-          var dataContainerLookupResult = dataContainersByID.GetValueOrDefault (id);
-          var exception = CheckLoadedDataContainer (id, dataContainerLookupResult.LocatedDataContainer, throwOnNotFound);
+          var exception = CheckLoadedDataContainer (dataContainerLookupResult.ObjectID, dataContainerLookupResult.LocatedDataContainer, throwOnNotFound);
           if (exception != null)
             exceptions.Add (exception);
           else if (dataContainerLookupResult.LocatedDataContainer != null)
             unorderedResultCollection.Add (dataContainerLookupResult.LocatedDataContainer);
         }
-
-        //foreach (var dataContainer in dataContainersByID)
-        //{
-        //  // TODO 4113: Use .LocatedDataContainer and .ObjectID
-        //  var exception = CheckLoadedDataContainer (null, dataContainer, throwOnNotFound);
-        //  if (exception != null)
-        //    exceptions.Add (exception);
-        //  else if(dataContainer!=null)
-        //    unorderedResultCollection.Add (dataContainer);
-        //}
       }
 
       if (exceptions.Count > 0)
