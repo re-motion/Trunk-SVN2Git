@@ -21,24 +21,32 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
-  // TODO 4113 Implement with tests
-  //public class SelectStorageProviderCommand<TIn, TOut, TExecutionContext> : IStorageProviderCommand<IEnumerable<TOut>, TExecutionContext>
-  //{
-  //  private readonly IStorageProviderCommand<IEnumerable<TIn>, TExecutionContext> _command;
-  //  private readonly Func<TIn, TOut> _selector;
+  /// <summary>
+  /// The <see cref="SelectStorageProviderCommand{TIn,TOut,TExecutionContext}"/> executes an <see cref="IStorageProviderCommand{T, TExecutionContext}"/>
+  /// and applies a specified selector-transformation to the result.
+  /// </summary>
+  public class SelectStorageProviderCommand<TIn, TOut, TExecutionContext> : IStorageProviderCommand<IEnumerable<TOut>, TExecutionContext>
+  {
+    private readonly IStorageProviderCommand<IEnumerable<TIn>, TExecutionContext> _command;
+    private readonly Func<TIn, TOut> _selector;
 
-  //  public SelectStorageProviderCommand (IStorageProviderCommand<IEnumerable<TIn>, TExecutionContext> command, Func<TIn, TOut> selector)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("command", command);
-  //    ArgumentUtility.CheckNotNull ("selector", selector);
+    public SelectStorageProviderCommand (IStorageProviderCommand<IEnumerable<TIn>, TExecutionContext> command, Func<TIn, TOut> selector)
+    {
+      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckNotNull ("selector", selector);
 
-  //    _command = command;
-  //    _selector = selector;
-  //  }
+      _command = command;
+      _selector = selector;
+    }
 
-  //  public IEnumerable<TOut> Execute (TExecutionContext executionContext)
-  //  {
-  //    return _command.Execute (executionContext).Select (_selector);
-  //  }
-  //}
+    public IStorageProviderCommand<IEnumerable<TIn>, TExecutionContext> Command
+    {
+      get { return _command; }
+    }
+
+    public IEnumerable<TOut> Execute (TExecutionContext executionContext)
+    {
+      return _command.Execute (executionContext).Select (_selector);
+    }
+  }
 }

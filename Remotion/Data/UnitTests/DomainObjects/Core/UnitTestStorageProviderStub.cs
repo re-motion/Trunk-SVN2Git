@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
@@ -98,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       get { return _innerMockStorageProvider.Current; }
     }
 
-    public override DataContainer LoadDataContainer (ObjectID id)
+    public override DataContainerLookupResult LoadDataContainer (ObjectID id)
     {
       if (InnerProvider != null)
         return InnerProvider.LoadDataContainer (id);
@@ -118,11 +117,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         int idAsInt = (int) id.Value;
         if (s_nextID <= idAsInt)
           s_nextID = idAsInt + 1;
-        return container;
+        return new DataContainerLookupResult(id, container);
       }
     }
 
-    public override IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids)
+    public override IEnumerable<DataContainerLookupResult> LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       if (InnerProvider != null)
         return InnerProvider.LoadDataContainers (ids);

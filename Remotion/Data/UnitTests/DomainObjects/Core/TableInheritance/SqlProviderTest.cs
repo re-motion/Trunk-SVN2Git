@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void LoadConcreteSingle ()
     {
-      DataContainer customerContainer = Provider.LoadDataContainer (DomainObjectIDs.Customer);
+      DataContainer customerContainer = Provider.LoadDataContainer (DomainObjectIDs.Customer).LocatedDataContainer;
       Assert.IsNotNull (customerContainer);
       Assert.AreEqual (DomainObjectIDs.Customer, customerContainer.ID);
       Assert.AreEqual (

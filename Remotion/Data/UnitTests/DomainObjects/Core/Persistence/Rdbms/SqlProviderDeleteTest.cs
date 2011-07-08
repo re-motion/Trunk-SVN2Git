@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _provider.Connect();
       _provider.Save (containers);
 
-      Assert.IsNull (_provider.LoadDataContainer (DomainObjectIDs.OrderTicket1));
+      Assert.IsNull (_provider.LoadDataContainer (DomainObjectIDs.OrderTicket1).LocatedDataContainer);
     }
 
     [Test]

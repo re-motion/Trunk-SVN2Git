@@ -354,6 +354,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSortCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\SingleDataContainerLoadCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\SelectStorageProviderCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedRealObjectRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedVirtualObjectRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\DelegatingFetchedRelationDataRegistrationAgentTest.cs" />

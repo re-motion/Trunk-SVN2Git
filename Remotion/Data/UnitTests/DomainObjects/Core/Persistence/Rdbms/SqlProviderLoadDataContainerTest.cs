@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
 
-      DataContainer container = Provider.LoadDataContainer (id);
+      DataContainer container = Provider.LoadDataContainer (id).LocatedDataContainer;
 
       Assert.IsNotNull (container);
       Assert.AreEqual (container.ID, id);
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       try
       {
-        DataContainer container = Provider.LoadDataContainer (id);
+        DataContainer container = Provider.LoadDataContainer (id).LocatedDataContainer;
       }
       catch (RdbmsProviderException e)
       {
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       try
       {
-        DataContainer container = Provider.LoadDataContainer (id);
+        DataContainer container = Provider.LoadDataContainer (id).LocatedDataContainer;
       }
       catch (RdbmsProviderException e)
       {
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{E067A627-BA3F-4ee5-8B61-1F46DC28DFC3}"));
 
-      Assert.IsNull (Provider.LoadDataContainer (id));
+      Assert.IsNull (Provider.LoadDataContainer (id).LocatedDataContainer);
     }
 
     [Test]
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      DataContainer actualContainer = Provider.LoadDataContainer (id);
+      DataContainer actualContainer = Provider.LoadDataContainer (id).LocatedDataContainer;
 
       DataContainer expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
 
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDerivedDataContainerByID ()
     {
-      DataContainer actualContainer = Provider.LoadDataContainer (DomainObjectIDs.Partner1);
+      DataContainer actualContainer = Provider.LoadDataContainer (DomainObjectIDs.Partner1).LocatedDataContainer;
       DataContainer expectedContainer = TestDataContainerFactory.CreatePartner1DataContainer ();
 
       DataContainerChecker checker = new DataContainerChecker ();
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadTwiceDerivedDataContainerByID ()
     {
-      DataContainer actualContainer = Provider.LoadDataContainer (DomainObjectIDs.Distributor2);
+      DataContainer actualContainer = Provider.LoadDataContainer (DomainObjectIDs.Distributor2).LocatedDataContainer;
       DataContainer expectedContainer = TestDataContainerFactory.CreateDistributor2DataContainer ();
 
       DataContainerChecker checker = new DataContainerChecker ();
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ObjectID id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
-      DataContainer container = Provider.LoadDataContainer (id);
+      DataContainer container = Provider.LoadDataContainer (id).LocatedDataContainer;
 
       PropertyValue actualPropertyValue = container.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"];
 
@@ -168,14 +168,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainerWithRelation ()
     {
-      DataContainer orderTicketContainer = Provider.LoadDataContainer (DomainObjectIDs.OrderTicket1);
+      DataContainer orderTicketContainer = Provider.LoadDataContainer (DomainObjectIDs.OrderTicket1).LocatedDataContainer;
       Assert.AreEqual (DomainObjectIDs.Order1, orderTicketContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
     }
 
     [Test]
     public void LoadDataContainerWithRelationAndInheritance ()
     {
-      DataContainer ceoContainer = Provider.LoadDataContainer (DomainObjectIDs.Ceo7);
+      DataContainer ceoContainer = Provider.LoadDataContainer (DomainObjectIDs.Ceo7).LocatedDataContainer;
       Assert.AreEqual (DomainObjectIDs.Partner2, ceoContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"));
     }
 

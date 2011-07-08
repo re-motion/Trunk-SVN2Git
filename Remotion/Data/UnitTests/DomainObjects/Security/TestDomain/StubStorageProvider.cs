@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
@@ -37,12 +36,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
     }
 
-    public override DataContainer LoadDataContainer (ObjectID id)
+    public override DataContainerLookupResult LoadDataContainer (ObjectID id)
     {
       throw new NotImplementedException ();
     }
 
-    public override IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids)
+    public override IEnumerable<DataContainerLookupResult> LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       throw new NotImplementedException ();
     }

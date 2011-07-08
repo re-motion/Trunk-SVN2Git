@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -87,9 +88,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       var officialDC1 = DataContainer.CreateNew (DomainObjectIDs.Official1);
       var officialDC2 = DataContainer.CreateNew (DomainObjectIDs.Official2);
 
-      var officialDCs = new DataContainerCollection();
-      officialDCs.Add (officialDC1);
-      officialDCs.Add (officialDC2);
+      var officialDCs = new List<DataContainerLookupResult>();
+      officialDCs.Add (new DataContainerLookupResult(DomainObjectIDs.Official1, officialDC1));
+      officialDCs.Add (new DataContainerLookupResult(DomainObjectIDs.Official2, officialDC2));
 
       Expect.Call (mockProvider.LoadDataContainers (null)).Constraints (
           Mocks_List.Equal (

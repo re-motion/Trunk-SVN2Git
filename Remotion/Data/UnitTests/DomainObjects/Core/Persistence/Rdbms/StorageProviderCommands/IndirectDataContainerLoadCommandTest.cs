@@ -30,20 +30,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   public class IndirectDataContainerLoadCommandTest : SqlProviderBaseTest
   {
     private IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> _objectIDLoadCommandStub;
-    private IStorageProviderCommand<DataContainer[], IRdbmsProviderCommandExecutionContext> _dataContainerLoadCommandStub;
+    private IStorageProviderCommand<DataContainerLookupResult[], IRdbmsProviderCommandExecutionContext> _dataContainerLoadCommandStub;
     private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderFactoryStub;
 
     private IndirectDataContainerLoadCommand _loadCommand;
     private ObjectID _objectID1;
     private ObjectID _objectID2;
-    private DataContainer[] _fakeResult;
+    private DataContainerLookupResult[] _fakeResult;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _fakeResult = new DataContainer[0];
+      _fakeResult = new DataContainerLookupResult[0];
       _objectID1 = DomainObjectIDs.Order1;
       _objectID2 = DomainObjectIDs.Order2;
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectIDLoadCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext>>();
       _objectIDLoadCommandStub.Stub (stub => stub.Execute(_commandExecutionContextStub)).Return (new[] { _objectID1, _objectID2 });
 
-      _dataContainerLoadCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<DataContainer[], IRdbmsProviderCommandExecutionContext>> ();
+      _dataContainerLoadCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<DataContainerLookupResult[], IRdbmsProviderCommandExecutionContext>> ();
       _dataContainerLoadCommandStub.Stub (stub => stub.Execute (_commandExecutionContextStub)).Return (_fakeResult);
 
       _storageProviderFactoryStub = MockRepository.GenerateStub<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();

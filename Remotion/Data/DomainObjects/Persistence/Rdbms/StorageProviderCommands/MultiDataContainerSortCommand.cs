@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
-using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
@@ -27,14 +27,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// Executes a given <see cref="IStorageProviderCommand{T,TExecutionContext}"/> and sorts the resulting <see cref="DataContainer"/> instances
   /// according to a given list of <see cref="ObjectID"/> values.
   /// </summary>
-  // TODO 4113: Refactor to return IEnumerable<DataContainerLookupResult>
-  public class MultiDataContainerSortCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
+  public class MultiDataContainerSortCommand : IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly ObjectID[] _objectIDs;
     private readonly IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> _command;
 
     public MultiDataContainerSortCommand (
-        IEnumerable<ObjectID> objectIDs, 
+        IEnumerable<ObjectID> objectIDs,
         IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> command)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
@@ -53,17 +52,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     {
       get { return _command; }
     }
-    
-    public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
+
+    public IEnumerable<DataContainerLookupResult> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
       var dataContainersByID = new Dictionary<ObjectID, DataContainer>();
       var dataContainers = _command.Execute (executionContext);
-      foreach (var dataContainer in dataContainers.Where(dc=>dc!=null))
+      foreach (var dataContainer in dataContainers.Where (dc => dc != null))
         dataContainersByID[dataContainer.ID] = dataContainer;
-      
-      return _objectIDs.Select (id => id!=null ? dataContainersByID.GetValueOrDefault (id) : null);
+
+      return
+          _objectIDs.Select (
+              id =>
+              id != null ? new DataContainerLookupResult (id, dataContainersByID.GetValueOrDefault (id)) : new DataContainerLookupResult (null, null));
     }
   }
 }

@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// <summary>
   /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a single <see cref="DataContainer"/>.
   /// </summary>
-  public class SingleDataContainerLoadCommand : IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>
+  public class SingleDataContainerLoadCommand : IStorageProviderCommand<DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilder _dbCommandBuilder;
     private readonly IDataContainerReader _dataContainerReader;
@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dataContainerReader; }
     }
 
-    public DataContainer Execute (IRdbmsProviderCommandExecutionContext executionContext)
+    public DataContainerLookupResult Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
@@ -58,7 +58,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleRow))
         {
-          return _dataContainerReader.Read(reader);
+          var dataContainer = _dataContainerReader.Read (reader);
+          return new DataContainerLookupResult(dataContainer!=null ? dataContainer.ID : null, dataContainer);
         }
       }
     }

@@ -229,9 +229,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainer ()
     {
       var objectID = DomainObjectIDs.Order1;
-      var fakeResult = DataContainer.CreateNew (objectID);
+      var fakeResult = new DataContainerLookupResult(objectID, DataContainer.CreateNew (objectID));
 
-      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>> ();
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>> ();
       using (_mockRepository.Ordered ())
       {
         _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
@@ -245,7 +245,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _provider.LoadDataContainer (objectID);
 
       _mockRepository.VerifyAll();
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result.LocatedDataContainer, Is.SameAs (fakeResult.LocatedDataContainer));
     }
 
     [Test]

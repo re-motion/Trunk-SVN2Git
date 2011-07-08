@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -96,9 +95,9 @@ namespace Remotion.Data.DomainObjects.Persistence
       _disposed = true;
     }
 
-    public abstract DataContainer LoadDataContainer (ObjectID id);
+    public abstract DataContainerLookupResult LoadDataContainer (ObjectID id);
 
-    public abstract IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids);
+    public abstract IEnumerable<DataContainerLookupResult> LoadDataContainers (IEnumerable<ObjectID> ids);
 
     public abstract DataContainerCollection LoadDataContainersByRelatedID (
         RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID);

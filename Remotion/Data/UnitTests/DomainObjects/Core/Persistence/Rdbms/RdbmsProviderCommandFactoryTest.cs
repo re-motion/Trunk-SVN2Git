@@ -356,8 +356,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
-      Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
-      var command = (IndirectDataContainerLoadCommand) result;
+      Assert.That (result, Is.TypeOf (typeof (SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>)));
+      var innerCommand = ((SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>) result).Command;
+      Assert.That (innerCommand, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
+      var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
       Assert.That (((MultiObjectIDLoadCommand) (command.ObjectIDLoadCommand)).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
       Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.SameAs (_objectIDReaderStub));
@@ -401,8 +403,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _foreignKeyValue,
           new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }));
 
-      Assert.That (result, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
-      var command = (IndirectDataContainerLoadCommand) result;
+      Assert.That (result, Is.TypeOf (typeof (SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>)));
+      var innerCommand = ((SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>) result).Command;
+      Assert.That (innerCommand, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
+      var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
       Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
       Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.SameAs (_objectIDReaderStub));
