@@ -33,6 +33,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
@@ -379,6 +380,10 @@
       <DependentUpon>TestForm.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="TestService.asmx.cs">
+      <DependentUpon>TestService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TestTabbedForm.aspx.cs">
       <DependentUpon>TestTabbedForm.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -518,6 +523,7 @@
     <Content Include="StartForm.aspx" />
     <Content Include="TestForm.aspx" />
     <Content Include="TestPage.htm" />
+    <Content Include="TestService.asmx" />
     <Content Include="TestTabbedForm.aspx" />
     <Content Include="TestTabbedPersonDetailsUserControl.ascx">
       <SubType>UserControl</SubType>

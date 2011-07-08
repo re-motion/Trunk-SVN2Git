@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,23 +15,31 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Threading;
-using System.Web.Compilation;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Remotion.Web.UI;
-using Remotion.Web.Utilities;
+using System.Web.Script.Services;
+using System.Web.Services;
 
 namespace OBWTest
 {
-  public class TestForm : Page
+  [WebService (Namespace = "http://tempuri.org/")]
+  [WebServiceBinding (ConformsTo = WsiProfiles.BasicProfile1_1)]
+  [ToolboxItem (false)]
+  [ScriptService]
+  public class TestService : WebService, ITestService
   {
-    protected override void OnPreRender (EventArgs e)
+    [WebMethod]
+    [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
+    public string DoStuff (string stringValue, int intValue)
     {
-      var testService = (ITestService) BuildManager.CreateInstanceFromVirtualPath ("~/TestService.asmx", typeof (ITestService));
-
-      HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude();
-      base.OnPreRender (e);
+      Thread.Sleep (3000);
+      return stringValue + " " + intValue * 2;
     }
+  }
+
+  public interface ITestService
+  {
+    string DoStuff (string stringValue, int intValue);
+
   }
 }
