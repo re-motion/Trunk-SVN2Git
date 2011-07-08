@@ -38,8 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _valueConverter = new ValueConverter (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
+      _valueConverter = new ValueConverter (TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
       _commandFactory = new RdbmsProviderCommandFactory (
           new SqlDbCommandBuilderFactory (
               SqlDialect.Instance,
@@ -49,8 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new ObjectIDReader (_valueConverter),
           new RdbmsPersistenceModelProvider());
 
-      _provider = new SqlProvider (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, _commandFactory);
+      _provider = new SqlProvider (TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, _commandFactory);
     }
 
     public override void TearDown ()

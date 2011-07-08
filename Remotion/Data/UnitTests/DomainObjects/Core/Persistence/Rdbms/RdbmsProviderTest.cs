@@ -15,15 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -33,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class RdbmsProviderTest : SqlProviderBaseTest
   {
     private RdbmsProviderDefinition _definition;
-    
+
     private MockRepository _mockRepository;
 
     private ISqlDialect _dialectStub;
@@ -52,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _definition = TestDomainStorageProviderDefinition;
 
       _mockRepository = new MockRepository();
-      
+
       _dialectStub = _mockRepository.Stub<ISqlDialect>();
 
       _storageNameProviderStub = _mockRepository.Stub<IStorageNameProvider>();
@@ -61,9 +68,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
       _storageNameProviderStub.Replay();
 
-      _commandFactoryMock = _mockRepository.StrictMock<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>> ();
+      _commandFactoryMock = _mockRepository.StrictMock<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
 
-      _connectionStub = _mockRepository.Stub<IDbConnection> ();
+      _connectionStub = _mockRepository.Stub<IDbConnection>();
 
       var sqlConnectionCreatorStub = _mockRepository.Stub<TestableRdbmsProvider.IConnectionCreator>();
       sqlConnectionCreatorStub.Stub (stub => stub.CreateConnection()).Return (new SqlConnection());
@@ -77,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _commandFactoryMock,
           sqlConnectionCreatorStub);
 
-      _connectionCreatorMock = _mockRepository.StrictMock<TestableRdbmsProvider.IConnectionCreator> ();
+      _connectionCreatorMock = _mockRepository.StrictMock<TestableRdbmsProvider.IConnectionCreator>();
 
       _provider = new TestableRdbmsProvider (
           _definition,
@@ -91,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public override void TearDown ()
     {
       _providerWithSqlConnection.Dispose();
-      base.TearDown ();
+      base.TearDown();
     }
 
     [Test]
@@ -199,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void StatementDelimiter_UsesDialect ()
     {
       _dialectStub.Stub (stub => stub.StatementDelimiter).Return ("&");
-      _dialectStub.Replay ();
+      _dialectStub.Replay();
 
       var result = _providerWithSqlConnection.StatementDelimiter;
       Assert.That (result, Is.EqualTo ("&"));
@@ -219,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetParameterName_UsesDialect ()
     {
       _dialectStub.Stub (stub => stub.GetParameterName ("xy")).Return ("#1");
-      _dialectStub.Replay ();
+      _dialectStub.Replay();
 
       var result = _providerWithSqlConnection.GetParameterName ("xy");
       Assert.That (result, Is.EqualTo ("#1"));
@@ -229,10 +236,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainer ()
     {
       var objectID = DomainObjectIDs.Order1;
-      var fakeResult = new DataContainerLookupResult(objectID, DataContainer.CreateNew (objectID));
+      var fakeResult = new DataContainerLookupResult (objectID, DataContainer.CreateNew (objectID));
 
-      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>> ();
-      using (_mockRepository.Ordered ())
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>>();
+      using (_mockRepository.Ordered())
       {
         _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
         _commandFactoryMock
@@ -252,23 +259,211 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainer_InvalidID ()
     {
       var objectID = DomainObjectIDs.Official1;
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      Assert.That (() => _provider.LoadDataContainer (objectID), Throws.ArgumentException.With.Message.EqualTo (
-          "The StorageProviderID 'UnitTestStorageProviderStub' of the provided ObjectID 'Official|1|System.Int32' does not match with this "
-           + "StorageProvider's ID 'TestDomain'.\r\nParameter name: id"));
+      Assert.That (
+          () => _provider.LoadDataContainer (objectID),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The StorageProviderID 'UnitTestStorageProviderStub' of the provided ObjectID 'Official|1|System.Int32' does not match with this "
+              + "StorageProvider's ID 'TestDomain'.\r\nParameter name: id"));
     }
 
     [Test]
     public void LoadDataContainer_Disposed ()
     {
       var objectID = DomainObjectIDs.Order1;
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
       _provider.Dispose();
 
-      Assert.That (() => _provider.LoadDataContainer (objectID), Throws.Exception.TypeOf<ObjectDisposedException>().With.Message.EqualTo (
-          "A disposed StorageProvider cannot be accessed.\r\nObject name: 'StorageProvider'."));
+      Assert.That (
+          () => _provider.LoadDataContainer (objectID),
+          Throws.Exception.TypeOf<ObjectDisposedException>().With.Message.EqualTo (
+              "A disposed StorageProvider cannot be accessed.\r\nObject name: 'StorageProvider'."));
+    }
+
+    [Test]
+    public void LoadDataContainers ()
+    {
+      var objectID1 = DomainObjectIDs.Order1;
+      var objectID2 = DomainObjectIDs.Order2;
+      var objectID3 = DomainObjectIDs.Order3;
+
+      var lookupResult1 = new DataContainerLookupResult (objectID1, DataContainer.CreateNew (objectID1));
+      var lookupResult2 = new DataContainerLookupResult (objectID2, DataContainer.CreateNew (objectID2));
+      var lookupResult3 = new DataContainerLookupResult (objectID3, DataContainer.CreateNew (objectID3));
+
+      var commandMock =
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext>>();
+      using (_mockRepository.Ordered())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForMultiIDLookup (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { objectID1, objectID2, objectID3 })))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (new[] { lookupResult1, lookupResult2, lookupResult3 });
+      }
+      _mockRepository.ReplayAll();
+
+      var result = _provider.LoadDataContainers (new[] { objectID1, objectID2, objectID3 }).ToArray();
+
+      _mockRepository.VerifyAll();
+      Assert.That (result.Length, Is.EqualTo (3));
+      Assert.That (result[0].ObjectID, Is.SameAs (lookupResult1.ObjectID));
+      Assert.That (result[0].LocatedDataContainer, Is.SameAs (lookupResult1.LocatedDataContainer));
+      Assert.That (result[1].ObjectID, Is.SameAs (lookupResult2.ObjectID));
+      Assert.That (result[1].LocatedDataContainer, Is.SameAs (lookupResult2.LocatedDataContainer));
+      Assert.That (result[2].ObjectID, Is.SameAs (lookupResult3.ObjectID));
+      Assert.That (result[2].LocatedDataContainer, Is.SameAs (lookupResult3.LocatedDataContainer));
+    }
+
+    [Test]
+    public void LoadDataContainers_Disposed ()
+    {
+      var objectID = DomainObjectIDs.Order1;
+      _mockRepository.ReplayAll();
+
+      _provider.Dispose();
+
+      Assert.That (
+          () => _provider.LoadDataContainers (new[] { objectID }),
+          Throws.Exception.TypeOf<ObjectDisposedException>().With.Message.EqualTo (
+              "A disposed StorageProvider cannot be accessed.\r\nObject name: 'StorageProvider'."));
+    }
+
+    [Test]
+    public void LoadDataContainers_InvalidID ()
+    {
+      var objectID = DomainObjectIDs.Official1;
+      var commandMock =
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext>>();
+      _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
+      _commandFactoryMock
+          .Expect (mock => mock.CreateForMultiIDLookup (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { objectID })))
+          .Return (commandMock);
+      _mockRepository.ReplayAll();
+
+      Assert.That (
+          () => _provider.LoadDataContainers (new[] { objectID }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The StorageProviderID 'UnitTestStorageProviderStub' of the provided ObjectID 'Official|1|System.Int32' does not match with this "
+              + "StorageProvider's ID 'TestDomain'.\r\nParameter name: ids"));
+    }
+
+    [Test]
+    public void LoadDataContainersByRelatedID ()
+    {
+      var objectID = DomainObjectIDs.Order1;
+      var propertyDefinition = PropertyDefinitionFactory.Create (
+          objectID.ClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("Official"));
+      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
+      var fakeResult = DataContainer.CreateNew (objectID);
+
+      var commandMock =
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForRelationLookup (relationEndPointDefinition, objectID, null))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (new[] { fakeResult });
+      }
+      _mockRepository.ReplayAll ();
+
+      var result = _provider.LoadDataContainersByRelatedID (relationEndPointDefinition, null, objectID);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (new[] { fakeResult }));
+    }
+
+    [Test]
+    public void LoadDataContainersByRelatedID_Disposed ()
+    {
+      var objectID = DomainObjectIDs.Order1;
+      var propertyDefinition = PropertyDefinitionFactory.Create (
+          objectID.ClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("Official"));
+      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
+      _mockRepository.ReplayAll();
+
+      _provider.Dispose();
+
+      Assert.That (
+          () => _provider.LoadDataContainersByRelatedID (relationEndPointDefinition, null, objectID),
+          Throws.Exception.TypeOf<ObjectDisposedException>().With.Message.EqualTo (
+              "A disposed StorageProvider cannot be accessed.\r\nObject name: 'StorageProvider'."));
+    }
+
+    [Test]
+    public void LoadDataContainersByRelatedID_ClassDefinitionWithDifferentStorageProviderDefinition ()
+    {
+      var providerWithDifferentStorageProvider = new SqlProvider (
+          new RdbmsProviderDefinition ("Test", new SqlStorageObjectFactory(), TestDomainConnectionString),
+          StorageNameProvider,
+          NullPersistenceListener.Instance,
+          CommandFactory);
+      var objectID = DomainObjectIDs.Order1;
+      var propertyDefinition = PropertyDefinitionFactory.Create (
+          objectID.ClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("Official"));
+      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
+      _mockRepository.ReplayAll();
+
+      Assert.That (
+          () => providerWithDifferentStorageProvider.LoadDataContainersByRelatedID (relationEndPointDefinition, null, objectID),
+          Throws.Exception.TypeOf<ArgumentException> ().With.Message.EqualTo (
+              "The StorageProviderID 'TestDomain' of the provided ClassDefinition does not match with this StorageProvider's ID 'Test'.\r\nParameter name: classDefinition"));
+    }
+
+    [Test]
+    public void LoadDataContainersByRelatedID_StorageClassTransaction ()
+    {
+      var objectID = DomainObjectIDs.Order1;
+      var propertyDefinition = PropertyDefinitionFactory.Create (
+          objectID.ClassDefinition, StorageClass.Transaction, typeof (Order).GetProperty ("Official"));
+      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
+      
+      _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+      _mockRepository.ReplayAll ();
+
+      var result = _provider.LoadDataContainersByRelatedID (relationEndPointDefinition, null, objectID);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.Empty);
+    }
+
+    [Test]
+    public void Save ()
+    {
+      var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IRdbmsProviderCommandExecutionContext>> ();
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForSave(Arg<DataContainer[]>.Is.Equal(new[]{dataContainer1, dataContainer2})))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider));
+      }
+      _mockRepository.ReplayAll ();
+
+      _provider.Save (new DataContainerCollection (new[] { dataContainer1, dataContainer2 }, true));
+
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void Save_Disposed ()
+    {
+      _mockRepository.ReplayAll ();
+
+      _provider.Dispose ();
+
+      Assert.That (
+          () => _provider.Save (new DataContainerCollection()),
+          Throws.Exception.TypeOf<ObjectDisposedException> ().With.Message.EqualTo (
+              "A disposed StorageProvider cannot be accessed.\r\nObject name: 'StorageProvider'."));
     }
   }
 }
