@@ -36,24 +36,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    public void CreateIfNull ()
-    {
-      IBusinessObjectReferenceProperty property = CreateProperty ("Scalar");
-
-      Assert.That (property.CreateIfNull, Is.False);
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage = "Create method is not supported by 'Remotion.ObjectBinding.BindableObject.Properties.ReferenceProperty'.")]
-    public void Create ()
-    {
-      IBusinessObjectReferenceProperty property = CreateProperty ("Scalar");
-
-      property.Create (null);
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = 
         "Argument concreteType is a Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, "
         +"which cannot be assigned to type Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass."
