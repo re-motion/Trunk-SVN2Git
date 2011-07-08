@@ -1,0 +1,124 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using NUnit.Framework;
+using Remotion.Mixins;
+using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
+using Rhino.Mocks;
+
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests
+{
+  [TestFixture]
+  public class Create : TestBase
+  {
+    private MockRepository _mockRepository;
+    private BindableObjectProvider _bindableObjectProviderForDeclaringType;
+    private BindableObjectProvider _bindableObjectProviderForPropertyType;
+
+    public override void SetUp ()
+    {
+      base.SetUp();
+
+      _mockRepository = new MockRepository();
+      _bindableObjectProviderForDeclaringType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
+      _bindableObjectProviderForPropertyType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
+
+      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProviderForDeclaringType);
+      BusinessObjectProvider.SetProvider<BindableObjectProviderForCreateObjectServiceAttribute> (_bindableObjectProviderForPropertyType);
+    }
+
+    [Test]
+    public void Create_WithCreateSupported ()
+    {
+      var stubBusinessObject = _mockRepository.Stub<IBusinessObject>();
+      var mockService = _mockRepository.StrictMock<ICreateObjectServiceOnProperty>();
+      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyDeclaration");
+      var expected = _mockRepository.Stub<IBusinessObject>();
+
+      using (_mockRepository.Ordered())
+      {
+        Expect.Call (mockService.SupportsProperty (property)).Return (true);
+        Expect.Call (mockService.Create (stubBusinessObject, property)).Return (expected);
+      }
+      _mockRepository.ReplayAll();
+
+      _bindableObjectProviderForDeclaringType.AddService (mockService);
+      IBusinessObject actual = property.Create (stubBusinessObject);
+
+      _mockRepository.VerifyAll();
+      Assert.That (actual, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void Create_WithCreateSupportedAndReferencingObjectNull ()
+    {
+      var mockService = _mockRepository.StrictMock<ICreateObjectServiceOnType>();
+      var property = CreateProperty ("CreateObjectServiceFromPropertyType");
+      var expected = _mockRepository.Stub<IBusinessObject>();
+
+      using (_mockRepository.Ordered())
+      {
+        Expect.Call (mockService.SupportsProperty (property)).Return (true);
+        Expect.Call (mockService.Create (null, property)).Return (expected);
+      }
+      _mockRepository.ReplayAll();
+
+      _bindableObjectProviderForPropertyType.AddService (mockService);
+      IBusinessObject actual = property.Create (null);
+
+      _mockRepository.VerifyAll();
+      Assert.That (actual, Is.SameAs (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Auto-creating an object is not supported for reference property 'CreateObjectServiceFromPropertyDeclaration' of business object class "
+        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]
+    public void Create_WithCreateNotSupported ()
+    {
+      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties> (ParamList.Empty);
+      var mockService = _mockRepository.StrictMock<ICreateObjectServiceOnProperty>();
+      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyDeclaration");
+
+      Expect.Call (mockService.SupportsProperty (property)).Return (false);
+      _mockRepository.ReplayAll();
+
+      _bindableObjectProviderForDeclaringType.AddService (mockService);
+      try
+      {
+        property.Create (businessObject);
+      }
+      finally
+      {
+        _mockRepository.VerifyAll();
+      }
+    }
+
+    private ReferenceProperty CreateProperty (string propertyName)
+    {
+      PropertyBase.Parameters propertyParameters =
+          GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _bindableObjectProviderForDeclaringType);
+      ReferenceProperty property = new ReferenceProperty (propertyParameters);
+      property.SetReflectedClass (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithBusinessObjectProperties)));
+
+      return property;
+    }
+  }
+}

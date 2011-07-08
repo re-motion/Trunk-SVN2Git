@@ -125,7 +125,19 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// </exception>
     public IBusinessObject Create (IBusinessObject referencingObject)
     {
-      throw new NotSupportedException (string.Format ("Create method is not supported by '{0}'.", GetType().FullName));
+      if (!CreateIfNull)
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "Auto-creating an object is not supported for reference property '{0}' of business object class '{1}'.",
+                Identifier,
+                ReflectedClass.Identifier));
+      }
+
+      ICreateObjectService createObjectService = GetCreateObjectService();
+      Assertion.IsNotNull (createObjectService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.Item2.FullName);
+
+      return createObjectService.Create (referencingObject, this);
     }
 
     private IBusinessObjectClass GetReferenceClass ()

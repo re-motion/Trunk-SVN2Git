@@ -107,6 +107,7 @@
     <Compile Include="Core\BindableObject\NullEnumerationValueFilterTest.cs" />
     <Compile Include="Core\BindableObject\PropertyCollectionTest.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\Extensibility.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\Create.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\CreateIfNull.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\BaseTestType.cs" />
     <Compile Include="Core\BindableObject\BindableObjectClassTest.cs" />
