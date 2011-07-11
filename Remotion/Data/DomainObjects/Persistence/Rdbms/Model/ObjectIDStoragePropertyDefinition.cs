@@ -22,14 +22,14 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="IDColumnDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
+  /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
   /// </summary>
-  public class IDColumnDefinition : IRdbmsStoragePropertyDefinition
+  public class ObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
     private readonly ColumnDefinition _objectIDColumn;
     private readonly ColumnDefinition _classIDColumn;
 
-    public IDColumnDefinition (ColumnDefinition objectIDColumn, ColumnDefinition classIDColumn)
+    public ObjectIDStoragePropertyDefinition (ColumnDefinition objectIDColumn, ColumnDefinition classIDColumn)
     {
       ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (other == null || other.GetType() != GetType())
         return false;
 
-      var castOther = (IDColumnDefinition) other;
+      var castOther = (ObjectIDStoragePropertyDefinition) other;
       return Equals (castOther.ObjectIDColumn, ObjectIDColumn) && Equals (castOther.ClassIDColumn, ClassIDColumn);
     }
 

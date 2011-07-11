@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
     private Guid _guid;
-    private IDColumnDefinition _foreignKeyColumnDefinition;
+    private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
     private IOrderedColumnsSpecification _orderedColumnsStub;
     private TableDefinition _table1;
     private TableDefinition _table2;
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp();
 
-      _foreignKeyColumnDefinition = new IDColumnDefinition (
+      _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
           ColumnDefinitionObjectMother.CreateTypedColumn ("FKID", typeof (Guid), "uniqueidentifier").ColumnDefinition,
           ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition);
 

@@ -64,17 +64,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return storagePropertyDefinitionAsIColumnDefinition;
     }
 
-    public IDColumnDefinition GetIDColumnDefinition (RelationEndPointDefinition relationEndPointDefinition)
+    public ObjectIDStoragePropertyDefinition GetIDColumnDefinition (RelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      var storagePropertyDefinitionAsIDColumnDefinition = relationEndPointDefinition.PropertyDefinition.StoragePropertyDefinition as IDColumnDefinition;
+      var storagePropertyDefinitionAsIDColumnDefinition = relationEndPointDefinition.PropertyDefinition.StoragePropertyDefinition as ObjectIDStoragePropertyDefinition;
       if (storagePropertyDefinitionAsIDColumnDefinition == null)
       {
         throw new InvalidOperationException (
           string.Format ("The RdbmsProvider expected a storage definition object of type '{0}' for property '{1}' of class-definition '{2}', "
                 + "but found a storage definition object of type '{3}'.",
-                typeof (IDColumnDefinition).Name,
+                typeof (ObjectIDStoragePropertyDefinition).Name,
                 relationEndPointDefinition.PropertyDefinition.PropertyName,
                 relationEndPointDefinition.PropertyDefinition.ClassDefinition.ID,
                 relationEndPointDefinition.PropertyDefinition.StoragePropertyDefinition.GetType ().Name));

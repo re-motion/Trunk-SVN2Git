@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetIDColumnDefinition ()
     {
-      var columnDefinition = new IDColumnDefinition (
+      var columnDefinition = new ObjectIDStoragePropertyDefinition (
           ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition);
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, "OrderNo", true, true, null, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The RdbmsProvider expected a storage definition object of type 'IDColumnDefinition' for property 'OrderNo' of class-definition 'Order', "
+        "The RdbmsProvider expected a storage definition object of type 'ObjectIDStoragePropertyDefinition' for property 'OrderNo' of class-definition 'Order', "
         + "but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
     public void GetIDColumnDefinition_NoIDColumnDefinition ()
     {

@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private ObjectID _objectID2;
     private ObjectID _objectID3;
     private ObjectID _foreignKeyValue;
-    private IDColumnDefinition _foreignKeyColumnDefinition;
+    private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
     private UnionViewDefinition _unionViewDefinition;
 
     public override void SetUp ()
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _tableDefinition1);
 
       _foreignKeyValue = CreateObjectID (_tableDefinition1);
-      _foreignKeyColumnDefinition = new IDColumnDefinition (
+      _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
           ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition);
 
       _objectID1 = CreateObjectID (_tableDefinition1);
@@ -380,7 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var classDefinition = CreateClassDefinition (_unionViewDefinition);
       var objectIDColumn = ColumnDefinitionObjectMother.ObjectIDColumn;
       var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
-      var idColumnDefinition = new IDColumnDefinition (objectIDColumn.ColumnDefinition, classIDColumn.ColumnDefinition);
+      var idColumnDefinition = new ObjectIDStoragePropertyDefinition (objectIDColumn.ColumnDefinition, classIDColumn.ColumnDefinition);
       var idPropertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,
@@ -562,7 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
-          new IDColumnDefinition (
+          new ObjectIDStoragePropertyDefinition (
               ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition));
     }
 

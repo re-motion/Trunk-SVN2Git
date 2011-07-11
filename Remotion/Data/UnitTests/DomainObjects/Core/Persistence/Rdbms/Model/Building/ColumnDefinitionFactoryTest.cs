@@ -253,8 +253,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (IDColumnDefinition)));
-      Assert.That (((IDColumnDefinition) result).HasClassIDColumn, Is.False);
+      Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
+      Assert.That (((ObjectIDStoragePropertyDefinition) result).HasClassIDColumn, Is.False);
     }
 
     [Test]
@@ -266,10 +266,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (IDColumnDefinition)));
-      Assert.That (((IDColumnDefinition) result).HasClassIDColumn, Is.True);
-      var objectIDColumn = ((IDColumnDefinition) result).ObjectIDColumn;
-      var classIDColumn = ((IDColumnDefinition) result).ClassIDColumn;
+      Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
+      Assert.That (((ObjectIDStoragePropertyDefinition) result).HasClassIDColumn, Is.True);
+      var objectIDColumn = ((ObjectIDStoragePropertyDefinition) result).ObjectIDColumn;
+      var classIDColumn = ((ObjectIDStoragePropertyDefinition) result).ClassIDColumn;
 
       Assert.That (objectIDColumn.Name, Is.EqualTo ("FakeColumnName"));
       Assert.That (objectIDColumn.IsNullable, Is.True);
@@ -292,7 +292,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (IDColumnDefinition)));
+      Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
     }
 
     [Test]

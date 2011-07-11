@@ -26,6 +26,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   {
     IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition);
     IRdbmsStoragePropertyDefinition GetColumnDefinition (PropertyDefinition propertyDefinition);
-    IDColumnDefinition GetIDColumnDefinition (RelationEndPointDefinition relationEndPointDefinition);
+    ObjectIDStoragePropertyDefinition GetIDColumnDefinition (RelationEndPointDefinition relationEndPointDefinition);
   }
 }

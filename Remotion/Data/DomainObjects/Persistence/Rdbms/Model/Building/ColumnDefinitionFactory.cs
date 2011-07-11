@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
     }
 
-    protected virtual IDColumnDefinition CreateRelationColumnDefinition (
+    protected virtual ObjectIDStoragePropertyDefinition CreateRelationColumnDefinition (
         PropertyDefinition propertyDefinition,
         IRelationEndPointDefinition relationEndPointDefinition,
         ColumnDefinition foreignKeyColumnDefinition)
@@ -103,11 +103,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
             true,
             false);
 
-        return new IDColumnDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
+        return new ObjectIDStoragePropertyDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
       }
       else
       {
-        return new IDColumnDefinition (foreignKeyColumnDefinition, null);
+        return new ObjectIDStoragePropertyDefinition (foreignKeyColumnDefinition, null);
       }
     }
 

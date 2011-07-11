@@ -32,13 +32,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        IDColumnDefinition foreignKeyColumn,
+        ObjectIDStoragePropertyDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns);
     IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         ISelectedColumnsSpecification selectedColumns,
-        IDColumnDefinition foreignKeyColumn,
+        ObjectIDStoragePropertyDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns);
     IDbCommandBuilder CreateForQuery (IQuery query);

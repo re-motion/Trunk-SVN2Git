@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         var oppositeObjectIDColumnDefinition = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
 
         var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
-        var endPointIDColumnDefinition = endPointColumnDefinition as IDColumnDefinition;
+        var endPointIDColumnDefinition = endPointColumnDefinition as ObjectIDStoragePropertyDefinition;
         if (endPointIDColumnDefinition == null)
           throw new InvalidOperationException ("The non virtual constraint column definition has to be an ID column definition.");
 
