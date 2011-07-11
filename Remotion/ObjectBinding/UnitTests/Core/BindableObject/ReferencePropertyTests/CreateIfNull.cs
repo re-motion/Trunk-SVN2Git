@@ -40,14 +40,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _bindableObjectProviderForPropertyType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
 
       BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProviderForDeclaringType);
-      BusinessObjectProvider.SetProvider<BindableObjectProviderForCreateObjectServiceAttribute> (_bindableObjectProviderForPropertyType);
+      BusinessObjectProvider.SetProvider<BindableObjectProviderForDefaultValueServiceAttribute> (_bindableObjectProviderForPropertyType);
     }
 
     [Test]
-    public void CreateObjectServiceFromPropertyType ()
+    public void DefaultValueServiceFromPropertyType ()
     {
-      ICreateObjectServiceOnType serviceMock = _mockRepository.StrictMock<ICreateObjectServiceOnType> ();
-      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyType");
+      IDefaultValueServiceOnType serviceMock = _mockRepository.StrictMock<IDefaultValueServiceOnType> ();
+      IBusinessObjectReferenceProperty property = CreateProperty ("DefaultValueServiceFromPropertyType");
 
       Expect.Call (serviceMock.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
@@ -60,11 +60,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    public void CreateObjectServiceFromPropertyDeclaration ()
+    public void DefaultValueServiceFromPropertyDeclaration ()
     {
-      var serviceMock = _mockRepository.StrictMock<ICreateObjectServiceOnProperty>();
-      var createObjectServiceOnTypeStub = _mockRepository.StrictMock<ICreateObjectServiceOnType>();
-      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyDeclaration");
+      var serviceMock = _mockRepository.StrictMock<IDefaultValueServiceOnProperty>();
+      var createObjectServiceOnTypeStub = _mockRepository.StrictMock<IDefaultValueServiceOnType>();
+      IBusinessObjectReferenceProperty property = CreateProperty ("DefaultValueServiceFromPropertyDeclaration");
 
       Expect.Call (serviceMock.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
@@ -78,18 +78,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    public void UnknownCreateObjectService ()
+    public void UnknownDefaultValueService ()
     {
-      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyType");
+      IBusinessObjectReferenceProperty property = CreateProperty ("DefaultValueServiceFromPropertyType");
 
       Assert.That (property.CreateIfNull, Is.False);
     }
 
     [Test]
-    public void WithoutCreateObjectServiceAttribute_AndDefaultCreateObjectService_FromPropertyDeclaration ()
+    public void WithoutDefaultValueServiceAttribute_AndDefaultDefaultValueService_FromPropertyDeclaration ()
     {
-      var createObjectServiceMock = _mockRepository.StrictMock<ICreateObjectService> ();
-      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoCreateObjectService");
+      var createObjectServiceMock = _mockRepository.StrictMock<IDefaultValueService> ();
+      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoDefaultValueService");
 
       Expect.Call (createObjectServiceMock.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
@@ -103,16 +103,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     [Test]
     [Ignore ("TODO RM-4106: Extend fallback behavior to include property type.")]
-    public void WithoutCreateObjectServiceAttribute_AndDefaultCreateObjectService_FromPropertyType ()
+    public void WithoutDefaultValueServiceAttribute_AndDefaultDefaultValueService_FromPropertyType ()
     {
-      var createObjectServiceMock = _mockRepository.StrictMock<ICreateObjectService> ();
+      var createObjectServiceMock = _mockRepository.StrictMock<IDefaultValueService> ();
       var businessObjectClassServiceMock = _mockRepository.StrictMock<IBusinessObjectClassService> ();
       var businessObjectProviderMock = _mockRepository.StrictMock<IBusinessObjectProvider> ();
       var businessObjectClassWithIdentityMock = _mockRepository.StrictMock<IBusinessObjectClassWithIdentity> ();
-      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoCreateObjectService");
+      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoDefaultValueService");
 
       Expect.Call (businessObjectClassWithIdentityMock.BusinessObjectProvider).Return (businessObjectProviderMock).Repeat.Any ();
-      Expect.Call (businessObjectProviderMock.GetService (typeof (ICreateObjectService))).Return (createObjectServiceMock);
+      Expect.Call (businessObjectProviderMock.GetService (typeof (IDefaultValueService))).Return (createObjectServiceMock);
       Expect.Call (businessObjectClassServiceMock.GetBusinessObjectClass (typeof (ClassFromOtherBusinessObjectImplementation)))
           .Return (businessObjectClassWithIdentityMock);
       Expect.Call (createObjectServiceMock.SupportsProperty (property)).Return (true);
@@ -126,9 +126,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    public void WithoutCreateObjectServiceAttribute_AndNoDefaultCreateObjectService_FromPropertyDeclaration ()
+    public void WithoutDefaultValueServiceAttribute_AndNoDefaultDefaultValueService_FromPropertyDeclaration ()
     {
-      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoCreateObjectService");
+      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoDefaultValueService");
 
       _mockRepository.ReplayAll ();
 
@@ -140,15 +140,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     [Test]
     [Ignore ("TODO RM-4106: Extend fallback behavior to include property type.")]
-    public void WithoutCreateObjectServiceAttribute_AndNoDefaultCreateObjectService_FromPropertyType ()
+    public void WithoutDefaultValueServiceAttribute_AndNoDefaultDefaultValueService_FromPropertyType ()
     {
       var businessObjectClassServiceMock = _mockRepository.StrictMock<IBusinessObjectClassService> ();
       var businessObjectProviderMock = _mockRepository.StrictMock<IBusinessObjectProvider> ();
       var businessObjectClassWithIdentityMock = _mockRepository.StrictMock<IBusinessObjectClassWithIdentity> ();
-      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoCreateObjectService");
+      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoDefaultValueService");
 
       Expect.Call (businessObjectClassWithIdentityMock.BusinessObjectProvider).Return (businessObjectProviderMock).Repeat.Any ();
-      Expect.Call (businessObjectProviderMock.GetService (typeof (ICreateObjectService))).Return (null);
+      Expect.Call (businessObjectProviderMock.GetService (typeof (IDefaultValueService))).Return (null);
       Expect.Call (businessObjectClassServiceMock.GetBusinessObjectClass (typeof (ClassFromOtherBusinessObjectImplementation)))
           .Return (businessObjectClassWithIdentityMock);
       _mockRepository.ReplayAll ();

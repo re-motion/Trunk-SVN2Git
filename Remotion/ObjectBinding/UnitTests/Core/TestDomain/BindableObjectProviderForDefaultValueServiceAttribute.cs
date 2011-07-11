@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.ObjectBinding.BindableObject
-{
-  // IDefaultValueService
-  public interface ICreateObjectService : IBusinessObjectService
-  {
-    bool SupportsProperty (IBusinessObjectReferenceProperty property);
+using Remotion.ObjectBinding.BindableObject;
 
-    IBusinessObject Create (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property);
+namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+{
+  public class BindableObjectProviderForDefaultValueServiceAttribute : BusinessObjectProviderAttribute
+  {
+    public BindableObjectProviderForDefaultValueServiceAttribute ()
+        : base (typeof (BindableObjectProvider))
+    {
+    }
   }
 }

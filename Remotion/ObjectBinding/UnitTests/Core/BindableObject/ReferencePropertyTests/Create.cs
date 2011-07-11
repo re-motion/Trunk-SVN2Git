@@ -41,15 +41,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _bindableObjectProviderForPropertyType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
 
       BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProviderForDeclaringType);
-      BusinessObjectProvider.SetProvider<BindableObjectProviderForCreateObjectServiceAttribute> (_bindableObjectProviderForPropertyType);
+      BusinessObjectProvider.SetProvider<BindableObjectProviderForDefaultValueServiceAttribute> (_bindableObjectProviderForPropertyType);
     }
 
     [Test]
     public void Create_WithCreateSupported ()
     {
       var stubBusinessObject = _mockRepository.Stub<IBusinessObject>();
-      var mockService = _mockRepository.StrictMock<ICreateObjectServiceOnProperty>();
-      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyDeclaration");
+      var mockService = _mockRepository.StrictMock<IDefaultValueServiceOnProperty>();
+      IBusinessObjectReferenceProperty property = CreateProperty ("DefaultValueServiceFromPropertyDeclaration");
       var expected = _mockRepository.Stub<IBusinessObject>();
 
       using (_mockRepository.Ordered())
@@ -68,13 +68,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Auto-creating an object is not supported for reference property 'CreateObjectServiceFromPropertyDeclaration' of business object class "
+        "Auto-creating an object is not supported for reference property 'DefaultValueServiceFromPropertyDeclaration' of business object class "
         + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]
     public void Create_WithCreateNotSupported ()
     {
       IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties> (ParamList.Empty);
-      var mockService = _mockRepository.StrictMock<ICreateObjectServiceOnProperty>();
-      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyDeclaration");
+      var mockService = _mockRepository.StrictMock<IDefaultValueServiceOnProperty>();
+      IBusinessObjectReferenceProperty property = CreateProperty ("DefaultValueServiceFromPropertyDeclaration");
 
       Expect.Call (mockService.SupportsProperty (property)).Return (false);
       _mockRepository.ReplayAll();

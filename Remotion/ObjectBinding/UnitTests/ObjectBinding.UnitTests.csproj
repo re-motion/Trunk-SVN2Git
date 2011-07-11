@@ -150,9 +150,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Core\TestDomain\BindableObjectProviderForCreateObjectServiceAttribute.cs" />
+    <Compile Include="Core\TestDomain\BindableObjectProviderForDefaultValueServiceAttribute.cs" />
     <Compile Include="Core\TestDomain\BindableObjectProviderForDeleteObjectServiceAttribute.cs" />
-    <Compile Include="Core\TestDomain\ClassWithCreateObjectServiceTypeAttribute.cs" />
+    <Compile Include="Core\TestDomain\ClassWithDefaultValueServiceTypeAttribute.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBase.cs" />
     <Compile Include="Core\TestDomain\ClassImplementingInterface.cs" />
     <Compile Include="Core\TestDomain\ClassWithBaseProperty.cs" />
@@ -171,8 +171,8 @@
     <Compile Include="Core\TestDomain\ExtensibleEnumWithFilterExtensions.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
-    <Compile Include="Core\TestDomain\ICreateObjectServiceOnProperty.cs" />
-    <Compile Include="Core\TestDomain\ICreateObjectServiceOnType.cs" />
+    <Compile Include="Core\TestDomain\IDefaultValueServiceOnProperty.cs" />
+    <Compile Include="Core\TestDomain\IDefaultValueServiceOnType.cs" />
     <Compile Include="Core\TestDomain\IDeleteObjectServiceOnProperty.cs" />
     <Compile Include="Core\TestDomain\IDeleteObjectServiceOnType.cs" />
     <Compile Include="Core\TestDomain\IInterfaceToImplement.cs" />

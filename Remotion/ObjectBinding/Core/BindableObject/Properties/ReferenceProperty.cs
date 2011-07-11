@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _concreteType = parameters.ConcreteType;
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
       _searchServiceDefinition = GetServiceDeclaration<SearchAvailableObjectsServiceTypeAttribute, ISearchAvailableObjectsService>();
-      _createObjectServiceDefinition = GetServiceDeclaration<CreateObjectServiceTypeAttribute, ICreateObjectService>();
+      _createObjectServiceDefinition = GetServiceDeclaration<DefaultValueServiceTypeAttribute, IDefaultValueService>();
       _deleteObjectServiceDefinition = GetServiceDeclaration<DeleteObjectServiceTypeAttribute, IDeleteObjectService> ();
     }
 
@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        ICreateObjectService service = GetCreateObjectService ();
+        IDefaultValueService service = GetCreateObjectService ();
         if (service == null)
           return false;
 
@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      ICreateObjectService service = GetCreateObjectService();
+      IDefaultValueService service = GetCreateObjectService();
       Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _createObjectServiceDefinition.Item2.FullName);
 
       return service.Create (referencingObject, this);
@@ -227,9 +227,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return GetService < ISearchAvailableObjectsService> (_searchServiceDefinition);
     }
 
-    private ICreateObjectService GetCreateObjectService ()
+    private IDefaultValueService GetCreateObjectService ()
     {
-      return GetService<ICreateObjectService> (_createObjectServiceDefinition);
+      return GetService<IDefaultValueService> (_createObjectServiceDefinition);
     }
 
     private IDeleteObjectService GetDeleteObjectService ()

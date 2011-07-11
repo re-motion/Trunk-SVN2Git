@@ -21,13 +21,13 @@ namespace Remotion.ObjectBinding.BindableObject
 {
   //TODO: doc
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public sealed class CreateObjectServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
+  public sealed class DefaultValueServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
   {
     private readonly Type _type;
 
-    public CreateObjectServiceTypeAttribute (Type type)
+    public DefaultValueServiceTypeAttribute (Type type)
     {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ICreateObjectService));
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (IDefaultValueService));
       _type = type;
     }
 

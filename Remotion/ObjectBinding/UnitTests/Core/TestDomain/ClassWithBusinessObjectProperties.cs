@@ -35,12 +35,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     public ClassFromOtherBusinessObjectImplementation NoSearchService { get; set; }
 
 
-    public ClassWithCreateObjectServiceTypeAttribute CreateObjectServiceFromPropertyType { get; set; }
+    public ClassWithDefaultValueServiceTypeAttribute DefaultValueServiceFromPropertyType { get; set; }
 
-    [CreateObjectServiceType (typeof (ICreateObjectServiceOnProperty))]
-    public ClassWithCreateObjectServiceTypeAttribute CreateObjectServiceFromPropertyDeclaration { get; set; }
+    [DefaultValueServiceType (typeof (IDefaultValueServiceOnProperty))]
+    public ClassWithDefaultValueServiceTypeAttribute DefaultValueServiceFromPropertyDeclaration { get; set; }
 
-    public ClassFromOtherBusinessObjectImplementation NoCreateObjectService { get; set; }
+    public ClassFromOtherBusinessObjectImplementation NoDefaultValueService { get; set; }
 
 
     public ClassWithDeleteObjectServiceTypeAttribute DeleteObjectServiceFromPropertyType { get; set; }
