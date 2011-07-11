@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var columnDefinitionFactory = new ColumnDefinitionFactory (
+      var columnDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
           new SqlStorageTypeCalculator (storageProviderDefinitionFinder), storageNameProvider, storageProviderDefinitionFinder);
       var columnDefinitionResolver = new ColumnDefinitionResolver();
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (

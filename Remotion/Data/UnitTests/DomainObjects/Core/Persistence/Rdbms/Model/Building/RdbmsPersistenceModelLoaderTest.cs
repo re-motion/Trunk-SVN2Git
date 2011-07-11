@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private SimpleStoragePropertyDefinition _fakeColumnDefinition5;
     private SimpleStoragePropertyDefinition _fakeColumnDefinition6;
     private SimpleStoragePropertyDefinition _fakeColumnDefinition7;
-    private IColumnDefinitionFactory _columnDefinitionFactoryMock;
+    private IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactoryMock;
     private RdbmsPersistenceModelLoaderTestHelper _testModel;
     private IStorageNameProvider _storageNameProviderStub;
 
@@ -85,13 +85,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeColumnDefinition7 = ColumnDefinitionObjectMother.CreateColumn ("Test7");
 
       _entityDefinitionFactoryMock = MockRepository.GenerateStrictMock<IEntityDefinitionFactory>();
-      _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IColumnDefinitionFactory>();
+      _rdbmsStoragePropertyDefinitionFactoryMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinitionFactory>();
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition1)).Return (_testModel.TableClassDefinition1.ID);
       _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition2)).Return (_testModel.TableClassDefinition2.ID);
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
           _entityDefinitionFactoryMock,
-          _columnDefinitionFactoryMock,
+          _rdbmsStoragePropertyDefinitionFactoryMock,
           _storageProviderDefinition,
           _storageNameProviderStub,
           new RdbmsPersistenceModelProvider());
@@ -114,28 +114,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void ApplyPersistenceModelToHierarchy_CreatesEntities_AndProperties_ForClassAndDerivedClasses ()
     {
-      _columnDefinitionFactoryMock
-          .Expect (mock => mock.CreateColumnDefinition (_testModel.BaseBasePropertyDefinition))
+      _rdbmsStoragePropertyDefinitionFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (_testModel.BaseBasePropertyDefinition))
           .Return (_fakeColumnDefinition1);
-      _columnDefinitionFactoryMock
-          .Expect (mock => mock.CreateColumnDefinition (_testModel.BasePropertyDefinition))
+      _rdbmsStoragePropertyDefinitionFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (_testModel.BasePropertyDefinition))
           .Return (_fakeColumnDefinition2);
-      _columnDefinitionFactoryMock
-          .Expect (mock => mock.CreateColumnDefinition (_testModel.TablePropertyDefinition1))
+      _rdbmsStoragePropertyDefinitionFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (_testModel.TablePropertyDefinition1))
           .Return (_fakeColumnDefinition3);
-      _columnDefinitionFactoryMock
-          .Expect (mock => mock.CreateColumnDefinition (_testModel.TablePropertyDefinition2))
+      _rdbmsStoragePropertyDefinitionFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (_testModel.TablePropertyDefinition2))
           .Return (_fakeColumnDefinition4);
-      _columnDefinitionFactoryMock
-          .Expect (mock => mock.CreateColumnDefinition (_testModel.DerivedPropertyDefinition1))
+      _rdbmsStoragePropertyDefinitionFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (_testModel.DerivedPropertyDefinition1))
           .Return (_fakeColumnDefinition5);
-      _columnDefinitionFactoryMock
-          .Expect (mock => mock.CreateColumnDefinition (_testModel.DerivedPropertyDefinition2))
+      _rdbmsStoragePropertyDefinitionFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (_testModel.DerivedPropertyDefinition2))
           .Return (_fakeColumnDefinition6);
-      _columnDefinitionFactoryMock
-          .Expect (mock => mock.CreateColumnDefinition (_testModel.DerivedDerivedPropertyDefinition))
+      _rdbmsStoragePropertyDefinitionFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (_testModel.DerivedDerivedPropertyDefinition))
           .Return (_fakeColumnDefinition7);
-      _columnDefinitionFactoryMock.Replay();
+      _rdbmsStoragePropertyDefinitionFactoryMock.Replay();
 
       _entityDefinitionFactoryMock
           .Expect (
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_testModel.BaseBaseClassDefinition);
 
-      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      _rdbmsStoragePropertyDefinitionFactoryMock.VerifyAllExpectations();
       _entityDefinitionFactoryMock.VerifyAllExpectations();
 
       Assert.That (_testModel.BaseBaseClassDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionBaseBase));
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_testModel.TableClassDefinition1);
 
-      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      _rdbmsStoragePropertyDefinitionFactoryMock.VerifyAllExpectations();
       _entityDefinitionFactoryMock.VerifyAllExpectations();
 
       Assert.That (_testModel.TableClassDefinition1.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionTable1));

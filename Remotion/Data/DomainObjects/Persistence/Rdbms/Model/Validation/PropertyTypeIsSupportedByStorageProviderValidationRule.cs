@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 
       if (propertyDefinition.StorageClass == StorageClass.Persistent)
       {
-        if (propertyDefinition.StoragePropertyDefinition is UnsupportedStorageTypeColumnDefinition)
+        if (propertyDefinition.StoragePropertyDefinition is UnsupportedStoragePropertyDefinition)
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               propertyDefinition.PropertyInfo,

@@ -22,16 +22,16 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="IRdbmsStoragePropertyDefinition"/> objects for <see cref="PropertyDefinition"/>
+  /// The <see cref="RdbmsStoragePropertyDefinitionFactory"/> is responsible to create a <see cref="IRdbmsStoragePropertyDefinition"/> objects for <see cref="PropertyDefinition"/>
   /// instances.
   /// </summary>
-  public class ColumnDefinitionFactory : IColumnDefinitionFactory
+  public class RdbmsStoragePropertyDefinitionFactory : IRdbmsStoragePropertyDefinitionFactory
   {
     private readonly StorageTypeCalculator _storageTypeCalculator;
     private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
     private readonly IStorageNameProvider _storageNameProvider;
 
-    public ColumnDefinitionFactory (
+    public RdbmsStoragePropertyDefinitionFactory (
         StorageTypeCalculator storageTypeCalculator,
         IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder)
@@ -45,13 +45,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _providerDefinitionFinder = providerDefinitionFinder;
     }
 
-    public virtual IRdbmsStoragePropertyDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition)
+    public virtual IRdbmsStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
       if (storageType == null)
-        return new UnsupportedStorageTypeColumnDefinition();
+        return new UnsupportedStoragePropertyDefinition();
 
       var columnDefinition = new ColumnDefinition (
           _storageNameProvider.GetColumnName (propertyDefinition),
@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (relationEndPointDefinition == null)
         return new SimpleStoragePropertyDefinition(columnDefinition);
 
-      return CreateRelationColumnDefinition (propertyDefinition, relationEndPointDefinition, columnDefinition);
+      return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition, columnDefinition);
     }
 
     public ColumnDefinition CreateObjectIDColumnDefinition ()
@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
     }
 
-    protected virtual ObjectIDStoragePropertyDefinition CreateRelationColumnDefinition (
+    protected virtual ObjectIDStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
         PropertyDefinition propertyDefinition,
         IRelationEndPointDefinition relationEndPointDefinition,
         ColumnDefinition foreignKeyColumnDefinition)

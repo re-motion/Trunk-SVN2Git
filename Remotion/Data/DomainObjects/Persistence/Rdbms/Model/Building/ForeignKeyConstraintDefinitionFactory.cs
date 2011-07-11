@@ -32,23 +32,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   {
     private readonly IColumnDefinitionResolver _columnDefinitionResolver;
     private readonly IStorageNameProvider _storageNameProvider;
-    private readonly IColumnDefinitionFactory _columnDefinitionFactory;
+    private readonly IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
     private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     public ForeignKeyConstraintDefinitionFactory (
         IStorageNameProvider storageNameProvider,
         IColumnDefinitionResolver columnDefinitionResolver,
-        IColumnDefinitionFactory columnDefinitionFactory,
+        IRdbmsStoragePropertyDefinitionFactory rdbmsStoragePropertyDefinitionFactory,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
-      ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("rdbmsStoragePropertyDefinitionFactory", rdbmsStoragePropertyDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       _storageNameProvider = storageNameProvider;
       _columnDefinitionResolver = columnDefinitionResolver;
-      _columnDefinitionFactory = columnDefinitionFactory;
+      _rdbmsStoragePropertyDefinitionFactory = rdbmsStoragePropertyDefinitionFactory;
       _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
     }
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         if (propertyDefinition.StorageClass != StorageClass.Persistent)
           continue;
 
-        var oppositeObjectIDColumnDefinition = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
+        var oppositeObjectIDColumnDefinition = _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition();
 
         var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
         var endPointIDColumnDefinition = endPointColumnDefinition as ObjectIDStoragePropertyDefinition;

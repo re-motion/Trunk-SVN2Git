@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   {
     private IStorageNameProvider _storageNameProviderMock;
     private IColumnDefinitionResolver _columnDefintionResolverMock;
-    private IColumnDefinitionFactory _columnDefintionFactoryMock;
+    private IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefintionFactoryMock;
     private ForeignKeyConstraintDefinitionFactory _factory;
     private ObjectIDStoragePropertyDefinition _fakeIdColumnDefinition;
     private SimpleStoragePropertyDefinition _fakeColumnDefintion;
@@ -54,10 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProviderMock = MockRepository.GenerateStrictMock<IStorageNameProvider>();
       _columnDefintionResolverMock = MockRepository.GenerateStrictMock<IColumnDefinitionResolver>();
-      _columnDefintionFactoryMock = MockRepository.GenerateStrictMock<IColumnDefinitionFactory>();
+      _rdbmsStoragePropertyDefintionFactoryMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinitionFactory>();
       _storageProviderDefinitionFinderStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder>();
       _factory = new ForeignKeyConstraintDefinitionFactory (
-          _storageNameProviderMock, _columnDefintionResolverMock, _columnDefintionFactoryMock, _storageProviderDefinitionFinderStub);
+          _storageNameProviderMock, _columnDefintionResolverMock, _rdbmsStoragePropertyDefintionFactoryMock, _storageProviderDefinitionFinderStub);
     }
 
     [Test]
@@ -67,10 +67,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var customerClassDefintion = Configuration.GetClassDefinition ("Customer");
       var officialClassDefinition = Configuration.GetClassDefinition ("Official");
 
-      _columnDefintionFactoryMock
+      _rdbmsStoragePropertyDefintionFactoryMock
           .Expect (mock => mock.CreateObjectIDColumnDefinition())
           .Return (_fakeIdColumnDefinition.ObjectIDColumn);
-      _columnDefintionFactoryMock.Replay();
+      _rdbmsStoragePropertyDefintionFactoryMock.Replay();
 
       _columnDefintionResolverMock
           .Expect (
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var foreignKeyConstraintDefinitions = _factory.CreateForeignKeyConstraints (orderClassDefinition).ToArray();
 
-      _columnDefintionFactoryMock.VerifyAllExpectations();
+      _rdbmsStoragePropertyDefintionFactoryMock.VerifyAllExpectations();
       _columnDefintionResolverMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
 
@@ -120,10 +120,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var computerClassDefinition = Configuration.GetClassDefinition ("Computer");
       var employeeClassDefinition = Configuration.GetClassDefinition ("Employee");
 
-      _columnDefintionFactoryMock
+      _rdbmsStoragePropertyDefintionFactoryMock
           .Expect (mock => mock.CreateObjectIDColumnDefinition())
           .Return (_fakeIdColumnDefinition.ObjectIDColumn).Repeat.Any();
-      _columnDefintionFactoryMock.Replay();
+      _rdbmsStoragePropertyDefintionFactoryMock.Replay();
 
       _columnDefintionResolverMock
           .Expect (
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var foreignKeyConstraintDefinitions = _factory.CreateForeignKeyConstraints (computerClassDefinition).ToArray();
 
-      _columnDefintionFactoryMock.VerifyAllExpectations();
+      _rdbmsStoragePropertyDefintionFactoryMock.VerifyAllExpectations();
       _columnDefintionResolverMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
       Assert.That (foreignKeyConstraintDefinitions.Length, Is.EqualTo (1)); //EmployeeTransactionProperty relation property is filtered
@@ -197,10 +197,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return (_fakeColumnDefintion);
       _columnDefintionResolverMock.Replay();
 
-      _columnDefintionFactoryMock
+      _rdbmsStoragePropertyDefintionFactoryMock
           .Expect (mock => mock.CreateObjectIDColumnDefinition())
           .Return (_fakeIdColumnDefinition.ObjectIDColumn);
-      _columnDefintionFactoryMock.Replay();
+      _rdbmsStoragePropertyDefintionFactoryMock.Replay();
 
       _storageProviderDefinitionFinderStub
           .Stub (stub => stub.GetStorageProviderDefinition (Arg<Type>.Is.Anything, Arg<string>.Is.Anything))

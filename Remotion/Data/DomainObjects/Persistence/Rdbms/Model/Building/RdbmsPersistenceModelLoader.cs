@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class RdbmsPersistenceModelLoader : IPersistenceModelLoader
   {
-    private readonly IColumnDefinitionFactory _columnDefinitionFactory;
+    private readonly IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IEntityDefinitionFactory _entityDefinitionFactory;
     private readonly IStorageNameProvider _storageNameProvider;
@@ -40,19 +40,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     public RdbmsPersistenceModelLoader (
         IEntityDefinitionFactory entityDefinitionFactory,
-        IColumnDefinitionFactory columnDefinitionFactory,
+        IRdbmsStoragePropertyDefinitionFactory rdbmsStoragePropertyDefinitionFactory,
         StorageProviderDefinition storageProviderDefinition,
         IStorageNameProvider storageNameProvider,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
       ArgumentUtility.CheckNotNull ("entityDefinitionFactory", entityDefinitionFactory);
-      ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("rdbmsStoragePropertyDefinitionFactory", rdbmsStoragePropertyDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
 
       _entityDefinitionFactory = entityDefinitionFactory;
-      _columnDefinitionFactory = columnDefinitionFactory;
+      _rdbmsStoragePropertyDefinitionFactory = rdbmsStoragePropertyDefinitionFactory;
       _storageProviderDefinition = storageProviderDefinition;
       _storageNameProvider = storageNameProvider;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
@@ -68,9 +68,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       get { return _entityDefinitionFactory; }
     }
 
-    public IColumnDefinitionFactory ColumnDefinitionFactory
+    public IRdbmsStoragePropertyDefinitionFactory RdbmsStoragePropertyDefinitionFactory
     {
-      get { return _columnDefinitionFactory; }
+      get { return _rdbmsStoragePropertyDefinitionFactory; }
     }
 
     public IStorageNameProvider StorageNameProvider
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       {
         if (propertyDefinition.StoragePropertyDefinition == null)
         {
-          var storagePropertyDefinition = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
+          var storagePropertyDefinition = _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
           propertyDefinition.SetStorageProperty (storagePropertyDefinition);
         }
         else if(!(propertyDefinition.StoragePropertyDefinition is IRdbmsStoragePropertyDefinition))

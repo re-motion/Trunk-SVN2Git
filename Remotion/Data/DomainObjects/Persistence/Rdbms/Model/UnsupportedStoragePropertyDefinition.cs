@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  public class UnsupportedStorageTypeColumnDefinition : IRdbmsStoragePropertyDefinition
+  public class UnsupportedStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
     string IStoragePropertyDefinition.Name
     {

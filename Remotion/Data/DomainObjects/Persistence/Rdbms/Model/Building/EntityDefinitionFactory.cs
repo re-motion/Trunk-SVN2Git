@@ -27,26 +27,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class EntityDefinitionFactory : IEntityDefinitionFactory
   {
-    private readonly IColumnDefinitionFactory _columnDefinitionFactory;
+    private readonly IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IColumnDefinitionResolver _columnDefinitionResolver;
     private readonly IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
     private readonly IStorageNameProvider _storageNameProvider;
 
     public EntityDefinitionFactory (
-        IColumnDefinitionFactory columnDefinitionFactory,
+        IRdbmsStoragePropertyDefinitionFactory rdbmsStoragePropertyDefinitionFactory,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
         IColumnDefinitionResolver columnDefinitionResolver,
         IStorageNameProvider storageNameProvider,
         StorageProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("rdbmsStoragePropertyDefinitionFactory", rdbmsStoragePropertyDefinitionFactory);
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinitionFactory", foreignKeyConstraintDefinitionFactory);
       ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      _columnDefinitionFactory = columnDefinitionFactory;
+      _rdbmsStoragePropertyDefinitionFactory = rdbmsStoragePropertyDefinitionFactory;
       _foreignKeyConstraintDefinitionFactory = foreignKeyConstraintDefinitionFactory;
       _columnDefinitionResolver = columnDefinitionResolver;
       _storageNameProvider = storageNameProvider;
@@ -61,9 +61,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (string.IsNullOrEmpty (tableName))
         throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
-      var objectIDColumn = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
-      var classIDColumn = _columnDefinitionFactory.CreateClassIDColumnDefinition();
-      var timestampColumn = _columnDefinitionFactory.CreateTimestampColumnDefinition();
+      var objectIDColumn = _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition();
+      var classIDColumn = _rdbmsStoragePropertyDefinitionFactory.CreateClassIDColumnDefinition();
+      var timestampColumn = _rdbmsStoragePropertyDefinitionFactory.CreateTimestampColumnDefinition();
       var columns = GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition));
       var allColumns = new[] { objectIDColumn, classIDColumn, timestampColumn }.Concat (columns).ToList();
 
@@ -98,9 +98,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          _columnDefinitionFactory.CreateObjectIDColumnDefinition (),
-          _columnDefinitionFactory.CreateClassIDColumnDefinition (),
-          _columnDefinitionFactory.CreateTimestampColumnDefinition (),
+          _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition (),
+          _rdbmsStoragePropertyDefinitionFactory.CreateClassIDColumnDefinition (),
+          _rdbmsStoragePropertyDefinitionFactory.CreateTimestampColumnDefinition (),
           GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition)),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -115,9 +115,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           unionedEntities,
-          _columnDefinitionFactory.CreateObjectIDColumnDefinition (),
-          _columnDefinitionFactory.CreateClassIDColumnDefinition (),
-          _columnDefinitionFactory.CreateTimestampColumnDefinition (),
+          _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition (),
+          _rdbmsStoragePropertyDefinitionFactory.CreateClassIDColumnDefinition (),
+          _rdbmsStoragePropertyDefinitionFactory.CreateTimestampColumnDefinition (),
           GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition)),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

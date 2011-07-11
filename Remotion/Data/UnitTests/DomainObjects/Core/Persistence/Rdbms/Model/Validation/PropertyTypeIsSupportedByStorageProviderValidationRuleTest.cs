@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           true,
           null,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty(new UnsupportedStorageTypeColumnDefinition());
+      propertyDefinition.SetStorageProperty(new UnsupportedStoragePropertyDefinition());
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 

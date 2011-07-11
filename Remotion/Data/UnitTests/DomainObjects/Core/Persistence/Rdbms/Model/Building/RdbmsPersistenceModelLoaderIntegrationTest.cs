@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private ColumnDefinition _fakeObjectIDColumn;
     private ColumnDefinition _fakeClassIDColumn;
     private ColumnDefinition _fakeTimestampColumnDefinition;
-    private IColumnDefinitionFactory _columnDefinitionFactory;
+    private IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
     private ReflectionBasedStorageNameProvider _storageNameProvider;
     private ForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
@@ -62,19 +62,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _columnDefinitionFactory = new ColumnDefinitionFactory (
+      _rdbmsStoragePropertyDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
           new SqlStorageTypeCalculator (_storageProviderDefinitionFinder), _storageNameProvider, _storageProviderDefinitionFinder);
       _columnDefinitionResolver = new ColumnDefinitionResolver();
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          _storageNameProvider, _columnDefinitionResolver, _columnDefinitionFactory, _storageProviderDefinitionFinder);
+          _storageNameProvider, _columnDefinitionResolver, _rdbmsStoragePropertyDefinitionFactory, _storageProviderDefinitionFinder);
       _entityDefinitionFactory = new EntityDefinitionFactory (
-          _columnDefinitionFactory,
+          _rdbmsStoragePropertyDefinitionFactory,
           _foreignKeyConstraintDefinitionFactory,
           _columnDefinitionResolver,
           _storageNameProvider,
           _storageProviderDefinition);
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
-          _entityDefinitionFactory, _columnDefinitionFactory, _storageProviderDefinition, _storageNameProvider, new RdbmsPersistenceModelProvider());
+          _entityDefinitionFactory, _rdbmsStoragePropertyDefinitionFactory, _storageProviderDefinition, _storageNameProvider, new RdbmsPersistenceModelProvider());
 
       _fakeBaseBaseColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("BaseBaseProperty");
       _fakeBaseColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("BaseProperty");
@@ -83,10 +83,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeDerivedColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("DerivedProperty1");
       _fakeDerivedColumnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("DerivedProperty2");
       _fakeDerivedDerivedColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("DerivedDerivedProperty");
-      _fakeObjectIDColumn = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
-      _fakeClassIDColumn = _columnDefinitionFactory.CreateClassIDColumnDefinition();
+      _fakeObjectIDColumn = _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition();
+      _fakeClassIDColumn = _rdbmsStoragePropertyDefinitionFactory.CreateClassIDColumnDefinition();
       _fakeIDColumnDefinition = new ObjectIDStoragePropertyDefinition (_fakeObjectIDColumn, _fakeClassIDColumn);
-      _fakeTimestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition();
+      _fakeTimestampColumnDefinition = _rdbmsStoragePropertyDefinitionFactory.CreateTimestampColumnDefinition();
 
       _testModel.BaseBasePropertyDefinition.SetStorageProperty (_fakeBaseBaseColumnDefinition);
       _testModel.BasePropertyDefinition.SetStorageProperty (_fakeBaseColumnDefinition);

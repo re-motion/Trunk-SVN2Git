@@ -356,7 +356,7 @@
     <Compile Include="Persistence\Rdbms\Model\ObjectIDStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\PrimaryKeyConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\ReflectionBasedStorageNameProvider.cs" />
-    <Compile Include="Persistence\Rdbms\Model\UnsupportedStorageTypeColumnDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\UnsupportedStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\RelationEndPointNamesAreConsistentValidationRule.cs" />
@@ -438,8 +438,8 @@
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\IColumnDefinitionFactory.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\ColumnDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\IRdbmsStoragePropertyDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\RdbmsStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\FilterViewDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinition.cs" />

@@ -22,14 +22,14 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class UnsupportedStorageTypeColumnDefinitionTest
+  public class UnsupportedStoragePropertyDefinitionTest
   {
-    private UnsupportedStorageTypeColumnDefinition _columnDefinition;
+    private UnsupportedStoragePropertyDefinition _columnDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = new UnsupportedStorageTypeColumnDefinition();
+      _columnDefinition = new UnsupportedStoragePropertyDefinition();
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_True ()
     {
-      var other = new UnsupportedStorageTypeColumnDefinition();
+      var other = new UnsupportedStoragePropertyDefinition();
 
       Assert.That (_columnDefinition.Equals (other), Is.True);
       Assert.That (_columnDefinition.Equals ((object) other), Is.True);
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetHashCode_EqualObjects ()
     {
-      var other = new UnsupportedStorageTypeColumnDefinition();
+      var other = new UnsupportedStoragePropertyDefinition();
 
       Assert.That (_columnDefinition.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
     }
