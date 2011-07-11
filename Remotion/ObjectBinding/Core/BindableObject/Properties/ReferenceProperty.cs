@@ -32,6 +32,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly DoubleCheckedLockingContainer<IBusinessObjectClass> _referenceClass;
     private readonly Tuple<ServiceProvider, Type> _searchServiceDefinition;
     private readonly Tuple<ServiceProvider, Type> _createObjectServiceDefinition;
+    private readonly Tuple<ServiceProvider, Type> _deleteObjectServiceDefinition;
 
     public ReferenceProperty (Parameters parameters)
         : base (parameters)
@@ -43,6 +44,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
       _searchServiceDefinition = GetServiceDeclaration<SearchAvailableObjectsServiceTypeAttribute, ISearchAvailableObjectsService>();
       _createObjectServiceDefinition = GetServiceDeclaration<CreateObjectServiceTypeAttribute, ICreateObjectService>();
+      _deleteObjectServiceDefinition = GetServiceDeclaration<DeleteObjectServiceTypeAttribute, IDeleteObjectService> ();
     }
 
     /// <summary> Gets the class information for elements of this property. </summary>
@@ -65,11 +67,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        ISearchAvailableObjectsService searchService = GetSearchService();
-        if (searchService == null)
+        ISearchAvailableObjectsService service = GetSearchService();
+        if (service == null)
           return false;
 
-        return searchService.SupportsProperty (this);
+        return service.SupportsProperty (this);
       }
     }
 
@@ -91,10 +93,10 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      ISearchAvailableObjectsService searchService = GetSearchService ();
-      Assertion.IsNotNull (searchService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.Item2.FullName);
+      ISearchAvailableObjectsService service = GetSearchService ();
+      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.Item2.FullName);
 
-      return searchService.Search (referencingObject, this, searchArguments);
+      return service.Search (referencingObject, this, searchArguments);
     }
 
     /// <summary>
@@ -105,11 +107,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        ICreateObjectService createObjectService = GetCreateObjectService ();
-        if (createObjectService == null)
+        ICreateObjectService service = GetCreateObjectService ();
+        if (service == null)
           return false;
 
-        return createObjectService.SupportsProperty (this);
+        return service.SupportsProperty (this);
       }
     }
 
@@ -125,6 +127,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// </exception>
     public IBusinessObject Create (IBusinessObject referencingObject)
     {
+      ArgumentUtility.CheckNotNull ("referencingObject", referencingObject);
+
       if (!CreateIfNull)
       {
         throw new NotSupportedException (
@@ -134,10 +138,42 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      ICreateObjectService createObjectService = GetCreateObjectService();
-      Assertion.IsNotNull (createObjectService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.Item2.FullName);
+      ICreateObjectService service = GetCreateObjectService();
+      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _createObjectServiceDefinition.Item2.FullName);
 
-      return createObjectService.Create (referencingObject, this);
+      return service.Create (referencingObject, this);
+    }
+
+    public bool SupportsDelete
+    {
+      get
+      {
+        IDeleteObjectService service = GetDeleteObjectService ();
+        if (service == null)
+          return false;
+
+        return service.SupportsProperty (this);
+      }
+    }
+
+    public void Delete (IBusinessObject referencingObject, IBusinessObject value)
+    {
+      ArgumentUtility.CheckNotNull ("referencingObject", referencingObject);
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      if (!SupportsDelete)
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "Deleting an object is not supported for reference property '{0}' of business object class '{1}'.",
+                Identifier,
+                ReflectedClass.Identifier));
+      }
+
+      IDeleteObjectService service = GetDeleteObjectService();
+      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _deleteObjectServiceDefinition.Item2.FullName);
+
+      service.Delete(referencingObject, this, value);
     }
 
     private IBusinessObjectClass GetReferenceClass ()
@@ -194,6 +230,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private ICreateObjectService GetCreateObjectService ()
     {
       return GetService<ICreateObjectService> (_createObjectServiceDefinition);
+    }
+
+    private IDeleteObjectService GetDeleteObjectService ()
+    {
+      return GetService<IDeleteObjectService> (_deleteObjectServiceDefinition);
     }
 
     private TService GetService<TService> (Tuple<ServiceProvider, Type> serviceDefinition)

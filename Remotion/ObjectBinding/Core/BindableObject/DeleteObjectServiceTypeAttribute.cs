@@ -14,13 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using Remotion.Utilities;
+
 namespace Remotion.ObjectBinding.BindableObject
 {
-  // IDefaultValueService
-  public interface ICreateObjectService : IBusinessObjectService
+  //TODO: doc
+  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+  public sealed class DeleteObjectServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
   {
-    bool SupportsProperty (IBusinessObjectReferenceProperty property);
+    private readonly Type _type;
 
-    IBusinessObject Create (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property);
+    public DeleteObjectServiceTypeAttribute (Type type)
+    {
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (IDeleteObjectService));
+      _type = type;
+    }
+
+    public Type Type
+    {
+      get { return _type; }
+    }
   }
 }

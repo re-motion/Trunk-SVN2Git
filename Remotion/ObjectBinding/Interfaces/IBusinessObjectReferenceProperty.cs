@@ -78,8 +78,8 @@ namespace Remotion.ObjectBinding
     // CreateDefaultValue
     IBusinessObject Create (IBusinessObject referencingObject);
 
-    //bool SupportsDelete
+    bool SupportsDelete { get; }
 
-    // void Delete (IBusinessObject referencingObject, IBusinessObject value);
+     void Delete (IBusinessObject referencingObject, IBusinessObject value);
   }
 }

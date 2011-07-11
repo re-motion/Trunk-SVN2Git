@@ -41,5 +41,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     public ClassWithCreateObjectServiceTypeAttribute CreateObjectServiceFromPropertyDeclaration { get; set; }
 
     public ClassFromOtherBusinessObjectImplementation NoCreateObjectService { get; set; }
+
+
+    public ClassWithDeleteObjectServiceTypeAttribute DeleteObjectServiceFromPropertyType { get; set; }
+
+    [DeleteObjectServiceType (typeof (IDeleteObjectServiceOnProperty))]
+    public ClassWithDeleteObjectServiceTypeAttribute DeleteObjectServiceFromPropertyDeclaration { get; set; }
+
+    public ClassFromOtherBusinessObjectImplementation NoDeleteObjectService { get; set; }
   }
 }

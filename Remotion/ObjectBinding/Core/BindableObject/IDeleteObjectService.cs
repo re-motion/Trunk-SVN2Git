@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.ObjectBinding.BindableObject
 {
-  // IDefaultValueService
-  public interface ICreateObjectService : IBusinessObjectService
+  public interface IDeleteObjectService : IBusinessObjectService
   {
     bool SupportsProperty (IBusinessObjectReferenceProperty property);
-
-    IBusinessObject Create (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property);
+    void Delete (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, IBusinessObject value);
   }
 }

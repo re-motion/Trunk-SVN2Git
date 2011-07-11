@@ -160,12 +160,14 @@
     <Compile Include="BindableObjectWithIdentityBase.cs" />
     <Compile Include="BindableObject\BindableObjectDefaultValueStrategy.cs" />
     <Compile Include="BindableObject\CreateObjectServiceTypeAttribute.cs" />
+    <Compile Include="BindableObject\DeleteObjectServiceTypeAttribute.cs" />
     <Compile Include="BindableObject\DisabledIdentifiersEnumerationFilter.cs" />
     <Compile Include="BindableObject\DisableExtensibleEnumValuesAttribute.cs" />
     <Compile Include="BindableObject\IBindableObjectBaseImplementation.cs" />
     <Compile Include="BindableObject\IBusinessObjectServiceTypeAttribute.cs" />
     <Compile Include="BindableObject\ICreateObjectService.cs" />
     <Compile Include="BindableObject\IDefaultValueStrategy.cs" />
+    <Compile Include="BindableObject\IDeleteObjectService.cs" />
     <Compile Include="BindableObject\InterfaceImplementationMethodInformation.cs" />
     <Compile Include="BindableObject\InterfaceImplementationPropertyInformation.cs" />
     <Compile Include="BindableObject\MixinIntroducedMethodInformation.cs" />

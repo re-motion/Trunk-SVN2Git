@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests
 {
   [TestFixture]
-  public class Create : TestBase
+  public class Delete : TestBase
   {
     private MockRepository _mockRepository;
     private BindableObjectProvider _bindableObjectProviderForDeclaringType;
@@ -41,48 +41,48 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _bindableObjectProviderForPropertyType = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
 
       BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProviderForDeclaringType);
-      BusinessObjectProvider.SetProvider<BindableObjectProviderForCreateObjectServiceAttribute> (_bindableObjectProviderForPropertyType);
+      BusinessObjectProvider.SetProvider<BindableObjectProviderForDeleteObjectServiceAttribute> (_bindableObjectProviderForPropertyType);
     }
 
     [Test]
-    public void Create_WithCreateSupported ()
+    public void Delete_WithDeleteSupported ()
     {
       var stubBusinessObject = _mockRepository.Stub<IBusinessObject>();
-      var mockService = _mockRepository.StrictMock<ICreateObjectServiceOnProperty>();
-      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyDeclaration");
-      var expected = _mockRepository.Stub<IBusinessObject>();
+      var mockService = _mockRepository.StrictMock<IDeleteObjectServiceOnProperty>();
+      IBusinessObjectReferenceProperty property = DeleteProperty ("DeleteObjectServiceFromPropertyDeclaration");
+      var value = _mockRepository.Stub<IBusinessObject>();
 
       using (_mockRepository.Ordered())
       {
-        Expect.Call (mockService.SupportsProperty (property)).Return (true);
-        Expect.Call (mockService.Create (stubBusinessObject, property)).Return (expected);
+        mockService.Expect (mock => mock.SupportsProperty (property)).Return (true);
+        mockService.Expect (mock => mock.Delete (stubBusinessObject, property, value));
       }
       _mockRepository.ReplayAll();
 
       _bindableObjectProviderForDeclaringType.AddService (mockService);
-      IBusinessObject actual = property.Create (stubBusinessObject);
+      property.Delete (stubBusinessObject, value);
 
       _mockRepository.VerifyAll();
-      Assert.That (actual, Is.SameAs (expected));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Auto-creating an object is not supported for reference property 'CreateObjectServiceFromPropertyDeclaration' of business object class "
+        "Deleting an object is not supported for reference property 'DeleteObjectServiceFromPropertyDeclaration' of business object class "
         + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]
-    public void Create_WithCreateNotSupported ()
+    public void Delete_WithDeleteNotSupported ()
     {
-      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties> (ParamList.Empty);
-      var mockService = _mockRepository.StrictMock<ICreateObjectServiceOnProperty>();
-      IBusinessObjectReferenceProperty property = CreateProperty ("CreateObjectServiceFromPropertyDeclaration");
+      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties>(ParamList.Empty);
+      var mockService = _mockRepository.StrictMock<IDeleteObjectServiceOnProperty>();
+      IBusinessObjectReferenceProperty property = DeleteProperty ("DeleteObjectServiceFromPropertyDeclaration");
+      var value = _mockRepository.Stub<IBusinessObject> ();
 
-      Expect.Call (mockService.SupportsProperty (property)).Return (false);
+      mockService.Expect (mock => mock.SupportsProperty (property)).Return (false);
       _mockRepository.ReplayAll();
 
       _bindableObjectProviderForDeclaringType.AddService (mockService);
       try
       {
-        property.Create (businessObject);
+        property.Delete (businessObject, value);
       }
       finally
       {
@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       }
     }
 
-    private ReferenceProperty CreateProperty (string propertyName)
+    private ReferenceProperty DeleteProperty (string propertyName)
     {
       PropertyBase.Parameters propertyParameters =
           GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _bindableObjectProviderForDeclaringType);
