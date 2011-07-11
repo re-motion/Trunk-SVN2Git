@@ -133,7 +133,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       {
         throw new NotSupportedException (
             string.Format (
-                "Auto-creating an object is not supported for reference property '{0}' of business object class '{1}'.",
+                "Creating a default value is not supported for reference property '{0}' of business object class '{1}'.",
                 Identifier,
                 ReflectedClass.Identifier));
       }

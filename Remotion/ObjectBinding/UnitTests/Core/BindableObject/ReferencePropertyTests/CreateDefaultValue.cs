@@ -68,7 +68,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Auto-creating an object is not supported for reference property 'DefaultValueServiceFromPropertyDeclaration' of business object class "
+        "Creating a default value is not supported for reference property 'DefaultValueServiceFromPropertyDeclaration' of business object class "
         + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]
     public void Create_WithCreateNotSupported ()
     {
