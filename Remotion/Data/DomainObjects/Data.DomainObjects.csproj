@@ -320,7 +320,6 @@
     <Compile Include="Persistence\Rdbms\Model\IIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IIndexDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IStorageNameProvider.cs" />
-    <Compile Include="Persistence\Rdbms\Model\SimpleColumnDefinitionFindingVisitor.cs" />
     <Compile Include="Linq\StorageSpecificExpressionResolver.cs" />
     <Compile Include="Mapping\ClassDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\IMappingObjectFactory.cs" />
@@ -349,11 +348,9 @@
     <Compile Include="Persistence\Rdbms\Model\Building\EntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ForeignKeyConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinition.cs" />
-    <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IEntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinitionVisitor.cs" />
-    <Compile Include="Persistence\Rdbms\Model\NullColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\NullEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IDColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\PrimaryKeyConstraintDefinition.cs" />

@@ -435,7 +435,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\EntityDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ForeignKeyConstraintDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\NullColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\NullEntityDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\IDColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\PrimaryKeyConstraintDefinitionTest.cs" />
@@ -778,7 +777,6 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsValidValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\ClassDefinitionTypeIsSubclassOfDomainObjectValidationRuleTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleColumnDefinitionFindingVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ReflectionBasedStorageNameProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnsupportedStorageTypeColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRuleTest.cs" />

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -68,11 +69,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _isPartOfPrimaryKey; }
     }
 
-    public void Accept (IColumnDefinitionVisitor visitor)
+    public IEnumerable<SimpleColumnDefinition> GetColumns ()
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-
-      visitor.VisitSimpleColumnDefinition (this);
+      yield return this;
     }
 
     public bool Equals (IColumnDefinition other)

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -26,8 +27,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return "unsupported property"; }
     }
 
-    public void Accept (IColumnDefinitionVisitor visitor)
+    public IEnumerable<SimpleColumnDefinition> GetColumns ()
     {
+      return new SimpleColumnDefinition[0];
     }
 
     public bool Equals (IColumnDefinition other)

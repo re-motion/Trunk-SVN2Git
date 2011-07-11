@@ -203,7 +203,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var columns = from spec in sortExpression.SortedProperties
                     let column = _rdbmsPersistenceModelProvider.GetColumnDefinition (spec.PropertyDefinition)
-                    from simpleColumn in SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { column })
+                    from simpleColumn in column.GetColumns()
                     select Tuple.Create (simpleColumn, spec.Order);
 
       return new OrderedColumnsSpecification (columns);

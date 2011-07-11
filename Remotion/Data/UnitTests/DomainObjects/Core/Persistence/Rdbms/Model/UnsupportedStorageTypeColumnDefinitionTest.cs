@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -34,12 +33,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Accept ()
+    public void GetColumns ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<IColumnDefinitionVisitor>();
-      visitorMock.Replay();
-
-      _columnDefinition.Accept (visitorMock);
+      Assert.That (_columnDefinition.GetColumns(), Is.Empty);
     }
 
     [Test]

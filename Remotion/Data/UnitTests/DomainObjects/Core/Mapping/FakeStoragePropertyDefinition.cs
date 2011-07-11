@@ -33,10 +33,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       get { return _name; }
     }
-
-    public void Accept (IColumnDefinitionVisitor visitor)
-    {
-      
-    }
   }
 }

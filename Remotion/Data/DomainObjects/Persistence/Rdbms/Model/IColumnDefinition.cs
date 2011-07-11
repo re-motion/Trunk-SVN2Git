@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -24,6 +25,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IColumnDefinition : IStoragePropertyDefinition, IEquatable<IColumnDefinition>, INullObject
   {
-    void Accept (IColumnDefinitionVisitor visitor);
+    IEnumerable<SimpleColumnDefinition> GetColumns ();
   }
 }

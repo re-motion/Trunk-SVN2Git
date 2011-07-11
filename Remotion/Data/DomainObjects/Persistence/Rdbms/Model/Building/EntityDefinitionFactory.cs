@@ -130,7 +130,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     private IEnumerable<SimpleColumnDefinition> GetSimpleColumnDefinitions (IEnumerable<IColumnDefinition> columns)
     {
-      return SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns);
+      return columns.SelectMany (c => c.GetColumns());
     }
   }
 }
