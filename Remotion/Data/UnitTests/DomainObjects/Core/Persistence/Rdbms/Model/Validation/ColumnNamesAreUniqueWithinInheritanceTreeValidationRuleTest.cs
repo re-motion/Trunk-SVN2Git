@@ -24,6 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
 using System.Linq;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -89,12 +90,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           _derivedBaseClass2,
           StorageClass.None,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new SimpleColumnDefinition("Property", typeof(string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           StorageClass.None,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -114,12 +115,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           classDefinition, 
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
 
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
@@ -149,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new SimpleColumnDefinition ("Property1", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property1"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
           "FirstName2",
@@ -158,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          new SimpleColumnDefinition ("Property2", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property2"));
 
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
@@ -180,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2", 
@@ -189,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{ propertyDefinition1}, true));
@@ -219,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseOfBaseValidationDomainObjectClass).GetProperty ("BaseOfBaseProperty"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass1,
           "FirstName2", 
@@ -228,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
       var propertyDefinition3 = PropertyDefinitionFactory.Create (
           _derivedClass,
           "FirstName3", 
@@ -237,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition2 }, true));
@@ -275,7 +276,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          new SimpleColumnDefinition ("Property1", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property1"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2", 
@@ -284,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new SimpleColumnDefinition ("Property2", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property2"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1}, true));
@@ -309,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2", 
@@ -318,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -348,7 +349,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
-          new SimpleColumnDefinition ("Property1", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property1"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2", 
@@ -357,7 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new SimpleColumnDefinition ("Property2", typeof (string), "varchar", true, false));
+          ColumnDefinitionObjectMother.CreateColumn("Property2"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -382,7 +383,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (string).GetProperty ("Length"),
-          new SimpleColumnDefinition ("Length", typeof (int), "integer", false, false));
+          ColumnDefinitionObjectMother.CreateColumn("Length"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "Length", 
@@ -391,7 +392,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (string).GetProperty ("Length"),
-          new SimpleColumnDefinition ("Length", typeof (int), "integer", false, false));
+          ColumnDefinitionObjectMother.CreateColumn("Length"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection ());

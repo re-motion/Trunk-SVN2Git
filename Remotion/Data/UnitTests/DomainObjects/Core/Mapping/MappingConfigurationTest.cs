@@ -35,6 +35,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.R
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointNamesAreConsistentValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -473,7 +474,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           null,
           StorageClass.Persistent);
-      propertyDefinition1.SetStorageProperty (new SimpleColumnDefinition ("FakeColumn1", typeof (string), "varchar", true, false));
+      propertyDefinition1.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("FakeColumn1"));
       var propertyDefinition2 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition,
           "DeliveryDate",
@@ -482,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           null,
           StorageClass.Persistent);
-      propertyDefinition2.SetStorageProperty (new SimpleColumnDefinition ("FakeColumn2", typeof (string), "varchar", true, false));
+      propertyDefinition2.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("FakeColumn2"));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 

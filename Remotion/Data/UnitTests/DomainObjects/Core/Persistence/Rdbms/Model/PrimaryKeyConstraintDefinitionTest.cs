@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -31,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _column1 = new SimpleColumnDefinition ("COL1", typeof (string), "varchar", false, true);
-      _column2 = new SimpleColumnDefinition ("COL2", typeof (int), "integer", true, false);
+      _column1 = ColumnDefinitionObjectMother.CreateColumn("COL1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn("COL2");
       _constraint = new PrimaryKeyConstraintDefinition ("Test", true, new[] {  _column1, _column2 });
     }
 

@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Model
@@ -25,15 +26,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlPrimaryXmlIndexDefinitionTest
   {
-    private EntityNameDefinition _objectName;
     private SimpleColumnDefinition _xmlColumn;
     private SqlPrimaryXmlIndexDefinition _indexDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _objectName = new EntityNameDefinition ("objectSchema", "objectName");
-      _xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", true, false);
+      _xmlColumn = ColumnDefinitionObjectMother.CreateColumn ("XmlColumn");
       _indexDefinition = new SqlPrimaryXmlIndexDefinition ("IndexName", _xmlColumn, true, 5, true, true, true, true, true, 2);
     }
 

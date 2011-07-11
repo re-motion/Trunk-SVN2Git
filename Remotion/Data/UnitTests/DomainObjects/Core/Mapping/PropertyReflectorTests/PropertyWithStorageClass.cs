@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
@@ -68,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           "NoAttribute", DomainModelConstraintProviderStub);
 
       var actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (new SimpleColumnDefinition ("NoAttribute", typeof (string), "varchar", true, false));
+      actual.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("NoAttribute"));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute",
@@ -84,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           "Persistent", DomainModelConstraintProviderStub);
 
       var actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (new SimpleColumnDefinition ("Persistent", typeof (string), "varchar", true, false));
+      actual.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("Persistent"));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent",

@@ -37,12 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _column = new SimpleColumnDefinition ("COL1", typeof (string), "varchar", true, false);
-      _constraints = new[]
-                     {
-                         new PrimaryKeyConstraintDefinition (
-                             "PK_Table", true, new[] { new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniquidentifier", false, false) })
-                     };
+      _column = ColumnDefinitionObjectMother.CreateColumn("COL1");
+      _constraints = new[] { new PrimaryKeyConstraintDefinition ("PK_Table", true, new[] { ColumnDefinitionObjectMother.ObjectIDColumn }) };
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 

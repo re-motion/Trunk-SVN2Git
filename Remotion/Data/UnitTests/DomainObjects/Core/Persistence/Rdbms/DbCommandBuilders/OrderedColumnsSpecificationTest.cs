@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -39,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [SetUp]
     public void SetUp ()
     {
-      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
-      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
-      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
+      _column1 = ColumnDefinitionObjectMother.CreateColumn("Column1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn("Column2");
+      _column3 = ColumnDefinitionObjectMother.CreateColumn("Column3");
       _specification =
           new OrderedColumnsSpecification (
               new[]

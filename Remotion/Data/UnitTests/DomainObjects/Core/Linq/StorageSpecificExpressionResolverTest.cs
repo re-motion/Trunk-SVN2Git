@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Reflection;
@@ -51,12 +52,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveEntity ()
     {
-      var primaryKeyColumn = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
-      var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
-      var timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+      var primaryKeyColumn = ColumnDefinitionObjectMother.ObjectIDColumn;
+      var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
+      var timestampColumn = ColumnDefinitionObjectMother.TimestampColumn;
 
-      var foreignKeyColumn = new SimpleColumnDefinition ("ForeignKey", typeof (int), "integer", false, false);
-      var simpleColumn = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
+      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateColumn ("ForeignKey");
+      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
@@ -69,10 +70,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
-      var expectedIdColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
+      var expectedIdColumn = new SqlColumnDefinitionExpression (typeof (Guid), "o", "ID", true);
       var expectedClassIdColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "ClassID", false);
       var expectedTimestampColumn = new SqlColumnDefinitionExpression (typeof (DateTime), "o", "Timestamp", false);
-      var expectedForeignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "o", "ForeignKey", false);
+      var expectedForeignKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "ForeignKey", false);
       var expectedColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "Column1", false);
 
       var expectedExpression = new SqlEntityDefinitionExpression (
@@ -199,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           true,
           null,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, typeof (ObjectID), "dummyStorageType", true, false));
+      propertyDefinition.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn(columnName));
       return propertyDefinition;
     }
   }

@@ -369,7 +369,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void CreateForRelationLookup_UnionViewDefinition_WithSortExpression ()
     {
       var classDefinition = CreateClassDefinition (_unionViewDefinition);
-      var objectIDColumn = new SimpleColumnDefinition ("OrderTicketID", typeof (Guid), "uniqueidentifier", true, false);
+      var objectIDColumn = ColumnDefinitionObjectMother.ObjectIDColumn;
       var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
       var idColumnDefinition = new IDColumnDefinition (objectIDColumn, classIDColumn);
       var idPropertyDefinition = PropertyDefinitionFactory.Create (

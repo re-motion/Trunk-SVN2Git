@@ -58,9 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _storageProviderDefinition);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
-      _fakeObjectIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
-      _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
-      _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false, false);
+      _fakeObjectIDColumnDefinition = ColumnDefinitionObjectMother.ObjectIDColumn;
+      _fakeColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("Test1");
+      _fakeTimestampColumnDefinition = ColumnDefinitionObjectMother.TimestampColumn;
 
       _fakeForeignKeyConstraint = new ForeignKeyConstraintDefinition (
           "FakeForeignKeyConstraint", new EntityNameDefinition(null, "Test"), new[] { _fakeObjectIDColumnDefinition }, new[] { _fakeColumnDefinition1 });

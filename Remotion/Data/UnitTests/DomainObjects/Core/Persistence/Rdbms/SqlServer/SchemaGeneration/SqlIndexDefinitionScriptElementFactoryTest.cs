@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptEleme
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -43,19 +44,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlIndexDefinitionScriptElementFactory();
 
-      _column1 = new SqlIndexedColumnDefinition (
-          new SimpleColumnDefinition ("IndexColumn1", typeof (int), "integer", false, false), IndexOrder.Desc);
-      _column2 = new SqlIndexedColumnDefinition (
-          new SimpleColumnDefinition ("IndexColumn2", typeof (string), "varchar", false, false), IndexOrder.Asc);
-      _includedColumn1 = new SimpleColumnDefinition ("IncludedColumn1", typeof (bool), "bit", true, false);
-      _includedColumn2 = new SimpleColumnDefinition ("IncludedColumn2", typeof (bool), "bit", true, false);
+      _column1 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("IndexColumn1"), IndexOrder.Desc);
+      _column2 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("IndexColumn2"), IndexOrder.Asc);
+      _includedColumn1 = ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn1", typeof (bool), "bit");
+      _includedColumn2 = ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn2", typeof (bool), "bit");
 
       _customSchemaNameDefinition = new EntityNameDefinition ("SchemaName", "TableName1");
-      _indexDefinitionWithCustomSchema = new SqlIndexDefinition (
-          "Index1", new[] { _column1 });
+      _indexDefinitionWithCustomSchema = new SqlIndexDefinition ("Index1", new[] { _column1 });
       _defaultSchemaNameDefinition = new EntityNameDefinition (null, "TableName2");
-      _indexDefinitionWithDefaultSchema = new SqlIndexDefinition (
-          "Index2", new[] { _column2 });
+      _indexDefinitionWithDefaultSchema = new SqlIndexDefinition ("Index2", new[] { _column2 });
     }
 
     [Test]

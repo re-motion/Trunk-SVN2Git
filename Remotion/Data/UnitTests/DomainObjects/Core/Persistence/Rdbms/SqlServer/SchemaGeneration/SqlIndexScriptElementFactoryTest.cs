@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptEleme
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -50,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _factory = new SqlIndexScriptElementFactory (
           _indexDefinitionElementFactoryMock, _primaryIndexDefinitionElementFactoryMock, _secondaryIndexDefinitionElementFactoryMock);
 
-      var simpleColumn = new SimpleColumnDefinition ("Column", typeof (int), "integer", false, false);
+      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column");
       var indexedColumn = new SqlIndexedColumnDefinition (simpleColumn, IndexOrder.Desc);
 
       _entityNameDefinition = new EntityNameDefinition (null, "Table");

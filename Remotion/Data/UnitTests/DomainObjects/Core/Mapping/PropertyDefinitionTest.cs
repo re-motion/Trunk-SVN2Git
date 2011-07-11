@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
@@ -253,7 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetStorageProperty ()
     {
       PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "ThePropertyName", null);
-      var columnDefinition = new SimpleColumnDefinition ("Test", typeof (string), "varchar", true, false);
+      var columnDefinition = ColumnDefinitionObjectMother.CreateColumn("Test");
 
       propertyDefinition.SetStorageProperty (columnDefinition);
 

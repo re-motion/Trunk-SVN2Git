@@ -41,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
-      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
-      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
+      _column1 = ColumnDefinitionObjectMother.CreateColumn("Column1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn("Column2");
+      _column3 = ColumnDefinitionObjectMother.CreateColumn("Column3");
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFullColumnList ()
     {
-      var column4 = new SimpleColumnDefinition ("Test", typeof (int), "integer", false, false);
+      var column4 = ColumnDefinitionObjectMother.CreateColumn("Test");
       var availableColumns = new[]
                              {
                                  ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn,

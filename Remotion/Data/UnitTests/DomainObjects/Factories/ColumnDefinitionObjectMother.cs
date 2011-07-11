@@ -24,5 +24,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     public static readonly SimpleColumnDefinition ObjectIDColumn = new SimpleColumnDefinition ("ID", typeof(Guid), "uniqueidentifier", false, true);
     public static readonly SimpleColumnDefinition ClassIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
     public static readonly SimpleColumnDefinition TimestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+
+    public static SimpleColumnDefinition CreateColumn ()
+    {
+      return new SimpleColumnDefinition (Guid.NewGuid().ToString(), typeof (string), "varchar", true, false);
+    }
+
+    public static SimpleColumnDefinition CreateColumn (string columnName)
+    {
+      return new SimpleColumnDefinition (columnName, typeof (string), "varchar", true, false);
+    }
+
+    public static SimpleColumnDefinition CreateTypedColumn (string columnName, Type propertyType, string storageType)
+    {
+      return new SimpleColumnDefinition (columnName, propertyType, storageType, false, true);
+    }
+
   }
 }

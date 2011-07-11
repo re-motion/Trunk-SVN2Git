@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using System.Linq;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -35,10 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _simpleColumn1 = new SimpleColumnDefinition ("Simple1", typeof (string), "varchar", true, false);
-      _simpleColumn2 = new SimpleColumnDefinition ("Simple2", typeof (int), "integer", false, false);
-      _simpleColumn3 = new SimpleColumnDefinition ("Simple3", typeof (int), "integer", false, false);
-      _simpleColumn4 = new SimpleColumnDefinition ("Simple4", typeof (int), "integer", false, false);
+      _simpleColumn1 = ColumnDefinitionObjectMother.CreateColumn ("Simple1");
+      _simpleColumn2 = ColumnDefinitionObjectMother.CreateColumn ("Simple2");
+      _simpleColumn3 = ColumnDefinitionObjectMother.CreateColumn ("Simple3");
+      _simpleColumn4 = ColumnDefinitionObjectMother.CreateColumn ("Simple4");
       _idColumn1 = new IDColumnDefinition (_simpleColumn1, _simpleColumn2);
       _idColumn2 = new IDColumnDefinition (_simpleColumn3, _simpleColumn4);
 

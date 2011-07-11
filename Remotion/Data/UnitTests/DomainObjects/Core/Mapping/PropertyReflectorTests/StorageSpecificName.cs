@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests
 {
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           "NoAttribute", DomainModelConstraintProviderStub);
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (new SimpleColumnDefinition ("NoAttribute", typeof (string), "varchar", true, false));
+      actual.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("NoAttribute"));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.NoAttribute",
@@ -49,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           "StorageSpecificName", DomainModelConstraintProviderStub);
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (new SimpleColumnDefinition ("CustomName", typeof (string), "varchar", true, false));
+      actual.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("CustomName"));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.StorageSpecificName",

@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -46,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp ();
 
-      var foreignKeyColumn = new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false);
+      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateTypedColumn ("FKID", typeof (Guid), "uniqueidentifier");
       _foreignKeyColumnDefinition = new IDColumnDefinition(foreignKeyColumn, foreignKeyColumn);
 
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification> ();

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
@@ -49,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           true,
           20,
           StorageClass.None);
-      propertyDefinition.SetStorageProperty(new SimpleColumnDefinition ("PropertyWithStorageClassNone", typeof(string), "supported", true, false));
+      propertyDefinition.SetStorageProperty(ColumnDefinitionObjectMother.CreateColumn("PropertyWithStorageClassNone"));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly();
 
@@ -69,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           true,
           20,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty(new SimpleColumnDefinition ("PropertyWithStorageClassPersistent", typeof(string), "supported", true, false));
+      propertyDefinition.SetStorageProperty(ColumnDefinitionObjectMother.CreateColumn("PropertyWithStorageClassPersistent"));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 

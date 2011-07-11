@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -75,13 +76,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeEntityDefinitionDerivedDerived = MockRepository.GenerateStub<IEntityDefinition>();
       _fakeEntityDefinitionDerivedDerivedDerived = MockRepository.GenerateStub<IEntityDefinition>();
 
-      _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
-      _fakeColumnDefinition2 = new SimpleColumnDefinition ("Test2", typeof (int), "int", false, false);
-      _fakeColumnDefinition3 = new SimpleColumnDefinition ("Test3", typeof (string), "varchar", true, false);
-      _fakeColumnDefinition4 = new SimpleColumnDefinition ("Test4", typeof (int), "int", false, false);
-      _fakeColumnDefinition5 = new SimpleColumnDefinition ("Test5", typeof (string), "varchar", true, false);
-      _fakeColumnDefinition6 = new SimpleColumnDefinition ("Test6", typeof (int), "int", false, false);
-      _fakeColumnDefinition7 = new SimpleColumnDefinition ("Test7", typeof (string), "varchar", true, false);
+      _fakeColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("Test1");
+      _fakeColumnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("Test2");
+      _fakeColumnDefinition3 = ColumnDefinitionObjectMother.CreateColumn ("Test3");
+      _fakeColumnDefinition4 = ColumnDefinitionObjectMother.CreateColumn ("Test4");
+      _fakeColumnDefinition5 = ColumnDefinitionObjectMother.CreateColumn ("Test5");
+      _fakeColumnDefinition6 = ColumnDefinitionObjectMother.CreateColumn ("Test6");
+      _fakeColumnDefinition7 = ColumnDefinitionObjectMother.CreateColumn ("Test7");
 
       _entityDefinitionFactoryMock = MockRepository.GenerateStrictMock<IEntityDefinitionFactory>();
       _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IColumnDefinitionFactory>();

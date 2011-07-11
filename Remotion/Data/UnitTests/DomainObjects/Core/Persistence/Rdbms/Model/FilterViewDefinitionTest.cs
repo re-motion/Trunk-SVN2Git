@@ -38,8 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
-      _column2 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
+      _column1 = ColumnDefinitionObjectMother.CreateColumn("Column1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn("Column3");
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
       _entityDefinition = TableDefinitionObjectMother.Create (

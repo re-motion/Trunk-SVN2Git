@@ -16,8 +16,8 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Model
@@ -27,15 +27,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   {
     private SimpleColumnDefinition[] _includedColumns;
     private SqlIndexedColumnDefinition[] _columns;
-    private EntityNameDefinition _objectName;
     private SqlIndexDefinition _sqlIndexDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _objectName = new EntityNameDefinition ("objectSchema", "objectName");
-      _columns = new[] { new SqlIndexedColumnDefinition (new SimpleColumnDefinition ("TestColumn1", typeof (string), "varchar", true, false)) };
-      _includedColumns = new[] { new SimpleColumnDefinition ("TestColumn2", typeof (string), "varchar", true, false) };
+      _columns = new[] { new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("TestColumn1")) };
+      _includedColumns = new[] { ColumnDefinitionObjectMother.CreateColumn("TestColumn2") };
 
       _sqlIndexDefinition = new SqlIndexDefinition (
           "IndexName", _columns, _includedColumns, true, true, true, true, true, 5, true, true, true, true, true, 2);

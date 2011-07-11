@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -36,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [SetUp]
     public void SetUp ()
     {
-      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
-      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
-      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
+      _column1 = ColumnDefinitionObjectMother.CreateColumn("Column1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn("Column2");
+      _column3 = ColumnDefinitionObjectMother.CreateColumn("Column3");
       _specification = new SelectedColumnsSpecification (new[] { _column1, _column2, _column3 });
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[Column1]");
@@ -65,8 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Union ()
     {
-      var column4 = new SimpleColumnDefinition ("Column4", typeof (string), "varchar", true, false);
-      var column5 = new SimpleColumnDefinition ("Column5", typeof (string), "varchar", true, false);
+      var column4 = ColumnDefinitionObjectMother.CreateColumn("Column4");
+      var column5 = ColumnDefinitionObjectMother.CreateColumn("Column5");
 
       var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column5 });
 
@@ -76,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Union_DuplicatedColumns()
     {
-      var column4 = new SimpleColumnDefinition ("Column4", typeof (string), "varchar", true, false);
+      var column4 = ColumnDefinitionObjectMother.CreateColumn("Column4");
       
       var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column4 });
 

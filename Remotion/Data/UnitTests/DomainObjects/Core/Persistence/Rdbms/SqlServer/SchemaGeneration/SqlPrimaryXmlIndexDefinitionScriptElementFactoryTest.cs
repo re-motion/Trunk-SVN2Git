@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptEleme
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -40,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlPrimaryXmlIndexDefinitionScriptElementFactory ();
 
-      _xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", true, false);
+      _xmlColumn = ColumnDefinitionObjectMother.CreateColumn ("XmlColumn");
 
       _customSchemaNameDefinition = new EntityNameDefinition ("SchemaName", "TableName1");
       _indexDefinitionWithCustomSchema = new SqlPrimaryXmlIndexDefinition("Index1", _xmlColumn);

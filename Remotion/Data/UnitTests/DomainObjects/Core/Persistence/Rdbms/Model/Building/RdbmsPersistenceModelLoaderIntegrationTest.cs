@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
 {
@@ -75,13 +76,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
           _entityDefinitionFactory, _columnDefinitionFactory, _storageProviderDefinition, _storageNameProvider, new RdbmsPersistenceModelProvider());
 
-      _fakeBaseBaseColumnDefinition = new SimpleColumnDefinition ("BaseBaseProperty", typeof (string), "nvarchar (max)", true, false);
-      _fakeBaseColumnDefinition = new SimpleColumnDefinition ("BaseProperty", typeof (string), "nvarchar (max)", true, false);
-      _fakeTableColumnDefinition1 = new SimpleColumnDefinition ("TableProperty1", typeof (string), "nvarchar (max)", true, false);
-      _fakeTableColumnDefinition2 = new SimpleColumnDefinition ("TableProperty2", typeof (string), "nvarchar (max)", true, false);
-      _fakeDerivedColumnDefinition1 = new SimpleColumnDefinition ("DerivedProperty1", typeof (string), "nvarchar (max)", true, false);
-      _fakeDerivedColumnDefinition2 = new SimpleColumnDefinition ("DerivedProperty2", typeof (string), "nvarchar (max)", true, false);
-      _fakeDerivedDerivedColumnDefinition = new SimpleColumnDefinition ("DerivedDerivedProperty", typeof (string), "nvarchar (max)", true, false);
+      _fakeBaseBaseColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("BaseBaseProperty");
+      _fakeBaseColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("BaseProperty");
+      _fakeTableColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("TableProperty1");
+      _fakeTableColumnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("TableProperty2");
+      _fakeDerivedColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("DerivedProperty1");
+      _fakeDerivedColumnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("DerivedProperty2");
+      _fakeDerivedDerivedColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("DerivedDerivedProperty");
       _fakeObjectIDColumn = _columnDefinitionFactory.CreateObjectIDColumnDefinition();
       _fakeClassIDColumn = _columnDefinitionFactory.CreateClassIDColumnDefinition();
       _fakeIDColumnDefinition = new IDColumnDefinition (_fakeObjectIDColumn, _fakeClassIDColumn);

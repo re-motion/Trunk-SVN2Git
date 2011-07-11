@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       base.SetUp();
 
       _foreignKeyColumnDefinition = new IDColumnDefinition (
-          new SimpleColumnDefinition ("FKID", typeof (Guid), "uniqueidentifier", true, false), ColumnDefinitionObjectMother.ObjectIDColumn);
+          ColumnDefinitionObjectMother.CreateTypedColumn("FKID", typeof(Guid), "uniqueidentifier"), ColumnDefinitionObjectMother.ObjectIDColumn);
       
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _selectedColumnsStub
