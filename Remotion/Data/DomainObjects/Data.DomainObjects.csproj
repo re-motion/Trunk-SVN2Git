@@ -248,7 +248,9 @@
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IColumnTypeInformation.cs" />
     <Compile Include="Persistence\Rdbms\Model\SimpleStoragePropertyDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\StorageTypeInformation.cs" />
     <Compile Include="Persistence\Rdbms\RdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\RdbmsProviderCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\DataReaders\DataContainerReader.cs" />
