@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
-      _referencingColumn = ColumnDefinitionObjectMother.CreateColumn("COL1");
-      _referencedColumn = ColumnDefinitionObjectMother.CreateColumn("COL2");
+      _referencingColumn = ColumnDefinitionObjectMother.CreateColumn("COL1").ColumnDefinition;
+      _referencedColumn = ColumnDefinitionObjectMother.CreateColumn("COL2").ColumnDefinition;
 
       _referencedTableName = "TableName";
       _constraint = new ForeignKeyConstraintDefinition (

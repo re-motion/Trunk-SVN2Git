@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _indexDefinitionElementFactoryMock, _primaryIndexDefinitionElementFactoryMock, _secondaryIndexDefinitionElementFactoryMock);
 
       var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column");
-      var indexedColumn = new SqlIndexedColumnDefinition (simpleColumn, IndexOrder.Desc);
+      var indexedColumn = new SqlIndexedColumnDefinition (simpleColumn.ColumnDefinition, IndexOrder.Desc);
 
       _entityNameDefinition = new EntityNameDefinition (null, "Table");
       _indexDefinition = new SqlIndexDefinition ("Index1", new[] { indexedColumn });

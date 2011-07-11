@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
       var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition == null)
-        return columnDefinition;
+        return new SimpleStoragePropertyDefinition(columnDefinition);
 
       return CreateRelationColumnDefinition (propertyDefinition, relationEndPointDefinition, columnDefinition);
     }

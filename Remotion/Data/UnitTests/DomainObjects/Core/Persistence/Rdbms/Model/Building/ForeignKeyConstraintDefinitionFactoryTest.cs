@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private IColumnDefinitionFactory _columnDefintionFactoryMock;
     private ForeignKeyConstraintDefinitionFactory _factory;
     private IDColumnDefinition _fakeIdColumnDefinition;
-    private ColumnDefinition _fakeColumnDefintion;
+    private SimpleStoragePropertyDefinition _fakeColumnDefintion;
     private IDColumnDefinition _fakeForeignColumnDefinition;
     private IStorageProviderDefinitionFinder _storageProviderDefinitionFinderStub;
 
@@ -44,10 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       base.SetUp();
 
-      _fakeIdColumnDefinition = new IDColumnDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+      _fakeIdColumnDefinition = new IDColumnDefinition (
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition);
       _fakeForeignColumnDefinition = new IDColumnDefinition (
-          ColumnDefinitionObjectMother.CreateTypedColumn ("OrderID", typeof (ObjectID), "uniqueidentifier"),
-          ColumnDefinitionObjectMother.CreateColumn ("ClassID"));
+          ColumnDefinitionObjectMother.CreateTypedColumn ("OrderID", typeof (ObjectID), "uniqueidentifier").ColumnDefinition,
+          ColumnDefinitionObjectMother.CreateColumn ("ClassID").ColumnDefinition);
 
       _fakeColumnDefintion = ColumnDefinitionObjectMother.CreateColumn();
 

@@ -49,13 +49,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private IEntityDefinition _fakeEntityDefinitionDerivedDerived;
     private IEntityDefinition _fakeEntityDefinitionDerivedDerivedDerived;
 
-    private ColumnDefinition _fakeColumnDefinition1;
-    private ColumnDefinition _fakeColumnDefinition2;
-    private ColumnDefinition _fakeColumnDefinition3;
-    private ColumnDefinition _fakeColumnDefinition4;
-    private ColumnDefinition _fakeColumnDefinition5;
-    private ColumnDefinition _fakeColumnDefinition6;
-    private ColumnDefinition _fakeColumnDefinition7;
+    private SimpleStoragePropertyDefinition _fakeColumnDefinition1;
+    private SimpleStoragePropertyDefinition _fakeColumnDefinition2;
+    private SimpleStoragePropertyDefinition _fakeColumnDefinition3;
+    private SimpleStoragePropertyDefinition _fakeColumnDefinition4;
+    private SimpleStoragePropertyDefinition _fakeColumnDefinition5;
+    private SimpleStoragePropertyDefinition _fakeColumnDefinition6;
+    private SimpleStoragePropertyDefinition _fakeColumnDefinition7;
     private IColumnDefinitionFactory _columnDefinitionFactoryMock;
     private RdbmsPersistenceModelLoaderTestHelper _testModel;
     private IStorageNameProvider _storageNameProviderStub;

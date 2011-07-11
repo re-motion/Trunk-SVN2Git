@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -77,27 +76,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private TableDefinition CreateNewTableDefinitionWithIndexes (StorageProviderDefinition storageProviderDefinition)
     {
-      var column1 = new ColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      var column2 = new ColumnDefinition ("FirstName", typeof (string), "varchar(100)", false, false);
-      var column3 = new ColumnDefinition ("LastName", typeof (string), "varchar(100)", false, false);
-      var column4 = new ColumnDefinition ("XmlColumn1", typeof (string), "xml", false, false);
+      var column1 = new SimpleStoragePropertyDefinition(new ColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true));
+      var column2 = new SimpleStoragePropertyDefinition(new ColumnDefinition ("FirstName", typeof (string), "varchar(100)", false, false));
+      var column3 = new SimpleStoragePropertyDefinition(new ColumnDefinition ("LastName", typeof (string), "varchar(100)", false, false));
+      var column4 = new SimpleStoragePropertyDefinition(new ColumnDefinition ("XmlColumn1", typeof (string), "xml", false, false));
 
       var tableName = new EntityNameDefinition (null, "IndexTestTable");
       var viewName = new EntityNameDefinition (null, "IndexTestView");
 
       var nonClusteredUniqueIndex = new SqlIndexDefinition (
-          "IDX_NonClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column1) }, null, false, true, true, false);
+          "IDX_NonClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column1.ColumnDefinition) }, null, false, true, true, false);
       var nonClusteredNonUniqueIndex = new SqlIndexDefinition (
           "IDX_NonClusteredNonUniqueIndex",
-          new[] { new SqlIndexedColumnDefinition (column2), new SqlIndexedColumnDefinition (column3) },
-          new[] { column1 },
+          new[] { new SqlIndexedColumnDefinition (column2.ColumnDefinition), new SqlIndexedColumnDefinition (column3.ColumnDefinition) },
+          new[] { column1.ColumnDefinition },
           false,
           false,
           false,
           false);
       var indexWithOptionsSet = new SqlIndexDefinition (
           "IDX_IndexWithSeveralOptions",
-          new[] { new SqlIndexedColumnDefinition (column2, IndexOrder.Desc) },
+          new[] { new SqlIndexedColumnDefinition (column2.ColumnDefinition, IndexOrder.Desc) },
           null,
           false,
           true,
@@ -150,8 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           objectIDColunmn,
           classIDCOlumn,
           timestampColumn,
-          new[] { column1, column2, column3, column4 },
-          new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { column1 }) },
+          new[] { column1.ColumnDefinition, column2.ColumnDefinition, column3.ColumnDefinition, column4.ColumnDefinition },
+          new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { column1.ColumnDefinition }) },
           new IIndexDefinition[]
           {
               nonClusteredUniqueIndex,

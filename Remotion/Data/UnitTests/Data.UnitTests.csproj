@@ -291,6 +291,7 @@
     <Compile Include="DomainObjects\Core\Persistence\FixedValueStorageProviderCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CompositeScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsPersistenceModelProviderTest.cs" />
@@ -448,7 +449,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\Table1Class.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\Table2Class.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\RdbmsPersistenceModelLoaderTestHelper.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleColumnDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Core\Mapping\FakeStoragePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Mapping\FakeMappingConfiguration.cs" />

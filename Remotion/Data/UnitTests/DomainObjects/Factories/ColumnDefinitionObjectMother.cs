@@ -21,24 +21,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public static class ColumnDefinitionObjectMother
   {
-    public static readonly ColumnDefinition ObjectIDColumn = new ColumnDefinition ("ID", typeof(Guid), "uniqueidentifier", false, true);
-    public static readonly ColumnDefinition ClassIDColumn = new ColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
-    public static readonly ColumnDefinition TimestampColumn = new ColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+    public static readonly SimpleStoragePropertyDefinition ObjectIDColumn =
+        new SimpleStoragePropertyDefinition (new ColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true));
 
-    public static ColumnDefinition CreateColumn ()
+    public static readonly SimpleStoragePropertyDefinition ClassIDColumn =
+        new SimpleStoragePropertyDefinition (new ColumnDefinition ("ClassID", typeof (string), "varchar", true, false));
+
+    public static readonly SimpleStoragePropertyDefinition TimestampColumn =
+        new SimpleStoragePropertyDefinition (new ColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false));
+
+    public static SimpleStoragePropertyDefinition CreateColumn ()
     {
-      return new ColumnDefinition (Guid.NewGuid().ToString(), typeof (string), "varchar", true, false);
+      return new SimpleStoragePropertyDefinition (new ColumnDefinition (Guid.NewGuid().ToString(), typeof (string), "varchar", true, false));
     }
 
-    public static ColumnDefinition CreateColumn (string columnName)
+    public static SimpleStoragePropertyDefinition CreateColumn (string columnName)
     {
-      return new ColumnDefinition (columnName, typeof (string), "varchar", true, false);
+      return new SimpleStoragePropertyDefinition (new ColumnDefinition (columnName, typeof (string), "varchar", true, false));
     }
 
-    public static ColumnDefinition CreateTypedColumn (string columnName, Type propertyType, string storageType)
+    public static SimpleStoragePropertyDefinition CreateTypedColumn (string columnName, Type propertyType, string storageType)
     {
-      return new ColumnDefinition (columnName, propertyType, storageType, false, true);
+      return new SimpleStoragePropertyDefinition (new ColumnDefinition (columnName, propertyType, storageType, false, true));
     }
-
   }
 }

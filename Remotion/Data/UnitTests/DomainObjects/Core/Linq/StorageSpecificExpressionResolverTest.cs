@@ -52,12 +52,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveEntity ()
     {
-      var primaryKeyColumn = ColumnDefinitionObjectMother.ObjectIDColumn;
-      var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
-      var timestampColumn = ColumnDefinitionObjectMother.TimestampColumn;
+      var primaryKeyColumn = ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition;
+      var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition;
+      var timestampColumn = ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition;
 
-      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateColumn ("ForeignKey");
-      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateColumn ("ForeignKey").ColumnDefinition;
+      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column1").ColumnDefinition;
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
@@ -41,8 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlForeignKeyConstraintScriptElementFactory();
 
-      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
-      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
+      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1").ColumnDefinition;
+      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2").ColumnDefinition;
 
       _table1 = new EntityNameDefinition (null, "TableName1");
       _table2 = new EntityNameDefinition ("SchemaName", "TableName2");

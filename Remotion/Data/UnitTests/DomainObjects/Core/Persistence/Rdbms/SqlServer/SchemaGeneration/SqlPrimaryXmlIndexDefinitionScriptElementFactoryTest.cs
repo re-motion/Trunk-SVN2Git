@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -31,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlPrimaryXmlIndexDefinitionScriptElementFactory _factory;
     private SqlPrimaryXmlIndexDefinition _indexDefinitionWithCustomSchema;
     private SqlPrimaryXmlIndexDefinition _indexDefinitionWithDefaultSchema;
-    private ColumnDefinition _xmlColumn;
+    private SimpleStoragePropertyDefinition _xmlColumn;
     private EntityNameDefinition _customSchemaNameDefinition;
     private EntityNameDefinition _defaultSchemaNameDefinition;
 

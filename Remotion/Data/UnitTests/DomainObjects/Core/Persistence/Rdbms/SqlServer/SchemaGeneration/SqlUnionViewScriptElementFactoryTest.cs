@@ -36,16 +36,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlUnionViewScriptElementFactory();
 
-      var column1 = ColumnDefinitionObjectMother.CreateColumn("Column1");
-      var column2 = ColumnDefinitionObjectMother.CreateColumn("Column2");
+      var column1 = ColumnDefinitionObjectMother.CreateColumn("Column1").ColumnDefinition;
+      var column2 = ColumnDefinitionObjectMother.CreateColumn("Column2").ColumnDefinition;
 
       var tableDefinition1 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "TableName1"),
           null,
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
           new[]{column1},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -54,9 +54,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
           null,
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
           new[]{column1, column2},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -66,9 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "UnionView1"),
           new[] { tableDefinition1 },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
           new[]{column1},
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -76,9 +76,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView2"),
           new[] { tableDefinition1, tableDefinition2 },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
           new[]{column1, column2},
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

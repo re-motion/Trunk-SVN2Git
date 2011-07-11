@@ -22,7 +22,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class SimpleColumnDefinitionTest
+  public class ColumnDefinitionTest
   {
     private ColumnDefinition _columnDefinition;
     private Type _type;
@@ -44,12 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_columnDefinition.StorageType, Is.EqualTo("varchar"));
       Assert.That (_columnDefinition.IsNullable, Is.True);
       Assert.That (_columnDefinition.IsPartOfPrimaryKey, Is.True);
-    }
-
-    [Test]
-    public void GetColumns ()
-    {
-      Assert.That (_columnDefinition.GetColumns(), Is.EqualTo (new[] { _columnDefinition }));
     }
 
     [Test]

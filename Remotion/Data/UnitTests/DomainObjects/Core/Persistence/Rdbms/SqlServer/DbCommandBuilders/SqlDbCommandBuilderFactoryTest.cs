@@ -54,7 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub, _storageNameProviderStub);
 
-      _foreignKeyColumnDefinition = new IDColumnDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+      _foreignKeyColumnDefinition = new IDColumnDefinition (
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition);
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
 
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
@@ -112,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.TypeOf (typeof (QueryDbCommandBuilder)));
       Assert.That (((QueryDbCommandBuilder) result).Query, Is.SameAs (queryStub));
-      Assert.That (((QueryDbCommandBuilder) result).SqlDialect, Is.SameAs(_sqlDialectStub));
+      Assert.That (((QueryDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
       Assert.That (((QueryDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
     }
 
@@ -122,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.CreateForInsert (_dataContainer);
 
       Assert.That (result, Is.TypeOf (typeof (InsertDbCommandBuilder)));
-      Assert.That (((InsertDbCommandBuilder) result).SqlDialect, Is.SameAs(_sqlDialectStub));
+      Assert.That (((InsertDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
       Assert.That (((InsertDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
       Assert.That (((InsertDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
     }

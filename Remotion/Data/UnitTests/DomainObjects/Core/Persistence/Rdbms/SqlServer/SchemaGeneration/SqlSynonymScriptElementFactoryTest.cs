@@ -46,23 +46,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _tableDefinition1 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "TableName1"),
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition);
       _tableDefinition2 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition);
 
       _unionViewDefinition1 = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "UnionView1"),
           new[] { _tableDefinition1 },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn, 
-          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition, 
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -70,9 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView2"),
           new[] { _tableDefinition1, _tableDefinition2 },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -82,9 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
          new EntityNameDefinition ("SchemaName", "FilterView1"),
          _tableDefinition1,
          new[] { "ClassID1" },
-         ColumnDefinitionObjectMother.ObjectIDColumn,
-         ColumnDefinitionObjectMother.ClassIDColumn,
-         ColumnDefinitionObjectMother.TimestampColumn,
+         ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+         ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+         ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
          new ColumnDefinition[0],
          new IIndexDefinition[0],
          new EntityNameDefinition[0]);
@@ -93,9 +93,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (null, "FilterView2"),
           _tableDefinition2,
           new[] { "ClassID1", "ClassID2" },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

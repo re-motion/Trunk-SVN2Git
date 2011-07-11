@@ -52,15 +52,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       base.SetUp();
 
       _foreignKeyColumnDefinition = new IDColumnDefinition (
-          ColumnDefinitionObjectMother.CreateTypedColumn("FKID", typeof(Guid), "uniqueidentifier"), ColumnDefinitionObjectMother.ObjectIDColumn);
-      
+          ColumnDefinitionObjectMother.CreateTypedColumn ("FKID", typeof (Guid), "uniqueidentifier").ColumnDefinition,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition);
+
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _selectedColumnsStub
           .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2]"));
-      _unionedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification> ();
+      _unionedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _unionedColumnsStub
-        .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       _orderedColumnsStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
@@ -71,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
       _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
-      
+
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
 
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
@@ -83,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
 
       _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
-      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
 
       _guid = Guid.NewGuid();
       _objectID = new ObjectID ("Order", _guid);
@@ -102,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
       _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
       _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
-      _sqlDialectMock.Replay ();
+      _sqlDialectMock.Replay();
 
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, null, _table1);
 
@@ -121,8 +122,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           result.CommandText,
           Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [Table1] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
-      _dataParameterCollectionMock.VerifyAllExpectations ();
-      _sqlDialectMock.VerifyAllExpectations ();
+      _dataParameterCollectionMock.VerifyAllExpectations();
+      _sqlDialectMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -135,12 +136,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
       _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
       _sqlDialectMock.Replay();
-      
+
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           null,
-          _table1, 
-          _table2, 
+          _table1,
+          _table2,
           _table3);
 
       var builder = new UnionRelationLookupSelectDbCommandBuilder (
@@ -151,15 +152,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _orderedColumnsStub,
           _sqlDialectMock,
           _valueConverterStub);
-      
+
       var result = builder.Create (_commandExecutionContextStub);
 
       Assert.That (
           result.CommandText,
           Is.EqualTo (
               "SELECT [Column1], [Column2], [Column3] FROM [Table1] WHERE [FKID] = @FKID UNION ALL "
-             +"SELECT [Column1], [Column2], [Column3] FROM [Table2] WHERE [FKID] = @FKID UNION ALL "
-             +"SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table3] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
+              + "SELECT [Column1], [Column2], [Column3] FROM [Table2] WHERE [FKID] = @FKID UNION ALL "
+              + "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table3] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
       _dataParameterCollectionMock.VerifyAllExpectations();
       _sqlDialectMock.VerifyAllExpectations();

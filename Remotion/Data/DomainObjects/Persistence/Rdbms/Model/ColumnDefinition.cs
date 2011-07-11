@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -23,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// Defines a column in a relational database.
   /// </summary>
-  public class ColumnDefinition : IRdbmsStoragePropertyDefinition
+  public class ColumnDefinition : IEquatable<ColumnDefinition>
   {
     private readonly string _name;
     private readonly Type _propertyType;
@@ -69,26 +68,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _isPartOfPrimaryKey; }
     }
 
-    public IEnumerable<ColumnDefinition> GetColumns ()
+    public bool Equals (ColumnDefinition other)
     {
-      yield return this;
-    }
-
-    public bool Equals (IRdbmsStoragePropertyDefinition other)
-    {
-      if (other == null || other.GetType () != GetType ())
+      if (other == null)
         return false;
 
-      var castOther = (ColumnDefinition) other;
-      return castOther.Name == Name 
-          && castOther.PropertyType == PropertyType 
-          && castOther.StorageType == StorageType 
-          && castOther.IsNullable == IsNullable;
+      return other.Name == Name
+          && other.PropertyType == PropertyType
+          && other.StorageType == StorageType
+          && other.IsNullable == IsNullable;
     }
 
     public override bool Equals (object obj)
     {
-      return Equals (obj as IRdbmsStoragePropertyDefinition);
+      return Equals (obj as ColumnDefinition);
     }
 
     public override int GetHashCode ()

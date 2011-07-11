@@ -50,11 +50,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.SameAs (entityDefinition));
     }
-    
+
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-      "The RdbmsProvider expected a storage definition object of type 'IEntityDefinition' for class-definition 'Order', "
-      +"but found a storage definition object of type 'IStorageEntityDefinition*.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The RdbmsProvider expected a storage definition object of type 'IEntityDefinition' for class-definition 'Order', "
+        + "but found a storage definition object of type 'IStorageEntityDefinition*.", MatchType = MessageMatch.Regex)]
     public void GetEntityDefinition_NoIEntityDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
@@ -66,10 +66,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetColumnDefinition ()
     {
-      var columnDefinition = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      var columnDefinition = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
-      
+
       var result = _provider.GetColumnDefinition (propertyDefinition);
 
       Assert.That (result, Is.SameAs (columnDefinition));
@@ -77,11 +77,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-      "The RdbmsProvider expected a storage definition object of type 'IRdbmsStoragePropertyDefinition' for property 'OrderNumber' of class-definition 'Order', "
-      +"but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
+        "The RdbmsProvider expected a storage definition object of type 'IRdbmsStoragePropertyDefinition' for property 'OrderNumber' of class-definition 'Order', "
+        + "but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
     public void GetColumnDefinition_NoIColumnDefinition ()
     {
-      var columnDefinition = MockRepository.GenerateStub<IStoragePropertyDefinition> ();
+      var columnDefinition = MockRepository.GenerateStub<IStoragePropertyDefinition>();
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
 
@@ -91,7 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetIDColumnDefinition ()
     {
-      var columnDefinition = new IDColumnDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+      var columnDefinition = new IDColumnDefinition (
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition);
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, "OrderNo", true, true, null, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
@@ -103,11 +104,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-      "The RdbmsProvider expected a storage definition object of type 'IDColumnDefinition' for property 'OrderNo' of class-definition 'Order', "
-      +"but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
+        "The RdbmsProvider expected a storage definition object of type 'IDColumnDefinition' for property 'OrderNo' of class-definition 'Order', "
+        + "but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
     public void GetIDColumnDefinition_NoIDColumnDefinition ()
     {
-      var columnDefinition = MockRepository.GenerateStub<IStoragePropertyDefinition> ();
+      var columnDefinition = MockRepository.GenerateStub<IStoragePropertyDefinition>();
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, "OrderNo", true, true, null, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);

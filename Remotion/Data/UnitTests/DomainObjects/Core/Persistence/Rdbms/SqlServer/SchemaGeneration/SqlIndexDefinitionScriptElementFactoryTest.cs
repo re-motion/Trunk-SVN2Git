@@ -44,10 +44,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlIndexDefinitionScriptElementFactory();
 
-      _column1 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("IndexColumn1"), IndexOrder.Desc);
-      _column2 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("IndexColumn2"), IndexOrder.Asc);
-      _includedColumn1 = ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn1", typeof (bool), "bit");
-      _includedColumn2 = ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn2", typeof (bool), "bit");
+      _column1 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("IndexColumn1").ColumnDefinition, IndexOrder.Desc);
+      _column2 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("IndexColumn2").ColumnDefinition, IndexOrder.Asc);
+      _includedColumn1 = ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn1", typeof (bool), "bit").ColumnDefinition;
+      _includedColumn2 = ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn2", typeof (bool), "bit").ColumnDefinition;
 
       _customSchemaNameDefinition = new EntityNameDefinition ("SchemaName", "TableName1");
       _indexDefinitionWithCustomSchema = new SqlIndexDefinition ("Index1", new[] { _column1 });

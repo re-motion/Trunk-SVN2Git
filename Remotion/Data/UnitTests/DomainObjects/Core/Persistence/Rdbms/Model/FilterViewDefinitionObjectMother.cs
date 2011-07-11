@@ -31,9 +31,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           viewName,
           baseEntity,
           new[] { "ClassID1" },
-          ColumnDefinitionObjectMother.ObjectIDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

@@ -16,7 +16,6 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
@@ -31,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _innerColumn = ColumnDefinitionObjectMother.CreateColumn("InnerColumn");
+      _innerColumn = ColumnDefinitionObjectMother.CreateColumn("InnerColumn").ColumnDefinition;
       _indexedColumn = new SqlIndexedColumnDefinition (_innerColumn, IndexOrder.Desc);
     }
 
