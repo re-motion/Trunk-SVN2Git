@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private PrimaryKeyConstraintDefinition[] _constraints;
     private IIndexDefinition[] _indexes;
     private EntityNameDefinition[] _synonyms;
-    private SimpleColumnDefinition _column;
+    private ColumnDefinition _column;
 
     [SetUp]
     public void SetUp ()

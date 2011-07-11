@@ -26,8 +26,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class PrimaryKeyConstraintDefinitionTest
   {
     private PrimaryKeyConstraintDefinition _constraint;
-    private SimpleColumnDefinition _column1;
-    private SimpleColumnDefinition _column2;
+    private ColumnDefinition _column1;
+    private ColumnDefinition _column2;
 
     [SetUp]
     public void SetUp ()

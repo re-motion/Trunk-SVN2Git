@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       _builder.AddEntityDefinition (entityDefinition);
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       _builder.AddEntityDefinition (entityDefinition);

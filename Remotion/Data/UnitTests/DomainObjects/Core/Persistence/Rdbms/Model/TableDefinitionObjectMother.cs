@@ -36,10 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public static TableDefinition Create (
         StorageProviderDefinition storageProviderDefinition,  
         EntityNameDefinition tableName,
-        SimpleColumnDefinition objectIdColumnDefinition,
-        SimpleColumnDefinition classIdColumnDefinition,
-        SimpleColumnDefinition timestampColumnDefinition,
-        params SimpleColumnDefinition[] dataColumns)
+        ColumnDefinition objectIdColumnDefinition,
+        ColumnDefinition classIdColumnDefinition,
+        ColumnDefinition timestampColumnDefinition,
+        params ColumnDefinition[] dataColumns)
     {
       return new TableDefinition (
           storageProviderDefinition,

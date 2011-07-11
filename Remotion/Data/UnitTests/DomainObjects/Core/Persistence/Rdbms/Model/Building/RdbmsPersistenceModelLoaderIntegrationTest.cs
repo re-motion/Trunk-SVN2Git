@@ -35,17 +35,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private string _storageProviderID;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
-    private SimpleColumnDefinition _fakeBaseBaseColumnDefinition;
-    private SimpleColumnDefinition _fakeBaseColumnDefinition;
-    private SimpleColumnDefinition _fakeTableColumnDefinition1;
-    private SimpleColumnDefinition _fakeTableColumnDefinition2;
-    private SimpleColumnDefinition _fakeDerivedColumnDefinition1;
-    private SimpleColumnDefinition _fakeDerivedColumnDefinition2;
-    private SimpleColumnDefinition _fakeDerivedDerivedColumnDefinition;
+    private ColumnDefinition _fakeBaseBaseColumnDefinition;
+    private ColumnDefinition _fakeBaseColumnDefinition;
+    private ColumnDefinition _fakeTableColumnDefinition1;
+    private ColumnDefinition _fakeTableColumnDefinition2;
+    private ColumnDefinition _fakeDerivedColumnDefinition1;
+    private ColumnDefinition _fakeDerivedColumnDefinition2;
+    private ColumnDefinition _fakeDerivedDerivedColumnDefinition;
     private IDColumnDefinition _fakeIDColumnDefinition;
-    private SimpleColumnDefinition _fakeObjectIDColumn;
-    private SimpleColumnDefinition _fakeClassIDColumn;
-    private SimpleColumnDefinition _fakeTimestampColumnDefinition;
+    private ColumnDefinition _fakeObjectIDColumn;
+    private ColumnDefinition _fakeClassIDColumn;
+    private ColumnDefinition _fakeTimestampColumnDefinition;
     private IColumnDefinitionFactory _columnDefinitionFactory;
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
     private ReflectionBasedStorageNameProvider _storageNameProvider;
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
               _fakeObjectIDColumn, _fakeClassIDColumn, _fakeTimestampColumnDefinition, _fakeBaseBaseColumnDefinition, _fakeBaseColumnDefinition,
               _fakeTableColumnDefinition1
           },
-          new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { (SimpleColumnDefinition) _fakeIDColumnDefinition.ObjectIDColumn })
+          new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { (ColumnDefinition) _fakeIDColumnDefinition.ObjectIDColumn })
           );
     }
 
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
               _fakeTableColumnDefinition2,
               _fakeDerivedColumnDefinition1, _fakeDerivedColumnDefinition2, _fakeDerivedDerivedColumnDefinition
           },
-          new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, new[] { (SimpleColumnDefinition) _fakeIDColumnDefinition.ObjectIDColumn })
+          new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, new[] { (ColumnDefinition) _fakeIDColumnDefinition.ObjectIDColumn })
           );
     }
 
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
         string storageProviderID,
         string tableName,
         string viewName,
-        SimpleColumnDefinition[] columnDefinitions,
+        ColumnDefinition[] columnDefinitions,
         PrimaryKeyConstraintDefinition primaryKeyConstraintDefinition)
     {
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
         string viewName,
         IStorageEntityDefinition baseEntity,
         string[] classIDs,
-        SimpleColumnDefinition[] columnDefinitions)
+        ColumnDefinition[] columnDefinitions)
     {
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
       Assert.That (classDefinition.StorageEntityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
         string storageProviderID,
         string viewName,
         IStorageEntityDefinition[] storageEntityDefinitions,
-        SimpleColumnDefinition[] columnDefinitions)
+        ColumnDefinition[] columnDefinitions)
     {
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
       Assert.That (classDefinition.StorageEntityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));

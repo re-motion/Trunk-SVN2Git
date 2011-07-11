@@ -34,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private IColumnDefinitionResolver _columnDefinitionResolverMock;
     private IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactoryMock;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
-    private SimpleColumnDefinition _fakeColumnDefinition1;
-    private SimpleColumnDefinition _fakeTimestampColumnDefinition;
-    private SimpleColumnDefinition _fakeObjectIDColumnDefinition;
+    private ColumnDefinition _fakeColumnDefinition1;
+    private ColumnDefinition _fakeTimestampColumnDefinition;
+    private ColumnDefinition _fakeObjectIDColumnDefinition;
     private ForeignKeyConstraintDefinition _fakeForeignKeyConstraint;
     private IStorageNameProvider _storageNameProviderMock;
     private RdbmsPersistenceModelLoaderTestHelper _testModel;
@@ -261,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
         string expectedStorageProviderID,
         string expectedTableName,
         string expectedViewName,
-        SimpleColumnDefinition[] expectedColumnDefinitions,
+        ColumnDefinition[] expectedColumnDefinitions,
         ITableConstraintDefinition[] expectedTableConstraintDefinitions,
         IIndexDefinition[] expectedIndexDefinitions,
         EntityNameDefinition[] expectedSynonyms)
@@ -305,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
         string expectedViewName,
         IStorageEntityDefinition expectedBaseEntity,
         string[] expectedClassIDs,
-        SimpleColumnDefinition[] expectedColumnDefinitions,
+        ColumnDefinition[] expectedColumnDefinitions,
         IIndexDefinition[] expectedIndexDefinitions,
         EntityNameDefinition[] expectedSynonyms)
     {
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
         string expectedStorageProviderID,
         string expectedViewName,
         IStorageEntityDefinition[] expectedStorageEntityDefinitions,
-        SimpleColumnDefinition[] expectedColumnDefinitions,
+        ColumnDefinition[] expectedColumnDefinitions,
         IIndexDefinition[] expectedIndexDefinitions,
         EntityNameDefinition[] expectedSynonyms)
     {

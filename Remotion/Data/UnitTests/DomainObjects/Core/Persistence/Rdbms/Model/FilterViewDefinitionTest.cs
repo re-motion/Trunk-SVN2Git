@@ -26,8 +26,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class FilterViewDefinitionTest
   {
-    private SimpleColumnDefinition _column1;
-    private SimpleColumnDefinition _column2;
+    private ColumnDefinition _column1;
+    private ColumnDefinition _column2;
     private TableDefinition _entityDefinition;
     private FilterViewDefinition _filterViewDefinition;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       new FilterViewDefinition (
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       Assert.That (filterViewDefinition.ViewName, Is.Null);
@@ -202,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 

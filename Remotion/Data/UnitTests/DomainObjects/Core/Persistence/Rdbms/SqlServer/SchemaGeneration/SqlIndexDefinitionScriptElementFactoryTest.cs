@@ -33,8 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlIndexDefinition _indexDefinitionWithCustomSchema;
     private SqlIndexedColumnDefinition _column1;
     private SqlIndexedColumnDefinition _column2;
-    private SimpleColumnDefinition _includedColumn1;
-    private SimpleColumnDefinition _includedColumn2;
+    private ColumnDefinition _includedColumn1;
+    private ColumnDefinition _includedColumn2;
     private EntityNameDefinition _customSchemaNameDefinition;
     private EntityNameDefinition _defaultSchemaNameDefinition;
 

@@ -27,9 +27,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return "unsupported property"; }
     }
 
-    public IEnumerable<SimpleColumnDefinition> GetColumns ()
+    public IEnumerable<ColumnDefinition> GetColumns ()
     {
-      return new SimpleColumnDefinition[0];
+      return new ColumnDefinition[0];
     }
 
     public bool Equals (IRdbmsStoragePropertyDefinition other)

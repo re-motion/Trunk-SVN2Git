@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (storageType == null)
         return new UnsupportedStorageTypeColumnDefinition();
 
-      var columnDefinition = new SimpleColumnDefinition (
+      var columnDefinition = new ColumnDefinition (
           _storageNameProvider.GetColumnName (propertyDefinition),
           propertyDefinition.PropertyType,
           storageType,
@@ -67,28 +67,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return CreateRelationColumnDefinition (propertyDefinition, relationEndPointDefinition, columnDefinition);
     }
 
-    public SimpleColumnDefinition CreateObjectIDColumnDefinition ()
+    public ColumnDefinition CreateObjectIDColumnDefinition ()
     {
-      return new SimpleColumnDefinition (
+      return new ColumnDefinition (
           _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeCalculator.SqlDataTypeObjectID, false, true);
     }
 
-    public SimpleColumnDefinition CreateClassIDColumnDefinition ()
+    public ColumnDefinition CreateClassIDColumnDefinition ()
     {
-      return new SimpleColumnDefinition (
+      return new ColumnDefinition (
           _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
     }
 
-    public virtual SimpleColumnDefinition CreateTimestampColumnDefinition ()
+    public virtual ColumnDefinition CreateTimestampColumnDefinition ()
     {
-      return new SimpleColumnDefinition (
+      return new ColumnDefinition (
           _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
     }
 
     protected virtual IDColumnDefinition CreateRelationColumnDefinition (
         PropertyDefinition propertyDefinition,
         IRelationEndPointDefinition relationEndPointDefinition,
-        SimpleColumnDefinition foreignKeyColumnDefinition)
+        ColumnDefinition foreignKeyColumnDefinition)
     {
       var leftProvider = _providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition.StorageGroupType,  null);
       var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
       if (rightEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy && leftProvider.Name == rightProvider.Name)
       {
-        var classIdColumnDefinition = new SimpleColumnDefinition (
+        var classIdColumnDefinition = new ColumnDefinition (
             _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
             typeof (string),
             _storageTypeCalculator.SqlDataTypeClassID,

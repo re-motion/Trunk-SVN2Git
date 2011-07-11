@@ -30,16 +30,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// </summary>
   public class SelectedColumnsSpecification : ISelectedColumnsSpecification
   {
-    private readonly SimpleColumnDefinition[] _selectedColumns;
+    private readonly ColumnDefinition[] _selectedColumns;
 
-    public SelectedColumnsSpecification (IEnumerable<SimpleColumnDefinition> selectedColumns)
+    public SelectedColumnsSpecification (IEnumerable<ColumnDefinition> selectedColumns)
     {
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
 
       _selectedColumns = selectedColumns.ToArray();
     }
 
-    public ReadOnlyCollection<SimpleColumnDefinition> SelectedColumns
+    public ReadOnlyCollection<ColumnDefinition> SelectedColumns
     {
       get { return Array.AsReadOnly(_selectedColumns); }
     }
@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       stringBuilder.Append (SeparatedStringBuilder.Build (", ", _selectedColumns, c => sqlDialect.DelimitIdentifier(c.Name)));
     }
 
-    public ISelectedColumnsSpecification Union (IEnumerable<SimpleColumnDefinition> additionalColumns)
+    public ISelectedColumnsSpecification Union (IEnumerable<ColumnDefinition> additionalColumns)
     {
       ArgumentUtility.CheckNotNull ("additionalColumns", additionalColumns);
 

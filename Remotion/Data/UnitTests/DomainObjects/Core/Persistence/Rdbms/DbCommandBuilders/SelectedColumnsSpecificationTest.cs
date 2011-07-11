@@ -28,9 +28,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class SelectedColumnsSpecificationTest
   {
-    private SimpleColumnDefinition _column1;
-    private SimpleColumnDefinition _column2;
-    private SimpleColumnDefinition _column3;
+    private ColumnDefinition _column1;
+    private ColumnDefinition _column2;
+    private ColumnDefinition _column3;
     private SelectedColumnsSpecification _specification;
     private ISqlDialect _sqlDialectStub;
 

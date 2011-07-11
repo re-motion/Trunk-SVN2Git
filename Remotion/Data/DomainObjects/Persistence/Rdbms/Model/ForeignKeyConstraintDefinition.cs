@@ -29,14 +29,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly string _constraintName;
     private readonly EntityNameDefinition _referencedTableName;
-    private readonly ReadOnlyCollection<SimpleColumnDefinition> _referencingColumns;
-    private readonly ReadOnlyCollection<SimpleColumnDefinition> _referencedColumns;
+    private readonly ReadOnlyCollection<ColumnDefinition> _referencingColumns;
+    private readonly ReadOnlyCollection<ColumnDefinition> _referencedColumns;
 
     public ForeignKeyConstraintDefinition (
         string constraintName,
         EntityNameDefinition referencedTableName,
-        IEnumerable<SimpleColumnDefinition> referencingColumns,
-        IEnumerable<SimpleColumnDefinition> referencedColumns)
+        IEnumerable<ColumnDefinition> referencingColumns,
+        IEnumerable<ColumnDefinition> referencedColumns)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("constraintName", constraintName);
       ArgumentUtility.CheckNotNull ("referencedTableName", referencedTableName);
@@ -62,12 +62,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _referencedTableName; }
     }
 
-    public ReadOnlyCollection<SimpleColumnDefinition> ReferencingColumns
+    public ReadOnlyCollection<ColumnDefinition> ReferencingColumns
     {
       get { return _referencingColumns; }
     }
 
-    public ReadOnlyCollection<SimpleColumnDefinition> ReferencedColumns
+    public ReadOnlyCollection<ColumnDefinition> ReferencedColumns
     {
       get { return _referencedColumns; }
     }

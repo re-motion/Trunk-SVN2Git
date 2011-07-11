@@ -29,12 +29,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     EntityNameDefinition ViewName { get; }
     ReadOnlyCollection<IIndexDefinition> Indexes { get; }
     ReadOnlyCollection<EntityNameDefinition> Synonyms { get; }
-    SimpleColumnDefinition ObjectIDColumn { get; }
-    SimpleColumnDefinition ClassIDColumn { get; }
-    SimpleColumnDefinition TimestampColumn { get; }
-    IEnumerable<SimpleColumnDefinition> DataColumns { get; }
+    ColumnDefinition ObjectIDColumn { get; }
+    ColumnDefinition ClassIDColumn { get; }
+    ColumnDefinition TimestampColumn { get; }
+    IEnumerable<ColumnDefinition> DataColumns { get; }
 
-    IEnumerable<SimpleColumnDefinition> GetAllColumns ();
+    IEnumerable<ColumnDefinition> GetAllColumns ();
     void Accept (IEntityDefinitionVisitor visitor);
   }
 }

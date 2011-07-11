@@ -549,10 +549,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (
-        ClassDefinition classDefinition, PropertyInfo propertyInfo, SimpleColumnDefinition simpleColumnDefinition, SortOrder sortOrder)
+        ClassDefinition classDefinition, PropertyInfo propertyInfo, ColumnDefinition columnDefinition, SortOrder sortOrder)
     {
       var sortedPropertyDefinition = PropertyDefinitionFactory.Create (
-          classDefinition, StorageClass.Persistent, propertyInfo, simpleColumnDefinition);
+          classDefinition, StorageClass.Persistent, propertyInfo, columnDefinition);
       return new SortedPropertySpecification (sortedPropertyDefinition, sortOrder);
     }
   }

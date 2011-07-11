@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
   {
     private readonly string _indexName;
     private readonly ReadOnlyCollection<SqlIndexedColumnDefinition> _columns;
-    private readonly ReadOnlyCollection<SimpleColumnDefinition> _includedColumns;
+    private readonly ReadOnlyCollection<ColumnDefinition> _includedColumns;
     private readonly bool? _isClustered;
     private readonly bool? _isUnique;
     private readonly bool? _ignoreDupKey;
@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
     public SqlIndexDefinition (
         string indexName,
         IEnumerable<SqlIndexedColumnDefinition> columns,
-        IEnumerable<SimpleColumnDefinition> includedColumns = null,
+        IEnumerable<ColumnDefinition> includedColumns = null,
         bool? isClustered = false,
         bool? isUnique = false,
         bool? ignoreDupKey = null,
@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
       get { return _columns; }
     }
 
-    public ReadOnlyCollection<SimpleColumnDefinition> IncludedColumns
+    public ReadOnlyCollection<ColumnDefinition> IncludedColumns
     {
       get { return _includedColumns; }
     }

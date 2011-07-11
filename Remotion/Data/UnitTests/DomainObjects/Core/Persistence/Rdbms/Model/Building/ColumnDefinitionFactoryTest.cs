@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var propertyDefinition = PropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder");
       StubStorageCalculators (propertyDefinition);
 
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("FakeColumnName"));
       Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
       StubStorageCalculators (propertyDefinition);
 
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("FakeColumnName"));
       Assert.That (result.PropertyType, Is.SameAs (typeof (bool)));
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
       StubStorageCalculators (propertyDefinition);
 
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("FakeColumnName"));
       Assert.That (result.StorageType, Is.EqualTo ("storage type"));
@@ -122,9 +122,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       StubStorageCalculators (nonNullablePropertyDefinition);
 
       var nullableResult =
-          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (nullablePropertyDefinition);
+          (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (nullablePropertyDefinition);
       var nonNullableResult =
-          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (nonNullablePropertyDefinition);
+          (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (nonNullablePropertyDefinition);
 
       Assert.That (nullableResult.IsNullable, Is.True);
       Assert.That (nonNullableResult.IsNullable, Is.False);
@@ -156,9 +156,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (_classAboveDbTableAttribute.BaseClass, Is.Null);
 
       var resultNotNullable =
-          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
+          (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
       var resultNullable =
-          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable);
+          (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable);
 
       Assert.That (resultNotNullable.IsNullable, Is.False);
       Assert.That (resultNullable.IsNullable, Is.True);
@@ -176,9 +176,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       StubStorageCalculators (propertyDefinitionNullable);
 
       var resultNotNullable =
-           (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
+           (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
       var resultNullable =
-          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable);
+          (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable);
 
       Assert.That (resultNotNullable.IsNullable, Is.False);
       Assert.That (resultNullable.IsNullable, Is.True);
@@ -197,9 +197,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (_classWithDbTableAttribute.ID);
 
       var resultNotNullable =
-           (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
+           (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
       var resultNullable =
-          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable);
+          (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable);
 
       Assert.That (resultNotNullable.IsNullable, Is.True);
       Assert.That (resultNullable.IsNullable, Is.True);
@@ -224,9 +224,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (_classWithDbTableAttribute.ID);
 
       var resultNotNullable =
-           (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
+           (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
       var resultNullable =
-          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable);
+          (ColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable);
 
       Assert.That (resultNotNullable.IsNullable, Is.True);
       Assert.That (resultNullable.IsNullable, Is.True);
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (SimpleColumnDefinition)));
+      Assert.That (result, Is.TypeOf (typeof (ColumnDefinition)));
     }
 
     [Test]

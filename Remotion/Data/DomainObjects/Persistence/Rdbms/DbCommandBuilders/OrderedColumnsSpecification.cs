@@ -32,16 +32,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// </summary>
   public class OrderedColumnsSpecification : IOrderedColumnsSpecification
   {
-    private readonly Tuple<SimpleColumnDefinition, SortOrder>[] _columns;
+    private readonly Tuple<ColumnDefinition, SortOrder>[] _columns;
 
-    public OrderedColumnsSpecification (IEnumerable<Tuple<SimpleColumnDefinition, SortOrder>> columns)
+    public OrderedColumnsSpecification (IEnumerable<Tuple<ColumnDefinition, SortOrder>> columns)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
 
       _columns = columns.ToArray();
     }
 
-    public ReadOnlyCollection<Tuple<SimpleColumnDefinition, SortOrder>> Columns
+    public ReadOnlyCollection<Tuple<ColumnDefinition, SortOrder>> Columns
     {
       get { return Array.AsReadOnly(_columns); }
     }

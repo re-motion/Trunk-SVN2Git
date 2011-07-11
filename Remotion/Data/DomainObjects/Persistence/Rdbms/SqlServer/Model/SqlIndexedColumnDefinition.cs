@@ -24,10 +24,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
   /// </summary>
   public class SqlIndexedColumnDefinition
   {
-    private readonly SimpleColumnDefinition _columnn;
+    private readonly ColumnDefinition _columnn;
     private readonly IndexOrder? _indexOrder;
 
-    public SqlIndexedColumnDefinition (SimpleColumnDefinition columnn, IndexOrder? indexOrder = null)
+    public SqlIndexedColumnDefinition (ColumnDefinition columnn, IndexOrder? indexOrder = null)
     {
       ArgumentUtility.CheckNotNull ("columnn", columnn);
 
@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
       _indexOrder = indexOrder;
     }
 
-    public SimpleColumnDefinition Columnn
+    public ColumnDefinition Columnn
     {
       get { return _columnn; }
     }

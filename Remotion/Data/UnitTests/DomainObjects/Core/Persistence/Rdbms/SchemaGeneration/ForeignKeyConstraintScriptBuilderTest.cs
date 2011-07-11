@@ -50,9 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder = new ForeignKeyConstraintScriptBuilder (_factoryStub, new SqlCommentScriptElementFactory());
 
       _tableName = new EntityNameDefinition (null, "Table");
-      _constraint1 = new ForeignKeyConstraintDefinition ("FK1", _tableName, new SimpleColumnDefinition[0], new SimpleColumnDefinition[0]);
-      _constraint2 = new ForeignKeyConstraintDefinition ("FK2", _tableName, new SimpleColumnDefinition[0], new SimpleColumnDefinition[0]);
-      _constraint3 = new ForeignKeyConstraintDefinition ("FK3", _tableName, new SimpleColumnDefinition[0], new SimpleColumnDefinition[0]);
+      _constraint1 = new ForeignKeyConstraintDefinition ("FK1", _tableName, new ColumnDefinition[0], new ColumnDefinition[0]);
+      _constraint2 = new ForeignKeyConstraintDefinition ("FK2", _tableName, new ColumnDefinition[0], new ColumnDefinition[0]);
+      _constraint3 = new ForeignKeyConstraintDefinition ("FK3", _tableName, new ColumnDefinition[0], new ColumnDefinition[0]);
 
       _tableDefinition1 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new[] { _constraint1 },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new[] { _constraint2, _constraint3 },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

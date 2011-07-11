@@ -21,23 +21,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public static class ColumnDefinitionObjectMother
   {
-    public static readonly SimpleColumnDefinition ObjectIDColumn = new SimpleColumnDefinition ("ID", typeof(Guid), "uniqueidentifier", false, true);
-    public static readonly SimpleColumnDefinition ClassIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
-    public static readonly SimpleColumnDefinition TimestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+    public static readonly ColumnDefinition ObjectIDColumn = new ColumnDefinition ("ID", typeof(Guid), "uniqueidentifier", false, true);
+    public static readonly ColumnDefinition ClassIDColumn = new ColumnDefinition ("ClassID", typeof (string), "varchar", true, false);
+    public static readonly ColumnDefinition TimestampColumn = new ColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
 
-    public static SimpleColumnDefinition CreateColumn ()
+    public static ColumnDefinition CreateColumn ()
     {
-      return new SimpleColumnDefinition (Guid.NewGuid().ToString(), typeof (string), "varchar", true, false);
+      return new ColumnDefinition (Guid.NewGuid().ToString(), typeof (string), "varchar", true, false);
     }
 
-    public static SimpleColumnDefinition CreateColumn (string columnName)
+    public static ColumnDefinition CreateColumn (string columnName)
     {
-      return new SimpleColumnDefinition (columnName, typeof (string), "varchar", true, false);
+      return new ColumnDefinition (columnName, typeof (string), "varchar", true, false);
     }
 
-    public static SimpleColumnDefinition CreateTypedColumn (string columnName, Type propertyType, string storageType)
+    public static ColumnDefinition CreateTypedColumn (string columnName, Type propertyType, string storageType)
     {
-      return new SimpleColumnDefinition (columnName, propertyType, storageType, false, true);
+      return new ColumnDefinition (columnName, propertyType, storageType, false, true);
     }
 
   }

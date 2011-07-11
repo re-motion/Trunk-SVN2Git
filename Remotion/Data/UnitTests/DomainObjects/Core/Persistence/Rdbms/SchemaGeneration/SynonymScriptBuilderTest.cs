@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
           new[] { _synonym1 });
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
           new[] { _synonym2, _synonym3 });
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new[] { _synonym1 });
       _unionViewDefinition2 = new UnionViewDefinition (
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new[] { _synonym2, _synonym3 });
       _filterViewDefinition1 = new FilterViewDefinition (
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new[] { _synonym1 });
       _filterViewDefinition2 = new FilterViewDefinition (
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new[] { _synonym2, _synonym3 });
 

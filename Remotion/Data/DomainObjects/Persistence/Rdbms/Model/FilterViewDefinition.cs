@@ -37,10 +37,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         EntityNameDefinition viewName,
         IEntityDefinition baseEntity,
         IEnumerable<string> classIDs,
-        SimpleColumnDefinition objectIDColumnDefinition,
-        SimpleColumnDefinition classIDColumnDefinition,
-        SimpleColumnDefinition timstampColumnDefinition,
-        IEnumerable<SimpleColumnDefinition> dataColumns,
+        ColumnDefinition objectIDColumnDefinition,
+        ColumnDefinition classIDColumnDefinition,
+        ColumnDefinition timstampColumnDefinition,
+        IEnumerable<ColumnDefinition> dataColumns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
         : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, indexes, synonyms)

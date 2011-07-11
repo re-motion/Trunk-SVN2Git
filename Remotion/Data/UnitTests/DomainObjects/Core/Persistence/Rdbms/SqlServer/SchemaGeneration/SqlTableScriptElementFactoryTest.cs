@@ -31,8 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private TableDefinition _tableDefinitionWithoutPrimaryKeyConstraint;
     private TableDefinition _tableDefinitionWithClusteredPrimaryKeyConstraint;
     private TableDefinition _tableDefinitionWithNonClusteredPrimaryKeyConstraint;
-    private SimpleColumnDefinition _column1;
-    private SimpleColumnDefinition _column2;
+    private ColumnDefinition _column1;
+    private ColumnDefinition _column2;
 
     public override void SetUp ()
     {
@@ -40,8 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlTableScriptElementFactory();
 
-      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", false, true);
-      _column2 = new SimpleColumnDefinition ("Column2", typeof (bool), "bit", true, false);
+      _column1 = new ColumnDefinition ("Column1", typeof (string), "varchar", false, true);
+      _column2 = new ColumnDefinition ("Column2", typeof (bool), "bit", true, false);
 
       _tableDefinitionWithoutPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,

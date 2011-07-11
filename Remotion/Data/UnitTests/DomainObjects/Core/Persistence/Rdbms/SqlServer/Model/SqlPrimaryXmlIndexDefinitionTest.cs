@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlPrimaryXmlIndexDefinitionTest
   {
-    private SimpleColumnDefinition _xmlColumn;
+    private ColumnDefinition _xmlColumn;
     private SqlPrimaryXmlIndexDefinition _indexDefinition;
 
     [SetUp]

@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       var instance = AllSelectedColumnsSpecification.Instance;
 
-      Assert.That (instance.Union (new SimpleColumnDefinition[0]), Is.SameAs (instance));
+      Assert.That (instance.Union (new ColumnDefinition[0]), Is.SameAs (instance));
     }
   }
 }

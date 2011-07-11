@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn, 
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       _unionViewDefinition2 = new UnionViewDefinition (
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
          ColumnDefinitionObjectMother.ObjectIDColumn,
          ColumnDefinitionObjectMother.ClassIDColumn,
          ColumnDefinitionObjectMother.TimestampColumn,
-         new SimpleColumnDefinition[0],
+         new ColumnDefinition[0],
          new IIndexDefinition[0],
          new EntityNameDefinition[0]);
       _filterViewDefinition2 = new FilterViewDefinition (
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 

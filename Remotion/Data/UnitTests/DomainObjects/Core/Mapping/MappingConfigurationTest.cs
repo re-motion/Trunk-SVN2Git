@@ -360,7 +360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _fakeStorageEntityDefinition.ObjectIDColumn,
           _fakeStorageEntityDefinition.ClassIDColumn,
           _fakeStorageEntityDefinition.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
@@ -502,10 +502,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetAllColumns().Count(), Is.EqualTo (5));
       Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
       Assert.That (
-          ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn1"));
+          ((ColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn1"));
       Assert.That (classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition, Is.Not.Null);
       Assert.That (
-          ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn2"));
+          ((ColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn2"));
     }
 
     [Test]

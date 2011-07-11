@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return new BatchDelimiterStatement (BatchDelimiter);
     }
 
-    protected string GetColumnList (IEnumerable<SimpleColumnDefinition> columns)
+    protected string GetColumnList (IEnumerable<ColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
       return SeparatedStringBuilder.Build (", ", columns, cd => cd != null ? ("["+ cd.Name + "]") : "NULL");

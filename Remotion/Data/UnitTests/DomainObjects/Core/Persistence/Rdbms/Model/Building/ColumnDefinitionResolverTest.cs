@@ -31,13 +31,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   public class ColumnDefinitionResolverTest
   {
     private ColumnDefinitionResolver _resolver;
-    private SimpleColumnDefinition _fakeColumnDefinition1;
-    private SimpleColumnDefinition _fakeColumnDefinition2;
-    private SimpleColumnDefinition _fakeColumnDefinition3;
-    private SimpleColumnDefinition _fakeColumnDefinition4;
-    private SimpleColumnDefinition _fakeColumnDefinition5;
-    private SimpleColumnDefinition _fakeColumnDefinition6;
-    private SimpleColumnDefinition _fakeColumnDefinition7;
+    private ColumnDefinition _fakeColumnDefinition1;
+    private ColumnDefinition _fakeColumnDefinition2;
+    private ColumnDefinition _fakeColumnDefinition3;
+    private ColumnDefinition _fakeColumnDefinition4;
+    private ColumnDefinition _fakeColumnDefinition5;
+    private ColumnDefinition _fakeColumnDefinition6;
+    private ColumnDefinition _fakeColumnDefinition7;
     private RdbmsPersistenceModelLoaderTestHelper _testModel;
 
     [SetUp]

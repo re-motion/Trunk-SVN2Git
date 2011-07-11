@@ -37,10 +37,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
         IEnumerable<IEntityDefinition> unionedEntities,
-        SimpleColumnDefinition objectIDColumnDefinition,
-        SimpleColumnDefinition classIDColumnDefinition,
-        SimpleColumnDefinition timstampColumnDefinition,
-        IEnumerable<SimpleColumnDefinition> dataColumns,
+        ColumnDefinition objectIDColumnDefinition,
+        ColumnDefinition classIDColumnDefinition,
+        ColumnDefinition timstampColumnDefinition,
+        IEnumerable<ColumnDefinition> dataColumns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
         : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, indexes, synonyms)
@@ -89,12 +89,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return null; }
     }
 
-    public SimpleColumnDefinition[] CreateFullColumnList (IEnumerable<SimpleColumnDefinition> availableColumns)
+    public ColumnDefinition[] CreateFullColumnList (IEnumerable<ColumnDefinition> availableColumns)
     {
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
       var availableColumnsAsDictionary = availableColumns.ToDictionary (c => c);
-      var fullColumnList = new List<SimpleColumnDefinition>();
+      var fullColumnList = new List<ColumnDefinition>();
 
       foreach (var columnDefinition in GetAllColumns())
         fullColumnList.Add (availableColumnsAsDictionary.GetValueOrDefault (columnDefinition));

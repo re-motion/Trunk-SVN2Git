@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       stringBuilder.Append ("*");
     }
 
-    public ISelectedColumnsSpecification Union (IEnumerable<SimpleColumnDefinition> additionalColumns)
+    public ISelectedColumnsSpecification Union (IEnumerable<ColumnDefinition> additionalColumns)
     {
       ArgumentUtility.CheckNotNull ("additionalColumns", additionalColumns);
 

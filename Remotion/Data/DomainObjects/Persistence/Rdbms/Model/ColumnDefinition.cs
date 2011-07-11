@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// Defines a column in a relational database.
   /// </summary>
-  public class SimpleColumnDefinition : IRdbmsStoragePropertyDefinition
+  public class ColumnDefinition : IRdbmsStoragePropertyDefinition
   {
     private readonly string _name;
     private readonly Type _propertyType;
@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly bool _isPartOfPrimaryKey;
     private readonly string _storageType;
 
-    public SimpleColumnDefinition (string name, Type propertyType, string storageType, bool isNullable, bool isPartOfPrimaryKey)
+    public ColumnDefinition (string name, Type propertyType, string storageType, bool isNullable, bool isPartOfPrimaryKey)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _isPartOfPrimaryKey; }
     }
 
-    public IEnumerable<SimpleColumnDefinition> GetColumns ()
+    public IEnumerable<ColumnDefinition> GetColumns ()
     {
       yield return this;
     }
@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (other == null || other.GetType () != GetType ())
         return false;
 
-      var castOther = (SimpleColumnDefinition) other;
+      var castOther = (ColumnDefinition) other;
       return castOther.Name == Name 
           && castOther.PropertyType == PropertyType 
           && castOther.StorageType == StorageType 

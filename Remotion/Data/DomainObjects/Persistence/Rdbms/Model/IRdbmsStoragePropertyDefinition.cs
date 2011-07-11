@@ -25,6 +25,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition, IEquatable<IRdbmsStoragePropertyDefinition>, INullObject
   {
-    IEnumerable<SimpleColumnDefinition> GetColumns ();
+    IEnumerable<ColumnDefinition> GetColumns ();
   }
 }

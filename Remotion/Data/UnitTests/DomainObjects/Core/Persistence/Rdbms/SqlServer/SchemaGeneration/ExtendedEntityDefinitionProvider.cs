@@ -77,10 +77,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private TableDefinition CreateNewTableDefinitionWithIndexes (StorageProviderDefinition storageProviderDefinition)
     {
-      var column1 = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      var column2 = new SimpleColumnDefinition ("FirstName", typeof (string), "varchar(100)", false, false);
-      var column3 = new SimpleColumnDefinition ("LastName", typeof (string), "varchar(100)", false, false);
-      var column4 = new SimpleColumnDefinition ("XmlColumn1", typeof (string), "xml", false, false);
+      var column1 = new ColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
+      var column2 = new ColumnDefinition ("FirstName", typeof (string), "varchar(100)", false, false);
+      var column3 = new ColumnDefinition ("LastName", typeof (string), "varchar(100)", false, false);
+      var column4 = new ColumnDefinition ("XmlColumn1", typeof (string), "xml", false, false);
 
       var tableName = new EntityNameDefinition (null, "IndexTestTable");
       var viewName = new EntityNameDefinition (null, "IndexTestView");
@@ -139,9 +139,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           true,
           false);
 
-      var objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
-      var classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
-      var timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+      var objectIDColunmn = new ColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      var classIDCOlumn = new ColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      var timestampColumn = new ColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
 
       return new TableDefinition (
           storageProviderDefinition,
@@ -170,11 +170,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var tableName = new EntityNameDefinition (null, "PKTestTable");
       var viewName = new EntityNameDefinition (null, "PKTestView");
 
-      var column1 = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
-      var column2 = new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", false, false);
-      var objectIDColunmn = new SimpleColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
-      var classIDCOlumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
-      var timestampColumn = new SimpleColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
+      var column1 = new ColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
+      var column2 = new ColumnDefinition ("Name", typeof (string), "varchar(100)", false, false);
+      var objectIDColunmn = new ColumnDefinition ("ObjectID", typeof (int), "integer", false, true);
+      var classIDCOlumn = new ColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      var timestampColumn = new ColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false);
 
       var nonClusteredUniqueIndex = new SqlIndexDefinition (
           "IDX_ClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column2) }, null, true, true, true, false);

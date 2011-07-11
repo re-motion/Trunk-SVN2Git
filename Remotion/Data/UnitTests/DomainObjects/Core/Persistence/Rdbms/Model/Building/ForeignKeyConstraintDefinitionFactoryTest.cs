@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private IColumnDefinitionFactory _columnDefintionFactoryMock;
     private ForeignKeyConstraintDefinitionFactory _factory;
     private IDColumnDefinition _fakeIdColumnDefinition;
-    private SimpleColumnDefinition _fakeColumnDefintion;
+    private ColumnDefinition _fakeColumnDefintion;
     private IDColumnDefinition _fakeForeignColumnDefinition;
     private IStorageProviderDefinitionFinder _storageProviderDefinitionFinderStub;
 

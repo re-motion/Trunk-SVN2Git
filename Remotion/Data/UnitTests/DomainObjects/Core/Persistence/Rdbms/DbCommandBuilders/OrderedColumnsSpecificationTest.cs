@@ -31,9 +31,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class OrderedColumnsSpecificationTest
   {
-    private SimpleColumnDefinition _column1;
-    private SimpleColumnDefinition _column2;
-    private SimpleColumnDefinition _column3;
+    private ColumnDefinition _column1;
+    private ColumnDefinition _column2;
+    private ColumnDefinition _column3;
     private OrderedColumnsSpecification _specification;
     private ISqlDialect _sqlDialectStub;
 
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var selectedColumns = MockRepository.GenerateStrictMock<ISelectedColumnsSpecification>();
 
       selectedColumns
-        .Expect (mock => mock.Union (Arg<IEnumerable<SimpleColumnDefinition>>.List.Equal (new[] { _column1, _column2, _column3 })))
+        .Expect (mock => mock.Union (Arg<IEnumerable<ColumnDefinition>>.List.Equal (new[] { _column1, _column2, _column3 })))
         .Return (selectedColumns);
       selectedColumns.Replay();
 

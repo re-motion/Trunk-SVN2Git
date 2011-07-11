@@ -61,29 +61,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return null; }
     }
 
-    public SimpleColumnDefinition ObjectIDColumn
+    public ColumnDefinition ObjectIDColumn
     {
       get { return null; }
     }
 
-    public SimpleColumnDefinition ClassIDColumn
+    public ColumnDefinition ClassIDColumn
     {
       get { return null; }
     }
 
-    public SimpleColumnDefinition TimestampColumn
+    public ColumnDefinition TimestampColumn
     {
       get { return null; }
     }
 
-    public IEnumerable<SimpleColumnDefinition> DataColumns
+    public IEnumerable<ColumnDefinition> DataColumns
     {
-      get { return new SimpleColumnDefinition[0]; }
+      get { return new ColumnDefinition[0]; }
     }
 
-    public IEnumerable<SimpleColumnDefinition> GetAllColumns ()
+    public IEnumerable<ColumnDefinition> GetAllColumns ()
     {
-      return new SimpleColumnDefinition[0];
+      return new ColumnDefinition[0];
     }
 
     public ReadOnlyCollection<IIndexDefinition> Indexes

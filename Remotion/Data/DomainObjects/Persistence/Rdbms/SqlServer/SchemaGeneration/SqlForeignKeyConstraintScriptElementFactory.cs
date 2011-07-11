@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           referencingColumnNameList);
     }
 
-    private string GetColumnNameList (IEnumerable<SimpleColumnDefinition> columns)
+    private string GetColumnNameList (IEnumerable<ColumnDefinition> columns)
     {
       return SeparatedStringBuilder.Build (", ", columns, c => "[" + c.Name + "]");
     }

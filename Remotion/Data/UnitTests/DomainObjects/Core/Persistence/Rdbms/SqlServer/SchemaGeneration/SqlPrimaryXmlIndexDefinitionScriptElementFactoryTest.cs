@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlPrimaryXmlIndexDefinitionScriptElementFactory _factory;
     private SqlPrimaryXmlIndexDefinition _indexDefinitionWithCustomSchema;
     private SqlPrimaryXmlIndexDefinition _indexDefinitionWithDefaultSchema;
-    private SimpleColumnDefinition _xmlColumn;
+    private ColumnDefinition _xmlColumn;
     private EntityNameDefinition _customSchemaNameDefinition;
     private EntityNameDefinition _defaultSchemaNameDefinition;
 

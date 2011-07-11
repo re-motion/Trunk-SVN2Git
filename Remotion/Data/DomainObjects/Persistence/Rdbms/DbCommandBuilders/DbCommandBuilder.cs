@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       statement.Append (SqlDialect.DelimitIdentifier (tableDefinition.TableName.EntityName));
     }
 
-    protected void AppendComparingWhereClause (StringBuilder statement, SimpleColumnDefinition comparedColumn, IDataParameter expectedValue)
+    protected void AppendComparingWhereClause (StringBuilder statement, ColumnDefinition comparedColumn, IDataParameter expectedValue)
     {
       statement.Append (" WHERE ");
       statement.Append (SqlDialect.DelimitIdentifier (comparedColumn.Name));

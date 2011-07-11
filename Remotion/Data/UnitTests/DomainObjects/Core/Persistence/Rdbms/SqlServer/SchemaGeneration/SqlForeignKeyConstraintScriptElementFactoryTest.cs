@@ -28,8 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   public class SqlForeignKeyConstraintScriptElementFactoryTest : SchemaGenerationTestBase
   {
     private SqlForeignKeyConstraintScriptElementFactory _factory;
-    private SimpleColumnDefinition _column1;
-    private SimpleColumnDefinition _column2;
+    private ColumnDefinition _column1;
+    private ColumnDefinition _column2;
     private ForeignKeyConstraintDefinition _constraint1;
     private ForeignKeyConstraintDefinition _constraint2;
     private EntityNameDefinition _table1;

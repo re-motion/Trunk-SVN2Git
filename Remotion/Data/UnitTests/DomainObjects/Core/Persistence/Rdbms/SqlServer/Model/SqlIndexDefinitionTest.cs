@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlIndexDefinitionTest
   {
-    private SimpleColumnDefinition[] _includedColumns;
+    private ColumnDefinition[] _includedColumns;
     private SqlIndexedColumnDefinition[] _columns;
     private SqlIndexDefinition _sqlIndexDefinition;
 

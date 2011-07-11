@@ -24,8 +24,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class IDColumnDefinitionTest
   {
-    private SimpleColumnDefinition _objectIDColumn;
-    private SimpleColumnDefinition _classIDColumn;
+    private ColumnDefinition _objectIDColumn;
+    private ColumnDefinition _classIDColumn;
     private IDColumnDefinition _columnDefinition;
     private IDColumnDefinition _columnDefinitionWithoutClassID;
 

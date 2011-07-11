@@ -30,9 +30,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
     private UnionViewDefinition _unionViewDefinition;
-    private SimpleColumnDefinition _column1;
-    private SimpleColumnDefinition _column2;
-    private SimpleColumnDefinition _column3;
+    private ColumnDefinition _column1;
+    private ColumnDefinition _column2;
+    private ColumnDefinition _column3;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private IIndexDefinition[] _indexes;
     private EntityNameDefinition[] _synonyms;
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       Assert.That (unionViewDefinition.ViewName, Is.Null);
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       new UnionViewDefinition (
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFullColumnList_ChecksByContentNotByReference ()
     {
-      var column1WithDifferentReference = new SimpleColumnDefinition (
+      var column1WithDifferentReference = new ColumnDefinition (
           _column1.Name, _column1.PropertyType, _column1.StorageType, _column1.IsNullable, false);
       var availableColumns = new[]
                              {
@@ -281,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ObjectIDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new SimpleColumnDefinition[0],
+          new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 

@@ -28,8 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ForeignKeyConstraintDefinition _constraint;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private string _referencedTableName;
-    private SimpleColumnDefinition _referencingColumn;
-    private SimpleColumnDefinition _referencedColumn;
+    private ColumnDefinition _referencingColumn;
+    private ColumnDefinition _referencedColumn;
 
     [SetUp]
     public void SetUp ()
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization_InvalidColumns ()
     {
       new ForeignKeyConstraintDefinition (
-          "Test", new EntityNameDefinition (null, _referencedTableName), new[] { _referencingColumn }, new SimpleColumnDefinition[0]);
+          "Test", new EntityNameDefinition (null, _referencedTableName), new[] { _referencingColumn }, new ColumnDefinition[0]);
     }
 
     [Test]

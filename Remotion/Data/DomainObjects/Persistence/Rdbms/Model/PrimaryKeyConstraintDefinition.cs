@@ -29,9 +29,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly string _constraintName;
     private readonly bool _isClustered;
-    private readonly ReadOnlyCollection<SimpleColumnDefinition> _columns;
+    private readonly ReadOnlyCollection<ColumnDefinition> _columns;
 
-    public PrimaryKeyConstraintDefinition (string constraintName, bool isClustered, IEnumerable<SimpleColumnDefinition> columns)
+    public PrimaryKeyConstraintDefinition (string constraintName, bool isClustered, IEnumerable<ColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("constraintName", constraintName);
       ArgumentUtility.CheckNotNull ("columns", columns);
@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _isClustered; }
     }
 
-    public ReadOnlyCollection<SimpleColumnDefinition> Columns
+    public ReadOnlyCollection<ColumnDefinition> Columns
     {
       get { return _columns; }
     }

@@ -28,6 +28,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   public interface ISelectedColumnsSpecification
   {
     void AppendProjection (StringBuilder stringBuilder, ISqlDialect sqlDialect);
-    ISelectedColumnsSpecification Union (IEnumerable<SimpleColumnDefinition> additionalColumns);
+    ISelectedColumnsSpecification Union (IEnumerable<ColumnDefinition> additionalColumns);
   }
 }
