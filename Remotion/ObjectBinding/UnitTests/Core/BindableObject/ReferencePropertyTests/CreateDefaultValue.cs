@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests
 {
   [TestFixture]
-  public class Create : TestBase
+  public class CreateDefaultValue : TestBase
   {
     private MockRepository _mockRepository;
     private BindableObjectProvider _bindableObjectProviderForDeclaringType;
@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _mockRepository.ReplayAll();
 
       _bindableObjectProviderForDeclaringType.AddService (mockService);
-      IBusinessObject actual = property.Create (stubBusinessObject);
+      IBusinessObject actual = property.CreateDefaultValue (stubBusinessObject);
 
       _mockRepository.VerifyAll();
       Assert.That (actual, Is.SameAs (expected));
@@ -82,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _bindableObjectProviderForDeclaringType.AddService (mockService);
       try
       {
-        property.Create (businessObject);
+        property.CreateDefaultValue (businessObject);
       }
       finally
       {

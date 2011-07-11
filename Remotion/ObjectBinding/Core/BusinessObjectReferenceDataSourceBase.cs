@@ -59,8 +59,8 @@ namespace Remotion.ObjectBinding
       if (ReferencedDataSource != null && ReferencedDataSource.BusinessObject != null && ReferenceProperty != null)
       {
         var businessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
-        if (businessObject == null && Mode == DataSourceMode.Edit && ReferenceProperty.CreateIfNull)
-          businessObject = ReferenceProperty.Create (ReferencedDataSource.BusinessObject);
+        if (businessObject == null && Mode == DataSourceMode.Edit && ReferenceProperty.SupportsDefaultValue)
+          businessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
         BusinessObject = businessObject;
         _hasBusinessObjectChanged = false;
       }

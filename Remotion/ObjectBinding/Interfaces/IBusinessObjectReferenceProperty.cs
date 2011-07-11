@@ -54,29 +54,29 @@ namespace Remotion.ObjectBinding
     IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, ISearchAvailableObjectsArguments searchArguments);
 
     /// <summary>
-    ///   Gets a flag indicating if <see cref="Create"/> may be called to implicitly create a new business object 
+    ///   Gets a flag indicating if <see cref="CreateDefaultValue"/> may be called to implicitly create a new business object 
     ///   for editing in case the object reference is null.
     /// </summary>
     // SupportsDefaultValue
-    bool CreateIfNull { get; }
+    bool SupportsDefaultValue { get; }
 
     /// <summary>
-    ///   If <see cref="CreateIfNull"/> is <see langword="true"/>, this method can be used to create a new business 
+    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new business 
     ///   object.
     /// </summary>
     /// <param name="referencingObject"> 
     ///   The business object containing the reference property whose value will be assigned the newly created object. 
     /// </param>
     /// <exception cref="NotSupportedException"> 
-    ///   Thrown if this method is called although <see cref="CreateIfNull"/> evaluated <see langword="false"/>. 
+    ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
     /// </exception>
     /// <remarks>
-    ///   A use case for the <b>Create</b> method is the instantiation of an business object without a unique identifier,
+    ///   A use case for the <b>CreateDefaultValue</b> method is the instantiation of an business object without a unique identifier,
     ///   usually an <b>Aggregate</b>. The aggregate reference can be <see langword="null"/> until one of its values
     ///   is set in the user interface.
     /// </remarks>
     // CreateDefaultValue
-    IBusinessObject Create (IBusinessObject referencingObject);
+    IBusinessObject CreateDefaultValue (IBusinessObject referencingObject);
 
     bool SupportsDelete { get; }
 

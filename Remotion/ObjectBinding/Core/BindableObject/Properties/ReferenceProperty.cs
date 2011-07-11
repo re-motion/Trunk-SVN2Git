@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly Type _concreteType;
     private readonly DoubleCheckedLockingContainer<IBusinessObjectClass> _referenceClass;
     private readonly Tuple<ServiceProvider, Type> _searchServiceDefinition;
-    private readonly Tuple<ServiceProvider, Type> _createObjectServiceDefinition;
+    private readonly Tuple<ServiceProvider, Type> _defaultValueServiceDefinition;
     private readonly Tuple<ServiceProvider, Type> _deleteObjectServiceDefinition;
 
     public ReferenceProperty (Parameters parameters)
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _concreteType = parameters.ConcreteType;
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
       _searchServiceDefinition = GetServiceDeclaration<SearchAvailableObjectsServiceTypeAttribute, ISearchAvailableObjectsService>();
-      _createObjectServiceDefinition = GetServiceDeclaration<DefaultValueServiceTypeAttribute, IDefaultValueService>();
+      _defaultValueServiceDefinition = GetServiceDeclaration<DefaultValueServiceTypeAttribute, IDefaultValueService>();
       _deleteObjectServiceDefinition = GetServiceDeclaration<DeleteObjectServiceTypeAttribute, IDeleteObjectService> ();
     }
 
@@ -100,14 +100,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary>
-    ///   Gets a flag indicating if <see cref="Create"/> may be called to implicitly create a new business object 
+    ///   Gets a flag indicating if <see cref="CreateDefaultValue"/> may be called to implicitly create a new business object 
     ///   for editing in case the object reference is null.
     /// </summary>
-    public bool CreateIfNull
+    public bool SupportsDefaultValue
     {
       get
       {
-        IDefaultValueService service = GetCreateObjectService ();
+        IDefaultValueService service = GetDefaultValueService ();
         if (service == null)
           return false;
 
@@ -116,20 +116,20 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary>
-    ///   If <see cref="CreateIfNull"/> is <see langword="true"/>, this method can be used to create a new business 
+    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new business 
     ///   object.
     /// </summary>
     /// <param name="referencingObject"> 
     ///   The business object containing the reference property whose value will be assigned the newly created object. 
     /// </param>
     /// <exception cref="NotSupportedException"> 
-    ///   Thrown if this method is called although <see cref="CreateIfNull"/> evaluated <see langword="false"/>. 
+    ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
     /// </exception>
-    public IBusinessObject Create (IBusinessObject referencingObject)
+    public IBusinessObject CreateDefaultValue (IBusinessObject referencingObject)
     {
       ArgumentUtility.CheckNotNull ("referencingObject", referencingObject);
 
-      if (!CreateIfNull)
+      if (!SupportsDefaultValue)
       {
         throw new NotSupportedException (
             string.Format (
@@ -138,8 +138,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      IDefaultValueService service = GetCreateObjectService();
-      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _createObjectServiceDefinition.Item2.FullName);
+      IDefaultValueService service = GetDefaultValueService();
+      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _defaultValueServiceDefinition.Item2.FullName);
 
       return service.Create (referencingObject, this);
     }
@@ -227,9 +227,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return GetService < ISearchAvailableObjectsService> (_searchServiceDefinition);
     }
 
-    private IDefaultValueService GetCreateObjectService ()
+    private IDefaultValueService GetDefaultValueService ()
     {
-      return GetService<IDefaultValueService> (_createObjectServiceDefinition);
+      return GetService<IDefaultValueService> (_defaultValueServiceDefinition);
     }
 
     private IDeleteObjectService GetDeleteObjectService ()

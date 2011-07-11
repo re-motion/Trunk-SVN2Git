@@ -109,8 +109,8 @@
     <Compile Include="Core\BindableObject\PropertyReflectorTests\Extensibility.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\Delete.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\SupportsDelete.cs" />
-    <Compile Include="Core\BindableObject\ReferencePropertyTests\Create.cs" />
-    <Compile Include="Core\BindableObject\ReferencePropertyTests\CreateIfNull.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\CreateDefaultValue.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\SupportsDefaultValue.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\BaseTestType.cs" />
     <Compile Include="Core\BindableObject\BindableObjectClassTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectClassWithIdentityTest.cs" />

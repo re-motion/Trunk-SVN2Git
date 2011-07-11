@@ -25,7 +25,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests
 {
   [TestFixture]
-  public class CreateIfNull : TestBase
+  public class SupportsDefaultValue : TestBase
   {
     private MockRepository _mockRepository;
     private BindableObjectProvider _bindableObjectProviderForDeclaringType;
@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _mockRepository.ReplayAll();
 
       _bindableObjectProviderForPropertyType.AddService (serviceMock);
-      bool actual = property.CreateIfNull;
+      bool actual = property.SupportsDefaultValue;
 
       _mockRepository.VerifyAll();
       Assert.That (actual, Is.True);
@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
       _bindableObjectProviderForPropertyType.AddService (createObjectServiceOnTypeStub);
       _bindableObjectProviderForDeclaringType.AddService (serviceMock);
-      bool actual = property.CreateIfNull;
+      bool actual = property.SupportsDefaultValue;
 
       _mockRepository.VerifyAll();
       Assert.That (actual, Is.True);
@@ -82,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     {
       IBusinessObjectReferenceProperty property = CreateProperty ("DefaultValueServiceFromPropertyType");
 
-      Assert.That (property.CreateIfNull, Is.False);
+      Assert.That (property.SupportsDefaultValue, Is.False);
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _mockRepository.ReplayAll();
 
       _bindableObjectProviderForDeclaringType.AddService (createObjectServiceMock);
-      bool actual = property.CreateIfNull;
+      bool actual = property.SupportsDefaultValue;
 
       _mockRepository.VerifyAll();
       Assert.That (actual, Is.True);
@@ -119,7 +119,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _mockRepository.ReplayAll ();
 
       _bindableObjectProviderForDeclaringType.AddService (businessObjectClassServiceMock);
-      bool actual = property.CreateIfNull;
+      bool actual = property.SupportsDefaultValue;
 
       _mockRepository.VerifyAll ();
       Assert.That (actual, Is.True);
@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
       _mockRepository.ReplayAll ();
 
-      bool actual = property.CreateIfNull;
+      bool actual = property.SupportsDefaultValue;
 
       _mockRepository.VerifyAll ();
       Assert.That (actual, Is.False);
@@ -156,7 +156,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       _bindableObjectProviderForDeclaringType.AddService (businessObjectClassServiceMock);
 
       _mockRepository.VerifyAll ();
-      Assert.That (property.CreateIfNull, Is.False);
+      Assert.That (property.SupportsDefaultValue, Is.False);
     }
 
     private ReferenceProperty CreateProperty (string propertyName)
