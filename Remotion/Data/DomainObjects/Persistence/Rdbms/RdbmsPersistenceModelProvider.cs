@@ -45,17 +45,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return storageEntityDefinitionAsIEntityDefinition;
     }
 
-    public IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
+    public IRdbmsStoragePropertyDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      var storagePropertyDefinitionAsIColumnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
+      var storagePropertyDefinitionAsIColumnDefinition = propertyDefinition.StoragePropertyDefinition as IRdbmsStoragePropertyDefinition;
       if (storagePropertyDefinitionAsIColumnDefinition == null)
       {
         throw new InvalidOperationException(
           string.Format("The RdbmsProvider expected a storage definition object of type '{0}' for property '{1}' of class-definition '{2}', "
                 + "but found a storage definition object of type '{3}'.",
-                typeof (IColumnDefinition).Name,
+                typeof (IRdbmsStoragePropertyDefinition).Name,
                 propertyDefinition.PropertyName,
                 propertyDefinition.ClassDefinition.ID,
                 propertyDefinition.StoragePropertyDefinition.GetType().Name));

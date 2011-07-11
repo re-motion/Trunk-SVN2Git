@@ -347,7 +347,7 @@
     <Compile Include="Persistence\Rdbms\IRdbmsStorageObjectFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\EntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ForeignKeyConstraintDefinition.cs" />
-    <Compile Include="Persistence\Rdbms\Model\IColumnDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IRdbmsStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IEntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinitionVisitor.cs" />

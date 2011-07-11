@@ -26,11 +26,11 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// The <see cref="ColumnDefinitionResolver"/> is responsible to get all <see cref="IColumnDefinition"/>s for a <see cref="ClassDefinition"/>
+  /// The <see cref="ColumnDefinitionResolver"/> is responsible to get all <see cref="IRdbmsStoragePropertyDefinition"/>s for a <see cref="ClassDefinition"/>
   /// </summary>
   public class ColumnDefinitionResolver : IColumnDefinitionResolver
   {
-    public IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
+    public IEnumerable<IRdbmsStoragePropertyDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           .Reverse ()
           .Concat (classDefinition.GetAllDerivedClasses ());
 
-      var equalityComparer = new DelegateBasedEqualityComparer<Tuple<IPropertyInformation, IColumnDefinition>> (
+      var equalityComparer = new DelegateBasedEqualityComparer<Tuple<IPropertyInformation, IRdbmsStoragePropertyDefinition>> (
           (tuple1, tuple2) => tuple1.Item1.Equals (tuple2.Item1),
           tuple => tuple.Item1.GetHashCode ());
 
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return columnDefinitions;
     }
 
-    public IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
+    public IRdbmsStoragePropertyDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
                 propertyDefinition.PropertyInfo.Name));
       }
 
-      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
+      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IRdbmsStoragePropertyDefinition;
       if (columnDefinition == null)
       {
         throw new MappingException (

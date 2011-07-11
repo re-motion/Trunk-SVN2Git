@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="IColumnDefinition"/> objects for <see cref="PropertyDefinition"/>
+  /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="IRdbmsStoragePropertyDefinition"/> objects for <see cref="PropertyDefinition"/>
   /// instances.
   /// </summary>
   public class ColumnDefinitionFactory : IColumnDefinitionFactory
@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _providerDefinitionFinder = providerDefinitionFinder;
     }
 
-    public virtual IColumnDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition)
+    public virtual IRdbmsStoragePropertyDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 

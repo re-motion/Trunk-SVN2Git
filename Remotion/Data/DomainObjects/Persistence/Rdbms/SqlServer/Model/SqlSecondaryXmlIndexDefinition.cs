@@ -25,13 +25,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
   public class SqlSecondaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
     private readonly string _indexName;
-    private readonly IColumnDefinition _xmlColumn;
+    private readonly IRdbmsStoragePropertyDefinition _xmlColumn;
     private readonly string _primaryIndexName;
     private readonly SqlSecondaryXmlIndexKind _kind;
 
     public SqlSecondaryXmlIndexDefinition (
         string indexName,
-        IColumnDefinition xmlColumn,
+        IRdbmsStoragePropertyDefinition xmlColumn,
         string primaryIndexName,
         SqlSecondaryXmlIndexKind kind,
         bool? padIndex = null,
@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
       get { return _indexName; }
     }
 
-    public IColumnDefinition XmlColumn
+    public IRdbmsStoragePropertyDefinition XmlColumn
     {
       get { return _xmlColumn; }
     }

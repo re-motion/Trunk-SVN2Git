@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  public class UnsupportedStorageTypeColumnDefinition : IColumnDefinition
+  public class UnsupportedStorageTypeColumnDefinition : IRdbmsStoragePropertyDefinition
   {
     string IStoragePropertyDefinition.Name
     {
@@ -32,14 +32,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new SimpleColumnDefinition[0];
     }
 
-    public bool Equals (IColumnDefinition other)
+    public bool Equals (IRdbmsStoragePropertyDefinition other)
     {
       return other != null && other.GetType () == GetType ();
     }
 
     public override bool Equals (object obj)
     {
-      return Equals (obj as IColumnDefinition);
+      return Equals (obj as IRdbmsStoragePropertyDefinition);
     }
 
     public override int GetHashCode ()

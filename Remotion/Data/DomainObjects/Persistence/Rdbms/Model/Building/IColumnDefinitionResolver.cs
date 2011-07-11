@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public interface IColumnDefinitionResolver
   {
-    IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition);
-    IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition);
+    IRdbmsStoragePropertyDefinition GetColumnDefinition (PropertyDefinition propertyDefinition);
+    IEnumerable<IRdbmsStoragePropertyDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition);
   }
 }

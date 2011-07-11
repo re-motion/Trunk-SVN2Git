@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var columns = _resolver.GetColumnDefinitionsForHierarchy (classDefinition).ToArray ();
 
-      Assert.That (columns, Is.EqualTo (new IColumnDefinition[0]));
+      Assert.That (columns, Is.EqualTo (new IRdbmsStoragePropertyDefinition[0]));
     }
 
     [Test]

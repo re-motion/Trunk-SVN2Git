@@ -21,9 +21,9 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IColumnDefinition"/> defines the API for all column definitions.
+  /// <see cref="IRdbmsStoragePropertyDefinition"/> defines the API for all column definitions.
   /// </summary>
-  public interface IColumnDefinition : IStoragePropertyDefinition, IEquatable<IColumnDefinition>, INullObject
+  public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition, IEquatable<IRdbmsStoragePropertyDefinition>, INullObject
   {
     IEnumerable<SimpleColumnDefinition> GetColumns ();
   }

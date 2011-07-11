@@ -19,11 +19,11 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// <see cref="IColumnDefinitionFactory"/> defines the API to create instances of <see cref="IColumnDefinition"/>. 
+  /// <see cref="IColumnDefinitionFactory"/> defines the API to create instances of <see cref="IRdbmsStoragePropertyDefinition"/>. 
   /// </summary>
   public interface IColumnDefinitionFactory
   {
-    IColumnDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition);
+    IRdbmsStoragePropertyDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition);
     SimpleColumnDefinition CreateObjectIDColumnDefinition ();
     SimpleColumnDefinition CreateClassIDColumnDefinition ();
     SimpleColumnDefinition CreateTimestampColumnDefinition ();

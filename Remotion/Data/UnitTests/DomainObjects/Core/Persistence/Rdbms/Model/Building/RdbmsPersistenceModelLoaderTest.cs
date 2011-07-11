@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The property definition 'DerivedDerivedProperty' of class 'DerivedDerivedClass' does not implement interface 'IColumnDefinition'.")]
+        "The property definition 'DerivedDerivedProperty' of class 'DerivedDerivedClass' does not implement interface 'IRdbmsStoragePropertyDefinition'.")]
     public void ApplyPersistenceModelToHierarchy_Throws_WhenExistingPropertyDefinitionDoesNotImplementIColumnDefinition ()
     {
       _testModel.DerivedClassDefinition2.SetStorageEntity (_fakeEntityDefinitionDerived2);

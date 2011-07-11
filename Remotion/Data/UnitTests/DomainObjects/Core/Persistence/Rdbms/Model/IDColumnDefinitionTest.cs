@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_columnDefinition.ObjectIDColumn, Is.SameAs (_objectIDColumn));
       Assert.That (_columnDefinition.ClassIDColumn, Is.SameAs (_classIDColumn));
-      Assert.That (((IColumnDefinition) _columnDefinition).Name, Is.EqualTo ("ID"));
+      Assert.That (((IRdbmsStoragePropertyDefinition) _columnDefinition).Name, Is.EqualTo ("ID"));
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_Null ()
     {
-      Assert.That (_columnDefinition.Equals ((IColumnDefinition) null), Is.False);
+      Assert.That (_columnDefinition.Equals ((IRdbmsStoragePropertyDefinition) null), Is.False);
       Assert.That (_columnDefinition.Equals ((object) null), Is.False);
     }
 

@@ -142,14 +142,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           var storagePropertyDefinition = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
           propertyDefinition.SetStorageProperty (storagePropertyDefinition);
         }
-        else if(!(propertyDefinition.StoragePropertyDefinition is IColumnDefinition))
+        else if(!(propertyDefinition.StoragePropertyDefinition is IRdbmsStoragePropertyDefinition))
         {
           throw new InvalidOperationException (
             string.Format (
                 "The property definition '{0}' of class '{1}' does not implement interface '{2}'.",
                 propertyDefinition.PropertyName,
                 classDefinition.ID,
-                typeof (IColumnDefinition).Name));
+                typeof (IRdbmsStoragePropertyDefinition).Name));
         }
         
         Assertion.IsNotNull (propertyDefinition.StoragePropertyDefinition);

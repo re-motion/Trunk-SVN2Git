@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses()).Select (cd => cd.ID);
     }
 
-    private IEnumerable<SimpleColumnDefinition> GetSimpleColumnDefinitions (IEnumerable<IColumnDefinition> columns)
+    private IEnumerable<SimpleColumnDefinition> GetSimpleColumnDefinitions (IEnumerable<IRdbmsStoragePropertyDefinition> columns)
     {
       return columns.SelectMany (c => c.GetColumns());
     }

@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="IDColumnDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
   /// </summary>
-  public class IDColumnDefinition : IColumnDefinition
+  public class IDColumnDefinition : IRdbmsStoragePropertyDefinition
   {
     private readonly SimpleColumnDefinition _objectIDColumn;
     private readonly SimpleColumnDefinition _classIDColumn;
@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         yield return _classIDColumn;
     }
 
-    public bool Equals (IColumnDefinition other)
+    public bool Equals (IRdbmsStoragePropertyDefinition other)
     {
       if (other == null || other.GetType() != GetType())
         return false;
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public override bool Equals (object obj)
     {
-      return Equals (obj as IColumnDefinition);
+      return Equals (obj as IRdbmsStoragePropertyDefinition);
     }
 
     public override int GetHashCode ()

@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// Defines a column in a relational database.
   /// </summary>
-  public class SimpleColumnDefinition : IColumnDefinition
+  public class SimpleColumnDefinition : IRdbmsStoragePropertyDefinition
   {
     private readonly string _name;
     private readonly Type _propertyType;
@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       yield return this;
     }
 
-    public bool Equals (IColumnDefinition other)
+    public bool Equals (IRdbmsStoragePropertyDefinition other)
     {
       if (other == null || other.GetType () != GetType ())
         return false;
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public override bool Equals (object obj)
     {
-      return Equals (obj as IColumnDefinition);
+      return Equals (obj as IRdbmsStoragePropertyDefinition);
     }
 
     public override int GetHashCode ()

@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetColumnDefinition ()
     {
-      var columnDefinition = MockRepository.GenerateStub<IColumnDefinition> ();
+      var columnDefinition = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
       
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-      "The RdbmsProvider expected a storage definition object of type 'IColumnDefinition' for property 'OrderNumber' of class-definition 'Order', "
+      "The RdbmsProvider expected a storage definition object of type 'IRdbmsStoragePropertyDefinition' for property 'OrderNumber' of class-definition 'Order', "
       +"but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
     public void GetColumnDefinition_NoIColumnDefinition ()
     {
