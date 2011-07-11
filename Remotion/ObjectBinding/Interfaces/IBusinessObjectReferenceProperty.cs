@@ -57,6 +57,7 @@ namespace Remotion.ObjectBinding
     ///   Gets a flag indicating if <see cref="Create"/> may be called to implicitly create a new business object 
     ///   for editing in case the object reference is null.
     /// </summary>
+    // SupportsDefaultValue
     bool CreateIfNull { get; }
 
     /// <summary>
@@ -74,6 +75,11 @@ namespace Remotion.ObjectBinding
     ///   usually an <b>Aggregate</b>. The aggregate reference can be <see langword="null"/> until one of its values
     ///   is set in the user interface.
     /// </remarks>
+    // CreateDefaultValue
     IBusinessObject Create (IBusinessObject referencingObject);
+
+    //bool SupportsDelete
+
+    // void Delete (IBusinessObject referencingObject, IBusinessObject value);
   }
 }
