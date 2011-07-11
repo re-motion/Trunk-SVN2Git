@@ -28,17 +28,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly Type _propertyType;
     private readonly bool _isNullable;
     private readonly bool _isPartOfPrimaryKey;
-    private readonly string _storageType;
+    private readonly IColumnTypeInformation _storageTypeInfo;
 
-    public ColumnDefinition (string name, Type propertyType, string storageType, bool isNullable, bool isPartOfPrimaryKey)
+    public ColumnDefinition (string name, Type propertyType, IColumnTypeInformation storageTypeInfo, bool isNullable, bool isPartOfPrimaryKey)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
-      ArgumentUtility.CheckNotNullOrEmpty ("storageType", storageType);
+      ArgumentUtility.CheckNotNull ("storageTypeInfo", storageTypeInfo);
       
       _name = name;
       _propertyType = propertyType;
-      _storageType = storageType;
+      _storageTypeInfo = storageTypeInfo;
       _isNullable = isNullable;
       _isPartOfPrimaryKey = isPartOfPrimaryKey;
     }
@@ -53,9 +53,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _propertyType; }
     }
 
-    public string StorageType
+    public IColumnTypeInformation StorageTypeInfo
     {
-      get { return _storageType; }
+      get { return _storageTypeInfo; }
     }
 
     public bool IsNullable
@@ -75,7 +75,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return other.Name == Name
           && other.PropertyType == PropertyType
-          && other.StorageType == StorageType
+          && other.StorageTypeInfo.StorageType == StorageTypeInfo.StorageType
+          && other.StorageTypeInfo.DbType == StorageTypeInfo.DbType
           && other.IsNullable == IsNullable;
     }
 
@@ -86,12 +87,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (Name, PropertyType, StorageType, IsNullable);
+      return EqualityUtility.GetRotatedHashCode (Name, PropertyType, StorageTypeInfo.StorageType, IsNullable);
     }
 
     public override string ToString ()
     {
-      return string.Format ("{0} {1} {2}", Name, StorageType, IsNullable ? "NULL" : "NOT NULL");
+      return string.Format ("{0} {1} {2}", Name, StorageTypeInfo, IsNullable ? "NULL" : "NOT NULL");
     }
 
     public bool IsNull

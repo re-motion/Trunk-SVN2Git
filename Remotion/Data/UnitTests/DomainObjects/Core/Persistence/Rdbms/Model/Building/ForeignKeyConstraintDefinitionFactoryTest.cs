@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -47,7 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeIdColumnDefinition = new ObjectIDStoragePropertyDefinition (
           ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition);
       _fakeForeignColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          ColumnDefinitionObjectMother.CreateTypedColumn ("OrderID", typeof (ObjectID), "uniqueidentifier").ColumnDefinition,
+          ColumnDefinitionObjectMother.CreateTypedColumn ("OrderID", typeof (ObjectID), new StorageTypeInformation ("uniqueidentifier", DbType.Guid)).
+              ColumnDefinition,
           ColumnDefinitionObjectMother.CreateColumn ("ClassID").ColumnDefinition);
 
       _fakeColumnDefintion = ColumnDefinitionObjectMother.CreateColumn();

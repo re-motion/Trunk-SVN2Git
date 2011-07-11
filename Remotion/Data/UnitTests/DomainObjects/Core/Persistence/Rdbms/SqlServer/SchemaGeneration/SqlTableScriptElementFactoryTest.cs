@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -40,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlTableScriptElementFactory();
 
-      _column1 = new ColumnDefinition ("Column1", typeof (string), "varchar", false, true);
-      _column2 = new ColumnDefinition ("Column2", typeof (bool), "bit", true, false);
+      _column1 = new ColumnDefinition ("Column1", typeof (string), new StorageTypeInformation("varchar", DbType.String), false, true);
+      _column2 = new ColumnDefinition ("Column2", typeof (bool), new StorageTypeInformation("bit", DbType.String), true, false);
 
       _tableDefinitionWithoutPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,

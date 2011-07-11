@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
@@ -58,43 +59,93 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetStorageType ()
     {
-      Assert.AreEqual ("bit", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Boolean), false, null)));
-      Assert.AreEqual ("tinyint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)));
-      Assert.AreEqual ("datetime", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)));
-      Assert.AreEqual ("decimal (38, 3)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal), false, null)));
-      Assert.AreEqual ("float", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double), false, null)));
-      Assert.AreEqual ("uniqueidentifier", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid), false, null)));
-      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16), false, null)));
-      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32), false, null)));
-      Assert.AreEqual ("bigint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64), false, null)));
-      Assert.AreEqual ("real", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single), false, null)));
+      Assert.AreEqual ("bit", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Boolean), false, null)).StorageType);
+      Assert.AreEqual (DbType.Boolean, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Boolean), false, null)).DbType);
 
-      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum), false, null)));
-      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum), false, null)));
+      Assert.AreEqual ("tinyint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).StorageType);
+      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).DbType);
 
-      Assert.AreEqual ("nvarchar (200)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, 200)));
-      Assert.AreEqual ("nvarchar (max)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)));
+      Assert.AreEqual ("datetime", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)).StorageType);
+      Assert.AreEqual (DbType.DateTime, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)).DbType);
 
-      Assert.AreEqual ("varbinary (200)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, 200)));
-      Assert.AreEqual ("varbinary (max)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)));
+      Assert.AreEqual ("decimal (38, 3)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal), false, null)).StorageType);
+      Assert.AreEqual (DbType.Decimal, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal), false, null)).DbType);
+
+      Assert.AreEqual ("float", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double), false, null)).StorageType);
+      Assert.AreEqual (DbType.Double, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double), false, null)).DbType);
+      
+      Assert.AreEqual ("uniqueidentifier", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid), false, null)).StorageType);
+      Assert.AreEqual (DbType.Guid, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid), false, null)).DbType);
+
+      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16), false, null)).StorageType);
+      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16), false, null)).DbType);
+
+      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32), false, null)).StorageType);
+      Assert.AreEqual (DbType.Int32, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32), false, null)).DbType);
+
+      Assert.AreEqual ("bigint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64), false, null)).StorageType);
+      Assert.AreEqual (DbType.Int64, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64), false, null)).DbType);
+
+      Assert.AreEqual ("real", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single), false, null)).StorageType);
+      Assert.AreEqual (DbType.Single, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single), false, null)).DbType);
+      
+      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum), false, null)).StorageType);
+      Assert.AreEqual (DbType.Int32, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum), false, null)).DbType);
+
+      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum), false, null)).StorageType);
+      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum), false, null)).DbType);
+
+      Assert.AreEqual ("nvarchar (200)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, 200)).StorageType);
+      Assert.AreEqual (DbType.String, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, 200)).DbType);
+
+      Assert.AreEqual ("nvarchar (max)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)).StorageType);
+      Assert.AreEqual (DbType.String, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)).DbType);
+      
+      Assert.AreEqual ("varbinary (200)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, 200)).StorageType);
+      Assert.AreEqual (DbType.Binary, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, 200)).DbType);
+
+      Assert.AreEqual ("varbinary (max)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)).StorageType);
+      Assert.AreEqual (DbType.Binary, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)).DbType);
     }
 
     [Test]
     public void GetStorageType_ForNullableValueTypes ()
     {
-      Assert.AreEqual ("bit", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Boolean>), true, null)));
-      Assert.AreEqual ("tinyint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), true, null)));
-      Assert.AreEqual ("datetime", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), true, null)));
-      Assert.AreEqual ("decimal (38, 3)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Decimal>), true, null)));
-      Assert.AreEqual ("float", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Double>), true, null)));
-      Assert.AreEqual ("uniqueidentifier", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Guid>), true, null)));
-      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16>), true, null)));
-      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32>), true, null)));
-      Assert.AreEqual ("bigint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int64>), true, null)));
-      Assert.AreEqual ("real", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Single>), true, null)));
+      Assert.AreEqual ("bit", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Boolean>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Boolean, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Boolean>), true, null)).DbType);
+      
+      Assert.AreEqual ("tinyint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), true, null)).DbType);
 
-      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32Enum>), true, null)));
-      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16Enum>), true, null)));
+      Assert.AreEqual ("datetime", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), true, null)).StorageType);
+      Assert.AreEqual (DbType.DateTime, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), true, null)).DbType);
+
+      Assert.AreEqual ("decimal (38, 3)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Decimal>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Decimal, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Decimal>), true, null)).DbType);
+
+      Assert.AreEqual ("float", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Double>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Double, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Double>), true, null)).DbType);
+
+      Assert.AreEqual ("uniqueidentifier", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Guid>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Guid, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Guid>), true, null)).DbType);
+
+      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16>), true, null)).DbType);
+
+      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Int32, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32>), true, null)).DbType);
+
+      Assert.AreEqual ("bigint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int64>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Int64, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int64>), true, null)).DbType);
+
+      Assert.AreEqual ("real", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Single>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Single, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Single>), true, null)).DbType);
+
+      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32Enum>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Int32, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32Enum>), true, null)).DbType);
+
+      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16Enum>), true, null)).StorageType);
+      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16Enum>), true, null)).DbType);
     }
 
     [Test]
@@ -103,11 +154,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (
           "uniqueidentifier",
           _typeCalculator.GetStorageType (
-              _orderItemClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order")));
+              _orderItemClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order")).StorageType);
+      Assert.AreEqual (
+          DbType.Guid,
+          _typeCalculator.GetStorageType (
+              _orderItemClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order")).DbType);
       Assert.AreEqual (
           "varchar (255)",
           _typeCalculator.GetStorageType (
-          _orderClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official")));
+          _orderClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official")).StorageType);
+      Assert.AreEqual (
+          DbType.String,
+          _typeCalculator.GetStorageType (
+          _orderClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official")).DbType);
     }
 
     [Test]

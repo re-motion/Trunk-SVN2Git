@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -44,10 +44,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlIndexDefinitionScriptElementFactory();
 
-      _column1 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("IndexColumn1").ColumnDefinition, IndexOrder.Desc);
-      _column2 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("IndexColumn2").ColumnDefinition, IndexOrder.Asc);
-      _includedColumn1 = ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn1", typeof (bool), "bit").ColumnDefinition;
-      _includedColumn2 = ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn2", typeof (bool), "bit").ColumnDefinition;
+      _column1 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn ("IndexColumn1").ColumnDefinition, IndexOrder.Desc);
+      _column2 = new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn ("IndexColumn2").ColumnDefinition, IndexOrder.Asc);
+      _includedColumn1 =
+          ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn1", typeof (bool), new StorageTypeInformation ("bit", DbType.Boolean)).
+              ColumnDefinition;
+      _includedColumn2 =
+          ColumnDefinitionObjectMother.CreateTypedColumn ("IncludedColumn2", typeof (bool), new StorageTypeInformation ("bit", DbType.Boolean)).
+              ColumnDefinition;
 
       _customSchemaNameDefinition = new EntityNameDefinition ("SchemaName", "TableName1");
       _indexDefinitionWithCustomSchema = new SqlIndexDefinition ("Index1", new[] { _column1 });
@@ -101,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_WithAllOptionsOn ()
     {
-      var entityNameDefinition = new EntityNameDefinition(null, "TableName");
+      var entityNameDefinition = new EntityNameDefinition (null, "TableName");
       var indexDefinition = new SqlIndexDefinition (
           "Index1",
           new[] { _column1, _column2 },
@@ -133,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_WithAllOptionsOff ()
     {
-      var entityNameDefinition = new EntityNameDefinition(null, "TableName");
+      var entityNameDefinition = new EntityNameDefinition (null, "TableName");
       var indexDefinition = new SqlIndexDefinition (
           "Index1",
           new[] { _column1, _column2 },

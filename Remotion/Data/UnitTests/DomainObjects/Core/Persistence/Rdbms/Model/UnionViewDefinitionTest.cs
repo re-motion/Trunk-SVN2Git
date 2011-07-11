@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void CreateFullColumnList_ChecksByContentNotByReference ()
     {
       var column1WithDifferentReference = new ColumnDefinition (
-          _column1.Name, _column1.PropertyType, _column1.StorageType, _column1.IsNullable, false);
+          _column1.Name, _column1.PropertyType, _column1.StorageTypeInfo, _column1.IsNullable, false);
       var availableColumns = new[]
                              {
                                  ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,

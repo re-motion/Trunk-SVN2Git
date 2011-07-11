@@ -45,40 +45,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateTypedColumn ("FKID", typeof (Guid), "uniqueidentifier").ColumnDefinition;
-      _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition(foreignKeyColumn, foreignKeyColumn);
+      var foreignKeyColumn =
+          ColumnDefinitionObjectMother.CreateTypedColumn ("FKID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.Guid)).
+              ColumnDefinition;
+      _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (foreignKeyColumn, foreignKeyColumn);
 
-      _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification> ();
+      _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _selectedColumnsStub
-        .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-        .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       _orderedColumnsStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
       _orderedColumnsStub
           .Stub (stub => stub.AppendOrderByClause (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" ORDER BY [Column1] ASC, [Column2] DESC"));
 
-      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect> ();
+      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
       _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
-      
-      _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
 
-      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
+      _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
 
-      _dbCommandStub = MockRepository.GenerateStub<IDbCommand> ();
-      _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub);
+      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
+
+      _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
+      _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub);
       _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
 
-      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
-      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
 
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
 
-      _guid = Guid.NewGuid ();
+      _guid = Guid.NewGuid();
       _objectID = new ObjectID ("Order", _guid);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg.Is(_objectID))).Return (_guid);
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg.Is (_objectID))).Return (_guid);
     }
 
     [Test]
@@ -101,22 +103,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Replay();
 
       _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
-      _dataParameterCollectionMock.Replay ();
+      _dataParameterCollectionMock.Replay();
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      _dataParameterCollectionMock.VerifyAllExpectations ();
+      _dataParameterCollectionMock.VerifyAllExpectations();
       _sqlDialectMock.VerifyAllExpectations();
 
-      Assert.That (result.CommandText, Is.EqualTo (
-        "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
+      Assert.That (
+          result.CommandText,
+          Is.EqualTo (
+              "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
     }
 
     [Test]
     public void Create_CustomSchema ()
     {
-      var tableDefinition = TableDefinitionObjectMother.Create(TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
+      var tableDefinition = TableDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
 
       var builder = new TableRelationLookupSelectDbCommandBuilder (
           tableDefinition,
@@ -134,15 +139,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Replay();
 
       _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
-      _dataParameterCollectionMock.Replay ();
+      _dataParameterCollectionMock.Replay();
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      _dataParameterCollectionMock.VerifyAllExpectations ();
+      _dataParameterCollectionMock.VerifyAllExpectations();
       _sqlDialectMock.VerifyAllExpectations();
 
-      Assert.That (result.CommandText, Is.EqualTo (
-        "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
+      Assert.That (
+          result.CommandText,
+          Is.EqualTo (
+              "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
     }
   }

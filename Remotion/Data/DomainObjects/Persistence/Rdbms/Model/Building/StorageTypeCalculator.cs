@@ -25,10 +25,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public abstract class StorageTypeCalculator
   {
-    public abstract string SqlDataTypeObjectID { get; }
-    public abstract string SqlDataTypeSerializedObjectID { get; }
-    public abstract string SqlDataTypeClassID { get; }
-    public abstract string SqlDataTypeTimestamp { get; }
+    public abstract IColumnTypeInformation SqlDataTypeObjectID { get; }
+    public abstract IColumnTypeInformation SqlDataTypeSerializedObjectID { get; }
+    public abstract IColumnTypeInformation SqlDataTypeClassID { get; }
+    public abstract IColumnTypeInformation SqlDataTypeTimestamp { get; }
 
     private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       get { return _storageProviderDefinitionFinder; }
     }
 
-    public virtual string GetStorageType (PropertyDefinition propertyDefinition)
+    public virtual IColumnTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       
