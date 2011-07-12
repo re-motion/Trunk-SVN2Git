@@ -19,6 +19,9 @@ using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
+  /// <summary>
+  /// Holds the result from looking up the <see cref="DataContainer"/> for a specific <see cref="ObjectID"/>.
+  /// </summary>
   public struct DataContainerLookupResult
   {
     private readonly ObjectID _objectID;

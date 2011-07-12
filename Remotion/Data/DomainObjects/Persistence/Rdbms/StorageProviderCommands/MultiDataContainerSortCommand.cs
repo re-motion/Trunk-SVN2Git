@@ -63,9 +63,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
         dataContainersByID[dataContainer.ID] = dataContainer;
 
       return
-          _objectIDs.Select (
-              id =>
-              id != null ? new DataContainerLookupResult (id, dataContainersByID.GetValueOrDefault (id)) : new DataContainerLookupResult (null, null));
+          _objectIDs.Select (id => CreateLookupResult(id, dataContainersByID));
+    }
+
+    private DataContainerLookupResult CreateLookupResult (ObjectID id, Dictionary<ObjectID, DataContainer> dataContainersByID)
+    {
+      return id != null ? new DataContainerLookupResult (id, dataContainersByID.GetValueOrDefault (id)) : new DataContainerLookupResult (null, null);
     }
   }
 }

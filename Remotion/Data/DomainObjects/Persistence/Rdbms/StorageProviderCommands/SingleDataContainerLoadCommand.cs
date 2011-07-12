@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// <summary>
   /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a single <see cref="DataContainer"/>.
   /// </summary>
+  // TODO Review 4113: Refactor to return DataContainer instead of DCLookupResult
   public class SingleDataContainerLoadCommand : IStorageProviderCommand<DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilder _dbCommandBuilder;
@@ -59,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleRow))
         {
           var dataContainer = _dataContainerReader.Read (reader);
-          return new DataContainerLookupResult(dataContainer!=null ? dataContainer.ID : null, dataContainer);
+          return new DataContainerLookupResult (dataContainer != null ? dataContainer.ID : null, dataContainer);
         }
       }
     }

@@ -249,8 +249,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var command = _storageProviderCommandFactory.CreateForMultiIDLookup (ids.Select (id => CheckStorageProviderID(id, "ids")));
-
+      var checkedIDs = ids.Select (id => CheckStorageProviderID (id, "ids"));
+      var command = _storageProviderCommandFactory.CreateForMultiIDLookup (checkedIDs);
       return command.Execute (this);
     }
 

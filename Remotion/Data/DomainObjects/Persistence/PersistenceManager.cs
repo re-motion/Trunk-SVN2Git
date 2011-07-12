@@ -112,31 +112,31 @@ namespace Remotion.Data.DomainObjects.Persistence
       ArgumentUtility.CheckNotNull ("id", id);
 
       var provider = _storageProviderManager.GetMandatory (id.StorageProviderDefinition.Name);
-      var dataContainer = provider.LoadDataContainer (id).LocatedDataContainer;
+      var result = provider.LoadDataContainer (id);
 
-      var exception = CheckLoadedDataContainer (id, dataContainer, true);
+      var exception = CheckLoadedDataContainer (result, true);
       if (exception != null)
         throw exception;
 
-      return dataContainer;
+      return result.LocatedDataContainer;
     }
 
-    private Exception CheckLoadedDataContainer (ObjectID id, DataContainer dataContainer, bool throwOnNotFound)
+    private Exception CheckLoadedDataContainer (DataContainerLookupResult lookupResult, bool throwOnNotFound)
     {
-      if (dataContainer != null)
+      if (lookupResult.LocatedDataContainer != null)
       {
-        if (id.ClassID != dataContainer.ID.ClassID)
+        if (lookupResult.ObjectID.ClassID != lookupResult.LocatedDataContainer.ID.ClassID)
         {
           return CreatePersistenceException (
               "The ClassID of the provided ObjectID '{0}' and the ClassID of the loaded DataContainer '{1}' differ.",
-              id,
-              dataContainer.ID);
+              lookupResult.ObjectID,
+              lookupResult.LocatedDataContainer.ID);
         }
         else
           return null;
       }
       else if (throwOnNotFound)
-        return new ObjectNotFoundException (id);
+        return new ObjectNotFoundException (lookupResult.ObjectID);
       else
         return null;
     }
@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Persistence
         var provider = _storageProviderManager.GetMandatory (idGroup.Key);
         foreach (var dataContainerLookupResult in provider.LoadDataContainers (idGroup.Value))
         {
-          var exception = CheckLoadedDataContainer (dataContainerLookupResult.ObjectID, dataContainerLookupResult.LocatedDataContainer, throwOnNotFound);
+          var exception = CheckLoadedDataContainer (dataContainerLookupResult, throwOnNotFound);
           if (exception != null)
             exceptions.Add (exception);
           else if (dataContainerLookupResult.LocatedDataContainer != null)
@@ -270,9 +270,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
       var oppositeProvider = _storageProviderManager.GetMandatory (oppositeID.StorageProviderDefinition.Name);
       var oppositeDataContainer = oppositeProvider.LoadDataContainer (oppositeID).LocatedDataContainer;
-      if (oppositeDataContainer != null)
-        CheckClassIDForEndPoint (dataContainer, relationEndPointID, oppositeDataContainer);
-      else
+      if (oppositeDataContainer == null)
       {
         throw CreatePersistenceException (
             "Property '{0}' of object '{1}' refers to non-existing object '{2}'.",
@@ -280,7 +278,8 @@ namespace Remotion.Data.DomainObjects.Persistence
             relationEndPointID.ObjectID,
             oppositeID);
       }
-
+      
+      CheckClassIDForEndPoint (dataContainer, relationEndPointID, oppositeDataContainer);
       return oppositeDataContainer;
     }
 

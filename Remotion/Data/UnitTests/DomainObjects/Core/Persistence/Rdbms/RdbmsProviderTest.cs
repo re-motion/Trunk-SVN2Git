@@ -252,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _provider.LoadDataContainer (objectID);
 
       _mockRepository.VerifyAll();
-      Assert.That (result.LocatedDataContainer, Is.SameAs (fakeResult.LocatedDataContainer));
+      Assert.That (result, Is.EqualTo (fakeResult));
     }
 
     [Test]
@@ -308,13 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _provider.LoadDataContainers (new[] { objectID1, objectID2, objectID3 }).ToArray();
 
       _mockRepository.VerifyAll();
-      Assert.That (result.Length, Is.EqualTo (3));
-      Assert.That (result[0].ObjectID, Is.SameAs (lookupResult1.ObjectID));
-      Assert.That (result[0].LocatedDataContainer, Is.SameAs (lookupResult1.LocatedDataContainer));
-      Assert.That (result[1].ObjectID, Is.SameAs (lookupResult2.ObjectID));
-      Assert.That (result[1].LocatedDataContainer, Is.SameAs (lookupResult2.LocatedDataContainer));
-      Assert.That (result[2].ObjectID, Is.SameAs (lookupResult3.ObjectID));
-      Assert.That (result[2].LocatedDataContainer, Is.SameAs (lookupResult3.LocatedDataContainer));
+      Assert.That (result, Is.EqualTo (new[] { lookupResult1, lookupResult2, lookupResult3 }));
     }
 
     [Test]

@@ -66,6 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           table,
           AllSelectedColumnsSpecification.Instance,
           objectID);
+      // TODO Review 4113: Use DelegateBasedStorageProviderCommand to create a lookup result from objectID and the loaded DataContainer (requires RM-4146)
       return new SingleDataContainerLoadCommand (dbCommandBuilder, _dataContainerReader);
     }
 
