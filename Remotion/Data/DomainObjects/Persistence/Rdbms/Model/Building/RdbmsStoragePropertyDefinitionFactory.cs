@@ -50,6 +50,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
+      // TODO Review 4127: Refactor to check for relationEndPointDefinition first, only if no relationEndPointDefinition, get storage type, column definition, etc.
+
+      // var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
+      // if (relationEndPointDefinition == null)
+      // {
       var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
       if (storageType == null)
         return new UnsupportedStoragePropertyDefinition();
@@ -61,10 +66,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
           false);
 
-      var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
+      var relationEndPointDefinition = 
+          (RelationEndPointDefinition) propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition == null)
         return new SimpleStoragePropertyDefinition (columnDefinition);
-
+      // }
       return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition);
     }
 
@@ -88,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     protected virtual IObjectIDStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
         PropertyDefinition propertyDefinition,
-        IRelationEndPointDefinition relationEndPointDefinition)
+        RelationEndPointDefinition relationEndPointDefinition)
     {
       var leftProvider = _providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition.StorageGroupType, null);
       var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();

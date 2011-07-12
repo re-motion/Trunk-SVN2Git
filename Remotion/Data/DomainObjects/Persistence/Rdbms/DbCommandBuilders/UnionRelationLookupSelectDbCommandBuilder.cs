@@ -66,7 +66,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var fullProjection = _orderedColumns.UnionWithSelectedColumns (_selectedColumns);
 
       var statement = new StringBuilder();
-      var parameter = AddCommandParameter (command, _foreignKeyColumn.GetColumnForLookup().Name, _foreignKeyValue);
+      var lookupColumn = _foreignKeyColumn.GetColumnForLookup();
+      var parameter = AddCommandParameter (command, lookupColumn.Name, _foreignKeyValue);
       bool first = true;
       foreach (var table in _unionViewDefinition.GetAllTables())
       {
@@ -75,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         
         AppendSelectClause (statement, fullProjection);
         AppendFromClause (statement, table);
-        AppendComparingWhereClause (statement, _foreignKeyColumn.GetColumnForLookup(), parameter);
+        AppendComparingWhereClause (statement, lookupColumn, parameter);
         
         first = false;
       }

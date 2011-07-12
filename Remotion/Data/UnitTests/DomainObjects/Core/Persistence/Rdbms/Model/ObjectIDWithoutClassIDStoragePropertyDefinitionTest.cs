@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class ObjectIDWithoutClassIDStoragePropertyDefinitionTest : StandardMappingTest
   {
     private ClassDefinition _classDefinition;
-    private SimpleStoragePropertyDefinition _simpleStoragePropertyDefinition;
+    private SimpleStoragePropertyDefinition _valueProperty;
     private ObjectIDWithoutClassIDStoragePropertyDefinition _objectIDWithoutClassIDStorageDefinition;
 
     public override void SetUp ()
@@ -37,40 +37,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       base.SetUp();
 
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      _simpleStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
+      _valueProperty = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
       _objectIDWithoutClassIDStorageDefinition = new ObjectIDWithoutClassIDStoragePropertyDefinition (
-          _simpleStoragePropertyDefinition, _classDefinition);
+          _valueProperty, _classDefinition);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.SimpleStoragePropertyDefinition, Is.SameAs (_simpleStoragePropertyDefinition));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.ValueProperty, Is.SameAs (_valueProperty));
       Assert.That (_objectIDWithoutClassIDStorageDefinition.ClassDefinition, Is.SameAs (_classDefinition));
     }
 
     [Test]
     public void GetColumnForLookup ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForLookup(), Is.SameAs (_simpleStoragePropertyDefinition.ColumnDefinition));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForLookup(), Is.SameAs (_valueProperty.ColumnDefinition));
     }
 
     [Test]
     public void GetColumns ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (_simpleStoragePropertyDefinition.GetColumns()));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (_valueProperty.GetColumns()));
     }
 
     [Test]
     public void Name ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.Name, Is.EqualTo (_simpleStoragePropertyDefinition.Name));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.Name, Is.EqualTo (_valueProperty.Name));
     }
 
     [Test]
     public void IsNull ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.IsNull, Is.EqualTo (_simpleStoragePropertyDefinition.IsNull));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.IsNull, Is.EqualTo (_valueProperty.IsNull));
     }
 
     [Test]
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Equals_OtherColumnDefinition ()
+    public void Equals_OtherValueProperty ()
     {
       Assert.That (
           _objectIDWithoutClassIDStorageDefinition.Equals (
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (
           _objectIDWithoutClassIDStorageDefinition.Equals (
               new ObjectIDWithoutClassIDStoragePropertyDefinition (
-                  _simpleStoragePropertyDefinition,
+                  _valueProperty,
                   ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem), TestDomainStorageProviderDefinition))),
           Is.False);
     }
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (
           _objectIDWithoutClassIDStorageDefinition.Equals (
-              new ObjectIDWithoutClassIDStoragePropertyDefinition (_simpleStoragePropertyDefinition, _classDefinition)),
+              new ObjectIDWithoutClassIDStoragePropertyDefinition (_valueProperty, _classDefinition)),
           Is.True);
     }
   }

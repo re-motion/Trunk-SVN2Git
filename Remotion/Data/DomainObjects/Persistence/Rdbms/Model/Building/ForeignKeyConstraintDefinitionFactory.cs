@@ -58,29 +58,44 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
       var allClassDefinitions = classDefinition
           .CreateSequence (cd => cd.BaseClass)
-          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition>());
+          .Concat (classDefinition.GetAllDerivedClasses ());
       var allRelationEndPointDefinitions = allClassDefinitions.SelectMany (cd => cd.MyRelationEndPointDefinitions);
 
       foreach (var endPoint in allRelationEndPointDefinitions)
       {
-        var oppositeClassDefinition = endPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (endPoint.PropertyName);
-
         if (endPoint.IsVirtual)
           continue;
 
-        if (!HasConstraint (endPoint, oppositeClassDefinition))
+        var oppositeClassDefinition = endPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (endPoint.PropertyName);
+
+        // Foreign keys can only be declared within the same storage provider
+        if (GetStorageProviderDefinition (oppositeClassDefinition) != GetStorageProviderDefinition (endPoint.ClassDefinition))
           continue;
 
+        // No foreign keys for non-persistent properties.
         var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
         if (propertyDefinition.StorageClass != StorageClass.Persistent)
           continue;
 
-        var oppositeObjectIDColumnDefinition = _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition();
+        // Foreign keys can only be declared if we have an opposite table (not if we have an opposite union view, for example)
+        if (FindTableName (oppositeClassDefinition) == null)
+          continue;
 
+        // We can't access the opposite ID column from here, but columns implement equality, so we can just recreate it
+        var oppositeObjectIDColumnDefinition = _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition();
+        
         var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
+        // TODO Review 4127: Add IObjectIDStoragePropertyDefinition.GetColumnForForeignKey(), implement with ValueProperty.ColumnDefinition; Serialized...Property returns null
+        // TODO Review 4127: Below, use GetColumnForForeignKey instead of GetColumnForLookup; if null, ignore this endPoint (and continue loop).
+        // TODO Review 4127: test with three variations: 1) an ObjectIDStoragePropertyDefinition, 2) an ObjectIDWithoutClassIDStoragePropertyDefinition, 3) a SerializedObjectIDStoragePropertyDefinition - or - with a stub returning null/not-null
+
         var endPointIDColumnDefinition = endPointColumnDefinition as IObjectIDStoragePropertyDefinition;
         if (endPointIDColumnDefinition == null)
           throw new InvalidOperationException ("The non virtual constraint column definition has to be an ID column definition.");
+
+        Assertion.IsFalse (
+            endPointIDColumnDefinition is SerializedObjectIDStoragePropertyDefinition, 
+            "Within the same storage provider, IDs are never serialized.");
 
         var referencingColumn = oppositeObjectIDColumnDefinition;
         var referencedColumn = endPointIDColumnDefinition.GetColumnForLookup();
@@ -94,17 +109,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       }
 
       return foreignKeyConstraintDefinitions;
-    }
-
-    private bool HasConstraint (IRelationEndPointDefinition endPoint, ClassDefinition oppositeClassDefinition)
-    {
-      if (GetStorageProviderDefinition (oppositeClassDefinition).Name != GetStorageProviderDefinition (endPoint.ClassDefinition).Name)
-        return false;
-
-      if (FindTableName (oppositeClassDefinition) == null)
-        return false;
-
-      return true;
     }
 
     private StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition oppositeClassDefinition)

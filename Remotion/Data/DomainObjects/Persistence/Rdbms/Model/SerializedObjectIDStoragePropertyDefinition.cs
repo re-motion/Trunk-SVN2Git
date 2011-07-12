@@ -20,35 +20,38 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  /// <summary>
+  /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/> property that is stored in a single string-typed column.
+  /// </summary>
   public class SerializedObjectIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
-    private readonly SimpleStoragePropertyDefinition _simpleStoragePropertyDefinition;
+    private readonly SimpleStoragePropertyDefinition _serializedIDProperty;
 
-    public SerializedObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinition simpleStoragePropertyDefinition)
+    public SerializedObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinition serializedIDProperty)
     {
-      ArgumentUtility.CheckNotNull ("simpleStoragePropertyDefinition", simpleStoragePropertyDefinition);
+      ArgumentUtility.CheckNotNull ("serializedIDProperty", serializedIDProperty);
 
-      _simpleStoragePropertyDefinition = simpleStoragePropertyDefinition;
+      _serializedIDProperty = serializedIDProperty;
     }
 
-    public SimpleStoragePropertyDefinition SimpleStoragePropertyDefinition
+    public SimpleStoragePropertyDefinition SerializedIDProperty
     {
-      get { return _simpleStoragePropertyDefinition; }
+      get { return _serializedIDProperty; }
     }
 
     public ColumnDefinition GetColumnForLookup ()
     {
-      return _simpleStoragePropertyDefinition.ColumnDefinition;
+      return _serializedIDProperty.ColumnDefinition;
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
-      return _simpleStoragePropertyDefinition.GetColumns();
+      return _serializedIDProperty.GetColumns();
     }
 
     public string Name
     {
-      get { return _simpleStoragePropertyDefinition.Name; }
+      get { return _serializedIDProperty.Name; }
     }
 
     public bool Equals (IRdbmsStoragePropertyDefinition other)
@@ -56,12 +59,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (other == null || other.GetType () != GetType ())
         return false;
 
-      return _simpleStoragePropertyDefinition.Equals (((SerializedObjectIDStoragePropertyDefinition) other).SimpleStoragePropertyDefinition);
+      return _serializedIDProperty.Equals (((SerializedObjectIDStoragePropertyDefinition) other).SerializedIDProperty);
     }
 
     public bool IsNull
     {
-      get { return _simpleStoragePropertyDefinition.IsNull; }
+      get { return _serializedIDProperty.IsNull; }
     }
     
   }

@@ -21,23 +21,28 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  /// <summary>
+  /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/> property that is stored as an ID column without a 
+  /// ClassID column. This can only be used when the <see cref="ClassDefinition"/> of the referenced <see cref="ObjectID"/> is known in advance
+  /// (i.e., if there is no inheritance involved).
+  /// </summary>
   public class ObjectIDWithoutClassIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
-    private readonly SimpleStoragePropertyDefinition _simpleStoragePropertyDefinition;
+    private readonly SimpleStoragePropertyDefinition _valueProperty;
     private readonly ClassDefinition _classDefinition;
 
-    public ObjectIDWithoutClassIDStoragePropertyDefinition (SimpleStoragePropertyDefinition simpleStoragePropertyDefinition, ClassDefinition classDefinition)
+    public ObjectIDWithoutClassIDStoragePropertyDefinition (SimpleStoragePropertyDefinition valueProperty, ClassDefinition classDefinition)
     {
-      ArgumentUtility.CheckNotNull ("simpleStoragePropertyDefinition", simpleStoragePropertyDefinition);
+      ArgumentUtility.CheckNotNull ("valueProperty", valueProperty);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      _simpleStoragePropertyDefinition = simpleStoragePropertyDefinition;
+      _valueProperty = valueProperty;
       _classDefinition = classDefinition;
     }
 
-    public SimpleStoragePropertyDefinition SimpleStoragePropertyDefinition
+    public SimpleStoragePropertyDefinition ValueProperty
     {
-      get { return _simpleStoragePropertyDefinition; }
+      get { return _valueProperty; }
     }
 
     public ClassDefinition ClassDefinition
@@ -47,17 +52,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public ColumnDefinition GetColumnForLookup ()
     {
-      return _simpleStoragePropertyDefinition.ColumnDefinition;
+      return _valueProperty.ColumnDefinition;
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
-      return _simpleStoragePropertyDefinition.GetColumns();
+      return _valueProperty.GetColumns();
     }
 
     public string Name
     {
-      get { return _simpleStoragePropertyDefinition.Name; }
+      get { return _valueProperty.Name; }
     }
 
     public bool Equals (IRdbmsStoragePropertyDefinition other)
@@ -65,13 +70,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (other == null || other.GetType () != GetType ())
         return false;
 
-      return _simpleStoragePropertyDefinition.Equals (((ObjectIDWithoutClassIDStoragePropertyDefinition) other).SimpleStoragePropertyDefinition) &&
+      return _valueProperty.Equals (((ObjectIDWithoutClassIDStoragePropertyDefinition) other).ValueProperty) &&
              ((ObjectIDWithoutClassIDStoragePropertyDefinition) other).ClassDefinition == _classDefinition;
     }
 
     public bool IsNull
     {
-      get { return _simpleStoragePropertyDefinition.IsNull; }
+      get { return _valueProperty.IsNull; }
     }
   }
 }

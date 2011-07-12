@@ -25,44 +25,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class SerializedObjectIDStoragePropertyDefinitionTest
   {
-    private SimpleStoragePropertyDefinition _simpleStoragePropertyDefinition;
+    private SimpleStoragePropertyDefinition _serializedIDProperty;
     private SerializedObjectIDStoragePropertyDefinition _serializedObjectIDStoragePropertyDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _simpleStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
-      _serializedObjectIDStoragePropertyDefinition = new SerializedObjectIDStoragePropertyDefinition (_simpleStoragePropertyDefinition);
+      _serializedIDProperty = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
+      _serializedObjectIDStoragePropertyDefinition = new SerializedObjectIDStoragePropertyDefinition (_serializedIDProperty);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.SimpleStoragePropertyDefinition, Is.SameAs (_simpleStoragePropertyDefinition));
+      Assert.That (_serializedObjectIDStoragePropertyDefinition.SerializedIDProperty, Is.SameAs (_serializedIDProperty));
     }
 
     [Test]
     public void GetColumnForLookup ()
     {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumnForLookup(), Is.SameAs (_simpleStoragePropertyDefinition.ColumnDefinition));
+      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumnForLookup(), Is.SameAs (_serializedIDProperty.ColumnDefinition));
     }
 
     [Test]
     public void GetColumns ()
     {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumns(), Is.EqualTo (_simpleStoragePropertyDefinition.GetColumns()));
+      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumns(), Is.EqualTo (_serializedIDProperty.GetColumns()));
     }
 
     [Test]
     public void Name ()
     {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.Name, Is.EqualTo (_simpleStoragePropertyDefinition.Name));
+      Assert.That (_serializedObjectIDStoragePropertyDefinition.Name, Is.EqualTo (_serializedIDProperty.Name));
     }
 
     [Test]
     public void IsNull ()
     {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.IsNull, Is.EqualTo (_simpleStoragePropertyDefinition.IsNull));
+      Assert.That (_serializedObjectIDStoragePropertyDefinition.IsNull, Is.EqualTo (_serializedIDProperty.IsNull));
     }
 
     [Test]
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Equals_True ()
     {
       Assert.That (
-          _serializedObjectIDStoragePropertyDefinition.Equals (new SerializedObjectIDStoragePropertyDefinition (_simpleStoragePropertyDefinition)),
+          _serializedObjectIDStoragePropertyDefinition.Equals (new SerializedObjectIDStoragePropertyDefinition (_serializedIDProperty)),
           Is.True);
     }
   }

@@ -22,7 +22,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
+  /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/> property that is stored as an ID column and a ClassID
+  /// column.
   /// </summary>
   public class ObjectIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {

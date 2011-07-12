@@ -23,7 +23,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="PrimaryKeyConstraintDefinition"/> represents a foreign key constraint in a relational database management system.
+  /// The <see cref="ForeignKeyConstraintDefinition"/> represents a foreign key constraint in a relational database management system.
   /// </summary>
   public class ForeignKeyConstraintDefinition : ITableConstraintDefinition
   {

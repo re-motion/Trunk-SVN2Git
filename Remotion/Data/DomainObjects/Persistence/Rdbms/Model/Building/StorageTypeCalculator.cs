@@ -25,6 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public abstract class StorageTypeCalculator
   {
+    // TODO Review 4127: Rename to ObjectIDStorageType etc
     public abstract IColumnTypeInformation SqlDataTypeObjectID { get; }
     public abstract IColumnTypeInformation SqlDataTypeSerializedObjectID { get; }
     public abstract IColumnTypeInformation SqlDataTypeClassID { get; }
@@ -44,6 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       get { return _storageProviderDefinitionFinder; }
     }
 
+    // TODO Review 4127: Remove this implementation
     public virtual IColumnTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

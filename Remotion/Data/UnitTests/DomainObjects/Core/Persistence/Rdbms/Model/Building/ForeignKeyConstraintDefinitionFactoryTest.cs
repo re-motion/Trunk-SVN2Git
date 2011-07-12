@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (employeeClassDefinition))
           .Return ("FakeTableName")
-          .Repeat.Times (3);
+          .Repeat.Times (2);
       _storageNameProviderMock.Replay();
 
       _storageProviderDefinitionFinderStub

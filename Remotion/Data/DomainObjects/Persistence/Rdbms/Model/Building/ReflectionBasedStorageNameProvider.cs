@@ -66,11 +66,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      var attribute = propertyDefinition.PropertyInfo.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (false);
+      var name = GetColumnNameFromAttribute(propertyDefinition);
+      if (name != null)
+        return name;
 
-      if (attribute != null)
-        return attribute.Identifier;
-
+      // TODO Review 4127: Remove
       if (ReflectionUtility.IsDomainObject (propertyDefinition.PropertyInfo.PropertyType))
         return GetRelationColumnName (propertyDefinition);
 
@@ -79,6 +79,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     public string GetRelationColumnName (PropertyDefinition propertyDefinition)
     {
+      // TODO Review 4127
+      //var name = GetColumnNameFromAttribute (propertyDefinition);
+      //if (name != null)
+      //  return name;
+
       return propertyDefinition.PropertyInfo.Name + "ID";
     }
 
@@ -107,6 +112,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var propertyName = storagePropertyDefinition.Name;
 
       return String.Format ("FK_{0}_{1}", tableName, propertyName);
+    }
+
+    private string GetColumnNameFromAttribute (PropertyDefinition propertyDefinition)
+    {
+      var attribute = propertyDefinition.PropertyInfo.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (false);
+      return attribute != null ? attribute.Identifier : null;
     }
   }
 }

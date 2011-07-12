@@ -66,8 +66,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var statement = new StringBuilder();
       AppendSelectClause (statement, _selectedColumns);
       AppendFromClause (statement, _table);
-      var foreignKeyParameter = AddCommandParameter (command, _foreignKeyColumn.GetColumnForLookup().Name, _foreignKeyValue);
-      AppendComparingWhereClause (statement, _foreignKeyColumn.GetColumnForLookup(), foreignKeyParameter);
+      var lookupColumn = _foreignKeyColumn.GetColumnForLookup();
+      var foreignKeyParameter = AddCommandParameter (command, lookupColumn.Name, _foreignKeyValue);
+      AppendComparingWhereClause (statement, lookupColumn, foreignKeyParameter);
       
       // TODO in case of integer primary keys: 
       // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,
