@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       base.SetUp();
 
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      _simpleStoragePropertyDefinition = ColumnDefinitionObjectMother.CreateColumn();
+      _simpleStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
       _objectIDWithoutClassIDStorageDefinition = new ObjectIDWithoutClassIDStoragePropertyDefinition (
           _simpleStoragePropertyDefinition, _classDefinition);
     }
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (
           _objectIDWithoutClassIDStorageDefinition.Equals (
-              new ObjectIDWithoutClassIDStoragePropertyDefinition (ColumnDefinitionObjectMother.CreateColumn(), _classDefinition)),
+              new ObjectIDWithoutClassIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty(), _classDefinition)),
           Is.False);
     }
 

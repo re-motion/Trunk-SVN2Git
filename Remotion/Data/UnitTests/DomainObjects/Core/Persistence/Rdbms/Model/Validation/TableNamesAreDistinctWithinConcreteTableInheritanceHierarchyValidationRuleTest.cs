@@ -71,15 +71,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _tableDefinition1 = TableDefinitionObjectMother.Create (
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName1"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition);
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
       _tableDefinition2 = TableDefinitionObjectMother.Create (
           storageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition);
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
       _unionViewDefinition = new UnionViewDefinition (
           storageProviderDefinition,
           null,
@@ -88,13 +88,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
               TableDefinitionObjectMother.Create (
               storageProviderDefinition,
               new EntityNameDefinition (null, "Test"),
-              ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-              ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-              ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition)
+              ColumnDefinitionObjectMother.IDColumn,
+              ColumnDefinitionObjectMother.ClassIDColumn,
+              ColumnDefinitionObjectMother.TimestampColumn)
           },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
     }

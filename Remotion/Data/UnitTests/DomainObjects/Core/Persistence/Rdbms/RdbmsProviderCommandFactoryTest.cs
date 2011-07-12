@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _foreignKeyValue = CreateObjectID (_tableDefinition1);
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+          SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
 
       _objectID1 = CreateObjectID (_tableDefinition1);
       _objectID2 = CreateObjectID (_tableDefinition1);
@@ -305,18 +305,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var sortedPropertySpecification1 = CreateSortedPropertySpecification (
           classDefinition,
           typeof (Order).GetProperty ("OrderNumber"),
-          ColumnDefinitionObjectMother.ObjectIDColumn,
+          SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty,
           SortOrder.Descending);
       var sortedPropertySpecification2 = CreateSortedPropertySpecification (
           classDefinition,
           typeof (Order).GetProperty ("OrderNumber"),
-          ColumnDefinitionObjectMother.ObjectIDColumn,
+          SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty,
           SortOrder.Ascending);
 
       var expectedOrderedColumns = new[]
                                    {
-                                       Tuple.Create (ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, SortOrder.Descending),
-                                       Tuple.Create (ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, SortOrder.Ascending)
+                                       Tuple.Create (ColumnDefinitionObjectMother.IDColumn, SortOrder.Descending),
+                                       Tuple.Create (ColumnDefinitionObjectMother.IDColumn, SortOrder.Ascending)
                                    };
       _dbCommandBuilderFactoryStub
           .Stub (
@@ -378,8 +378,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void CreateForRelationLookup_UnionViewDefinition_WithSortExpression ()
     {
       var classDefinition = CreateClassDefinition (_unionViewDefinition);
-      var objectIDColumn = ColumnDefinitionObjectMother.ObjectIDColumn;
-      var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
+      var objectIDColumn = SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty;
+      var classIDColumn = SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty;
       var idColumnDefinition = new ObjectIDStoragePropertyDefinition (objectIDColumn, classIDColumn);
       var idPropertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
@@ -562,7 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
-          new ObjectIDStoragePropertyDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn));
+          new ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty));
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (

@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _xmlColumn = ColumnDefinitionObjectMother.CreateColumn ("XmlColumn");
+      _xmlColumn = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("XmlColumn");
       _indexDefinition = new SqlPrimaryXmlIndexDefinition ("IndexName", _xmlColumn, true, 5, true, true, true, true, true, 2);
     }
 

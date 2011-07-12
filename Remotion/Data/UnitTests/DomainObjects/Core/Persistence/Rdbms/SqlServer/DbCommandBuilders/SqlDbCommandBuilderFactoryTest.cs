@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub, _storageNameProviderStub);
 
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+          SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
 
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();

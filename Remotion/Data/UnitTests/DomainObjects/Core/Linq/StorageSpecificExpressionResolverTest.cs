@@ -52,12 +52,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveEntity ()
     {
-      var primaryKeyColumn = ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition;
-      var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition;
-      var timestampColumn = ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition;
+      var primaryKeyColumn = ColumnDefinitionObjectMother.IDColumn;
+      var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
+      var timestampColumn = ColumnDefinitionObjectMother.TimestampColumn;
 
-      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateColumn ("ForeignKey").ColumnDefinition;
-      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column1").ColumnDefinition;
+      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateColumn ("ForeignKey");
+      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           true,
           null,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn(columnName));
+      propertyDefinition.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty(columnName));
       return propertyDefinition;
     }
   }

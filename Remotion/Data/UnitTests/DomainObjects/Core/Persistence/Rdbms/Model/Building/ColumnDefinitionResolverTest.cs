@@ -46,13 +46,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _resolver = new ColumnDefinitionResolver();
       _testModel = new RdbmsPersistenceModelLoaderTestHelper ();
       
-      _fakeColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn("Test1");
-      _fakeColumnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("Test2");
-      _fakeColumnDefinition3 = ColumnDefinitionObjectMother.CreateColumn ("Test3");
-      _fakeColumnDefinition4 = ColumnDefinitionObjectMother.CreateColumn ("Test4");
-      _fakeColumnDefinition5 = ColumnDefinitionObjectMother.CreateColumn ("Test5");
-      _fakeColumnDefinition6 = ColumnDefinitionObjectMother.CreateColumn ("Test6");
-      _fakeColumnDefinition7 = ColumnDefinitionObjectMother.CreateColumn ("Test7");
+      _fakeColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Test1");
+      _fakeColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test2");
+      _fakeColumnDefinition3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test3");
+      _fakeColumnDefinition4 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test4");
+      _fakeColumnDefinition5 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test5");
+      _fakeColumnDefinition6 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test6");
+      _fakeColumnDefinition7 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test7");
       
       _testModel.BaseBasePropertyDefinition.SetStorageProperty (_fakeColumnDefinition1);
       _testModel.BasePropertyDefinition.SetStorageProperty (_fakeColumnDefinition2);

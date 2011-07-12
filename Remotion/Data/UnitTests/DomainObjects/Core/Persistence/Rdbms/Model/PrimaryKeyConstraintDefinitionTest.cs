@@ -32,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _column1 = ColumnDefinitionObjectMother.CreateColumn("COL1").ColumnDefinition;
-      _column2 = ColumnDefinitionObjectMother.CreateColumn("COL2").ColumnDefinition;
+      _column1 = ColumnDefinitionObjectMother.CreateColumn ("COL1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn ("COL2");
       _constraint = new PrimaryKeyConstraintDefinition ("Test", true, new[] {  _column1, _column2 });
     }
 

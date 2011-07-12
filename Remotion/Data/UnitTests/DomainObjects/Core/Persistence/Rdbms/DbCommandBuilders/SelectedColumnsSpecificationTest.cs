@@ -37,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [SetUp]
     public void SetUp ()
     {
-      _column1 = ColumnDefinitionObjectMother.CreateColumn("Column1").ColumnDefinition;
-      _column2 = ColumnDefinitionObjectMother.CreateColumn("Column2").ColumnDefinition;
-      _column3 = ColumnDefinitionObjectMother.CreateColumn("Column3").ColumnDefinition;
+      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
+      _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
       _specification = new SelectedColumnsSpecification (new[] { _column1, _column2, _column3 });
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[Column1]");
@@ -66,8 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Union ()
     {
-      var column4 = ColumnDefinitionObjectMother.CreateColumn("Column4").ColumnDefinition;
-      var column5 = ColumnDefinitionObjectMother.CreateColumn("Column5").ColumnDefinition;
+      var column4 = ColumnDefinitionObjectMother.CreateColumn ("Column4");
+      var column5 = ColumnDefinitionObjectMother.CreateColumn ("Column5");
 
       var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column5 });
 
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Union_DuplicatedColumns()
     {
-      var column4 = ColumnDefinitionObjectMother.CreateColumn("Column4").ColumnDefinition;
+      var column4 = ColumnDefinitionObjectMother.CreateColumn ("Column4");
       
       var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column4 });
 

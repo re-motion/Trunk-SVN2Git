@@ -36,16 +36,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlTableViewScriptElementFactory();
 
-      var column1 = ColumnDefinitionObjectMother.CreateColumn("Column1").ColumnDefinition;
-      var column2 = ColumnDefinitionObjectMother.CreateColumn("Column2").ColumnDefinition;
+      var column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      var column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
 
       _tableDefinitionWithCustomSchema = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "Table1"),
           new EntityNameDefinition ("SchemaName", "View1"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new[] {column1},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
@@ -54,9 +54,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
           new EntityNameDefinition (null, "View2"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new[] {column1, column2},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],

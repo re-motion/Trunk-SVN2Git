@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [SetUp]
     public void SetUp ()
     {
-      _column1 = ColumnDefinitionObjectMother.CreateColumn("Column1").ColumnDefinition;
-      _column2 = ColumnDefinitionObjectMother.CreateColumn("Column2").ColumnDefinition;
-      _column3 = ColumnDefinitionObjectMother.CreateColumn("Column3").ColumnDefinition;
+      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
+      _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
       _specification =
           new OrderedColumnsSpecification (
               new[]

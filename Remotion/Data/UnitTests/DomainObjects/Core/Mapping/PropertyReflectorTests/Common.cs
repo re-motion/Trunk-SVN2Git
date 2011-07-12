@@ -15,13 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests
@@ -35,13 +32,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty", DomainModelConstraintProviderStub);
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (
-          ColumnDefinitionObjectMother.CreateTypedColumn ("Boolean", typeof (bool), new StorageTypeInformation ("bit", DbType.Boolean)));
+      actual.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty());
 
       Assert.IsNotNull (actual);
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
-      Assert.AreEqual ("Boolean", StorageModelTestHelper.GetColumnName (actual));
       Assert.AreSame (typeof (bool), actual.PropertyType);
     }
   }

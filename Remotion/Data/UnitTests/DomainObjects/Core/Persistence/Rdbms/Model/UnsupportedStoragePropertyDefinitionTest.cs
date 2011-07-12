@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_DifferentType ()
     {
-      var other = ColumnDefinitionObjectMother.CreateColumn("Test");
+      var other = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Test");
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);

@@ -188,9 +188,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                 storageProviderDefinition,
                 new EntityNameDefinition (null, entityName),
                 new EntityNameDefinition(null, classDefinition.ID + "View"),
-                ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-                ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-                ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+                ColumnDefinitionObjectMother.IDColumn,
+                ColumnDefinitionObjectMother.ClassIDColumn,
+                ColumnDefinitionObjectMother.TimestampColumn,
                 new ColumnDefinition[0],
                 new ITableConstraintDefinition[0],
                 new IIndexDefinition[0], new EntityNameDefinition[0]));

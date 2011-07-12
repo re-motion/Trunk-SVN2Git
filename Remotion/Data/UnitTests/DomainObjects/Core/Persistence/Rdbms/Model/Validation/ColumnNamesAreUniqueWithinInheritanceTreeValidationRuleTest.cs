@@ -90,12 +90,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           _derivedBaseClass2,
           StorageClass.None,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           StorageClass.None,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -115,12 +115,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           classDefinition, 
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
 
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          ColumnDefinitionObjectMother.CreateColumn("Property1"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
           "FirstName2",
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          ColumnDefinitionObjectMother.CreateColumn("Property2"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property2"));
 
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
@@ -181,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2", 
@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{ propertyDefinition1}, true));
@@ -220,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseOfBaseValidationDomainObjectClass).GetProperty ("BaseOfBaseProperty"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass1,
           "FirstName2", 
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
       var propertyDefinition3 = PropertyDefinitionFactory.Create (
           _derivedClass,
           "FirstName3", 
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition2 }, true));
@@ -276,7 +276,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          ColumnDefinitionObjectMother.CreateColumn("Property1"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2", 
@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          ColumnDefinitionObjectMother.CreateColumn("Property2"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property2"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1}, true));
@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2", 
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          ColumnDefinitionObjectMother.CreateColumn("Property"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -349,7 +349,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
-          ColumnDefinitionObjectMother.CreateColumn("Property1"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2", 
@@ -358,7 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          ColumnDefinitionObjectMother.CreateColumn("Property2"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property2"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -383,7 +383,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (string).GetProperty ("Length"),
-          ColumnDefinitionObjectMother.CreateColumn("Length"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Length"));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "Length", 
@@ -392,7 +392,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (string).GetProperty ("Length"),
-          ColumnDefinitionObjectMother.CreateColumn("Length"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Length"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection ());

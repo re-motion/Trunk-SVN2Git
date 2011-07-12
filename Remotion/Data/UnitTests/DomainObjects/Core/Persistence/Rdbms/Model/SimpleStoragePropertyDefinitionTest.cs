@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _storagePropertyDefinition = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      _storagePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
       _innerColumnDefinition = _storagePropertyDefinition.ColumnDefinition;
     }
 
@@ -65,13 +65,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_NotEqual ()
     {
-      Assert.That (_storagePropertyDefinition.Equals (ColumnDefinitionObjectMother.ObjectIDColumn), Is.False);
+      Assert.That (_storagePropertyDefinition.Equals (SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty), Is.False);
     }
 
     [Test]
     public void Equals_True ()
     {
-      Assert.That (_storagePropertyDefinition.Equals (ColumnDefinitionObjectMother.CreateColumn ("Column1")), Is.True);
+      Assert.That (_storagePropertyDefinition.Equals (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1")), Is.True);
     }
   }
 }

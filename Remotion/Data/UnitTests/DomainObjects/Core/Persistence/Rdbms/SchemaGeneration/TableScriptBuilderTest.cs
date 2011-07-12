@@ -48,21 +48,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _tableDefinition1 = TableDefinitionObjectMother.Create(
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table1"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition);
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
       _tableDefinition2 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition);
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
       _tableDefinition3 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table3"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition);
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
 
       _fakeElement1 = MockRepository.GenerateStub<IScriptElement>();
       _fakeElement2 = MockRepository.GenerateStub<IScriptElement>();
@@ -139,9 +139,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition (null, "FilterView"),
           _tableDefinition1,
           new[] { "ClassID" },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -163,9 +163,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),
           new[] { _tableDefinition1 },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

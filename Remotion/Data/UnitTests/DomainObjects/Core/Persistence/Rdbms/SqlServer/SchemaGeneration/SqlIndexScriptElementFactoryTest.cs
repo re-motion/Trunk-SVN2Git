@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _factory = new SqlIndexScriptElementFactory (
           _indexDefinitionElementFactoryMock, _primaryIndexDefinitionElementFactoryMock, _secondaryIndexDefinitionElementFactoryMock);
 
-      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column");
+      var simpleColumn = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column");
       var indexedColumn = new SqlIndexedColumnDefinition (simpleColumn.ColumnDefinition, IndexOrder.Desc);
 
       _entityNameDefinition = new EntityNameDefinition (null, "Table");

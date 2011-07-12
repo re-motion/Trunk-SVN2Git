@@ -46,12 +46,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       base.SetUp();
 
       _fakeIdColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+          SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
       _fakeForeignColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          ColumnDefinitionObjectMother.CreateTypedColumn ("OrderID", typeof (ObjectID), new StorageTypeInformation ("uniqueidentifier", DbType.Guid)),
-          ColumnDefinitionObjectMother.CreateColumn ("ClassID"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("OrderID"),
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("ClassID"));
 
-      _fakeColumnDefintion = ColumnDefinitionObjectMother.CreateColumn();
+      _fakeColumnDefintion = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
 
       _storageNameProviderMock = MockRepository.GenerateStrictMock<IStorageNameProvider>();
       _columnDefintionResolverMock = MockRepository.GenerateStrictMock<IColumnDefinitionResolver>();

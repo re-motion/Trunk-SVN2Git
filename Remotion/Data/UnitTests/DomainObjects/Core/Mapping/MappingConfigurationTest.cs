@@ -474,7 +474,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           null,
           StorageClass.Persistent);
-      propertyDefinition1.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("FakeColumn1"));
+      propertyDefinition1.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("FakeColumn1"));
       var propertyDefinition2 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition,
           "DeliveryDate",
@@ -483,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           null,
           StorageClass.Persistent);
-      propertyDefinition2.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("FakeColumn2"));
+      propertyDefinition2.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("FakeColumn2"));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 

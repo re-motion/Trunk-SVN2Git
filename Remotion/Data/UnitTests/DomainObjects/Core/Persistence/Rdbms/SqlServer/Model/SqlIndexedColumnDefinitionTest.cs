@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _innerColumn = ColumnDefinitionObjectMother.CreateColumn("InnerColumn").ColumnDefinition;
+      _innerColumn = ColumnDefinitionObjectMother.CreateColumn ("InnerColumn");
       _indexedColumn = new SqlIndexedColumnDefinition (_innerColumn, IndexOrder.Desc);
     }
 

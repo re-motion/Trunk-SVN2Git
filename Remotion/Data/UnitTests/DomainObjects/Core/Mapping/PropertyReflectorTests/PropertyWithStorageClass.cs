@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           "NoAttribute", DomainModelConstraintProviderStub);
 
       var actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("NoAttribute"));
+      actual.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("NoAttribute"));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute",
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
           "Persistent", DomainModelConstraintProviderStub);
 
       var actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (ColumnDefinitionObjectMother.CreateColumn("Persistent"));
+      actual.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Persistent"));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent",

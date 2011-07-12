@@ -30,9 +30,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           storageProviderDefinition,
           viewName,
           unionedEntities,
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

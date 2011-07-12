@@ -32,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _columns = new[] { new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn("TestColumn1").ColumnDefinition) };
-      _includedColumns = new[] { ColumnDefinitionObjectMother.CreateColumn("TestColumn2").ColumnDefinition };
+      _columns = new[] { new SqlIndexedColumnDefinition (ColumnDefinitionObjectMother.CreateColumn ("TestColumn1")) };
+      _includedColumns = new[] { ColumnDefinitionObjectMother.CreateColumn ("TestColumn2") };
 
       _sqlIndexDefinition = new SqlIndexDefinition (
           "IndexName", _columns, _includedColumns, true, true, true, true, true, 5, true, true, true, true, true, 2);

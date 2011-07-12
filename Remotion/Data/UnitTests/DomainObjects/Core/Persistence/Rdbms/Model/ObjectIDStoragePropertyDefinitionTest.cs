@@ -31,8 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _objectIDColumn = ColumnDefinitionObjectMother.ObjectIDColumn;
-      _classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
+      _objectIDColumn = SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty;
+      _classIDColumn = SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty;
       _columnDefinition = new ObjectIDStoragePropertyDefinition (_objectIDColumn, _classIDColumn);
     }
 
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_True_WithClassIDColumns ()
     {
-      var other = new ObjectIDStoragePropertyDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+      var other = new ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
 
       Assert.That (_columnDefinition.Equals (other), Is.True);
       Assert.That (_columnDefinition.Equals ((object) other), Is.True);
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_DifferentType ()
     {
-      var other = ColumnDefinitionObjectMother.ObjectIDColumn;
+      var other = SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty;
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Equals_False_DifferentObjectIDColumn ()
     {
       var other = new ObjectIDStoragePropertyDefinition (
-          ColumnDefinitionObjectMother.CreateColumn ("ObjectID"), ColumnDefinitionObjectMother.ClassIDColumn);
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("ObjectID"), SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Equals_False_DifferentClassIDColumn ()
     {
       var other = new ObjectIDStoragePropertyDefinition (
-          ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.CreateColumn ("Class_ID"));
+          SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Class_ID"));
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetHashCode_EqualObjects ()
     {
-      var other = new ObjectIDStoragePropertyDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
+      var other = new ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
 
       Assert.That (_columnDefinition.GetHashCode(), Is.EqualTo (other.GetHashCode()));
     }

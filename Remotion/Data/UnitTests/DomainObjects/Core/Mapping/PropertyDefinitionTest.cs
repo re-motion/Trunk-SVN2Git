@@ -254,7 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetStorageProperty ()
     {
       PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "ThePropertyName", null);
-      var columnDefinition = ColumnDefinitionObjectMother.CreateColumn("Test");
+      var columnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Test");
 
       propertyDefinition.SetStorageProperty (columnDefinition);
 

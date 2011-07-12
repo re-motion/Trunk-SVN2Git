@@ -80,13 +80,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _storageNameProvider,
           new RdbmsPersistenceModelProvider());
 
-      _fakeBaseBaseColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("BaseBaseProperty");
-      _fakeBaseColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("BaseProperty");
-      _fakeTableColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("TableProperty1");
-      _fakeTableColumnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("TableProperty2");
-      _fakeDerivedColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("DerivedProperty1");
-      _fakeDerivedColumnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("DerivedProperty2");
-      _fakeDerivedDerivedColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("DerivedDerivedProperty");
+      _fakeBaseBaseColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseBaseProperty");
+      _fakeBaseColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseProperty");
+      _fakeTableColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("TableProperty1");
+      _fakeTableColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("TableProperty2");
+      _fakeDerivedColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty1");
+      _fakeDerivedColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty2");
+      _fakeDerivedDerivedColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedDerivedProperty");
       _fakeObjectIDColumn = new SimpleStoragePropertyDefinition (_rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition());
       _fakeClassIDColumn = new SimpleStoragePropertyDefinition (_rdbmsStoragePropertyDefinitionFactory.CreateClassIDColumnDefinition());
       _fakeIDColumnDefinition = new ObjectIDStoragePropertyDefinition (_fakeObjectIDColumn, _fakeClassIDColumn);

@@ -41,34 +41,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1").ColumnDefinition;
-      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2").ColumnDefinition;
-      _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3").ColumnDefinition;
+      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
+      _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table1"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           _column1);
       _tableDefinition2 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           _column2,
           _column3);
       _unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new[] { _column1, _column2, _column3 },
           _indexes,
           _synonyms);
@@ -82,9 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_unionViewDefinition.StorageProviderID, Is.EqualTo ("SPID"));
       Assert.That (_unionViewDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
 
-      Assert.That (_unionViewDefinition.ObjectIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition));
-      Assert.That (_unionViewDefinition.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition));
-      Assert.That (_unionViewDefinition.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition));
+      Assert.That (_unionViewDefinition.ObjectIDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
+      Assert.That (_unionViewDefinition.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
+      Assert.That (_unionViewDefinition.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
       Assert.That (_unionViewDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column2, _column3 }));
 
       Assert.That (_unionViewDefinition.LegacyEntityName, Is.Null);
@@ -98,9 +98,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           null,
           new[] { _tableDefinition1, _tableDefinition2 },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -114,9 +114,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           null,
           new[] { _unionViewDefinition },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -132,9 +132,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "ViewName"),
           _tableDefinition1,
           new[] { "x" },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -142,9 +142,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           null,
           new[] { filterViewDefinition },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -160,8 +160,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           Is.EqualTo (
               new[]
               {
-                  ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-                  ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+                  ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn,
+                  ColumnDefinitionObjectMother.TimestampColumn,
                   _column1, _column2, _column3
               }));
     }
@@ -185,19 +185,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFullColumnList ()
     {
-      var column4 = ColumnDefinitionObjectMother.CreateColumn ("Test").ColumnDefinition;
+      var column4 = ColumnDefinitionObjectMother.CreateColumn ("Test");
       var availableColumns = new[]
                              {
-                                 ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-                                 ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition, _column3, column4, _column1
+                                 ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn,
+                                 ColumnDefinitionObjectMother.TimestampColumn, _column3, column4, _column1
                              };
 
       var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (6));
-      Assert.That (result[0], Is.SameAs (ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition));
-      Assert.That (result[1], Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition));
-      Assert.That (result[2], Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition));
+      Assert.That (result[0], Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
+      Assert.That (result[1], Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
+      Assert.That (result[2], Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
       Assert.That (result[3], Is.SameAs (_column1));
       Assert.That (result[4], Is.Null);
       Assert.That (result[5], Is.SameAs (_column3));
@@ -210,9 +210,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _column1.Name, _column1.PropertyType, _column1.StorageTypeInfo, _column1.IsNullable, false);
       var availableColumns = new[]
                              {
-                                 ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-                                 ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-                                 ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition, column1WithDifferentReference, _column2, _column3
+                                 ColumnDefinitionObjectMother.IDColumn,
+                                 ColumnDefinitionObjectMother.ClassIDColumn,
+                                 ColumnDefinitionObjectMother.TimestampColumn, column1WithDifferentReference, _column2, _column3
                              };
 
       var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
@@ -222,8 +222,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           Is.EqualTo (
               new[]
               {
-                  ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-                  ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+                  ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn,
+                  ColumnDefinitionObjectMother.TimestampColumn,
                   column1WithDifferentReference, _column2, _column3
               }));
     }
@@ -235,26 +235,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new[] { _column1, _column2 },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 
       var availableColumns = new[]
                              {
-                                 ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-                                 ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-                                 ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition, _column1
+                                 ColumnDefinitionObjectMother.IDColumn,
+                                 ColumnDefinitionObjectMother.ClassIDColumn,
+                                 ColumnDefinitionObjectMother.TimestampColumn, _column1
                              };
 
       var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (5));
-      Assert.That (result[0], Is.SameAs (ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition));
-      Assert.That (result[1], Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition));
-      Assert.That (result[2], Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition));
+      Assert.That (result[0], Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
+      Assert.That (result[1], Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
+      Assert.That (result[2], Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
       Assert.That (result[3], Is.SameAs (_column1));
       Assert.That (result[4], Is.Null);
     }
@@ -273,16 +273,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var tableDefinition3 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table3"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition);
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
       var baseUnionDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),
           new IEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

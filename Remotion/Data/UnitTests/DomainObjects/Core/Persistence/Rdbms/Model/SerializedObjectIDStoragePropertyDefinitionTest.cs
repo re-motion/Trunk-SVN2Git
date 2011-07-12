@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _simpleStoragePropertyDefinition = ColumnDefinitionObjectMother.CreateColumn();
+      _simpleStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
       _serializedObjectIDStoragePropertyDefinition = new SerializedObjectIDStoragePropertyDefinition (_simpleStoragePropertyDefinition);
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (
           _serializedObjectIDStoragePropertyDefinition.Equals (
-              new SerializedObjectIDStoragePropertyDefinition (ColumnDefinitionObjectMother.CreateColumn())),
+              new SerializedObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty())),
           Is.False);
     }
 

@@ -36,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _column = ColumnDefinitionObjectMother.CreateColumn ("COL1").ColumnDefinition;
+      _column = ColumnDefinitionObjectMother.CreateColumn ("COL1");
       _constraints = new[]
-                     { new PrimaryKeyConstraintDefinition ("PK_Table", true, new[] { ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition }) };
+                     { new PrimaryKeyConstraintDefinition ("PK_Table", true, new[] { ColumnDefinitionObjectMother.IDColumn }) };
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
@@ -46,9 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new EntityNameDefinition (null, "TestView"),
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new[] { _column },
           _constraints,
           _indexes,
@@ -62,9 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_tableDefintion.StorageProviderID, Is.EqualTo ("SPID"));
       Assert.That (_tableDefintion.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
 
-      Assert.That (_tableDefintion.ObjectIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition));
-      Assert.That (_tableDefintion.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition));
-      Assert.That (_tableDefintion.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition));
+      Assert.That (_tableDefintion.ObjectIDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
+      Assert.That (_tableDefintion.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
+      Assert.That (_tableDefintion.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
       Assert.That (_tableDefintion.DataColumns, Is.EqualTo (new[] { _column }));
 
       Assert.That (_tableDefintion.LegacyEntityName, Is.EqualTo ("Test"));
@@ -78,9 +78,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           null,
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-          ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
           new[] { _column },
           _constraints,
           new IIndexDefinition[0],
@@ -98,8 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           Is.EqualTo (
               new[]
               {
-                  ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition,
-                  ColumnDefinitionObjectMother.TimestampColumn.ColumnDefinition,
+                  ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn,
+                  ColumnDefinitionObjectMother.TimestampColumn,
                   _column
               }));
     }

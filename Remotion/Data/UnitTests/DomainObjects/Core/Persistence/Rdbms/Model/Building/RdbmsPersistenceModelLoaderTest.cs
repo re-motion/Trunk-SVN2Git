@@ -76,13 +76,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeEntityDefinitionDerivedDerived = MockRepository.GenerateStub<IEntityDefinition>();
       _fakeEntityDefinitionDerivedDerivedDerived = MockRepository.GenerateStub<IEntityDefinition>();
 
-      _fakeColumnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("Test1");
-      _fakeColumnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("Test2");
-      _fakeColumnDefinition3 = ColumnDefinitionObjectMother.CreateColumn ("Test3");
-      _fakeColumnDefinition4 = ColumnDefinitionObjectMother.CreateColumn ("Test4");
-      _fakeColumnDefinition5 = ColumnDefinitionObjectMother.CreateColumn ("Test5");
-      _fakeColumnDefinition6 = ColumnDefinitionObjectMother.CreateColumn ("Test6");
-      _fakeColumnDefinition7 = ColumnDefinitionObjectMother.CreateColumn ("Test7");
+      _fakeColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test1");
+      _fakeColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test2");
+      _fakeColumnDefinition3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test3");
+      _fakeColumnDefinition4 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test4");
+      _fakeColumnDefinition5 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test5");
+      _fakeColumnDefinition6 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test6");
+      _fakeColumnDefinition7 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test7");
 
       _entityDefinitionFactoryMock = MockRepository.GenerateStrictMock<IEntityDefinitionFactory>();
       _rdbmsStoragePropertyDefinitionFactoryMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinitionFactory>();

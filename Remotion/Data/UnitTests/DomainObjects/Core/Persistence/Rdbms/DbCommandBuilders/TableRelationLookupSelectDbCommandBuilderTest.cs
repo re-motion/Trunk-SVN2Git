@@ -47,8 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp();
 
-      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateTypedColumn (
-          "FKID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.Guid));
+      var foreignKeyColumn = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("FKID");
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (foreignKeyColumn, foreignKeyColumn);
 
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
