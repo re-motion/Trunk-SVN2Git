@@ -19,10 +19,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -33,6 +35,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using SortOrder = Remotion.Data.DomainObjects.Mapping.SortExpressions.SortOrder;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -348,9 +351,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainersByRelatedID ()
     {
       var objectID = DomainObjectIDs.Order1;
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          objectID.ClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("Official"));
-      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
+      var sortExpression = new SortExpressionDefinition (
+          new[] { new SortedPropertySpecification (GetPropertyDefinition (typeof (Official), "Name"), SortOrder.Ascending) });
       var fakeResult = DataContainer.CreateNew (objectID);
 
       var commandMock =
@@ -359,13 +362,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
         _commandFactoryMock
-            .Expect (mock => mock.CreateForRelationLookup (relationEndPointDefinition, objectID, null))
+            .Expect (mock => mock.CreateForRelationLookup (relationEndPointDefinition, objectID, sortExpression))
             .Return (commandMock);
         commandMock.Expect (mock => mock.Execute (_provider)).Return (new[] { fakeResult });
       }
       _mockRepository.ReplayAll ();
 
-      var result = _provider.LoadDataContainersByRelatedID (relationEndPointDefinition, null, objectID);
+      var result = _provider.LoadDataContainersByRelatedID (relationEndPointDefinition, sortExpression, objectID);
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.EqualTo (new[] { fakeResult }));
@@ -375,9 +378,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainersByRelatedID_Disposed ()
     {
       var objectID = DomainObjectIDs.Order1;
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          objectID.ClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("Official"));
-      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
       _mockRepository.ReplayAll();
 
       _provider.Dispose();
@@ -397,9 +398,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           NullPersistenceListener.Instance,
           CommandFactory);
       var objectID = DomainObjectIDs.Order1;
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          objectID.ClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("Official"));
-      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
+
       _mockRepository.ReplayAll();
 
       Assert.That (
