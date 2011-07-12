@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
 
     public override IColumnTypeInformation SqlDataTypeTimestamp
     {
-      get { return new StorageTypeInformation("rowversion", DbType.String); } //TODO 4126: ok ??
+      get { return new StorageTypeInformation ("rowversion", DbType.String); } //TODO Review 4126: Binary
     }
 
     public override IColumnTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (type == typeof (Boolean))
         return new StorageTypeInformation ("bit", DbType.Boolean);
       if (type == typeof (Byte))
-        return new StorageTypeInformation ("tinyint", DbType.Int16); //TODO 4126: ok ??
+        return new StorageTypeInformation ("tinyint", DbType.Int16); //TODO Review 4126: Byte
       if (type == typeof (DateTime))
         return new StorageTypeInformation ("datetime", DbType.DateTime);
       if (type == typeof (Decimal))
