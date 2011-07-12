@@ -108,6 +108,7 @@
     <Compile Include="Core\BindableObject\PropertyCollectionTest.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\Extensibility.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\Delete.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\IsDefaultValue.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\SupportsDelete.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\CreateDefaultValue.cs" />
     <Compile Include="Core\BindableObject\ReferencePropertyTests\SupportsDefaultValue.cs" />
@@ -150,19 +151,19 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Core\TestDomain\BindableObjectProviderForDefaultValueServiceAttribute.cs" />
-    <Compile Include="Core\TestDomain\BindableObjectProviderForDeleteObjectServiceAttribute.cs" />
-    <Compile Include="Core\TestDomain\ClassWithDefaultValueServiceTypeAttribute.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\BindableObjectProviderForDefaultValueServiceAttribute.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\BindableObjectProviderForDeleteObjectServiceAttribute.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassWithDefaultValueServiceTypeAttribute.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBase.cs" />
     <Compile Include="Core\TestDomain\ClassImplementingInterface.cs" />
     <Compile Include="Core\TestDomain\ClassWithBaseProperty.cs" />
-    <Compile Include="Core\TestDomain\ClassWithDeleteObjectServiceTypeAttribute.cs" />
-    <Compile Include="Core\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassWithDeleteObjectServiceTypeAttribute.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingDisplayName.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBase.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingDisplayName.cs" />
     <Compile Include="Core\TestDomain\ClassWithOverridingProperty.cs" />
-    <Compile Include="Core\TestDomain\ClassWithReferenceToClassDerivedFromBindableObjectBase.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassWithReferenceToClassDerivedFromBindableObjectBase.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod.cs" />
     <Compile Include="Core\TestDomain\DerivedSecurableClassWithProperties.cs" />
@@ -171,10 +172,10 @@
     <Compile Include="Core\TestDomain\ExtensibleEnumWithFilterExtensions.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
-    <Compile Include="Core\TestDomain\IDefaultValueServiceOnProperty.cs" />
-    <Compile Include="Core\TestDomain\IDefaultValueServiceOnType.cs" />
-    <Compile Include="Core\TestDomain\IDeleteObjectServiceOnProperty.cs" />
-    <Compile Include="Core\TestDomain\IDeleteObjectServiceOnType.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\IDefaultValueServiceOnProperty.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\IDefaultValueServiceOnType.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\IDeleteObjectServiceOnProperty.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\IDeleteObjectServiceOnType.cs" />
     <Compile Include="Core\TestDomain\IInterfaceToImplement.cs" />
     <Compile Include="Core\TestDomain\IInterfaceWithProperty.cs" />
     <Compile Include="Core\TestDomain\IMixinSecurableClass.cs" />
@@ -226,11 +227,11 @@
     <Compile Include="Core\BindableObject\DateTimePropertyTest.cs" />
     <Compile Include="Core\BindableObject\NumericPropertyTest.cs" />
     <Compile Include="Core\TestDomain\ClassWithIdentity.cs" />
-    <Compile Include="Core\TestDomain\ClassWithBusinessObjectProperties.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassWithBusinessObjectProperties.cs" />
     <Compile Include="Core\TestDomain\ClassWithMixedProperty.cs" />
     <Compile Include="Core\TestDomain\ClassWithOverriddenDisplayName.cs" />
     <Compile Include="Core\TestDomain\ClassWithResources.cs" />
-    <Compile Include="Core\TestDomain\ClassWithIdentityAndSearchServiceTypeAttribute.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassWithIdentityAndSearchServiceTypeAttribute.cs" />
     <Compile Include="Core\TestDomain\ClassWithUndefinedEnumValue.cs" />
     <Compile Include="Core\TestDomain\ClassWithDisabledEnumValue.cs" />
     <Compile Include="Core\TestDomain\ClassWithManualIdentity.cs" />
@@ -246,7 +247,7 @@
     <Compile Include="Core\TestDomain\MixinAddingProperty.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources.cs" />
     <Compile Include="Core\TestDomain\SecurableClassWithOverriddenDisplayName.cs" />
-    <Compile Include="Core\TestDomain\ISearchServiceOnProperty.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ISearchServiceOnProperty.cs" />
     <Compile Include="Core\TestDomain\EnumWithUndefinedValueFromOtherType.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\ListProperties.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\ReferenceType.cs" />
@@ -257,8 +258,8 @@
     <Compile Include="Core\TestDomain\EnumWithDescription.cs" />
     <Compile Include="Core\TestDomain\EnumWithResoruces.cs" />
     <Compile Include="Core\TestDomain\EnumWithUndefinedValue.cs" />
-    <Compile Include="Core\TestDomain\ISearchServiceOnType.cs" />
-    <Compile Include="Core\TestDomain\ClassFromOtherBusinessObjectImplementation.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ISearchServiceOnType.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\TestDomain\ClassFromOtherBusinessObjectImplementation.cs" />
     <Compile Include="Core\TestDomain\SecurableClassWithReferenceType.cs" />
     <Compile Include="Core\TestDomain\StubBusinessObjectClassService.cs" />
     <Compile Include="Core\TestDomain\StubBusinessObjectService.cs" />

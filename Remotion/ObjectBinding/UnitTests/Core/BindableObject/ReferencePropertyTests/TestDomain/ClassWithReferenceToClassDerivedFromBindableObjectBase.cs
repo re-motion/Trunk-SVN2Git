@@ -15,20 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Mixins;
-using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain
 {
-  [BindableObjectWithIdentity]
-  [SearchAvailableObjectsServiceType (typeof (ISearchServiceOnType))]
-  public class ClassWithIdentityAndSearchServiceTypeAttribute
+  public class ClassWithReferenceToClassDerivedFromBindableObjectBase : BindableObjectBase
   {
-    public ClassWithIdentityAndSearchServiceTypeAttribute ()
-    {
-    }
-
-    [OverrideMixin]
-    public string UniqueIdentifier { get; private set; }
+    public ClassDerivedFromBindableObjectBase ScalarReference { get; set; }
   }
 }

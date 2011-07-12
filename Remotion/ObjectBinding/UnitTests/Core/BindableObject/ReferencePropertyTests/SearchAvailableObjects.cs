@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
@@ -92,7 +92,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Searching is not supported for reference property 'SearchServiceFromPropertyDeclaration' of business object class "
-        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]
+        + "'Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain.ClassWithBusinessObjectProperties, "
+        + "Remotion.ObjectBinding.UnitTests'.")]
     public void Search_WithSearchNotSupported ()
     {
       IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties> (ParamList.Empty);

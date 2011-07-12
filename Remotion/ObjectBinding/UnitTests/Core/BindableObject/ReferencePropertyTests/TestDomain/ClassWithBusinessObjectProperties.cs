@@ -17,7 +17,7 @@
 using System;
 using Remotion.ObjectBinding.BindableObject;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain
 {
   [BindableObject]
   public class ClassWithBusinessObjectProperties
@@ -25,7 +25,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     public ClassWithBusinessObjectProperties ()
     {
     }
-
 
     public ClassWithIdentityAndSearchServiceTypeAttribute SearchServiceFromPropertyType { get; set; }
 

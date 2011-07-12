@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain;
 using Remotion.Reflection;
 using Rhino.Mocks;
 
@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    public void Create_WithCreateSupportedAndReferencingObjectNull ()
+    public void Create_WithDeleteSupportedAndReferencingObjectNull ()
     {
       var mockService = _mockRepository.StrictMock<IDeleteObjectServiceOnType> ();
       var property = DeleteProperty ("DeleteObjectServiceFromPropertyType");
@@ -88,7 +88,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Deleting an object is not supported for reference property 'DeleteObjectServiceFromPropertyDeclaration' of business object class "
-        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]
+        + "'Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain.ClassWithBusinessObjectProperties, "
+        + "Remotion.ObjectBinding.UnitTests'.")]
     public void Delete_WithDeleteNotSupported ()
     {
       IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties>(ParamList.Empty);

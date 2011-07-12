@@ -15,15 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain
 {
-  [BindableObjectProviderForDefaultValueService]
+  [BindableObjectProviderForDeleteObjectService]
   [BindableObjectBaseClass]
-  [DefaultValueServiceType (typeof (IDefaultValueServiceOnType))]
-  public class ClassWithDefaultValueServiceTypeAttribute : ManualBusinessObject
+  [DeleteObjectServiceType (typeof (IDeleteObjectServiceOnType))]
+  public class ClassWithDeleteObjectServiceTypeAttribute : ManualBusinessObject
   {
-    public ClassWithDefaultValueServiceTypeAttribute ()
+    public ClassWithDeleteObjectServiceTypeAttribute ()
     {
     }
   }

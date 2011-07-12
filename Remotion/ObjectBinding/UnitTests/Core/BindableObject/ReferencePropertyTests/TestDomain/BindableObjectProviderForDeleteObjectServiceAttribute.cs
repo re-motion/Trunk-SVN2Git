@@ -16,9 +16,13 @@
 // 
 using Remotion.ObjectBinding.BindableObject;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain
 {
-  public interface IDefaultValueServiceOnProperty : IDefaultValueService
+  public class BindableObjectProviderForDeleteObjectServiceAttribute : BusinessObjectProviderAttribute
   {
+    public BindableObjectProviderForDeleteObjectServiceAttribute ()
+        : base (typeof (BindableObjectProvider))
+    {
+    }
   }
 }

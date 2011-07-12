@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.ObjectBinding.BindableObject;
+using System;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain
 {
-  public interface ISearchServiceOnType : ISearchAvailableObjectsService
+  public abstract class ClassWithIdentityFromOtherBusinessObjectImplementation
+      : ClassFromOtherBusinessObjectImplementation, IBusinessObjectWithIdentity
   {
+    public abstract string UniqueIdentifier { get; }
   }
 }

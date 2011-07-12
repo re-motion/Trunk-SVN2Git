@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain
 {
   public abstract class ClassFromOtherBusinessObjectImplementation : IBusinessObject
   {
