@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
@@ -62,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
       var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition == null)
-        return new SimpleStoragePropertyDefinition(columnDefinition);
+        return new SimpleStoragePropertyDefinition (columnDefinition);
 
       return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition, columnDefinition);
     }
@@ -90,8 +91,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         IRelationEndPointDefinition relationEndPointDefinition,
         ColumnDefinition foreignKeyColumnDefinition)
     {
-      var leftProvider = _providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition.StorageGroupType,  null);
-      var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+      var leftProvider = _providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition.StorageGroupType, null);
+      var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
       var rightProvider = _providerDefinitionFinder.GetStorageProviderDefinition (rightEndPointDefinition.ClassDefinition.StorageGroupType, null);
 
       if (rightEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy && leftProvider.Name == rightProvider.Name)
@@ -103,19 +104,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
             true,
             false);
 
-        return new ObjectIDStoragePropertyDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
+        return new ObjectIDStoragePropertyDefinition (
+            new SimpleStoragePropertyDefinition (foreignKeyColumnDefinition), new SimpleStoragePropertyDefinition (classIdColumnDefinition));
       }
       else
-      {
-        return new ObjectIDStoragePropertyDefinition (foreignKeyColumnDefinition, null);
-      }
+        return new ObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (foreignKeyColumnDefinition), null);
     }
 
     protected virtual bool MustBeNullable (PropertyDefinition propertyDefinition)
     {
       // CreateSequence can deal with null source objects
       var baseClasses = propertyDefinition.ClassDefinition.BaseClass.CreateSequence (cd => cd.BaseClass);
-      return baseClasses.Any (cd => _storageNameProvider.GetTableName(cd)!=null);
+      return baseClasses.Any (cd => _storageNameProvider.GetTableName (cd) != null);
     }
   }
 }

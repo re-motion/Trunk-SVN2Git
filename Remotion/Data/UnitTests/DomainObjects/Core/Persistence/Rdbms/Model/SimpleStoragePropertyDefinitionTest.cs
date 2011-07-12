@@ -25,27 +25,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class SimpleStoragePropertyDefinitionTest
   {
-    private ColumnDefinition _columnDefinition;
     private SimpleStoragePropertyDefinition _storagePropertyDefinition;
+    private ColumnDefinition _innerColumnDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Column1").ColumnDefinition;
-      _storagePropertyDefinition = new SimpleStoragePropertyDefinition (_columnDefinition);
+      _storagePropertyDefinition = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      _innerColumnDefinition = _storagePropertyDefinition.ColumnDefinition;
     }
 
     [Test]
     public void Name ()
     {
-      Assert.That (_storagePropertyDefinition.Name, Is.EqualTo (_columnDefinition.Name));
-      Assert.That (_storagePropertyDefinition.IsNull, Is.EqualTo (_columnDefinition.IsNull));
+      Assert.That (_storagePropertyDefinition.Name, Is.EqualTo (_innerColumnDefinition.Name));
+      Assert.That (_storagePropertyDefinition.IsNull, Is.EqualTo (_innerColumnDefinition.IsNull));
     }
 
     [Test]
     public void GetColumns ()
     {
-      Assert.That (_storagePropertyDefinition.GetColumns(), Is.EqualTo (new[] { _columnDefinition }));
+      Assert.That (_storagePropertyDefinition.GetColumns (), Is.EqualTo (new[] { _innerColumnDefinition }));
     }
 
     [Test]

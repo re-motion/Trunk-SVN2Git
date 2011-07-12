@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _foreignKeyValue = CreateObjectID (_tableDefinition1);
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition);
+          ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn);
 
       _objectID1 = CreateObjectID (_tableDefinition1);
       _objectID2 = CreateObjectID (_tableDefinition1);
@@ -380,7 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var classDefinition = CreateClassDefinition (_unionViewDefinition);
       var objectIDColumn = ColumnDefinitionObjectMother.ObjectIDColumn;
       var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
-      var idColumnDefinition = new ObjectIDStoragePropertyDefinition (objectIDColumn.ColumnDefinition, classIDColumn.ColumnDefinition);
+      var idColumnDefinition = new ObjectIDStoragePropertyDefinition (objectIDColumn, classIDColumn);
       var idPropertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,
@@ -562,8 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
-          new ObjectIDStoragePropertyDefinition (
-              ColumnDefinitionObjectMother.ObjectIDColumn.ColumnDefinition, ColumnDefinitionObjectMother.ClassIDColumn.ColumnDefinition));
+          new ObjectIDStoragePropertyDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, ColumnDefinitionObjectMother.ClassIDColumn));
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (

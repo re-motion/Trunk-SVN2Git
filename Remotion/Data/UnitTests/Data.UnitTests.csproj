@@ -291,6 +291,8 @@
     <Compile Include="DomainObjects\Core\Persistence\FixedValueStorageProviderCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CompositeScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ObjectIDWithoutClassIDStoragePropertyDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SerializedObjectIDStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StorageTypeInformationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionObjectMother.cs" />

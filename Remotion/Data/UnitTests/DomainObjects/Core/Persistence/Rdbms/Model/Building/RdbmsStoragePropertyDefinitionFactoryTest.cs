@@ -272,19 +272,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
       Assert.That (((ObjectIDStoragePropertyDefinition) result).HasClassIDColumn, Is.True);
-      var objectIDColumn = ((ObjectIDStoragePropertyDefinition) result).ObjectIDColumn;
-      var classIDColumn = ((ObjectIDStoragePropertyDefinition) result).ClassIDColumn;
+      var objectIDColumn = ((ObjectIDStoragePropertyDefinition) result).ValueProperty;
+      var classIDColumn = ((ObjectIDStoragePropertyDefinition) result).ClassIDProperty;
 
       Assert.That (objectIDColumn.Name, Is.EqualTo ("FakeColumnName"));
-      Assert.That (objectIDColumn.IsNullable, Is.True);
-      Assert.That (objectIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (objectIDColumn.StorageTypeInfo.StorageType, Is.EqualTo ("storage type"));
-      Assert.That (objectIDColumn.IsPartOfPrimaryKey, Is.False);
+      Assert.That (objectIDColumn.ColumnDefinition.IsNullable, Is.True);
+      Assert.That (objectIDColumn.ColumnDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (objectIDColumn.ColumnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("storage type"));
+      Assert.That (objectIDColumn.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
       Assert.That (classIDColumn.Name, Is.EqualTo ("FakeRelationClassID"));
-      Assert.That (classIDColumn.IsNullable, Is.True);
-      Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (classIDColumn.StorageTypeInfo.StorageType, Is.EqualTo ("varchar(100)"));
-      Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
+      Assert.That (classIDColumn.ColumnDefinition.IsNullable, Is.True);
+      Assert.That (classIDColumn.ColumnDefinition.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (classIDColumn.ColumnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("varchar(100)"));
+      Assert.That (classIDColumn.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
     }
 
     [Test]

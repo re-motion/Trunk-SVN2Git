@@ -24,44 +24,49 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
   /// </summary>
-  public class ObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
+  public class ObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition, IObjectIDStoragePropertyDefinition
   {
-    private readonly ColumnDefinition _objectIDColumn;
-    private readonly ColumnDefinition _classIDColumn;
+    private readonly SimpleStoragePropertyDefinition _valueProperty;
+    private readonly SimpleStoragePropertyDefinition _classIDProperty;
 
-    public ObjectIDStoragePropertyDefinition (ColumnDefinition objectIDColumn, ColumnDefinition classIDColumn)
+    public ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinition valueProperty, SimpleStoragePropertyDefinition classIDProperty)
     {
-      ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
+      ArgumentUtility.CheckNotNull ("valueProperty", valueProperty);
 
-      _objectIDColumn = objectIDColumn;
-      _classIDColumn = classIDColumn;
+      _valueProperty = valueProperty;
+      _classIDProperty = classIDProperty;
     }
 
     string IStoragePropertyDefinition.Name
     {
-      get { return _objectIDColumn.Name; }
+      get { return _valueProperty.Name; }
     }
 
-    public ColumnDefinition ObjectIDColumn
+    public SimpleStoragePropertyDefinition ValueProperty
     {
-      get { return _objectIDColumn; }
+      get { return _valueProperty; }
     }
 
-    public ColumnDefinition ClassIDColumn
+    public SimpleStoragePropertyDefinition ClassIDProperty
     {
-      get { return _classIDColumn; }
+      get { return _classIDProperty; }
     }
 
     public bool HasClassIDColumn
     {
-      get { return _classIDColumn != null; }
+      get { return _classIDProperty != null; }
+    }
+
+    public ColumnDefinition GetColumnForLookup ()
+    {
+      return _valueProperty.ColumnDefinition;
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
-      yield return _objectIDColumn;
+      yield return _valueProperty.ColumnDefinition;
       if(HasClassIDColumn)
-        yield return _classIDColumn;
+        yield return _classIDProperty.ColumnDefinition;
     }
 
     public bool Equals (IRdbmsStoragePropertyDefinition other)
@@ -70,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         return false;
 
       var castOther = (ObjectIDStoragePropertyDefinition) other;
-      return Equals (castOther.ObjectIDColumn, ObjectIDColumn) && Equals (castOther.ClassIDColumn, ClassIDColumn);
+      return Equals (castOther.ValueProperty, ValueProperty) && Equals (castOther.ClassIDProperty, ClassIDProperty);
     }
 
     public override bool Equals (object obj)
@@ -80,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (ObjectIDColumn, ClassIDColumn);
+      return EqualityUtility.GetRotatedHashCode (ValueProperty, ClassIDProperty);
     }
 
     public bool IsNull
