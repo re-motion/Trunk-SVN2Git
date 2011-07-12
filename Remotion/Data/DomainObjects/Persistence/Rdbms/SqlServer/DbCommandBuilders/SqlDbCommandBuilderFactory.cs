@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        ObjectIDStoragePropertyDefinition foreignKeyColumn,
+        IObjectIDStoragePropertyDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns)
     {
@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         ISelectedColumnsSpecification selectedColumns,
-        ObjectIDStoragePropertyDefinition foreignKeyColumn,
+        IObjectIDStoragePropertyDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns)
     {

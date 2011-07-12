@@ -30,14 +30,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     private readonly UnionViewDefinition _unionViewDefinition;
     private readonly ISelectedColumnsSpecification _selectedColumns;
-    private readonly ObjectIDStoragePropertyDefinition _foreignKeyColumn;
+    private readonly IObjectIDStoragePropertyDefinition _foreignKeyColumn;
     private readonly ObjectID _foreignKeyValue;
     private readonly IOrderedColumnsSpecification _orderedColumns;
 
     public UnionRelationLookupSelectDbCommandBuilder (
         UnionViewDefinition unionViewDefinition,
         ISelectedColumnsSpecification selectedColumns,
-        ObjectIDStoragePropertyDefinition foreignKeyColumn,
+        IObjectIDStoragePropertyDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns,
         ISqlDialect sqlDialect,
@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var fullProjection = _orderedColumns.UnionWithSelectedColumns (_selectedColumns);
 
       var statement = new StringBuilder();
-      var parameter = AddCommandParameter (command, _foreignKeyColumn.ValueProperty.Name, _foreignKeyValue);
+      var parameter = AddCommandParameter (command, _foreignKeyColumn.GetColumnForLookup().Name, _foreignKeyValue);
       bool first = true;
       foreach (var table in _unionViewDefinition.GetAllTables())
       {
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         
         AppendSelectClause (statement, fullProjection);
         AppendFromClause (statement, table);
-        AppendComparingWhereClause (statement, _foreignKeyColumn.ValueProperty.ColumnDefinition, parameter);
+        AppendComparingWhereClause (statement, _foreignKeyColumn.GetColumnForLookup(), parameter);
         
         first = false;
       }
