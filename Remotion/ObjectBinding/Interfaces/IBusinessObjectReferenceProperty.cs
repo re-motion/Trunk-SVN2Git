@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding
     /// </remarks>
     IBusinessObject CreateDefaultValue (IBusinessObject referencingObject);
 
-    //bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties);
+    bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties);
 
     bool SupportsDelete { get; }
 

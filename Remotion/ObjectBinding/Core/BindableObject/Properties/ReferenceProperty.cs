@@ -141,6 +141,26 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return service.Create (referencingObject, this);
     }
 
+    public bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("emptyProperties", emptyProperties);
+
+      if (!SupportsDefaultValue)
+      {
+        throw new NotSupportedException (
+            string.Format (
+                "Checking for a value's default is not supported for reference property '{0}' of business object class '{1}'.",
+                Identifier,
+                ReflectedClass.Identifier));
+      }
+
+      IDefaultValueService service = GetDefaultValueService ();
+      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _defaultValueServiceDefinition.Item2.FullName);
+
+      return service.IsDefaultValue(referencingObject, this, value, emptyProperties);
+    }
+
     public bool SupportsDelete
     {
       get
