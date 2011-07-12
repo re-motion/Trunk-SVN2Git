@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -52,6 +53,65 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumnForLookup ()
     {
       Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForLookup(), Is.SameAs (_simpleStoragePropertyDefinition.ColumnDefinition));
+    }
+
+    [Test]
+    public void GetColumns ()
+    {
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (_simpleStoragePropertyDefinition.GetColumns()));
+    }
+
+    [Test]
+    public void Name ()
+    {
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.Name, Is.EqualTo (_simpleStoragePropertyDefinition.Name));
+    }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.IsNull, Is.EqualTo (_simpleStoragePropertyDefinition.IsNull));
+    }
+
+    [Test]
+    public void Equals_Null ()
+    {
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.Equals (null), Is.False);
+    }
+
+    [Test]
+    public void Equals_OtherType ()
+    {
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.Equals (MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>()), Is.False);
+    }
+
+    [Test]
+    public void Equals_OtherColumnDefinition ()
+    {
+      Assert.That (
+          _objectIDWithoutClassIDStorageDefinition.Equals (
+              new ObjectIDWithoutClassIDStoragePropertyDefinition (ColumnDefinitionObjectMother.CreateColumn(), _classDefinition)),
+          Is.False);
+    }
+
+    [Test]
+    public void Equals_OtherClassDefinition ()
+    {
+      Assert.That (
+          _objectIDWithoutClassIDStorageDefinition.Equals (
+              new ObjectIDWithoutClassIDStoragePropertyDefinition (
+                  _simpleStoragePropertyDefinition,
+                  ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem), TestDomainStorageProviderDefinition))),
+          Is.False);
+    }
+
+    [Test]
+    public void Equals_True ()
+    {
+      Assert.That (
+          _objectIDWithoutClassIDStorageDefinition.Equals (
+              new ObjectIDWithoutClassIDStoragePropertyDefinition (_simpleStoragePropertyDefinition, _classDefinition)),
+          Is.True);
     }
   }
 }

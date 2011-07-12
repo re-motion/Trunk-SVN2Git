@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (relationEndPointDefinition == null)
         return new SimpleStoragePropertyDefinition (columnDefinition);
 
-      return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition, columnDefinition);
+      return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition);
     }
 
     public ColumnDefinition CreateObjectIDColumnDefinition ()
@@ -86,29 +86,50 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
     }
 
-    protected virtual ObjectIDStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
+    protected virtual IObjectIDStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
         PropertyDefinition propertyDefinition,
-        IRelationEndPointDefinition relationEndPointDefinition,
-        ColumnDefinition foreignKeyColumnDefinition)
+        IRelationEndPointDefinition relationEndPointDefinition)
     {
       var leftProvider = _providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition.StorageGroupType, null);
       var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
       var rightProvider = _providerDefinitionFinder.GetStorageProviderDefinition (rightEndPointDefinition.ClassDefinition.StorageGroupType, null);
 
-      if (rightEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy && leftProvider.Name == rightProvider.Name)
+      if (leftProvider != rightProvider)
       {
-        var classIdColumnDefinition = new ColumnDefinition (
-            _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
-            typeof (string),
-            _storageTypeCalculator.SqlDataTypeClassID,
+        var columnDefinition = new ColumnDefinition (
+            _storageNameProvider.GetColumnName (propertyDefinition),
+            propertyDefinition.PropertyType,
+            _storageTypeCalculator.SqlDataTypeSerializedObjectID,
+            propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
+            false);
+        return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (columnDefinition));
+      }
+      else
+      {
+        var valueColumnDefinition = new ColumnDefinition (
+            _storageNameProvider.GetColumnName (propertyDefinition),
+            propertyDefinition.PropertyType,
+            _storageTypeCalculator.SqlDataTypeObjectID,
             true,
             false);
 
-        return new ObjectIDStoragePropertyDefinition (
-            new SimpleStoragePropertyDefinition (foreignKeyColumnDefinition), new SimpleStoragePropertyDefinition (classIdColumnDefinition));
+        if (!rightEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy)
+        {
+          return new ObjectIDWithoutClassIDStoragePropertyDefinition (
+              new SimpleStoragePropertyDefinition (valueColumnDefinition), rightEndPointDefinition.ClassDefinition);
+        }
+        else
+        {
+          var classIDColumnDefinition = new ColumnDefinition (
+              _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
+              typeof (string),
+              _storageTypeCalculator.SqlDataTypeClassID,
+              true,
+              false);
+          return new ObjectIDStoragePropertyDefinition (
+              new SimpleStoragePropertyDefinition (valueColumnDefinition), new SimpleStoragePropertyDefinition (classIDColumnDefinition));
+        }
       }
-      else
-        return new ObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (foreignKeyColumnDefinition), null);
     }
 
     protected virtual bool MustBeNullable (PropertyDefinition propertyDefinition)

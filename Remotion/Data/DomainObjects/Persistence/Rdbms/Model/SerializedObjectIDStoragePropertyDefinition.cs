@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -39,5 +40,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return _simpleStoragePropertyDefinition.ColumnDefinition;
     }
+
+    public IEnumerable<ColumnDefinition> GetColumns ()
+    {
+      return _simpleStoragePropertyDefinition.GetColumns();
+    }
+
+    public string Name
+    {
+      get { return _simpleStoragePropertyDefinition.Name; }
+    }
+
+    public bool Equals (IRdbmsStoragePropertyDefinition other)
+    {
+      if (other == null || other.GetType () != GetType ())
+        return false;
+
+      return _simpleStoragePropertyDefinition.Equals (((SerializedObjectIDStoragePropertyDefinition) other).SimpleStoragePropertyDefinition);
+    }
+
+    public bool IsNull
+    {
+      get { return _simpleStoragePropertyDefinition.IsNull; }
+    }
+    
   }
 }

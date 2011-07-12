@@ -64,11 +64,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return storagePropertyDefinitionAsIColumnDefinition;
     }
 
-    public ObjectIDStoragePropertyDefinition GetIDColumnDefinition (RelationEndPointDefinition relationEndPointDefinition)
+    public IObjectIDStoragePropertyDefinition GetIDColumnDefinition (RelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      var storagePropertyDefinitionAsIDColumnDefinition = relationEndPointDefinition.PropertyDefinition.StoragePropertyDefinition as ObjectIDStoragePropertyDefinition;
+      var storagePropertyDefinitionAsIDColumnDefinition = relationEndPointDefinition.PropertyDefinition.StoragePropertyDefinition as IObjectIDStoragePropertyDefinition;
       if (storagePropertyDefinitionAsIDColumnDefinition == null)
       {
         throw new InvalidOperationException (

@@ -78,18 +78,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         var oppositeObjectIDColumnDefinition = _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition();
 
         var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
-        var endPointIDColumnDefinition = endPointColumnDefinition as ObjectIDStoragePropertyDefinition;
+        var endPointIDColumnDefinition = endPointColumnDefinition as IObjectIDStoragePropertyDefinition;
         if (endPointIDColumnDefinition == null)
           throw new InvalidOperationException ("The non virtual constraint column definition has to be an ID column definition.");
 
         var referencingColumn = oppositeObjectIDColumnDefinition;
-        var referencedColumn = endPointIDColumnDefinition.ValueProperty;
+        var referencedColumn = endPointIDColumnDefinition.GetColumnForLookup();
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
             _storageNameProvider.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),
             new EntityNameDefinition(null, FindTableName(oppositeClassDefinition)),
             new[] { referencingColumn },
-            new[] { referencedColumn.ColumnDefinition });
+            new[] { referencedColumn });
         foreignKeyConstraintDefinitions.Add (foreignKeyConstraintDefinition);
       }
 

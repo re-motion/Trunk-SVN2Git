@@ -53,9 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       base.SetUp();
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> (_storageProviderDefinitionFinder);
-      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeClassID).Return (new StorageTypeInformation("varchar(100)", DbType.String));
-      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeObjectID).Return (new StorageTypeInformation("guid", DbType.Guid));
-      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeTimestamp).Return (new StorageTypeInformation("rowversion", DbType.DateTime));
+      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeClassID).Return (new StorageTypeInformation ("varchar(100)", DbType.String));
+      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeObjectID).Return (new StorageTypeInformation ("guid", DbType.Guid));
+      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeTimestamp).Return (new StorageTypeInformation ("rowversion", DbType.DateTime));
+      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeSerializedObjectID).Return(new StorageTypeInformation ("varchar (255)", DbType.String));
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
       _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
@@ -257,8 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var result = _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
-      Assert.That (((ObjectIDStoragePropertyDefinition) result).HasClassIDColumn, Is.False);
+      Assert.That (result, Is.TypeOf (typeof (ObjectIDWithoutClassIDStoragePropertyDefinition)));
     }
 
     [Test]
@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (objectIDColumn.Name, Is.EqualTo ("FakeColumnName"));
       Assert.That (objectIDColumn.ColumnDefinition.IsNullable, Is.True);
       Assert.That (objectIDColumn.ColumnDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (objectIDColumn.ColumnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("storage type"));
+      Assert.That (objectIDColumn.ColumnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("guid"));
       Assert.That (objectIDColumn.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
       Assert.That (classIDColumn.Name, Is.EqualTo ("FakeRelationClassID"));
       Assert.That (classIDColumn.ColumnDefinition.IsNullable, Is.True);
@@ -297,6 +297,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
+    }
+
+    [Test]
+    public void CreaeStoragePropertyDefinition_RelationPropertyToAClassDefinitionWithDifferentStorageProvider ()
+    {
+      var classDefinition = Configuration.GetTypeDefinition (typeof (Ceo));
+      var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof (Ceo).FullName + ".Company"];
+      StubStorageCalculators (propertyDefinition);
+
+      var storageProviderDefinitionFinder = MockRepository.GenerateStub<IStorageProviderDefinitionFinder>();
+      storageProviderDefinitionFinder
+          .Stub (stub => stub.GetStorageProviderDefinition (Arg<Type>.Is.Anything, Arg<string>.Is.Anything))
+          .Return (TestDomainStorageProviderDefinition).Repeat.Once();
+      storageProviderDefinitionFinder
+          .Stub (stub => stub.GetStorageProviderDefinition (Arg<Type>.Is.Anything, Arg<string>.Is.Anything))
+          .Return (UnitTestStorageProviderDefinition).Repeat.Once();
+      var rdbmsStoragePropertyDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
+          _storageTypeCalculatorStub, _storageNameProviderStub, storageProviderDefinitionFinder);
+
+      var result = rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+
+      Assert.That (result, Is.TypeOf (typeof (SerializedObjectIDStoragePropertyDefinition)));
     }
 
     [Test]
