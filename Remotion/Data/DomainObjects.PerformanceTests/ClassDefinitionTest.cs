@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
@@ -138,9 +139,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new EntityNameDefinition (null, "TestView"),
-          new ColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true),
-          new ColumnDefinition ("ClassID", typeof (string), "varchar", true, false),
-          new ColumnDefinition ("Timestamp", typeof (DateTime), "datetime", true, false),
+          new ColumnDefinition ("ID", typeof (Guid), new StorageTypeInformation("uniqueidentifier", DbType.Guid), false, true),
+          new ColumnDefinition ("ClassID", typeof (string), new StorageTypeInformation("varchar", DbType.String), true, false),
+          new ColumnDefinition ("Timestamp", typeof (DateTime), new StorageTypeInformation("datetime", DbType.DateTime), true, false),
           new ColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
