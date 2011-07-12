@@ -58,8 +58,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <returns> <see langword="true"/> if it is possible to get the available objects from the object model. </returns>
     /// <remarks>
     /// <para>Use the <see cref="SearchAvailableObjects"/> method to get the list of objects.</para>
-    /// <para>If the <see cref="ReferenceClass"/> implements <see cref="IBusinessObjectClassWithIdentity"/>, 
-    /// the <see cref="ISearchAvailableObjectsService.SupportsProperty"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
+    /// <para>
+    /// The <see cref="ISearchAvailableObjectsService.SupportsProperty"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
     /// is evaluated in order to determine the return value of this property.
     /// </para>
     /// </remarks>
@@ -76,12 +76,15 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary>Searches the object model for the <see cref="IBusinessObject"/> instances that can be assigned to this property.</summary>
-    /// <param name="referencingObject"> The business object for which to search for the possible objects to be referenced. Can be <see langword="null"/>.</param>
-    /// <param name="searchArguments">A parameter-object containing additional information for executing the search. Can be <see langword="null"/>.</param>
+    /// <param name="referencingObject"> The <see cref="IBusinessObject"/> for which to search for the possible objects to be referenced. Can be <see langword="null"/>.</param>
+    /// <param name="searchArguments">A parameter object containing additional information for executing the search. Can be <see langword="null"/>.</param>
     /// <returns>A list of the <see cref="IBusinessObject"/> instances available. Must not return <see langword="null"/>.</returns>
     /// <exception cref="NotSupportedException">
     ///   Thrown if <see cref="SupportsSearchAvailableObjects"/> evaluated <see langword="false"/> but this method has been called anyways.
     /// </exception>
+    /// <remarks>
+    /// The implementation delegates to the <see cref="ISearchAvailableObjectsService.Search"/> method of the <see cref="ISearchAvailableObjectsService"/> interface.
+    /// </remarks>
     public IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, ISearchAvailableObjectsArguments searchArguments)
     {
       if (!SupportsSearchAvailableObjects)
@@ -100,9 +103,13 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary>
-    ///   Gets a flag indicating if <see cref="CreateDefaultValue"/> may be called to implicitly create a new business object 
-    ///   for editing in case the object reference is null.
+    ///   Gets a flag indicating if <see cref="CreateDefaultValue"/> and <see cref="IsDefaultValue"/> may be called
+    ///   to implicitly create a new <see cref="IBusinessObject"/> instance for editing in case the object reference is <see langword="null" />.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="IDefaultValueService.SupportsProperty"/> method of the <see cref="IDefaultValueService"/> interface 
+    /// is evaluated in order to determine the return value of this property.
+    /// </remarks>
     public bool SupportsDefaultValue
     {
       get
@@ -116,14 +123,17 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary>
-    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new business object.
+    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new <see cref="IBusinessObject"/> instance.
     /// </summary>
     /// <param name="referencingObject"> 
-    ///   The business object containing the reference property whose value will be assigned the newly created object. Can be <see langword="null"/>.
+    ///   The <see cref="IBusinessObject"/> instance containing the object reference whose value will be assigned the newly created object. Can be <see langword="null"/>.
     /// </param>
     /// <exception cref="NotSupportedException"> 
     ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
     /// </exception>
+    /// <remarks>
+    /// The implementation delegates to the <see cref="IDefaultValueService.Create"/> method of the <see cref="IDefaultValueService"/> interface.
+    /// </remarks>
     public IBusinessObject CreateDefaultValue (IBusinessObject referencingObject)
     {
       if (!SupportsDefaultValue)
@@ -141,6 +151,27 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return service.Create (referencingObject, this);
     }
 
+    /// <summary>
+    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used evaluate if the <paramref name="value"/>
+    ///   is equivalent to the <see cref="IBusinessObject"/> instance created when calling <see cref="CreateDefaultValue"/>.
+    /// </summary>
+    /// <param name="referencingObject"> 
+    ///   The <see cref="IBusinessObject"/> instance containing the object reference the <paramref name="value"/> is assigned to. Can be <see langword="null"/>.
+    /// </param>
+    /// <param name="value">
+    ///   The <see cref="IBusinessObject"/> instance to be evaluated. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="emptyProperties">
+    ///   The list of properties that will be assigned <see langword="null"/> when the data is written back into the <paramref name="value"/>.
+    ///   The properties belong to the <see cref="IBusinessObject.BusinessObjectClass"/> of the <paramref name="value"/>.
+    ///   Must not be <see langword="null" />.
+    /// </param>
+    /// <exception cref="NotSupportedException"> 
+    ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
+    /// </exception>
+    /// <remarks>
+    /// The implementation delegates to the <see cref="IDefaultValueService.IsDefaultValue"/> method of the <see cref="IDefaultValueService"/> interface.
+    /// </remarks>
     public bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -161,6 +192,13 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return service.IsDefaultValue(referencingObject, this, value, emptyProperties);
     }
 
+    /// <summary>
+    ///   Gets a flag indicating if <see cref="Delete"/> may be called to automatically delete the current value of this object reference.
+    /// </summary>
+    /// <remarks>
+    /// The <see cref="IDeleteObjectService.SupportsProperty"/> method of the <see cref="IDeleteObjectService"/> interface 
+    /// is evaluated in order to determine the return value of this property.
+    /// </remarks>
     public bool SupportsDelete
     {
       get
@@ -173,15 +211,21 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
     }
 
+    /// <summary>
+    ///   If <see cref="SupportsDelete"/> is <see langword="true"/>, this method can be used to delete the current value of this object reference.
+    /// </summary>
     /// <param name="referencingObject"> 
-    ///   The business object containing the reference property whose value will be deleted. Can be <see langword="null"/>.
+    ///   The <see cref="IBusinessObject"/> instance containing the object reference whose <paramref name="value"/> will be deleted. Can be <see langword="null"/>.
     /// </param>
     /// <param name="value">
-    ///   The business object to be deleted. Must not be <see langword="null" />.
+    ///   The <see cref="IBusinessObject"/> instance to be deleted. Must not be <see langword="null" />.
     /// </param>
     /// <exception cref="NotSupportedException"> 
-    ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
+    ///   Thrown if this method is called although <see cref="SupportsDelete"/> evaluated <see langword="false"/>. 
     /// </exception>
+    /// <remarks>
+    /// The implementation delegates to the <see cref="IDeleteObjectService.Delete"/> method of the <see cref="IDeleteObjectService"/> interface.
+    /// </remarks>
     public void Delete (IBusinessObject referencingObject, IBusinessObject value)
     {
       ArgumentUtility.CheckNotNull ("value", value);

@@ -54,16 +54,16 @@ namespace Remotion.ObjectBinding
     IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, ISearchAvailableObjectsArguments searchArguments);
 
     /// <summary>
-    ///   Gets a flag indicating if <see cref="CreateDefaultValue"/> may be called to implicitly create a new business object 
-    ///   for editing in case the object reference is <see langword="null" />.
+    ///   Gets a flag indicating if <see cref="CreateDefaultValue"/> and <see cref="IsDefaultValue"/> may be called
+    ///   to implicitly create a new <see cref="IBusinessObject"/> instance for editing in case the object reference is <see langword="null" />.
     /// </summary>
     bool SupportsDefaultValue { get; }
 
     /// <summary>
-    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new business object.
+    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new <see cref="IBusinessObject"/> instance.
     /// </summary>
     /// <param name="referencingObject"> 
-    ///   The business object containing the reference property whose value will be assigned the newly created object. Can be <see langword="null"/>.
+    ///   The <see cref="IBusinessObject"/> instance containing the object reference whose value will be assigned the newly created object. Can be <see langword="null"/>.
     /// </param>
     /// <exception cref="NotSupportedException"> 
     ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
@@ -75,15 +75,51 @@ namespace Remotion.ObjectBinding
     /// </remarks>
     IBusinessObject CreateDefaultValue (IBusinessObject referencingObject);
 
-    bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties);
-
-    bool SupportsDelete { get; }
-
+    /// <summary>
+    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used evaluate if the <paramref name="value"/>
+    ///   is equivalent to the <see cref="IBusinessObject"/> instance created when calling <see cref="CreateDefaultValue"/>.
+    /// </summary>
     /// <param name="referencingObject"> 
-    ///   The business object containing the reference property whose value will be deleted. Can be <see langword="null"/>.
+    ///   The <see cref="IBusinessObject"/> instance containing the object reference the <paramref name="value"/> is assigned to. Can be <see langword="null"/>.
     /// </param>
     /// <param name="value">
-    ///   The business object to be deleted. Must not be <see langword="null" />.
+    ///   The <see cref="IBusinessObject"/> instance to be evaluated. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="emptyProperties">
+    ///   The list of properties that will be assigned <see langword="null"/> when the data is written back into the <paramref name="value"/>.
+    ///   The properties belong to the <see cref="IBusinessObject.BusinessObjectClass"/> of the <paramref name="value"/>.
+    ///   Must not be <see langword="null" />.
+    /// </param>
+    /// <exception cref="NotSupportedException"> 
+    ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
+    /// </exception>
+    /// <remarks>
+    ///   <para>
+    ///     A use case for the <see cref="IsDefaultValue"/> method is the save operation of the <see cref="T:Remotion.ObjectBinding.BusinessObjectReferenceDataSource"/>.
+    ///     If the property supports both the default value behavior and object deletion behavior, and <see cref="IsDefaultValue"/> evaluates <see langword="true" />,
+    ///     the data source can delete the <paramref name="value"/> and write back <see langword="null" /> into the object reference.
+    ///   </para>
+    ///   <para>
+    ///     In order to properly evaluate the default value semantics even before the data from the bound controls are written back into the <paramref name="value"/>,
+    ///     the <paramref name="emptyProperties"/> can be evaluated by business object layer to determine if the <paramref name="value"/> would retain 
+    ///     any relevant information after the data had been written back.
+    ///   </para>
+    /// </remarks>
+    bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties);
+
+    /// <summary>
+    ///   Gets a flag indicating if <see cref="Delete"/> may be called to automatically delete the current value of this object reference.
+    /// </summary>
+    bool SupportsDelete { get; }
+
+    /// <summary>
+    ///   If <see cref="SupportsDelete"/> is <see langword="true"/>, this method can be used to delete the current value of this object reference.
+    /// </summary>
+    /// <param name="referencingObject"> 
+    ///   The <see cref="IBusinessObject"/> instance containing the object reference whose <paramref name="value"/> will be deleted. Can be <see langword="null"/>.
+    /// </param>
+    /// <param name="value">
+    ///   The <see cref="IBusinessObject"/> instance to be deleted. Must not be <see langword="null" />.
     /// </param>
     /// <exception cref="NotSupportedException"> 
     ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
