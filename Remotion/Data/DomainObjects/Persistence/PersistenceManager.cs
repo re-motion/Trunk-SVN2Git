@@ -114,6 +114,9 @@ namespace Remotion.Data.DomainObjects.Persistence
       var provider = _storageProviderManager.GetMandatory (id.StorageProviderDefinition.Name);
       var result = provider.LoadDataContainer (id);
 
+      // TODO Review 4113: Remove
+      result = new DataContainerLookupResult (id, result.LocatedDataContainer);
+
       var exception = CheckLoadedDataContainer (result, true);
       if (exception != null)
         throw exception;
