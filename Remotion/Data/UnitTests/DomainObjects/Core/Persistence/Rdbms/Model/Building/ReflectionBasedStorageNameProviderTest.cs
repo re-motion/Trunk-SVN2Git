@@ -132,6 +132,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
+    public void GetRelationColumnName ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
+      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "ParentFolder");
+
+      var result = _provider.GetColumnName (propertyDefinition);
+
+      Assert.That (result, Is.EqualTo ("ParentFolderID"));
+    }
+
+    [Test]
     public void GetRelationClassIDColumnName ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);

@@ -271,7 +271,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
-      Assert.That (((ObjectIDStoragePropertyDefinition) result).HasClassIDColumn, Is.True);
       var objectIDColumn = ((ObjectIDStoragePropertyDefinition) result).ValueProperty;
       var classIDColumn = ((ObjectIDStoragePropertyDefinition) result).ClassIDProperty;
 

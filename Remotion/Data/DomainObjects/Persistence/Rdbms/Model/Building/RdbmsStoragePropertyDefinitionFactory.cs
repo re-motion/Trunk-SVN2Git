@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (leftProvider != rightProvider)
       {
         var columnDefinition = new ColumnDefinition (
-            _storageNameProvider.GetColumnName (propertyDefinition),
+            _storageNameProvider.GetColumnName (propertyDefinition), //TODO 4127: use GetRelationColumnName
             propertyDefinition.PropertyType,
             _storageTypeCalculator.SqlDataTypeSerializedObjectID,
             propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
@@ -107,7 +107,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       else
       {
         var valueColumnDefinition = new ColumnDefinition (
-            _storageNameProvider.GetColumnName (propertyDefinition),
+            _storageNameProvider.GetColumnName (propertyDefinition), //TODO 4127: use GetRelationColumnName
             propertyDefinition.PropertyType,
             _storageTypeCalculator.SqlDataTypeObjectID,
             true,

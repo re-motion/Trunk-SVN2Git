@@ -34,6 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     string GetTableName (ClassDefinition classDefinition);
     string GetViewName (ClassDefinition classDefinition);
     string GetColumnName (PropertyDefinition propertyDefinition);
+    string GetRelationColumnName (PropertyDefinition propertyDefinition);
     string GetRelationClassIDColumnName (PropertyDefinition propertyDefinition);
     
     string GetPrimaryKeyConstraintName (ClassDefinition classDefinition);

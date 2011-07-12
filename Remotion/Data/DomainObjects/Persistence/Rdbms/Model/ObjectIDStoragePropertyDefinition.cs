@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinition valueProperty, SimpleStoragePropertyDefinition classIDProperty)
     {
       ArgumentUtility.CheckNotNull ("valueProperty", valueProperty);
+      ArgumentUtility.CheckNotNull ("classIDProperty", classIDProperty);
 
       _valueProperty = valueProperty;
       _classIDProperty = classIDProperty;
@@ -52,11 +53,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _classIDProperty; }
     }
 
-    public bool HasClassIDColumn
-    {
-      get { return _classIDProperty != null; }
-    }
-
     public ColumnDefinition GetColumnForLookup ()
     {
       return _valueProperty.ColumnDefinition;
@@ -65,8 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       yield return _valueProperty.ColumnDefinition;
-      if(HasClassIDColumn)
-        yield return _classIDProperty.ColumnDefinition;
+      yield return _classIDProperty.ColumnDefinition;
     }
 
     public bool Equals (IRdbmsStoragePropertyDefinition other)

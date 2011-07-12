@@ -72,9 +72,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         return attribute.Identifier;
 
       if (ReflectionUtility.IsDomainObject (propertyDefinition.PropertyInfo.PropertyType))
-        return propertyDefinition.PropertyInfo.Name + "ID";
+        return GetRelationColumnName (propertyDefinition);
 
       return propertyDefinition.PropertyInfo.Name;
+    }
+
+    public string GetRelationColumnName (PropertyDefinition propertyDefinition)
+    {
+      return propertyDefinition.PropertyInfo.Name + "ID";
     }
 
     public string GetRelationClassIDColumnName (PropertyDefinition propertyDefinition)

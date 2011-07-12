@@ -27,7 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleStoragePropertyDefinition _objectIDColumn;
     private SimpleStoragePropertyDefinition _classIDColumn;
     private ObjectIDStoragePropertyDefinition _columnDefinition;
-    private ObjectIDStoragePropertyDefinition _columnDefinitionWithoutClassID;
 
     [SetUp]
     public void SetUp ()
@@ -35,7 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _objectIDColumn = ColumnDefinitionObjectMother.ObjectIDColumn;
       _classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
       _columnDefinition = new ObjectIDStoragePropertyDefinition (_objectIDColumn, _classIDColumn);
-      _columnDefinitionWithoutClassID = new ObjectIDStoragePropertyDefinition (_objectIDColumn, null);
     }
 
     [Test]
@@ -62,7 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumns ()
     {
       Assert.That (_columnDefinition.GetColumns(), Is.EqualTo (new[] { _objectIDColumn.ColumnDefinition, _classIDColumn.ColumnDefinition }));
-      Assert.That (_columnDefinitionWithoutClassID.GetColumns(), Is.EqualTo (new[] { _objectIDColumn.ColumnDefinition }));
     }
 
     [Test]
@@ -72,15 +69,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (_columnDefinition.Equals (other), Is.True);
       Assert.That (_columnDefinition.Equals ((object) other), Is.True);
-    }
-
-    [Test]
-    public void Equals_True_NoClassIDColumns ()
-    {
-      var other = new ObjectIDStoragePropertyDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, null);
-
-      Assert.That (_columnDefinitionWithoutClassID.Equals (other), Is.True);
-      Assert.That (_columnDefinitionWithoutClassID.Equals ((object) other), Is.True);
     }
 
     [Test]
@@ -113,15 +101,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Equals_False_NullClassIDColumn ()
-    {
-      var other = new ObjectIDStoragePropertyDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, null);
-
-      Assert.That (_columnDefinition.Equals (other), Is.False);
-      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
-    }
-
-    [Test]
     public void Equals_False_Null ()
     {
       Assert.That (_columnDefinition.Equals ((IRdbmsStoragePropertyDefinition) null), Is.False);
@@ -135,13 +114,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (_columnDefinition.GetHashCode(), Is.EqualTo (other.GetHashCode()));
     }
-
-    [Test]
-    public void GetHashCode_EqualObjects_NoClassIDColumn ()
-    {
-      var other = new ObjectIDStoragePropertyDefinition (ColumnDefinitionObjectMother.ObjectIDColumn, null);
-
-      Assert.That (_columnDefinitionWithoutClassID.GetHashCode(), Is.EqualTo (other.GetHashCode()));
-    }
+    
   }
 }
