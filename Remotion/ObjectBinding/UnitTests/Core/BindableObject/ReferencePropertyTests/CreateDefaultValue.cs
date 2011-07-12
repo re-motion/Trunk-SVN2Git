@@ -67,6 +67,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
+    public void Create_WithCreateSupportedAndReferencingObjectNull ()
+    {
+      var mockService = _mockRepository.StrictMock<IDefaultValueServiceOnType> ();
+      var property = CreateProperty ("DefaultValueServiceFromPropertyType");
+      var expected = _mockRepository.Stub<IBusinessObject> ();
+
+      using (_mockRepository.Ordered ())
+      {
+        Expect.Call (mockService.SupportsProperty (property)).Return (true);
+        Expect.Call (mockService.Create (null, property)).Return (expected);
+      }
+      _mockRepository.ReplayAll ();
+
+      _bindableObjectProviderForPropertyType.AddService (mockService);
+      IBusinessObject actual = property.CreateDefaultValue (null);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (actual, Is.SameAs (expected));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         "Creating a default value is not supported for reference property 'DefaultValueServiceFromPropertyDeclaration' of business object class "
         + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]

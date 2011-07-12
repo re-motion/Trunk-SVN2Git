@@ -21,5 +21,7 @@ namespace Remotion.ObjectBinding.BindableObject
     bool SupportsProperty (IBusinessObjectReferenceProperty property);
 
     IBusinessObject Create (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property);
+
+    //bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, IBusinessObject value, IBusinessObjectProperty[] emptyProperties);
   }
 }

@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding
     bool SupportsSearchAvailableObjects { get; }
 
     /// <summary>Searches the object model for the <see cref="IBusinessObject"/> instances that can be assigned to this property.</summary>
-    /// <param name="referencingObject"> The business object for which to search for the possible objects to be referenced. </param>
+    /// <param name="referencingObject"> The business object for which to search for the possible objects to be referenced. Can be <see langword="null"/>.</param>
     /// <param name="searchArguments">A parameter-object containing additional information for executing the search. Can be <see langword="null"/>.</param>
     /// <returns>A list of the <see cref="IBusinessObject"/> instances available. Must not return <see langword="null"/>.</returns>
     /// <exception cref="NotSupportedException">
@@ -55,31 +55,39 @@ namespace Remotion.ObjectBinding
 
     /// <summary>
     ///   Gets a flag indicating if <see cref="CreateDefaultValue"/> may be called to implicitly create a new business object 
-    ///   for editing in case the object reference is null.
+    ///   for editing in case the object reference is <see langword="null" />.
     /// </summary>
-    // SupportsDefaultValue
     bool SupportsDefaultValue { get; }
 
     /// <summary>
-    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new business 
-    ///   object.
+    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new business object.
     /// </summary>
     /// <param name="referencingObject"> 
-    ///   The business object containing the reference property whose value will be assigned the newly created object. 
+    ///   The business object containing the reference property whose value will be assigned the newly created object. Can be <see langword="null"/>.
     /// </param>
     /// <exception cref="NotSupportedException"> 
     ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
     /// </exception>
     /// <remarks>
-    ///   A use case for the <b>CreateDefaultValue</b> method is the instantiation of an business object without a unique identifier,
-    ///   usually an <b>Aggregate</b>. The aggregate reference can be <see langword="null"/> until one of its values
+    ///   A use case for the <see cref="CreateDefaultValue"/> method is the instantiation of an business object without identity,
+    ///   e.g. a <b>value object</b>. The reference to the value object can be <see langword="null"/> until one of its values
     ///   is set in the user interface.
     /// </remarks>
-    // CreateDefaultValue
     IBusinessObject CreateDefaultValue (IBusinessObject referencingObject);
+
+    //bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties);
 
     bool SupportsDelete { get; }
 
-     void Delete (IBusinessObject referencingObject, IBusinessObject value);
+    /// <param name="referencingObject"> 
+    ///   The business object containing the reference property whose value will be deleted. Can be <see langword="null"/>.
+    /// </param>
+    /// <param name="value">
+    ///   The business object to be deleted. Must not be <see langword="null" />.
+    /// </param>
+    /// <exception cref="NotSupportedException"> 
+    ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
+    /// </exception>
+    void Delete (IBusinessObject referencingObject, IBusinessObject value);
   }
 }

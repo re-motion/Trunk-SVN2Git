@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary>Searches the object model for the <see cref="IBusinessObject"/> instances that can be assigned to this property.</summary>
-    /// <param name="referencingObject"> The business object for which to search for the possible objects to be referenced. </param>
+    /// <param name="referencingObject"> The business object for which to search for the possible objects to be referenced. Can be <see langword="null"/>.</param>
     /// <param name="searchArguments">A parameter-object containing additional information for executing the search. Can be <see langword="null"/>.</param>
     /// <returns>A list of the <see cref="IBusinessObject"/> instances available. Must not return <see langword="null"/>.</returns>
     /// <exception cref="NotSupportedException">
@@ -116,19 +116,16 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary>
-    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new business 
-    ///   object.
+    ///   If <see cref="SupportsDefaultValue"/> is <see langword="true"/>, this method can be used to create a new business object.
     /// </summary>
     /// <param name="referencingObject"> 
-    ///   The business object containing the reference property whose value will be assigned the newly created object. 
+    ///   The business object containing the reference property whose value will be assigned the newly created object. Can be <see langword="null"/>.
     /// </param>
     /// <exception cref="NotSupportedException"> 
     ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
     /// </exception>
     public IBusinessObject CreateDefaultValue (IBusinessObject referencingObject)
     {
-      ArgumentUtility.CheckNotNull ("referencingObject", referencingObject);
-
       if (!SupportsDefaultValue)
       {
         throw new NotSupportedException (
@@ -156,9 +153,17 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
     }
 
+    /// <param name="referencingObject"> 
+    ///   The business object containing the reference property whose value will be deleted. Can be <see langword="null"/>.
+    /// </param>
+    /// <param name="value">
+    ///   The business object to be deleted. Must not be <see langword="null" />.
+    /// </param>
+    /// <exception cref="NotSupportedException"> 
+    ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
+    /// </exception>
     public void Delete (IBusinessObject referencingObject, IBusinessObject value)
     {
-      ArgumentUtility.CheckNotNull ("referencingObject", referencingObject);
       ArgumentUtility.CheckNotNull ("value", value);
 
       if (!SupportsDelete)
