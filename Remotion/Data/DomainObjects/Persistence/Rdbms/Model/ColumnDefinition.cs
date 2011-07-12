@@ -98,11 +98,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       // TODO Review 4126: use StorageTypeInfo.ToString
       return string.Format ("{0} {1} {2}", Name, StorageTypeInfo, IsNullable ? "NULL" : "NOT NULL");
     }
-
-    // TODO Review 4125: Remove this member
-    public bool IsNull
-    {
-      get { return false; }
-    }
   }
 }

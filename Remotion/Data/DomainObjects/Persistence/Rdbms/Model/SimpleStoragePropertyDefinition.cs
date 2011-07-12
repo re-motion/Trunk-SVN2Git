@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public bool IsNull
     {
-      get { return _columnDefinition.IsNull; }
+      get { return false; }
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()

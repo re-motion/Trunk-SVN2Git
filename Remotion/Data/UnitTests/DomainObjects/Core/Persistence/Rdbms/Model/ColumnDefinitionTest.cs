@@ -49,12 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void IsNull ()
-    {
-      Assert.That (_columnDefinition.IsNull, Is.False);
-    }
-
-    [Test]
     public void Equals_True ()
     {
       var other = new ColumnDefinition ("Name", _type, new StorageTypeInformation("varchar", DbType.String), true, false);

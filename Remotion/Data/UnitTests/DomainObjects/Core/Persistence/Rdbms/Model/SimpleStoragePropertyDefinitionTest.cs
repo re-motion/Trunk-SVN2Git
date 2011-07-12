@@ -39,7 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Name ()
     {
       Assert.That (_storagePropertyDefinition.Name, Is.EqualTo (_innerColumnDefinition.Name));
-      Assert.That (_storagePropertyDefinition.IsNull, Is.EqualTo (_innerColumnDefinition.IsNull));
     }
 
     [Test]
