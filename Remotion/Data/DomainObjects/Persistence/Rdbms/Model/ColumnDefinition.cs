@@ -73,6 +73,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (other == null)
         return false;
 
+      // TODO Review 4126: Refactor so that other.StorageTypeInfo is compared with StorageTypeInfo
       return other.Name == Name
           && other.PropertyType == PropertyType
           && other.StorageTypeInfo.StorageType == StorageTypeInfo.StorageType
@@ -87,14 +88,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public override int GetHashCode ()
     {
+      // TODO Review 4126: Change to include full StorageTypeInfo
       return EqualityUtility.GetRotatedHashCode (Name, PropertyType, StorageTypeInfo.StorageType, IsNullable);
     }
 
     public override string ToString ()
     {
+      // TODO Review 4126: Add test for ToString
+      // TODO Review 4126: use StorageTypeInfo.ToString
       return string.Format ("{0} {1} {2}", Name, StorageTypeInfo, IsNullable ? "NULL" : "NOT NULL");
     }
 
+    // TODO Review 4125: Remove this member
     public bool IsNull
     {
       get { return false; }

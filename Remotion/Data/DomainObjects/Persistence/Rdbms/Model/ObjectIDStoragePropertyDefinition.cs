@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
   /// </summary>
-  public class ObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition, IObjectIDStoragePropertyDefinition
+  public class ObjectIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
     private readonly SimpleStoragePropertyDefinition _valueProperty;
     private readonly SimpleStoragePropertyDefinition _classIDProperty;
@@ -38,11 +38,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _classIDProperty = classIDProperty;
     }
 
-    string IStoragePropertyDefinition.Name
-    {
-      get { return _valueProperty.Name; }
-    }
-
     public SimpleStoragePropertyDefinition ValueProperty
     {
       get { return _valueProperty; }
@@ -51,6 +46,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public SimpleStoragePropertyDefinition ClassIDProperty
     {
       get { return _classIDProperty; }
+    }
+
+    string IStoragePropertyDefinition.Name
+    {
+      get { return _valueProperty.Name; }
     }
 
     public ColumnDefinition GetColumnForLookup ()

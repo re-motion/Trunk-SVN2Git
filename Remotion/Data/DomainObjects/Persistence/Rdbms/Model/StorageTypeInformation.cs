@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="StorageTypeInformation"/> provides information of the storage-type and database-type for a column in a relational database.
   /// </summary>
+  // TODO Review 4126: Convert to struct, add tests for Equals and GetHashCode
   public class StorageTypeInformation : IColumnTypeInformation
   {
     private readonly string _storageType;

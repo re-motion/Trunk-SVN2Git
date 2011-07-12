@@ -21,8 +21,9 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IRdbmsStoragePropertyDefinition"/> defines the API for all column definitions.
+  /// <see cref="IRdbmsStoragePropertyDefinition"/> is exposed by all RDBMS-specific <see cref="IStoragePropertyDefinition"/> implementations.
   /// </summary>
+  // TODO Review 4126: Remove INullObject and all IsNull properties
   public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition, IEquatable<IRdbmsStoragePropertyDefinition>, INullObject
   {
     IEnumerable<ColumnDefinition> GetColumns ();

@@ -16,6 +16,9 @@
 // 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  /// <summary>
+  /// Denotes a <see cref="IRdbmsStoragePropertyDefinition"/> that refers to another <see cref="DomainObject"/>.
+  /// </summary>
   public interface IObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
     ColumnDefinition GetColumnForLookup ();

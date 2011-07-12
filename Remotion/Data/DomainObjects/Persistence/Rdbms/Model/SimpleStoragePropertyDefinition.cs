@@ -21,7 +21,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// Defines a simple storage property definition in a relational database.
+  /// Defines that a property maps directly to a simple column in a relational database.
   /// </summary>
   public class SimpleStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {

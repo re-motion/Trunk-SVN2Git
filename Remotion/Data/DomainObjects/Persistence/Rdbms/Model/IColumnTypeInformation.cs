@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <see cref="IColumnTypeInformation"/> defines the API for all implementations that are responsible to hold information about how a column is 
   /// declared in a relational database.
   /// </summary>
+  // TODO Review 4126: Remove this interface
   public interface IColumnTypeInformation
   {
     string StorageType { get; }
