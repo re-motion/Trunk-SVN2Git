@@ -86,8 +86,7 @@ namespace Remotion.ObjectBinding
       SaveValues (interim);
 
       // if required, save value into "parent" data source
-      if (ReferencedDataSource != null && ReferencedDataSource.BusinessObject != null
-          && ReferenceProperty != null && ReferenceProperty.ReferenceClass != null
+      if (ReferencedDataSource != null && ReferencedDataSource.BusinessObject != null && ReferenceProperty != null
           && (_hasBusinessObjectChanged || ReferenceProperty.ReferenceClass.RequiresWriteBack))
       {
         ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
