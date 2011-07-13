@@ -45,12 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void IsNull ()
-    {
-      Assert.That (_columnDefinition.IsNull, Is.False);
-    }
-
-    [Test]
     public void GetColumnForLookup ()
     {
       Assert.That (_columnDefinition.GetColumnForLookup(), Is.SameAs (_objectIDColumn.ColumnDefinition));

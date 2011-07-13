@@ -38,5 +38,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_storageTypeInformation.StorageType, Is.EqualTo ("test"));
       Assert.That (_storageTypeInformation.DbType, Is.EqualTo (DbType.Boolean));
     }
+
+    [Test]
+    public void Equals_True ()
+    {
+      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.Boolean)), Is.True);
+    }
+
+    [Test]
+    public void Equals_DifferentStorageType_False ()
+    {
+      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test2", DbType.Boolean)), Is.False);
+    }
+
+    [Test]
+    public void Equals_DifferentDbType_False ()
+    {
+      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.String)), Is.False);
+    }
+
+    [Test]
+    public void GetHashcode_EqualObjects ()
+    {
+      var storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean);
+
+      Assert.That (_storageTypeInformation.GetHashCode(), Is.EqualTo (storageTypeInformation.GetHashCode()));
+    }
   }
 }

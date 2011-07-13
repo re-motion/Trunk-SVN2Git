@@ -28,9 +28,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly Type _propertyType;
     private readonly bool _isNullable;
     private readonly bool _isPartOfPrimaryKey;
-    private readonly IColumnTypeInformation _storageTypeInfo;
+    private readonly StorageTypeInformation _storageTypeInfo;
 
-    public ColumnDefinition (string name, Type propertyType, IColumnTypeInformation storageTypeInfo, bool isNullable, bool isPartOfPrimaryKey)
+    public ColumnDefinition (string name, Type propertyType, StorageTypeInformation storageTypeInfo, bool isNullable, bool isPartOfPrimaryKey)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _propertyType; }
     }
 
-    public IColumnTypeInformation StorageTypeInfo
+    public StorageTypeInformation StorageTypeInfo
     {
       get { return _storageTypeInfo; }
     }
@@ -73,11 +73,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (other == null)
         return false;
 
-      // TODO Review 4126: Refactor so that other.StorageTypeInfo is compared with StorageTypeInfo
       return other.Name == Name
           && other.PropertyType == PropertyType
-          && other.StorageTypeInfo.StorageType == StorageTypeInfo.StorageType
-          && other.StorageTypeInfo.DbType == StorageTypeInfo.DbType
+          && other.StorageTypeInfo.Equals(StorageTypeInfo)
           && other.IsNullable == IsNullable;
     }
 
@@ -88,15 +86,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public override int GetHashCode ()
     {
-      // TODO Review 4126: Change to include full StorageTypeInfo
-      return EqualityUtility.GetRotatedHashCode (Name, PropertyType, StorageTypeInfo.StorageType, IsNullable);
+      return EqualityUtility.GetRotatedHashCode (Name, PropertyType, StorageTypeInfo, IsNullable);
     }
 
     public override string ToString ()
     {
-      // TODO Review 4126: Add test for ToString
-      // TODO Review 4126: use StorageTypeInfo.ToString
-      return string.Format ("{0} {1} {2}", Name, StorageTypeInfo, IsNullable ? "NULL" : "NOT NULL");
+      return string.Format ("{0} {1} {2}", Name, StorageTypeInfo.StorageType, IsNullable ? "NULL" : "NOT NULL");
     }
   }
 }

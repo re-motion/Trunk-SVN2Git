@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Equals_False_DifferentStorageType ()
+    public void Equals_False_DifferentStorageTypeInfo ()
     {
       var other = new ColumnDefinition ("Name", _type, new StorageTypeInformation("varchar2", DbType.String), true, false);
 
@@ -117,5 +117,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_columnDefinition.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
     }
 
+    [Test]
+    public void To_String ()
+    {
+      Assert.That (_columnDefinition.ToString (), Is.EqualTo ("Name varchar NULL"));
+    }
   }
 }

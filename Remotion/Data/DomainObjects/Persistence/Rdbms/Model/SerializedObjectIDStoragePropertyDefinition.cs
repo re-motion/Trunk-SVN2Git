@@ -61,11 +61,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return _serializedIDProperty.Equals (((SerializedObjectIDStoragePropertyDefinition) other).SerializedIDProperty);
     }
-
-    public bool IsNull
-    {
-      get { return _serializedIDProperty.IsNull; }
-    }
     
   }
 }

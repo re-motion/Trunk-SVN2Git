@@ -35,32 +35,32 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
     {
     }
 
-    public override IColumnTypeInformation SqlDataTypeObjectID
+    public override StorageTypeInformation SqlDataTypeObjectID
     {
       get { return new StorageTypeInformation ("uniqueidentifier", DbType.Guid); }
     }
 
-    public override IColumnTypeInformation SqlDataTypeSerializedObjectID
+    public override StorageTypeInformation SqlDataTypeSerializedObjectID
     {
       get { return new StorageTypeInformation ("varchar (255)", DbType.String); }
     }
 
-    public override IColumnTypeInformation SqlDataTypeClassID
+    public override StorageTypeInformation SqlDataTypeClassID
     {
       get { return new StorageTypeInformation ("varchar (100)", DbType.String); }
     }
 
-    public override IColumnTypeInformation SqlDataTypeTimestamp
+    public override StorageTypeInformation SqlDataTypeTimestamp
     {
-      get { return new StorageTypeInformation ("rowversion", DbType.String); } //TODO Review 4126: Binary
+      get { return new StorageTypeInformation ("rowversion", DbType.Binary); } 
     }
 
-    public override IColumnTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
+    public override StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       var sqlDataType = GetSqlDataType (propertyDefinition.PropertyType);
-      if (sqlDataType != null)
+      if (!string.IsNullOrEmpty(sqlDataType.StorageType))
         return sqlDataType;
 
       if (ReflectionUtility.IsStringPropertyValueType (propertyDefinition.PropertyType))
@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return base.GetStorageType (propertyDefinition);
     }
 
-    private static IColumnTypeInformation GetSqlDataType (Type type)
+    private static StorageTypeInformation GetSqlDataType (Type type)
     {
       type = Nullable.GetUnderlyingType (type) ?? type;
 
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (ExtensibleEnumUtility.IsExtensibleEnumType (type))
         return new StorageTypeInformation (string.Format ("varchar ({0})", GetColumnWidthForExtensibleEnum (type)), DbType.String);
 
-      return null;
+      return new StorageTypeInformation();
     }
 
     private static int GetColumnWidthForExtensibleEnum (Type extensibleEnumType)

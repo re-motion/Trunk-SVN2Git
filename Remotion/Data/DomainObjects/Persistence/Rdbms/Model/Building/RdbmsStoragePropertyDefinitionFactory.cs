@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       // if (relationEndPointDefinition == null)
       // {
       var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
-      if (storageType == null)
+      if (string.IsNullOrEmpty(storageType.StorageType))
         return new UnsupportedStoragePropertyDefinition();
 
       var columnDefinition = new ColumnDefinition (

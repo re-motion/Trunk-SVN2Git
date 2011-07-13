@@ -73,10 +73,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _valueProperty.Equals (((ObjectIDWithoutClassIDStoragePropertyDefinition) other).ValueProperty) &&
              ((ObjectIDWithoutClassIDStoragePropertyDefinition) other).ClassDefinition == _classDefinition;
     }
-
-    public bool IsNull
-    {
-      get { return _valueProperty.IsNull; }
-    }
+    
   }
 }

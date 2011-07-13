@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var result = _typeCalculator.GetStorageType (propertyDefinition);
 
-      Assert.That (result, Is.Null);
+      Assert.That (result.StorageType, Is.Null);
     }
 
     private PropertyDefinition CreatePropertyDefinition (Type propertyType, bool isNullable, int? maxLength)

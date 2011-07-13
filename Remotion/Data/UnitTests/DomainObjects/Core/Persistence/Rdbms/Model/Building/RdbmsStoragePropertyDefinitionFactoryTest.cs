@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
-      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (null);
+      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (new StorageTypeInformation());
 
       var result = _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 

@@ -83,10 +83,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return EqualityUtility.GetRotatedHashCode (ValueProperty, ClassIDProperty);
     }
-
-    public bool IsNull
-    {
-      get { return false; }
-    }
   }
 }

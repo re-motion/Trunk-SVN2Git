@@ -60,12 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void IsNull ()
-    {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.IsNull, Is.EqualTo (_serializedIDProperty.IsNull));
-    }
-
-    [Test]
     public void Equals_Null ()
     {
       Assert.That (_serializedObjectIDStoragePropertyDefinition.Equals (null), Is.False);

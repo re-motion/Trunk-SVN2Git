@@ -23,8 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="IRdbmsStoragePropertyDefinition"/> is exposed by all RDBMS-specific <see cref="IStoragePropertyDefinition"/> implementations.
   /// </summary>
-  // TODO Review 4126: Remove INullObject and all IsNull properties
-  public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition, IEquatable<IRdbmsStoragePropertyDefinition>, INullObject
+  public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition, IEquatable<IRdbmsStoragePropertyDefinition>
   {
     IEnumerable<ColumnDefinition> GetColumns ();
   }
