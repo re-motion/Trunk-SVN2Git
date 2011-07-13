@@ -103,8 +103,13 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 
+      // ReSharper bug: value can be null
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
+      // ReSharper disable HeuristicUnreachableCode
       if (_isNullable && value == null)
         return (destinationType == typeof (string)) ? string.Empty : null;
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
       
       bool isMatchingDestinationType = !_isNullable && destinationType == _underlyingEnumType;
       bool isMatchingNullableDestinationType = Nullable.GetUnderlyingType (destinationType) == _underlyingEnumType;
