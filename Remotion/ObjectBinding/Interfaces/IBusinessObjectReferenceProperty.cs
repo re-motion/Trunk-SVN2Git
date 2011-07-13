@@ -26,7 +26,8 @@ namespace Remotion.ObjectBinding
   {
     /// <summary> Gets the class information for elements of this property. </summary>
     /// <value> 
-    ///   The <see cref="IBusinessObjectClass"/> of the <see cref="IBusinessObject"/> accessed through this property.
+    ///   The <see cref="IBusinessObjectClass"/> of the <see cref="IBusinessObject"/> accessed through this property. 
+    ///   Must not return <see langword="null" />.
     /// </value>
     IBusinessObjectClass ReferenceClass { get; }
 
