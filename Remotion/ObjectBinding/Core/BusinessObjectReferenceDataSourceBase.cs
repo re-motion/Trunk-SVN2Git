@@ -42,6 +42,18 @@ namespace Remotion.ObjectBinding
     /// </summary>
     private bool _hasBusinessObjectChanged = false;
 
+    /// <summary>
+    ///   See <see cref="IBusinessObjectReferenceDataSource.ReferenceProperty">IBusinessObjectReferenceDataSource.ReferenceProperty</see>
+    ///   for information on how to implement this <see langword="abstract"/> property.
+    /// </summary>
+    public abstract IBusinessObjectReferenceProperty ReferenceProperty { get; }
+
+    /// <summary>
+    ///   See <see cref="IBusinessObjectReferenceDataSource.ReferencedDataSource">IBusinessObjectReferenceDataSource.ReferencedDataSource</see>
+    ///   for information on how to implement this <see langword="abstract"/> property.
+    /// </summary>
+    public abstract IBusinessObjectDataSource ReferencedDataSource { get; }
+
     /// <summary> 
     ///   Loads the <see cref="BusinessObject"/> from the <see cref="ReferencedDataSource"/> using 
     ///   <see cref="ReferenceProperty"/> and populates the bound controls using 
@@ -49,18 +61,19 @@ namespace Remotion.ObjectBinding
     /// </summary>
     /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <remarks>
-    ///   For details on <b>LoadValue</b>, 
+    ///   For details on <see cref="LoadValue"/>, 
     ///   see <see cref="IBusinessObjectDataSource.LoadValues">IBusinessObjectDataSource.LoadValues</see>.
     /// </remarks>
     /// <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
     public void LoadValue (bool interim)
     {
       // load value from "parent" data source
-      if (ReferencedDataSource != null && ReferencedDataSource.BusinessObject != null && ReferenceProperty != null)
+      if (HasValidBinding)
       {
         var businessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
-        if (businessObject == null && Mode == DataSourceMode.Edit && ReferenceProperty.SupportsDefaultValue)
+        if (businessObject == null && SupportsDefaultValueSemantics)
           businessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
+        
         BusinessObject = businessObject;
         _hasBusinessObjectChanged = false;
       }
@@ -76,7 +89,7 @@ namespace Remotion.ObjectBinding
     /// </summary>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
     /// <remarks>
-    ///   For details on <b>SaveValue</b>, 
+    ///   For details on <see cref="SaveValue"/>, 
     ///   see <see cref="IBusinessObjectDataSource.SaveValues">IBusinessObjectDataSource.SaveValues</see>.
     /// </remarks>
     /// <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
@@ -86,8 +99,7 @@ namespace Remotion.ObjectBinding
       SaveValues (interim);
 
       // if required, save value into "parent" data source
-      if (ReferencedDataSource != null && ReferencedDataSource.BusinessObject != null && ReferenceProperty != null
-          && (_hasBusinessObjectChanged || ReferenceProperty.ReferenceClass.RequiresWriteBack))
+      if (HasValidBinding && RequiresWriteBack)
       {
         ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
         _hasBusinessObjectChanged = false;
@@ -150,16 +162,19 @@ namespace Remotion.ObjectBinding
       }
     }
 
-    /// <summary>
-    ///   See <see cref="IBusinessObjectReferenceDataSource.ReferenceProperty">IBusinessObjectReferenceDataSource.ReferenceProperty</see>
-    ///   for information on how to implement this <see langword="abstract"/> property.
-    /// </summary>
-    public abstract IBusinessObjectReferenceProperty ReferenceProperty { get; }
+    private bool HasValidBinding
+    {
+      get { return ReferencedDataSource != null && ReferencedDataSource.BusinessObject != null && ReferenceProperty != null; }
+    }
 
-    /// <summary>
-    ///   See <see cref="IBusinessObjectReferenceDataSource.ReferencedDataSource">IBusinessObjectReferenceDataSource.ReferencedDataSource</see>
-    ///   for information on how to implement this <see langword="abstract"/> property.
-    /// </summary>
-    public abstract IBusinessObjectDataSource ReferencedDataSource { get; }
+    private bool RequiresWriteBack
+    {
+      get { return (_hasBusinessObjectChanged || ReferenceProperty.ReferenceClass.RequiresWriteBack); }
+    }
+
+    private bool SupportsDefaultValueSemantics
+    {
+      get { return (Mode == DataSourceMode.Edit && ReferenceProperty.SupportsDefaultValue); }
+    }
   }
 }
