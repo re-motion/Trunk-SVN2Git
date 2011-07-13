@@ -49,10 +49,7 @@ public class PersonDetailsForm : SingleBocTestWxeBasePage
 
 	private void Page_Load(object sender, EventArgs e)
 	{
-    string id = (string) Variables["id"];
-    Guid personID = Guid.Empty;
-    if (! StringUtility.IsNullOrEmpty (id))
-      personID = new Guid (id);
+	  var  personID = new Guid (((ViewPersonDetailsWxeFunction)CurrentFunction).ID);
 
     Person person = Person.GetObject (personID);
     Person partner;

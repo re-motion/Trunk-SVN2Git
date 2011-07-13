@@ -24,21 +24,18 @@ namespace OBWTest
 [Serializable]
 public class ViewPersonDetailsWxeFunction: WxeFunction
 {
-  static readonly WxeParameterDeclaration[] s_parameters =  { 
-      new WxeParameterDeclaration ("id", false, WxeParameterDirection.In, typeof (string))};
-
   public ViewPersonDetailsWxeFunction()
-    :base (new NoneTransactionMode(), s_parameters)
+    :base (new NoneTransactionMode())
   {
   }
 
   // parameters and local variables
 
-  [WxeParameter (1, false, WxeParameterDirection.In)]
+  [WxeParameter (1, true, WxeParameterDirection.In)]
   public string ID
   {
-    get { return (string) Variables["id"]; }
-    set { Variables["id"] = value; }
+    get { return (string) Variables["ID"]; }
+    set { Variables["ID"] = value; }
   }
 
   // steps

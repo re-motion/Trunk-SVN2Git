@@ -191,16 +191,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("control", control);
 
-      if (control.DataSource == null)
+      var dataSource = control.DataSource;
+      if (dataSource == null)
         return null;
 
-      var businessObjectProvider = control.DataSource.BusinessObjectProvider;
+      var businessObjectClass = dataSource.BusinessObjectClass;
+      if (businessObjectClass == null)
+        return null;
+
+      var businessObjectProvider = businessObjectClass.BusinessObjectProvider;
       if (businessObjectProvider == null)
         return null;
 
       var webUIService = businessObjectProvider.GetService<IBusinessObjectWebUIService>();
       if (webUIService != null)
-        return webUIService.GetHelpInfo (control, control.DataSource.BusinessObjectClass, control.Property, control.DataSource.BusinessObject);
+        return webUIService.GetHelpInfo (control, businessObjectClass, control.Property, dataSource.BusinessObject);
 
       return null;
     }
