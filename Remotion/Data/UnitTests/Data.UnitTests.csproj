@@ -290,6 +290,8 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\FixedValueStorageProviderCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CompositeScriptBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\DictionaryBasedColumnOrdinalProviderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\NameBasedColumnOrdinalProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ObjectIDWithoutClassIDStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SerializedObjectIDStoragePropertyDefinitionTest.cs" />

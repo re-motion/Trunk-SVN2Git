@@ -245,6 +245,9 @@
     <Compile Include="Persistence\FixedValueStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />
+    <Compile Include="Persistence\Rdbms\DataReaders\DictionaryBasedColumnOrdinalProvider.cs" />
+    <Compile Include="Persistence\Rdbms\DataReaders\IColumnOrdinalProvider.cs" />
+    <Compile Include="Persistence\Rdbms\DataReaders\NameBasedColumnOrdinalProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
