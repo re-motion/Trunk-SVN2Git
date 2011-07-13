@@ -83,22 +83,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
         // We can't access the opposite ID column from here, but columns implement equality, so we can just recreate it
         var oppositeObjectIDColumnDefinition = _rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition();
-        
         var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
-        // TODO Review 4127: Add IObjectIDStoragePropertyDefinition.GetColumnForForeignKey(), implement with ValueProperty.ColumnDefinition; Serialized...Property returns null
-        // TODO Review 4127: Below, use GetColumnForForeignKey instead of GetColumnForLookup; if null, ignore this endPoint (and continue loop).
-        // TODO Review 4127: test with three variations: 1) an ObjectIDStoragePropertyDefinition, 2) an ObjectIDWithoutClassIDStoragePropertyDefinition, 3) a SerializedObjectIDStoragePropertyDefinition - or - with a stub returning null/not-null
-
+        
         var endPointIDColumnDefinition = endPointColumnDefinition as IObjectIDStoragePropertyDefinition;
         if (endPointIDColumnDefinition == null)
           throw new InvalidOperationException ("The non virtual constraint column definition has to be an ID column definition.");
 
-        Assertion.IsFalse (
-            endPointIDColumnDefinition is SerializedObjectIDStoragePropertyDefinition, 
-            "Within the same storage provider, IDs are never serialized.");
-
         var referencingColumn = oppositeObjectIDColumnDefinition;
-        var referencedColumn = endPointIDColumnDefinition.GetColumnForLookup();
+        var referencedColumn = endPointIDColumnDefinition.GetColumnForForeignKey();
+        if(referencedColumn==null)
+          continue;
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
             _storageNameProvider.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),

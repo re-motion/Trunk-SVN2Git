@@ -70,19 +70,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (name != null)
         return name;
 
-      // TODO Review 4127: Remove
-      if (ReflectionUtility.IsDomainObject (propertyDefinition.PropertyInfo.PropertyType))
-        return GetRelationColumnName (propertyDefinition);
-
       return propertyDefinition.PropertyInfo.Name;
     }
 
     public string GetRelationColumnName (PropertyDefinition propertyDefinition)
     {
-      // TODO Review 4127
-      //var name = GetColumnNameFromAttribute (propertyDefinition);
-      //if (name != null)
-      //  return name;
+      var name = GetColumnNameFromAttribute (propertyDefinition);
+      if (name != null)
+        return name;
 
       return propertyDefinition.PropertyInfo.Name + "ID";
     }
@@ -91,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return GetColumnName (propertyDefinition) + "ClassID";
+      return GetRelationColumnName (propertyDefinition) + "ClassID";
     }
 
     public string GetPrimaryKeyConstraintName (ClassDefinition classDefinition)

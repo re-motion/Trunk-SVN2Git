@@ -25,11 +25,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public abstract class StorageTypeCalculator
   {
-    // TODO Review 4127: Rename to ObjectIDStorageType etc
-    public abstract StorageTypeInformation SqlDataTypeObjectID { get; }
-    public abstract StorageTypeInformation SqlDataTypeSerializedObjectID { get; }
-    public abstract StorageTypeInformation SqlDataTypeClassID { get; }
-    public abstract StorageTypeInformation SqlDataTypeTimestamp { get; }
+    public abstract StorageTypeInformation ObjectIDStorageType { get; }
+    public abstract StorageTypeInformation SerializedObjectIDStorageType { get; }
+    public abstract StorageTypeInformation ClassIDStorageType { get; }
+    public abstract StorageTypeInformation TimestampStorageType { get; }
 
     private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
@@ -58,9 +57,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         var leftStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition.StorageGroupType, null);
         var rightStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClass.StorageGroupType, null);
         if (leftStorageProviderDefinition == rightStorageProviderDefinition)
-          return SqlDataTypeObjectID;
+          return ObjectIDStorageType;
         else
-          return SqlDataTypeSerializedObjectID;
+          return SerializedObjectIDStorageType;
       }
 
       return new StorageTypeInformation();

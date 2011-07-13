@@ -77,19 +77,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     public ColumnDefinition CreateObjectIDColumnDefinition ()
     {
       return new ColumnDefinition (
-          _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeCalculator.SqlDataTypeObjectID, false, true);
+          _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeCalculator.ObjectIDStorageType, false, true);
     }
 
     public ColumnDefinition CreateClassIDColumnDefinition ()
     {
       return new ColumnDefinition (
-          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
+          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeCalculator.ClassIDStorageType, false, false);
     }
 
     public virtual ColumnDefinition CreateTimestampColumnDefinition ()
     {
       return new ColumnDefinition (
-          _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
+          _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.TimestampStorageType, false, false);
     }
 
     protected virtual IObjectIDStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
@@ -103,9 +103,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (leftProvider != rightProvider)
       {
         var columnDefinition = new ColumnDefinition (
-            _storageNameProvider.GetColumnName (propertyDefinition), //TODO 4127: use GetRelationColumnName
+            _storageNameProvider.GetRelationColumnName (propertyDefinition),
             propertyDefinition.PropertyType,
-            _storageTypeCalculator.SqlDataTypeSerializedObjectID,
+            _storageTypeCalculator.SerializedObjectIDStorageType,
             propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
             false);
         return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (columnDefinition));
@@ -113,9 +113,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       else
       {
         var valueColumnDefinition = new ColumnDefinition (
-            _storageNameProvider.GetColumnName (propertyDefinition), //TODO 4127: use GetRelationColumnName
+            _storageNameProvider.GetRelationColumnName (propertyDefinition),
             propertyDefinition.PropertyType,
-            _storageTypeCalculator.SqlDataTypeObjectID,
+            _storageTypeCalculator.ObjectIDStorageType,
             true,
             false);
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           var classIDColumnDefinition = new ColumnDefinition (
               _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
               typeof (string),
-              _storageTypeCalculator.SqlDataTypeClassID,
+              _storageTypeCalculator.ClassIDStorageType,
               true,
               false);
           return new ObjectIDStoragePropertyDefinition (

@@ -53,10 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       base.SetUp();
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> (_storageProviderDefinitionFinder);
-      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeClassID).Return (new StorageTypeInformation ("varchar(100)", DbType.String));
-      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeObjectID).Return (new StorageTypeInformation ("guid", DbType.Guid));
-      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeTimestamp).Return (new StorageTypeInformation ("rowversion", DbType.DateTime));
-      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeSerializedObjectID).Return(new StorageTypeInformation ("varchar (255)", DbType.String));
+      _storageTypeCalculatorStub.Stub (stub => stub.ClassIDStorageType).Return (new StorageTypeInformation ("varchar(100)", DbType.String));
+      _storageTypeCalculatorStub.Stub (stub => stub.ObjectIDStorageType).Return (new StorageTypeInformation ("guid", DbType.Guid));
+      _storageTypeCalculatorStub.Stub (stub => stub.TimestampStorageType).Return (new StorageTypeInformation ("rowversion", DbType.DateTime));
+      _storageTypeCalculatorStub.Stub (stub => stub.SerializedObjectIDStorageType).Return(new StorageTypeInformation ("varchar (255)", DbType.String));
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
       _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
@@ -274,7 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var objectIDColumn = ((ObjectIDStoragePropertyDefinition) result).ValueProperty;
       var classIDColumn = ((ObjectIDStoragePropertyDefinition) result).ClassIDProperty;
 
-      Assert.That (objectIDColumn.Name, Is.EqualTo ("FakeColumnName"));
+      Assert.That (objectIDColumn.Name, Is.EqualTo ("FakeColumnNameID"));
       Assert.That (objectIDColumn.ColumnDefinition.IsNullable, Is.True);
       Assert.That (objectIDColumn.ColumnDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (objectIDColumn.ColumnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("guid"));
@@ -364,6 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (
           new StorageTypeInformation ("storage type", DbType.String));
       _storageNameProviderStub.Stub (stub => stub.GetColumnName (propertyDefinition)).Return ("FakeColumnName");
+      _storageNameProviderStub.Stub (stub => stub.GetRelationColumnName (propertyDefinition)).Return ("FakeColumnNameID");
       _storageNameProviderStub.Stub (stub => stub.GetRelationClassIDColumnName (propertyDefinition)).Return ("FakeRelationClassID");
     }
   }

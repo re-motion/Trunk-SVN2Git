@@ -15,15 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
@@ -37,8 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private ForeignKeyConstraintDefinitionFactory _factory;
     private ObjectIDStoragePropertyDefinition _fakeIdColumnDefinition;
     private SimpleStoragePropertyDefinition _fakeColumnDefintion;
-    private ObjectIDStoragePropertyDefinition _fakeForeignColumnDefinition;
+    private ObjectIDStoragePropertyDefinition _fakeObjectIDStoragePropertyDefinition;
     private IStorageProviderDefinitionFinder _storageProviderDefinitionFinderStub;
+    private ObjectIDWithoutClassIDStoragePropertyDefinition _fakeObjectIDWithoutClassIDStoragePropertyDefinition;
+    private SerializedObjectIDStoragePropertyDefinition _fakeSerializedObjectIDStoragePropertyDefinition;
 
     [SetUp]
     public override void SetUp ()
@@ -47,9 +49,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _fakeIdColumnDefinition = new ObjectIDStoragePropertyDefinition (
           SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
-      _fakeForeignColumnDefinition = new ObjectIDStoragePropertyDefinition (
+      _fakeObjectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("OrderID"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("ClassID"));
+      _fakeObjectIDWithoutClassIDStoragePropertyDefinition = new ObjectIDWithoutClassIDStoragePropertyDefinition (
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("OrderID"),
+          ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition));
+      _fakeSerializedObjectIDStoragePropertyDefinition =
+          new SerializedObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("OrderID"));
 
       _fakeColumnDefintion = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
 
@@ -62,7 +69,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void CreateForeignKeyConstraints ()
+    public void CreateForeignKeyConstraints_ObjectIDStoragePropertyDefinition ()
+    {
+      var orderClassDefinition = Configuration.GetClassDefinition ("Order");
+      var customerClassDefintion = Configuration.GetClassDefinition ("Customer");
+      var officialClassDefinition = Configuration.GetClassDefinition ("Official");
+
+      _rdbmsStoragePropertyDefintionFactoryMock
+          .Expect (mock => mock.CreateObjectIDColumnDefinition ())
+          .Return (_fakeIdColumnDefinition.ValueProperty.ColumnDefinition);
+      _rdbmsStoragePropertyDefintionFactoryMock.Replay ();
+
+      _columnDefintionResolverMock
+          .Expect (
+              mock =>
+              mock.GetColumnDefinition (orderClassDefinition.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"]))
+          .Return (_fakeObjectIDStoragePropertyDefinition);
+      _columnDefintionResolverMock.Replay ();
+
+      _storageNameProviderMock
+          .Expect (mock => mock.GetForeignKeyConstraintName (orderClassDefinition, _fakeObjectIDStoragePropertyDefinition))
+          .Return ("FakeConstraintName");
+      _storageNameProviderMock
+          .Expect (mock => mock.GetTableName (customerClassDefintion))
+          .Return ("FakeTableName")
+          .Repeat.Twice ();
+      _storageNameProviderMock.Replay ();
+
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (orderClassDefinition.StorageGroupType, null))
+          .Return (orderClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (customerClassDefintion.StorageGroupType, null))
+          .Return (customerClassDefintion.StorageEntityDefinition.StorageProviderDefinition);
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (officialClassDefinition.StorageGroupType, null))
+          .Return (officialClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
+
+      var foreignKeyConstraintDefinitions = _factory.CreateForeignKeyConstraints (orderClassDefinition).ToArray ();
+
+      _rdbmsStoragePropertyDefintionFactoryMock.VerifyAllExpectations ();
+      _columnDefintionResolverMock.VerifyAllExpectations ();
+      _storageNameProviderMock.VerifyAllExpectations ();
+
+      //OrderItem and OrderTicket endpoints are virtual and Official endpoint has different storage provider
+      Assert.That (foreignKeyConstraintDefinitions.Length, Is.EqualTo (1));
+      var foreignKeyConstraint = foreignKeyConstraintDefinitions[0];
+      Assert.That (foreignKeyConstraint.ReferencedTableName.EntityName, Is.EqualTo ("FakeTableName"));
+      Assert.That (foreignKeyConstraint.ReferencedTableName.SchemaName, Is.Null);
+      Assert.That (foreignKeyConstraint.ConstraintName, Is.EqualTo ("FakeConstraintName"));
+      Assert.That (foreignKeyConstraint.ReferencingColumns, Is.EqualTo (new[] { _fakeIdColumnDefinition.ValueProperty.ColumnDefinition }));
+      Assert.That (
+          foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeObjectIDStoragePropertyDefinition.ValueProperty.ColumnDefinition }));
+    }
+
+    [Test]
+    public void CreateForeignKeyConstraints_ObjectIDWithoutClassIDStoragePropertyDefinition ()
     {
       var orderClassDefinition = Configuration.GetClassDefinition ("Order");
       var customerClassDefintion = Configuration.GetClassDefinition ("Customer");
@@ -77,11 +139,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Expect (
               mock =>
               mock.GetColumnDefinition (orderClassDefinition.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"]))
-          .Return (_fakeForeignColumnDefinition);
+          .Return (_fakeObjectIDWithoutClassIDStoragePropertyDefinition);
       _columnDefintionResolverMock.Replay();
 
       _storageNameProviderMock
-          .Expect (mock => mock.GetForeignKeyConstraintName (orderClassDefinition, _fakeForeignColumnDefinition))
+          .Expect (mock => mock.GetForeignKeyConstraintName (orderClassDefinition, _fakeObjectIDWithoutClassIDStoragePropertyDefinition))
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
@@ -112,7 +174,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (foreignKeyConstraint.ReferencedTableName.SchemaName, Is.Null);
       Assert.That (foreignKeyConstraint.ConstraintName, Is.EqualTo ("FakeConstraintName"));
       Assert.That (foreignKeyConstraint.ReferencingColumns, Is.EqualTo (new[] { _fakeIdColumnDefinition.ValueProperty.ColumnDefinition }));
-      Assert.That (foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeForeignColumnDefinition.ValueProperty.ColumnDefinition }));
+      Assert.That (
+          foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeObjectIDStoragePropertyDefinition.ValueProperty.ColumnDefinition }));
+    }
+    
+    [Test]
+    public void CreateForeignKeyConstraints_SerializedObjectIDStoragePropertyDefinition_IsIgnored ()
+    {
+      var orderClassDefinition = Configuration.GetClassDefinition ("Order");
+      var customerClassDefintion = Configuration.GetClassDefinition ("Customer");
+      var officialClassDefinition = Configuration.GetClassDefinition ("Official");
+
+      _rdbmsStoragePropertyDefintionFactoryMock
+          .Expect (mock => mock.CreateObjectIDColumnDefinition ())
+          .Return (_fakeIdColumnDefinition.ValueProperty.ColumnDefinition);
+      _rdbmsStoragePropertyDefintionFactoryMock.Replay ();
+
+      _columnDefintionResolverMock
+          .Expect (
+              mock =>
+              mock.GetColumnDefinition (orderClassDefinition.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"]))
+          .Return (_fakeSerializedObjectIDStoragePropertyDefinition);
+      _columnDefintionResolverMock.Replay ();
+
+      _storageNameProviderMock
+          .Expect (mock => mock.GetTableName (customerClassDefintion))
+          .Return ("FakeTableName")
+          .Repeat.Once();
+      _storageNameProviderMock.Replay ();
+
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (orderClassDefinition.StorageGroupType, null))
+          .Return (orderClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (customerClassDefintion.StorageGroupType, null))
+          .Return (customerClassDefintion.StorageEntityDefinition.StorageProviderDefinition);
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (officialClassDefinition.StorageGroupType, null))
+          .Return (officialClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
+
+      var foreignKeyConstraintDefinitions = _factory.CreateForeignKeyConstraints (orderClassDefinition).ToArray ();
+
+      _rdbmsStoragePropertyDefintionFactoryMock.VerifyAllExpectations ();
+      _columnDefintionResolverMock.VerifyAllExpectations ();
+      _storageNameProviderMock.VerifyAllExpectations ();
+
+      Assert.That (foreignKeyConstraintDefinitions.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -131,11 +238,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
               mock =>
               mock.GetColumnDefinition (
                   computerClassDefinition.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"]))
-          .Return (_fakeForeignColumnDefinition);
+          .Return (_fakeObjectIDStoragePropertyDefinition);
       _columnDefintionResolverMock.Replay();
 
       _storageNameProviderMock
-          .Expect (mock => mock.GetForeignKeyConstraintName (computerClassDefinition, _fakeForeignColumnDefinition))
+          .Expect (mock => mock.GetForeignKeyConstraintName (computerClassDefinition, _fakeObjectIDStoragePropertyDefinition))
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (employeeClassDefinition))

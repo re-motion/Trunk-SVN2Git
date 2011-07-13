@@ -35,22 +35,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
     {
     }
 
-    public override StorageTypeInformation SqlDataTypeObjectID
+    public override StorageTypeInformation ObjectIDStorageType
     {
       get { return new StorageTypeInformation ("uniqueidentifier", DbType.Guid); }
     }
 
-    public override StorageTypeInformation SqlDataTypeSerializedObjectID
+    public override StorageTypeInformation SerializedObjectIDStorageType
     {
       get { return new StorageTypeInformation ("varchar (255)", DbType.String); }
     }
 
-    public override StorageTypeInformation SqlDataTypeClassID
+    public override StorageTypeInformation ClassIDStorageType
     {
       get { return new StorageTypeInformation ("varchar (100)", DbType.String); }
     }
 
-    public override StorageTypeInformation SqlDataTypeTimestamp
+    public override StorageTypeInformation TimestampStorageType
     {
       get { return new StorageTypeInformation ("rowversion", DbType.Binary); } 
     }

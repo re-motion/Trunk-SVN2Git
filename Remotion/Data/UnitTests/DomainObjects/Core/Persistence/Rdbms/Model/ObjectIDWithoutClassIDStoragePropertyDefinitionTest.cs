@@ -56,6 +56,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void GetColumnForForeignKey ()
+    {
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForForeignKey(), Is.SameAs (_valueProperty.ColumnDefinition));
+    }
+
+    [Test]
     public void GetColumns ()
     {
       Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (_valueProperty.GetColumns()));

@@ -44,6 +44,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _serializedIDProperty.ColumnDefinition;
     }
 
+    public ColumnDefinition GetColumnForForeignKey ()
+    {
+      return null;
+    }
+
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return _serializedIDProperty.GetColumns();

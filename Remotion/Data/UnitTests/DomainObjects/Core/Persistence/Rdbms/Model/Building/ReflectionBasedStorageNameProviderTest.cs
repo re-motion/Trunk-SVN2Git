@@ -121,25 +121,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void GetColumnName_RelationProperty_ReturnsRelationIDName ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
-      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "ParentFolder");
-
-      var result = _provider.GetColumnName (propertyDefinition);
-
-      Assert.That (result, Is.EqualTo ("ParentFolderID"));
-    }
-
-    [Test]
     public void GetRelationColumnName ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "ParentFolder");
 
-      var result = _provider.GetColumnName (propertyDefinition);
+      var result = _provider.GetRelationColumnName (propertyDefinition);
 
       Assert.That (result, Is.EqualTo ("ParentFolderID"));
+    }
+
+    [Test]
+    public void GetRelationColumnName_PropertyWithIStorageSpecificIdentifierAttribute_ReturnsNameFromAttribute ()
+    {
+      var classWithAllDataTypesDefinition =
+          ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (ClassWithAllDataTypes), null);
+      var propertyDefinition = PropertyDefinitionFactory.Create (
+          classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+
+      var result = _provider.GetRelationColumnName (propertyDefinition);
+
+      Assert.That (result, Is.EqualTo ("Boolean"));
     }
 
     [Test]
