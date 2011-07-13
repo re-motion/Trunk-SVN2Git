@@ -106,7 +106,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SetsValuesForBoundControls ()
+    public void LoadsValuesForBoundControls ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject>();
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (referencedObject);
