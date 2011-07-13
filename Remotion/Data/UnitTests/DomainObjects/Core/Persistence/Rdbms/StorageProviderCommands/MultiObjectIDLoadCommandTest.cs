@@ -22,9 +22,9 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 

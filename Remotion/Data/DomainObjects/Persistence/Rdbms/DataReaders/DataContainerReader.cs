@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 {
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="DataContainer"/> instances.

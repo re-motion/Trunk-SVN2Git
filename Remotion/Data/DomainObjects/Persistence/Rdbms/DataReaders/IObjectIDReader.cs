@@ -16,16 +16,15 @@
 // 
 using System.Collections.Generic;
 using System.Data;
-using Remotion.Data.DomainObjects.DataManagement;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 {
   /// <summary>
-  /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and converting it into <see cref="DataContainer"/> instances.
+  /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and converting it into <see cref="ObjectID"/> instances.
   /// </summary>
-  public interface IDataContainerReader
+  public interface IObjectIDReader
   {
-    DataContainer Read (IDataReader dataReader);
-    IEnumerable<DataContainer> ReadSequence (IDataReader dataReader, bool allowNulls);
+    ObjectID Read (IDataReader dataReader);
+    IEnumerable<ObjectID> ReadSequence (IDataReader dataReader);
   }
 }

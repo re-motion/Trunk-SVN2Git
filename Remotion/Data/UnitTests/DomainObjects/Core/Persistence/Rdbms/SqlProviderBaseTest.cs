@@ -16,11 +16,10 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 

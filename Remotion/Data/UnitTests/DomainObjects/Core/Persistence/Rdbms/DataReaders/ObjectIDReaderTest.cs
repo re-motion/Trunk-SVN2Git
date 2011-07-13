@@ -19,11 +19,11 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.DataReaders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.DataReaders
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
   public class ObjectIDReaderTest : SqlProviderBaseTest
