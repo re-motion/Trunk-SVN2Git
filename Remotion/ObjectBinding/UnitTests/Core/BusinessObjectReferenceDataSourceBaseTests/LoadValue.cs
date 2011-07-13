@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SetsBusinessObject ()
+    public void SetsBusinessObject_LoadsValueFromBoundObject ()
     {
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (expectedValue);
@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferencedDataSource_Null_DoesNotSetBusinessObject ()
+    public void ReferencedDataSource_Null_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (null, _referencePropertyStub);
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
@@ -75,10 +75,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
 
       Assert.That (referenceDataSource.BusinessObject, Is.SameAs (expectedValue));
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.True);
     }
 
     [Test]
-    public void ReferencedDataSource_BusinessObject_Null_DoesNotSetBusinessObject ()
+    public void ReferencedDataSource_BusinessObject_Null_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
     {
       _referencedDataSourceStub.BusinessObject = null;
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
@@ -88,10 +89,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
 
       Assert.That (referenceDataSource.BusinessObject, Is.SameAs (expectedValue));
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.True);
     }
 
     [Test]
-    public void ReferencedProperty_Null_DoesNotSetBusinessObject ()
+    public void ReferencedProperty_Null_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, null);
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
@@ -100,6 +102,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
 
       Assert.That (referenceDataSource.BusinessObject, Is.SameAs (expectedValue));
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.True);
     }
 
     [Test]
@@ -118,10 +121,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       secondControlMock.Stub (stub => stub.HasValidBinding).Return (true);
       referenceDataSource.Register (secondControlMock);
 
+      firstControlMock.Expect(mock => mock.LoadValue (false))
+          .WhenCalled (mi=>Assert.That (referenceDataSource.BusinessObject, Is.SameAs (referencedObject)));
+      secondControlMock.Expect(mock => mock.LoadValue (false))
+          .WhenCalled (mi=>Assert.That (referenceDataSource.BusinessObject, Is.SameAs (referencedObject)));
+
       referenceDataSource.LoadValue (false);
 
-      firstControlMock.AssertWasCalled (mock => mock.LoadValue (false));
-      secondControlMock.AssertWasCalled (mock => mock.LoadValue (false));
+      firstControlMock.VerifyAllExpectations();
+      secondControlMock.VerifyAllExpectations();
     }
 
     [Test]
