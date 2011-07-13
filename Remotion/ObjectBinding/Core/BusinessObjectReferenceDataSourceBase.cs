@@ -152,16 +152,6 @@ namespace Remotion.ObjectBinding
     }
 
     /// <summary>
-    ///   Gets the <see cref="IBusinessObjectProvider"/> used for accessing supplementary information on the bound
-    ///   <see cref="IBusinessObject"/>.
-    /// </summary>
-    /// <value> The <see cref="IBusinessObjectProvider"/> for the current <see cref="BusinessObjectClass"/>. </value>
-    public override IBusinessObjectProvider BusinessObjectProvider
-    {
-      get { return (ReferencedDataSource == null) ? null : ReferencedDataSource.BusinessObjectProvider; }
-    }
-
-    /// <summary>
     ///   See <see cref="IBusinessObjectReferenceDataSource.ReferenceProperty">IBusinessObjectReferenceDataSource.ReferenceProperty</see>
     ///   for information on how to implement this <see langword="abstract"/> property.
     /// </summary>

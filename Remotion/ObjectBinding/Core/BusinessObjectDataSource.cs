@@ -98,14 +98,9 @@ namespace Remotion.ObjectBinding
     ///   <see cref="IBusinessObject"/> and assigned <see cref="IBusinessObjectClass"/>.
     /// </summary>
     /// <value> The <see cref="IBusinessObjectProvider"/> for the current <see cref="BusinessObjectClass"/>. </value>
-    /// <remarks>
-    ///   <note type="inheritinfo">
-    ///     Must not return <see langword="null"/> if the <see cref="BusinessObjectClass"/> is set.
-    ///   </note>
-    /// </remarks>
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public virtual IBusinessObjectProvider BusinessObjectProvider
+    public IBusinessObjectProvider BusinessObjectProvider
     {
       get { return (BusinessObjectClass == null) ? null : BusinessObjectClass.BusinessObjectProvider; }
     }
