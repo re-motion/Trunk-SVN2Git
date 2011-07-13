@@ -177,16 +177,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, _objectIDReader);
       var indirectDataContainerLoadCommand = new IndirectDataContainerLoadCommand (objectIDLoadCommand, this);
       return
-          new SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>
+          new DelegateBasedStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
               (
               indirectDataContainerLoadCommand,
-              result =>
+              lookupResults => lookupResults.Select(result => 
               {
                 Assertion.IsNotNull (
                     result.LocatedDataContainer,
                     "Because ID lookup and DataContainer lookup are executed within the same database transaction, the DataContainer can never be null.");
                 return result.LocatedDataContainer;
-              });
+              }));
     }
 
     private FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForNullRelationLookup ()

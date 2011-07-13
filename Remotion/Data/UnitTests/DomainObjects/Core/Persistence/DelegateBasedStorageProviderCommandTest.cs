@@ -16,29 +16,30 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
   [TestFixture]
-  public class SelectStorageProviderCommandTest
+  public class DelegateBasedStorageProviderCommandTest
   {
     [Test]
     public void Execute ()
     {
       var executionContext = new object();
-      var commandStub = MockRepository.GenerateStub <IStorageProviderCommand<IEnumerable<string>, object>>();
-      var providerCommand = new SelectStorageProviderCommand<string, int, object> (commandStub, s => s.Length);
+      var commandStub = MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<string>, object>>();
+      var providerCommand = new DelegateBasedStorageProviderCommand<IEnumerable<string>, IEnumerable<int>, object> (
+          commandStub, s => s.Select (r => r.Count()));
 
       commandStub.Stub (stub => stub.Execute (executionContext)).Return (new[] { "Test1", "TestTest2" });
-        
+
       var result = providerCommand.Execute (executionContext).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (result[0], Is.EqualTo(5));
+      Assert.That (result[0], Is.EqualTo (5));
       Assert.That (result[1], Is.EqualTo (9));
     }
   }

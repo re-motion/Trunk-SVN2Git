@@ -364,9 +364,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
       Assert.That (
-          result, Is.TypeOf (typeof (SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>)));
+          result,
+          Is.TypeOf (
+              typeof (
+                  DelegateBasedStorageProviderCommand
+                  <IEnumerable<DataContainerLookupResult>, IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>)));
       var innerCommand =
-          ((SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>) result).Command;
+          ((
+           DelegateBasedStorageProviderCommand
+               <IEnumerable<DataContainerLookupResult>, IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>) result).Command;
       Assert.That (innerCommand, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
       var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
@@ -417,9 +423,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }));
 
       Assert.That (
-          result, Is.TypeOf (typeof (SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>)));
+          result,
+          Is.TypeOf (
+              typeof (
+                  DelegateBasedStorageProviderCommand
+                  <IEnumerable<DataContainerLookupResult>, IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>)));
       var innerCommand =
-          ((SelectStorageProviderCommand<DataContainerLookupResult, DataContainer, IRdbmsProviderCommandExecutionContext>) result).Command;
+          ((
+           DelegateBasedStorageProviderCommand
+               <IEnumerable<DataContainerLookupResult>, IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>) result).Command;
       Assert.That (innerCommand, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
       var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
@@ -562,7 +574,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
-          new ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty));
+          new ObjectIDStoragePropertyDefinition (
+              SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty));
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (

@@ -439,7 +439,7 @@
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSortCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleDataContainerLoadCommand.cs" />
-    <Compile Include="Persistence\SelectStorageProviderCommand.cs" />
+    <Compile Include="Persistence\DelegateBasedStorageProviderCommand.cs" />
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />

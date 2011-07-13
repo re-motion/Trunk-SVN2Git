@@ -15,38 +15,37 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>
-  /// The <see cref="SelectStorageProviderCommand{TIn,TOut,TExecutionContext}"/> executes an <see cref="IStorageProviderCommand{T, TExecutionContext}"/>
-  /// and applies a specified selector-transformation to the result.
+  /// The <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/> executes an <see cref="IStorageProviderCommand{T, TExecutionContext}"/>
+  /// and applies a specified operation-transformation to the result.
   /// </summary>
-  public class SelectStorageProviderCommand<TIn, TOut, TExecutionContext> : IStorageProviderCommand<IEnumerable<TOut>, TExecutionContext>
+  public class DelegateBasedStorageProviderCommand<TIn, TOut, TExecutionContext> : IStorageProviderCommand<TOut, TExecutionContext>
   {
-    private readonly IStorageProviderCommand<IEnumerable<TIn>, TExecutionContext> _command;
-    private readonly Func<TIn, TOut> _selector;
+    private readonly IStorageProviderCommand<TIn, TExecutionContext> _command;
+    private readonly Func<TIn, TOut> _operation;
 
-    public SelectStorageProviderCommand (IStorageProviderCommand<IEnumerable<TIn>, TExecutionContext> command, Func<TIn, TOut> selector)
+    public DelegateBasedStorageProviderCommand (IStorageProviderCommand<TIn, TExecutionContext> command, Func<TIn, TOut> operation)
     {
       ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNull ("selector", selector);
+      ArgumentUtility.CheckNotNull ("operation", operation);
 
       _command = command;
-      _selector = selector;
+      _operation = operation;
     }
 
-    public IStorageProviderCommand<IEnumerable<TIn>, TExecutionContext> Command
+    public IStorageProviderCommand<TIn, TExecutionContext> Command
     {
       get { return _command; }
     }
 
-    public IEnumerable<TOut> Execute (TExecutionContext executionContext)
+    public TOut Execute (TExecutionContext executionContext)
     {
-      return _command.Execute (executionContext).Select (_selector);
+      var executionResult = _command.Execute (executionContext);
+      return _operation (executionResult);
     }
   }
 }
