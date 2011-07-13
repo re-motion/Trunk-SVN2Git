@@ -75,6 +75,7 @@ namespace Remotion.Utilities
     /// <exception cref="NotSupportedException"> The conversion could not be performed. </exception>
     public override object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
     {
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
       if (_isNullable && (value == null || (value is string) && string.IsNullOrEmpty ((string) value)))
         return null;
 
@@ -90,6 +91,7 @@ namespace Remotion.Utilities
       }
 
       return base.ConvertFrom (context, culture, value);
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
     }
 
     /// <summary> Convertes an <see cref="Enum"/> value into the <paramref name="destinationType"/>. </summary>
