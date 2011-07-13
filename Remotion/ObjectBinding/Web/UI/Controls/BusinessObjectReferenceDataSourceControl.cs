@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     private class InternalBusinessObjectReferenceDataSource : BusinessObjectReferenceDataSourceBase
     {
-      private BusinessObjectReferenceDataSourceControl _parent;
+      private readonly BusinessObjectReferenceDataSourceControl _parent;
 
       public InternalBusinessObjectReferenceDataSource (BusinessObjectReferenceDataSourceControl parent)
       {
@@ -45,8 +45,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       public override IBusinessObjectReferenceProperty ReferenceProperty
       {
-        get { return _parent.ReferenceProperty; }
-        set { _parent.ReferenceProperty = value; }
+        get { return (IBusinessObjectReferenceProperty) _parent.Property; }
       }
 
       public override IBusinessObjectDataSource ReferencedDataSource
@@ -73,7 +72,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    private InternalBusinessObjectReferenceDataSource _internalDataSource;
+    private readonly InternalBusinessObjectReferenceDataSource _internalDataSource;
 
     /// <summary>
     ///   <see cref="BusinessObjectReferenceDataSourceControl"/> supports properties of type
@@ -176,19 +175,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Gets or sets the <see cref="IBusinessObjectReferenceProperty"/> used to access the 
+    ///   Gets the <see cref="IBusinessObjectReferenceProperty"/> used to access the 
     ///   <see cref="IBusinessObject"/> to which this <see cref="BusinessObjectReferenceDataSourceControl"/> connects.
     /// </summary>
     /// <value> 
     ///   An <see cref="IBusinessObjectReferenceProperty"/> that is part of the 
     ///   <see cref="IBusinessObjectDataSource.BusinessObjectClass"/>.
     /// </value>
+    /// <remarks> Identical to <see cref="BusinessObjectBoundWebControl.Property"/>. </remarks>
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public IBusinessObjectReferenceProperty ReferenceProperty
     {
       get { return (IBusinessObjectReferenceProperty) Property; }
-      set { Property = value; }
     }
 
     /// <summary>

@@ -137,7 +137,6 @@ namespace Remotion.ObjectBinding
         }
         return _property;
       }
-      set { _property = value; }
     }
 
     /// <summary> Gets or sets the value provided by the <see cref="BusinessObjectReferenceDataSource"/>. </summary>

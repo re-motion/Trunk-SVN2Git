@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding
   public interface IBusinessObjectReferenceDataSource: IBusinessObjectDataSource
   {
     /// <summary>
-    ///   Gets or sets the <see cref="IBusinessObjectReferenceProperty"/> used to access the 
+    ///   Gets the <see cref="IBusinessObjectReferenceProperty"/> used to access the 
     ///   <see cref="IBusinessObject"/> to which this <see cref="IBusinessObjectReferenceDataSource"/> connects.
     /// </summary>
     /// <value> 
@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding
     ///   Usually identical to <see cref="IBusinessObjectBoundControl.Property"/>, i.e. <b>ReferenceProperty</b>
     ///   gets or sets the current value of <see cref="IBusinessObjectBoundControl.Property"/>.
     /// </remarks>
-    IBusinessObjectReferenceProperty ReferenceProperty { get; set; }
+    IBusinessObjectReferenceProperty ReferenceProperty { get; }
 
     /// <summary>
     ///   Gets the <see cref="IBusinessObjectDataSource"/> providing the <see cref="IBusinessObject"/> 

@@ -155,7 +155,7 @@ namespace Remotion.ObjectBinding
     ///   See <see cref="IBusinessObjectReferenceDataSource.ReferenceProperty">IBusinessObjectReferenceDataSource.ReferenceProperty</see>
     ///   for information on how to implement this <see langword="abstract"/> property.
     /// </summary>
-    public abstract IBusinessObjectReferenceProperty ReferenceProperty { get; set; }
+    public abstract IBusinessObjectReferenceProperty ReferenceProperty { get; }
 
     /// <summary>
     ///   See <see cref="IBusinessObjectReferenceDataSource.ReferencedDataSource">IBusinessObjectReferenceDataSource.ReferencedDataSource</see>
