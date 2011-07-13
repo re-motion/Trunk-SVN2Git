@@ -127,5 +127,36 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
 
       _referencedDataSourceStub.BusinessObject.AssertWasCalled (stub => stub.SetProperty (_referencePropertyStub, expectedValue));
     }
+
+    [Test]
+    public void SavesValuesForBoundControls ()
+    {
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
+      bool isControlSaved = false;
+
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.SetProperty (_referencePropertyStub, expectedValue))
+// ReSharper disable AccessToModifiedClosure
+          .WhenCalled (mi => Assert.That (isControlSaved, Is.True));
+// ReSharper restore AccessToModifiedClosure
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = expectedValue;
+
+      var firstControlMock = MockRepository.GenerateMock<IBusinessObjectBoundEditableControl>();
+      firstControlMock.Stub (stub => stub.HasValidBinding).Return (true);
+      referenceDataSource.Register (firstControlMock);
+
+      var secondControlMock = MockRepository.GenerateMock<IBusinessObjectBoundEditableControl>();
+      secondControlMock.Stub (stub => stub.HasValidBinding).Return (true);
+      referenceDataSource.Register (secondControlMock);
+
+      firstControlMock.Expect (mock => mock.SaveValue (false)).WhenCalled (mi => isControlSaved = true);
+      secondControlMock.Expect (mock => mock.SaveValue (false));
+
+      referenceDataSource.SaveValue (false);
+
+      firstControlMock.VerifyAllExpectations();
+      secondControlMock.VerifyAllExpectations();
+    }
   }
 }
