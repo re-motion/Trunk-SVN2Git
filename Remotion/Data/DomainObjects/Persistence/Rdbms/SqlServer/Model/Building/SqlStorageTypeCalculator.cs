@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
                 DbType.Binary);
       }
 
-      return base.GetStorageType (propertyDefinition);
+      return new StorageTypeInformation();
     }
 
     private static StorageTypeInformation GetSqlDataType (Type type)
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (type == typeof (Boolean))
         return new StorageTypeInformation ("bit", DbType.Boolean);
       if (type == typeof (Byte))
-        return new StorageTypeInformation ("tinyint", DbType.Int16); //TODO Review 4126: Byte
+        return new StorageTypeInformation ("tinyint", DbType.Byte);
       if (type == typeof (DateTime))
         return new StorageTypeInformation ("datetime", DbType.DateTime);
       if (type == typeof (Decimal))

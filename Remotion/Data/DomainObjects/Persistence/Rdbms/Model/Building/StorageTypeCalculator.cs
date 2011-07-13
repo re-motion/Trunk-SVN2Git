@@ -44,25 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       get { return _storageProviderDefinitionFinder; }
     }
 
-    // TODO Review 4127: Remove this implementation
-    public virtual StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-      
-      if (propertyDefinition.IsObjectID)
-      {
-        var oppositeClass = propertyDefinition.ClassDefinition.GetMandatoryOppositeClassDefinition (propertyDefinition.PropertyName);
-
-        var classDefinition = propertyDefinition.ClassDefinition;
-        var leftStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition.StorageGroupType, null);
-        var rightStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClass.StorageGroupType, null);
-        if (leftStorageProviderDefinition == rightStorageProviderDefinition)
-          return ObjectIDStorageType;
-        else
-          return SerializedObjectIDStorageType;
-      }
-
-      return new StorageTypeInformation();
-    }
+    public abstract StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition);
+  
   }
 }

@@ -50,27 +50,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      // TODO Review 4127: Refactor to check for relationEndPointDefinition first, only if no relationEndPointDefinition, get storage type, column definition, etc.
-
-      // var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
-      // if (relationEndPointDefinition == null)
-      // {
-      var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
-      if (string.IsNullOrEmpty(storageType.StorageType))
-        return new UnsupportedStoragePropertyDefinition();
-
-      var columnDefinition = new ColumnDefinition (
-          _storageNameProvider.GetColumnName (propertyDefinition),
-          propertyDefinition.PropertyType,
-          storageType,
-          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
-          false);
-
-      var relationEndPointDefinition = 
+      var relationEndPointDefinition =
           (RelationEndPointDefinition) propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition == null)
+      {
+        var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
+        if (string.IsNullOrEmpty (storageType.StorageType))
+          return new UnsupportedStoragePropertyDefinition();
+
+        var columnDefinition = new ColumnDefinition (
+            _storageNameProvider.GetColumnName (propertyDefinition),
+            propertyDefinition.PropertyType,
+            storageType,
+            propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
+            false);
+        
         return new SimpleStoragePropertyDefinition (columnDefinition);
-      // }
+      }
       return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition);
     }
 

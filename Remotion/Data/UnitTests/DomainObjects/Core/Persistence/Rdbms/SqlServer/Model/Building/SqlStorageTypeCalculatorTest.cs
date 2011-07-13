@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -63,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (DbType.Boolean, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Boolean), false, null)).DbType);
 
       Assert.AreEqual ("tinyint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).StorageType);
-      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).DbType);
+      Assert.AreEqual (DbType.Byte, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).DbType);
 
       Assert.AreEqual ("datetime", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)).StorageType);
       Assert.AreEqual (DbType.DateTime, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)).DbType);
@@ -115,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (DbType.Boolean, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Boolean>), true, null)).DbType);
       
       Assert.AreEqual ("tinyint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), true, null)).DbType);
+      Assert.AreEqual (DbType.Byte, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), true, null)).DbType);
 
       Assert.AreEqual ("datetime", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), true, null)).StorageType);
       Assert.AreEqual (DbType.DateTime, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), true, null)).DbType);
@@ -151,22 +150,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetStorageTypeForSpecialCulumns ()
     {
-      Assert.AreEqual (
-          "uniqueidentifier",
-          _typeCalculator.GetStorageType (
-              _orderItemClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order")).StorageType);
-      Assert.AreEqual (
-          DbType.Guid,
-          _typeCalculator.GetStorageType (
-              _orderItemClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order")).DbType);
-      Assert.AreEqual (
-          "varchar (255)",
-          _typeCalculator.GetStorageType (
-          _orderClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official")).StorageType);
-      Assert.AreEqual (
-          DbType.String,
-          _typeCalculator.GetStorageType (
-          _orderClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official")).DbType);
+      Assert.AreEqual ("uniqueidentifier", _typeCalculator.ObjectIDStorageType.StorageType);
+      Assert.AreEqual (DbType.Guid, _typeCalculator.ObjectIDStorageType.DbType);
+
+      Assert.AreEqual ("varchar (255)", _typeCalculator.SerializedObjectIDStorageType.StorageType);
+      Assert.AreEqual (DbType.String, _typeCalculator.SerializedObjectIDStorageType.DbType);
+
+      Assert.AreEqual ("varchar (100)", _typeCalculator.ClassIDStorageType.StorageType);
+      Assert.AreEqual (DbType.String, _typeCalculator.ClassIDStorageType.DbType);
+
+      Assert.AreEqual ("rowversion", _typeCalculator.TimestampStorageType.StorageType);
+      Assert.AreEqual (DbType.Binary, _typeCalculator.TimestampStorageType.DbType);
     }
 
     [Test]
