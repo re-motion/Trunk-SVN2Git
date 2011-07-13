@@ -100,9 +100,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForSingleIDLookup (objectID);
 
-      Assert.That (result, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
-      Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (((SingleDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
+      Assert.That (
+          result,
+          Is.TypeOf (typeof (DelegateBasedStorageProviderCommand<DataContainer, DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>)));
+      var innerCommand =
+          ((DelegateBasedStorageProviderCommand<DataContainer, DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>) result).Command;
+      Assert.That (innerCommand, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
+      Assert.That (((SingleDataContainerLoadCommand) innerCommand).DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
+      Assert.That (((SingleDataContainerLoadCommand) innerCommand).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
     }
 
     [Test]
@@ -135,9 +140,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForSingleIDLookup (objectID);
 
-      Assert.That (result, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
-      Assert.That (((SingleDataContainerLoadCommand) result).DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (((SingleDataContainerLoadCommand) result).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
+      Assert.That (
+          result,
+          Is.TypeOf (typeof (DelegateBasedStorageProviderCommand<DataContainer, DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>)));
+      var innerCommand =
+          ((DelegateBasedStorageProviderCommand<DataContainer, DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>) result).Command;
+      Assert.That (innerCommand, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
+      Assert.That (((SingleDataContainerLoadCommand) innerCommand).DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
+      Assert.That (((SingleDataContainerLoadCommand) innerCommand).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
     }
 
     [Test]

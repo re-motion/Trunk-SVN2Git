@@ -81,8 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataContainerReaderMock.VerifyAllExpectations();
       _dbCommandBuilderMock.VerifyAllExpectations();
       _dbCommandMock.VerifyAllExpectations();
-      Assert.That (result.LocatedDataContainer, Is.SameAs (_container));
-      Assert.That (result.ObjectID, Is.EqualTo(DomainObjectIDs.Computer1));
+      Assert.That (result, Is.SameAs (_container));
     }
 
     [Test]
@@ -106,8 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataContainerReaderMock.VerifyAllExpectations ();
       _dbCommandBuilderMock.VerifyAllExpectations ();
       _dbCommandMock.VerifyAllExpectations ();
-      Assert.That (result.LocatedDataContainer, Is.Null);
-      Assert.That (result.ObjectID, Is.Null);
+      Assert.That (result, Is.Null);
     }
     
   }
