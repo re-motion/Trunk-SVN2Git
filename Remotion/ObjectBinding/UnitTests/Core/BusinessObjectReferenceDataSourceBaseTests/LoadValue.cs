@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ClearsHasBusinessObjectChangedFlag ()
+    public void SetsBusinessObject_Clears_HasBusinessObjectChanged ()
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub))
           .Return (MockRepository.GenerateStub<IBusinessObject>());
@@ -138,6 +138,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
 
       Assert.That (referenceDataSource.BusinessObject, Is.SameAs (expectedValue));
+    }
+
+    [Test]
+    public void SetsDefaultValue_Clears_HasBusinessObjectChanged ()
+    {
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject)).Return (expectedValue);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
     }
 
     [Test]
