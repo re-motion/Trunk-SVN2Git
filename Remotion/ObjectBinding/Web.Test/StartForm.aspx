@@ -83,6 +83,8 @@ href="WxeHandler.ashx?WxeFunctionType=OBWTest.Design.DesignTestFunction,OBWTest"
 <a href="ViewLayoutTest.wxe?WxeReturnToSelf=True&TabbedMenuSelection=ViewLayoutTests">ViewLayoutTest.wxe</a></p>
 <p>Tests for layout compatibility between the different controls<br />
 <a href="ControlLayoutTest.wxe?WxeReturnToSelf=True&TabbedMenuSelection=ViewLayoutTests">ControlLayoutTest.wxe</a></p>
+<p>Tests for reference data sources<br />
+<a href="ReferenceDataSourceTest.wxe?WxeReturnToSelf=True">ReferenceDataSourceTest.wxe</a></p>
 </form>
   </body>
 </html>

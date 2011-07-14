@@ -178,6 +178,12 @@
     <Compile Include="PersonTreeView.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReferenceDataSourceTestDomain\LevelOne.cs" />
+    <Compile Include="ReferenceDataSourceTestDomain\LevelThree.cs" />
+    <Compile Include="ReferenceDataSourceTestDomain\LevelTwo.cs" />
+    <Compile Include="ReferenceDataSourceTestDomain\ReferenceDataSourceTestDefaultValueService.cs" />
+    <Compile Include="ReferenceDataSourceTestDomain\ReferenceDataSourceTestDeleteObjectService.cs" />
+    <Compile Include="ReferenceDataSourceTestDomain\ReferenceDataSourceTestDomainBase.cs" />
     <Compile Include="ReflectionBusinessObjectWebUIService.cs" />
     <Compile Include="TestBocList.cs">
       <SubType>Code</SubType>

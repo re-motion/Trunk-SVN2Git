@@ -195,6 +195,14 @@
     <Compile Include="IndividualControlTests\Form.aspx.designer.cs">
       <DependentUpon>Form.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ReferenceDataSourceTestForm.aspx.cs">
+      <DependentUpon>ReferenceDataSourceTestForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReferenceDataSourceTestForm.aspx.designer.cs">
+      <DependentUpon>ReferenceDataSourceTestForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReferenceDataSourceTestFunction.cs" />
     <Compile Include="StandardMode.Master.cs">
       <DependentUpon>StandardMode.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -508,6 +516,7 @@
     <Content Include="MainWindow.htm" />
     <Content Include="PersonDetailsForm.aspx" />
     <Content Include="PersonsForm.aspx" />
+    <Content Include="ReferenceDataSourceTestForm.aspx" />
     <Content Include="RepeaterTest.aspx">
       <SubType>Form</SubType>
     </Content>

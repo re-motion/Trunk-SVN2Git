@@ -26,6 +26,7 @@ using Remotion.Logging;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
+using Remotion.ObjectBinding.Sample.ReferenceDataSourceTestDomain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Legacy;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
@@ -87,6 +88,9 @@ namespace OBWTest
           .AddService (typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService());
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()
           .AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService());
+
+      BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>().AddService (new ReferenceDataSourceTestDefaultValueService());
+      BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>().AddService (new ReferenceDataSourceTestDeleteObjectService());
 
       if (PreferQuirksModeRendering)
       {
