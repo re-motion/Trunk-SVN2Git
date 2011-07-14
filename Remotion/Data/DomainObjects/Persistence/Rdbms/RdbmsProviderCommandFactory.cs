@@ -67,8 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           AllSelectedColumnsSpecification.Instance,
           objectID);
       var singleDataContainerLoadCommand = new SingleDataContainerLoadCommand (dbCommandBuilder, _dataContainerReader);
-      return new DelegateBasedStorageProviderCommand<DataContainer, DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>
-              (singleDataContainerLoadCommand, result => new DataContainerLookupResult(objectID, result));
+      return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new DataContainerLookupResult (objectID, result));
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext> CreateForMultiIDLookup (
@@ -177,17 +176,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, _objectIDReader);
       var indirectDataContainerLoadCommand = new IndirectDataContainerLoadCommand (objectIDLoadCommand, this);
-      return
-          new DelegateBasedStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
-              (
-              indirectDataContainerLoadCommand,
-              lookupResults => lookupResults.Select(result => 
-              {
-                Assertion.IsNotNull (
-                    result.LocatedDataContainer,
-                    "Because ID lookup and DataContainer lookup are executed within the same database transaction, the DataContainer can never be null.");
-                return result.LocatedDataContainer;
-              }));
+      return DelegateBasedStorageProviderCommand.Create (
+          indirectDataContainerLoadCommand,
+          lookupResults => lookupResults.Select (result => 
+          {
+            Assertion.IsNotNull (
+                result.LocatedDataContainer,
+                "Because ID lookup and DataContainer lookup are executed within the same database transaction, the DataContainer can never be null.");
+            return result.LocatedDataContainer;
+          }));
     }
 
     private FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForNullRelationLookup ()

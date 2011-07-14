@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence;
 using Rhino.Mocks;
@@ -30,17 +28,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void Execute ()
     {
       var executionContext = new object();
-      var commandStub = MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<string>, object>>();
-      var providerCommand = new DelegateBasedStorageProviderCommand<IEnumerable<string>, IEnumerable<int>, object> (
-          commandStub, s => s.Select (r => r.Count()));
+      var innerCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<string, object>>();
+      var delegateBasedCommand = new DelegateBasedStorageProviderCommand<string, int, object> (innerCommandStub, s => s.Length);
 
-      commandStub.Stub (stub => stub.Execute (executionContext)).Return (new[] { "Test1", "TestTest2" });
+      innerCommandStub.Stub (stub => stub.Execute (executionContext)).Return ("Test1");
 
-      var result = providerCommand.Execute (executionContext).ToArray();
+      var result = delegateBasedCommand.Execute (executionContext);
 
-      Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (result[0], Is.EqualTo (5));
-      Assert.That (result[1], Is.EqualTo (9));
+      Assert.That (result, Is.EqualTo (5));
+    }
+
+    [Test]
+    public void Create ()
+    {
+      var innerCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<string, object>>();
+      Func<string, int> operation = s => s.Length;
+      var instance = DelegateBasedStorageProviderCommand.Create (innerCommandStub, operation);
+
+      Assert.That (instance, Is.TypeOf (typeof (DelegateBasedStorageProviderCommand<string, int, object>)));
+      Assert.That (instance.Command, Is.SameAs (innerCommandStub));
+      Assert.That (instance.Operation, Is.SameAs (operation));
     }
   }
 }

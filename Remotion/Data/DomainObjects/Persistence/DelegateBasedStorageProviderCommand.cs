@@ -20,6 +20,24 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>
+  /// Creates instances of <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>. Use this factory class to avoid having
+  /// to pass all generic arguments to <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>'s constructor by hand.
+  /// </summary>
+  public static class DelegateBasedStorageProviderCommand
+  {
+    /// <summary>
+    /// Creates instances of <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>. Use this factory method to avoid having
+    /// to pass all generic arguments to <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>'s constructor by hand.
+    /// </summary>
+    public static DelegateBasedStorageProviderCommand<TIn, TOut, TExecutionContext> Create<TIn, TOut, TExecutionContext> (
+        IStorageProviderCommand<TIn, TExecutionContext> command, 
+        Func<TIn, TOut> operation)
+    {
+      return new DelegateBasedStorageProviderCommand<TIn, TOut, TExecutionContext> (command, operation);
+    }
+  }
+
+  /// <summary>
   /// The <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/> executes an <see cref="IStorageProviderCommand{T, TExecutionContext}"/>
   /// and applies a specified operation-transformation to the result.
   /// </summary>
@@ -40,6 +58,11 @@ namespace Remotion.Data.DomainObjects.Persistence
     public IStorageProviderCommand<TIn, TExecutionContext> Command
     {
       get { return _command; }
+    }
+
+    public Func<TIn, TOut> Operation
+    {
+      get { return _operation; }
     }
 
     public TOut Execute (TExecutionContext executionContext)
