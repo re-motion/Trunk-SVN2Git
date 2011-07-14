@@ -117,7 +117,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BusinessObjectReferen
     }
 
     [Test]
-    public void SupportsDefaultValue_True_AllBoundControlsEmpty_NotAllBoundControlsValid_IsRequired_True_ReturnsFalse ()
+    public void IsRequired_True_AllBoundControlsEmpty_NotAllBoundControlsValid_ReturnsFalse ()
     {
       _dataSourceControl.Required = true;
 
