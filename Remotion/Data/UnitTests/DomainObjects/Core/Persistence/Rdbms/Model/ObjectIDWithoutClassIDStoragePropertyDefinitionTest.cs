@@ -34,27 +34,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class ObjectIDWithoutClassIDStoragePropertyDefinitionTest : StandardMappingTest
   {
     private ClassDefinition _classDefinition;
-    private SimpleStoragePropertyDefinition _valueProperty;
+    private IRdbmsStoragePropertyDefinition _valuePropertyStub;
     private ObjectIDWithoutClassIDStoragePropertyDefinition _objectIDWithoutClassIDStorageDefinition;
     private IDataReader _dataReaderStub;
     private IColumnOrdinalProvider _columnOrdinalProviderStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
+    private ColumnDefinition _columnDefinition;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      _valueProperty = new SimpleStoragePropertyDefinition (
-          new ColumnDefinition (
-              Guid.NewGuid().ToString(),
-              typeof (string),
-              new StorageTypeInformation ("varchar", DbType.String, typeof (string), new GuidConverter()),
-              true,
-              false));
+
+      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ();
+
+      _valuePropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      _valuePropertyStub.Stub (stub => stub.Name).Return ("ID");
+      _valuePropertyStub.Stub (stub => stub.GetColumnForLookup ()).Return (_columnDefinition);
+      _valuePropertyStub.Stub (stub => stub.GetColumnForForeignKey ()).Return (_columnDefinition);
+      _valuePropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition });
+
       _objectIDWithoutClassIDStorageDefinition = new ObjectIDWithoutClassIDStoragePropertyDefinition (
-          _valueProperty, _classDefinition);
+          _valuePropertyStub, _classDefinition);
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
@@ -63,44 +66,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub).Repeat.Once();
     }
 
-    // TODO Review 4129: Rewrite tests using stubs
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.ValueProperty, Is.SameAs (_valueProperty));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.ValueProperty, Is.SameAs (_valuePropertyStub));
       Assert.That (_objectIDWithoutClassIDStorageDefinition.ClassDefinition, Is.SameAs (_classDefinition));
     }
 
     [Test]
     public void GetColumnForLookup ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForLookup(), Is.SameAs (_valueProperty.ColumnDefinition));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForLookup(), Is.SameAs (_columnDefinition));
     }
 
     [Test]
     public void GetColumnForForeignKey ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForForeignKey(), Is.SameAs (_valueProperty.ColumnDefinition));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForForeignKey(), Is.SameAs (_columnDefinition));
     }
 
     [Test]
     public void GetColumns ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (_valueProperty.GetColumns()));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (new[]{_columnDefinition}));
     }
 
     [Test]
     public void Name ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.Name, Is.EqualTo (_valueProperty.Name));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.Name, Is.EqualTo (_valuePropertyStub.Name));
     }
     
     [Test]
     public void Read ()
     {
-      _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (_valueProperty.ColumnDefinition, _dataReaderStub)).Return (2);
-      _dataReaderStub.Stub (stub => stub[2]).Return (DomainObjectIDs.Order1.Value.ToString());
+      _valuePropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
 
       var result = _objectIDWithoutClassIDStorageDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
@@ -112,15 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Read_ValueIsNull_ReturnsNull ()
     {
-      var typeConverterStub = MockRepository.GenerateStub<StringConverter>();
-      var storageTypeInformation = new StorageTypeInformation ("varchar", DbType.String, typeof (string), typeConverterStub);
-      var idColumnDefinition = new ColumnDefinition ("Test", typeof (string), storageTypeInformation, true, false);
-      _objectIDWithoutClassIDStorageDefinition =
-          new ObjectIDWithoutClassIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (idColumnDefinition), _classDefinition);
-
-      typeConverterStub.Stub (stub => stub.ConvertFrom (null)).Return (null);
-      _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (idColumnDefinition, _dataReaderStub)).Return (2);
-      _dataReaderStub.Stub (stub => stub[2]).Return (null);
+      _valuePropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (null);
 
       var result = _objectIDWithoutClassIDStorageDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
@@ -130,16 +123,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateDataParameters ()
     {
-      var objectIDWithoutClassIDStoragePropertyDefinition =
-          new ObjectIDWithoutClassIDStoragePropertyDefinition (
-              SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("ID"), _classDefinition);
+      _valuePropertyStub.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1.Value, "key")).Return (new[]{_dbDataParameterStub});
 
-      var result = objectIDWithoutClassIDStoragePropertyDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1, "key").ToArray();
+      var result = _objectIDWithoutClassIDStorageDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1, "key").ToArray ();
 
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0].ParameterName, Is.EqualTo ("key"));
-      Assert.That (result[0].Value, Is.EqualTo (DomainObjectIDs.Order1.Value.ToString()));
-      Assert.That (result[0].DbType, Is.EqualTo (DbType.String));
+      Assert.That (result, Is.EqualTo (new[]{_dbDataParameterStub}));
     }
   }
 }
