@@ -54,7 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "The column 'Testcolumn' was not found in the query result.")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "No ordinal was defined for column 'Testcolumn'.\r\nParameter name: columnDefinition")]
     public void GetOrdinal_IndexOutOfRange_ThrowsException ()
     {
       _dictionaryBasedColumnOrdinalProvider.GetOrdinal (_columnDefinition, _dataReaderStub);

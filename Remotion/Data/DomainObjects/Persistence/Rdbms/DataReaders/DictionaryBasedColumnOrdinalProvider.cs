@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       if (_ordinals.TryGetValue (columnDefinition, out index))
         return index;
 
-      throw new RdbmsProviderException (string.Format ("The column '{0}' was not found in the query result.", columnDefinition.Name));
+      throw new ArgumentException (string.Format ("No ordinal was defined for column '{0}'.", columnDefinition.Name), "columnDefinition");
     }
   }
 }

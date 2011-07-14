@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 {
   /// <summary>
   /// <see cref="IColumnOrdinalProvider"/> defines the API for all implementations that calculate the index of a 
-  /// <see cref="ColumnDefinition"/> for a specified <see cref="IDataReader"/>-stream.
+  /// <see cref="ColumnDefinition"/> in the list of values read by a specified <see cref="IDataReader"/>.
   /// </summary>
   public interface IColumnOrdinalProvider
   {
