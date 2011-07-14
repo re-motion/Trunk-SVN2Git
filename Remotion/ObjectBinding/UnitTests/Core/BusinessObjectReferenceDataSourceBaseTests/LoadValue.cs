@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     {
       _referencedDataSourceStub = MockRepository.GenerateStub<IBusinessObjectDataSource>();
       _referencedDataSourceStub.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
-      _referencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty>();
+      _referencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty> ();
     }
 
     [Test]

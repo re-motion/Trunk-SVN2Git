@@ -330,12 +330,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public override bool Validate ()
     {
       bool isValid = base.Validate ();
-      for (int i = 0; i < _internalDataSource.BoundControls.Length; i++)
+      if (IsRequired || _internalDataSource.HasValue())
       {
-        IBusinessObjectBoundControl control = _internalDataSource.BoundControls[i];
-        IValidatableControl validateableControl = control as IValidatableControl;
-        if (validateableControl != null)
-          isValid &= validateableControl.Validate ();
+        for (int i = 0; i < _internalDataSource.BoundControls.Length; i++)
+        {
+          IBusinessObjectBoundControl control = _internalDataSource.BoundControls[i];
+          IValidatableControl validateableControl = control as IValidatableControl;
+          if (validateableControl != null)
+            isValid &= validateableControl.Validate();
+        }
       }
       return isValid;
     }

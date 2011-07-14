@@ -117,10 +117,7 @@ namespace Remotion.ObjectBinding
 
     public bool HasValue ()
     {
-      if (BusinessObject == null)
-        return true;
-
-      return IsBusinessObjectSetToDefaultValue();
+      return BusinessObject != null && !IsBusinessObjectSetToDefaultValue();
     }
 
     private bool IsBusinessObjectSetToDefaultValue ()
