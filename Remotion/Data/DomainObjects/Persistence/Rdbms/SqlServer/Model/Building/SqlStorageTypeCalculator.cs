@@ -81,9 +81,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
 
       if (ExtensibleEnumUtility.IsExtensibleEnumType (propertyType))
       {
-        // TODO Review 4150: ExtensibleEnumConverter
         var storageType = GetStorageTypeStringForVarType ("varchar", GetColumnWidthForExtensibleEnum (propertyType));
-        return new StorageTypeInformation (storageType, DbType.String, typeof (string), new StringConverter ());
+        return new StorageTypeInformation (storageType, DbType.String, typeof (string), new ExtensibleEnumConverter (propertyType));
       }
 
       if (ReflectionUtility.IsStringPropertyValueType (propertyType))
