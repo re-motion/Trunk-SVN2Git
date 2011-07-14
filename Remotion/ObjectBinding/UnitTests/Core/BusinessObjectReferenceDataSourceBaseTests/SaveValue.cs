@@ -62,17 +62,30 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void HasBusinessObjectChanged_False_DoesNotReadBusinessObject ()
+    public void HasBusinessObjectChanged_False_DoesNotSaveValueIntoBoundObject ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
-      referenceDataSource.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub))
+          .Return (MockRepository.GenerateStub<IBusinessObject>());
       referenceDataSource.LoadValue (false);
       Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
 
       referenceDataSource.SaveValue (false);
 
-      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (
-          stub => stub.SetProperty (Arg.Is (_referencePropertyStub), Arg<IBusinessObject>.Is.Anything));
+      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (stub => stub.SetProperty (null, null), options => options.IgnoreArguments());
+    }
+
+    [Test]
+    public void HasBusinessObjectChanged_False_BusinessObject_Null_DoesNotSaveValueIntoBoundObject ()
+    {
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
+      referenceDataSource.LoadValue (false);
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
+
+      referenceDataSource.SaveValue (false);
+
+      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (stub => stub.SetProperty (null, null), options => options.IgnoreArguments ());
     }
 
     [Test]
@@ -83,8 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
 
       referenceDataSource.SaveValue (false);
 
-      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (
-          stub => stub.SetProperty (Arg.Is (_referencePropertyStub), Arg<IBusinessObject>.Is.Anything));
+      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (stub => stub.SetProperty (null, null), options => options.IgnoreArguments ());
       Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.True);
     }
 
@@ -108,8 +120,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
 
       referenceDataSource.SaveValue (false);
 
-      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (
-          stub => stub.SetProperty (Arg.Is (_referencePropertyStub), Arg<IBusinessObject>.Is.Anything));
+      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (stub => stub.SetProperty (null, null), options => options.IgnoreArguments ());
     }
 
     [Test]
@@ -129,7 +140,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SavesValuesForBoundControls ()
+    public void SavesValuesForBoundControls_BusinessObject_NotNull ()
     {
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
       bool isControlSaved = false;
@@ -160,6 +171,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
+    public void SavesValuesForBoundControls_BusinessObject_Null ()
+    {
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = null;
+
+      var controlMock = MockRepository.GenerateMock<IBusinessObjectBoundEditableControl> ();
+      controlMock.Stub (stub => stub.HasValidBinding).Return (true);
+      referenceDataSource.Register (controlMock);
+
+      controlMock.Expect (mock => mock.SaveValue (false));
+      
+      referenceDataSource.SaveValue (false);
+
+      controlMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void IsDefaultValue_True_DeletesObject ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
@@ -183,9 +211,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
-      _referencePropertyStub
-          .Stub (stub => stub.IsDefaultValue (_referencedDataSourceStub.BusinessObject, referencedObject, new IBusinessObjectProperty[0]))
-          .Return (true);
+      _referencePropertyStub.Stub (stub => stub.IsDefaultValue (null, null, null)).IgnoreArguments ().Return (true);
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.BusinessObject = referencedObject;
@@ -201,9 +227,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
-      _referencePropertyStub
-          .Stub (stub => stub.IsDefaultValue (_referencedDataSourceStub.BusinessObject, referencedObject, new IBusinessObjectProperty[0]))
-          .Return (true);
+      _referencePropertyStub.Stub (stub => stub.IsDefaultValue (null, null, null)).IgnoreArguments ().Return (true);
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.BusinessObject = referencedObject;
@@ -219,9 +243,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
-      _referencePropertyStub
-          .Stub (stub => stub.IsDefaultValue (_referencedDataSourceStub.BusinessObject, referencedObject, new IBusinessObjectProperty[0]))
-          .Return (true);
+      _referencePropertyStub.Stub (stub => stub.IsDefaultValue (null, null, null)).IgnoreArguments ().Return (true);
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.BusinessObject = referencedObject;
@@ -236,20 +258,25 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
+      var firstPropertyStub = MockRepository.GenerateStub<IBusinessObjectProperty> ();
+      var secondPropertyStub = MockRepository.GenerateStub<IBusinessObjectProperty> ();
+
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
-      _referencePropertyStub
-          .Stub (stub => stub.IsDefaultValue (_referencedDataSourceStub.BusinessObject, referencedObject, new IBusinessObjectProperty[0]))
-          .Return (true);
+      _referencePropertyStub.Stub (stub => stub.IsDefaultValue (null, null, null)).IgnoreArguments().Return (true);
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.BusinessObject = referencedObject;
 
       var firstControlMock = MockRepository.GenerateMock<IBusinessObjectBoundEditableControl> ();
       firstControlMock.Stub (stub => stub.HasValidBinding).Return (true);
+      firstControlMock.Stub (stub => stub.HasValue).Return (false);
+      firstControlMock.Property = firstPropertyStub;
       referenceDataSource.Register (firstControlMock);
 
       var secondControlMock = MockRepository.GenerateMock<IBusinessObjectBoundEditableControl> ();
       secondControlMock.Stub (stub => stub.HasValidBinding).Return (true);
+      secondControlMock.Stub (stub => stub.HasValue).Return (false);
+      secondControlMock.Property = secondPropertyStub;
       referenceDataSource.Register (secondControlMock);
 
       referenceDataSource.SaveValue (false);
@@ -259,46 +286,108 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void IsDefaultValue_RequiresAllBoundControlsEmpty_ContainsOnlyEmtptyControls ()
+    public void IsDefaultValue_RequiresAllBoundControlsEmpty_ContainsOnlyEmtpyControls ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
+      var firstPropertyStub = MockRepository.GenerateStub<IBusinessObjectProperty>();
+      var secondPropertyStub = MockRepository.GenerateStub<IBusinessObjectProperty> ();
+
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
       _referencePropertyStub
-          .Stub (stub => stub.IsDefaultValue (_referencedDataSourceStub.BusinessObject, referencedObject, new IBusinessObjectProperty[0]))
+          .Stub (
+              stub =>
+              stub.IsDefaultValue (_referencedDataSourceStub.BusinessObject, referencedObject, new[] { firstPropertyStub, secondPropertyStub }))
           .Return (true);
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.BusinessObject = referencedObject;
 
-      var firstControlMock = MockRepository.GenerateMock<IBusinessObjectBoundControl> ();
-      firstControlMock.Stub (stub => stub.HasValidBinding).Return (true);
-      //firstControlMock.Stub (stub => stub.HasValue).Return (true);
-      referenceDataSource.Register (firstControlMock);
+      var firstControlStub = MockRepository.GenerateStub<IBusinessObjectBoundControl> ();
+      firstControlStub.Stub (stub => stub.HasValidBinding).Return (true);
+      firstControlStub.Stub (stub => stub.HasValue).Return (false);
+      firstControlStub.Property = firstPropertyStub;
+      referenceDataSource.Register (firstControlStub);
 
-      var secondControlMock = MockRepository.GenerateMock<IBusinessObjectBoundControl> ();
-      secondControlMock.Stub (stub => stub.HasValidBinding).Return (true);
-      //secondControlMock.Stub (stub => stub.HasValue).Return (true);
-      referenceDataSource.Register (secondControlMock);
+      var secondControlStub = MockRepository.GenerateStub<IBusinessObjectBoundControl> ();
+      secondControlStub.Stub (stub => stub.HasValidBinding).Return (true);
+      secondControlStub.Stub (stub => stub.HasValue).Return (false);
+      secondControlStub.Property = secondPropertyStub;
+      referenceDataSource.Register (secondControlStub);
 
-      var thirdControlMock = MockRepository.GenerateMock<IBusinessObjectBoundControl> ();
-      thirdControlMock.Stub (stub => stub.HasValidBinding).Return (true);
-      //thirdControlMock.Stub (stub => stub.HasValue).Return (true);
-      referenceDataSource.Register (thirdControlMock);
+      var thirdControlStub = MockRepository.GenerateStub<IBusinessObjectBoundControl> ();
+      thirdControlStub.Stub (stub => stub.HasValidBinding).Return (true);
+      thirdControlStub.Stub (stub => stub.HasValue).Return (false);
+      thirdControlStub.Property = firstPropertyStub;
+      referenceDataSource.Register (thirdControlStub);
 
       referenceDataSource.SaveValue (false);
+
+      _referencePropertyStub.AssertWasCalled (stub => stub.Delete (_referencedDataSourceStub.BusinessObject, referencedObject));
+      Assert.That (referenceDataSource.BusinessObject, Is.Null);
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
     }
 
     [Test]
-    public void IsDefaultValue_PassesAllEmptyProperties ()
+    public void IsDefaultValue_RequiresAllBoundControlsEmpty_ContainsNonEmtpyControls ()
     {
-      Assert.Ignore ("impl");
+      var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
+
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = referencedObject;
+
+      var firstControlStub = MockRepository.GenerateStub<IBusinessObjectBoundControl> ();
+      firstControlStub.Stub (stub => stub.HasValidBinding).Return (true);
+      firstControlStub.Stub (stub => stub.HasValue).Return (false);
+      referenceDataSource.Register (firstControlStub);
+
+      var secondControlStub = MockRepository.GenerateStub<IBusinessObjectBoundControl> ();
+      secondControlStub.Stub (stub => stub.HasValidBinding).Return (true);
+      secondControlStub.Stub (stub => stub.HasValue).Return (true);
+      referenceDataSource.Register (secondControlStub);
+
+      var thirdControlStub = MockRepository.GenerateStub<IBusinessObjectBoundControl> ();
+      thirdControlStub.Stub (stub => stub.HasValidBinding).Return (true);
+      thirdControlStub.Stub (stub => stub.HasValue).Return (false);
+      referenceDataSource.Register (thirdControlStub);
+
+      referenceDataSource.SaveValue (false);
+
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.IsDefaultValue (null, null, null), options => options.IgnoreArguments());
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.Delete (null, null), options => options.IgnoreArguments ());
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (referencedObject));
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
     }
 
     [Test]
-    public void BusinessObjectIsNull_IgnoresDefaultValueSemantics ()
+    public void BusinessObject_Null_IgnoresDefaultValueSemantics ()
     {
-      Assert.Ignore ("impl");
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = null;
+
+      referenceDataSource.SaveValue (false);
+
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.SupportsDefaultValue);
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.IsDefaultValue (null, null, null), options => options.IgnoreArguments ());
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.Delete (null, null), options => options.IgnoreArguments ());
+      _referencedDataSourceStub.BusinessObject.AssertWasCalled (stub => stub.SetProperty (_referencePropertyStub, null));
+    }
+
+    [Test]
+    public void SupportsDefaultValue_False_IsDefaultValue_NotCalled ()
+    {
+      var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
+
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (false);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = referencedObject;
+
+      referenceDataSource.SaveValue (false);
+
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.IsDefaultValue (null, null, null), options => options.IgnoreArguments ());
     }
   }
 }

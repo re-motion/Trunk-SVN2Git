@@ -149,7 +149,7 @@ namespace Remotion.ObjectBinding
 
     bool IBusinessObjectBoundControl.HasValue
     {
-      get { return IsDefaultValue(); }
+      get { return HasValue(); }
     }
 
     /// <summary>

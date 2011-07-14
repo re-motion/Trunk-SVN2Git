@@ -99,7 +99,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override bool HasValue
     {
-      get { return _internalDataSource.IsDefaultValue(); }
+      get { return _internalDataSource.HasValue(); }
     }
 
     /// <summary> Gets or sets the dirty flag. </summary>

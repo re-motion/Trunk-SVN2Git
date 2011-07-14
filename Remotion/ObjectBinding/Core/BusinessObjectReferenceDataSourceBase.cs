@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
@@ -95,7 +96,7 @@ namespace Remotion.ObjectBinding
     /// <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
     public void SaveValue (bool interim)
     {
-      if (HasValidBinding && IsDefaultValue())
+      if (IsBusinessObjectSetToDefaultValue())
       {
         ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
         BusinessObject = null;
@@ -114,9 +115,28 @@ namespace Remotion.ObjectBinding
       }
     }
 
-    public bool IsDefaultValue ()
+    public bool HasValue ()
     {
-      return ReferenceProperty.IsDefaultValue (ReferencedDataSource.BusinessObject, BusinessObject, new IBusinessObjectProperty[0]);
+      if (BusinessObject == null)
+        return true;
+
+      return IsBusinessObjectSetToDefaultValue();
+    }
+
+    private bool IsBusinessObjectSetToDefaultValue ()
+    {
+      if (HasValidBinding && BusinessObject != null && ReferenceProperty.SupportsDefaultValue)
+      {
+        if (BoundControls.Any (c=>c.HasValue))
+          return false;
+
+        var properties = BoundControls.Select (c => c.Property).Distinct().ToArray();
+        return ReferenceProperty.IsDefaultValue (ReferencedDataSource.BusinessObject, BusinessObject, properties);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     /// <summary> 
