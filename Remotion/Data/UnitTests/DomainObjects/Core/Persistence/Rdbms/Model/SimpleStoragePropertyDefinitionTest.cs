@@ -30,8 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class SimpleStoragePropertyDefinitionTest
   {
-    private SimpleStoragePropertyDefinition _storagePropertyDefinition;
+    private TypeConverter _typeConverterStub;
     private ColumnDefinition _innerColumnDefinition;
+    private SimpleStoragePropertyDefinition _storagePropertyDefinition;
+
     private IDataReader _dataReaderStub;
     private IColumnOrdinalProvider _columnOrdinalProviderStub;
     private IDbCommand _dbCommandStub;
@@ -40,8 +42,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _storagePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
-      _innerColumnDefinition = _storagePropertyDefinition.ColumnDefinition;
+      _typeConverterStub = MockRepository.GenerateStub<TypeConverter> ();
+      
+      var storageTypeInformation = new StorageTypeInformation ("integer", DbType.Int32, typeof (int?), _typeConverterStub);
+      _innerColumnDefinition = new ColumnDefinition ("Test", typeof (string), storageTypeInformation, true, false);
+      _storagePropertyDefinition = new SimpleStoragePropertyDefinition (_innerColumnDefinition);
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
@@ -63,14 +68,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void GetColumnForLookup ()
+    {
+      Assert.That (_storagePropertyDefinition.GetColumnForLookup(), Is.SameAs (_innerColumnDefinition));
+    }
+
+    [Test]
+    public void GetColumnForForeignKey ()
+    {
+      Assert.That (_storagePropertyDefinition.GetColumnForForeignKey (), Is.SameAs (_innerColumnDefinition));
+    }
+
+    [Test]
     public void Read ()
     {
       _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (_innerColumnDefinition, _dataReaderStub)).Return (5);
       _dataReaderStub.Stub (stub => stub[5]).Return ("test");
+      _typeConverterStub.Stub (mock => mock.ConvertFrom ("test")).Return ("converted");
 
       var result = _storagePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
-      Assert.That (result, Is.EqualTo ("test"));
+      Assert.That (result, Is.EqualTo ("converted"));
     }
 
     [Test]
@@ -78,39 +96,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (_innerColumnDefinition, _dataReaderStub)).Return (3);
       _dataReaderStub.Stub (stub => stub[3]).Return (DBNull.Value);
+      _typeConverterStub.Stub (mock => mock.ConvertFrom (null)).Return ("converted");
 
       var result = _storagePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
-      Assert.That (result, Is.EqualTo (string.Empty));
+      Assert.That (result, Is.EqualTo ("converted"));
     }
 
     [Test]
     public void CreateDataParameters ()
     {
+      _typeConverterStub.Stub (mock => mock.ConvertTo ("test", typeof (int?))).Return (12);
+
       var result = _storagePropertyDefinition.CreateDataParameters (_dbCommandStub, "test", "key").ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0].ParameterName, Is.EqualTo ("key"));
-      Assert.That (result[0].Value, Is.EqualTo ("test"));
-      Assert.That (result[0].DbType, Is.EqualTo (DbType.String));
+      Assert.That (result[0].Value, Is.EqualTo (12));
+      Assert.That (result[0].DbType, Is.EqualTo (DbType.Int32));
     }
 
     [Test]
     public void CreateDataParameters_ValueIsNull ()
     {
-      var typeConverterStub = MockRepository.GenerateStub<StringConverter> ();
-      var storageTypeInformation = new StorageTypeInformation ("varchar", DbType.String, typeof (string), typeConverterStub);
-      var idColumnDefinition = new ColumnDefinition ("Test", typeof (string), storageTypeInformation, true, false);
-      _storagePropertyDefinition = new SimpleStoragePropertyDefinition (idColumnDefinition);
-
-      typeConverterStub.Stub (stub => stub.ConvertTo ("test", typeof(string))).Return (null);
+      _typeConverterStub.Stub (stub => stub.ConvertTo ("test", typeof (int?))).Return (null);
 
       var result = _storagePropertyDefinition.CreateDataParameters (_dbCommandStub, "test", "key").ToArray ();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0].ParameterName, Is.EqualTo ("key"));
       Assert.That (result[0].Value, Is.EqualTo (DBNull.Value));
-      Assert.That (result[0].DbType, Is.EqualTo (DbType.String));
+      Assert.That (result[0].DbType, Is.EqualTo (DbType.Int32));
     }
   }
 }

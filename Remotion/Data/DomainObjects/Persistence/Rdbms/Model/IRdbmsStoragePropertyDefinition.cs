@@ -28,6 +28,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition
   {
     IEnumerable<ColumnDefinition> GetColumns ();
+    ColumnDefinition GetColumnForLookup ();
+    ColumnDefinition GetColumnForForeignKey ();
+
     object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
     IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key);
   }

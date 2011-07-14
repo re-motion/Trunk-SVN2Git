@@ -51,6 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub).Repeat.Once ();
     }
 
+    // TODO Review 4129: Rewrite tests using stubs
+
     [Test]
     public void Initialization ()
     {
@@ -64,9 +66,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "String-serialized ObjectID values cannot be used as foreign keys.")]
     public void GetColumnForForeignKey ()
     {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumnForForeignKey(), Is.Null);
+      _serializedObjectIDStoragePropertyDefinition.GetColumnForForeignKey();
     }
 
     [Test]
@@ -84,8 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Read ()
     {
-      _columnOrdinalProviderStub.Stub (
-          stub => stub.GetOrdinal (_serializedObjectIDStoragePropertyDefinition.SerializedIDProperty.ColumnDefinition, _dataReaderStub)).Return (2);
+      _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (_serializedIDProperty.ColumnDefinition, _dataReaderStub)).Return (2);
       _dataReaderStub.Stub (stub => stub[2]).Return (DomainObjectIDs.Order1.ToString());
 
       var result = _serializedObjectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);

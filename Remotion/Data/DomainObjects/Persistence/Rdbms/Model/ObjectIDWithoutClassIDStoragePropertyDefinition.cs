@@ -30,10 +30,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class ObjectIDWithoutClassIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
-    private readonly SimpleStoragePropertyDefinition _valueProperty;
+    private readonly IRdbmsStoragePropertyDefinition _valueProperty;
     private readonly ClassDefinition _classDefinition;
 
-    public ObjectIDWithoutClassIDStoragePropertyDefinition (SimpleStoragePropertyDefinition valueProperty, ClassDefinition classDefinition)
+    public ObjectIDWithoutClassIDStoragePropertyDefinition (IRdbmsStoragePropertyDefinition valueProperty, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("valueProperty", valueProperty);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _valueProperty.Name; }
     }
 
-    public SimpleStoragePropertyDefinition ValueProperty
+    public IRdbmsStoragePropertyDefinition ValueProperty
     {
       get { return _valueProperty; }
     }
@@ -59,12 +59,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public ColumnDefinition GetColumnForLookup ()
     {
-      return _valueProperty.ColumnDefinition;
+      return _valueProperty.GetColumnForLookup();
     }
 
     public ColumnDefinition GetColumnForForeignKey ()
     {
-      return _valueProperty.ColumnDefinition;
+      return _valueProperty.GetColumnForForeignKey();
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()
@@ -89,6 +89,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
 
       var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
+
+      // TODO Review 4129: Check that objectID.ClassDefinition == _classDefinition, otherwise throw ArgumentException
       return _valueProperty.CreateDataParameters (command, objectID.Value, key);
     }
     

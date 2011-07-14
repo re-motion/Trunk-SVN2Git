@@ -91,8 +91,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
         var referencingColumn = oppositeObjectIDColumnDefinition;
         var referencedColumn = endPointIDColumnDefinition.GetColumnForForeignKey();
-        if(referencedColumn==null)
-          continue;
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
             _storageNameProvider.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Runtime.InteropServices;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
 
@@ -28,16 +27,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class SerializedObjectIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
-    private readonly SimpleStoragePropertyDefinition _serializedIDProperty;
+    private readonly IRdbmsStoragePropertyDefinition _serializedIDProperty;
 
-    public SerializedObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinition serializedIDProperty)
+    public SerializedObjectIDStoragePropertyDefinition (IRdbmsStoragePropertyDefinition serializedIDProperty)
     {
       ArgumentUtility.CheckNotNull ("serializedIDProperty", serializedIDProperty);
 
       _serializedIDProperty = serializedIDProperty;
     }
 
-    public SimpleStoragePropertyDefinition SerializedIDProperty
+    public IRdbmsStoragePropertyDefinition SerializedIDProperty
     {
       get { return _serializedIDProperty; }
     }
@@ -49,12 +48,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public ColumnDefinition GetColumnForLookup ()
     {
-      return _serializedIDProperty.ColumnDefinition;
+      return _serializedIDProperty.GetColumnForLookup();
     }
 
     public ColumnDefinition GetColumnForForeignKey ()
     {
-      return null;
+      throw new NotSupportedException ("String-serialized ObjectID values cannot be used as foreign keys.");
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()

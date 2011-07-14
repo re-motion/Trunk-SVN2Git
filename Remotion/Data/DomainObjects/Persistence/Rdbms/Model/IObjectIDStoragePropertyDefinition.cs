@@ -21,7 +21,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
-    ColumnDefinition GetColumnForLookup ();
-    ColumnDefinition GetColumnForForeignKey ();
   }
 }

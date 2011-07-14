@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
               _fakeBaseColumnDefinition.ColumnDefinition,
               _fakeTableColumnDefinition1.ColumnDefinition
           },
-          new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { _fakeIDColumnDefinition.ValueProperty.ColumnDefinition })
+          new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { _fakeIDColumnDefinition.GetColumnForForeignKey() })
           );
     }
 
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
               _fakeDerivedColumnDefinition1.ColumnDefinition, _fakeDerivedColumnDefinition2.ColumnDefinition,
               _fakeDerivedDerivedColumnDefinition.ColumnDefinition
           },
-          new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, new[] { _fakeIDColumnDefinition.ValueProperty.ColumnDefinition })
+          new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, new[] { _fakeIDColumnDefinition.GetColumnForForeignKey () })
           );
     }
 

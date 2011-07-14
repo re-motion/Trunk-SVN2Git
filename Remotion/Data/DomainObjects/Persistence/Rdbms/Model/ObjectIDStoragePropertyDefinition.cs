@@ -30,10 +30,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class ObjectIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
-    private readonly SimpleStoragePropertyDefinition _valueProperty;
-    private readonly SimpleStoragePropertyDefinition _classIDProperty;
+    private readonly IRdbmsStoragePropertyDefinition _valueProperty;
+    private readonly IRdbmsStoragePropertyDefinition _classIDProperty;
 
-    public ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinition valueProperty, SimpleStoragePropertyDefinition classIDProperty)
+    public ObjectIDStoragePropertyDefinition (IRdbmsStoragePropertyDefinition valueProperty, IRdbmsStoragePropertyDefinition classIDProperty)
     {
       ArgumentUtility.CheckNotNull ("valueProperty", valueProperty);
       ArgumentUtility.CheckNotNull ("classIDProperty", classIDProperty);
@@ -42,12 +42,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _classIDProperty = classIDProperty;
     }
 
-    public SimpleStoragePropertyDefinition ValueProperty
+    public IRdbmsStoragePropertyDefinition ValueProperty
     {
       get { return _valueProperty; }
     }
 
-    public SimpleStoragePropertyDefinition ClassIDProperty
+    public IRdbmsStoragePropertyDefinition ClassIDProperty
     {
       get { return _classIDProperty; }
     }
@@ -59,18 +59,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public ColumnDefinition GetColumnForLookup ()
     {
-      return _valueProperty.ColumnDefinition;
+      return _valueProperty.GetColumnForLookup();
     }
 
     public ColumnDefinition GetColumnForForeignKey ()
     {
-      return _valueProperty.ColumnDefinition;
+      return _valueProperty.GetColumnForForeignKey();
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
-      yield return _valueProperty.ColumnDefinition;
-      yield return _classIDProperty.ColumnDefinition;
+      return _valueProperty.GetColumns().Concat (_classIDProperty.GetColumns());
     }
 
     public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
@@ -82,7 +81,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (value == null)
         return null;
       return new ObjectID (_classIDProperty.Name, value);
-
     }
 
     public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
@@ -92,10 +90,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
 
-      foreach (var dataParameter in _valueProperty.CreateDataParameters (command, objectID.Value.ToString (), key))
-        yield return dataParameter;
-      foreach (var dataParameter in _classIDProperty.CreateDataParameters (command, objectID.ClassID, key + "ClassID"))
-        yield return dataParameter;
+      return _valueProperty.CreateDataParameters (command, objectID.Value.ToString(), key)
+          .Concat (_classIDProperty.CreateDataParameters (command, objectID.ClassID, key + "ClassID"));
     }
   }
 }

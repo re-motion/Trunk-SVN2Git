@@ -276,19 +276,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
-      var objectIDColumn = ((ObjectIDStoragePropertyDefinition) result).ValueProperty;
-      var classIDColumn = ((ObjectIDStoragePropertyDefinition) result).ClassIDProperty;
+      var valueProperty = ((ObjectIDStoragePropertyDefinition) result).ValueProperty;
+      var classIDValueProperty = ((ObjectIDStoragePropertyDefinition) result).ClassIDProperty;
 
-      Assert.That (objectIDColumn.Name, Is.EqualTo ("FakeColumnNameID"));
-      Assert.That (objectIDColumn.ColumnDefinition.IsNullable, Is.True);
-      Assert.That (objectIDColumn.ColumnDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (objectIDColumn.ColumnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("guid"));
-      Assert.That (objectIDColumn.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
+      Assert.That (valueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
+      Assert.That (classIDValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
+
+      var valueIDColumn = ((SimpleStoragePropertyDefinition) valueProperty).ColumnDefinition;
+      var classIDColumn = ((SimpleStoragePropertyDefinition) classIDValueProperty).ColumnDefinition;
+
+      Assert.That (valueIDColumn.Name, Is.EqualTo ("FakeColumnNameID"));
+      Assert.That (valueIDColumn.IsNullable, Is.True);
+      Assert.That (valueIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (valueIDColumn.StorageTypeInfo.StorageType, Is.EqualTo ("guid"));
+      Assert.That (valueIDColumn.IsPartOfPrimaryKey, Is.False);
       Assert.That (classIDColumn.Name, Is.EqualTo ("FakeRelationClassID"));
-      Assert.That (classIDColumn.ColumnDefinition.IsNullable, Is.True);
-      Assert.That (classIDColumn.ColumnDefinition.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (classIDColumn.ColumnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("varchar(100)"));
-      Assert.That (classIDColumn.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
+      Assert.That (classIDColumn.IsNullable, Is.True);
+      Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (classIDColumn.StorageTypeInfo.StorageType, Is.EqualTo ("varchar(100)"));
+      Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
     }
 
     [Test]

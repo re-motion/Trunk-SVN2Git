@@ -51,6 +51,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       yield return _columnDefinition;
     }
 
+    public ColumnDefinition GetColumnForLookup ()
+    {
+      return _columnDefinition;
+    }
+
+    public ColumnDefinition GetColumnForForeignKey ()
+    {
+      return _columnDefinition;
+    }
+
     public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
@@ -71,8 +81,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var parameter = command.CreateParameter();
       parameter.ParameterName = key;
-      parameter.Value = _columnDefinition.StorageTypeInfo.TypeConverter.ConvertTo (value, _columnDefinition.StorageTypeInfo.ParameterValueType)
-                        ?? DBNull.Value;
+      
+      var convertedValue = 
+          _columnDefinition.StorageTypeInfo.TypeConverter.ConvertTo (value, _columnDefinition.StorageTypeInfo.ParameterValueType);
+      parameter.Value = convertedValue ?? DBNull.Value;
       parameter.DbType = _columnDefinition.StorageTypeInfo.DbType;
 
       yield return parameter;

@@ -57,6 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameter2Stub).Repeat.Once ();
     }
 
+    // TODO Review 4129: Rewrite tests using stubs
+
     [Test]
     public void Initialization ()
     {
