@@ -16,7 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -30,6 +33,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return new ColumnDefinition[0];
+    }
+
+    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
+    {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
+
+      return null;
+    }
+
+    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
+    {
+      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+
+      return new IDataParameter[0];
     }
   }
 }

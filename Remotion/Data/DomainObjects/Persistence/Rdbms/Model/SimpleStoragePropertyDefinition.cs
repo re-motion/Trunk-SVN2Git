@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -47,6 +49,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       yield return _columnDefinition;
+    }
+
+    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
+    {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
+
+      var ordinal = ordinalProvider.GetOrdinal (_columnDefinition, dataReader);
+      var value = dataReader[ordinal];
+      if (value == DBNull.Value)
+        value = null;
+      return _columnDefinition.StorageTypeInfo.TypeConverter.ConvertFrom (value);
+    }
+
+    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
+    {
+      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+
+      var parameter = command.CreateParameter();
+      parameter.ParameterName = key;
+      parameter.Value = _columnDefinition.StorageTypeInfo.TypeConverter.ConvertTo (value, _columnDefinition.StorageTypeInfo.ParameterValueType)
+                        ?? DBNull.Value;
+      parameter.DbType = _columnDefinition.StorageTypeInfo.DbType;
+
+      yield return parameter;
     }
   }
 }

@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -68,6 +71,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       yield return _valueProperty.ColumnDefinition;
       yield return _classIDProperty.ColumnDefinition;
+    }
+
+    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
+    {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
+
+      var value = _valueProperty.Read (dataReader, ordinalProvider);
+      if (value == null)
+        return null;
+      return new ObjectID (_classIDProperty.Name, value);
+
+    }
+
+    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
+    {
+      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+
+      var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
+
+      foreach (var dataParameter in _valueProperty.CreateDataParameters (command, objectID.Value.ToString (), key))
+        yield return dataParameter;
+      foreach (var dataParameter in _classIDProperty.CreateDataParameters (command, objectID.ClassID, key + "ClassID"))
+        yield return dataParameter;
     }
   }
 }

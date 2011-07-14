@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -26,5 +28,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition
   {
     IEnumerable<ColumnDefinition> GetColumns ();
+    object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
+    IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key);
   }
 }

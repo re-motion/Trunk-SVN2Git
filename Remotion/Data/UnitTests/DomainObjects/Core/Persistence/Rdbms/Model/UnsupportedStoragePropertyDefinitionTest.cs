@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -36,6 +39,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumns ()
     {
       Assert.That (_columnDefinition.GetColumns(), Is.Empty);
+    }
+
+    [Test]
+    public void Read ()
+    {
+      Assert.That (
+          _columnDefinition.Read (MockRepository.GenerateStub<IDataReader>(), MockRepository.GenerateStub<IColumnOrdinalProvider>()), Is.Null);
+    }
+
+    [Test]
+    public void CreateDataParameters ()
+    {
+      Assert.That (_columnDefinition.CreateDataParameters (MockRepository.GenerateStub<IDbCommand>(), "test", "key"), Is.Empty);
     }
   }
 }

@@ -16,6 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Runtime.InteropServices;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -39,6 +42,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _serializedIDProperty; }
     }
 
+    public string Name
+    {
+      get { return _serializedIDProperty.Name; }
+    }
+
     public ColumnDefinition GetColumnForLookup ()
     {
       return _serializedIDProperty.ColumnDefinition;
@@ -54,9 +62,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _serializedIDProperty.GetColumns();
     }
 
-    public string Name
+    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
     {
-      get { return _serializedIDProperty.Name; }
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
+
+      var value = _serializedIDProperty.Read (dataReader, ordinalProvider);
+      if (value == null)
+        return null;
+      return ObjectID.Parse ((string) value);
     }
+
+    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
+    {
+      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+
+      var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
+      return _serializedIDProperty.CreateDataParameters (command, objectID.ToString (), key);
+    }
+    
   }
 }

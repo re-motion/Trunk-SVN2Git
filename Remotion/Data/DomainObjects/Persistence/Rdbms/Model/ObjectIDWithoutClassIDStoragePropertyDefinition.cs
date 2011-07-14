@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -38,6 +40,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       _valueProperty = valueProperty;
       _classDefinition = classDefinition;
+    }
+
+    public string Name
+    {
+      get { return _valueProperty.Name; }
     }
 
     public SimpleStoragePropertyDefinition ValueProperty
@@ -65,9 +72,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _valueProperty.GetColumns();
     }
 
-    public string Name
+    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
     {
-      get { return _valueProperty.Name; }
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
+
+      var value = _valueProperty.Read (dataReader, ordinalProvider);
+      if (value == null)
+        return null;
+      return new ObjectID (_classDefinition, value);
     }
+
+    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
+    {
+      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+
+      var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
+      return _valueProperty.CreateDataParameters (command, objectID.Value, key);
+    }
+    
   }
 }
