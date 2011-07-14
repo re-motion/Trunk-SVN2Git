@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding.Design
 {
   /// <summary>
-  ///   Editor applied to an <see cref="IBusinessObjectBoundControl.PropertyIdentifier">IBusinessObjectBoundControl.PropertyIdentifier</see>.
+  ///   Editor applied to an <see cref="IBusinessObjectBoundControl"/>'s property identifier.
   /// </summary>
   public class PropertyPickerEditor : DropDownEditorBase
   {

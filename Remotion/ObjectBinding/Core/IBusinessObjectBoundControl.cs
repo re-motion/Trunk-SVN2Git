@@ -42,15 +42,6 @@ public interface IBusinessObjectBoundControl: IComponent
   IBusinessObjectDataSource DataSource { get; set; }
 
   /// <summary>
-  ///   Gets or sets the string representation of the <see cref="Property"/>.
-  /// </summary>
-  /// <value> 
-  ///   A string that can be used to query the <see cref="IBusinessObjectClass.GetPropertyDefinition"/> method for
-  ///   the <see cref="IBusinessObjectProperty"/>. 
-  /// </value>
-  string PropertyIdentifier { get; set; }
-
-  /// <summary>
   ///   Gets or sets the <see cref="IBusinessObjectProperty"/> used for accessing the data to be loaded into 
   ///   <see cref="Value"/>.
   /// </summary>

@@ -50,7 +50,7 @@
 
       <h4 class="dtH4">Usage Notes</h4>      
       <para>
-        If <see cref="IBusinessObjectBoundControl.DataSource"/> and <see cref="IBusinessObjectBoundControl.PropertyIdentifier"/> 
+        If <see cref="BusinessObjectBoundWebControl.DataSource"/> and <see cref="BusinessObjectBoundWebControl.PropertyIdentifier"/> 
         properties are not set, the control is unbound. In that case, the <see cref="Value"/> property must be accessed programmatically to display 
         the current value.
       </para><para>

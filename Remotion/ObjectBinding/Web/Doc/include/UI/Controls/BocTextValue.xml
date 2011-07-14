@@ -38,8 +38,8 @@
       </para><para>
         See the <see cref="BocTextValueBase.CreateValidators"/> method for the validators provided by this control.        
       </para><para>
-        If <see cref="IBusinessObjectBoundControl.DataSource"/> and 
-        <see cref="IBusinessObjectBoundControl.PropertyIdentifier"/> properties are not set, the 
+        If <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        <see cref="BusinessObjectBoundWebControl.PropertyIdentifier"/> properties are not set, the 
         control is unbound. In that case, the <see cref="BusinessObjectBoundWebControl.Property"/> and 
         <see cref="Value"/> or <see cref="Text"/> properties must be accessed programmatically to display the
         current value using automatic formatting.
