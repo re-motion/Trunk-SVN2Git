@@ -18,9 +18,11 @@ using System;
 using System.ComponentModel;
 using System.Data;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -29,274 +31,283 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Model.Building
 {
   [TestFixture]
-  public class SqlStorageTypeCalculatorTest : StandardMappingTest
+  public class SqlStorageTypeCalculatorTest
   {
     private SqlStorageTypeCalculator _typeCalculator;
-    private ClassDefinition _classDefinition;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
+    // We explicitly want an _int_ enum
+    // ReSharper disable EnumUnderlyingTypeIsInt
     private enum Int32Enum : int
     {
     }
+    // ReSharper restore EnumUnderlyingTypeIsInt
 
     private enum Int16Enum : short
     {
     }
 
     [SetUp]
-    public override void SetUp ()
+    public void SetUp ()
     {
-      base.SetUp();
-
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _typeCalculator = new SqlStorageTypeCalculator (_storageProviderDefinitionFinder);
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
     }
 
     [Test]
     public void GetStorageType ()
     {
-      Assert.AreEqual ("bit", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Boolean), false, null)).StorageType);
-      Assert.AreEqual (DbType.Boolean, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Boolean), false, null)).DbType);
-      Assert.AreEqual (typeof (bool), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Boolean), false, null)).ParameterValueType);
-      Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Boolean), false, null)).TypeConverter,
-          Is.TypeOf (typeof (BooleanConverter)));
+      CheckGetStorageType (typeof (Boolean), null, "bit", DbType.Boolean, typeof (bool), Is.TypeOf (typeof (BooleanConverter)));
 
-      Assert.AreEqual ("tinyint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).StorageType);
-      Assert.AreEqual (DbType.Byte, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).DbType);
-      Assert.AreEqual (typeof (byte), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).ParameterValueType);
+      // TODO Review 4150: Refactor tests to use CheckGetStorageType
+
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte))).StorageType, Is.EqualTo ("tinyint"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte))).DbType, Is.EqualTo (DbType.Byte));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte))).ParameterValueType, Is.EqualTo (typeof (byte)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte))).TypeConverter,
           Is.TypeOf (typeof (ByteConverter)));
 
-      Assert.AreEqual ("datetime", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)).StorageType);
-      Assert.AreEqual (DbType.DateTime, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)).DbType);
-      Assert.AreEqual (typeof (DateTime), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)).ParameterValueType);
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime))).StorageType, Is.EqualTo ("datetime"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime))).DbType, Is.EqualTo (DbType.DateTime));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime))).ParameterValueType,
+          Is.EqualTo (typeof (DateTime)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (DateTime))).TypeConverter,
           Is.TypeOf (typeof (DateTimeConverter)));
 
-      Assert.AreEqual ("decimal (38, 3)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal), false, null)).StorageType);
-      Assert.AreEqual (DbType.Decimal, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal), false, null)).DbType);
-      Assert.AreEqual (typeof (Decimal), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal), false, null)).ParameterValueType);
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal))).StorageType, Is.EqualTo ("decimal (38, 3)"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal))).DbType, Is.EqualTo (DbType.Decimal));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal))).ParameterValueType, Is.EqualTo (typeof (Decimal)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Decimal))).TypeConverter,
           Is.TypeOf (typeof (DecimalConverter)));
 
-      Assert.AreEqual ("float", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double), false, null)).StorageType);
-      Assert.AreEqual (DbType.Double, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double), false, null)).DbType);
-      Assert.AreEqual (typeof (Double), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double), false, null)).ParameterValueType);
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double))).StorageType, Is.EqualTo ("float"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double))).DbType, Is.EqualTo (DbType.Double));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double))).ParameterValueType, Is.EqualTo (typeof (Double)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Double))).TypeConverter,
           Is.TypeOf (typeof (DoubleConverter)));
 
-      Assert.AreEqual ("uniqueidentifier", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid), false, null)).StorageType);
-      Assert.AreEqual (DbType.Guid, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid), false, null)).DbType);
-      Assert.AreEqual (typeof (Guid), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid), false, null)).ParameterValueType);
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid))).StorageType, Is.EqualTo ("uniqueidentifier"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid))).DbType, Is.EqualTo (DbType.Guid));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid))).ParameterValueType, Is.EqualTo (typeof (Guid)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Guid))).TypeConverter,
           Is.TypeOf (typeof (GuidConverter)));
 
-      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16), false, null)).StorageType);
-      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16), false, null)).DbType);
-      Assert.AreEqual (typeof (Int16), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16), false, null)).ParameterValueType);
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16))).StorageType, Is.EqualTo ("smallint"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16))).DbType, Is.EqualTo (DbType.Int16));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16))).ParameterValueType, Is.EqualTo (typeof (Int16)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16))).TypeConverter,
           Is.TypeOf (typeof (Int16Converter)));
 
-      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32), false, null)).StorageType);
-      Assert.AreEqual (DbType.Int32, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32), false, null)).DbType);
-      Assert.AreEqual (typeof (int), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32), false, null)).ParameterValueType);
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32))).StorageType, Is.EqualTo ("int"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32))).DbType, Is.EqualTo (DbType.Int32));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32))).ParameterValueType, Is.EqualTo (typeof (int)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32))).TypeConverter,
           Is.TypeOf (typeof (Int32Converter)));
 
-      Assert.AreEqual ("bigint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64), false, null)).StorageType);
-      Assert.AreEqual (DbType.Int64, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64), false, null)).DbType);
-      Assert.AreEqual (typeof (Int64), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64), false, null)).ParameterValueType);
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64))).StorageType, Is.EqualTo ("bigint"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64))).DbType, Is.EqualTo (DbType.Int64));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64))).ParameterValueType, Is.EqualTo (typeof (Int64)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int64))).TypeConverter,
           Is.TypeOf (typeof (Int64Converter)));
 
-      Assert.AreEqual ("real", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single), false, null)).StorageType);
-      Assert.AreEqual (DbType.Single, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single), false, null)).DbType);
-      Assert.AreEqual (typeof (Single), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single), false, null)).ParameterValueType);
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single))).StorageType, Is.EqualTo ("real"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single))).DbType, Is.EqualTo (DbType.Single));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single))).ParameterValueType, Is.EqualTo (typeof (Single)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Single))).TypeConverter,
           Is.TypeOf (typeof (SingleConverter)));
 
-      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum), false, null)).StorageType);
-      Assert.AreEqual (DbType.Int32, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum), false, null)).DbType);
-      Assert.AreEqual (typeof (Int32), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum), false, null)).ParameterValueType);
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum))).StorageType, Is.EqualTo ("int"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum))).DbType, Is.EqualTo (DbType.Int32));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum), false, null)).TypeConverter,
-          Is.TypeOf (typeof (AdvancedEnumConverter)));
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum))).ParameterValueType, Is.EqualTo (typeof (Int32)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum))).TypeConverter,
+          Is.TypeOf (typeof (AdvancedEnumConverter))); // TODO Review 4150: Also check EnumType
 
-      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum), false, null)).StorageType);
-      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum), false, null)).DbType);
-      Assert.AreEqual (typeof (Int16), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum), false, null)).ParameterValueType);
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum))).StorageType, Is.EqualTo ("smallint"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum))).DbType, Is.EqualTo (DbType.Int16));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum), false, null)).TypeConverter,
-          Is.TypeOf (typeof (AdvancedEnumConverter)));
-      
-      Assert.AreEqual ("nvarchar (200)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, 200)).StorageType);
-      Assert.AreEqual (DbType.String, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, 200)).DbType);
-      Assert.AreEqual (typeof (string), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)).ParameterValueType);
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum))).ParameterValueType, Is.EqualTo (typeof (Int16)));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum))).TypeConverter,
+          Is.TypeOf (typeof (AdvancedEnumConverter))); // TODO Review 4150: Also check EnumType
+
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Color))).StorageType,
+          Is.EqualTo ("varchar (" + Color.Values.Green ().ID.Length + ")"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Color))).DbType, Is.EqualTo (DbType.String));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Color))).ParameterValueType, Is.EqualTo (typeof (string)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Color))).TypeConverter,
+          Is.TypeOf (typeof (StringConverter))); // TODO Review 4150: Should be ExtensibleEnumConverter, also check ExtensibleEnumType
+
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), 200)).StorageType, Is.EqualTo ("nvarchar (200)"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), 200)).DbType, Is.EqualTo (DbType.String));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String))).ParameterValueType, Is.EqualTo (typeof (string)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String))).TypeConverter,
           Is.TypeOf (typeof (StringConverter)));
 
-      Assert.AreEqual ("nvarchar (max)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)).StorageType);
-      Assert.AreEqual (DbType.String, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)).DbType);
-      Assert.AreEqual (typeof (string), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)).ParameterValueType);
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String))).StorageType, Is.EqualTo ("nvarchar (max)"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String))).DbType, Is.EqualTo (DbType.String));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String))).ParameterValueType, Is.EqualTo (typeof (string)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (String))).TypeConverter,
           Is.TypeOf (typeof (StringConverter)));
-      
-      Assert.AreEqual ("varbinary (200)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, 200)).StorageType);
-      Assert.AreEqual (DbType.Binary, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, 200)).DbType);
-      Assert.AreEqual (typeof (byte[]), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)).ParameterValueType);
+
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), 200)).StorageType, Is.EqualTo ("varbinary (200)"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), 200)).DbType, Is.EqualTo (DbType.Binary));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]))).ParameterValueType, Is.EqualTo (typeof (byte[])));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]))).TypeConverter,
           Is.TypeOf (typeof (ArrayConverter)));
 
-      Assert.AreEqual ("varbinary (max)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)).StorageType);
-      Assert.AreEqual (DbType.Binary, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)).DbType);
-      Assert.AreEqual (typeof (byte[]), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)).ParameterValueType);
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]))).StorageType, Is.EqualTo ("varbinary (max)"));
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]))).DbType, Is.EqualTo (DbType.Binary));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]))).ParameterValueType, Is.EqualTo (typeof (byte[])));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Byte[]))).TypeConverter,
           Is.TypeOf (typeof (ArrayConverter)));
     }
 
     [Test]
     public void GetStorageType_ForNullableValueTypes ()
     {
-      Assert.AreEqual ("bit", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Boolean>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Boolean, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Boolean>), true, null)).DbType);
-      Assert.AreEqual (typeof (bool?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Boolean>), false, null)).ParameterValueType);
+      // TODO Review 4150: Refactor tests to use CheckGetStorageType
+
+      Assert.That (_typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (bool?))).StorageType, Is.EqualTo ("bit"));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Boolean>), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (bool?))).DbType, Is.EqualTo (DbType.Boolean));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (bool?))).ParameterValueType,
+          Is.EqualTo (typeof (bool?)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (bool?))).TypeConverter,
           Is.TypeOf (typeof (NullableConverter)));
 
-      Assert.AreEqual ("tinyint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Byte, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), true, null)).DbType);
-      Assert.AreEqual (typeof (byte?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), false, null)).ParameterValueType);
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Byte>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual ("datetime", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), true, null)).StorageType);
-      Assert.AreEqual (DbType.DateTime, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), true, null)).DbType);
-      Assert.AreEqual (typeof (DateTime?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), false, null)).ParameterValueType);
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum?))).StorageType, Is.EqualTo ("int"));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<DateTime>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual (
-          "decimal (38, 3)", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Decimal>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Decimal, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Decimal>), true, null)).DbType);
-      Assert.AreEqual (typeof (Decimal?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Decimal>), false, null)).ParameterValueType);
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum?))).DbType, Is.EqualTo (DbType.Int32));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Decimal>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual ("float", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Double>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Double, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Double>), true, null)).DbType);
-      Assert.AreEqual (typeof (Double?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Double>), false, null)).ParameterValueType);
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum?))).ParameterValueType,
+          Is.EqualTo (typeof (int?)));
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Double>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual (
-          "uniqueidentifier", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Guid>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Guid, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Guid>), true, null)).DbType);
-      Assert.AreEqual (typeof (Guid?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Guid>), false, null)).ParameterValueType);
-      Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Guid>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16>), true, null)).DbType);
-      Assert.AreEqual (typeof (Int16?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16>), false, null)).ParameterValueType);
-      Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Int32, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32>), true, null)).DbType);
-      Assert.AreEqual (typeof (Int32?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32>), false, null)).ParameterValueType);
-      Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual ("bigint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int64>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Int64, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int64>), true, null)).DbType);
-      Assert.AreEqual (typeof (Int64?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int64>), false, null)).ParameterValueType);
-      Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int64>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual ("real", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Single>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Single, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Single>), true, null)).DbType);
-      Assert.AreEqual (typeof (Single?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Single>), false, null)).ParameterValueType);
-      Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Single>), false, null)).TypeConverter,
-          Is.TypeOf (typeof (NullableConverter)));
-
-      Assert.AreEqual ("int", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32Enum>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Int32, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32Enum>), true, null)).DbType);
-      Assert.AreEqual (typeof (int?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32Enum>), false, null)).ParameterValueType);
-      Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int32Enum>), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int32Enum?))).TypeConverter,
           Is.TypeOf (typeof (AdvancedEnumConverter)));
 
-      Assert.AreEqual ("smallint", _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16Enum>), true, null)).StorageType);
-      Assert.AreEqual (DbType.Int16, _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16Enum>), true, null)).DbType);
-      Assert.AreEqual (typeof (Int16?), _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16Enum>), false, null)).ParameterValueType);
       Assert.That (
-          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Nullable<Int16Enum>), false, null)).TypeConverter,
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum?))).StorageType, Is.EqualTo ("smallint"));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum?))).DbType, Is.EqualTo (DbType.Int16));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum?))).ParameterValueType,
+          Is.EqualTo (typeof (Int16?)));
+      Assert.That (
+          _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Int16Enum?))).TypeConverter,
           Is.TypeOf (typeof (AdvancedEnumConverter)));
     }
 
     [Test]
-    public void GetStorageTypeForSpecialCulumns ()
+    public void GetStorageTypeForSpecialColumns ()
     {
-      Assert.AreEqual ("uniqueidentifier", _typeCalculator.ObjectIDStorageType.StorageType);
-      Assert.AreEqual (DbType.Guid, _typeCalculator.ObjectIDStorageType.DbType);
-      Assert.AreEqual (typeof (Guid), _typeCalculator.ObjectIDStorageType.ParameterValueType);
+      // TODO Review 4150: Refactor tests to use CheckStorageType
+
+      Assert.That (_typeCalculator.ObjectIDStorageType.StorageType, Is.EqualTo ("uniqueidentifier"));
+      Assert.That (_typeCalculator.ObjectIDStorageType.DbType, Is.EqualTo (DbType.Guid));
+      Assert.That (_typeCalculator.ObjectIDStorageType.ParameterValueType, Is.EqualTo (typeof (Guid)));
       Assert.That (_typeCalculator.ObjectIDStorageType.TypeConverter, Is.TypeOf (typeof (GuidConverter)));
 
-      Assert.AreEqual ("varchar (255)", _typeCalculator.SerializedObjectIDStorageType.StorageType);
-      Assert.AreEqual (DbType.String, _typeCalculator.SerializedObjectIDStorageType.DbType);
-      Assert.AreEqual (typeof (String), _typeCalculator.SerializedObjectIDStorageType.ParameterValueType);
+      Assert.That (_typeCalculator.SerializedObjectIDStorageType.StorageType, Is.EqualTo ("varchar (255)"));
+      Assert.That (_typeCalculator.SerializedObjectIDStorageType.DbType, Is.EqualTo (DbType.String));
+      Assert.That (_typeCalculator.SerializedObjectIDStorageType.ParameterValueType, Is.EqualTo (typeof (String)));
       Assert.That (_typeCalculator.SerializedObjectIDStorageType.TypeConverter, Is.TypeOf (typeof (StringConverter)));
 
-      Assert.AreEqual ("varchar (100)", _typeCalculator.ClassIDStorageType.StorageType);
-      Assert.AreEqual (DbType.String, _typeCalculator.ClassIDStorageType.DbType);
-      Assert.AreEqual (typeof (String), _typeCalculator.ClassIDStorageType.ParameterValueType);
+      Assert.That (_typeCalculator.ClassIDStorageType.StorageType, Is.EqualTo ("varchar (100)"));
+      Assert.That (_typeCalculator.ClassIDStorageType.DbType, Is.EqualTo (DbType.String));
+      Assert.That (_typeCalculator.ClassIDStorageType.ParameterValueType, Is.EqualTo (typeof (String)));
       Assert.That (_typeCalculator.ClassIDStorageType.TypeConverter, Is.TypeOf (typeof (StringConverter)));
 
-      Assert.AreEqual ("rowversion", _typeCalculator.TimestampStorageType.StorageType);
-      Assert.AreEqual (DbType.Binary, _typeCalculator.TimestampStorageType.DbType);
-      Assert.AreEqual (typeof (Byte[]), _typeCalculator.TimestampStorageType.ParameterValueType);
+      Assert.That (_typeCalculator.TimestampStorageType.StorageType, Is.EqualTo ("rowversion"));
+      Assert.That (_typeCalculator.TimestampStorageType.DbType, Is.EqualTo (DbType.Binary));
+      Assert.That (_typeCalculator.TimestampStorageType.ParameterValueType, Is.EqualTo (typeof (Byte[])));
       Assert.That (_typeCalculator.TimestampStorageType.TypeConverter, Is.TypeOf (typeof (ArrayConverter)));
     }
 
     [Test]
     public void GettorageType_WithNotSupportedType ()
     {
-      var propertyDefinition = CreatePropertyDefinition (typeof (Char), false, null);
+      var propertyDefinition = CreatePropertyDefinition (typeof (Char));
 
       var result = _typeCalculator.GetStorageType (propertyDefinition);
 
       Assert.That (result.StorageType, Is.Null);
     }
 
-    private PropertyDefinition CreatePropertyDefinition (Type propertyType, bool isNullable, int? maxLength)
+    private void CheckGetStorageType (
+        Type propertyType,
+        int? maxLength,
+        string expectedStorageTypeString,
+        DbType expectedDbType,
+        Type expectedParameterValueType,
+        IResolveConstraint expectedTypeConverterConstraint)
     {
+      var propertyDefinition = CreatePropertyDefinition (propertyType, maxLength);
+      var info = _typeCalculator.GetStorageType (propertyDefinition);
+      CheckStorageTypeInformation (info, expectedStorageTypeString, expectedDbType, expectedParameterValueType, expectedTypeConverterConstraint);
+    }
+
+    private PropertyDefinition CreatePropertyDefinition (Type propertyType, int? maxLength = null)
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       return PropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _classDefinition, "Name", "ColumnName", propertyType, isNullable, maxLength, StorageClass.Persistent);
+          classDefinition,
+          "Name",
+          "ColumnName",
+          propertyType,
+          false,
+          maxLength,
+          StorageClass.Persistent);
+    }
+
+    private void CheckStorageTypeInformation (
+        StorageTypeInformation storageTypeInformation,
+        string expectedStorageTypeString,
+        DbType expectedDbType,
+        Type expectedParameterValueType,
+        IResolveConstraint typeConverterConstraint)
+    {
+      Assert.That (storageTypeInformation.StorageType, Is.EqualTo (expectedStorageTypeString));
+      Assert.That (storageTypeInformation.DbType, Is.EqualTo (expectedDbType));
+      Assert.That (storageTypeInformation.ParameterValueType, Is.EqualTo (expectedParameterValueType));
+      Assert.That (storageTypeInformation.TypeConverter, typeConverterConstraint);
     }
   }
 }
