@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding
     /// <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
     public void SaveValue (bool interim)
     {
-      if (IsBusinessObjectSetToDefaultValue())
+      if (!interim && IsBusinessObjectSetToDefaultValue())
       {
         ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
         BusinessObject = null;

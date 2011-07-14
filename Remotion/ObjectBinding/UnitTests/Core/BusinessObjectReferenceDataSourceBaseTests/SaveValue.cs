@@ -390,5 +390,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
 
       _referencePropertyStub.AssertWasNotCalled (stub => stub.IsDefaultValue (null, null, null), options => options.IgnoreArguments ());
     }
+
+    [Test]
+    public void InterimSave_DoesNotUseDefaultValueSemantics ()
+    {
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject> ();
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = expectedValue;
+
+      var firstControlMock = MockRepository.GenerateMock<IBusinessObjectBoundEditableControl> ();
+      firstControlMock.Stub (stub => stub.HasValidBinding).Return (true);
+      referenceDataSource.Register (firstControlMock);
+
+      firstControlMock.Expect (mock => mock.SaveValue (true));
+
+      referenceDataSource.SaveValue (true);
+
+      firstControlMock.VerifyAllExpectations ();
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.SupportsDefaultValue);
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.IsDefaultValue (null, null, null), options => options.IgnoreArguments ());
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.Delete (null, null), options => options.IgnoreArguments ());
+      _referencedDataSourceStub.BusinessObject.AssertWasCalled (stub => stub.SetProperty (_referencePropertyStub, expectedValue));
+    }
   }
 }
