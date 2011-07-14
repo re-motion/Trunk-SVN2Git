@@ -115,25 +115,19 @@ namespace Remotion.ObjectBinding
       }
     }
 
+    /// <summary>
+    /// Evaluates whether the <see cref="BusinessObjectReferenceDataSource"/> contains a value that will be written back into the 
+    /// <see cref="ReferencedDataSource"/> during <see cref="SaveValue"/>.
+    /// </summary>
+    /// <returns></returns>
     public bool HasValue ()
     {
-      return BusinessObject != null && !IsBusinessObjectSetToDefaultValue();
-    }
-
-    private bool IsBusinessObjectSetToDefaultValue ()
-    {
-      if (HasValidBinding && BusinessObject != null && ReferenceProperty.SupportsDefaultValue)
-      {
-        if (BoundControls.Any (c=>c.HasValue))
-          return false;
-
-        var properties = BoundControls.Select (c => c.Property).Distinct().ToArray();
-        return ReferenceProperty.IsDefaultValue (ReferencedDataSource.BusinessObject, BusinessObject, properties);
-      }
-      else
-      {
+      if (BusinessObject == null)
         return false;
-      }
+      else if (IsBusinessObjectSetToDefaultValue())
+        return false;
+      else
+        return true;
     }
 
     /// <summary> 
@@ -205,6 +199,22 @@ namespace Remotion.ObjectBinding
     private bool SupportsDefaultValueSemantics
     {
       get { return (Mode == DataSourceMode.Edit && ReferenceProperty.SupportsDefaultValue); }
+    }
+
+    private bool IsBusinessObjectSetToDefaultValue ()
+    {
+      if (HasValidBinding && BusinessObject != null && ReferenceProperty.SupportsDefaultValue)
+      {
+        if (BoundControls.Any (c => c.HasValue))
+          return false;
+
+        var properties = BoundControls.Select (c => c.Property).Distinct ().ToArray ();
+        return ReferenceProperty.IsDefaultValue (ReferencedDataSource.BusinessObject, BusinessObject, properties);
+      }
+      else
+      {
+        return false;
+      }
     }
   }
 }
