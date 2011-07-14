@@ -95,8 +95,16 @@ namespace Remotion.ObjectBinding
     /// <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
     public void SaveValue (bool interim)
     {
-      // save values from "child" controls
-      SaveValues (interim);
+      if (HasValidBinding && ReferenceProperty.IsDefaultValue (ReferencedDataSource.BusinessObject, BusinessObject, new IBusinessObjectProperty[0]))
+      {
+        ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
+        BusinessObject = null;
+      }
+      else
+      {
+        // save values from "child" controls
+        SaveValues (interim);
+      }
 
       // if required, save value into "parent" data source
       if (HasValidBinding && RequiresWriteBack)

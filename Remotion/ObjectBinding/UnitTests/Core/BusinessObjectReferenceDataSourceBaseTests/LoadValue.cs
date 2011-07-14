@@ -169,8 +169,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
-      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
-          .Throw (new NotSupportedException());
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.Mode = DataSourceMode.Read;
@@ -178,6 +176,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
 
       Assert.That (referenceDataSource.BusinessObject, Is.Null);
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.CreateDefaultValue (Arg<IBusinessObject>.Is.Anything));
     }
 
     [Test]
@@ -185,8 +184,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
-      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
-          .Throw (new NotSupportedException());
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.Mode = DataSourceMode.Search;
@@ -194,6 +191,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
 
       Assert.That (referenceDataSource.BusinessObject, Is.Null);
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.CreateDefaultValue (Arg<IBusinessObject>.Is.Anything));
     }
 
     [Test]
@@ -201,8 +199,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (false);
-      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
-          .Return (MockRepository.GenerateStub<IBusinessObject>());
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.Mode = DataSourceMode.Edit;
@@ -210,6 +206,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
 
       Assert.That (referenceDataSource.BusinessObject, Is.Null);
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.CreateDefaultValue (Arg<IBusinessObject>.Is.Anything));
     }
 
     [Test]
