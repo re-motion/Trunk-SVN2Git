@@ -284,7 +284,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var saveCommand = _storageProviderCommandFactory.CreateForSave (dataContainers.ToArray());
+      var saveCommand = _storageProviderCommandFactory.CreateForSave (dataContainers);
       saveCommand.Execute (this);
     }
 

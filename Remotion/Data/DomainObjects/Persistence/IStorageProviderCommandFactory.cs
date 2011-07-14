@@ -37,6 +37,6 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForDataContainerQuery (IQuery query);
 
-    IStorageProviderCommand<TExecutionContext> CreateForSave (DataContainer[] dataContainers);
+    IStorageProviderCommand<TExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers);
   }
 }

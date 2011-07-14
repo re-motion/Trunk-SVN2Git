@@ -75,13 +75,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      var dbCommandBuilders = from id in objectIDs
+      var objectIDList = objectIDs.ToList();
+      var dbCommandBuilders = from id in objectIDList
                               let tableDefinition = GetTableDefinition (id)
                               group id by tableDefinition
                               into idsByTable
                               select CreateIDLookupDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
       var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders, false, _dataContainerReader);
-      return new MultiDataContainerSortCommand (objectIDs, multiDataContainerLoadCommand);
+      return new MultiDataContainerSortCommand (objectIDList, multiDataContainerLoadCommand);
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForRelationLookup (
@@ -105,7 +106,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new MultiDataContainerLoadCommand (new[] { _dbCommandBuilderFactory.CreateForQuery (query) }, true, _dataContainerReader);
     }
 
-    public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (DataContainer[] dataContainers)
+    public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)
     {
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
 
