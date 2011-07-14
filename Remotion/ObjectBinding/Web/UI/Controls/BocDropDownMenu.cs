@@ -230,6 +230,12 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
     set { Value = (IBusinessObject) value; }
   }
 
+  /// <summary>Gets a flag indicating whether the <see cref="BocDropDownMenu"/> contains a value. </summary>
+  public override bool HasValue
+  {
+    get { return _value != null; }
+  }
+
   /// <summary>
   ///   Gets or sets the <see cref="IBusinessObjectReferenceProperty"/> used for accessing the data to be loaded into 
   ///   <see cref="Value"/>.

@@ -113,6 +113,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    public override bool HasValue
+    {
+      get
+      {
+        if (_referenceDataSource == null)
+          throw new InvalidOperationException ("Cannot analyze value if no property is set.");
+        return _referenceDataSource.HasValue;
+      }
+    }
+
     public override bool IsDirty
     {
       get

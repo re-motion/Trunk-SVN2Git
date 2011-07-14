@@ -341,6 +341,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocCheckBox"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return true; }
+    }
+
     /// <summary> The boolean value to which this control defaults if the assigned value is <see langword="null"/>. </summary>
     /// <value> 
     ///   <see langword="true"/> or <see langword="false"/> to explicitly specify the default value, or <see langword="null"/> to leave the decision 

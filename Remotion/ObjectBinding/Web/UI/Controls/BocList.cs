@@ -2623,6 +2623,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { Value = (IList) value; }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocTreeView"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return _value != null; }
+    }
+
     /// <summary>
     ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
     ///   <see cref="Control.ClientID"/>.

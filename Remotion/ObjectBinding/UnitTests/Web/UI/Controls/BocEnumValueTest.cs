@@ -53,7 +53,7 @@ public class BocEnumValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelUndefined()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
@@ -63,7 +63,7 @@ public class BocEnumValueTest: BocTest
     Assert.IsFalse (WcagHelperMock.HasError);
   }
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityLevelA()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
@@ -75,7 +75,7 @@ public class BocEnumValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelAWithListControlStyleAutoPostBackTrue()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -158,7 +158,24 @@ public class BocEnumValueTest: BocTest
     Assert.AreEqual (null, _bocEnumValue.Value);
     Assert.IsTrue (_bocEnumValue.IsDirty);
   }
-    
+  
+
+  [Test]
+  public void HasValue_ValueIsSet_ReturnsTrue ()
+  {
+    _bocEnumValue.Property = _propertyEnumValue;
+    _bocEnumValue.Value = TestEnum.Second;
+    Assert.IsTrue (_bocEnumValue.HasValue);
+  }
+
+  [Test]
+  public void HasValue_ValueIsNull_ReturnsFalse ()
+  {
+    _bocEnumValue.Property = _propertyEnumValue;
+    _bocEnumValue.Value = null;
+    Assert.IsFalse (_bocEnumValue.HasValue);
+  }
+
 
   [Test]
   public void LoadValueAndInterimTrue()

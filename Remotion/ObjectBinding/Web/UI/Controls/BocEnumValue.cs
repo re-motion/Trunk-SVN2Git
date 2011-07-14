@@ -299,6 +299,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocEnumValue"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return InternalValue != null; }
+    }
+
     /// <summary>
     ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
     ///   <see cref="TargetControl"/>.

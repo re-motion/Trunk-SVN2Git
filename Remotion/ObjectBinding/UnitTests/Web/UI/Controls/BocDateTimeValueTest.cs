@@ -252,6 +252,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
 
     [Test]
+    public void HasValue_ValueIsSet_ReturnsTrue ()
+    {
+      _bocDateTimeValue.Value = DateTime.Now;
+      Assert.IsTrue (_bocDateTimeValue.HasValue);
+    }
+
+    [Test]
+    public void HasValue_ValueIsNull_ReturnsFalse ()
+    {
+      _bocDateTimeValue.Value = null;
+      Assert.IsFalse (_bocDateTimeValue.HasValue);
+    }
+
+
+    [Test]
     public void LoadValueAndInterimTrue()
     {
       _businessObject.DateTimeValue = new DateTime (2006, 1, 1, 1, 1, 1);

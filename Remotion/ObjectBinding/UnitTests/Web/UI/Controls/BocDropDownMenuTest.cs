@@ -53,7 +53,7 @@ public class BocDropDownMenuTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelUndefined()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
@@ -63,7 +63,7 @@ public class BocDropDownMenuTest: BocTest
     Assert.IsFalse (WcagHelperMock.HasError);
   }
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityLevelA()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
@@ -74,7 +74,7 @@ public class BocDropDownMenuTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelA()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -101,7 +101,22 @@ public class BocDropDownMenuTest: BocTest
     _bocDropDownMenu.Value = null;
     Assert.AreEqual (null, _bocDropDownMenu.Value);
   }
-    
+
+
+  [Test]
+  public void HasValue_ValueIsSet_ReturnsTrue ()
+  {
+    _bocDropDownMenu.Value = (IBusinessObject) TypeWithReference.Create ();
+    Assert.IsTrue (_bocDropDownMenu.HasValue);
+  }
+
+  [Test]
+  public void HasValue_ValueIsNull_ReturnsFalse ()
+  {
+    _bocDropDownMenu.Value = null;
+    Assert.IsFalse (_bocDropDownMenu.HasValue);
+  }
+
 
   [Test]
   public void LoadValueAndInterimTrueWithObject()

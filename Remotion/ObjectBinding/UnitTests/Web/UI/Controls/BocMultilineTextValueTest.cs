@@ -52,7 +52,7 @@ public class BocMultilineTextValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelUndefined()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
@@ -62,7 +62,7 @@ public class BocMultilineTextValueTest: BocTest
     Assert.IsFalse (WcagHelperMock.HasError);
   }
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityLevelA()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
@@ -74,7 +74,7 @@ public class BocMultilineTextValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelAWithTextBoxStyleAutoPostBackTrue()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -109,7 +109,7 @@ public class BocMultilineTextValueTest: BocTest
   [Test]
   public void SetValueToString()
   {
-    string[] value = new string[] {"Foo", "Bar"};
+    string[] value = new [] {"Foo", "Bar"};
     _bocMultilineTextValue.IsDirty = false;
     _bocMultilineTextValue.Value = value;
     Assert.AreEqual (value, _bocMultilineTextValue.Value);
@@ -124,12 +124,35 @@ public class BocMultilineTextValueTest: BocTest
     Assert.AreEqual (null, _bocMultilineTextValue.Value);
     Assert.IsTrue (_bocMultilineTextValue.IsDirty);
   }
-    
+
+
+  [Test]
+  public void HasValue_ValueIsSet_ReturnsTrue ()
+  {
+    _bocMultilineTextValue.Value = new [] { "x" };
+    Assert.IsTrue (_bocMultilineTextValue.HasValue);
+  }
+
+  [Test]
+  public void HasValue_TextContainsOnlyWhitespace_ReturnsFalse ()
+  {
+    _bocMultilineTextValue.Text = " \r\n ";
+    Assert.IsFalse (_bocMultilineTextValue.HasValue);
+    Assert.IsNull (_bocMultilineTextValue.Value);
+  }
+
+  [Test]
+  public void HasValue_ValueIsNull_ReturnsFalse ()
+  {
+    _bocMultilineTextValue.Value = null;
+    Assert.IsFalse (_bocMultilineTextValue.HasValue);
+  }
+
 
   [Test]
   public void LoadValueAndInterimTrue()
   {
-    _businessObject.StringArray = new string[] {"Foo", "Bar"};
+    _businessObject.StringArray = new [] {"Foo", "Bar"};
     _bocMultilineTextValue.DataSource = _dataSource;
     _bocMultilineTextValue.Property = _propertyStringArray;
     _bocMultilineTextValue.Value = null;
@@ -143,7 +166,7 @@ public class BocMultilineTextValueTest: BocTest
   [Test]
   public void LoadValueAndInterimFalseWithString()
   {
-    _businessObject.StringArray = new string[] {"Foo", "Bar"};
+    _businessObject.StringArray = new [] {"Foo", "Bar"};
     _bocMultilineTextValue.DataSource = _dataSource;
     _bocMultilineTextValue.Property = _propertyStringArray;
     _bocMultilineTextValue.Value = null;
@@ -160,7 +183,7 @@ public class BocMultilineTextValueTest: BocTest
     _businessObject.StringArray = null;
     _bocMultilineTextValue.DataSource = _dataSource;
     _bocMultilineTextValue.Property = _propertyStringArray;
-    _bocMultilineTextValue.Value = new string[] {"Foo", "Bar"};
+    _bocMultilineTextValue.Value = new [] {"Foo", "Bar"};
     _bocMultilineTextValue.IsDirty = true;
 
     _bocMultilineTextValue.LoadValue (false);
@@ -171,7 +194,7 @@ public class BocMultilineTextValueTest: BocTest
   [Test]
   public void LoadUnboundValueAndInterimTrue()
   {
-    string[] value = new string[] {"Foo", "Bar"};
+    string[] value = new [] {"Foo", "Bar"};
     _bocMultilineTextValue.Value = null;
     _bocMultilineTextValue.IsDirty = true;
 
@@ -183,7 +206,7 @@ public class BocMultilineTextValueTest: BocTest
   [Test]
   public void LoadUnboundValueAndInterimFalseWithString()
   {
-    string[] value = new string[] {"Foo", "Bar"};
+    string[] value = new [] {"Foo", "Bar"};
     _bocMultilineTextValue.Value = null;
     _bocMultilineTextValue.IsDirty = true;
 
@@ -196,7 +219,7 @@ public class BocMultilineTextValueTest: BocTest
   public void LoadUnboundValueAndInterimFalseWithNull()
   {
     string[] value = null;
-    _bocMultilineTextValue.Value = new string[] {"Foo", "Bar"};
+    _bocMultilineTextValue.Value = new [] {"Foo", "Bar"};
     _bocMultilineTextValue.IsDirty = true;
 
     _bocMultilineTextValue.LoadUnboundValue (value, false);

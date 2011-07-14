@@ -224,6 +224,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
 
     [Test]
+    public void HasValue_ValueIsSet_ReturnsTrue ()
+    {
+      _bocCheckBox.Value = false;
+      Assert.IsTrue (_bocCheckBox.HasValue);
+    }
+
+    [Test]
+    public void HasValue_ValueIsNull_ReturnsFalse ()
+    {
+      _bocCheckBox.Value = null;
+      Assert.IsTrue (_bocCheckBox.HasValue);
+    }
+
+
+    [Test]
     public void LoadValueAndInterimTrue()
     {
       _businessObject.BooleanValue = true;

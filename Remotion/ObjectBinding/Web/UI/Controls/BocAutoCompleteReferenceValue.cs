@@ -326,7 +326,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> 
+    /// <summary>Gets a flag indicating whether the <see cref="BocAutoCompleteReferenceValue"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return InternalValue != null; }
+    }
+
+    /// <summary> Intern
     ///   Returns the <see cref="Control.ClientID"/> values of all controls whose value can be modified in the user interface.
     /// </summary>
     /// <returns> 

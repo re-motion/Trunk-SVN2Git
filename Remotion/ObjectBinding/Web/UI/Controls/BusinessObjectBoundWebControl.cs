@@ -289,6 +289,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     protected abstract object ValueImplementation { get; set; }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BusinessObjectBoundWebControl"/> contains a value. </summary>
+    /// <value><see langword="true" /> if the <see cref="BusinessObjectBoundWebControl"/> contains a value. </value>
+    /// <remarks>
+    /// The flag only specifies the presense of data. It does not specify whether the data is in a format compatible with the <see cref="Property"/>.
+    /// For this, a separate validation step is required.
+    /// </remarks>
+    [Browsable (false)]
+    public abstract bool HasValue { get; }
+
     /// <summary> Calls <see cref="Control.OnPreRender"/> on every invocation. </summary>
     /// <remarks> Used by the <see cref="BocDesigner"/>. </remarks>
     void IControlWithDesignTimeSupport.PreRenderForDesignMode ()

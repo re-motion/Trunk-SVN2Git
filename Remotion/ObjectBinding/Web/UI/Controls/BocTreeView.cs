@@ -613,6 +613,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocTreeView"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return _value != null; }
+    }
+
     /// <summary> Gets the tree nodes displayed by this tree view. </summary>
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]

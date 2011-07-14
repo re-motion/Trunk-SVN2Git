@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
 {
@@ -119,6 +120,38 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
       _bocTextValue.Value = null;
       Assert.AreEqual (null, _bocTextValue.Value);
       Assert.IsTrue (_bocTextValue.IsDirty);
+    }
+
+
+    [Test]
+    public void HasValue_ValueIsSet_ReturnsTrue ()
+    {
+      _bocTextValue.Value = "x";
+      Assert.IsTrue (_bocTextValue.HasValue);
+    }
+
+    [Test]
+    public void HasValue_TextContainsInvaliData_ReturnsTrue ()
+    {
+      _bocTextValue.ValueType = BocTextValueType.Date;
+      _bocTextValue.Text = "x";
+      Assert.IsTrue (_bocTextValue.HasValue);
+    }
+
+    [Test]
+    public void HasValue_TextContainsOnlyWhitespace_ReturnsFalse ()
+    {
+      _bocTextValue.ValueType = BocTextValueType.Date;
+      _bocTextValue.Text = "  ";
+      Assert.IsFalse (_bocTextValue.HasValue);
+      Assert.IsNull (_bocTextValue.Value);
+    }
+
+    [Test]
+    public void HasValue_ValueIsNull_ReturnsFalse ()
+    {
+      _bocTextValue.Value = null;
+      Assert.IsFalse (_bocTextValue.HasValue);
     }
 
 

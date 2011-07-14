@@ -565,6 +565,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocDateTimeValue"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return !(string.IsNullOrEmpty (InternalDateValue) && string.IsNullOrEmpty (InternalTimeValue)); }
+    }
+
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }

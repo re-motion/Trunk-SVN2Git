@@ -147,6 +147,11 @@ namespace Remotion.ObjectBinding
       set { BusinessObject = (IBusinessObject) value; }
     }
 
+    bool IBusinessObjectBoundControl.HasValue
+    {
+      get { return IsDefaultValue(); }
+    }
+
     /// <summary>
     ///   Gets a flag specifying whether the <see cref="BusinessObjectReferenceDataSource"/> has a valid configuration.
     /// </summary>
@@ -156,7 +161,7 @@ namespace Remotion.ObjectBinding
     ///   and <see cref="IBusinessObjectDataSource.BusinessObject"/>.
     /// </value>
     [Browsable (false)]
-    public bool HasValidBinding
+    bool IBusinessObjectBoundControl.HasValidBinding
     {
       get
       {

@@ -185,6 +185,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocTextValue"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return _text != null && _text.Trim ().Length > 0; }
+    }
+
     /// <summary> Gets or sets the string representation of the current value. </summary>
     /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
     [Description ("The string representation of the current value.")]

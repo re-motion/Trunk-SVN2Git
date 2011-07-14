@@ -239,6 +239,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocTextValue"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return _text != null && _text.Trim().Length > 0; }
+    }
+
     /// <summary>
     ///   Gets a flag describing whether it is save (i.e. accessing <see cref="Value"/> does not throw a 
     ///   <see cref="FormatException"/> or <see cref="OverflowException"/>) to read the contents of <see cref="Value"/>.

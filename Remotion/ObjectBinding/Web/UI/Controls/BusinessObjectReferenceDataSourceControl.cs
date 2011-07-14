@@ -97,6 +97,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _internalDataSource.BusinessObject = (IBusinessObject) value; }
     }
 
+    public override bool HasValue
+    {
+      get { return _internalDataSource.IsDefaultValue(); }
+    }
+
     /// <summary> Gets or sets the dirty flag. </summary>
     /// <value> 
     ///   Evaluates <see langword="true"/> if either the <see cref="BusinessObjectReferenceDataSourceControl"/> or one 

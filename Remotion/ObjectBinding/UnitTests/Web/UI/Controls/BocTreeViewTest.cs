@@ -55,7 +55,7 @@ public class BocTreeViewTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelUndefined()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
@@ -65,7 +65,7 @@ public class BocTreeViewTest: BocTest
     Assert.IsFalse (WcagHelperMock.HasError);
   }
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityLevelA()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
@@ -76,7 +76,7 @@ public class BocTreeViewTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelA()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -103,7 +103,22 @@ public class BocTreeViewTest: BocTest
     _bocTreeView.Value = null;
     Assert.AreEqual (null, _bocTreeView.Value);
   }
-    
+
+
+  [Test]
+  public void HasValue_ValueIsSet_ReturnsTrue ()
+  {
+    _bocTreeView.Value = new IBusinessObjectWithIdentity[0];
+    Assert.IsTrue (_bocTreeView.HasValue);
+  }
+
+  [Test]
+  public void HasValue_ValueIsNull_ReturnsFalse ()
+  {
+    _bocTreeView.Value = null;
+    Assert.IsFalse (_bocTreeView.HasValue);
+  }
+
 
   [Test]
   public void LoadValueAndInterimTrueWithObject()

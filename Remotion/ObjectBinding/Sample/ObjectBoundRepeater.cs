@@ -103,7 +103,12 @@ namespace Remotion.ObjectBinding.Sample
         set { Value = (IList) value; }
       }
 
-      /// <summary>
+      public override bool HasValue 
+      {
+        get { return _value != null; } 
+      }
+
+        /// <summary>
       ///   Gets or sets the list of <see cref="Type"/> objects for the <see cref="IBusinessObjectProperty"/> 
       ///   implementations that can be bound to this control.
       /// </summary>
@@ -214,6 +219,11 @@ namespace Remotion.ObjectBinding.Sample
       set { _repeaterInternal.Value = (IList) value; }
     }
 
+    public bool HasValue 
+    {
+      get { return _repeaterInternal.HasValue; } 
+    }
+    
     [Browsable (false)]
     public bool IsDirty
     {

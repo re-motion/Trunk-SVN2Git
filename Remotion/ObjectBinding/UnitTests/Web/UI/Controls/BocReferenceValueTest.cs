@@ -86,7 +86,7 @@ public class BocReferenceValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelUndefined()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
@@ -96,7 +96,7 @@ public class BocReferenceValueTest: BocTest
     Assert.IsFalse (WcagHelperMock.HasError);
   }
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityLevelA()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
@@ -108,7 +108,7 @@ public class BocReferenceValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelAWithAutoPostBackTrue()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -122,7 +122,7 @@ public class BocReferenceValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugExceptionLevelAWithShowOptionsMenuTrue()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -158,7 +158,7 @@ public class BocReferenceValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelAWithEventCommand()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -191,7 +191,7 @@ public class BocReferenceValueTest: BocTest
   }
 
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelAWithWxeFunctionCommand()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -223,7 +223,7 @@ public class BocReferenceValueTest: BocTest
     Assert.IsTrue (_bocReferenceValue.IsCommandEnabled (false));
   }
 
-	
+  
   [Test]
   public void EvaluateWaiConformityDebugLevelAWithHrefCommand()
   {
@@ -235,7 +235,7 @@ public class BocReferenceValueTest: BocTest
     Assert.IsFalse (WcagHelperMock.HasError);
   }
 
-	[Test]
+  [Test]
   public void EvaluateWaiConformityDebugLevelAWithoutCommand()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -285,7 +285,22 @@ public class BocReferenceValueTest: BocTest
     Assert.AreEqual (null, _bocReferenceValue.Value);
     Assert.IsTrue (_bocReferenceValue.IsDirty);
   }
-    
+
+
+  [Test]
+  public void HasValue_ValueIsSet_ReturnsTrue ()
+  {
+    IBusinessObjectWithIdentity referencedObject = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+    _bocReferenceValue.Value = referencedObject;
+    Assert.IsTrue (_bocReferenceValue.HasValue);
+  }
+
+  [Test]
+  public void HasValue_ValueIsNull_ReturnsFalse ()
+  {
+    _bocReferenceValue.Value = null;
+    Assert.IsFalse (_bocReferenceValue.HasValue);
+  }
 
   [Test]
   public void LoadValueAndInterimTrue()

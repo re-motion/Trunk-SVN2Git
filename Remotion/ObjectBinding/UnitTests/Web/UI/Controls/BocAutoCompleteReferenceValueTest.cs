@@ -185,6 +185,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
+    public void HasValue_ValueIsSet_ReturnsTrue ()
+    {
+      IBusinessObjectWithIdentity referencedObject = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      _control.Value = referencedObject;
+      Assert.IsTrue (_control.HasValue);
+    }
+
+    [Test]
+    public void HasValue_ValueIsNull_ReturnsFalse ()
+    {
+      _control.Value = null;
+      Assert.IsFalse (_control.HasValue);
+    }
+
+    [Test]
     public void LoadValueAndInterimTrue ()
     {
       _businessObject.ReferenceValue = TypeWithReference.Create();

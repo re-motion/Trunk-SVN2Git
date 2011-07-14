@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding
     /// <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
     public void SaveValue (bool interim)
     {
-      if (HasValidBinding && ReferenceProperty.IsDefaultValue (ReferencedDataSource.BusinessObject, BusinessObject, new IBusinessObjectProperty[0]))
+      if (HasValidBinding && IsDefaultValue())
       {
         ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
         BusinessObject = null;
@@ -112,6 +112,11 @@ namespace Remotion.ObjectBinding
         ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
         _hasBusinessObjectChanged = false;
       }
+    }
+
+    public bool IsDefaultValue ()
+    {
+      return ReferenceProperty.IsDefaultValue (ReferencedDataSource.BusinessObject, BusinessObject, new IBusinessObjectProperty[0]);
     }
 
     /// <summary> 

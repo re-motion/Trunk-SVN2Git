@@ -262,6 +262,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _value = value; }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocLiteral"/> contains a value. </summary>
+    public bool HasValue
+    {
+      get { return !string.IsNullOrEmpty (_value); }
+    }
+
     object IBusinessObjectBoundControl.Value
     {
       get { return ValueImplementation; }

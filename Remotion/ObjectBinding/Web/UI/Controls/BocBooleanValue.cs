@@ -209,6 +209,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>Gets a flag indicating whether the <see cref="BocBooleanValue"/> contains a value. </summary>
+    public override bool HasValue
+    {
+      get { return _value.HasValue; }
+    }
+
     /// <summary> Gets or sets the validation error message. </summary>
     /// <value> 
     ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.

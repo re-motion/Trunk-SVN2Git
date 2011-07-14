@@ -97,7 +97,22 @@ public class BocListTest: BocTest
     Assert.AreEqual (null, _bocList.Value);
     Assert.IsTrue (_bocList.IsDirty);
   }
- 
+
+
+  [Test]
+  public void HasValue_ValueIsSet_ReturnsTrue ()
+  {
+    _bocList.Value = new IBusinessObjectWithIdentity[0];
+    Assert.IsTrue (_bocList.HasValue);
+  }
+
+  [Test]
+  public void HasValue_ValueIsNull_ReturnsFalse ()
+  {
+    _bocList.Value = null;
+    Assert.IsFalse (_bocList.HasValue);
+  }
+
 
   [Test]
   public void LoadValueAndInterimTrueWithListAndDirty()

@@ -54,6 +54,14 @@ namespace Remotion.ObjectBinding
     /// <value> An object or boxed value. </value>
     object Value { get; set; }
 
+    /// <summary>Gets a flag indicating whether the <see cref="IBusinessObjectBoundControl"/> contains a value. </summary>
+    /// <value><see langword="true" /> if the <see cref="IBusinessObjectBoundControl"/> contains a value. </value>
+    /// <remarks>
+    /// The flag only specifies the presense of data. It does not specify whether the data is in a format compatible with the <see cref="Property"/>.
+    /// For this, a separate validation step is required.
+    /// </remarks>
+    bool HasValue { get; }
+
     /// <summary> 
     ///   Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. 
     /// </summary>
