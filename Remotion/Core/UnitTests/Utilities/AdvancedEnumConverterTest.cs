@@ -27,11 +27,14 @@ namespace Remotion.UnitTests.Utilities
     private AdvancedEnumConverter _int16EnumConverter;
     private AdvancedEnumConverter _nullableInt32EnumConverter;
 
+    // Explicitly declare an Int32 enum
+    // ReSharper disable EnumUnderlyingTypeIsInt
     public enum Int32Enum: int
     {
       ValueA = 0,
       ValueB = 1
     }
+    // ReSharper restore EnumUnderlyingTypeIsInt
 
     public enum Int16Enum: short
     {
@@ -45,6 +48,22 @@ namespace Remotion.UnitTests.Utilities
       _int32EnumConverter = new AdvancedEnumConverter (typeof (Int32Enum));
       _int16EnumConverter = new AdvancedEnumConverter (typeof (Int16Enum));
       _nullableInt32EnumConverter = new AdvancedEnumConverter (typeof (Int32Enum?));
+    }
+
+    [Test]
+    public void EnumType ()
+    {
+      Assert.That (_int32EnumConverter.EnumType, Is.SameAs (typeof (Int32Enum)));
+      Assert.That (_int16EnumConverter.EnumType, Is.SameAs (typeof (Int16Enum)));
+      Assert.That (_nullableInt32EnumConverter.EnumType, Is.SameAs (typeof (Int32Enum?)));
+    }
+
+    [Test]
+    public void UnderlyingEnumType ()
+    {
+      Assert.That (_int32EnumConverter.UnderlyingEnumType, Is.SameAs (typeof (Int32Enum)));
+      Assert.That (_int16EnumConverter.UnderlyingEnumType, Is.SameAs (typeof (Int16Enum)));
+      Assert.That (_nullableInt32EnumConverter.UnderlyingEnumType, Is.SameAs (typeof (Int32Enum)));
     }
 
     [Test]
@@ -181,7 +200,7 @@ namespace Remotion.UnitTests.Utilities
     [ExpectedException (typeof (NotSupportedException))]
     public void ConvertFromNullableInt32_WithInt32EnumConverter ()
     {
-      _int32EnumConverter.ConvertFrom ((int?) null);
+      _int32EnumConverter.ConvertFrom (null);
     }
 
     [Test]

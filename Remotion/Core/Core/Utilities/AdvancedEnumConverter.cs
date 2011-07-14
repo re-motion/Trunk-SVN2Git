@@ -23,14 +23,52 @@ namespace Remotion.Utilities
   /// <summary> Specialization of <see cref="TypeConverter"/> for conversions from and to <see cref="Enum"/> types. </summary>
   public class AdvancedEnumConverter: EnumConverter
   {
-    private readonly Type _underlyingEnumType;
+    private readonly Type _enumType;
+    private readonly Type _underlyingType;
     private readonly bool _isNullable;
 
     public AdvancedEnumConverter (Type enumType)
         : base (Nullable.GetUnderlyingType (ArgumentUtility.CheckNotNull ("enumType", enumType)) ?? enumType)
     {
-      _underlyingEnumType = Enum.GetUnderlyingType (EnumType);
-      _isNullable = EnumType != enumType;
+      _enumType = enumType;
+      _underlyingType = Enum.GetUnderlyingType (UnderlyingEnumType);
+      _isNullable = UnderlyingEnumType != EnumType;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="Type"/> this converter is associated with, as it was passed to this <see cref="AdvancedEnumConverter"/>'s constructor.
+    /// This can be an <see cref="Enum"/> type or a nullable <see cref="Enum"/> type.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="Type"/> this converter is associated with, as it was passed to this <see cref="AdvancedEnumConverter"/>'s constructor.
+    /// </returns>
+    public new Type EnumType
+    {
+      get { return _enumType; }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="Enum"/> <see cref="Type"/> this converter is associated with. If a nullable type was passed to this 
+    /// <see cref="AdvancedEnumConverter"/>'s constructor, this property returns the actual <see cref="Enum"/> type underlying the nullable type.
+    /// Otherwise, it returns the same as <see cref="EnumType"/>.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="Enum"/> <see cref="Type"/> this converter is associated with.
+    /// </returns>
+    public Type UnderlyingEnumType
+    {
+      get { return base.EnumType; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is associated with a nullable <see cref="Enum"/>.
+    /// </summary>
+    /// <returns>
+    /// 	<see langword="true"/> if <see cref="EnumType"/> is nullable; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool IsNullable
+    {
+      get { return _isNullable; }
     }
 
     /// <summary> Test: Can convert from <paramref name="sourceType"/> to <see cref="String"/>? </summary>
@@ -41,10 +79,10 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("sourceType", sourceType);
 
-      if (sourceType == _underlyingEnumType)
+      if (sourceType == _underlyingType)
         return true;
   
-      if (_isNullable && Nullable.GetUnderlyingType (sourceType) == _underlyingEnumType)
+      if (_isNullable && Nullable.GetUnderlyingType (sourceType) == _underlyingType)
         return true;
 
       return base.CanConvertFrom (context, sourceType);
@@ -58,10 +96,10 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 
-      if (!_isNullable && destinationType == _underlyingEnumType)
+      if (!_isNullable && destinationType == _underlyingType)
         return true;
 
-      if (Nullable.GetUnderlyingType (destinationType) == _underlyingEnumType)
+      if (Nullable.GetUnderlyingType (destinationType) == _underlyingType)
         return true;
 
       return base.CanConvertFrom (context, destinationType);
@@ -81,12 +119,12 @@ namespace Remotion.Utilities
 
       if (!(value is string))
       {
-        if (value != null && _underlyingEnumType == value.GetType())
+        if (value != null && _underlyingType == value.GetType())
         {
-          if (!EnumUtility.IsValidEnumValue(EnumType, value))
-            throw new ArgumentOutOfRangeException (string.Format ("The value {0} is not supported for enumeration '{1}'.", value, EnumType.FullName), (Exception) null);
+          if (!EnumUtility.IsValidEnumValue(UnderlyingEnumType, value))
+            throw new ArgumentOutOfRangeException (string.Format ("The value {0} is not supported for enumeration '{1}'.", value, UnderlyingEnumType.FullName), (Exception) null);
 
-          return Enum.ToObject (EnumType, value);
+          return Enum.ToObject (UnderlyingEnumType, value);
         }
       }
 
@@ -113,11 +151,11 @@ namespace Remotion.Utilities
       // ReSharper restore ConditionIsAlwaysTrueOrFalse
       // ReSharper restore ConditionIsAlwaysTrueOrFalse
       
-      bool isMatchingDestinationType = !_isNullable && destinationType == _underlyingEnumType;
-      bool isMatchingNullableDestinationType = Nullable.GetUnderlyingType (destinationType) == _underlyingEnumType;
+      bool isMatchingDestinationType = !_isNullable && destinationType == _underlyingType;
+      bool isMatchingNullableDestinationType = Nullable.GetUnderlyingType (destinationType) == _underlyingType;
       
       if (value is Enum && (isMatchingDestinationType || isMatchingNullableDestinationType))
-        return Convert.ChangeType (value, _underlyingEnumType, culture);
+        return Convert.ChangeType (value, _underlyingType, culture);
       
       return base.ConvertTo (context, culture, value, destinationType);
     }
