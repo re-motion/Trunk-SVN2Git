@@ -31,21 +31,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return new ColumnDefinition[0];
     }
-
-    public bool Equals (IRdbmsStoragePropertyDefinition other)
-    {
-      return other != null && other.GetType () == GetType ();
-    }
-
-    public override bool Equals (object obj)
-    {
-      return Equals (obj as IRdbmsStoragePropertyDefinition);
-    }
-
-    public override int GetHashCode ()
-    {
-      return 0;
-    }
-    
   }
 }

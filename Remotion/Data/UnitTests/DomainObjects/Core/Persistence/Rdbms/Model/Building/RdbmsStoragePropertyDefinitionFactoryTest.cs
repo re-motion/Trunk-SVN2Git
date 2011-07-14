@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Reflection;
 using NUnit.Framework;
@@ -53,10 +54,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       base.SetUp();
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> (_storageProviderDefinitionFinder);
-      _storageTypeCalculatorStub.Stub (stub => stub.ClassIDStorageType).Return (new StorageTypeInformation ("varchar(100)", DbType.String));
-      _storageTypeCalculatorStub.Stub (stub => stub.ObjectIDStorageType).Return (new StorageTypeInformation ("guid", DbType.Guid));
-      _storageTypeCalculatorStub.Stub (stub => stub.TimestampStorageType).Return (new StorageTypeInformation ("rowversion", DbType.DateTime));
-      _storageTypeCalculatorStub.Stub (stub => stub.SerializedObjectIDStorageType).Return(new StorageTypeInformation ("varchar (255)", DbType.String));
+      _storageTypeCalculatorStub.Stub (stub => stub.ClassIDStorageType).Return (
+          new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()));
+      _storageTypeCalculatorStub.Stub (stub => stub.ObjectIDStorageType).Return (
+          new StorageTypeInformation ("guid", DbType.Guid, typeof (Guid), new GuidConverter()));
+      _storageTypeCalculatorStub.Stub (stub => stub.TimestampStorageType).Return (
+          new StorageTypeInformation ("rowversion", DbType.DateTime, typeof (DateTime), new DateTimeConverter()));
+      _storageTypeCalculatorStub.Stub (stub => stub.SerializedObjectIDStorageType).Return (
+          new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new StringConverter()));
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
       _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
@@ -362,7 +367,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private void StubStorageCalculators (PropertyDefinition propertyDefinition)
     {
       _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (
-          new StorageTypeInformation ("storage type", DbType.String));
+          new StorageTypeInformation ("storage type", DbType.String, typeof(string), new StringConverter()));
       _storageNameProviderStub.Stub (stub => stub.GetColumnName (propertyDefinition)).Return ("FakeColumnName");
       _storageNameProviderStub.Stub (stub => stub.GetRelationColumnName (propertyDefinition)).Return ("FakeColumnNameID");
       _storageNameProviderStub.Stub (stub => stub.GetRelationClassIDColumnName (propertyDefinition)).Return ("FakeRelationClassID");

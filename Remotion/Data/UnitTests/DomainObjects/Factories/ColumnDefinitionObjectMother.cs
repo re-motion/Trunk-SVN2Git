@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
@@ -22,23 +23,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public static class ColumnDefinitionObjectMother
   {
-    public static readonly ColumnDefinition IDColumn = 
-        new ColumnDefinition ("ID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.Guid), false, true);
+    public static readonly ColumnDefinition IDColumn =
+        new ColumnDefinition (
+            "ID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()), false, true);
 
-    public static readonly ColumnDefinition ClassIDColumn = 
-        new ColumnDefinition ("ClassID", typeof (string), new StorageTypeInformation ("varchar", DbType.String), true, false);
+    public static readonly ColumnDefinition ClassIDColumn =
+        new ColumnDefinition (
+            "ClassID", typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), true, false);
 
-    public static readonly ColumnDefinition TimestampColumn = 
-        new ColumnDefinition ("Timestamp", typeof (DateTime), new StorageTypeInformation ("datetime", DbType.DateTime), true, false);
+    public static readonly ColumnDefinition TimestampColumn =
+        new ColumnDefinition (
+            "Timestamp",
+            typeof (DateTime),
+            new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
+            true,
+            false);
 
     public static ColumnDefinition CreateColumn ()
     {
-      return new ColumnDefinition (Guid.NewGuid().ToString(), typeof (string), new StorageTypeInformation ("varchar", DbType.String), true, false);
+      return new ColumnDefinition (
+          Guid.NewGuid().ToString(),
+          typeof (string),
+          new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()),
+          true,
+          false);
     }
 
     public static ColumnDefinition CreateColumn (string columnName)
     {
-      return new ColumnDefinition (columnName, typeof (string), new StorageTypeInformation ("varchar", DbType.String), true, false);
+      return new ColumnDefinition (
+          columnName, typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), true, false);
     }
   }
 }

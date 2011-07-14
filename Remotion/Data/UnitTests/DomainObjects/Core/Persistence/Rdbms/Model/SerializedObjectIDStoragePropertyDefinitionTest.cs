@@ -64,34 +64,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_serializedObjectIDStoragePropertyDefinition.Name, Is.EqualTo (_serializedIDProperty.Name));
     }
-
-    [Test]
-    public void Equals_Null ()
-    {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.Equals (null), Is.False);
-    }
-
-    [Test]
-    public void Equals_OtherType ()
-    {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.Equals (MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>()), Is.False);
-    }
-
-    [Test]
-    public void Equals_False ()
-    {
-      Assert.That (
-          _serializedObjectIDStoragePropertyDefinition.Equals (
-              new SerializedObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty())),
-          Is.False);
-    }
-
-    [Test]
-    public void Equals_True ()
-    {
-      Assert.That (
-          _serializedObjectIDStoragePropertyDefinition.Equals (new SerializedObjectIDStoragePropertyDefinition (_serializedIDProperty)),
-          Is.True);
-    }
   }
 }

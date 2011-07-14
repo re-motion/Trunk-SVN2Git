@@ -72,46 +72,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_objectIDWithoutClassIDStorageDefinition.Name, Is.EqualTo (_valueProperty.Name));
     }
-
-    [Test]
-    public void Equals_Null ()
-    {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.Equals (null), Is.False);
-    }
-
-    [Test]
-    public void Equals_OtherType ()
-    {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.Equals (MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>()), Is.False);
-    }
-
-    [Test]
-    public void Equals_OtherValueProperty ()
-    {
-      Assert.That (
-          _objectIDWithoutClassIDStorageDefinition.Equals (
-              new ObjectIDWithoutClassIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty(), _classDefinition)),
-          Is.False);
-    }
-
-    [Test]
-    public void Equals_OtherClassDefinition ()
-    {
-      Assert.That (
-          _objectIDWithoutClassIDStorageDefinition.Equals (
-              new ObjectIDWithoutClassIDStoragePropertyDefinition (
-                  _valueProperty,
-                  ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem), TestDomainStorageProviderDefinition))),
-          Is.False);
-    }
-
-    [Test]
-    public void Equals_True ()
-    {
-      Assert.That (
-          _objectIDWithoutClassIDStorageDefinition.Equals (
-              new ObjectIDWithoutClassIDStoragePropertyDefinition (_valueProperty, _classDefinition)),
-          Is.True);
-    }
   }
 }

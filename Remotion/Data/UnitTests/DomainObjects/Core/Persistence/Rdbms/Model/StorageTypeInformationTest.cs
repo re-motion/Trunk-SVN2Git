@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -25,11 +27,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class StorageTypeInformationTest
   {
     private StorageTypeInformation _storageTypeInformation;
+    private BooleanConverter _booleanConverter;
 
     [SetUp]
     public void SetUp ()
     {
-      _storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean);
+      _booleanConverter = new BooleanConverter();
+      _storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean, typeof(bool), _booleanConverter);
     }
 
     [Test]
@@ -37,30 +41,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_storageTypeInformation.StorageType, Is.EqualTo ("test"));
       Assert.That (_storageTypeInformation.DbType, Is.EqualTo (DbType.Boolean));
+      Assert.That (_storageTypeInformation.ParameterValueType, Is.EqualTo(typeof(bool)));
+      Assert.That (_storageTypeInformation.TypeConverter, Is.SameAs(_booleanConverter));
     }
 
     [Test]
     public void Equals_True ()
     {
-      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.Boolean)), Is.True);
+      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.Boolean, typeof(bool), new BooleanConverter())), Is.True);
     }
 
     [Test]
     public void Equals_DifferentStorageType_False ()
     {
-      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test2", DbType.Boolean)), Is.False);
+      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test2", DbType.Boolean, typeof(bool), _booleanConverter)), Is.False);
     }
 
     [Test]
     public void Equals_DifferentDbType_False ()
     {
-      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.String)), Is.False);
+      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.String, typeof(bool), _booleanConverter)), Is.False);
+    }
+
+    [Test]
+    public void Equals_DifferentParameterType_False ()
+    {
+      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.Boolean, typeof (string), _booleanConverter)), Is.False);
+    }
+
+    [Test]
+    public void Equals_DifferentTypeConverter_False ()
+    {
+      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new StringConverter())), Is.False);
     }
 
     [Test]
     public void GetHashcode_EqualObjects ()
     {
-      var storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean);
+      var storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean, typeof(bool), new BooleanConverter());
 
       Assert.That (_storageTypeInformation.GetHashCode(), Is.EqualTo (storageTypeInformation.GetHashCode()));
     }

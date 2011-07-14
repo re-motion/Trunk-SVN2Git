@@ -58,14 +58,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return _serializedIDProperty.Name; }
     }
-
-    public bool Equals (IRdbmsStoragePropertyDefinition other)
-    {
-      if (other == null || other.GetType () != GetType ())
-        return false;
-
-      return _serializedIDProperty.Equals (((SerializedObjectIDStoragePropertyDefinition) other).SerializedIDProperty);
-    }
-    
   }
 }

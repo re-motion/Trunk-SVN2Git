@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="IRdbmsStoragePropertyDefinition"/> is exposed by all RDBMS-specific <see cref="IStoragePropertyDefinition"/> implementations.
   /// </summary>
-  public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition, IEquatable<IRdbmsStoragePropertyDefinition>
+  public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition
   {
     IEnumerable<ColumnDefinition> GetColumns ();
   }

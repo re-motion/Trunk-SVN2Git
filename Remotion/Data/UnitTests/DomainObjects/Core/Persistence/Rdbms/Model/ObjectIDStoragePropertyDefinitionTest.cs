@@ -61,59 +61,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_columnDefinition.GetColumns(), Is.EqualTo (new[] { _objectIDColumn.ColumnDefinition, _classIDColumn.ColumnDefinition }));
     }
-
-    [Test]
-    public void Equals_True_WithClassIDColumns ()
-    {
-      var other = new ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
-
-      Assert.That (_columnDefinition.Equals (other), Is.True);
-      Assert.That (_columnDefinition.Equals ((object) other), Is.True);
-    }
-
-    [Test]
-    public void Equals_False_DifferentType ()
-    {
-      var other = SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty;
-
-      Assert.That (_columnDefinition.Equals (other), Is.False);
-      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
-    }
-
-    [Test]
-    public void Equals_False_DifferentObjectIDColumn ()
-    {
-      var other = new ObjectIDStoragePropertyDefinition (
-          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("ObjectID"), SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
-
-      Assert.That (_columnDefinition.Equals (other), Is.False);
-      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
-    }
-
-    [Test]
-    public void Equals_False_DifferentClassIDColumn ()
-    {
-      var other = new ObjectIDStoragePropertyDefinition (
-          SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Class_ID"));
-
-      Assert.That (_columnDefinition.Equals (other), Is.False);
-      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
-    }
-
-    [Test]
-    public void Equals_False_Null ()
-    {
-      Assert.That (_columnDefinition.Equals ((IRdbmsStoragePropertyDefinition) null), Is.False);
-      Assert.That (_columnDefinition.Equals ((object) null), Is.False);
-    }
-
-    [Test]
-    public void GetHashCode_EqualObjects ()
-    {
-      var other = new ObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
-
-      Assert.That (_columnDefinition.GetHashCode(), Is.EqualTo (other.GetHashCode()));
-    }
-    
   }
 }

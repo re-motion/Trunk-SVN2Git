@@ -37,38 +37,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_columnDefinition.GetColumns(), Is.Empty);
     }
-
-    [Test]
-    public void Equals_True ()
-    {
-      var other = new UnsupportedStoragePropertyDefinition();
-
-      Assert.That (_columnDefinition.Equals (other), Is.True);
-      Assert.That (_columnDefinition.Equals ((object) other), Is.True);
-    }
-
-    [Test]
-    public void Equals_False_DifferentType ()
-    {
-      var other = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Test");
-
-      Assert.That (_columnDefinition.Equals (other), Is.False);
-      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
-    }
-
-    [Test]
-    public void Equals_False_Null ()
-    {
-      Assert.That (_columnDefinition.Equals ((IRdbmsStoragePropertyDefinition) null), Is.False);
-      Assert.That (_columnDefinition.Equals ((object) null), Is.False);
-    }
-
-    [Test]
-    public void GetHashCode_EqualObjects ()
-    {
-      var other = new UnsupportedStoragePropertyDefinition();
-
-      Assert.That (_columnDefinition.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
-    }
   }
 }

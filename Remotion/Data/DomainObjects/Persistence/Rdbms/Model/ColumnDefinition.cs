@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return other.Name == Name
           && other.PropertyType == PropertyType
-          && other.StorageTypeInfo.Equals(StorageTypeInfo)
+          && other.StorageTypeInfo.Equals (StorageTypeInfo)
           && other.IsNullable == IsNullable;
     }
 

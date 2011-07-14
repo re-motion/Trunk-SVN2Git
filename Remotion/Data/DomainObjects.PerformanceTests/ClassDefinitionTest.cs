@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -139,12 +140,20 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new EntityNameDefinition (null, "TestView"),
-          new ColumnDefinition ("ID", typeof (Guid), new StorageTypeInformation("uniqueidentifier", DbType.Guid), false, true),
-          new ColumnDefinition ("ClassID", typeof (string), new StorageTypeInformation("varchar", DbType.String), true, false),
-          new ColumnDefinition ("Timestamp", typeof (DateTime), new StorageTypeInformation("datetime", DbType.DateTime), true, false),
+          new ColumnDefinition (
+              "ID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()), false, true),
+          new ColumnDefinition (
+              "ClassID", typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), true, false),
+          new ColumnDefinition (
+              "Timestamp",
+              typeof (DateTime),
+              new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
+              true,
+              false),
           new ColumnDefinition[0],
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.SameAs (tableDefinition));
       classDefinition.SetStorageEntity (tableDefinition);

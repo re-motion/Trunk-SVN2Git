@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
@@ -78,16 +79,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var column1 =
           new SimpleStoragePropertyDefinition (
-              new ColumnDefinition ("ID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.String), false, true));
+              new ColumnDefinition (
+                  "ID",
+                  typeof (Guid),
+                  new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
+                  false,
+                  true));
       var column2 =
           new SimpleStoragePropertyDefinition (
-              new ColumnDefinition ("FirstName", typeof (string), new StorageTypeInformation ("varchar(100)", DbType.String), false, false));
+              new ColumnDefinition (
+                  "FirstName",
+                  typeof (string),
+                  new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()),
+                  false,
+                  false));
       var column3 =
           new SimpleStoragePropertyDefinition (
-              new ColumnDefinition ("LastName", typeof (string), new StorageTypeInformation ("varchar(100)", DbType.String), false, false));
+              new ColumnDefinition (
+                  "LastName",
+                  typeof (string),
+                  new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()),
+                  false,
+                  false));
       var column4 =
           new SimpleStoragePropertyDefinition (
-              new ColumnDefinition ("XmlColumn1", typeof (string), new StorageTypeInformation ("xml", DbType.String), false, false));
+              new ColumnDefinition (
+                  "XmlColumn1",
+                  typeof (string),
+                  new StorageTypeInformation ("xml", DbType.String, typeof (string), new StringConverter()),
+                  false,
+                  false));
 
       var tableName = new EntityNameDefinition (null, "IndexTestTable");
       var viewName = new EntityNameDefinition (null, "IndexTestView");
@@ -146,9 +167,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           true,
           false);
 
-      var objectIDColunmn = new ColumnDefinition ("ObjectID", typeof (int), new StorageTypeInformation("integer", DbType.Int32), false, true);
-      var classIDCOlumn = new ColumnDefinition ("ClassID", typeof (string), new StorageTypeInformation("varchar", DbType.String), false, false);
-      var timestampColumn = new ColumnDefinition ("Timestamp", typeof (DateTime), new StorageTypeInformation("datetime", DbType.DateTime), true, false);
+      var objectIDColunmn = new ColumnDefinition (
+          "ObjectID", typeof (int), new StorageTypeInformation ("integer", DbType.Int32, typeof (int), new Int32Converter()), false, true);
+      var classIDCOlumn = new ColumnDefinition (
+          "ClassID", typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), false, false);
+      var timestampColumn = new ColumnDefinition (
+          "Timestamp",
+          typeof (DateTime),
+          new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
+          true,
+          false);
 
       return new TableDefinition (
           storageProviderDefinition,
@@ -177,11 +205,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var tableName = new EntityNameDefinition (null, "PKTestTable");
       var viewName = new EntityNameDefinition (null, "PKTestView");
 
-      var column1 = new ColumnDefinition ("ID", typeof (Guid), new StorageTypeInformation("uniqueidentifier", DbType.Guid), false, true);
-      var column2 = new ColumnDefinition ("Name", typeof (string), new StorageTypeInformation("varchar(100)", DbType.String), false, false);
-      var objectIDColunmn = new ColumnDefinition ("ObjectID", typeof (int), new StorageTypeInformation("integer", DbType.Int32), false, true);
-      var classIDCOlumn = new ColumnDefinition ("ClassID", typeof (string), new StorageTypeInformation("varchar", DbType.String), false, false);
-      var timestampColumn = new ColumnDefinition ("Timestamp", typeof (DateTime), new StorageTypeInformation("datetime", DbType.DateTime), true, false);
+      var column1 = new ColumnDefinition (
+          "ID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()), false, true);
+      var column2 = new ColumnDefinition (
+          "Name", typeof (string), new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()), false, false);
+      var objectIDColunmn = new ColumnDefinition (
+          "ObjectID", typeof (int), new StorageTypeInformation ("integer", DbType.Int32, typeof (Int32), new Int32Converter()), false, true);
+      var classIDCOlumn = new ColumnDefinition (
+          "ClassID", typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), false, false);
+      var timestampColumn = new ColumnDefinition (
+          "Timestamp",
+          typeof (DateTime),
+          new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
+          true,
+          false);
 
       var nonClusteredUniqueIndex = new SqlIndexDefinition (
           "IDX_ClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column2) }, null, true, true, true, false);

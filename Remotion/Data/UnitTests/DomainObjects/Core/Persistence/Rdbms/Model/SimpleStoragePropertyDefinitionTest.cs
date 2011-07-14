@@ -46,31 +46,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_storagePropertyDefinition.GetColumns (), Is.EqualTo (new[] { _innerColumnDefinition }));
     }
-
-    [Test]
-    public void Equals_Null ()
-    {
-      Assert.That (_storagePropertyDefinition.Equals (null), Is.False);
-    }
-
-    [Test]
-    public void Equals_OtherType ()
-    {
-      var other = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-
-      Assert.That (_storagePropertyDefinition.Equals (other), Is.False);
-    }
-
-    [Test]
-    public void Equals_NotEqual ()
-    {
-      Assert.That (_storagePropertyDefinition.Equals (SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty), Is.False);
-    }
-
-    [Test]
-    public void Equals_True ()
-    {
-      Assert.That (_storagePropertyDefinition.Equals (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1")), Is.True);
-    }
   }
 }

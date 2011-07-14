@@ -69,15 +69,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return _valueProperty.Name; }
     }
-
-    public bool Equals (IRdbmsStoragePropertyDefinition other)
-    {
-      if (other == null || other.GetType () != GetType ())
-        return false;
-
-      return _valueProperty.Equals (((ObjectIDWithoutClassIDStoragePropertyDefinition) other).ValueProperty) &&
-             ((ObjectIDWithoutClassIDStoragePropertyDefinition) other).ClassDefinition == _classDefinition;
-    }
-    
   }
 }

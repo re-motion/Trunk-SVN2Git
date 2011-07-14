@@ -69,24 +69,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       yield return _valueProperty.ColumnDefinition;
       yield return _classIDProperty.ColumnDefinition;
     }
-
-    public bool Equals (IRdbmsStoragePropertyDefinition other)
-    {
-      if (other == null || other.GetType() != GetType())
-        return false;
-
-      var castOther = (ObjectIDStoragePropertyDefinition) other;
-      return Equals (castOther.ValueProperty, ValueProperty) && Equals (castOther.ClassIDProperty, ClassIDProperty);
-    }
-
-    public override bool Equals (object obj)
-    {
-      return Equals (obj as IRdbmsStoragePropertyDefinition);
-    }
-
-    public override int GetHashCode ()
-    {
-      return EqualityUtility.GetRotatedHashCode (ValueProperty, ClassIDProperty);
-    }
   }
 }

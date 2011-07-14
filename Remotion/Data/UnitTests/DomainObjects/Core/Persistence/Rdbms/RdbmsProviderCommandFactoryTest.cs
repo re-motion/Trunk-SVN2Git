@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void CreateForRelationLookup_TableDefinition_NoSortExpression ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      var idPropertyDefinition = CreateForeignLeyEndPointDefinition (classDefinition);
+      var idPropertyDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
       var relationEndPointDefinition = new RelationEndPointDefinition (idPropertyDefinition, false);
 
       _dbCommandBuilderFactoryStub
@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void CreateForRelationLookup_TableDefinition_WithSortExpression ()
     {
       var classDefinition = CreateClassDefinition (_tableDefinition1);
-      var idPropertyDefinition = CreateForeignLeyEndPointDefinition (classDefinition);
+      var idPropertyDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
       var relationEndPointDefinition = new RelationEndPointDefinition (idPropertyDefinition, false);
 
       var sortedPropertySpecification1 = CreateSortedPropertySpecification (
@@ -578,14 +578,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       return classDefinition;
     }
 
-    private PropertyDefinition CreateForeignLeyEndPointDefinition (ClassDefinition classDefinition)
+    private PropertyDefinition CreateForeignKeyEndPointDefinition (ClassDefinition classDefinition)
     {
       return PropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
-          new ObjectIDStoragePropertyDefinition (
-              SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty));
+          _foreignKeyColumnDefinition);
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (
