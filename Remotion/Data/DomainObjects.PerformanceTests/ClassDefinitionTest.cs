@@ -131,33 +131,5 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           averageMicroseconds.ToString ("n"),
           endPoints.Count);
     }
-
-    [Test]
-    public void SetStorageEntity ()
-    {
-      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
-      var tableDefinition = new TableDefinition (
-          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
-          new EntityNameDefinition (null, "TestView"),
-          new ColumnDefinition (
-              "ID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()), false, true),
-          new ColumnDefinition (
-              "ClassID", typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), true, false),
-          new ColumnDefinition (
-              "Timestamp",
-              typeof (DateTime),
-              new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
-              true,
-              false),
-          new ColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-
-      Assert.That (classDefinition.StorageEntityDefinition, Is.Not.SameAs (tableDefinition));
-      classDefinition.SetStorageEntity (tableDefinition);
-      Assert.That (classDefinition.StorageEntityDefinition, Is.SameAs (tableDefinition));
-    }
   }
 }
