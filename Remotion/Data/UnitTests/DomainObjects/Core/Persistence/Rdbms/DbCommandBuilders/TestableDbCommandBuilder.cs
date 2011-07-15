@@ -17,15 +17,17 @@
 
 using System;
 using System.Data;
+using System.Text;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
-  public class StubDbCommandBuilder : DbCommandBuilder
+  public class TestableDbCommandBuilder : DbCommandBuilder
   {
-    public StubDbCommandBuilder (RdbmsProvider provider)
+    public TestableDbCommandBuilder (RdbmsProvider provider)
         : base (provider.SqlDialect,
             provider.CreateValueConverter())
     {
@@ -34,6 +36,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       throw new NotImplementedException();
+    }
+
+    public new string GetOrderClause (SortExpressionDefinition sortExpression)
+    {
+      return base.GetOrderClause (sortExpression);
+    }
+
+    public new void AppendSelectClause (StringBuilder statement, ISelectedColumnsSpecification selectedColumns)
+    {
+      base.AppendSelectClause (statement, selectedColumns);
+    }
+
+    public new void AppendFromClause (StringBuilder statement, TableDefinition tableDefinition)
+    {
+      base.AppendFromClause (statement, tableDefinition);
+    }
+
+    public new void AppendTableName (StringBuilder statement, TableDefinition tableDefinition)
+    {
+      base.AppendTableName (statement, tableDefinition);
+    }
+
+    public new void AppendComparingWhereClause (StringBuilder statement, ColumnDefinition comparedColumn, IDataParameter expectedValue)
+    {
+      base.AppendComparingWhereClause (statement, comparedColumn, expectedValue);
     }
   }
 }

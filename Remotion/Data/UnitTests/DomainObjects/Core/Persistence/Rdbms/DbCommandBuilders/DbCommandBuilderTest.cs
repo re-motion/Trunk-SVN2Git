@@ -16,9 +16,7 @@
 // 
 using System.Data;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -27,13 +25,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class DbCommandBuilderTest : SqlProviderBaseTest
   {
-    private DbCommandBuilder _commandBuilder;
+    private TestableDbCommandBuilder _commandBuilder;
 
     public override void SetUp ()
     {
       base.SetUp ();
       Provider.Connect ();
-      _commandBuilder = new StubDbCommandBuilder (Provider);
+      _commandBuilder = new TestableDbCommandBuilder (Provider);
     }
 
     [Test]
@@ -62,8 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void GetOrderClause ()
     {
       var sortExpressionDefinition = SortExpressionDefinitionObjectMother.CreateOrderItemSortExpressionPositionAscProductDesc ();
-      
-      var result = PrivateInvoke.InvokeNonPublicMethod (_commandBuilder, "GetOrderClause", sortExpressionDefinition);
+
+      var result = _commandBuilder.GetOrderClause (sortExpressionDefinition);
 
       Assert.That (result, Is.EqualTo (" ORDER BY [Position] ASC, [Product] DESC"));
     }
@@ -71,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void GetOrderClause_Null ()
     {
-      var result = PrivateInvoke.InvokeNonPublicMethod (_commandBuilder, "GetOrderClause", null);
+      var result = _commandBuilder.GetOrderClause (null);
 
       Assert.That (result, Is.EqualTo (string.Empty));
     }
