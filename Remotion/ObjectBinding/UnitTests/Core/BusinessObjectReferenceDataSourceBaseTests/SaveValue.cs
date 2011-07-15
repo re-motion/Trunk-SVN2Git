@@ -277,7 +277,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void IsDefaultValue_DoesNotSaveValuesForBoundControls ()
+    public void IsDefaultValue_SavesValuesForBoundControls ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
@@ -305,8 +305,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
 
       referenceDataSource.SaveValue (false);
 
-      firstControlMock.AssertWasNotCalled (mock => mock.SaveValue (Arg<bool>.Is.Anything));
-      secondControlMock.AssertWasNotCalled (mock => mock.SaveValue (Arg<bool>.Is.Anything));
+      firstControlMock.AssertWasCalled (mock => mock.SaveValue (false));
+      secondControlMock.AssertWasCalled (mock => mock.SaveValue (false));
     }
 
     [Test]

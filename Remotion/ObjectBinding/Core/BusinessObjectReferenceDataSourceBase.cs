@@ -111,13 +111,9 @@ namespace Remotion.ObjectBinding
 
         BusinessObject = null;
       }
-      else
-      {
-        // save values from "child" controls
-        SaveValues (interim);
-        // Save takes care of resetting the chilren's dirty state. If the parent is deleted, the child controls would still be dirty.
-        //-> move SaveValues to perform always. RM-1806
-      }
+
+      // save values from "child" controls
+      SaveValues (interim);
 
       // if required, save value into "parent" data source
       if (HasValidBinding && RequiresWriteBack)
