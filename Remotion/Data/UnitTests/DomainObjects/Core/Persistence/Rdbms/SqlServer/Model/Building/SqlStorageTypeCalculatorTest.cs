@@ -129,13 +129,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GettorageType_WithNotSupportedType ()
+    public void GetStorageType_WithNotSupportedType ()
     {
       var propertyDefinition = CreatePropertyDefinition (typeof (Char));
 
       var result = _typeCalculator.GetStorageType (propertyDefinition);
 
-      Assert.That (result.StorageType, Is.Null);
+      Assert.That (result, Is.Null);
     }
 
     private void CheckGetStorageType (

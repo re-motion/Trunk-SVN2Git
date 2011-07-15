@@ -26,19 +26,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class ColumnDefinitionTest
   {
-    private ColumnDefinition _columnDefinition;
     private Type _type;
     private StringConverter _stringConverter;
-    public string DummyProperty { get; set; }
-    public string OtherProperty { get; set; }
+    private StorageTypeInformation _storageTypeInformation;
+
+    private ColumnDefinition _columnDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _type = typeof (string);
       _stringConverter = new StringConverter();
-      _columnDefinition = new ColumnDefinition (
-          "Name", _type, new StorageTypeInformation ("varchar", DbType.String, typeof (string), _stringConverter), true, true);
+      _storageTypeInformation = new StorageTypeInformation ("varchar", DbType.String, typeof (string), _stringConverter);
+
+      _columnDefinition = new ColumnDefinition ("Name", _type, _storageTypeInformation, true, true);
     }
 
     [Test]
@@ -46,8 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
       Assert.That (_columnDefinition.PropertyType, Is.SameAs (_type));
-      Assert.That (_columnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("varchar"));
-      Assert.That (_columnDefinition.StorageTypeInfo.DbType, Is.EqualTo (DbType.String));
+      Assert.That (_columnDefinition.StorageTypeInfo, Is.SameAs (_storageTypeInformation));
       Assert.That (_columnDefinition.IsNullable, Is.True);
       Assert.That (_columnDefinition.IsPartOfPrimaryKey, Is.True);
     }
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Equals_True ()
     {
       var other = new ColumnDefinition (
-          "Name", _type, new StorageTypeInformation ("varchar", DbType.String, typeof (string), _stringConverter), true, false);
+          "Name", _type, new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), true, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.True);
       Assert.That (_columnDefinition.Equals ((object) other), Is.True);
@@ -68,14 +68,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var other = SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty;
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
-      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+      Assert.That (_columnDefinition.Equals (other), Is.False);
     }
 
     [Test]
     public void Equals_False_DifferentName ()
     {
       var other = new ColumnDefinition (
-          "Name2", _type, new StorageTypeInformation ("varchar", DbType.String, typeof (string), _stringConverter), true, false);
+          "Name2", _type, _storageTypeInformation, true, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Equals_False_DifferentPropertyType ()
     {
       var other = new ColumnDefinition (
-          "Name", typeof (object), new StorageTypeInformation ("varchar", DbType.String, typeof (string), _stringConverter), true, false);
+          "Name", typeof (object), _storageTypeInformation, true, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Equals_False_DifferentNullability ()
     {
       var other = new ColumnDefinition (
-          "Name", _type, new StorageTypeInformation ("varchar", DbType.String, typeof (string), _stringConverter), false, false);
+          "Name", _type, _storageTypeInformation, false, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetHashCode_EqualObjects ()
     {
       var other = new ColumnDefinition (
-          "Name", _type, new StorageTypeInformation ("varchar", DbType.String, typeof (string), _stringConverter), true, false);
+          "Name", _type, _storageTypeInformation, true, false);
 
       Assert.That (_columnDefinition.GetHashCode(), Is.EqualTo (other.GetHashCode()));
     }

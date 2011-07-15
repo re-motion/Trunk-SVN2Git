@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Data;
+using System.Text;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -23,15 +26,19 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
-  public class DbCommandBuilderTest : SqlProviderBaseTest
+  public class DbCommandBuilderTest : StandardMappingTest
   {
+    private ISqlDialect _sqlDialectStub;
+    private IValueConverter _valueConverterStub;
     private TestableDbCommandBuilder _commandBuilder;
 
     public override void SetUp ()
     {
-      base.SetUp ();
-      Provider.Connect ();
-      _commandBuilder = new TestableDbCommandBuilder (Provider);
+      base.SetUp();
+
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
+      _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
+      _commandBuilder = new TestableDbCommandBuilder (_sqlDialectStub, _valueConverterStub);
     }
 
     [Test]
@@ -48,9 +55,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       parameterCollectionStub.Stub (stub => stub.Add (parameterMock)).Return (0);
       parameterCollectionStub.Replay ();
 
-      parameterMock.Expect (mock => mock.Value = Color.Values.Red ().ID); // string!
-      parameterMock.Replay ();
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("x")).Return ("x");
+      _valueConverterStub.Stub (stub => stub.GetDBValue (Color.Values.Red ())).Return ("VALUE");
 
+      parameterMock.Expect (mock => mock.Value = "VALUE"); // string!
+      parameterMock.Replay ();
+      
       _commandBuilder.AddCommandParameter (commandStub, "x", Color.Values.Red ());
 
       parameterMock.VerifyAllExpectations ();
@@ -60,10 +70,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void GetOrderClause ()
     {
       var sortExpressionDefinition = SortExpressionDefinitionObjectMother.CreateOrderItemSortExpressionPositionAscProductDesc ();
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Position")).Return ("<Position>");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Product")).Return ("<Product>");
 
       var result = _commandBuilder.GetOrderClause (sortExpressionDefinition);
 
-      Assert.That (result, Is.EqualTo (" ORDER BY [Position] ASC, [Product] DESC"));
+      Assert.That (result, Is.EqualTo (" ORDER BY <Position> ASC, <Product> DESC"));
     }
 
     [Test]
@@ -73,5 +85,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Assert.That (result, Is.EqualTo (string.Empty));
     }
+
+    [Test]
+    public void AppendComparingWhereClause ()
+    {
+      var statement = new StringBuilder();
+      var command = MockRepository.GenerateStub<IDbCommand>();
+      
+      var specificationMock = MockRepository.GenerateStrictMock<IComparedColumnsSpecification>();
+      specificationMock
+          .Expect (mock => mock.AppendComparisons (statement, command, _sqlDialectStub))
+          .WhenCalled (
+              mi =>
+              {
+                Assert.That (statement.ToString(), Is.EqualTo (" WHERE "));
+                statement.Append ("<conditions>");
+              });
+      specificationMock.Replay();
+
+      _commandBuilder.AppendComparingWhereClause (statement, command, specificationMock);
+
+      specificationMock.VerifyAllExpectations();
+    }
+
   }
 }

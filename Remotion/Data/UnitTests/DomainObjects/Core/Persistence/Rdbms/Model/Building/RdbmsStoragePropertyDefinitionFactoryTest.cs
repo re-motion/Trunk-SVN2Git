@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
-      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (new StorageTypeInformation());
+      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (null);
 
       var result = _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
@@ -341,7 +341,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.IsPartOfPrimaryKey, Is.True);
       Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (result.StorageTypeInfo.StorageType, Is.EqualTo ("guid"));
-      Assert.That (result.StorageTypeInfo.DbType, Is.EqualTo (DbType.Guid));
     }
 
     [Test]
@@ -353,7 +352,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.PropertyType, Is.SameAs (typeof (string)));
       Assert.That (result.StorageTypeInfo.StorageType, Is.EqualTo ("varchar(100)"));
-      Assert.That (result.StorageTypeInfo.DbType, Is.EqualTo (DbType.String));
       Assert.That (result.IsPartOfPrimaryKey, Is.False);
     }
 
@@ -366,7 +364,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.PropertyType, Is.SameAs (typeof (object)));
       Assert.That (result.StorageTypeInfo.StorageType, Is.EqualTo ("rowversion"));
-      Assert.That (result.StorageTypeInfo.DbType, Is.EqualTo (DbType.DateTime));
       Assert.That (result.IsPartOfPrimaryKey, Is.False);
     }
 

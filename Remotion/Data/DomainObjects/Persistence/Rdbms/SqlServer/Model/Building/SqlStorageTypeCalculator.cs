@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (propertyType == typeof (Single))
         return new StorageTypeInformation ("real", DbType.Single, typeof (Single), new SingleConverter ());
       
-      return new StorageTypeInformation (); // TODO Review 4150: Throw NotSupportedException ("Type '...' is not supported by this storage provider.");
+      return null; // TODO Review 4150: Throw NotSupportedException ("Type '...' is not supported by this storage provider.");
     }
 
     private StorageTypeInformation GetStorageTypeForNullableValueType (Type type, Type underlyingType, int? maxLength)

@@ -67,10 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
 
       var ordinal = ordinalProvider.GetOrdinal (_columnDefinition, dataReader);
-      var value = dataReader[ordinal];
-      if (value == DBNull.Value)
-        value = null;
-      return _columnDefinition.StorageTypeInfo.TypeConverter.ConvertFrom (value);
+      return _columnDefinition.StorageTypeInfo.Read (dataReader, ordinal);
     }
 
     public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
@@ -79,13 +76,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
 
-      var parameter = command.CreateParameter();
+      var parameter = _columnDefinition.StorageTypeInfo.CreateDataParameter (command, value);
       parameter.ParameterName = key;
-      
-      var convertedValue = 
-          _columnDefinition.StorageTypeInfo.TypeConverter.ConvertTo (value, _columnDefinition.StorageTypeInfo.ParameterValueType);
-      parameter.Value = convertedValue ?? DBNull.Value;
-      parameter.DbType = _columnDefinition.StorageTypeInfo.DbType;
 
       yield return parameter;
     }

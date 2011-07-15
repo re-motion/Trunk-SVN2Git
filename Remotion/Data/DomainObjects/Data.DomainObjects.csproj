@@ -248,10 +248,13 @@
     <Compile Include="Persistence\Rdbms\DataReaders\DictionaryBasedColumnOrdinalProvider.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\IColumnOrdinalProvider.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\NameBasedColumnOrdinalProvider.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\ComparedColumnsSpecification.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\IComparedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
     <Compile Include="Persistence\Rdbms\Model\IObjectIDStoragePropertyDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IStorageTypeInformation.cs" />
     <Compile Include="Persistence\Rdbms\Model\ObjectIDWithoutClassIDStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\SerializedObjectIDStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\SimpleStoragePropertyDefinition.cs" />

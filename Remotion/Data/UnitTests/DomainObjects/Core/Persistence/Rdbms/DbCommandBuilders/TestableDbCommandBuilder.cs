@@ -27,9 +27,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 {
   public class TestableDbCommandBuilder : DbCommandBuilder
   {
-    public TestableDbCommandBuilder (RdbmsProvider provider)
-        : base (provider.SqlDialect,
-            provider.CreateValueConverter())
+    public TestableDbCommandBuilder (ISqlDialect sqlDialect, IValueConverter valueConverter)
+        : base (sqlDialect, valueConverter)
     {
     }
 
@@ -61,6 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public new void AppendComparingWhereClause (StringBuilder statement, ColumnDefinition comparedColumn, IDataParameter expectedValue)
     {
       base.AppendComparingWhereClause (statement, comparedColumn, expectedValue);
+    }
+
+    public new void AppendComparingWhereClause (StringBuilder statement, IDbCommand command, IComparedColumnsSpecification comparedColumns)
+    {
+      base.AppendComparingWhereClause (statement, command, comparedColumns);
     }
   }
 }

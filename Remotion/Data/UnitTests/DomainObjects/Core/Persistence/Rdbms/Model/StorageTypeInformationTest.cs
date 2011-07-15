@@ -19,7 +19,7 @@ using System.ComponentModel;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.ObjectBinding;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -27,13 +27,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class StorageTypeInformationTest
   {
     private StorageTypeInformation _storageTypeInformation;
-    private BooleanConverter _booleanConverter;
+    private TypeConverter _typeConverterStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _booleanConverter = new BooleanConverter();
-      _storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean, typeof(bool), _booleanConverter);
+      _typeConverterStub = MockRepository.GenerateStub<TypeConverter>();
+      _storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean, typeof(bool), _typeConverterStub);
     }
 
     [Test]
@@ -42,45 +42,137 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_storageTypeInformation.StorageType, Is.EqualTo ("test"));
       Assert.That (_storageTypeInformation.DbType, Is.EqualTo (DbType.Boolean));
       Assert.That (_storageTypeInformation.ParameterValueType, Is.EqualTo(typeof(bool)));
-      Assert.That (_storageTypeInformation.TypeConverter, Is.SameAs(_booleanConverter));
+      Assert.That (_storageTypeInformation.TypeConverter, Is.SameAs(_typeConverterStub));
+    }
+
+    [Test]
+    public void CreateDataParameter ()
+    {
+      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
+      var dataParameterMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
+
+      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.ParameterValueType)).Return ("converted value");
+
+      commandMock.Expect (mock => mock.CreateParameter()).Return (dataParameterMock);
+      commandMock.Replay();
+
+      dataParameterMock.Expect (mock => mock.DbType = _storageTypeInformation.DbType);
+      dataParameterMock.Expect (mock => mock.Value = "converted value");
+      dataParameterMock.Replay();
+
+      var result = _storageTypeInformation.CreateDataParameter (commandMock, "value");
+
+      commandMock.VerifyAllExpectations();
+      dataParameterMock.VerifyAllExpectations();
+
+      Assert.That (result, Is.SameAs (dataParameterMock));
+    }
+
+    [Test]
+    public void CreateDataParameter_Null ()
+    {
+      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
+      var dataParameterMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
+
+      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.ParameterValueType)).Return (null);
+
+      commandMock.Expect (mock => mock.CreateParameter ()).Return (dataParameterMock);
+      commandMock.Replay ();
+
+      dataParameterMock.Expect (mock => mock.DbType = _storageTypeInformation.DbType);
+      dataParameterMock.Expect (mock => mock.Value = DBNull.Value);
+      dataParameterMock.Replay ();
+
+      var result = _storageTypeInformation.CreateDataParameter (commandMock, "value");
+
+      commandMock.VerifyAllExpectations ();
+      dataParameterMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (dataParameterMock));
+    }
+
+    [Test]
+    public void Read ()
+    {
+      var dataReaderMock = MockRepository.GenerateStrictMock<IDataReader>();
+      dataReaderMock.Expect (mock => mock[17]).Return ("value");
+      dataReaderMock.Replay();
+
+      _typeConverterStub.Stub (stub => stub.ConvertFrom ("value")).Return ("converted value");
+
+      var result = _storageTypeInformation.Read (dataReaderMock, 17);
+
+      dataReaderMock.VerifyAllExpectations();
+      Assert.That (result, Is.EqualTo ("converted value"));
+    }
+
+    [Test]
+    public void Read_DBNull ()
+    {
+      var dataReaderMock = MockRepository.GenerateStrictMock<IDataReader> ();
+      dataReaderMock.Expect (mock => mock[17]).Return (DBNull.Value);
+      dataReaderMock.Replay ();
+
+      _typeConverterStub.Stub (stub => stub.ConvertFrom (null)).Return ("converted null value");
+
+      var result = _storageTypeInformation.Read (dataReaderMock, 17);
+
+      dataReaderMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo ("converted null value"));
     }
 
     [Test]
     public void Equals_True ()
     {
-      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.Boolean, typeof(bool), new BooleanConverter())), Is.True);
+      var one = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new BooleanConverter ());
+      var two = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new BooleanConverter ());
+
+      Assert.That (one.Equals (two), Is.True);
     }
 
     [Test]
     public void Equals_DifferentStorageType_False ()
     {
-      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test2", DbType.Boolean, typeof(bool), _booleanConverter)), Is.False);
+      var one = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new BooleanConverter ());
+      var two = new StorageTypeInformation ("test2", DbType.Boolean, typeof (bool), new BooleanConverter ());
+
+      Assert.That (one.Equals (two), Is.False);
     }
 
     [Test]
     public void Equals_DifferentDbType_False ()
     {
-      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.String, typeof(bool), _booleanConverter)), Is.False);
+      var one = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new BooleanConverter ());
+      var two = new StorageTypeInformation ("test", DbType.Int64, typeof (bool), new BooleanConverter ());
+
+      Assert.That (one.Equals (two), Is.False);
     }
 
     [Test]
     public void Equals_DifferentParameterType_False ()
     {
-      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.Boolean, typeof (string), _booleanConverter)), Is.False);
+      var one = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new BooleanConverter ());
+      var two = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool?), new BooleanConverter ());
+
+      Assert.That (one.Equals (two), Is.False);
     }
 
     [Test]
     public void Equals_DifferentTypeConverter_False ()
     {
-      Assert.That (_storageTypeInformation.Equals (new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new StringConverter())), Is.False);
+      var one = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new BooleanConverter ());
+      var two = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new StringConverter ());
+
+      Assert.That (one.Equals (two), Is.False);
     }
 
     [Test]
     public void GetHashcode_EqualObjects ()
     {
-      var storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean, typeof(bool), new BooleanConverter());
+      var one = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new BooleanConverter ());
+      var two = new StorageTypeInformation ("test", DbType.Boolean, typeof (bool), new BooleanConverter ());
 
-      Assert.That (_storageTypeInformation.GetHashCode(), Is.EqualTo (storageTypeInformation.GetHashCode()));
+      Assert.That (one.GetHashCode(), Is.EqualTo (two.GetHashCode()));
     }
   }
 }

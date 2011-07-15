@@ -129,5 +129,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       statement.Append (" = ");
       statement.Append (expectedValue.ParameterName);
     }
+
+    protected void AppendComparingWhereClause (StringBuilder statement, IDbCommand command, IComparedColumnsSpecification comparedColumns)
+    {
+      statement.Append (" WHERE ");
+      comparedColumns.AppendComparisons (statement, command, SqlDialect);
+    }
   }
 }

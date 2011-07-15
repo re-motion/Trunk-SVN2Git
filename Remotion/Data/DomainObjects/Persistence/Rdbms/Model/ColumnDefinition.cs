@@ -28,9 +28,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly Type _propertyType;
     private readonly bool _isNullable;
     private readonly bool _isPartOfPrimaryKey;
-    private readonly StorageTypeInformation _storageTypeInfo;
+    private readonly IStorageTypeInformation _storageTypeInfo;
 
-    public ColumnDefinition (string name, Type propertyType, StorageTypeInformation storageTypeInfo, bool isNullable, bool isPartOfPrimaryKey)
+    public ColumnDefinition (string name, Type propertyType, IStorageTypeInformation storageTypeInfo, bool isNullable, bool isPartOfPrimaryKey)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _propertyType; }
     }
 
-    public StorageTypeInformation StorageTypeInfo
+    public IStorageTypeInformation StorageTypeInfo
     {
       get { return _storageTypeInfo; }
     }

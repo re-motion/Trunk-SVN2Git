@@ -23,9 +23,16 @@ using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="StorageTypeInformation"/> provides information of the storage-type and database-type for a column in a relational database.
+  /// The <see cref="StorageTypeInformation"/> provides information about the storage type of a value in a relational database.
+  /// In addition, it can create an unnamed <see cref="IDbDataParameter"/> for a value convertible to <see cref="ParameterValueType"/> via 
+  /// <see cref="TypeConverter"/>, or read and convert a value from an <see cref="IDataReader"/>.
   /// </summary>
-  public struct StorageTypeInformation
+  /// <remarks>
+  /// The <see cref="TypeConverter"/> must be associated with the in-memory .NET type of the stored value. It is used to convert to the database
+  /// representation (represented by <see cref="ParameterValueType"/>) when a <see cref="IDbDataParameter"/> is created, and it is used to convert
+  /// values back to the .NET format when a value is read from an <see cref="IDataReader"/>.
+  /// </remarks>
+  public class StorageTypeInformation : IStorageTypeInformation
   {
     private readonly string _storageType;
     private readonly DbType _dbType;
@@ -62,6 +69,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public TypeConverter TypeConverter
     {
       get { return _typeConverter; }
+    }
+
+    public IDbDataParameter CreateDataParameter (IDbCommand command, object value)
+    {
+      ArgumentUtility.CheckNotNull ("command", command);
+
+      var convertedValue = TypeConverter.ConvertTo (value, ParameterValueType);
+
+      var parameter = command.CreateParameter ();
+      parameter.Value = convertedValue ?? DBNull.Value;
+      parameter.DbType = DbType;
+      return parameter;
+    }
+
+    public object Read (IDataReader dataReader, int ordinal)
+    {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+
+      var value = dataReader[ordinal];
+      if (value == DBNull.Value)
+        value = null;
+
+      return TypeConverter.ConvertFrom (value);
     }
 
     public override bool Equals (object obj)
