@@ -69,12 +69,20 @@ namespace Remotion.ObjectBinding
     public void LoadValue (bool interim)
     {
       // load value from "parent" data source
-      if (HasValidBinding)
+      if (HasValidBinding) //->  requires Businessobject=set, not required for edge cases
       {
+        //what about multiple LoadValues commands??? maybe check created and do an auto-delete?
+        //if created and interim=true do not load object from parent, i.e. skip down to LoadValues(interim)
+        //if created and interim=false and SupportsDelete -> delete before execuuting remaining logic
+
+        //_hasBusinessObjectCreated = false;
         var businessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
         if (businessObject == null && SupportsDefaultValueSemantics)
+        {
           businessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
-        
+          //_hasBusinessObjectCreated = true;
+        }
+
         BusinessObject = businessObject;
         _hasBusinessObjectChanged = false;
       }
@@ -98,13 +106,17 @@ namespace Remotion.ObjectBinding
     {
       if (!interim && IsBusinessObjectSetToDefaultValue())
       {
-        ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
+        if (ReferenceProperty.SupportsDelete)
+          ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
+
         BusinessObject = null;
       }
       else
       {
         // save values from "child" controls
         SaveValues (interim);
+        // Save takes care of resetting the chilren's dirty state. If the parent is deleted, the child controls would still be dirty.
+        //-> move SaveValues to perform always. RM-1806
       }
 
       // if required, save value into "parent" data source
@@ -112,6 +124,7 @@ namespace Remotion.ObjectBinding
       {
         ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
         _hasBusinessObjectChanged = false;
+        //_hasBusinessObjectCreated = false;
       }
     }
 
@@ -193,7 +206,7 @@ namespace Remotion.ObjectBinding
 
     private bool RequiresWriteBack
     {
-      get { return (_hasBusinessObjectChanged || ReferenceProperty.ReferenceClass.RequiresWriteBack); }
+      get { return (_hasBusinessObjectChanged || /*_hasBusinessObjectCreated ||*/ ReferenceProperty.ReferenceClass.RequiresWriteBack); }
     }
 
     private bool SupportsDefaultValueSemantics
