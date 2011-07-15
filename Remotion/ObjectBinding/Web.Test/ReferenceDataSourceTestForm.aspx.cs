@@ -28,6 +28,23 @@ namespace OBWTest
       LevelOneDataSource.LoadValues (IsPostBack);
     }
 
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+
+      // Normally only in OnUnload. Call here only to provide diagnostic output
+      LevelOneDataSource.SaveValues (true);
+
+      var hasLevelOneInstance = CurrentFunction.RootObject != null;
+      var hasLevelTwoInstance = hasLevelOneInstance && CurrentFunction.RootObject.ReferenceValue != null;
+      var hasLevelThreeInstance = hasLevelTwoInstance && CurrentFunction.RootObject.ReferenceValue.ReferenceValue != null;
+
+      Stack.Text = "";
+      Stack.Text += string.Format ("LevelOne: hasInstance = {0}<br/>", hasLevelOneInstance);
+      Stack.Text += string.Format ("LevelTwo (LevelOne.ReferenceValue): hasInstance = {0}<br/>", hasLevelTwoInstance);
+      Stack.Text += string.Format ("LevelThree (LevelOne.ReferenceValue.ReferenceValue): hasInstance = {0}<br/>", hasLevelThreeInstance);
+    }
+
     protected override void OnUnload (EventArgs e)
     {
       base.OnUnload (e);
@@ -44,6 +61,12 @@ namespace OBWTest
       PrepareValidation ();
 
      return LevelOneDataSource.Validate();
+    }
+
+    protected void SaveButton_OnClick (object sender, EventArgs e)
+    {
+      if (ValidateDataSource ())
+        LevelOneDataSource.SaveValues (false);
     }
   }
 }

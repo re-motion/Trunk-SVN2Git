@@ -67,6 +67,15 @@ namespace OBWTest {
         protected global::Remotion.Web.UI.Controls.WebButton ValidateButton;
         
         /// <summary>
+        /// SaveButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton SaveButton;
+        
+        /// <summary>
         /// UserControlUpdatePanel control.
         /// </summary>
         /// <remarks>

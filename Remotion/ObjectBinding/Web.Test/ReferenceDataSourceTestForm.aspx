@@ -13,7 +13,8 @@
         <div>
           <remotion:WebButton ID="PostBackButton" runat="server" Text="Post Back" />
           <remotion:WebButton ID="ValidateButton" runat="server" Text="Validate" OnClick="ValidateButton_OnClick" />
-        </div>
+          <remotion:WebButton ID="SaveButton" runat="server" Text="Save" OnClick="SaveButton_OnClick" />
+      </div>
       </asp:PlaceHolder>
     </TopControls>
     <View>
@@ -101,7 +102,7 @@
     <BottomControls>
       <asp:UpdatePanel ID="StackUpdatePanel" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
-          <asp:Literal ID="Stack" runat="server" />
+          <asp:Literal ID="Stack" runat="server" EnableViewState="false"/>
         </ContentTemplate>
       </asp:UpdatePanel>
     </BottomControls>
