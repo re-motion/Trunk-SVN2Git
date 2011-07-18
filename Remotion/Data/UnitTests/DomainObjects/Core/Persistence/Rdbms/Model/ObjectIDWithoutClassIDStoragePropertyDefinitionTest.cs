@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
@@ -46,15 +45,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
+      _classDefinition = DomainObjectIDs.Order1.ClassDefinition;
 
-      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ();
+      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn();
 
-      _valuePropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      _valuePropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       _valuePropertyStub.Stub (stub => stub.Name).Return ("ID");
-      _valuePropertyStub.Stub (stub => stub.GetColumnForLookup ()).Return (_columnDefinition);
-      _valuePropertyStub.Stub (stub => stub.GetColumnForForeignKey ()).Return (_columnDefinition);
-      _valuePropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition });
+      _valuePropertyStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition);
+      _valuePropertyStub.Stub (stub => stub.GetColumnForForeignKey()).Return (_columnDefinition);
+      _valuePropertyStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition });
 
       _objectIDWithoutClassIDStorageDefinition = new ObjectIDWithoutClassIDStoragePropertyDefinition (
           _valuePropertyStub, _classDefinition);
@@ -89,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumns ()
     {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (new[]{_columnDefinition}));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (new[] { _columnDefinition }));
     }
 
     [Test]
@@ -97,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_objectIDWithoutClassIDStorageDefinition.Name, Is.EqualTo (_valuePropertyStub.Name));
     }
-    
+
     [Test]
     public void Read ()
     {
@@ -123,11 +122,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateDataParameters ()
     {
-      _valuePropertyStub.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1.Value, "key")).Return (new[]{_dbDataParameterStub});
+      _valuePropertyStub.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1.Value, "key")).Return (
+          new[] { _dbDataParameterStub });
 
-      var result = _objectIDWithoutClassIDStorageDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1, "key").ToArray ();
+      var result = _objectIDWithoutClassIDStorageDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1, "key").ToArray();
 
-      Assert.That (result, Is.EqualTo (new[]{_dbDataParameterStub}));
+      Assert.That (result, Is.EqualTo (new[] { _dbDataParameterStub }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The specified object-id has an invalid class definition.\r\nParameter name: value")]
+    public void CreateDataParameters_InvalidClassDefinition ()
+    {
+      _valuePropertyStub.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.OrderItem1.Value, "key")).Return (
+          new[] { _dbDataParameterStub });
+
+      _objectIDWithoutClassIDStorageDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.OrderItem1, "key").ToArray();
     }
   }
 }

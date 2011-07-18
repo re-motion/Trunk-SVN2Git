@@ -37,14 +37,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public ColumnDefinition GetColumnForLookup ()
     {
-      // TODO Review 4129: throw NotSupportedException
-      throw new NotImplementedException ();
+      throw new NotSupportedException();
     }
 
     public ColumnDefinition GetColumnForForeignKey ()
     {
-      // TODO Review 4129: throw NotSupportedException
-      throw new NotImplementedException ();
+      throw new NotSupportedException();
     }
 
     public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
@@ -52,8 +50,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
       ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
 
-      // TODO Review 4129: throw NotSupportedException
-      return null;
+      throw new NotSupportedException();
     }
 
     public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
@@ -62,8 +59,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
 
-      // TODO Review 4129: throw NotSupportedException
-      return new IDataParameter[0];
+      throw new NotSupportedException();
     }
   }
 }

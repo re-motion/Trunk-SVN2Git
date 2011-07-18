@@ -38,20 +38,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumns ()
     {
-      Assert.That (_columnDefinition.GetColumns(), Is.Empty);
+      _columnDefinition.GetColumns();
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void GetColumnForLookup ()
+    {
+      _columnDefinition.GetColumnForLookup();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void GetColumnForForeignKey ()
+    {
+      _columnDefinition.GetColumnForForeignKey();
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException))]
     public void Read ()
     {
-      Assert.That (
-          _columnDefinition.Read (MockRepository.GenerateStub<IDataReader>(), MockRepository.GenerateStub<IColumnOrdinalProvider>()), Is.Null);
+      _columnDefinition.Read (MockRepository.GenerateStub<IDataReader>(), MockRepository.GenerateStub<IColumnOrdinalProvider>());
     }
 
     [Test]
+    [ExpectedException(typeof(NotSupportedException))]
     public void CreateDataParameters ()
     {
-      Assert.That (_columnDefinition.CreateDataParameters (MockRepository.GenerateStub<IDbCommand>(), "test", "key"), Is.Empty);
+      _columnDefinition.CreateDataParameters (MockRepository.GenerateStub<IDbCommand>(), "test", "key");
     }
   }
 }

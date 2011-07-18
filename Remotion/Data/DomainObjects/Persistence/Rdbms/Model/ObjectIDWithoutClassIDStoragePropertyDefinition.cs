@@ -90,8 +90,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
 
-      // TODO Review 4129: Check that objectID.ClassDefinition == _classDefinition, otherwise throw ArgumentException
-      return _valueProperty.CreateDataParameters (command, objectID.Value, key);
+      if(objectID.ClassDefinition==_classDefinition)
+        return _valueProperty.CreateDataParameters (command, objectID.Value, key);
+
+      throw new ArgumentException ("The specified object-id has an invalid class definition.", "value");
     }
     
   }
