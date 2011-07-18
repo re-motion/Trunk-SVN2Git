@@ -83,19 +83,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new ObjectID (_classDefinition, value);
     }
 
-    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
-
-      var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
-
-      if(objectID.ClassDefinition==_classDefinition)
-        return _valueProperty.CreateDataParameters (command, objectID.Value, key);
-
-      throw new ArgumentException ("The specified object-id has an invalid class definition.", "value");
-    }
-
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);

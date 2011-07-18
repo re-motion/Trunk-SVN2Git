@@ -83,17 +83,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new ObjectID (_classIDProperty.Name, value);
     }
 
-    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
-
-      var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
-
-      return _valueProperty.CreateDataParameters (command, objectID.Value.ToString(), key)
-          .Concat (_classIDProperty.CreateDataParameters (command, objectID.ClassID, key + "ClassID"));
-    }
-
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);

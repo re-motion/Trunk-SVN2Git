@@ -32,7 +32,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     ColumnDefinition GetColumnForForeignKey ();
 
     object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
-    IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key);
     IEnumerable<ColumnValue> SplitValue (object value);
   }
 }

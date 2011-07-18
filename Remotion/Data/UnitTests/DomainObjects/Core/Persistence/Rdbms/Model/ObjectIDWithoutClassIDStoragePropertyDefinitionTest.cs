@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Data;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -115,27 +114,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _objectIDWithoutClassIDStorageDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
       Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void CreateDataParameters ()
-    {
-      _valuePropertyStub.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1.Value, "key")).Return (
-          new[] { _dbDataParameterStub });
-
-      var result = _objectIDWithoutClassIDStorageDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1, "key").ToArray();
-
-      Assert.That (result, Is.EqualTo (new[] { _dbDataParameterStub }));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The specified object-id has an invalid class definition.\r\nParameter name: value")]
-    public void CreateDataParameters_InvalidClassDefinition ()
-    {
-      _valuePropertyStub.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.OrderItem1.Value, "key")).Return (
-          new[] { _dbDataParameterStub });
-
-      _objectIDWithoutClassIDStorageDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.OrderItem1, "key").ToArray();
     }
 
     [Test]

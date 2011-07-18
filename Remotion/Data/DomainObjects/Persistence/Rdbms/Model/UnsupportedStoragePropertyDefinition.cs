@@ -53,15 +53,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       throw new NotSupportedException();
     }
 
-    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
-
-      throw new NotSupportedException();
-    }
-
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
       throw new NotSupportedException();

@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.Data;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -116,21 +114,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
       Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void CreateDataParameters ()
-    {
-      _objectIDColumn.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1.Value.ToString(), "key")).Return (
-          new[] { _dbDataParameter1Stub });
-      _classIDColumn.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1.ClassID, "keyClassID")).Return (
-          new[] { _dbDataParameter2Stub });
-
-      var objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (_objectIDColumn, _classIDColumn);
-
-      var result = objectIDStoragePropertyDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1, "key");
-
-      Assert.That (result, Is.EqualTo (new[]{_dbDataParameter1Stub, _dbDataParameter2Stub}));
     }
 
     [Test]

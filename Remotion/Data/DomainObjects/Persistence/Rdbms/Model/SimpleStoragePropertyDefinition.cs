@@ -70,18 +70,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _columnDefinition.StorageTypeInfo.Read (dataReader, ordinal);
     }
 
-    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
-
-      var parameter = _columnDefinition.StorageTypeInfo.CreateDataParameter (command, value);
-      parameter.ParameterName = key;
-
-      yield return parameter;
-    }
-
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
       yield return new ColumnValue(_columnDefinition, value);

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Data;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -109,17 +108,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _serializedObjectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
       Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void CreateDataParameters ()
-    {
-      _serializedIDPropertyStub.Stub (stub => stub.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1.ToString(), "key")).Return (
-          new[] { _dbDataParameterStub });
-
-      var result = _serializedObjectIDStoragePropertyDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.Order1, "key").ToArray();
-
-      Assert.That (result, Is.EqualTo (new[] { _dbDataParameterStub }));
     }
 
     [Test]

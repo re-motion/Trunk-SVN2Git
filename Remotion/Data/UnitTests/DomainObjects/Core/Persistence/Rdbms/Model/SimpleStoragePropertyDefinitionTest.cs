@@ -21,7 +21,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -99,32 +98,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _storagePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
       Assert.That (result, Is.EqualTo ("converted"));
-    }
-
-    [Test]
-    public void CreateDataParameters ()
-    {
-      _typeConverterStub.Stub (mock => mock.ConvertTo ("test", typeof (int?))).Return (12);
-
-      var result = _storagePropertyDefinition.CreateDataParameters (_dbCommandStub, "test", "key").ToArray();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0].ParameterName, Is.EqualTo ("key"));
-      Assert.That (result[0].Value, Is.EqualTo (12));
-      Assert.That (result[0].DbType, Is.EqualTo (DbType.Int32));
-    }
-
-    [Test]
-    public void CreateDataParameters_ValueIsNull ()
-    {
-      _typeConverterStub.Stub (stub => stub.ConvertTo ("test", typeof (int?))).Return (null);
-
-      var result = _storagePropertyDefinition.CreateDataParameters (_dbCommandStub, "test", "key").ToArray ();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0].ParameterName, Is.EqualTo ("key"));
-      Assert.That (result[0].Value, Is.EqualTo (DBNull.Value));
-      Assert.That (result[0].DbType, Is.EqualTo (DbType.Int32));
     }
 
     [Test]

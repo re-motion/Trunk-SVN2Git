@@ -72,15 +72,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return ObjectID.Parse ((string) value);
     }
 
-    public IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
-
-      var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
-      return _serializedIDProperty.CreateDataParameters (command, objectID.ToString (), key);
-    }
-
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);

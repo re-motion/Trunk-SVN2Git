@@ -63,13 +63,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     [Test]
     [ExpectedException(typeof(NotSupportedException))]
-    public void CreateDataParameters ()
-    {
-      _columnDefinition.CreateDataParameters (MockRepository.GenerateStub<IDbCommand>(), "test", "key");
-    }
-
-    [Test]
-    [ExpectedException(typeof(NotSupportedException))]
     public void SplitValue ()
     {
       _columnDefinition.SplitValue (null);
