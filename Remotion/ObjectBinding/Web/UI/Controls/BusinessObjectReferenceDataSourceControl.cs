@@ -161,7 +161,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public override void SaveValue (bool interim) // inherited from control interface
     {
       // Do not include check for IsDirty.
-      // The wrapped reference data source has it's own mechanism to prevent unnecessary write-backs.
+      // The wrapped reference data source has its own mechanism to prevent unnecessary write-backs.
       // The bound controls also have their own IsDirty-checks and do not concern the DataSourceControl's write-back semantics.
       if (!IsReadOnly)
         _internalDataSource.SaveValue (interim);
