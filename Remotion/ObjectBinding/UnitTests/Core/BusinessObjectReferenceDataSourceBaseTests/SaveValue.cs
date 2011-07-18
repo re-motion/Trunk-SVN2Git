@@ -63,6 +63,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
+    public void ClearsHasBusinessObjectCreated ()
+    {
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (MockRepository.GenerateStub<IBusinessObject> ());
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+      referenceDataSource.LoadValue (false);
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+
+      referenceDataSource.SaveValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.False);
+    }
+
+    [Test]
     public void HasBusinessObjectChangedFalse_DoesNotSaveValueIntoBoundObject ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
@@ -134,6 +151,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.LoadValue (false);
       Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
+
+      referenceDataSource.SaveValue (false);
+
+      _referencedDataSourceStub.BusinessObject.AssertWasCalled (stub => stub.SetProperty (_referencePropertyStub, expectedValue));
+    }
+
+    [Test]
+    public void HasBusinessObjectCreatedTrue_ReadsBusinessObject_SavesValueIntoBoundObject ()
+    {
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject)).Return (expectedValue);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+      referenceDataSource.LoadValue (false);
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
 
       referenceDataSource.SaveValue (false);
 

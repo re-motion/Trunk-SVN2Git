@@ -165,6 +165,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
+    public void SetsDefaultValue_SetHasBusinessObjectCreated ()
+    {
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject)).Return (expectedValue);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+    }
+
+    [Test]
     public void DataSourceModeRead_DoesNotSetDefaultValue ()
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
@@ -224,6 +240,148 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
 
       Assert.That (referenceDataSource.BusinessObject, Is.Not.Null);
+    }
+
+    [Test]
+    public void LoadValueCalledAgainWithInterimTrue_HasBusinessObjectCreatedTrue_LeavesBusinessObjectUntouched ()
+    {
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null).Repeat.Once();
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true).Repeat.Once();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (MockRepository.GenerateStub<IBusinessObject> ())
+          .Repeat.Once();
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      var oldValue = referenceDataSource.BusinessObject;
+
+      referenceDataSource.LoadValue (true);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (oldValue));
+    }
+
+    [Test]
+    public void LoadValueCalledAgainWithInterimFalse_HasBusinessObjectCreatedTrue_CreatesNewDefaultValue ()
+    {
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null).Repeat.Once();
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      var oldValue = MockRepository.GenerateStub<IBusinessObject>();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (oldValue)
+          .Repeat.Once();
+      var newValue = MockRepository.GenerateStub<IBusinessObject>();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (newValue)
+          .Repeat.Once();
+
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (oldValue));
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.Not.Null);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (newValue));
+    }
+
+    [Test]
+    public void LoadValueCalledAgainWithInterimFalse_HasBusinessObjectCreatedTrue_SupportsDelete_DeletesOldValue ()
+    {
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null).Repeat.Once ();
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      _referencePropertyStub.Stub (stub => stub.SupportsDelete).Return (true);
+      var oldValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (oldValue)
+          .Repeat.Once ();
+      var newValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (newValue)
+          .Repeat.Once ();
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (oldValue));
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.Delete (_referencedDataSourceStub.BusinessObject, oldValue));
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (newValue));
+      _referencePropertyStub.AssertWasCalled (stub => stub.Delete (_referencedDataSourceStub.BusinessObject, oldValue));
+    }
+
+    [Test]
+    public void LoadValueCalledAgainWithInterimFalse_HasBusinessObjectCreatedTrue_DoesNotSupportDelete_DoesNotDeleteOldValue ()
+    {
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null).Repeat.Once ();
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      _referencePropertyStub.Stub (stub => stub.SupportsDelete).Return (false);
+      var oldValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (oldValue)
+          .Repeat.Once ();
+      var newValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (newValue)
+          .Repeat.Once ();
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (oldValue));
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.Delete (_referencedDataSourceStub.BusinessObject, oldValue));
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (newValue));
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.Delete (_referencedDataSourceStub.BusinessObject, oldValue));
+    }
+
+    [Test]
+    public void LoadValueCalledAgainWithInterimFalse_HasBusinessObjectCreatedTrue_BoundPropertyContainsValue_DoesNotCreateDefaultValue ()
+    {
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null).Repeat.Once ();
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      var oldValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (_referencedDataSourceStub.BusinessObject))
+          .Return (oldValue)
+          .Repeat.Once ();
+
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject> ();
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (expectedValue).Repeat.Once ();
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (oldValue));
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.False);
+      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (expectedValue));
     }
   }
 }

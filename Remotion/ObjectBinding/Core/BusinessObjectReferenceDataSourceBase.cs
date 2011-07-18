@@ -41,7 +41,13 @@ namespace Remotion.ObjectBinding
     ///   A flag that is cleared when the <see cref="BusinessObject"/> is loaded from or saved to the
     ///   <see cref="ReferencedDataSource"/>.
     /// </summary>
-    private bool _hasBusinessObjectChanged = false;
+    private bool _hasBusinessObjectChanged;
+
+    /// <summary>
+    ///   A flag that is cleared when the <see cref="BusinessObject"/> is loaded from the 
+    ///   <see cref="IBusinessObjectReferenceProperty.CreateDefaultValue"/> API.
+    /// </summary>
+    private bool _hasBusinessObjectCreated;
 
     /// <summary>
     ///   See <see cref="IBusinessObjectReferenceDataSource.ReferenceProperty">IBusinessObjectReferenceDataSource.ReferenceProperty</see>
@@ -71,20 +77,28 @@ namespace Remotion.ObjectBinding
       // load value from "parent" data source
       if (HasValidBinding) //->  requires Businessobject=set, not required for edge cases
       {
-        //what about multiple LoadValues commands??? maybe check created and do an auto-delete?
-        //if created and interim=true do not load object from parent, i.e. skip down to LoadValues(interim)
-        //if created and interim=false and SupportsDelete -> delete before execuuting remaining logic
-
-        //_hasBusinessObjectCreated = false;
-        var businessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
-        if (businessObject == null && SupportsDefaultValueSemantics)
+        if (interim && _hasBusinessObjectCreated)
         {
-          businessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
-          //_hasBusinessObjectCreated = true;
+          // NOP
         }
+        else
+        {
+          if (_hasBusinessObjectCreated)
+          {
+            DeleteBusinessObject();
+            BusinessObject = null;
+            Assertion.IsFalse (_hasBusinessObjectCreated);
+          }
 
-        BusinessObject = businessObject;
-        _hasBusinessObjectChanged = false;
+          BusinessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
+          if (BusinessObject == null && SupportsDefaultValueSemantics)
+          {
+            BusinessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
+            _hasBusinessObjectCreated = true;
+          }
+
+          _hasBusinessObjectChanged = false;
+        }
       }
 
       // load values into "child" controls
@@ -106,10 +120,9 @@ namespace Remotion.ObjectBinding
     {
       if (!interim && IsBusinessObjectSetToDefaultValue())
       {
-        if (ReferenceProperty.SupportsDelete)
-          ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
-
+        DeleteBusinessObject ();
         BusinessObject = null;
+        Assertion.IsTrue (_hasBusinessObjectChanged);
       }
 
       // save values from "child" controls
@@ -120,7 +133,7 @@ namespace Remotion.ObjectBinding
       {
         ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
         _hasBusinessObjectChanged = false;
-        //_hasBusinessObjectCreated = false;
+        _hasBusinessObjectCreated = false;
       }
     }
 
@@ -146,6 +159,16 @@ namespace Remotion.ObjectBinding
     public bool HasBusinessObjectChanged
     {
       get { return _hasBusinessObjectChanged; }
+    }
+
+    /// <summary>
+    ///   Gets a flag that is <see langword="true" /> if the <see cref="BusinessObject"/> is loaded from the 
+    ///   <see cref="IBusinessObjectReferenceProperty.CreateDefaultValue"/> API. It is cleared once the newly created <see cref="BusinessObject"/> 
+    ///   has been saved back into the <see cref="ReferencedDataSource"/>.
+    /// </summary>
+    public bool HasBusinessObjectCreated
+    {
+      get { return _hasBusinessObjectCreated; }
     }
 
     /// <summary>
@@ -177,6 +200,7 @@ namespace Remotion.ObjectBinding
       {
         _businessObject = value;
         _hasBusinessObjectChanged = true;
+        _hasBusinessObjectCreated = false;
       }
     }
 
@@ -202,7 +226,7 @@ namespace Remotion.ObjectBinding
 
     private bool RequiresWriteBack
     {
-      get { return (_hasBusinessObjectChanged || /*_hasBusinessObjectCreated ||*/ ReferenceProperty.ReferenceClass.RequiresWriteBack); }
+      get { return (_hasBusinessObjectChanged || _hasBusinessObjectCreated || ReferenceProperty.ReferenceClass.RequiresWriteBack); }
     }
 
     private bool SupportsDefaultValueSemantics
@@ -224,6 +248,12 @@ namespace Remotion.ObjectBinding
       {
         return false;
       }
+    }
+
+    private void DeleteBusinessObject ()
+    {
+      if (ReferenceProperty.SupportsDelete)
+        ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
     }
   }
 }
