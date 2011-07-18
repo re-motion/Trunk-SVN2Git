@@ -129,6 +129,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
+    public void ReferencedDataSourceBusinessObjectNull_DoesNotCreateDefaultValue ()
+    {
+      _referencedDataSourceStub.BusinessObject = null;
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = null;
+
+      referenceDataSource.LoadValue (false);
+
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.SupportsDefaultValue);
+      _referencePropertyStub.AssertWasNotCalled (stub => stub.CreateDefaultValue (null), options=>options.IgnoreArguments ());
+    }
+
+    [Test]
     public void ReferencedDataSourceNull_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (null, _referencePropertyStub);
