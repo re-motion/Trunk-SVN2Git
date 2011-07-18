@@ -14,25 +14,32 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  /// <summary>
-  /// <see cref="IRdbmsStoragePropertyDefinition"/> is exposed by all RDBMS-specific <see cref="IStoragePropertyDefinition"/> implementations.
-  /// </summary>
-  public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition
+  public struct ColumnValue
   {
-    IEnumerable<ColumnDefinition> GetColumns ();
-    ColumnDefinition GetColumnForLookup ();
-    ColumnDefinition GetColumnForForeignKey ();
+    private readonly ColumnDefinition _column;
+    private readonly object _value;
 
-    object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
-    IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key);
-    //IEnumerable<ColumnValue> SplitValue (object value);
+    public ColumnValue (ColumnDefinition column, object value)
+    {
+      ArgumentUtility.CheckNotNull ("column", column);
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      _column = column;
+      _value = value;
+    }
+
+    public ColumnDefinition Column
+    {
+      get { return _column; }
+    }
+
+    public object Value
+    {
+      get { return _value; }
+    }
   }
 }

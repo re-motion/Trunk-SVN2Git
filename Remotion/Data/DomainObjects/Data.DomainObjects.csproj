@@ -253,6 +253,7 @@
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ColumnValue.cs" />
     <Compile Include="Persistence\Rdbms\Model\IObjectIDStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IStorageTypeInformation.cs" />
     <Compile Include="Persistence\Rdbms\Model\ObjectIDWithoutClassIDStoragePropertyDefinition.cs" />

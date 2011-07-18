@@ -28,9 +28,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public class ComparedColumnsSpecification : IComparedColumnsSpecification
   {
-    private readonly Tuple<ColumnDefinition, object>[] _comparedColumnValues;
+    private readonly ColumnValue[] _comparedColumnValues;
 
-    public ComparedColumnsSpecification (IEnumerable<Tuple<ColumnDefinition, object>> comparedColumnValues)
+    public ComparedColumnsSpecification (IEnumerable<ColumnValue> comparedColumnValues)
     {
       ArgumentUtility.CheckNotNull ("comparedColumnValues", comparedColumnValues);
       _comparedColumnValues = comparedColumnValues.ToArray();
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         throw new ArgumentEmptyException ("comparedColumnValues", "The sequence of compared column values must contain at least one element.");
     }
 
-    public ReadOnlyCollection<Tuple<ColumnDefinition, object>> ComparedColumnValues
+    public ReadOnlyCollection<ColumnValue> ComparedColumnValues
     {
       get { return Array.AsReadOnly (_comparedColumnValues); }
     }
@@ -57,11 +57,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         if (!first)
           statement.Append (" AND ");
 
-        statement.Append (sqlDialect.DelimitIdentifier (comparedColumnValue.Item1.Name));
+        statement.Append (sqlDialect.DelimitIdentifier (comparedColumnValue.Column.Name));
         statement.Append ("=");
         
-        var parameter = comparedColumnValue.Item1.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Item2);
-        parameter.ParameterName = comparedColumnValue.Item1.Name;
+        var parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
+        parameter.ParameterName = comparedColumnValue.Column.Name;
         statement.Append (parameter.ParameterName);
 
         first = false;

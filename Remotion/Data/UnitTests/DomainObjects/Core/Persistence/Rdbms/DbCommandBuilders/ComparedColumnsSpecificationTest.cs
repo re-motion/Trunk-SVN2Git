@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Initialization_Empty ()
     {
       Assert.That (
-          () => new ComparedColumnsSpecification (Enumerable.Empty <Tuple<ColumnDefinition, object>>()),
+          () => new ComparedColumnsSpecification (Enumerable.Empty <ColumnValue>()),
           Throws.Exception.TypeOf<ArgumentEmptyException>().With.Message.EqualTo (
               "The sequence of compared column values must contain at least one element.\r\nParameter name: comparedColumnValues"));
     }
@@ -71,14 +71,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Initialization_NonEmpty ()
     {
-      var specification = new ComparedColumnsSpecification (new[] { Tuple.Create (_column1, _value1) });
-      Assert.That (specification.ComparedColumnValues, Is.EqualTo (new[] { Tuple.Create (_column1, _value1) }));
+      var specification = new ComparedColumnsSpecification (new[] { new ColumnValue(_column1, _value1) });
+      Assert.That (specification.ComparedColumnValues, Is.EqualTo (new[] { new ColumnValue(_column1, _value1) }));
     }
 
     [Test]
     public void AppendComparisons_OneValue ()
     {
-      var specification = new ComparedColumnsSpecification (new[] { Tuple.Create (_column1, _value1) });
+      var specification = new ComparedColumnsSpecification (new[] { new ColumnValue(_column1, _value1) });
 
       _statement.Append ("<existingtext>");
 
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void AppendComparisons_MultipleValues ()
     {
-      var specification = new ComparedColumnsSpecification (new[] { Tuple.Create (_column1, _value1), Tuple.Create (_column2, _value2) });
+      var specification = new ComparedColumnsSpecification (new[] { new ColumnValue(_column1, _value1), new ColumnValue(_column2, _value2) });
 
       _statement.Append ("<existingtext>");
 
