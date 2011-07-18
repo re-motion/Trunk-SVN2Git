@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ColumnValue (ColumnDefinition column, object value)
     {
       ArgumentUtility.CheckNotNull ("column", column);
-      ArgumentUtility.CheckNotNull ("value", value);
 
       _column = column;
       _value = value;

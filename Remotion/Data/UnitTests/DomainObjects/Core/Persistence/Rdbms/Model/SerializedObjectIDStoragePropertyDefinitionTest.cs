@@ -121,5 +121,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (result, Is.EqualTo (new[] { _dbDataParameterStub }));
     }
+
+    [Test]
+    public void SplitValue ()
+    {
+      var columnValue = new ColumnValue (_columnDefinition, DomainObjectIDs.OrderItem1);
+
+      _serializedIDPropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.OrderItem1.ToString())).Return (new[] { columnValue });
+
+      var result = _serializedObjectIDStoragePropertyDefinition.SplitValue (DomainObjectIDs.OrderItem1);
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue }));
+    }
+
+    [Test]
+    public void SplitValue_NullObjectID ()
+    {
+      var columnValue = new ColumnValue (_columnDefinition, DomainObjectIDs.OrderItem1);
+
+      _serializedIDPropertyStub.Stub (stub => stub.SplitValue (null)).Return (new[] { columnValue });
+
+      var result = _serializedObjectIDStoragePropertyDefinition.SplitValue (null);
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue }));
+    }
   }
 }

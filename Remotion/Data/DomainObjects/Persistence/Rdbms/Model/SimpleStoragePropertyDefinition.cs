@@ -81,5 +81,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       yield return parameter;
     }
+
+    public IEnumerable<ColumnValue> SplitValue (object value)
+    {
+      yield return new ColumnValue(_columnDefinition, value);
+    }
   }
 }

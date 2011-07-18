@@ -17,11 +17,9 @@
 using System;
 using System.ComponentModel;
 using System.Data;
-using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -127,6 +125,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (result[0].ParameterName, Is.EqualTo ("key"));
       Assert.That (result[0].Value, Is.EqualTo (DBNull.Value));
       Assert.That (result[0].DbType, Is.EqualTo (DbType.Int32));
+    }
+
+    [Test]
+    public void SplitValue ()
+    {
+      var value = new object();
+
+      var result = _storagePropertyDefinition.SplitValue (value);
+
+      Assert.That (result, Is.EqualTo (new[] { new ColumnValue(_innerColumnDefinition, value) }));
+    }
+
+    [Test]
+    public void SplitValue_NullValue ()
+    {
+      var result = _storagePropertyDefinition.SplitValue (null);
+
+      Assert.That (result, Is.EqualTo (new[] { new ColumnValue (_innerColumnDefinition, null) }));
     }
   }
 }

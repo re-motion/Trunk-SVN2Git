@@ -33,6 +33,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
     IEnumerable<IDataParameter> CreateDataParameters (IDbCommand command, object value, string key);
-    //IEnumerable<ColumnValue> SplitValue (object value);
+    IEnumerable<ColumnValue> SplitValue (object value);
   }
 }

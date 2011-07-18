@@ -80,6 +80,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var objectID = ArgumentUtility.CheckNotNullAndType<ObjectID> ("value", value);
       return _serializedIDProperty.CreateDataParameters (command, objectID.ToString (), key);
     }
-    
+
+    public IEnumerable<ColumnValue> SplitValue (object value)
+    {
+      var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
+
+      if (objectID == null)
+        return _serializedIDProperty.SplitValue (null);
+
+      return _serializedIDProperty.SplitValue (objectID.ToString());
+    }
   }
 }

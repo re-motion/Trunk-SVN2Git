@@ -22,9 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -138,6 +136,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { _dbDataParameterStub });
 
       _objectIDWithoutClassIDStorageDefinition.CreateDataParameters (_dbCommandStub, DomainObjectIDs.OrderItem1, "key").ToArray();
+    }
+
+    [Test]
+    public void SplitValue ()
+    {
+      var columnValue1 = new ColumnValue (_columnDefinition, DomainObjectIDs.Order1);
+
+      _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
+
+      var result = _objectIDWithoutClassIDStorageDefinition.SplitValue (DomainObjectIDs.Order1);
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
+    }
+
+    [Test]
+    public void SplitValue_NullValue ()
+    {
+      var columnValue = new ColumnValue (_columnDefinition, DomainObjectIDs.Order1);
+
+      _valuePropertyStub.Stub (stub => stub.SplitValue (null)).Return (new[] { columnValue });
+
+      var result = _objectIDWithoutClassIDStorageDefinition.SplitValue (null);
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The specified object-id has an invalid class definition.\r\nParameter name: value")]
+    public void SplitValue_InvalidClassDefinition ()
+    {
+      var columnValue1 = new ColumnValue (_columnDefinition, DomainObjectIDs.OrderItem1);
+
+      _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.OrderItem1.Value)).Return (new[] { columnValue1 });
+
+      _objectIDWithoutClassIDStorageDefinition.SplitValue (DomainObjectIDs.OrderItem1);
     }
   }
 }

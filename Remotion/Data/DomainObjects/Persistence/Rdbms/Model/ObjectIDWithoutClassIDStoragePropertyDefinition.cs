@@ -95,6 +95,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       throw new ArgumentException ("The specified object-id has an invalid class definition.", "value");
     }
-    
+
+    public IEnumerable<ColumnValue> SplitValue (object value)
+    {
+      var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
+      if (objectID == null)
+        return _valueProperty.SplitValue (null);
+
+      if (objectID.ClassDefinition == _classDefinition)
+        return _valueProperty.SplitValue (objectID.Value);
+
+      throw new ArgumentException ("The specified object-id has an invalid class definition.", "value");
+    }
   }
 }

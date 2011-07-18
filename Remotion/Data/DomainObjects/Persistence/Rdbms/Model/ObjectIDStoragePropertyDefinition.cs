@@ -93,5 +93,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _valueProperty.CreateDataParameters (command, objectID.Value.ToString(), key)
           .Concat (_classIDProperty.CreateDataParameters (command, objectID.ClassID, key + "ClassID"));
     }
+
+    public IEnumerable<ColumnValue> SplitValue (object value)
+    {
+      var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
+      if (objectID == null)
+        return _valueProperty.SplitValue (null);
+
+      return _valueProperty.SplitValue (objectID.Value).Concat(_classIDProperty.SplitValue(objectID.ClassID));
+    }
   }
 }

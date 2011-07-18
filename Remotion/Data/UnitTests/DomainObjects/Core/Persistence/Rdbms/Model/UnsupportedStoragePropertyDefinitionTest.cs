@@ -19,7 +19,6 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -67,6 +66,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void CreateDataParameters ()
     {
       _columnDefinition.CreateDataParameters (MockRepository.GenerateStub<IDbCommand>(), "test", "key");
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void SplitValue ()
+    {
+      _columnDefinition.SplitValue (null);
     }
   }
 }
