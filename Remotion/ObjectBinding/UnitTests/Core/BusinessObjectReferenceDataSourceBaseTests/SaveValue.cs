@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReadsBusinessObject_SavesValueIntoBoundObject ()
+    public void SavesValueIntoBoundObject ()
     {
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
 
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReadsBusinessObject_Clears_HasBusinessObjectChanged ()
+    public void ClearsHasBusinessObjectChanged ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void HasBusinessObjectChanged_False_DoesNotSaveValueIntoBoundObject ()
+    public void HasBusinessObjectChangedFalse_DoesNotSaveValueIntoBoundObject ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub))
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void HasBusinessObjectChanged_False_BusinessObject_Null_DoesNotSaveValueIntoBoundObject ()
+    public void HasBusinessObjectChangedFalse_BusinessObjectNull_DoesNotSaveValueIntoBoundObject ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferencedDataSource_Null_DoesNotReadBusinessObject_DoesNotClearHasBusinessObjectChanged ()
+    public void ReferencedDataSourceNull_DoesNotReadBusinessObject_DoesNotClearHasBusinessObjectChanged ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (null, _referencePropertyStub);
       referenceDataSource.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
@@ -102,7 +102,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferencedDataSource_BusinessObject_Null_DoesNotClearHasBusinessObjectChanged ()
+    public void ReferencedDataSourceBusinessObjectNull_DoesNotClearHasBusinessObjectChanged ()
     {
       _referencedDataSourceStub.BusinessObject = null;
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
@@ -114,7 +114,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferencedProperty_Null_DoesNotReadBusinessObject ()
+    public void ReferencedPropertyNull_DoesNotReadBusinessObject ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, null);
       referenceDataSource.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferenceClassRequiresWriteBack_True_ReadsBusinessObject_SavesValueIntoBoundObject ()
+    public void ReferenceClassRequiresWriteBackTrue_ReadsBusinessObject_SavesValueIntoBoundObject ()
     {
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (expectedValue);
@@ -141,7 +141,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SavesValuesForBoundControls_BusinessObject_NotNull ()
+    public void SavesValuesForBoundControls_BusinessObjectNotNull ()
     {
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
       bool isControlSaved = false;
@@ -172,7 +172,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SavesValuesForBoundControls_BusinessObject_Null ()
+    public void SavesValuesForBoundControls_BusinessObjectNull ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.BusinessObject = null;
@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void IsDefaultValue_True_SupportsDelete_True_DeletesObject ()
+    public void IsDefaultValueTrue_SupportsDeleteTrue_DeletesObject ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
@@ -208,7 +208,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void IsDefaultValue_True_SupportsDelete_Fales_DoesNotDeleteObject ()
+    public void IsDefaultValueTrue_SupportsDeleteFales_DoesNotDeleteObject ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
@@ -243,7 +243,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void IsDefaultValue_Clears_BusinessObject ()
+    public void IsDefaultValue_ClearsBusinessObject ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
@@ -260,7 +260,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void IsDefaultValue_Clears_HasBusinessObjectChanged ()
+    public void IsDefaultValue_ClearsHasBusinessObjectChanged ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
@@ -388,7 +388,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void BusinessObject_Null_IgnoresDefaultValueSemantics ()
+    public void BusinessObjectNull_IgnoresDefaultValueSemantics ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
       referenceDataSource.BusinessObject = null;
@@ -403,7 +403,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SupportsDefaultValue_False_IsDefaultValue_NotCalled ()
+    public void SupportsDefaultValueFalse_IsDefaultValueNotCalled ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 

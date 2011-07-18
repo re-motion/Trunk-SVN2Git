@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SetsBusinessObject_LoadsValueFromBoundObject ()
+    public void LoadsValueFromBoundObject ()
     {
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (expectedValue);
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SetsBusinessObject_Clears_HasBusinessObjectChanged ()
+    public void ClearsHasBusinessObjectChanged ()
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub))
           .Return (MockRepository.GenerateStub<IBusinessObject>());
@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferencedDataSource_Null_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
+    public void ReferencedDataSourceNull_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (null, _referencePropertyStub);
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferencedDataSource_BusinessObject_Null_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
+    public void ReferencedDataSourceBusinessObjectNull_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
     {
       _referencedDataSourceStub.BusinessObject = null;
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
@@ -93,7 +93,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferencedProperty_Null_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
+    public void ReferencedPropertyNull_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
     {
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, null);
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
@@ -149,7 +149,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SetsDefaultValue_Clears_HasBusinessObjectChanged ()
+    public void SetsDefaultValue_ClearsHasBusinessObjectChanged ()
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
@@ -165,7 +165,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void DataSourceMode_Read_DoesNotSetDefaultValue ()
+    public void DataSourceModeRead_DoesNotSetDefaultValue ()
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
@@ -180,7 +180,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void DataSourceMode_Search_DoesNotSetDefaultValue ()
+    public void DataSourceModeSearch_DoesNotSetDefaultValue ()
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
@@ -195,7 +195,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void SupportsDefaultValue_False_DoesNotSetDefaultValue ()
+    public void SupportsDefaultValueFalse_DoesNotSetDefaultValue ()
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (null);
       _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (false);
@@ -210,7 +210,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferenceProperty_ReturnsValue_False_DoesNotSetDefaultValue ()
+    public void HasValueFromProperty_DoesNotSetDefaultValue ()
     {
       _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub))
           .Return (MockRepository.GenerateStub<IBusinessObject>());
