@@ -141,6 +141,7 @@
     <Compile Include="Core\BindableObject\SecurityIntegrationTest.cs" />
     <Compile Include="Core\BindableObject\StubEnumerationValueFilter.cs" />
     <Compile Include="Core\BusinessObjectExtensionMethodsTest.cs" />
+    <Compile Include="Core\BusinessObjectReferenceDataSourceBaseTests\BusinessObject.cs" />
     <Compile Include="Core\BusinessObjectReferenceDataSourceBaseTests\LoadValue.cs" />
     <Compile Include="Core\BusinessObjectReferenceDataSourceBaseTests\SaveValue.cs" />
     <Compile Include="Core\BusinessObjectReferenceDataSourceBaseTests\TestDomain\TestableBusinessObjectReferenceDataSource.cs">

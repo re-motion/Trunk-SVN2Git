@@ -198,7 +198,11 @@ namespace Remotion.ObjectBinding
       get { return _businessObject; }
       set
       {
+         if (_hasBusinessObjectCreated)
+           DeleteBusinessObject();
+
         _businessObject = value;
+
         _hasBusinessObjectChanged = true;
         _hasBusinessObjectCreated = false;
       }
