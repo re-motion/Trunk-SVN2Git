@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding
     public void LoadValue (bool interim)
     {
       // load value from "parent" data source
-      if (HasValidBinding) //->  requires Businessobject=set, not required for edge cases
+      if (HasValidBinding)
       {
         if (interim && _hasBusinessObjectCreated)
         {
@@ -84,19 +84,20 @@ namespace Remotion.ObjectBinding
         else
         {
           if (_hasBusinessObjectCreated)
-          {
             DeleteBusinessObject();
-            BusinessObject = null;
-            Assertion.IsFalse (_hasBusinessObjectCreated);
-          }
 
-          BusinessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
-          if (BusinessObject == null && SupportsDefaultValueSemantics)
+          BusinessObject = null;
+          Assertion.IsFalse (_hasBusinessObjectCreated);
+
+          if (ReferencedDataSource.BusinessObject != null)
           {
-            BusinessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
-            _hasBusinessObjectCreated = true;
+            BusinessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
+            if (BusinessObject == null && SupportsDefaultValueSemantics)
+            {
+              BusinessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
+              _hasBusinessObjectCreated = true;
+            }
           }
-
           _hasBusinessObjectChanged = false;
         }
       }
@@ -120,7 +121,7 @@ namespace Remotion.ObjectBinding
     {
       if (!interim && IsBusinessObjectSetToDefaultValue())
       {
-        DeleteBusinessObject ();
+        DeleteBusinessObject();
         BusinessObject = null;
         Assertion.IsTrue (_hasBusinessObjectChanged);
       }
@@ -131,7 +132,9 @@ namespace Remotion.ObjectBinding
       // if required, save value into "parent" data source
       if (HasValidBinding && RequiresWriteBack)
       {
-        ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
+        if (ReferencedDataSource.BusinessObject != null)
+          ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
+
         _hasBusinessObjectChanged = false;
         _hasBusinessObjectCreated = false;
       }
@@ -225,7 +228,7 @@ namespace Remotion.ObjectBinding
 
     private bool HasValidBinding
     {
-      get { return ReferencedDataSource != null && ReferencedDataSource.BusinessObject != null && ReferenceProperty != null; }
+      get { return ReferencedDataSource != null && ReferenceProperty != null; }
     }
 
     private bool RequiresWriteBack

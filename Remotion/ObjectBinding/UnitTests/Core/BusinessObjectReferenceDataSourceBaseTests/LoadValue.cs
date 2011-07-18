@@ -66,23 +66,72 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void ReferencedDataSourceNull_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
+    public void ReferencedDataSourceBusinessObjectNull_SetsBusinessObjectNull ()
     {
-      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (null, _referencePropertyStub);
-      var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
-      referenceDataSource.BusinessObject = expectedValue;
+      _referencedDataSourceStub.BusinessObject = null;
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
 
       referenceDataSource.LoadValue (false);
 
-      Assert.That (referenceDataSource.BusinessObject, Is.SameAs (expectedValue));
-      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.True);
+      Assert.That (referenceDataSource.BusinessObject, Is.Null);
     }
 
     [Test]
-    public void ReferencedDataSourceBusinessObjectNull_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
+    public void ReferencedDataSourceBusinessObjectNull_DoesNotLoadValueFromProperty ()
+    {
+      var parentObjectStub = _referencedDataSourceStub.BusinessObject;
+      _referencedDataSourceStub.BusinessObject = null;
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = MockRepository.GenerateStub<IBusinessObject> ();
+
+      referenceDataSource.LoadValue (false);
+
+      parentObjectStub.AssertWasNotCalled (stub => stub.GetProperty (null), options => options.IgnoreArguments ());
+    }
+
+    [Test]
+    public void ReferencedDataSourceBusinessObjectNull_ClearsHasBusinessObjectChanged ()
     {
       _referencedDataSourceStub.BusinessObject = null;
+
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = MockRepository.GenerateStub<IBusinessObject> ();
+
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.True);
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
+    }
+
+    [Test]
+    public void ReferencedDataSourceBusinessObjectNull_ClearsHasBusinessObjectCreated ()
+    {
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      _referencePropertyStub.Stub (stub => stub.CreateDefaultValue (null)).IgnoreArguments().Return (MockRepository.GenerateStub<IBusinessObject>());
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.Mode = DataSourceMode.Edit;
+
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.BusinessObject, Is.Not.Null);
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.True);
+
+      _referencedDataSourceStub.BusinessObject = null;
+      referenceDataSource.LoadValue (false);
+
+      Assert.That (referenceDataSource.BusinessObject, Is.Null);
+      Assert.That (referenceDataSource.HasBusinessObjectCreated, Is.False);
+    }
+
+    [Test]
+    public void ReferencedDataSourceNull_DoesNotSetBusinessObject_DoesNotClearHasBusinessObjectChanged ()
+    {
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (null, _referencePropertyStub);
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
       referenceDataSource.BusinessObject = expectedValue;
 
