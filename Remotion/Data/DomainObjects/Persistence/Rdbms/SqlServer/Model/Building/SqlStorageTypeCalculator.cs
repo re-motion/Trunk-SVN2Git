@@ -43,12 +43,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
 
     public override StorageTypeInformation SerializedObjectIDStorageType
     {
-      get { return new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new StringConverter()); }
+      get { return new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new DefaultConverter(typeof(string))); }
     }
 
     public override StorageTypeInformation ClassIDStorageType
     {
-      get { return new StorageTypeInformation ("varchar (100)", DbType.String, typeof (string), new StringConverter()); }
+      get { return new StorageTypeInformation ("varchar (100)", DbType.String, typeof (string), new DefaultConverter(typeof(string))); }
     }
 
     public override StorageTypeInformation TimestampStorageType
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (ReflectionUtility.IsStringPropertyValueType (propertyType))
       {
         string storageType = GetStorageTypeStringForVarType ("nvarchar", maxLength);
-        return new StorageTypeInformation (storageType, DbType.String, typeof (string), new StringConverter ());
+        return new StorageTypeInformation (storageType, DbType.String, typeof (string), new DefaultConverter (typeof(string)));
       }
 
       if (ReflectionUtility.IsBinaryPropertyValueType (propertyType))

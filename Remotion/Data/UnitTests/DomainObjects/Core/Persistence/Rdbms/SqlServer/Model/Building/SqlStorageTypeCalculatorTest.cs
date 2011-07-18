@@ -90,8 +90,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           DbType.String,
           typeof (string),
           Is.TypeOf (typeof (ExtensibleEnumConverter)).With.Property ("ExtensibleEnumType").EqualTo (typeof (Color)));
-      CheckGetStorageType (typeof (String), 200, "nvarchar (200)", DbType.String, typeof (string), Is.TypeOf (typeof (StringConverter)));
-      CheckGetStorageType (typeof (String), null, "nvarchar (max)", DbType.String, typeof (string), Is.TypeOf (typeof (StringConverter)));
+      CheckGetStorageType (
+          typeof (String),
+          200,
+          "nvarchar (200)",
+          DbType.String,
+          typeof (string),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
+      CheckGetStorageType (
+          typeof (String),
+          null,
+          "nvarchar (max)",
+          DbType.String,
+          typeof (string),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
       CheckGetStorageType (typeof (Byte[]), 200, "varbinary (200)", DbType.Binary, typeof (Byte[]), Is.TypeOf (typeof (ArrayConverter)));
       CheckGetStorageType (typeof (Byte[]), null, "varbinary (max)", DbType.Binary, typeof (Byte[]), Is.TypeOf (typeof (ArrayConverter)));
     }
@@ -115,12 +127,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (_typeCalculator.SerializedObjectIDStorageType.StorageType, Is.EqualTo ("varchar (255)"));
       Assert.That (_typeCalculator.SerializedObjectIDStorageType.DbType, Is.EqualTo (DbType.String));
       Assert.That (_typeCalculator.SerializedObjectIDStorageType.ParameterValueType, Is.EqualTo (typeof (String)));
-      Assert.That (_typeCalculator.SerializedObjectIDStorageType.TypeConverter, Is.TypeOf (typeof (StringConverter)));
+      Assert.That (
+          _typeCalculator.SerializedObjectIDStorageType.TypeConverter,
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
       Assert.That (_typeCalculator.ClassIDStorageType.StorageType, Is.EqualTo ("varchar (100)"));
       Assert.That (_typeCalculator.ClassIDStorageType.DbType, Is.EqualTo (DbType.String));
       Assert.That (_typeCalculator.ClassIDStorageType.ParameterValueType, Is.EqualTo (typeof (String)));
-      Assert.That (_typeCalculator.ClassIDStorageType.TypeConverter, Is.TypeOf (typeof (StringConverter)));
+      Assert.That (
+          _typeCalculator.ClassIDStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
       Assert.That (_typeCalculator.TimestampStorageType.StorageType, Is.EqualTo ("rowversion"));
       Assert.That (_typeCalculator.TimestampStorageType.DbType, Is.EqualTo (DbType.Binary));
