@@ -26,11 +26,9 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
-using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -66,10 +64,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.ID = "BocAutoCompleteReferenceValue";
       _control.Value = (IBusinessObjectWithIdentity) _businessObject;
 
-      MockRepository mockRepository = new MockRepository ();
+      MockRepository mockRepository = new MockRepository();
       _page = mockRepository.PartialMultiMock<Page> (typeof (ISmartPage));
       ((ISmartPage) _page).Stub (stub => stub.Context).Return (new HttpContextWrapper (HttpContext.Current));
-      _page.Replay ();
+      _page.Replay();
       _page.Controls.Add (_control);
 
       _businessObject = TypeWithReference.Create();
@@ -99,8 +97,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void EvaluateWaiConformityDebugLevelA ()
     {
-      WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA ();
-      _control.EvaluateWaiConformity ();
+      WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
+      _control.EvaluateWaiConformity();
 
       Assert.IsFalse (WcagHelperMock.HasWarning);
       Assert.IsTrue (WcagHelperMock.HasError);
@@ -187,7 +185,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void HasValue_ValueIsSet_ReturnsTrue ()
     {
-      IBusinessObjectWithIdentity referencedObject = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      IBusinessObjectWithIdentity referencedObject = (IBusinessObjectWithIdentity) TypeWithReference.Create();
       _control.Value = referencedObject;
       Assert.IsTrue (_control.HasValue);
     }
@@ -307,7 +305,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       state[2] = "DisplayName";
 
       _control.LoadControlState (state);
-      Assert.That (((IBocReferenceValueBase)_control).GetLabelText(), Is.EqualTo ("DisplayName"));
+      Assert.That (((IBocReferenceValueBase) _control).GetLabelText(), Is.EqualTo ("DisplayName"));
       Assert.That (_control.BusinessObjectUniqueIdentifier, Is.EqualTo (uniqueIdentifier.ToString()));
     }
 
@@ -332,7 +330,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _control.IsDirty = false;
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
-      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (key, postbackCollection);
       Assert.IsFalse (_control.IsDirty);
@@ -345,13 +343,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
 
       var key = _control.HiddenFieldUniqueID;
-      var postbackCollection = new NameValueCollection ();
+      var postbackCollection = new NameValueCollection();
 
       postbackCollection.Add (key, string.Empty);
 
       _control.IsDirty = false;
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
-      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (key, postbackCollection);
       Assert.That (_control.IsDirty);
@@ -367,13 +365,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       var postbackCollection = new NameValueCollection();
 
       Guid value = Guid.NewGuid();
-      postbackCollection.Add (_control.HiddenFieldUniqueID, value.ToString ());
+      postbackCollection.Add (_control.HiddenFieldUniqueID, value.ToString());
       postbackCollection.Add (_control.TextBoxClientID, "NewValue");
 
       _control.IsDirty = false;
-      
+
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
-      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.HiddenFieldClientID, postbackCollection);
       Assert.That (_control.IsDirty);
@@ -387,7 +385,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
 
-      var postbackCollection = new NameValueCollection ();
+      var postbackCollection = new NameValueCollection();
 
       string value = _control.Value.UniqueIdentifier;
       postbackCollection.Add (_control.HiddenFieldClientID, value);
@@ -395,7 +393,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = false;
 
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
-      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.HiddenFieldClientID, postbackCollection);
       Assert.IsFalse (_control.IsDirty);
@@ -410,10 +408,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Property = _propertyReferenceValue;
       _control.DataSource = _dataSource;
 
-      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create();
       _control.Value = newValue;
       Assert.That (_control.Value, Is.EqualTo (newValue));
-      
+
       _control.LoadValue (true);
 
       Assert.That (_control.Value, Is.EqualTo (newValue));
@@ -428,8 +426,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Property = _propertyReferenceValue;
       _control.DataSource = _dataSource;
 
-      var propertyValue = _dataSource.BusinessObject.GetProperty(_propertyReferenceValue);
-      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      var propertyValue = _dataSource.BusinessObject.GetProperty (_propertyReferenceValue);
+      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create();
       _control.Value = newValue;
       Assert.That (_control.Value, Is.EqualTo (newValue));
 
@@ -443,7 +441,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void LoadUnboundValueInterim ()
     {
       var oldValue = _control.Value;
-      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create();
 
       _control.LoadUnboundValue (newValue, true);
 
@@ -454,7 +452,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void LoadUnboundValueInitial ()
     {
-      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create();
 
       _control.LoadUnboundValue (newValue, false);
 
@@ -471,7 +469,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.DataSource = _dataSource;
 
       var propertyValue = _dataSource.BusinessObject.GetProperty (_propertyReferenceValue);
-      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create();
       _control.Value = newValue;
 
       _control.SaveValue (true);
@@ -488,7 +486,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Property = _propertyReferenceValue;
       _control.DataSource = _dataSource;
 
-      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create();
       _control.Value = newValue;
 
       _control.SaveValue (false);
@@ -513,7 +511,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.ErrorMessage = "ErrorMessage";
       _control.ReadOnly = false;
       _control.Required = false;
-      BaseValidator[] validators = _control.CreateValidators ();
+      BaseValidator[] validators = _control.CreateValidators();
       Assert.That (validators.Length, Is.EqualTo (0));
     }
 
@@ -523,7 +521,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.ErrorMessage = "ErrorMessage";
       _control.ReadOnly = false;
       _control.Required = true;
-      BaseValidator[] validators = _control.CreateValidators ();
+      BaseValidator[] validators = _control.CreateValidators();
       Assert.That (validators.Length, Is.EqualTo (1));
       Assert.That (validators[0] is RequiredFieldValidator);
     }
@@ -544,7 +542,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.ReadOnly = true;
       bool eventHandlerCalled = false;
       _control.SelectionChanged += (sender, e) => { eventHandlerCalled = true; };
-      ((IPostBackDataHandler) _control).RaisePostDataChangedEvent ();
+      ((IPostBackDataHandler) _control).RaisePostDataChangedEvent();
 
       Assert.That (!eventHandlerCalled);
     }
@@ -555,7 +553,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Enabled = false;
       bool eventHandlerCalled = false;
       _control.SelectionChanged += (sender, e) => { eventHandlerCalled = true; };
-      ((IPostBackDataHandler) _control).RaisePostDataChangedEvent ();
+      ((IPostBackDataHandler) _control).RaisePostDataChangedEvent();
 
       Assert.That (!eventHandlerCalled);
     }
