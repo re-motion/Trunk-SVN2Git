@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -38,10 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommand _dbCommandMock2;
     private IDbCommandBuilder _dbCommandBuilder1Mock;
     private IDbCommandBuilder _dbCommandBuilder2Mock;
-    private IDataContainerReader _dataContainerReaderStub;
+    private IDataContainerReader _dataContainerReader1Stub;
     private DataContainer _container;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
     private MockRepository _repository;
+    private IDataContainerReader _dataContainerReader2Stub;
 
     public override void SetUp ()
     {
@@ -60,18 +62,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilder1Mock = _repository.StrictMock<IDbCommandBuilder>();
       _dbCommandBuilder2Mock = _repository.StrictMock<IDbCommandBuilder>();
 
-      _dataContainerReaderStub = _repository.Stub<IDataContainerReader>();
+      _dataContainerReader1Stub = _repository.Stub<IDataContainerReader>();
+      _dataContainerReader2Stub = _repository.Stub<IDataContainerReader>();
     }
 
     [Test]
     public void Initialization ()
     {
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, true, _dataContainerReaderStub);
+          new[] { Tuple.Create (_dbCommandBuilder1Mock, _dataContainerReader1Stub), Tuple.Create (_dbCommandBuilder2Mock, _dataContainerReader2Stub) },
+          true);
 
       Assert.That (command.AllowNulls, Is.True);
-      Assert.That (command.DataContainerReader, Is.SameAs (_dataContainerReaderStub));
-      Assert.That (command.DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }));
+      Assert.That (
+          command.DbCommandBuilderTuples,
+          Is.EqualTo (
+              new[]
+              { Tuple.Create (_dbCommandBuilder1Mock, _dataContainerReader1Stub), Tuple.Create (_dbCommandBuilder2Mock, _dataContainerReader2Stub) }));
     }
 
     [Test]
@@ -83,10 +90,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataReaderMock.Expect (mock => mock.Dispose());
       _repository.ReplayAll();
 
-      var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Mock }, true, _dataContainerReaderStub);
-      
-      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (new[] { _container });
+      var command = new MultiDataContainerLoadCommand (new[] { Tuple.Create (_dbCommandBuilder1Mock, _dataContainerReader1Stub) }, true);
+
+      _dataContainerReader1Stub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (new[] { _container });
       var result = command.Execute (_commandExecutionContextStub).ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { _container }));
@@ -105,10 +111,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataReaderMock.Expect (mock => mock.Dispose()).Repeat.Twice();
       _repository.ReplayAll();
 
-      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (new[] { _container });
+      _dataContainerReader1Stub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (new[] { _container });
+      _dataContainerReader2Stub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, false, _dataContainerReaderStub);
+          new[] { Tuple.Create (_dbCommandBuilder1Mock, _dataContainerReader1Stub), Tuple.Create (_dbCommandBuilder2Mock, _dataContainerReader2Stub) },
+          false);
 
       var result = command.Execute (_commandExecutionContextStub).ToArray();
 
@@ -126,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       {
         _dbCommandBuilder1Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock1);
         _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock1, CommandBehavior.SingleResult)).Return (_dataReaderMock);
-        _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (enumerableStub);
+        _dataContainerReader1Stub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (enumerableStub);
         enumerableStub.Stub (stub => stub.GetEnumerator()).Return (enumeratorMock);
         enumeratorMock.Expect (mock => mock.MoveNext()).Return (false);
         enumeratorMock.Expect (mock => mock.Dispose());
@@ -137,11 +145,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _repository.ReplayAll();
 
       var command = new MultiDataContainerLoadCommand (
-          new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, false, _dataContainerReaderStub);
+          new[] { Tuple.Create (_dbCommandBuilder1Mock, _dataContainerReader1Stub), Tuple.Create (_dbCommandBuilder2Mock, _dataContainerReader2Stub) },
+          false);
 
       var result =
           (IEnumerable<DataContainer>)
-          PrivateInvoke.InvokeNonPublicMethod (command, "LoadDataContainersFromCommandBuilder", _dbCommandBuilder1Mock, _commandExecutionContextStub);
+          PrivateInvoke.InvokeNonPublicMethod (
+              command,
+              "LoadDataContainersFromCommandBuilder",
+              Tuple.Create (_dbCommandBuilder1Mock, _dataContainerReader1Stub),
+              _commandExecutionContextStub);
       result.ToArray();
 
       _repository.VerifyAll();

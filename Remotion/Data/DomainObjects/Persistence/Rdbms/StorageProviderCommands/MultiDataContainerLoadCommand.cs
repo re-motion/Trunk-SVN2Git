@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
@@ -31,23 +32,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// </summary>
   public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
-    private readonly IDbCommandBuilder[] _dbCommandBuilders;
     private readonly bool _allowNulls;
-    private readonly IDataContainerReader _dataContainerReader;
+    private readonly Tuple<IDbCommandBuilder, IDataContainerReader>[] _dbCommandBuilderTuples;
 
-    public MultiDataContainerLoadCommand (IEnumerable<IDbCommandBuilder> dbCommandBuilders, bool allowNulls, IDataContainerReader dataContainerReader)
+    public MultiDataContainerLoadCommand (
+        IEnumerable<Tuple<IDbCommandBuilder, IDataContainerReader>> dbCommandBuilderTuples, bool allowNulls)
     {
-      ArgumentUtility.CheckNotNull ("dbCommandBuilders", dbCommandBuilders);
-      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
+      ArgumentUtility.CheckNotNull ("dbCommandBuilderTuples", dbCommandBuilderTuples);
 
-      _dbCommandBuilders = dbCommandBuilders.ToArray();
+      _dbCommandBuilderTuples = dbCommandBuilderTuples.ToArray();
       _allowNulls = allowNulls;
-      _dataContainerReader = dataContainerReader;
     }
 
-    public IDbCommandBuilder[] DbCommandBuilders
+    public Tuple<IDbCommandBuilder, IDataContainerReader>[] DbCommandBuilderTuples
     {
-      get { return _dbCommandBuilders; }
+      get { return _dbCommandBuilderTuples; }
     }
 
     public bool AllowNulls
@@ -55,27 +54,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _allowNulls; }
     }
 
-    public IDataContainerReader DataContainerReader
-    {
-      get { return _dataContainerReader; }
-    }
-
     public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
-      return _dbCommandBuilders.SelectMany (b => LoadDataContainersFromCommandBuilder (b, executionContext)).ToArray();
+      return _dbCommandBuilderTuples.SelectMany (b => LoadDataContainersFromCommandBuilder (b, executionContext)).ToArray();
     }
 
     private IEnumerable<DataContainer> LoadDataContainersFromCommandBuilder (
-        IDbCommandBuilder commandBuilder, IRdbmsProviderCommandExecutionContext executionContext)
+        Tuple<IDbCommandBuilder, IDataContainerReader> commandBuilderTuple, IRdbmsProviderCommandExecutionContext executionContext)
     {
-      ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("commandBuilderTuple", commandBuilderTuple);
 
-      using (var command = commandBuilder.Create (executionContext))
+      using (var command = commandBuilderTuple.Item1.Create (executionContext))
       {
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          foreach (var dataContainer in _dataContainerReader.ReadSequence (reader))
+          foreach (var dataContainer in commandBuilderTuple.Item2.ReadSequence (reader))
             yield return dataContainer;
         }
       }

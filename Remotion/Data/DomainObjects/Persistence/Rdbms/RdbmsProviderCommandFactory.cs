@@ -65,7 +65,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var selectProjection = table.GetAllColumns();
       var columnOrdinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
       var dataContainerReader = CreateDataContainerReader (table, columnOrdinalProvider);
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (table, new SelectedColumnsSpecification (selectProjection), objectID);
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
+          table, new SelectedColumnsSpecification (selectProjection), objectID);
       var singleDataContainerLoadCommand = new SingleDataContainerLoadCommand (dbCommandBuilder, dataContainerReader);
       return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new DataContainerLookupResult (objectID, result));
     }
@@ -81,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                               group id by tableDefinition
                               into idsByTable
                               select CreateIDLookupDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
-      var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders, false, _dataContainerReader);
+      var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders, false);
       return new MultiDataContainerSortCommand (objectIDList, multiDataContainerLoadCommand);
     }
 
@@ -103,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      return new MultiDataContainerLoadCommand (new[] { _dbCommandBuilderFactory.CreateForQuery (query) }, true, _dataContainerReader);
+      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), _dataContainerReader) }, true);
     }
 
     public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)
@@ -139,12 +140,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           (nullEntity, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a NullEntityDefinition."); });
     }
 
-    private IDbCommandBuilder CreateIDLookupDbCommandBuilder (TableDefinition tableDefinition, ObjectID[] objectIDs)
+    private Tuple<IDbCommandBuilder, IDataContainerReader> CreateIDLookupDbCommandBuilder (TableDefinition tableDefinition, ObjectID[] objectIDs)
     {
       if (objectIDs.Length > 1)
-        return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs);
+      {
+        return
+            Tuple.Create (
+                _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs),
+                _dataContainerReader);
+      }
       else
-        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs[0]);
+      {
+        return
+            Tuple.Create (
+                _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs[0]),
+                _dataContainerReader);
+      }
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDirectRelationLookup (
@@ -159,7 +170,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
-      return new MultiDataContainerLoadCommand (new[] { dbCommandBuilder }, false, _dataContainerReader);
+      return new MultiDataContainerLoadCommand (new[] { Tuple.Create(dbCommandBuilder, _dataContainerReader) }, false);
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForIndirectRelationLookup (
