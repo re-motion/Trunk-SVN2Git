@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -30,17 +31,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
   {
     private IDataReader _dataReaderStub;
     private ObjectIDReader _reader;
-    private IValueConverter _valueConverterStub;
+    private IRdbmsStoragePropertyDefinition _idPropertyStub;
     private ObjectID _objectID;
+    private IColumnOrdinalProvider _columnOrdinalProviderStub;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+      _idPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
 
-      _reader = new ObjectIDReader (_valueConverterStub);
+      _reader = new ObjectIDReader (_idPropertyStub, _columnOrdinalProviderStub);
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
     }
@@ -50,9 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     {
       _dataReaderStub.Stub (stub => stub.Read()).Return (false);
 
-      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID); 
-
-      var result = _reader.Read (_dataReaderStub);
+     var result = _reader.Read (_dataReaderStub);
 
       Assert.That (result, Is.Null);
     }
@@ -60,9 +61,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void Read_DataReaderReadTrue ()
     {
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once();
-
-      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID);
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once ();
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_objectID);
 
       var result = _reader.Read (_dataReaderStub);
 
@@ -73,10 +73,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     public void ReadSequence ()
     {
       var objectID2 = new ObjectID ("OrderItem", Guid.NewGuid ());
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Twice();
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Twice ();
       _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
-      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (_objectID).Repeat.Once ();
-      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (objectID2).Repeat.Once ();
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_objectID).Repeat.Once ();
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (objectID2).Repeat.Once ();
 
       var result = _reader.ReadSequence (_dataReaderStub).ToArray ();
 

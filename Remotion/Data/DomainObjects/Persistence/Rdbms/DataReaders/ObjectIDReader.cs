@@ -16,6 +16,7 @@
 // 
 using System.Collections.Generic;
 using System.Data;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
@@ -25,13 +26,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   /// </summary>
   public class ObjectIDReader : IObjectIDReader
   {
-    private readonly IValueConverter _valueConverter;
+    private readonly IRdbmsStoragePropertyDefinition _idProperty;
+    private readonly IColumnOrdinalProvider _columnOrdinalProvider;
 
-    public ObjectIDReader (IValueConverter valueConverter)
+    public ObjectIDReader (IRdbmsStoragePropertyDefinition idProperty, IColumnOrdinalProvider columnOrdinalProvider)
     {
-      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
+      ArgumentUtility.CheckNotNull ("idProperty", idProperty);
+      ArgumentUtility.CheckNotNull ("columnOrdinalProvider", columnOrdinalProvider);
 
-      _valueConverter = valueConverter;
+      _idProperty = idProperty;
+      _columnOrdinalProvider = columnOrdinalProvider;
     }
 
     public ObjectID Read (IDataReader dataReader)
@@ -39,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       if (dataReader.Read ())
-        return _valueConverter.GetID (dataReader);
+        return (ObjectID) _idProperty.Read(dataReader, _columnOrdinalProvider);
       else
         return null;
     }
@@ -49,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       while (dataReader.Read ())
-        yield return _valueConverter.GetID (dataReader);
+        yield return (ObjectID)_idProperty.Read(dataReader, _columnOrdinalProvider);
     }
   }
 }
