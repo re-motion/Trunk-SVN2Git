@@ -84,18 +84,36 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       LoadValueInternal (value, interim);
     }
+    
+    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
+    protected virtual void LoadValueInternal (bool? value, bool interim)
+    {
+      if (interim)
+        return;
+
+      Value = value;
+      IsDirty = false;
+    }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/SaveValue/*' />
     public override void SaveValue (bool interim)
     {
-      if (!interim && IsDirty)
+      if (interim)
+        return;
+
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      if (IsDirty)
       {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null && !IsReadOnly)
-        {
+        if (DataSource.BusinessObject != null && !IsReadOnly)
           DataSource.BusinessObject.SetProperty (Property, Value);
-          IsDirty = false;
-        }
+
+        IsDirty = false;
       }
     }
 
@@ -232,16 +250,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EventHandler eventHandler = (EventHandler) Events[s_checkedChangedEvent];
       if (eventHandler != null)
         eventHandler (this, EventArgs.Empty);
-    }
-
-    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
-    protected virtual void LoadValueInternal (bool? value, bool interim)
-    {
-      if (interim)
-        return;
-
-      Value = value;
-      IsDirty = false;
     }
 
     /// <summary> The <see cref="BocCheckBox"/> supports only scalar properties. </summary>
