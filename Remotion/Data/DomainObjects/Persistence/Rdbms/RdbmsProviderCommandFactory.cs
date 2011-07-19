@@ -62,11 +62,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       var table = GetTableDefinition (objectID);
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
-          table,
-          AllSelectedColumnsSpecification.Instance,
-          objectID);
-      var singleDataContainerLoadCommand = new SingleDataContainerLoadCommand (dbCommandBuilder, _dataContainerReader);
+      var selectProjection = table.GetAllColumns();
+      var columnOrdinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
+      var dataContainerReader = CreateDataContainerReader (table, columnOrdinalProvider);
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (table, new SelectedColumnsSpecification (selectProjection), objectID);
+      var singleDataContainerLoadCommand = new SingleDataContainerLoadCommand (dbCommandBuilder, dataContainerReader);
       return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new DataContainerLookupResult (objectID, result));
     }
 
@@ -179,13 +179,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var indirectDataContainerLoadCommand = new IndirectDataContainerLoadCommand (objectIDLoadCommand, this);
       return DelegateBasedStorageProviderCommand.Create (
           indirectDataContainerLoadCommand,
-          lookupResults => lookupResults.Select (result => 
-          {
-            Assertion.IsNotNull (
-                result.LocatedDataContainer,
-                "Because ID lookup and DataContainer lookup are executed within the same database transaction, the DataContainer can never be null.");
-            return result.LocatedDataContainer;
-          }));
+          lookupResults => lookupResults.Select (
+              result =>
+              {
+                Assertion.IsNotNull (
+                    result.LocatedDataContainer,
+                    "Because ID lookup and DataContainer lookup are executed within the same database transaction, the DataContainer can never be null.");
+                return result.LocatedDataContainer;
+              }));
     }
 
     private FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForNullRelationLookup ()
@@ -207,6 +208,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                     select Tuple.Create (simpleColumn, spec.Order);
 
       return new OrderedColumnsSpecification (columns);
+    }
+
+    private IDataContainerReader CreateDataContainerReader (TableDefinition tableDefinition, IColumnOrdinalProvider columnOrdinalProvider)
+    {
+      var objectIDStoragePropertyDefinition =
+          new ObjectIDStoragePropertyDefinition (
+              new SimpleStoragePropertyDefinition (tableDefinition.ObjectIDColumn),
+              new SimpleStoragePropertyDefinition (tableDefinition.ClassIDColumn));
+      var timestampPropertyDefinition = new SimpleStoragePropertyDefinition (tableDefinition.TimestampColumn);
+
+      return new DataContainerReader (
+          objectIDStoragePropertyDefinition, timestampPropertyDefinition, columnOrdinalProvider, _rdbmsPersistenceModelProvider);
+    }
+
+    private IColumnOrdinalProvider CreateOrdinalProviderForKnownProjection (IEnumerable<ColumnDefinition> selectedColumns)
+    {
+      var columnOrdinalsDictionary = selectedColumns.Select ((column, index) => new { column, index }).ToDictionary (t => t.column, t => t.index);
+      return new DictionaryBasedColumnOrdinalProvider (columnOrdinalsDictionary);
     }
   }
 }

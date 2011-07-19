@@ -19,6 +19,7 @@ using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -26,6 +27,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   [TestFixture]
   public class SqlProviderLoadDataContainerTest : SqlProviderBaseTest
   {
+    //TODO 4141: discuss if it would be a good idea do also display the message of the inner exception!
+
     [Test]
     public void LoadDataContainerWithGuidID ()
     {
@@ -72,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "The mandatory column 'ClassID' could not be found.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
     public void LoadDataContainerWithoutClassIDColumn ()
     {
       ObjectID id = new ObjectID ("ClassWithoutClassIDColumn", new Guid ("{DDD02092-355B-4820-90B6-7F1540C0547E}"));
@@ -81,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "The mandatory column 'Timestamp' could not be found.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
     public void LoadDataContainerWithoutTimestampColumn ()
     {
       ObjectID id = new ObjectID ("ClassWithoutTimestampColumn", new Guid ("{027DCBD7-ED68-461d-AE80-B8E145A7B816}"));
@@ -90,8 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException),
-        ExpectedMessage = "Invalid ClassID 'NonExistingClassID' for ID 'c9f16f93-cf42-4357-b87b-7493882aaeaf' encountered.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'NonExistingClassID'.")]
     public void LoadDataContainerWithNonExistingClassID ()
     {
       ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{C9F16F93-CF42-4357-B87B-7493882AAEAF}"));
@@ -100,10 +102,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     //TODO: Improove this message to state that the passed ClassID and the ClassID in the database to not match.
+    /// <summary>
+    /// Loads the data container with class ID from other class.
+    /// </summary>
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
         "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' of object "
-        + "'Order|895853eb-06cd-4291-b467-160560ae8ec1|System.Guid': The mandatory column 'OrderNo' could not be found.")]
+        + "'Order|895853eb-06cd-4291-b467-160560ae8ec1|System.Guid': The column 'OrderNo' could not be found.\r\nParameter name: columnDefinition")]
     public void LoadDataContainerWithClassIDFromOtherClass ()
     {
       ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{895853EB-06CD-4291-B467-160560AE8EC1}"));
@@ -180,11 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
-        "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithoutRelatedClassIDColumn.Distributor' "
-        + "of object 'ClassWithoutRelatedClassIDColumn|cd3be83e-fbb7-4251-aae4-b216485c5638|System.Guid':"
-        + " Incorrect database format encountered."
-        + " Entity 'TableWithoutRelatedClassIDColumn' must have column 'DistributorIDClassID' defined, because opposite class 'Distributor' is part of an inheritance hierarchy.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
     public void LoadDataContainerWithoutRelatedIDColumn ()
     {
       ObjectID id = new ObjectID ("ClassWithoutRelatedClassIDColumn", new Guid ("{CD3BE83E-FBB7-4251-AAE4-B216485C5638}"));
@@ -193,11 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
-        "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithoutRelatedClassIDColumnAndDerivation.Company' "
-        + "of object 'ClassWithoutRelatedClassIDColumnAndDerivation|4821d7f7-b586-4435-b572-8a96a44b113e|System.Guid':"
-        + " Incorrect database format encountered."
-        + " Entity 'TableWithoutRelatedClassIDColumnAndDerivation' must have column 'CompanyIDClassID' defined, because opposite class 'Company' is part of an inheritance hierarchy.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
     public void LoadDataContainerWithoutRelatedIDColumnAndDerivation ()
     {
       ObjectID id = new ObjectID ("ClassWithoutRelatedClassIDColumnAndDerivation",
@@ -217,6 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.LoadDataContainer (invalidID);
     }
 
+    [Ignore("TODO RM-4141")]
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
         "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithRelatedClassIDColumnAndNoInheritance.ClassWithGuidKey' "

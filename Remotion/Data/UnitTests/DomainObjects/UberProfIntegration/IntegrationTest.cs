@@ -65,7 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
           Is.StringMatching (
               @"^ConnectionStarted \((?<connectionid>[^,]+)\)" + Environment.NewLine
               + @"StatementExecuted \(\k<connectionid>, (?<statementid>[^,]+), -- Statement \k<statementid>" + Environment.NewLine
-              + @"SELECT \* FROM \[Order\] WHERE \[ID\] = \@ID;" + Environment.NewLine
+              + @"SELECT \[ID\], \[ClassID\], \[Timestamp\], \[OrderNo\], \[DeliveryDate\], \[OfficialID\], \[CustomerID\], \[CustomerIDClassID\] "
+              + @"FROM \[Order\] WHERE \[ID\] = \@ID;" + Environment.NewLine
               + @"-- Ignore unbounded result sets: TOP \*" + Environment.NewLine
               + @"-- Parameters:" + Environment.NewLine
               + @"-- \@ID = \[-\[5682f032-2f0b-494b-a31c-c97f02b89c36\]-\] \[-\[Type \(0\)\]-\]" + Environment.NewLine

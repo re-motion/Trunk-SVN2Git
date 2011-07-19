@@ -89,6 +89,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     }
 
     [Test]
+    [ExpectedException(typeof(RdbmsProviderException), ExpectedMessage =
+      "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName' of object 'OrderTicket*", 
+      MatchType = MessageMatch.Regex)]
+    public void Read_DataReaderReadTrue_ThrowsException ()
+    {
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true);
+
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_objectID);
+      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_timestamp);
+      var propertyDefinition = GetPropertyDefinition (typeof(OrderTicket), "FileName");
+      _persistenceModelProviderStub
+        .Stub (stub => stub.GetColumnDefinition (propertyDefinition))
+        .WhenCalled (mi => { throw new InvalidOperationException ("TestException"); });
+      
+      _dataContainerReader.Read (_dataReaderStub);
+    }
+
+    [Test]
     public void ReadSequence_DataReaderReadFalse ()
     {
       _dataReaderStub.Stub (stub => stub.Read()).Return (false);

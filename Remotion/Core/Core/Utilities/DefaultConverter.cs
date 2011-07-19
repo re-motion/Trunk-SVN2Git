@@ -47,7 +47,6 @@ namespace Remotion.Utilities
 
     public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("sourceType", sourceType);
       
       return _type.IsAssignableFrom (sourceType);
@@ -55,7 +54,6 @@ namespace Remotion.Utilities
 
     public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 
       return destinationType.IsAssignableFrom (_type);
@@ -64,13 +62,15 @@ namespace Remotion.Utilities
     public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
     {
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
+      // ReSharper disable HeuristicUnreachableCode
       if (value == null)
-      // ReSharper restore ConditionIsAlwaysTrueOrFalse
       {
-        if (!IsNullableType)
-          throw new NotSupportedException (string.Format ("Null cannot be converted to type '{0}'", _type.Name));
+        //if (!IsNullableType) //TODO RM-4167
+        //  throw new NotSupportedException (string.Format ("Null cannot be converted to type '{0}'", _type.Name));
         return null;
       }
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
+      // ReSharper restore HeuristicUnreachableCode
       else
       {
         if (!CanConvertFrom (context, value.GetType ()))
@@ -82,14 +82,18 @@ namespace Remotion.Utilities
 
     public override object ConvertTo (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
     {
+      ArgumentUtility.CheckNotNull ("destinationType", destinationType);
+
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
+      // ReSharper disable HeuristicUnreachableCode
       if (value == null)
-      // ReSharper restore ConditionIsAlwaysTrueOrFalse
       {
         if (!IsNullableType)
           throw new NotSupportedException ("Null cannot be converted by this TypeConverter.");
         return null;
       }
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
+      // ReSharper restore HeuristicUnreachableCode
       else
       {
         if (!_type.IsAssignableFrom (value.GetType ()))

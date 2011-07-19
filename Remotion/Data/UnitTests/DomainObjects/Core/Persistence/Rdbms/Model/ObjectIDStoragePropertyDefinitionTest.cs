@@ -98,7 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Read ()
     {
       _objectIDColumn.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
-
+      _classIDColumn.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return ("Order");
+      
       var result = _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectID)));

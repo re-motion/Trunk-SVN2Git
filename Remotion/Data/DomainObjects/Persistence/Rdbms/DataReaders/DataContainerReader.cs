@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     private readonly IRdbmsStoragePropertyDefinition _timestampProperty;
     private readonly IColumnOrdinalProvider _ordinalProvider;
     private readonly IRdbmsPersistenceModelProvider _persistenceModelProvider;
-    
+
     public DataContainerReader (
         IRdbmsStoragePropertyDefinition idProperty,
         IRdbmsStoragePropertyDefinition timestampProperty,
@@ -43,11 +43,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("timestampProperty", timestampProperty);
       ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
       ArgumentUtility.CheckNotNull ("persistenceModelProvider", persistenceModelProvider);
-      
+
       _idProperty = idProperty;
       _timestampProperty = timestampProperty;
       _ordinalProvider = ordinalProvider;
       _persistenceModelProvider = persistenceModelProvider;
+    }
+
+    public IRdbmsStoragePropertyDefinition IDProperty
+    {
+      get { return _idProperty; }
+    }
+
+    public IRdbmsStoragePropertyDefinition TimestampProperty
+    {
+      get { return _timestampProperty; }
+    }
+
+    public IColumnOrdinalProvider OrdinalProvider
+    {
+      get { return _ordinalProvider; }
+    }
+
+    public IRdbmsPersistenceModelProvider PersistenceModelProvider
+    {
+      get { return _persistenceModelProvider; }
     }
 
     public virtual DataContainer Read (IDataReader dataReader)
@@ -81,12 +101,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       var id = _idProperty.Read (dataReader, _ordinalProvider) as ObjectID;
+      var timestamp = _timestampProperty.Read (dataReader, _ordinalProvider);
       if (id != null)
       {
-        var timestamp = _timestampProperty.Read (dataReader, _ordinalProvider);
-
         return DataContainer.CreateForExisting (
-            id, timestamp, pd => _persistenceModelProvider.GetColumnDefinition (pd).Read (dataReader, _ordinalProvider) ?? pd.DefaultValue);
+            id,
+            timestamp,
+            pd =>
+            {
+              try
+              {
+                return _persistenceModelProvider.GetColumnDefinition (pd).Read (dataReader, _ordinalProvider) ?? pd.DefaultValue;
+              }
+              catch (Exception e)
+              {
+                throw new RdbmsProviderException (
+                    string.Format (
+                        "Error while reading property '{0}' of object '{1}': {2}",
+                        pd.PropertyName,
+                        id,
+                        e.Message),
+                    e);
+              }
+            });
       }
       return null;
     }

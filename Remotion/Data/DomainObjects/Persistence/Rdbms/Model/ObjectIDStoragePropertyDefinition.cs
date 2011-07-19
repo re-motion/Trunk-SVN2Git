@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var value = _valueProperty.Read (dataReader, ordinalProvider);
       if (value == null)
         return null;
-      return new ObjectID (_classIDProperty.Name, value);
+      return new ObjectID ((string) _classIDProperty.Read(dataReader, ordinalProvider), value);
     }
 
     public IEnumerable<ColumnValue> SplitValue (object value)

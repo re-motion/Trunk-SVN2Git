@@ -59,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private ObjectID _foreignKeyValue;
     private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
     private UnionViewDefinition _unionViewDefinition;
+    private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public override void SetUp ()
     {
@@ -68,8 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _objectIDReaderStub = MockRepository.GenerateStub<IObjectIDReader>();
 
-      _factory = new RdbmsProviderCommandFactory (
-          _dbCommandBuilderFactoryStub, _dataContainerReaderStub, _objectIDReaderStub, new RdbmsPersistenceModelProvider());
+      _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
+      _factory = new RdbmsProviderCommandFactory (_dbCommandBuilderFactoryStub, _dataContainerReaderStub, _objectIDReaderStub, _rdbmsPersistenceModelProvider);
 
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -95,7 +96,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var objectID = CreateObjectID (_tableDefinition1);
       _dbCommandBuilderFactoryStub
-          .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition1, AllSelectedColumnsSpecification.Instance, objectID))
+          .Stub (stub => stub.CreateForSingleIDLookupFromTable (
+                  Arg.Is (_tableDefinition1),
+                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (_tableDefinition1.GetAllColumns ())),
+                  Arg.Is (objectID)))
           .Return (_dbCommandBuilder1Stub);
 
       var result = _factory.CreateForSingleIDLookup (objectID);
@@ -107,7 +111,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           ((DelegateBasedStorageProviderCommand<DataContainer, DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>) result).Command;
       Assert.That (innerCommand, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       Assert.That (((SingleDataContainerLoadCommand) innerCommand).DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (((SingleDataContainerLoadCommand) innerCommand).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
+      Assert.That (((SingleDataContainerLoadCommand) innerCommand).DataContainerReader, Is.TypeOf (typeof (DataContainerReader)));
+      var dataContainerReader = (DataContainerReader) ((SingleDataContainerLoadCommand) innerCommand).DataContainerReader;
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ValueProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.ObjectIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ClassIDProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.ClassIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) dataContainerReader.TimestampProperty).ColumnDefinition, Is.SameAs (_tableDefinition1.TimestampColumn));
+      Assert.That (dataContainerReader.PersistenceModelProvider, Is.SameAs (_rdbmsPersistenceModelProvider));
+      Assert.That (dataContainerReader.OrdinalProvider, Is.TypeOf (typeof (DictionaryBasedColumnOrdinalProvider)));
     }
 
     [Test]
@@ -135,7 +150,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var objectID = CreateObjectID (filterViewDefinition);
 
       _dbCommandBuilderFactoryStub
-          .Stub (stub => stub.CreateForSingleIDLookupFromTable (_tableDefinition1, AllSelectedColumnsSpecification.Instance, objectID))
+          .Stub (
+              stub =>
+              stub.CreateForSingleIDLookupFromTable (
+                  Arg.Is (_tableDefinition1),
+                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (_tableDefinition1.GetAllColumns())),
+                  Arg.Is (objectID)))
           .Return (_dbCommandBuilder1Stub);
 
       var result = _factory.CreateForSingleIDLookup (objectID);
@@ -147,7 +167,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           ((DelegateBasedStorageProviderCommand<DataContainer, DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>) result).Command;
       Assert.That (innerCommand, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       Assert.That (((SingleDataContainerLoadCommand) innerCommand).DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (((SingleDataContainerLoadCommand) innerCommand).DataContainerReader, Is.SameAs (_dataContainerReaderStub));
+      Assert.That (((SingleDataContainerLoadCommand) innerCommand).DataContainerReader, Is.TypeOf (typeof (DataContainerReader)));
+      var dataContainerReader = (DataContainerReader) ((SingleDataContainerLoadCommand) innerCommand).DataContainerReader;
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ValueProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.ObjectIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ClassIDProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.ClassIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) dataContainerReader.TimestampProperty).ColumnDefinition, Is.SameAs (_tableDefinition1.TimestampColumn));
+      Assert.That (dataContainerReader.PersistenceModelProvider, Is.SameAs (_rdbmsPersistenceModelProvider));
+      Assert.That (dataContainerReader.OrdinalProvider, Is.TypeOf (typeof (DictionaryBasedColumnOrdinalProvider)));
     }
 
     [Test]

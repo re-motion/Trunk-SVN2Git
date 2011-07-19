@@ -86,6 +86,7 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (result, Is.False);
     }
 
+    [Ignore("TODO: RM-4167")]
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Null cannot be converted to type 'Int32'")]
     public void ConvertFrom_ValueIsNullAndNoNullableType ()

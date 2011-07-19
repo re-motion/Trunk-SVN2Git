@@ -59,16 +59,76 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetStorageType ()
     {
-      CheckGetStorageType (typeof (Boolean), null, "bit", DbType.Boolean, typeof (bool), Is.TypeOf (typeof (BooleanConverter)));
-      CheckGetStorageType (typeof (Byte), null, "tinyint", DbType.Byte, typeof (Byte), Is.TypeOf (typeof (ByteConverter)));
-      CheckGetStorageType (typeof (DateTime), null, "datetime", DbType.DateTime, typeof (DateTime), Is.TypeOf (typeof (DateTimeConverter)));
-      CheckGetStorageType (typeof (Decimal), null, "decimal (38, 3)", DbType.Decimal, typeof (Decimal), Is.TypeOf (typeof (DecimalConverter)));
-      CheckGetStorageType (typeof (Double), null, "float", DbType.Double, typeof (Double), Is.TypeOf (typeof (DoubleConverter)));
-      CheckGetStorageType (typeof (Guid), null, "uniqueidentifier", DbType.Guid, typeof (Guid), Is.TypeOf (typeof (GuidConverter)));
-      CheckGetStorageType (typeof (Int16), null, "smallint", DbType.Int16, typeof (Int16), Is.TypeOf (typeof (Int16Converter)));
-      CheckGetStorageType (typeof (Int32), null, "int", DbType.Int32, typeof (Int32), Is.TypeOf (typeof (Int32Converter)));
-      CheckGetStorageType (typeof (Int64), null, "bigint", DbType.Int64, typeof (Int64), Is.TypeOf (typeof (Int64Converter)));
-      CheckGetStorageType (typeof (Single), null, "real", DbType.Single, typeof (Single), Is.TypeOf (typeof (SingleConverter)));
+      CheckGetStorageType (
+          typeof (Boolean),
+          null,
+          "bit",
+          DbType.Boolean,
+          typeof (bool),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (bool)));
+      CheckGetStorageType (
+          typeof (Byte),
+          null,
+          "tinyint",
+          DbType.Byte,
+          typeof (Byte),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte)));
+      CheckGetStorageType (
+          typeof (DateTime),
+          null,
+          "datetime",
+          DbType.DateTime,
+          typeof (DateTime),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (DateTime)));
+      CheckGetStorageType (
+          typeof (Decimal),
+          null,
+          "decimal (38, 3)",
+          DbType.Decimal,
+          typeof (Decimal),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Decimal)));
+      CheckGetStorageType (
+          typeof (Double),
+          null,
+          "float",
+          DbType.Double,
+          typeof (Double),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Double)));
+      CheckGetStorageType (
+          typeof (Guid),
+          null,
+          "uniqueidentifier",
+          DbType.Guid,
+          typeof (Guid),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Guid)));
+      CheckGetStorageType (
+          typeof (Int16),
+          null,
+          "smallint",
+          DbType.Int16,
+          typeof (Int16),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Int16)));
+      CheckGetStorageType (
+          typeof (Int32),
+          null,
+          "int",
+          DbType.Int32,
+          typeof (Int32),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Int32)));
+      CheckGetStorageType (
+          typeof (Int64),
+          null,
+          "bigint",
+          DbType.Int64,
+          typeof (Int64),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Int64)));
+      CheckGetStorageType (
+          typeof (Single),
+          null,
+          "real",
+          DbType.Single,
+          typeof (Single),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Single)));
       CheckGetStorageType (
           typeof (Int32Enum),
           null,
@@ -104,8 +164,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           DbType.String,
           typeof (string),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
-      CheckGetStorageType (typeof (Byte[]), 200, "varbinary (200)", DbType.Binary, typeof (Byte[]), Is.TypeOf (typeof (ArrayConverter)));
-      CheckGetStorageType (typeof (Byte[]), null, "varbinary (max)", DbType.Binary, typeof (Byte[]), Is.TypeOf (typeof (ArrayConverter)));
+      CheckGetStorageType (
+          typeof (Byte[]),
+          200,
+          "varbinary (200)",
+          DbType.Binary,
+          typeof (Byte[]),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
+      CheckGetStorageType (
+          typeof (Byte[]),
+          null,
+          "varbinary (max)",
+          DbType.Binary,
+          typeof (Byte[]),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
     }
 
     [Test]
@@ -122,7 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (_typeCalculator.ObjectIDStorageType.StorageType, Is.EqualTo ("uniqueidentifier"));
       Assert.That (_typeCalculator.ObjectIDStorageType.DbType, Is.EqualTo (DbType.Guid));
       Assert.That (_typeCalculator.ObjectIDStorageType.ParameterValueType, Is.EqualTo (typeof (Guid)));
-      Assert.That (_typeCalculator.ObjectIDStorageType.TypeConverter, Is.TypeOf (typeof (GuidConverter)));
+      Assert.That (
+          _typeCalculator.ObjectIDStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Guid)));
 
       Assert.That (_typeCalculator.SerializedObjectIDStorageType.StorageType, Is.EqualTo ("varchar (255)"));
       Assert.That (_typeCalculator.SerializedObjectIDStorageType.DbType, Is.EqualTo (DbType.String));
@@ -140,7 +213,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (_typeCalculator.TimestampStorageType.StorageType, Is.EqualTo ("rowversion"));
       Assert.That (_typeCalculator.TimestampStorageType.DbType, Is.EqualTo (DbType.Binary));
       Assert.That (_typeCalculator.TimestampStorageType.ParameterValueType, Is.EqualTo (typeof (Byte[])));
-      Assert.That (_typeCalculator.TimestampStorageType.TypeConverter, Is.TypeOf (typeof (ArrayConverter)));
+      Assert.That (
+          _typeCalculator.TimestampStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
     }
 
     [Test]

@@ -174,5 +174,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (one.GetHashCode(), Is.EqualTo (two.GetHashCode()));
     }
+    
   }
 }
