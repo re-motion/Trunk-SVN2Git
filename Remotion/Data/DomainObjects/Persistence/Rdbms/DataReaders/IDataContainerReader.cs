@@ -26,6 +26,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   public interface IDataContainerReader
   {
     DataContainer Read (IDataReader dataReader);
-    IEnumerable<DataContainer> ReadSequence (IDataReader dataReader, bool allowNulls);
+    IEnumerable<DataContainer> ReadSequence (IDataReader dataReader);
   }
 }

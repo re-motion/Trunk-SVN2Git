@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          foreach (var dataContainer in _dataContainerReader.ReadSequence (reader, _allowNulls))
+          foreach (var dataContainer in _dataContainerReader.ReadSequence (reader))
             yield return dataContainer;
         }
       }

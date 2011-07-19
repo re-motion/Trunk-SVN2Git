@@ -76,22 +76,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException),
-        ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
-    public void Read_DataReaderReadTrue_ValueIDNull ()
-    {
-      _dataReaderStub.Stub (stub => stub.Read()).Return (true);
-      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (null);
-
-      _factory.Read (_dataReaderStub);
-    }
-
-    [Test]
     public void ReadSequence_DataReaderReadFalse ()
     {
       _dataReaderStub.Stub (stub => stub.Read()).Return (false);
 
-      var result = _factory.ReadSequence (_dataReaderStub, false);
+      var result = _factory.ReadSequence (_dataReaderStub);
 
       Assert.That (result, Is.Empty);
     }
@@ -123,39 +112,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
             }
           });
 
-      var result = _factory.ReadSequence (_dataReaderStub, true).ToArray ();
+      var result = _factory.ReadSequence (_dataReaderStub).ToArray ();
       Assert.That (result.Length, Is.EqualTo (3));
       Assert.That (result[0].ID, Is.EqualTo(DomainObjectIDs.OrderTicket1));
       Assert.That (result[1].ID, Is.EqualTo(DomainObjectIDs.OrderTicket2));
       Assert.That (result[2].ID, Is.EqualTo(DomainObjectIDs.OrderTicket3));
-    }
-
-    [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "A database query returned duplicates of the domain object "
-                                                                           +
-                                                                           "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', which is not supported."
-        )]
-    public void ReadSequence_DataReaderReadTrue_Duplicates ()
-    {
-      _valueConverterStub.Stub (stub => stub.GetID (_dataReaderStub)).Return (DomainObjectIDs.OrderTicket1);
-      _valueConverterStub.Stub (stub => stub.GetTimestamp (_dataReaderStub)).Return (_timestamp);
-
-      StubValueConverterForProperty (typeof (OrderTicket), "FileName", _objectID);
-      StubValueConverterForProperty (typeof (OrderTicket), "Order", _objectID);
-
-      var count = 0;
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).WhenCalled (
-          mi =>
-          {
-            count++;
-            if (count > 2)
-            {
-              _dataReaderStub.BackToRecord();
-              _dataReaderStub.Stub (stub => stub.Read()).Return (false);
-            }
-          });
-
-      _factory.ReadSequence (_dataReaderStub, true).ToArray ();
     }
 
     [Test]
@@ -168,27 +129,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
             _dataReaderStub.Stub (stub => stub.Read ()).Return (false);
           });
 
-      var result = _factory.ReadSequence (_dataReaderStub, true).ToArray ();
+      var result = _factory.ReadSequence (_dataReaderStub).ToArray ();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (RdbmsProviderException),
-        ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
-    public void ReadSequence_DataReaderReadTrue_NullIDIsReturned_NotSupported ()
-    {
-      _dataReaderStub.Stub (stub => stub.Read()).Return (true).WhenCalled (
-          mi =>
-          {
-            _dataReaderStub.BackToRecord();
-            _dataReaderStub.Stub (stub => stub.Read()).Return (false);
-          });
-
-      var result = _factory.ReadSequence (_dataReaderStub, false);
-
-      Assert.That (result, Is.Empty);
     }
 
     public void StubValueConverterForProperty (Type declaringType, string shortPropertyName, ObjectID objectID)

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -372,6 +371,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.EqualTo (new[] { fakeResult }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "The relation lookup returned an object with a NULL ID, this is not allowed.")]
+    public void LoadDataContainersByRelatedID_NullContainer ()
+    {
+      var objectID = DomainObjectIDs.Order1;
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
+      var sortExpression = new SortExpressionDefinition (
+          new[] { new SortedPropertySpecification (GetPropertyDefinition (typeof (Official), "Name"), SortOrder.Ascending) });
+      var fakeResult = DataContainer.CreateNew (objectID);
+
+      var commandMock =
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForRelationLookup (relationEndPointDefinition, objectID, sortExpression))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (new[] { fakeResult, null });
+      }
+      _mockRepository.ReplayAll ();
+
+      _provider.LoadDataContainersByRelatedID (relationEndPointDefinition, sortExpression, objectID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "A database query returned duplicates returned duplicates, which is not allowed.")]
+    public void LoadDataContainersByRelatedID_Duplicates ()
+    {
+      var objectID = DomainObjectIDs.Order1;
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
+      var sortExpression = new SortExpressionDefinition (
+          new[] { new SortedPropertySpecification (GetPropertyDefinition (typeof (Official), "Name"), SortOrder.Ascending) });
+      var fakeResult = DataContainer.CreateNew (objectID);
+
+      var commandMock =
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForRelationLookup (relationEndPointDefinition, objectID, sortExpression))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (new[] { fakeResult, fakeResult });
+      }
+      _mockRepository.ReplayAll ();
+
+      _provider.LoadDataContainersByRelatedID (relationEndPointDefinition, sortExpression, objectID);
     }
 
     [Test]

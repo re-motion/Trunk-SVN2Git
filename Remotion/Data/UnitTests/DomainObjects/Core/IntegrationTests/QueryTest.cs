@@ -82,8 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "A database query returned duplicates of the domain object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', which is not supported.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "A database query returned duplicates returned duplicates, which is not allowed.")]
     public void GetCollectionWithDuplicates ()
     {
       IQueryManager queryManager = _queryManager;

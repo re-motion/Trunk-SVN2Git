@@ -42,12 +42,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       if (dataReader.Read())
-        return CreateDataContainerFromReader (dataReader, false);
+        return CreateDataContainerFromReader (dataReader);
       else
         return null;
     }
 
-    public virtual IEnumerable<DataContainer> ReadSequence ( IDataReader dataReader, bool allowNulls)
+    public virtual IEnumerable<DataContainer> ReadSequence ( IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
@@ -55,22 +55,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 
       while (dataReader.Read())
       {
-        var dataContainer = CreateDataContainerFromReader (dataReader, allowNulls);
+        var dataContainer = CreateDataContainerFromReader (dataReader);
         if (dataContainer != null)
-        {
-          if (loadedIDs.Contains (dataContainer.ID))
-          {
-            throw new RdbmsProviderException (
-                string.Format ("A database query returned duplicates of the domain object '{0}', which is not supported.", dataContainer.ID));
-          }
           loadedIDs.Add (dataContainer.ID);
-        }
-
+        
         yield return dataContainer;
       }
     }
 
-    protected virtual DataContainer CreateDataContainerFromReader (IDataReader dataReader, bool allowNulls)
+    protected virtual DataContainer CreateDataContainerFromReader (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
@@ -85,10 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
             propertyDefinition => GetDataValue (dataReader, propertyDefinition, id));
         return dataContainer;
       }
-      else if (allowNulls)
-        return null;
-      else
-        throw new RdbmsProviderException ("An object returned from the database had a NULL ID, which is not supported.");
+      return null;
     }
 
     private object GetDataValue (IDataReader dataReader, PropertyDefinition propertyDefinition, ObjectID objectID)

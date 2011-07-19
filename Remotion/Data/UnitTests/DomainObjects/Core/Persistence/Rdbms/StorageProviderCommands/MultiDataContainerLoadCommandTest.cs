@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var command = new MultiDataContainerLoadCommand (
           new[] { _dbCommandBuilder1Mock }, true, _dataContainerReaderStub);
       
-      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock, true)).Return (new[] { _container });
+      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (new[] { _container });
       var result = command.Execute (_commandExecutionContextStub).ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { _container }));
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataReaderMock.Expect (mock => mock.Dispose()).Repeat.Twice();
       _repository.ReplayAll();
 
-      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock, false)).Return (new[] { _container });
+      _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (new[] { _container });
 
       var command = new MultiDataContainerLoadCommand (
           new[] { _dbCommandBuilder1Mock, _dbCommandBuilder2Mock }, false, _dataContainerReaderStub);
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       {
         _dbCommandBuilder1Mock.Expect (mock => mock.Create (_commandExecutionContextStub)).Return (_dbCommandMock1);
         _commandExecutionContextStub.Stub (stub => stub.ExecuteReader (_dbCommandMock1, CommandBehavior.SingleResult)).Return (_dataReaderMock);
-        _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock, false)).Return (enumerableStub);
+        _dataContainerReaderStub.Stub (stub => stub.ReadSequence (_dataReaderMock)).Return (enumerableStub);
         enumerableStub.Stub (stub => stub.GetEnumerator()).Return (enumeratorMock);
         enumeratorMock.Expect (mock => mock.MoveNext()).Return (false);
         enumeratorMock.Expect (mock => mock.Dispose());
