@@ -251,13 +251,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/SaveValue/*' />
     public override void SaveValue (bool interim)
     {
-      if (!interim && IsDirty)
+      if (interim)
+        return;
+
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      if (IsDirty)
       {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null && !IsReadOnly)
-        {
+        if (DataSource.BusinessObject != null && !IsReadOnly)
           DataSource.BusinessObject.SetProperty (Property, Value);
-          IsDirty = false;
-        }
+
+        IsDirty = false;
       }
     }
 

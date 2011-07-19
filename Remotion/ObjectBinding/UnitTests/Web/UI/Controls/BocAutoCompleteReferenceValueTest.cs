@@ -461,40 +461,112 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueInterim ()
+    public void SaveValueAndInterimTrue ()
     {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _control.DataSource = _dataSource;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = null;
       _control.IsDirty = true;
 
-      _control.Property = _propertyReferenceValue;
-      _control.DataSource = _dataSource;
-
-      var propertyValue = _dataSource.BusinessObject.GetProperty (_propertyReferenceValue);
-      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create();
-      _control.Value = newValue;
-
       _control.SaveValue (true);
-
-      Assert.That (_dataSource.BusinessObject.GetProperty (_propertyReferenceValue), Is.EqualTo (propertyValue));
-      Assert.That (_control.IsDirty);
+      Assert.AreEqual (value, _businessObject.ReferenceValue);
+      Assert.IsTrue (_control.IsDirty);
     }
 
     [Test]
-    public void SaveValueCommit ()
+    public void SaveValueAndInterimFalse ()
     {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _control.DataSource = _dataSource;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = null;
       _control.IsDirty = true;
 
-      _control.Property = _propertyReferenceValue;
-      _control.DataSource = _dataSource;
-
-      var newValue = (IBusinessObjectWithIdentity) TypeWithReference.Create();
-      _control.Value = newValue;
-
       _control.SaveValue (false);
-
-      Assert.That (_dataSource.BusinessObject.GetProperty (_propertyReferenceValue), Is.EqualTo (newValue));
-      Assert.That (!_control.IsDirty);
+      Assert.AreEqual (null, _businessObject.ReferenceValue);
+      Assert.IsFalse (_control.IsDirty);
     }
 
+    [Test]
+    public void SaveValueAndInterimFalseAndDataSourceNull ()
+    {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _control.DataSource = null;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = null;
+      _control.IsDirty = true;
+
+      _control.SaveValue (false);
+      Assert.AreEqual (value, _businessObject.ReferenceValue);
+      Assert.IsTrue (_control.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndPropertyNull ()
+    {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _control.DataSource = _dataSource;
+      _control.Property = null;
+      _control.Value = null;
+      _control.IsDirty = true;
+
+      _control.SaveValue (false);
+      Assert.AreEqual (value, _businessObject.ReferenceValue);
+      Assert.IsTrue (_control.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _dataSource.BusinessObject = null;
+      _control.DataSource = _dataSource;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = null;
+      _control.IsDirty = true;
+
+      _control.SaveValue (false);
+      Assert.AreEqual (value, _businessObject.ReferenceValue);
+      Assert.IsFalse (_control.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndIsDirtyFalse ()
+    {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _control.DataSource = _dataSource;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = null;
+      _control.IsDirty = false;
+
+      _control.SaveValue (false);
+      Assert.AreEqual (value, _businessObject.ReferenceValue);
+      Assert.IsFalse (_control.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndReadOnlyTrue ()
+    {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _control.DataSource = _dataSource;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = null;
+      _control.IsDirty = true;
+      _control.ReadOnly = true;
+
+      _control.SaveValue (false);
+      Assert.AreEqual (value, _businessObject.ReferenceValue);
+      Assert.IsFalse (_control.IsDirty);
+    }
+ 
     [Test]
     public void CreateValidatorsReadOnly ()
     {
