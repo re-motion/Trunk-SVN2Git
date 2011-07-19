@@ -342,16 +342,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocDateTimeValue.xml' path='BocDateTimeValue/SaveValue/*' />
     public override void SaveValue (bool interim)
     {
-      if (!interim && IsDirty)
+      if (interim)
+        return;
+
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      if (IsDirty)
       {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
+        if (DataSource.BusinessObject != null && !IsReadOnly)
         {
           DataSource.BusinessObject.SetProperty (Property, Value);
           //  get_Value parses the internal representation of the date/time value
           //  set_Value updates the internal representation of the date/time value
           Value = Value;
-          IsDirty = false;
         }
+
+        IsDirty = false;
       }
     }
 
