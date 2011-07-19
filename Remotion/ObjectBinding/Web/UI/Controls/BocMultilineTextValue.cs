@@ -99,17 +99,35 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       LoadValueInternal (value, interim);
     }
 
+    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
+    protected virtual void LoadValueInternal (string[] value, bool interim)
+    {
+      if (!interim)
+      {
+        Value = value;
+        IsDirty = false;
+      }
+    }
+
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/SaveValue/*' />
     public override void SaveValue (bool interim)
     {
-      if (!interim && IsDirty)
+      if (interim)
+        return;
+
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      if (IsDirty)
       {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null && !IsReadOnly)
-        {
+        if (DataSource.BusinessObject != null && !IsReadOnly)
           DataSource.BusinessObject.SetProperty (Property, Value);
-          IsDirty = false;
-        }
+
+        IsDirty = false;
       }
     }
 
@@ -226,16 +244,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       values[1] = _text;
 
       return values;
-    }
-
-    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
-    protected virtual void LoadValueInternal (string[] value, bool interim)
-    {
-      if (! interim)
-      {
-        Value = value;
-        IsDirty = false;
-      }
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
