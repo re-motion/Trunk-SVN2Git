@@ -232,5 +232,105 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
       Assert.AreEqual (value, _bocTextValue.Value);
       Assert.IsFalse (_bocTextValue.IsDirty);
     }
+
+    [Test]
+    public void SaveValueAndInterimTrue ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = null;
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.SaveValue (true);
+      Assert.AreEqual ("Foo Bar", _businessObject.StringValue);
+      Assert.IsTrue (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalse ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = null;
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.SaveValue (false);
+      Assert.AreEqual (null, _businessObject.StringValue);
+      Assert.IsFalse (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndDataSourceNull ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _bocTextValue.DataSource = null;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = null;
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.SaveValue (false);
+      Assert.AreEqual ("Foo Bar", _businessObject.StringValue);
+      Assert.IsTrue (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndPropertyNull ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = null;
+      _bocTextValue.Value = null;
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.SaveValue (false);
+      Assert.AreEqual ("Foo Bar", _businessObject.StringValue);
+      Assert.IsTrue (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _dataSource.BusinessObject = null;
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = null;
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.SaveValue (false);
+      Assert.AreEqual ("Foo Bar", _businessObject.StringValue);
+      Assert.IsFalse (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndIsDirtyFalse ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = null;
+      _bocTextValue.IsDirty = false;
+
+      _bocTextValue.SaveValue (false);
+      Assert.AreEqual ("Foo Bar", _businessObject.StringValue);
+      Assert.IsFalse (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndReadOnlyTrue ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = null;
+      _bocTextValue.IsDirty = true;
+      _bocTextValue.ReadOnly = true;
+
+      _bocTextValue.SaveValue (false);
+      Assert.AreEqual ("Foo Bar", _businessObject.StringValue);
+      Assert.IsFalse (_bocTextValue.IsDirty);
+    }
   }
 }
