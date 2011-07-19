@@ -43,8 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               SqlDialect.Instance,
               _valueConverter,
               _storageNameProvider),
-          new DataContainerReader (_valueConverter),
-          new ObjectIDReader (_valueConverter),
+          new LegacyDataContainerReader (_valueConverter),
+          new LegacyObjectIDReader (_valueConverter),
           new RdbmsPersistenceModelProvider());
 
       _provider = new SqlProvider (TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, _commandFactory);

@@ -26,11 +26,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="DataContainer"/> instances.
   /// </summary>
-  public class DataContainerReader : IDataContainerReader
+  public class LegacyDataContainerReader : IDataContainerReader
   {
     private readonly IValueConverter _valueConverter;
 
-    public DataContainerReader (IValueConverter valueConverter)
+    public LegacyDataContainerReader (IValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 

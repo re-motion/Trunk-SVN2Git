@@ -26,10 +26,10 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class ObjectIDReaderTest : SqlProviderBaseTest
+  public class LegacyObjectIDReaderTest : SqlProviderBaseTest
   {
     private IDataReader _dataReaderStub;
-    private ObjectIDReader _reader;
+    private LegacyObjectIDReader _reader;
     private IValueConverter _valueConverterStub;
     private ObjectID _objectID;
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
 
-      _reader = new ObjectIDReader (_valueConverterStub);
+      _reader = new LegacyObjectIDReader (_valueConverterStub);
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
     }

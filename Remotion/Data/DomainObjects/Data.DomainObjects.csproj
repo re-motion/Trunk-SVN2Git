@@ -263,7 +263,7 @@
     <Compile Include="Persistence\Rdbms\Model\StorageTypeInformation.cs" />
     <Compile Include="Persistence\Rdbms\RdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\RdbmsProviderCommandFactory.cs" />
-    <Compile Include="Persistence\Rdbms\DataReaders\DataContainerReader.cs" />
+    <Compile Include="Persistence\Rdbms\DataReaders\LegacyDataContainerReader.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\AllSelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\EmptyOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\IDbCommandBuilderFactory.cs" />
@@ -274,7 +274,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\IDataContainerReader.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\IObjectIDReader.cs" />
-    <Compile Include="Persistence\Rdbms\DataReaders\ObjectIDReader.cs" />
+    <Compile Include="Persistence\Rdbms\DataReaders\LegacyObjectIDReader.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilder.cs" />

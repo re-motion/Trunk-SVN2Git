@@ -27,10 +27,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class DataContainerReaderTest : SqlProviderBaseTest
+  public class LegacyDataContainerReaderTest : SqlProviderBaseTest
   {
     private IDataReader _dataReaderStub;
-    private DataContainerReader _factory;
+    private LegacyDataContainerReader _factory;
     private IValueConverter _valueConverterStub;
     private ObjectID _objectID;
     private object _timestamp;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
-      _factory = new DataContainerReader (_valueConverterStub);
+      _factory = new LegacyDataContainerReader (_valueConverterStub);
 
       _objectID = new ObjectID ("OrderTicket", Guid.NewGuid());
       _timestamp = new object();
