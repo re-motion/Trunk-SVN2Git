@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
@@ -28,13 +28,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   /// </summary>
   public class DataContainerReader : IDataContainerReader
   {
-    private readonly IValueConverter _valueConverter;
-
-    public DataContainerReader (IValueConverter valueConverter)
+    private readonly IRdbmsStoragePropertyDefinition _idProperty;
+    private readonly IRdbmsStoragePropertyDefinition _timestampProperty;
+    private readonly IColumnOrdinalProvider _ordinalProvider;
+    private readonly IRdbmsPersistenceModelProvider _persistenceModelProvider;
+    
+    public DataContainerReader (
+        IRdbmsStoragePropertyDefinition idProperty,
+        IRdbmsStoragePropertyDefinition timestampProperty,
+        IColumnOrdinalProvider ordinalProvider,
+        IRdbmsPersistenceModelProvider persistenceModelProvider)
     {
-      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
-
-      _valueConverter = valueConverter;
+      ArgumentUtility.CheckNotNull ("idProperty", idProperty);
+      ArgumentUtility.CheckNotNull ("timestampProperty", timestampProperty);
+      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
+      ArgumentUtility.CheckNotNull ("persistenceModelProvider", persistenceModelProvider);
+      
+      _idProperty = idProperty;
+      _timestampProperty = timestampProperty;
+      _ordinalProvider = ordinalProvider;
+      _persistenceModelProvider = persistenceModelProvider;
     }
 
     public virtual DataContainer Read (IDataReader dataReader)
@@ -47,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
         return null;
     }
 
-    public virtual IEnumerable<DataContainer> ReadSequence ( IDataReader dataReader)
+    public virtual IEnumerable<DataContainer> ReadSequence (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
@@ -58,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
         var dataContainer = CreateDataContainerFromReader (dataReader);
         if (dataContainer != null)
           loadedIDs.Add (dataContainer.ID);
-        
+
         yield return dataContainer;
       }
     }
@@ -67,41 +80,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      var id = _valueConverter.GetID (dataReader);
+      var id = _idProperty.Read (dataReader, _ordinalProvider) as ObjectID;
       if (id != null)
       {
-        var timestamp = _valueConverter.GetTimestamp (dataReader);
+        var timestamp = _timestampProperty.Read (dataReader, _ordinalProvider);
 
-        var dataContainer = DataContainer.CreateForExisting (
-            id,
-            timestamp,
-            propertyDefinition => GetDataValue (dataReader, propertyDefinition, id));
-        return dataContainer;
+        return DataContainer.CreateForExisting (
+            id, timestamp, pd => _persistenceModelProvider.GetColumnDefinition (pd).Read (dataReader, _ordinalProvider) ?? pd.DefaultValue);
       }
       return null;
     }
-
-    private object GetDataValue (IDataReader dataReader, PropertyDefinition propertyDefinition, ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      try
-      {
-        return _valueConverter.GetValue (objectID.ClassDefinition, propertyDefinition, dataReader);
-      }
-      catch (Exception e)
-      {
-        throw new RdbmsProviderException (
-            string.Format (
-                "Error while reading property '{0}' of object '{1}': {2}",
-                propertyDefinition.PropertyName,
-                objectID,
-                e.Message),
-            e);
-      }
-    }
   }
-  
 }
