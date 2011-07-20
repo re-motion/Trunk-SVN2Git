@@ -142,19 +142,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private Tuple<IDbCommandBuilder, IDataContainerReader> CreateIDLookupDbCommandBuilder (TableDefinition tableDefinition, ObjectID[] objectIDs)
     {
+      var selectProjection = tableDefinition.GetAllColumns();
+      var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
+      var dataContainerReader = CreateDataContainerReader (tableDefinition, ordinalProvider);
+
       if (objectIDs.Length > 1)
       {
         return
             Tuple.Create (
-                _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs),
-                _dataContainerReader);
+                _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (
+                    tableDefinition, new SelectedColumnsSpecification (selectProjection), objectIDs),
+                dataContainerReader);
       }
       else
       {
         return
             Tuple.Create (
-                _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, AllSelectedColumnsSpecification.Instance, objectIDs[0]),
-                _dataContainerReader);
+                _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
+                    tableDefinition, new SelectedColumnsSpecification (selectProjection), objectIDs[0]),
+                dataContainerReader);
       }
     }
 
@@ -170,7 +176,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
-      return new MultiDataContainerLoadCommand (new[] { Tuple.Create(dbCommandBuilder, _dataContainerReader) }, false);
+      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (dbCommandBuilder, _dataContainerReader) }, false);
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForIndirectRelationLookup (

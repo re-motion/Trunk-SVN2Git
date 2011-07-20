@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       _ordinalProvider = ordinalProvider;
       _persistenceModelProvider = persistenceModelProvider;
     }
-
+    
     public IRdbmsStoragePropertyDefinition IDProperty
     {
       get { return _idProperty; }
