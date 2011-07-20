@@ -516,7 +516,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
       Assert.That (((MultiObjectIDLoadCommand) (command.ObjectIDLoadCommand)).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
-      Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.SameAs (_objectIDReaderStub));
+      Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.TypeOf(typeof(ObjectIDReader)));
     }
 
     [Test]
@@ -575,7 +575,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
       Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
-      Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.SameAs (_objectIDReaderStub));
+      Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.TypeOf(typeof(ObjectIDReader)));
     }
 
     [Test]

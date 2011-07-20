@@ -170,13 +170,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression)
     {
-      var selectProjection = tableDefinition.GetAllColumns ();
+      var selectProjection = tableDefinition.GetAllColumns();
       var columnOrdinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
       var dataContainerReader = CreateDataContainerReader (tableDefinition, columnOrdinalProvider);
 
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
           tableDefinition,
-          new SelectedColumnsSpecification(selectProjection),
+          new SelectedColumnsSpecification (selectProjection),
           _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
@@ -196,7 +196,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
 
-      var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, _objectIDReader);
+      var objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (unionViewDefinition.ObjectIDColumn),
+          new SimpleStoragePropertyDefinition (unionViewDefinition.ClassIDColumn));
+      var ordinalProvider = CreateOrdinalProviderForKnownProjection (unionViewDefinition.GetAllColumns());
+      var objectIDReader = new ObjectIDReader (objectIDStoragePropertyDefinition, ordinalProvider);
+
+      var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, objectIDReader);
       var indirectDataContainerLoadCommand = new IndirectDataContainerLoadCommand (objectIDLoadCommand, this);
       return DelegateBasedStorageProviderCommand.Create (
           indirectDataContainerLoadCommand,
