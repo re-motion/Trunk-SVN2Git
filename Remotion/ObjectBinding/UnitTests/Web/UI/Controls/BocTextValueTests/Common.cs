@@ -198,6 +198,47 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
     }
 
     [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      _bocTextValue.DataSource = null;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = "Foo Bar";
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.LoadValue (false);
+      Assert.AreEqual ("Foo Bar", _bocTextValue.Value);
+      Assert.IsTrue (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = null;
+      _bocTextValue.Value = "Foo Bar";
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.LoadValue (false);
+      Assert.AreEqual ("Foo Bar", _bocTextValue.Value);
+      Assert.IsTrue (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = "Foo Bar";
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.LoadValue (false);
+      Assert.AreEqual (null, _bocTextValue.Value);
+      Assert.IsFalse (_bocTextValue.IsDirty);
+    }
+
+
+    [Test]
     public void LoadUnboundValueAndInterimTrue ()
     {
       string value = "Foo Bar";

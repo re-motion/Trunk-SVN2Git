@@ -84,14 +84,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
-      if (! interim)
-      {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-        {
-          object value = DataSource.BusinessObject.GetProperty (Property);
-          LoadValueInternal (value, interim);
-        }
-      }
+      if (interim)
+        return;
+
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      object value = null;
+
+      if (DataSource.BusinessObject != null)
+        value = DataSource.BusinessObject.GetProperty (Property);
+
+      LoadValueInternal (value, false);
     }
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
