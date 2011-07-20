@@ -21,9 +21,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Linq;
@@ -72,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var columnDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
-          new SqlStorageTypeCalculator (storageProviderDefinitionFinder), storageNameProvider, storageProviderDefinitionFinder);
+          new SqlStorageTypeCalculator (), storageNameProvider, storageProviderDefinitionFinder);
       var columnDefinitionResolver = new ColumnDefinitionResolver();
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           storageNameProvider, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
@@ -84,7 +82,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           storageProviderDefinition);
 
       return new RdbmsPersistenceModelLoader (
-          entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider, new RdbmsPersistenceModelProvider());
+          storageProviderDefinition,
+          entityDefinitionFactory,
+          columnDefinitionFactory,
+          storageNameProvider,
+          storageProviderDefinitionFinder,
+          new RdbmsPersistenceModelProvider());
     }
 
     public IQueryExecutor CreateLinqQueryExecutor (

@@ -32,29 +32,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class RdbmsPersistenceModelLoader : IPersistenceModelLoader
   {
-    private readonly IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IEntityDefinitionFactory _entityDefinitionFactory;
+    private readonly IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
     private readonly IStorageNameProvider _storageNameProvider;
+    private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public RdbmsPersistenceModelLoader (
+        StorageProviderDefinition storageProviderDefinition,
         IEntityDefinitionFactory entityDefinitionFactory,
         IRdbmsStoragePropertyDefinitionFactory rdbmsStoragePropertyDefinitionFactory,
-        StorageProviderDefinition storageProviderDefinition,
         IStorageNameProvider storageNameProvider,
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("entityDefinitionFactory", entityDefinitionFactory);
       ArgumentUtility.CheckNotNull ("rdbmsStoragePropertyDefinitionFactory", rdbmsStoragePropertyDefinitionFactory);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
 
+      _storageProviderDefinition = storageProviderDefinition;
       _entityDefinitionFactory = entityDefinitionFactory;
       _rdbmsStoragePropertyDefinitionFactory = rdbmsStoragePropertyDefinitionFactory;
-      _storageProviderDefinition = storageProviderDefinition;
       _storageNameProvider = storageNameProvider;
+      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
@@ -78,9 +82,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       get { return _storageNameProvider; }
     }
 
+    public IStorageProviderDefinitionFinder StorageProviderDefinitionFinder
+    {
+      get { return _storageProviderDefinitionFinder; }
+    }
+
     public StorageProviderDefinition StorageProviderDefinition
     {
       get { return _storageProviderDefinition; }
+    }
+
+    public IRdbmsPersistenceModelProvider RdbmsPersistenceModelProvider
+    {
+      get { return _rdbmsPersistenceModelProvider; }
     }
 
     public IPersistenceMappingValidator CreatePersistenceMappingValidator (ClassDefinition classDefinition)

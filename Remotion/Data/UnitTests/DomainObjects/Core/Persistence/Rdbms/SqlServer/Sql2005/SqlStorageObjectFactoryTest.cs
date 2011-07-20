@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetTypeConversionProvider ()
+    public void CreateTypeConversionProvider ()
     {
       var result = _sqlProviderFactory.CreateTypeConversionProvider();
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetTypeProvider ()
+    public void CreateTypeProvider ()
     {
       var result = _sqlProviderFactory.CreateTypeProvider();
 
@@ -97,13 +97,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetPersistenceModelLoader ()
+    public void CreatePersistenceModelLoader ()
     {
       var result = _sqlProviderFactory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder, _rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (RdbmsPersistenceModelLoader)));
       Assert.That (((RdbmsPersistenceModelLoader) result).RdbmsStoragePropertyDefinitionFactory, Is.TypeOf (typeof (RdbmsStoragePropertyDefinitionFactory)));
       Assert.That (((RdbmsPersistenceModelLoader) result).StorageProviderID, Is.EqualTo ("TestDomain"));
+      // TODO 4148: Check all other properties
+      Assert.That (((RdbmsPersistenceModelLoader) result).StorageProviderDefinitionFinder, Is.SameAs (_storageProviderDefinitionFinder));
     }
 
     [Test]

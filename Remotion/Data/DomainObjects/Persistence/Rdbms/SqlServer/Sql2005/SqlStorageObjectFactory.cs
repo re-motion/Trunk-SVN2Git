@@ -94,7 +94,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver, storageNameProvider, storageProviderDefinition);
 
       return new RdbmsPersistenceModelLoader (
-          entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider, CreateRdbmsPersistenceModelProvider());
+          storageProviderDefinition,
+          entityDefinitionFactory, 
+          columnDefinitionFactory, 
+          storageNameProvider, 
+          storageProviderDefinitionFinder,
+          CreateRdbmsPersistenceModelProvider());
     }
 
     public virtual IQueryExecutor CreateLinqQueryExecutor (
@@ -161,13 +166,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new ColumnDefinitionResolver();
     }
 
+    // TODO 4148: Rename to CreateStoragePropertyDefinitionFactory
     protected virtual IRdbmsStoragePropertyDefinitionFactory CreateColumnDefinitionFactory (
         IStorageNameProvider storageNameProvider, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
-      return new RdbmsStoragePropertyDefinitionFactory (new SqlStorageTypeCalculator (providerDefinitionFinder), storageNameProvider, providerDefinitionFinder);
+      return new RdbmsStoragePropertyDefinitionFactory (new SqlStorageTypeCalculator (), storageNameProvider, providerDefinitionFinder);
     }
 
     protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
@@ -232,6 +238,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
       var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter, storageNameProvider);
+
+      // var columnDefinitionFactory = CreateColumnDefinitionFactory (storageNameProvider);
 
       var dataContainerReader = new LegacyDataContainerReader (valueConverter);
       var objectIDReader = new LegacyObjectIDReader (valueConverter);

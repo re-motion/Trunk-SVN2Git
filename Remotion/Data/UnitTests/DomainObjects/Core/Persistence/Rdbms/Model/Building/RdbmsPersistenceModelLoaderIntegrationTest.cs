@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _rdbmsStoragePropertyDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
-          new SqlStorageTypeCalculator (_storageProviderDefinitionFinder), _storageNameProvider, _storageProviderDefinitionFinder);
+          new SqlStorageTypeCalculator (), _storageNameProvider, _storageProviderDefinitionFinder);
       _columnDefinitionResolver = new ColumnDefinitionResolver();
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           _storageNameProvider, _columnDefinitionResolver, _rdbmsStoragePropertyDefinitionFactory, _storageProviderDefinitionFinder);
@@ -74,11 +74,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _storageNameProvider,
           _storageProviderDefinition);
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
+          _storageProviderDefinition,
           _entityDefinitionFactory,
           _rdbmsStoragePropertyDefinitionFactory,
-          _storageProviderDefinition,
           _storageNameProvider,
-          new RdbmsPersistenceModelProvider());
+          _storageProviderDefinitionFinder,
+          new RdbmsPersistenceModelProvider ());
 
       _fakeBaseBaseColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseBaseProperty");
       _fakeBaseColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseProperty");

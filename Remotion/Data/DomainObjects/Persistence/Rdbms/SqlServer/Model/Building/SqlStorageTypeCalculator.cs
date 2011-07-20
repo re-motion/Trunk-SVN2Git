@@ -31,8 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
   /// </summary>
   public class SqlStorageTypeCalculator : StorageTypeCalculator
   {
-    public SqlStorageTypeCalculator (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
-        : base (storageProviderDefinitionFinder)
+    public SqlStorageTypeCalculator ()
     {
     }
 

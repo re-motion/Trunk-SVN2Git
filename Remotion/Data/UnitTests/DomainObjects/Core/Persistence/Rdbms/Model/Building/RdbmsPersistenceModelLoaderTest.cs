@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -36,9 +38,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   public class RdbmsPersistenceModelLoaderTest
   {
     private string _storageProviderID;
+    private StorageProviderDefinition _storageProviderDefinition;
+    
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
-    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private IEntityDefinitionFactory _entityDefinitionFactoryMock;
+
+    private IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactoryMock;
+    private RdbmsPersistenceModelLoaderTestHelper _testModel;
+    private IStorageNameProvider _storageNameProviderStub;
+    private IStorageProviderDefinitionFinder _storageProviderDefinitionFinderStub;
 
     private IEntityDefinition _fakeEntityDefinitionBaseBase;
     private IEntityDefinition _fakeEntityDefinitionBase;
@@ -56,10 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private SimpleStoragePropertyDefinition _fakeColumnDefinition5;
     private SimpleStoragePropertyDefinition _fakeColumnDefinition6;
     private SimpleStoragePropertyDefinition _fakeColumnDefinition7;
-    private IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactoryMock;
-    private RdbmsPersistenceModelLoaderTestHelper _testModel;
-    private IStorageNameProvider _storageNameProviderStub;
-
+    
     [SetUp]
     public void SetUp ()
     {
@@ -67,14 +72,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
-      _fakeEntityDefinitionBaseBase = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinitionBase = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinitionTable1 = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinitionTable2 = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinitionDerived1 = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinitionDerived2 = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinitionDerivedDerived = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinitionDerivedDerivedDerived = MockRepository.GenerateStub<IEntityDefinition>();
+      _entityDefinitionFactoryMock = MockRepository.GenerateStrictMock<IEntityDefinitionFactory>();
+      _rdbmsStoragePropertyDefinitionFactoryMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinitionFactory>();
+      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition1)).Return (_testModel.TableClassDefinition1.ID);
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition2)).Return (_testModel.TableClassDefinition2.ID);
+
+      _storageProviderDefinitionFinderStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder>();
+
+      _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
+          _storageProviderDefinition,
+          _entityDefinitionFactoryMock,
+          _rdbmsStoragePropertyDefinitionFactoryMock,
+          _storageNameProviderStub,
+          _storageProviderDefinitionFinderStub,
+          new RdbmsPersistenceModelProvider());
+
+      _fakeEntityDefinitionBaseBase = MockRepository.GenerateStub<IEntityDefinition> ();
+      _fakeEntityDefinitionBase = MockRepository.GenerateStub<IEntityDefinition> ();
+      _fakeEntityDefinitionTable1 = MockRepository.GenerateStub<IEntityDefinition> ();
+      _fakeEntityDefinitionTable2 = MockRepository.GenerateStub<IEntityDefinition> ();
+      _fakeEntityDefinitionDerived1 = MockRepository.GenerateStub<IEntityDefinition> ();
+      _fakeEntityDefinitionDerived2 = MockRepository.GenerateStub<IEntityDefinition> ();
+      _fakeEntityDefinitionDerivedDerived = MockRepository.GenerateStub<IEntityDefinition> ();
+      _fakeEntityDefinitionDerivedDerivedDerived = MockRepository.GenerateStub<IEntityDefinition> ();
 
       _fakeColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test1");
       _fakeColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test2");
@@ -83,18 +104,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeColumnDefinition5 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test5");
       _fakeColumnDefinition6 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test6");
       _fakeColumnDefinition7 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test7");
-
-      _entityDefinitionFactoryMock = MockRepository.GenerateStrictMock<IEntityDefinitionFactory>();
-      _rdbmsStoragePropertyDefinitionFactoryMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinitionFactory>();
-      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition1)).Return (_testModel.TableClassDefinition1.ID);
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition2)).Return (_testModel.TableClassDefinition2.ID);
-      _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
-          _entityDefinitionFactoryMock,
-          _rdbmsStoragePropertyDefinitionFactoryMock,
-          _storageProviderDefinition,
-          _storageNameProviderStub,
-          new RdbmsPersistenceModelProvider());
     }
 
     [Test]

@@ -30,18 +30,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     public abstract StorageTypeInformation ClassIDStorageType { get; }
     public abstract StorageTypeInformation TimestampStorageType { get; }
 
-    private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
-
-    protected StorageTypeCalculator (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    protected StorageTypeCalculator ()
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
-
-      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
-    }
-
-    protected IStorageProviderDefinitionFinder StorageProviderDefinitionFinder
-    {
-      get { return _storageProviderDefinitionFinder; }
     }
 
     public abstract StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition);

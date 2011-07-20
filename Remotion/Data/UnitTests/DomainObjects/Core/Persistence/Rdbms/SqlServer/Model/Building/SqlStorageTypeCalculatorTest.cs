@@ -19,9 +19,7 @@ using System.ComponentModel;
 using System.Data;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -35,7 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   public class SqlStorageTypeCalculatorTest
   {
     private SqlStorageTypeCalculator _typeCalculator;
-    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     // We explicitly want an _int_ enum
     // ReSharper disable EnumUnderlyingTypeIsInt
@@ -52,8 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      _typeCalculator = new SqlStorageTypeCalculator (_storageProviderDefinitionFinder);
+      _typeCalculator = new SqlStorageTypeCalculator ();
     }
 
     [Test]
