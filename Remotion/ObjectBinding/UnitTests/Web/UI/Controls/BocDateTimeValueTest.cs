@@ -338,7 +338,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void LoadValueAndInterimFalseWithPropertyNull ()
     {
-      _dataSource.BusinessObject = null;
       _bocDateTimeValue.DataSource = _dataSource;
       _bocDateTimeValue.Property = null;
       _bocDateTimeValue.Value = new DateTime (2000, 1, 1);
