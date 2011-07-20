@@ -581,6 +581,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return !(string.IsNullOrEmpty (InternalDateValue) && string.IsNullOrEmpty (InternalTimeValue)); }
     }
 
+    /// <summary> Gets or sets the <see cref="IBusinessObjectDateTimeProperty"/> object this control is bound to. </summary>
+    /// <value> An instance of type <see cref="IBusinessObjectDateTimeProperty"/>. </value>
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public new IBusinessObjectDateTimeProperty Property
+    {
+      get { return (IBusinessObjectDateTimeProperty) base.Property; }
+      set { base.Property = value; }
+    }
+
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
