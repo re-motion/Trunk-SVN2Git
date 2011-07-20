@@ -325,7 +325,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (DataSource.BusinessObject != null)
         value = (DateTime?) DataSource.BusinessObject.GetProperty (Property);
 
-      LoadValueInternal (value, interim);
+      LoadValueInternal (value, false);
     }
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
