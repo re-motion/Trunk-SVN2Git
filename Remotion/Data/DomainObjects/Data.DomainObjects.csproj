@@ -255,6 +255,8 @@
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\IInfrastructureStoragePropertyDefinitionProvider.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\InfrastructureStoragePropertyDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnValue.cs" />
     <Compile Include="Persistence\Rdbms\Model\CompoundStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IObjectIDStoragePropertyDefinition.cs" />
@@ -452,8 +454,8 @@
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\IRdbmsStoragePropertyDefinitionFactory.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\RdbmsStoragePropertyDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\IDataStoragePropertyDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\DataStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\FilterViewDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinition.cs" />

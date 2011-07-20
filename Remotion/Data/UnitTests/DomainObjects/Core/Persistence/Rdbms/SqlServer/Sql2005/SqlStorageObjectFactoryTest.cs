@@ -102,10 +102,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _sqlProviderFactory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder, _rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (RdbmsPersistenceModelLoader)));
-      Assert.That (((RdbmsPersistenceModelLoader) result).RdbmsStoragePropertyDefinitionFactory, Is.TypeOf (typeof (RdbmsStoragePropertyDefinitionFactory)));
+      Assert.That (((RdbmsPersistenceModelLoader) result).DataStoragePropertyDefinitionFactory, Is.TypeOf (typeof (DataStoragePropertyDefinitionFactory)));
       Assert.That (((RdbmsPersistenceModelLoader) result).StorageProviderID, Is.EqualTo ("TestDomain"));
       // TODO 4148: Check all other properties
-      Assert.That (((RdbmsPersistenceModelLoader) result).StorageProviderDefinitionFinder, Is.SameAs (_storageProviderDefinitionFinder));
     }
 
     [Test]

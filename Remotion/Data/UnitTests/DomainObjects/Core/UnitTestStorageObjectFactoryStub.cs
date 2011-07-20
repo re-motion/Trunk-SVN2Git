@@ -69,13 +69,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var columnDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
+      var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
+          new SqlStorageTypeCalculator (), storageNameProvider);
+      var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
           new SqlStorageTypeCalculator (), storageNameProvider, storageProviderDefinitionFinder);
       var columnDefinitionResolver = new ColumnDefinitionResolver();
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          storageNameProvider, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
+          storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
       var entityDefinitionFactory = new EntityDefinitionFactory (
-          columnDefinitionFactory,
+          infrastructureStoragePropertyDefinitionProvider,
           foreignKeyConstraintDefinitionFactory,
           columnDefinitionResolver,
           storageNameProvider,
@@ -84,9 +86,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return new RdbmsPersistenceModelLoader (
           storageProviderDefinition,
           entityDefinitionFactory,
-          columnDefinitionFactory,
+          dataStoragePropertyDefinitionFactory,
           storageNameProvider,
-          storageProviderDefinitionFinder,
           new RdbmsPersistenceModelProvider());
     }
 

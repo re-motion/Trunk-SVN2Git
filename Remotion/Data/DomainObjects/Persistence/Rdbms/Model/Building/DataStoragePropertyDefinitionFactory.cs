@@ -23,16 +23,16 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// The <see cref="RdbmsStoragePropertyDefinitionFactory"/> is responsible to create a <see cref="IRdbmsStoragePropertyDefinition"/> objects for <see cref="PropertyDefinition"/>
-  /// instances.
+  /// The <see cref="DataStoragePropertyDefinitionFactory"/> is responsible to create <see cref="IRdbmsStoragePropertyDefinition"/> objects for 
+  /// <see cref="PropertyDefinition"/> instances.
   /// </summary>
-  public class RdbmsStoragePropertyDefinitionFactory : IRdbmsStoragePropertyDefinitionFactory
+  public class DataStoragePropertyDefinitionFactory : IDataStoragePropertyDefinitionFactory
   {
     private readonly StorageTypeCalculator _storageTypeCalculator;
     private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
     private readonly IStorageNameProvider _storageNameProvider;
 
-    public RdbmsStoragePropertyDefinitionFactory (
+    public DataStoragePropertyDefinitionFactory (
         StorageTypeCalculator storageTypeCalculator,
         IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder)
@@ -68,24 +68,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         return new SimpleStoragePropertyDefinition (columnDefinition);
       }
       return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition);
-    }
-
-    public ColumnDefinition CreateObjectIDColumnDefinition ()
-    {
-      return new ColumnDefinition (
-          _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeCalculator.ObjectIDStorageType, false, true);
-    }
-
-    public ColumnDefinition CreateClassIDColumnDefinition ()
-    {
-      return new ColumnDefinition (
-          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeCalculator.ClassIDStorageType, false, false);
-    }
-
-    public virtual ColumnDefinition CreateTimestampColumnDefinition ()
-    {
-      return new ColumnDefinition (
-          _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.TimestampStorageType, false, false);
     }
 
     protected virtual IObjectIDStoragePropertyDefinition CreateRelationStoragePropertyDefinition (

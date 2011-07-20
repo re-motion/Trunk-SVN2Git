@@ -69,21 +69,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var columnDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
+      var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
+          new SqlStorageTypeCalculator (), storageNameProvider);
+      var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
           new SqlStorageTypeCalculator (), storageNameProvider, storageProviderDefinitionFinder);
-      var columnDefinitonResolver = new ColumnDefinitionResolver();
+      var columnDefinitionResolver = new ColumnDefinitionResolver ();
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          storageNameProvider, columnDefinitonResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
+          storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
       var entityDefinitionFactory = new EntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitonResolver, storageNameProvider, storageProviderDefinition);
+          infrastructureStoragePropertyDefinitionProvider,
+          foreignKeyConstraintDefinitionFactory,
+          columnDefinitionResolver,
+          storageNameProvider,
+          storageProviderDefinition);
 
       return new RdbmsPersistenceModelLoader (
           storageProviderDefinition,
           entityDefinitionFactory,
-          columnDefinitionFactory,
+          dataStoragePropertyDefinitionFactory,
           storageNameProvider,
-          storageProviderDefinitionFinder,
-          new RdbmsPersistenceModelProvider());
+          new RdbmsPersistenceModelProvider ());
     }
 
     public IQueryExecutor CreateLinqQueryExecutor (

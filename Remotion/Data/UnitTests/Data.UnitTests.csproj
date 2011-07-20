@@ -295,6 +295,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\DictionaryBasedColumnOrdinalProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\NameBasedColumnOrdinalProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\ComparedColumnsSpecificationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\InfrastructureStoragePropertyDefinitionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\CompoundStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ObjectIDWithoutClassIDStoragePropertyDefinitionTest.cs" />
@@ -440,7 +441,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\StorageGroupTypesAreSameWithinInheritanceTreeRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InvalidRdbmsStorageObjectFactory.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\RdbmsStoragePropertyDefinitionFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\DataStoragePropertyDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ColumnDefinitionResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\EntityDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ForeignKeyConstraintDefinitionFactoryTest.cs" />

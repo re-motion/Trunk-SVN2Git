@@ -31,10 +31,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   [TestFixture]
   public class RdbmsPersistenceModelLoaderIntegrationTest
   {
-    private RdbmsPersistenceModelLoaderTestHelper _testModel;
     private string _storageProviderID;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+
+    private ReflectionBasedStorageNameProvider _storageNameProvider;
+    private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
+    private IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
+    private ColumnDefinitionResolver _columnDefinitionResolver;
+    private ForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
+    private EntityDefinitionFactory _entityDefinitionFactory;
+    private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
+
+    private RdbmsPersistenceModelLoaderTestHelper _testModel;
     private SimpleStoragePropertyDefinition _fakeBaseBaseColumnDefinition;
     private SimpleStoragePropertyDefinition _fakeBaseColumnDefinition;
     private SimpleStoragePropertyDefinition _fakeTableColumnDefinition1;
@@ -46,12 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private SimpleStoragePropertyDefinition _fakeObjectIDColumn;
     private SimpleStoragePropertyDefinition _fakeClassIDColumn;
     private ColumnDefinition _fakeTimestampColumnDefinition;
-    private IRdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
-    private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
-    private ReflectionBasedStorageNameProvider _storageNameProvider;
-    private ForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
-    private ColumnDefinitionResolver _columnDefinitionResolver;
-    private EntityDefinitionFactory _entityDefinitionFactory;
+
 
     [SetUp]
     public void SetUp ()
@@ -59,16 +63,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageProviderID = "DefaultStorageProvider";
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID);
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _rdbmsStoragePropertyDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
+      _infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
+          new SqlStorageTypeCalculator (), _storageNameProvider);
+      _dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
           new SqlStorageTypeCalculator (), _storageNameProvider, _storageProviderDefinitionFinder);
       _columnDefinitionResolver = new ColumnDefinitionResolver();
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          _storageNameProvider, _columnDefinitionResolver, _rdbmsStoragePropertyDefinitionFactory, _storageProviderDefinitionFinder);
+          _storageNameProvider, _columnDefinitionResolver, _infrastructureStoragePropertyDefinitionProvider, _storageProviderDefinitionFinder);
       _entityDefinitionFactory = new EntityDefinitionFactory (
-          _rdbmsStoragePropertyDefinitionFactory,
+          _infrastructureStoragePropertyDefinitionProvider,
           _foreignKeyConstraintDefinitionFactory,
           _columnDefinitionResolver,
           _storageNameProvider,
@@ -76,11 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
           _storageProviderDefinition,
           _entityDefinitionFactory,
-          _rdbmsStoragePropertyDefinitionFactory,
+          _dataStoragePropertyDefinitionFactory,
           _storageNameProvider,
-          _storageProviderDefinitionFinder,
           new RdbmsPersistenceModelProvider ());
 
+      _testModel = new RdbmsPersistenceModelLoaderTestHelper();
       _fakeBaseBaseColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseBaseProperty");
       _fakeBaseColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseProperty");
       _fakeTableColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("TableProperty1");
@@ -88,10 +93,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeDerivedColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty1");
       _fakeDerivedColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty2");
       _fakeDerivedDerivedColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedDerivedProperty");
-      _fakeObjectIDColumn = new SimpleStoragePropertyDefinition (_rdbmsStoragePropertyDefinitionFactory.CreateObjectIDColumnDefinition());
-      _fakeClassIDColumn = new SimpleStoragePropertyDefinition (_rdbmsStoragePropertyDefinitionFactory.CreateClassIDColumnDefinition());
+      _fakeObjectIDColumn = new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition ());
+      _fakeClassIDColumn = new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ());
       _fakeIDColumnDefinition = new ObjectIDStoragePropertyDefinition (_fakeObjectIDColumn, _fakeClassIDColumn);
-      _fakeTimestampColumnDefinition = _rdbmsStoragePropertyDefinitionFactory.CreateTimestampColumnDefinition();
+      _fakeTimestampColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();
 
       _testModel.BaseBasePropertyDefinition.SetStorageProperty (_fakeBaseBaseColumnDefinition);
       _testModel.BasePropertyDefinition.SetStorageProperty (_fakeBaseColumnDefinition);

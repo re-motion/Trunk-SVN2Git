@@ -14,18 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.Mapping;
-
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// <see cref="IRdbmsStoragePropertyDefinitionFactory"/> defines the API to create instances of <see cref="IRdbmsStoragePropertyDefinition"/>. 
+  /// <see cref="IInfrastructureStoragePropertyDefinitionProvider"/> defines the API to create instances of <see cref="IRdbmsStoragePropertyDefinition"/>
+  /// to use for infrastructure columns.
   /// </summary>
-  public interface IRdbmsStoragePropertyDefinitionFactory
+  public interface IInfrastructureStoragePropertyDefinitionProvider
   {
-    IRdbmsStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition);
-    ColumnDefinition CreateObjectIDColumnDefinition ();
-    ColumnDefinition CreateClassIDColumnDefinition ();
-    ColumnDefinition CreateTimestampColumnDefinition ();
+    ColumnDefinition GetObjectIDColumnDefinition ();
+    ColumnDefinition GetClassIDColumnDefinition ();
+    ColumnDefinition GetTimestampColumnDefinition ();
   }
 }
