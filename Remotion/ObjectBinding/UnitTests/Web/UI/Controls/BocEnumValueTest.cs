@@ -205,6 +205,48 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.IsFalse (_bocEnumValue.IsDirty);
     }
 
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      _bocEnumValue.DataSource = null;
+      _bocEnumValue.Property = _propertyEnumValue;
+      _bocEnumValue.Value = TestEnum.Second;
+      _bocEnumValue.IsDirty = true;
+
+      _bocEnumValue.LoadValue (false);
+      Assert.AreEqual (TestEnum.Second, _bocEnumValue.Value);
+      Assert.IsTrue (_bocEnumValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocEnumValue.DataSource = _dataSource;
+      // BocEnumValue requires a property when setting the value
+      _bocEnumValue.Property = _propertyEnumValue;
+      _bocEnumValue.Value = TestEnum.Second;
+      _bocEnumValue.Property = null;
+      _bocEnumValue.IsDirty = true;
+
+      _bocEnumValue.LoadValue (false);
+      Assert.AreEqual (TestEnum.Second, _bocEnumValue.Value);
+      Assert.IsTrue (_bocEnumValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocEnumValue.DataSource = _dataSource;
+      _bocEnumValue.Property = _propertyEnumValue;
+      _bocEnumValue.Value = TestEnum.Second;
+      _bocEnumValue.IsDirty = true;
+
+      _bocEnumValue.LoadValue (false);
+      Assert.AreEqual (null, _bocEnumValue.Value);
+      Assert.IsFalse (_bocEnumValue.IsDirty);
+    }
 
     [Test]
     public void LoadUnboundValueAndInterimTrue ()
