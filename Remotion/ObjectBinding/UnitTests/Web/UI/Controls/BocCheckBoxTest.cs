@@ -339,7 +339,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void LoadValueAndInterimFalseWithPropertyNull ()
     {
-      _dataSource.BusinessObject = null;
       _bocCheckBox.DataSource = _dataSource;
       _bocCheckBox.Property = null;
       _bocCheckBox.Value = true;

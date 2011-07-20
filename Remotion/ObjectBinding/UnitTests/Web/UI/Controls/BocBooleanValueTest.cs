@@ -334,7 +334,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void LoadValueAndInterimFalseWithPropertyNull ()
     {
-      _dataSource.BusinessObject = null;
       _bocBooleanValue.DataSource = _dataSource;
       _bocBooleanValue.Property = null;
       _bocBooleanValue.Value = true;
