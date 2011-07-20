@@ -438,6 +438,49 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      var value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      _control.DataSource = null;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = value;
+      _control.IsDirty = true;
+
+      _control.LoadValue (false);
+      Assert.AreEqual (value, _control.Value);
+      Assert.IsTrue (_control.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      var value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      _control.DataSource = _dataSource;
+      _control.Property = null;
+      _control.Value = value;
+      _control.IsDirty = true;
+
+      _control.LoadValue (false);
+      Assert.AreEqual (value, _control.Value);
+      Assert.IsTrue (_control.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _control.DataSource = _dataSource;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      _control.IsDirty = true;
+
+      _control.LoadValue (false);
+      Assert.AreEqual (null, _control.Value);
+      Assert.IsFalse (_control.IsDirty);
+    }
+
+
+    [Test]
     public void LoadUnboundValueInterim ()
     {
       var oldValue = _control.Value;
