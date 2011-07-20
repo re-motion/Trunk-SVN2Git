@@ -260,11 +260,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (value != null)
         {
-          if (!Control.SupportsProperty (value))
+          if (!_control.SupportsProperty (value))
           {
             throw new ArgumentException (
                 string.Format ("{0} '{1}' does not support the  business object property '{2}'.",
-                    this.GetType ().Name, _control.ID, value.Identifier),
+                    _control.GetType ().Name, _control.ID, value.Identifier),
                 "value");
           }
         }

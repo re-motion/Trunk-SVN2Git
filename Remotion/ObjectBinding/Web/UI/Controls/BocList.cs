@@ -2590,13 +2590,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public new IBusinessObjectReferenceProperty Property
     {
       get { return (IBusinessObjectReferenceProperty) base.Property; }
-      set
-      {
-        IBusinessObjectReferenceProperty property = ArgumentUtility.CheckType<IBusinessObjectReferenceProperty> ("value", value);
-        if (value.IsList == false)
-          throw new ArgumentException ("Only properties supporting IList can be assigned to the BocList.", "value");
-        base.Property = property;
-      }
+      set { base.Property = ArgumentUtility.CheckType<IBusinessObjectReferenceProperty> ("value", value); }
     }
 
     /// <summary> Gets or sets the current value. </summary>
