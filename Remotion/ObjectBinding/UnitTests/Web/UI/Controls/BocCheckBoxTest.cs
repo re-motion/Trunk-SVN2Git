@@ -323,6 +323,47 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.IsFalse (_bocCheckBox.IsDirty);
     }
 
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      _bocCheckBox.DataSource = null;
+      _bocCheckBox.Property = _propertyBooleanValue;
+      _bocCheckBox.Value = true;
+      _bocCheckBox.IsDirty = true;
+
+      _bocCheckBox.LoadValue (false);
+      Assert.AreEqual (true, _bocCheckBox.Value);
+      Assert.IsTrue (_bocCheckBox.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocCheckBox.DataSource = _dataSource;
+      _bocCheckBox.Property = null;
+      _bocCheckBox.Value = true;
+      _bocCheckBox.IsDirty = true;
+
+      _bocCheckBox.LoadValue (false);
+      Assert.AreEqual (true, _bocCheckBox.Value);
+      Assert.IsTrue (_bocCheckBox.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocCheckBox.DataSource = _dataSource;
+      _bocCheckBox.Property = _propertyBooleanValue;
+      _bocCheckBox.Value = true;
+      _bocCheckBox.IsDirty = true;
+
+      _bocCheckBox.LoadValue (false);
+      Assert.AreEqual (false, _bocCheckBox.Value);
+      Assert.IsFalse (_bocCheckBox.IsDirty);
+    }
+
 
     [Test]
     public void LoadUnboundValueAndInterimTrue()

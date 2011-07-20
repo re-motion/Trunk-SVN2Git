@@ -318,6 +318,47 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.IsFalse (_bocBooleanValue.IsDirty);
     }
 
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      _bocBooleanValue.DataSource = null;
+      _bocBooleanValue.Property = _propertyBooleanValue;
+      _bocBooleanValue.Value = true;
+      _bocBooleanValue.IsDirty = true;
+
+      _bocBooleanValue.LoadValue (false);
+      Assert.AreEqual (true, _bocBooleanValue.Value);
+      Assert.IsTrue (_bocBooleanValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocBooleanValue.DataSource = _dataSource;
+      _bocBooleanValue.Property = null;
+      _bocBooleanValue.Value = true;
+      _bocBooleanValue.IsDirty = true;
+
+      _bocBooleanValue.LoadValue (false);
+      Assert.AreEqual (true, _bocBooleanValue.Value);
+      Assert.IsTrue (_bocBooleanValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocBooleanValue.DataSource = _dataSource;
+      _bocBooleanValue.Property = _propertyBooleanValue;
+      _bocBooleanValue.Value = true;
+      _bocBooleanValue.IsDirty = true;
+
+      _bocBooleanValue.LoadValue (false);
+      Assert.AreEqual (null, _bocBooleanValue.Value);
+      Assert.IsFalse (_bocBooleanValue.IsDirty);
+    }
+
 
     [Test]
     public void LoadUnboundValueAndInterimTrue ()

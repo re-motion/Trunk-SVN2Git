@@ -71,11 +71,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (interim)
         return;
 
-      if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-      {
-        bool? value = (bool?) DataSource.BusinessObject.GetProperty (Property);
-        LoadValueInternal (value, false);
-      }
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      bool? value = null;
+
+      if (DataSource.BusinessObject != null)
+        value = (bool?) DataSource.BusinessObject.GetProperty (Property);
+
+      LoadValueInternal (value, false);
     }
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
