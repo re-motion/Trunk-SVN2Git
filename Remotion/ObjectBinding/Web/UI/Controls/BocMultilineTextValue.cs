@@ -81,14 +81,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
-      if (! interim)
-      {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-        {
-          string[] value = (string[]) DataSource.BusinessObject.GetProperty (Property);
-          LoadValueInternal (value, interim);
-        }
-      }
+      if (interim)
+        return;
+
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      string[] value = null;
+
+      if (DataSource.BusinessObject != null)
+        value = (string[]) DataSource.BusinessObject.GetProperty (Property);
+
+      LoadValueInternal (value, false);
     }
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>

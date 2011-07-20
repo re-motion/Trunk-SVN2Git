@@ -192,6 +192,47 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      _bocMultilineTextValue.DataSource = null;
+      _bocMultilineTextValue.Property = _propertyStringArray;
+      _bocMultilineTextValue.Value = new[] { "Foo", "Bar" };
+      _bocMultilineTextValue.IsDirty = true;
+
+      _bocMultilineTextValue.LoadValue (false);
+      Assert.AreEqual (new[] { "Foo", "Bar" }, _bocMultilineTextValue.Value);
+      Assert.IsTrue (_bocMultilineTextValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      _bocMultilineTextValue.DataSource = _dataSource;
+      _bocMultilineTextValue.Property = null;
+      _bocMultilineTextValue.Value = new[] { "Foo", "Bar" };
+      _bocMultilineTextValue.IsDirty = true;
+
+      _bocMultilineTextValue.LoadValue (false);
+      Assert.AreEqual (new[] { "Foo", "Bar" }, _bocMultilineTextValue.Value);
+      Assert.IsTrue (_bocMultilineTextValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocMultilineTextValue.DataSource = _dataSource;
+      _bocMultilineTextValue.Property = _propertyStringArray;
+      _bocMultilineTextValue.Value = new[] { "Foo", "Bar" };
+      _bocMultilineTextValue.IsDirty = true;
+
+      _bocMultilineTextValue.LoadValue (false);
+      Assert.AreEqual (null, _bocMultilineTextValue.Value);
+      Assert.IsFalse (_bocMultilineTextValue.IsDirty);
+    }
+
+
+    [Test]
     public void LoadUnboundValueAndInterimTrue ()
     {
       string[] value = new[] { "Foo", "Bar" };
