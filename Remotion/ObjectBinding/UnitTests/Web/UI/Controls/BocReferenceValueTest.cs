@@ -345,6 +345,49 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      var value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      _bocReferenceValue.DataSource = null;
+      _bocReferenceValue.Property = _propertyReferenceValue;
+      _bocReferenceValue.Value = value;
+      _bocReferenceValue.IsDirty = true;
+
+      _bocReferenceValue.LoadValue (false);
+      Assert.AreEqual (value, _bocReferenceValue.Value);
+      Assert.IsTrue (_bocReferenceValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      var value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      _bocReferenceValue.DataSource = _dataSource;
+      _bocReferenceValue.Property = null;
+      _bocReferenceValue.Value = value;
+      _bocReferenceValue.IsDirty = true;
+
+      _bocReferenceValue.LoadValue (false);
+      Assert.AreEqual (value, _bocReferenceValue.Value);
+      Assert.IsTrue (_bocReferenceValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocReferenceValue.DataSource = _dataSource;
+      _bocReferenceValue.Property = _propertyReferenceValue;
+      _bocReferenceValue.Value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      _bocReferenceValue.IsDirty = true;
+
+      _bocReferenceValue.LoadValue (false);
+      Assert.AreEqual (null, _bocReferenceValue.Value);
+      Assert.IsFalse (_bocReferenceValue.IsDirty);
+    }
+
+
+    [Test]
     public void LoadUnboundValueAndInterimTrue ()
     {
       IBusinessObjectWithIdentity value = (IBusinessObjectWithIdentity) TypeWithReference.Create();
