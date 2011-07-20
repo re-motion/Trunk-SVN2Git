@@ -38,13 +38,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     }
 
     public abstract int NumberOfShops { get; set; }
-
-    [DBBidirectionalRelation ("Distributor")]
-    private ClassWithoutRelatedClassIDColumn ClassWithoutRelatedClassIDColumn
-    {
-      get { return Properties[typeof (Distributor), "ClassWithoutRelatedClassIDColumn"].GetValue<ClassWithoutRelatedClassIDColumn> (); }
-      set { Properties[typeof (Distributor), "ClassWithoutRelatedClassIDColumn"].SetValue (value); }
-    }
-    
   }
 }

@@ -37,21 +37,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   [TestFixture]
   public class RdbmsStoragePropertyDefinitionFactoryTest : StandardMappingTest
   {
+    private PropertyInfo _propertyInfoStub;
+
+    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
     private StorageTypeCalculator _storageTypeCalculatorStub;
-    private RdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
+    private IStorageNameProvider _storageNameProviderStub;
+
     private ClassDefinition _classWithAllDataTypesDefinition;
     private ClassDefinition _fileSystemItemClassDefinition;
-    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
     private ClassDefinition _classAboveDbTableAttribute;
     private ClassDefinition _classWithDbTableAttribute;
     private ClassDefinition _classBelowDbTableAttribute;
     private ClassDefinition _classBelowBelowDbTableAttribute;
-    private IStorageNameProvider _storageNameProviderStub;
+
+    private RdbmsStoragePropertyDefinitionFactory _rdbmsStoragePropertyDefinitionFactory;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
+
+      _propertyInfoStub = typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty");
+      
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> (_storageProviderDefinitionFinder);
       _storageTypeCalculatorStub.Stub (stub => stub.ClassIDStorageType).Return (
@@ -66,8 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
       _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
       _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
-      _rdbmsStoragePropertyDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
-          _storageTypeCalculatorStub, _storageNameProviderStub, _storageProviderDefinitionFinder);
+
       _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithAllDataTypes));
       _classWithAllDataTypesDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       _fileSystemItemClassDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (FileSystemItem));
@@ -81,6 +87,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _classBelowBelowDbTableAttribute = ClassDefinitionFactory.CreateClassDefinition (
           typeof (Distributor), _classBelowDbTableAttribute);
       _classBelowBelowDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
+
+      _rdbmsStoragePropertyDefinitionFactory = new RdbmsStoragePropertyDefinitionFactory (
+          _storageTypeCalculatorStub,
+          _storageNameProviderStub,
+          _storageProviderDefinitionFinder);
     }
 
     [Test]
@@ -98,8 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateColumnDefinition_PropertyType ()
     {
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+      var propertyDefinition = PropertyDefinitionFactory.Create (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
       StubStorageCalculators (propertyDefinition);
 
       var result = (SimpleStoragePropertyDefinition) _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
@@ -112,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void CreateColumnDefinition_StorageType ()
     {
       var propertyDefinition = PropertyDefinitionFactory.Create (
-          _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+          _classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
       StubStorageCalculators (propertyDefinition);
 
       var result = (SimpleStoragePropertyDefinition) _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
@@ -143,8 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateColumnDefinition_NotSupportedType ()
     {
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+      var propertyDefinition = PropertyDefinitionFactory.Create (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
       _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (null);
 
       var result = _rdbmsStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
@@ -153,12 +162,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void CreateColumnDefinition_ClassAboveDbTableAttribute ()
+    public void CreateColumnDefinition_RespectsNullability_ForClassAboveDbTableAttribute ()
     {
       var propertyDefinitionNotNullable = PropertyDefinitionFactory.Create (
-          _classAboveDbTableAttribute, StorageClass.Persistent, typeof (ClassNotInMapping).GetProperty ("RelationProperty"), false);
+          _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
-          _classAboveDbTableAttribute, StorageClass.Persistent, typeof (ClassNotInMapping).GetProperty ("RelationProperty"), true);
+          _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
 
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
@@ -175,12 +184,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void CreateColumnDefinition_ClassWithDbTableAttribute ()
+    public void CreateColumnDefinition_RespectsNullability_ForClassWithDbTableAttribute ()
     {
       var propertyDefinitionNotNullable = PropertyDefinitionFactory.Create (
-          _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), false);
+          _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
-          _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), true);
+          _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
 
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
@@ -195,12 +204,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void CreateColumnDefinition_ClassBelowDbTableAttribute ()
+    public void CreateColumnDefinition_OverridesNullability_ForClassBelowDbTableAttribute ()
     {
       var propertyDefinitionNotNullable = PropertyDefinitionFactory.Create (
-          _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), false);
+          _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
-          _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), true);
+          _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
 
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
@@ -216,17 +225,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void CreateColumnDefinition_ClassBelowBelowDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
+    public void CreateColumnDefinition_OverridesNullability_ForClassBelowBelowDbTableAttribute ()
     {
       var propertyDefinitionNotNullable = PropertyDefinitionFactory.Create (
           _classBelowBelowDbTableAttribute,
           StorageClass.Persistent,
-          typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn", BindingFlags.NonPublic | BindingFlags.Instance),
+          _propertyInfoStub,
           false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classBelowBelowDbTableAttribute,
           StorageClass.Persistent,
-          typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn", BindingFlags.NonPublic | BindingFlags.Instance),
+          _propertyInfoStub,
           true);
 
       StubStorageCalculators (propertyDefinitionNotNullable);

@@ -33,7 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     {
     }
 
-    [DBBidirectionalRelation ("ClassWithoutRelatedClassIDColumnAndDerivation", ContainsForeignKey = true)]
     public abstract Company Company { get; set; }
   }
 }

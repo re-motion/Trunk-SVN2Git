@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using System.Linq;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -203,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
     public void LoadDataContainersWithoutRelatedIDColumn ()
     {
-      var id = new ObjectID ("ClassWithoutRelatedClassIDColumn", new Guid ("{CD3BE83E-FBB7-4251-AAE4-B216485C5638}"));
+      var id = new ObjectID (typeof (ClassWithoutRelatedClassIDColumn), new Guid ("{CD3BE83E-FBB7-4251-AAE4-B216485C5638}"));
 
       Provider.LoadDataContainers (new[] { id });
     }
@@ -212,8 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
     public void LoadDataContainersWithoutRelatedIDColumnAndDerivation ()
     {
-      var id = new ObjectID ("ClassWithoutRelatedClassIDColumnAndDerivation",
-          new Guid ("{4821D7F7-B586-4435-B572-8A96A44B113E}"));
+      var id = new ObjectID (typeof (ClassWithoutRelatedClassIDColumnAndDerivation), new Guid ("{4821D7F7-B586-4435-B572-8A96A44B113E}"));
 
       Provider.LoadDataContainers (new[] { id });
     }
@@ -239,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + " because opposite class 'ClassWithGuidKey' is not part of an inheritance hierarchy.")]
     public void LoadDataContainersWithRelatedClassIDColumnAndNoInheritance ()
     {
-      var id = new ObjectID ("ClassWithRelatedClassIDColumnAndNoInheritance", new Guid ("{CB72715D-F419-4ab9-8D49-ABCBA4E9EDB4}"));
+      var id = new ObjectID (typeof (ClassWithRelatedClassIDColumnAndNoInheritance), new Guid ("{CB72715D-F419-4ab9-8D49-ABCBA4E9EDB4}"));
 
       Provider.LoadDataContainers (new[] { id });
     }

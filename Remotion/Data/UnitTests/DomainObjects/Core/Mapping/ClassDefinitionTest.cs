@@ -771,34 +771,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetRelationEndPointDefinitions ()
-    {
-      IRelationEndPointDefinition[] relationEndPointDefinitions = _distributorClass.MyRelationEndPointDefinitions.ToArray();
-
-      Assert.IsNotNull (relationEndPointDefinitions);
-      Assert.AreEqual (1, relationEndPointDefinitions.Length);
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn",
-          relationEndPointDefinitions[0].PropertyName);
-    }
-
-    [Test]
     public void GetAllRelationEndPointDefinitionsWithInheritance ()
     {
       var relationEndPointDefinitions = _distributorClass.GetRelationEndPointDefinitions();
 
-      IRelationEndPointDefinition classWithoutRelatedClassIDColumnEndPoint =
-          _distributorClass.GetRelationEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn");
       IRelationEndPointDefinition contactPersonEndPoint =
           _distributorClass.GetRelationEndPointDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Partner.ContactPerson");
       IRelationEndPointDefinition ceoEndPoint =
           _distributorClass.GetRelationEndPointDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.Ceo");
-      IRelationEndPointDefinition classWithoutRelatedClassIDColumnAndDerivationEndPoint =
-          _distributorClass.GetRelationEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation");
       IRelationEndPointDefinition industrialSectorEndPoint =
           _distributorClass.GetRelationEndPointDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.IndustrialSector");
@@ -809,10 +791,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Is.EquivalentTo (
               new[]
               {
-                  classWithoutRelatedClassIDColumnEndPoint,
                   contactPersonEndPoint,
                   ceoEndPoint,
-                  classWithoutRelatedClassIDColumnAndDerivationEndPoint,
                   industrialSectorEndPoint
               }));
     }

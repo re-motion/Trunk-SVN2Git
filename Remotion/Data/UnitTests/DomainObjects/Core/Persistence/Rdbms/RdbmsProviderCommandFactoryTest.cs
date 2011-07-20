@@ -392,20 +392,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _dbCommandBuilderFactoryStub
           .Stub (
               stub => stub.CreateForRelationLookupFromTable (
-                  (TableDefinition) classDefinition.StorageEntityDefinition,
-                  AllSelectedColumnsSpecification.Instance,
-                  _foreignKeyColumnDefinition,
-                  _foreignKeyValue,
-                  EmptyOrderedColumnsSpecification.Instance))
+                  Arg.Is ((TableDefinition) classDefinition.StorageEntityDefinition),
+                  Arg<SelectedColumnsSpecification>.Matches(c=>c.SelectedColumns.SequenceEqual(_tableDefinition1.GetAllColumns())),
+                  Arg.Is (_foreignKeyColumnDefinition),
+                  Arg.Is (_foreignKeyValue),
+                  Arg.Is (EmptyOrderedColumnsSpecification.Instance)))
           .Return (_dbCommandBuilder1Stub);
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (
-          ((MultiDataContainerLoadCommand) result).DbCommandBuilderTuples,
-          Is.EqualTo (new[] { Tuple.Create (_dbCommandBuilder1Stub, _dataContainerReaderStub) }));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
+      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuilderTuples;
+      Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
+      Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition)
+           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ValueProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.ObjectIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition)
+           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ClassIDProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.ClassIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition)
+           ((DataContainerReader) dbCommandBuilderTuples[0].Item2).TimestampProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.TimestampColumn));
     }
 
     [Test]
@@ -431,11 +443,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                                        Tuple.Create (ColumnDefinitionObjectMother.IDColumn, SortOrder.Descending),
                                        Tuple.Create (ColumnDefinitionObjectMother.IDColumn, SortOrder.Ascending)
                                    };
+      
       _dbCommandBuilderFactoryStub
           .Stub (
               stub => stub.CreateForRelationLookupFromTable (
                   Arg.Is ((TableDefinition) classDefinition.StorageEntityDefinition),
-                  Arg.Is (AllSelectedColumnsSpecification.Instance),
+                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (_tableDefinition1.GetAllColumns ())),
                   Arg.Is (_foreignKeyColumnDefinition),
                   Arg.Is (_foreignKeyValue),
                   Arg<OrderedColumnsSpecification>.Matches (o => o.Columns.SequenceEqual (expectedOrderedColumns))))
@@ -447,10 +460,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }));
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (
-          ((MultiDataContainerLoadCommand) result).DbCommandBuilderTuples,
-          Is.EqualTo (new[] { Tuple.Create (_dbCommandBuilder1Stub, _dataContainerReaderStub) }));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
+      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuilderTuples;
+      Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
+      Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition)
+           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ValueProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.ObjectIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition)
+           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ClassIDProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.ClassIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition)
+           ((DataContainerReader) dbCommandBuilderTuples[0].Item2).TimestampProperty).ColumnDefinition,
+          Is.SameAs (_tableDefinition1.TimestampColumn));
     }
 
     [Test]

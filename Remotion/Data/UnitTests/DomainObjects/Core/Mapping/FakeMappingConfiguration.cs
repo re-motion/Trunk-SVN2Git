@@ -114,9 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinitions.Add (CreateFolderDefinition (fileSystemItemDefinition));
       classDefinitions.Add (CreateFileDefinition (fileSystemItemDefinition));
 
-      classDefinitions.Add (CreateClassWithoutRelatedClassIDColumnAndDerivationDefinition (null));
       classDefinitions.Add (CreateClassWithOptionalOneToOneRelationAndOppositeDerivedClassDefinition (null));
-      classDefinitions.Add (CreateClassWithoutRelatedClassIDColumnDefinition (null));
       classDefinitions.Add (CreateClassWithAllDataTypesDefinition (null));
       classDefinitions.Add (CreateClassWithGuidKeyDefinition (null));
       classDefinitions.Add (CreateClassWithInvalidKeyTypeDefinition (null));
@@ -779,29 +777,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    private ClassDefinition CreateClassWithoutRelatedClassIDColumnDefinition (ClassDefinition baseClass)
-    {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
-          "ClassWithoutRelatedClassIDColumn",
-          "TableWithoutRelatedClassIDColumn",
-          _storageProviderDefinition,
-          typeof (ClassWithoutRelatedClassIDColumn),
-          false,
-          baseClass);
-
-      var properties = new List<PropertyDefinition> ();
-      properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition,
-              typeof (ClassWithoutRelatedClassIDColumn), "Distributor",
-              "DistributorID",
-              true));
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
-
-      return classDefinition;
-    }
-
-    private ClassDefinition CreateClassWithoutRelatedClassIDColumnAndDerivationDefinition (ClassDefinition baseClass)
+    private ClassDefinition CreateClassWithOptionalOneToOneRelationAndOppositeDerivedClassDefinition (ClassDefinition baseClass)
     {
       ClassDefinition classDefinition =
           ClassDefinitionFactory.CreateClassDefinition (
@@ -817,30 +793,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithOptionalOneToOneRelationAndOppositeDerivedClass), "Company",
-              "CompanyID",
-              true));
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
-
-      return classDefinition;
-    }
-
-    private ClassDefinition CreateClassWithOptionalOneToOneRelationAndOppositeDerivedClassDefinition (
-        ClassDefinition baseClass)
-    {
-      ClassDefinition classDefinition =
-          ClassDefinitionFactory.CreateClassDefinition (
-              "ClassWithoutRelatedClassIDColumnAndDerivation",
-              "TableWithoutRelatedClassIDColumnAndDerivation",
-              _storageProviderDefinition,
-              typeof (ClassWithoutRelatedClassIDColumnAndDerivation),
-              false,
-              baseClass);
-
-      var properties = new List<PropertyDefinition> ();
-      properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition,
-              typeof (ClassWithoutRelatedClassIDColumnAndDerivation), "Company",
               "CompanyID",
               true));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
@@ -1070,9 +1022,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitions.Add (CreateParentClientToChildClientRelationDefinition());
       relationDefinitions.Add (CreateFolderToFileSystemItemRelationDefinition());
 
-      relationDefinitions.Add (CreateCompanyToClassWithoutRelatedClassIDColumnAndDerivationRelationDefinition());
       relationDefinitions.Add (CreateCompanyToClassWithOptionalOneToOneRelationAndOppositeDerivedClassRelationDefinition());
-      relationDefinitions.Add (CreateDistributorToClassWithoutRelatedClassIDColumnRelationDefinition());
       relationDefinitions.Add (CreateClassWithGuidKeyToClassWithValidRelationsOptional());
       relationDefinitions.Add (CreateClassWithGuidKeyToClassWithValidRelationsNonOptional());
       relationDefinitions.Add (CreateClassWithGuidKeyToClassWithInvalidRelation());
@@ -1292,61 +1242,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem"
             + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder->"
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems", endPoint1, endPoint2);
-
-      return relation;
-    }
-
-    private RelationDefinition CreateDistributorToClassWithoutRelatedClassIDColumnRelationDefinition ()
-    {
-      ClassDefinition distributorClass = _typeDefinitions[typeof (Distributor)];
-
-      ClassDefinition classWithoutRelatedClassIDColumnClass = _typeDefinitions[typeof (ClassWithoutRelatedClassIDColumn)];
-
-      VirtualRelationEndPointDefinition endPoint1 =
-          VirtualRelationEndPointDefinitionFactory.Create (
-              distributorClass,
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn",
-              false,
-              CardinalityType.One,
-              typeof (ClassWithoutRelatedClassIDColumn));
-
-      RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
-          classWithoutRelatedClassIDColumnClass["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn.Distributor"],
-          false);
-
-      RelationDefinition relation =
-          CreateExpectedRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn"
-              + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn.Distributor->"
-              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn", endPoint1, endPoint2);
-
-      return relation;
-    }
-
-    private RelationDefinition CreateCompanyToClassWithoutRelatedClassIDColumnAndDerivationRelationDefinition ()
-    {
-      ClassDefinition companyClass = _typeDefinitions[typeof (Company)];
-
-      ClassDefinition classWithoutRelatedClassIDColumnAndDerivation = _typeDefinitions[typeof (ClassWithoutRelatedClassIDColumnAndDerivation)];
-
-      VirtualRelationEndPointDefinition endPoint1 =
-          VirtualRelationEndPointDefinitionFactory.Create (
-              companyClass,
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation",
-              false,
-              CardinalityType.One,
-              typeof (ClassWithoutRelatedClassIDColumnAndDerivation));
-
-      RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
-          classWithoutRelatedClassIDColumnAndDerivation[
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation.Company"],
-          false);
-
-      RelationDefinition relation =
-          CreateExpectedRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation:"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation.Company->"
-              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation", endPoint1, endPoint2);
 
       return relation;
     }

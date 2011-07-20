@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       Assert.That (clone.Customer.Name, Is.EqualTo (source.Customer.Name));
       Assert.That (clone.Customer.Orders.ContainsObject (clone));
     }
-
+   
     [Test]
     public void TwoClonesWithSameContext ()
     {

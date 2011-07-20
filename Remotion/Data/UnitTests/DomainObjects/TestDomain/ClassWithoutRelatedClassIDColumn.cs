@@ -33,7 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     {
     }
   
-    [DBBidirectionalRelation ("ClassWithoutRelatedClassIDColumn", ContainsForeignKey = true)]
     public abstract Distributor Distributor { get; set; }
   }
 }

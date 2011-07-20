@@ -120,17 +120,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer, 1, order.Customer.Properties[typeof (Customer), "Orders"])).Return (true);
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer, 1, order.Customer.Properties[typeof (Company), "Ceo"])).Return (true);
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer, 1, order.Customer.Properties[typeof (Company), "IndustrialSector"])).Return (true);
-        Expect.Call (strategy.ShouldFollowLink (order, order.Customer, 1, order.Customer.Properties[typeof (Company), "ClassWithoutRelatedClassIDColumnAndDerivation"])).Return (true);
 
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer.Ceo, 2, order.Customer.Ceo.Properties[typeof (Ceo), "Company"])).Return (true);
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer.IndustrialSector, 2, order.Customer.IndustrialSector.Properties[typeof (IndustrialSector), "Companies"])).Return (true);
 
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer.IndustrialSector.Companies[1], 3, order.Customer.IndustrialSector.Companies[1].Properties[typeof (Company), "IndustrialSector"])).Return (true);
-        Expect.Call (strategy.ShouldFollowLink (order, order.Customer.IndustrialSector.Companies[1], 3, order.Customer.IndustrialSector.Companies[1].Properties[typeof (Company), "ClassWithoutRelatedClassIDColumnAndDerivation"])).Return (true);
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer.IndustrialSector.Companies[1], 3, order.Customer.IndustrialSector.Companies[1].Properties[typeof (Company), "Ceo"])).Return (true);
 
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer.IndustrialSector.Companies[2], 3, order.Customer.IndustrialSector.Companies[2].Properties[typeof (Company), "IndustrialSector"])).Return (true);
-        Expect.Call (strategy.ShouldFollowLink (order, order.Customer.IndustrialSector.Companies[2], 3, order.Customer.IndustrialSector.Companies[2].Properties[typeof (Company), "ClassWithoutRelatedClassIDColumnAndDerivation"])).Return (true);
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer.IndustrialSector.Companies[2], 3, order.Customer.IndustrialSector.Companies[2].Properties[typeof (Company), "Ceo"])).Return (true);
 
         Expect.Call (strategy.ShouldFollowLink (order, order.Customer.IndustrialSector.Companies[1].Ceo, 4, order.Customer.IndustrialSector.Companies[1].Ceo.Properties[typeof (Ceo), "Company"])).Return (true);

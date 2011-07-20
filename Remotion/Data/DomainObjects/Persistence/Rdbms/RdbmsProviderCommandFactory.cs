@@ -170,13 +170,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression)
     {
+      var selectProjection = tableDefinition.GetAllColumns ();
+      var columnOrdinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
+      var dataContainerReader = CreateDataContainerReader (tableDefinition, columnOrdinalProvider);
+
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
           tableDefinition,
-          AllSelectedColumnsSpecification.Instance,
+          new SelectedColumnsSpecification(selectProjection),
           _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
-      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (dbCommandBuilder, _dataContainerReader) }, false);
+      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) }, false);
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForIndirectRelationLookup (

@@ -58,12 +58,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
       get { return CurrentProperty.GetValue<IndustrialSector> (); }
       set { CurrentProperty.SetValue<IndustrialSector> (value); }
     }
-
-    [DBBidirectionalRelation ("Company")]
-    private ClassWithoutRelatedClassIDColumnAndDerivation ClassWithoutRelatedClassIDColumnAndDerivation
-    {
-      get { return Properties[typeof (Company), "ClassWithoutRelatedClassIDColumnAndDerivation"].GetValue<ClassWithoutRelatedClassIDColumnAndDerivation>(); }
-      set { Properties[typeof (Company), "ClassWithoutRelatedClassIDColumnAndDerivation"].SetValue (value); }
-    }
   }
 }

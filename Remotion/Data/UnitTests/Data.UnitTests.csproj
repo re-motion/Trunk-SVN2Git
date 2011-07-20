@@ -567,8 +567,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithoutClassIDColumn.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithoutIDColumn.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithoutRelatedClassIDColumn.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithoutRelatedClassIDColumnAndDerivation.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithoutTimestampColumn.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithRelatedClassIDColumnAndNoInheritance.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithValidRelations.cs" />
