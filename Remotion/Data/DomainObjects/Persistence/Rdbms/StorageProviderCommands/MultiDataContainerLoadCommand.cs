@@ -33,20 +33,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly bool _allowNulls;
-    private readonly Tuple<IDbCommandBuilder, IDataContainerReader>[] _dbCommandBuilderTuples;
+    private readonly Tuple<IDbCommandBuilder, IDataContainerReader>[] _dbCommandBuildersAndReaders;
 
     public MultiDataContainerLoadCommand (
-        IEnumerable<Tuple<IDbCommandBuilder, IDataContainerReader>> dbCommandBuilderTuples, bool allowNulls)
+        IEnumerable<Tuple<IDbCommandBuilder, IDataContainerReader>> dbCommandBuildersAndReaders, bool allowNulls)
     {
-      ArgumentUtility.CheckNotNull ("dbCommandBuilderTuples", dbCommandBuilderTuples);
+      ArgumentUtility.CheckNotNull ("dbCommandBuildersAndReaders", dbCommandBuildersAndReaders);
 
-      _dbCommandBuilderTuples = dbCommandBuilderTuples.ToArray();
+      _dbCommandBuildersAndReaders = dbCommandBuildersAndReaders.ToArray();
       _allowNulls = allowNulls;
     }
 
-    public Tuple<IDbCommandBuilder, IDataContainerReader>[] DbCommandBuilderTuples
+    public Tuple<IDbCommandBuilder, IDataContainerReader>[] DbCommandBuildersAndReaders
     {
-      get { return _dbCommandBuilderTuples; }
+      get { return _dbCommandBuildersAndReaders; }
     }
 
     public bool AllowNulls
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
-      return _dbCommandBuilderTuples.SelectMany (b => LoadDataContainersFromCommandBuilder (b, executionContext)).ToArray();
+      return _dbCommandBuildersAndReaders.SelectMany (b => LoadDataContainersFromCommandBuilder (b, executionContext)).ToArray();
     }
 
     private IEnumerable<DataContainer> LoadDataContainersFromCommandBuilder (

@@ -30,6 +30,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -46,6 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStub;
     private IDataContainerReader _dataContainerReaderStub;
     private IObjectIDReader _objectIDReaderStub;
+    private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
+    private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProviderStub;
 
     private RdbmsProviderCommandFactory _factory;
 
@@ -59,7 +62,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private ObjectID _foreignKeyValue;
     private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public override void SetUp ()
     {
@@ -68,10 +70,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
       _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
       _objectIDReaderStub = MockRepository.GenerateStub<IObjectIDReader>();
-
       _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
+      _infrastructureStoragePropertyDefinitionProviderStub = MockRepository.GenerateStub<IInfrastructureStoragePropertyDefinitionProvider>();
+
       _factory = new RdbmsProviderCommandFactory (
-          _dbCommandBuilderFactoryStub, _dataContainerReaderStub, _objectIDReaderStub, _rdbmsPersistenceModelProvider);
+          _dbCommandBuilderFactoryStub,
+          _dataContainerReaderStub,
+          _objectIDReaderStub,
+          _rdbmsPersistenceModelProvider,
+          _infrastructureStoragePropertyDefinitionProviderStub);
 
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -213,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuilderTuples;
+      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (
@@ -245,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuilderTuples;
+      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (
@@ -286,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
 
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuilderTuples;
+      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (2));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder2Stub));
       Assert.That (
@@ -339,7 +346,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuilderTuples;
+      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (
@@ -403,7 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuilderTuples;
+      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (
@@ -461,7 +468,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuilderTuples;
+      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (
@@ -602,20 +609,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void CreateForQuery ()
+    public void CreateForDataContainerQuery ()
     {
       var queryStub = MockRepository.GenerateStub<IQuery>();
-      var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
 
+      var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilderFactoryStub.Stub (stub => stub.CreateForQuery (queryStub)).Return (commandBuilderStub);
+
+      var objectIDColumnDefinition = ColumnDefinitionObjectMother.IDColumn;
+      var classIDColumnDefinition = ColumnDefinitionObjectMother.ClassIDColumn;
+      var timestampColumnDefinition = ColumnDefinitionObjectMother.TimestampColumn;
+
+      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetObjectIDColumnDefinition ()).Return (objectIDColumnDefinition);
+      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetClassIDColumnDefinition ()).Return (classIDColumnDefinition);
+      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetTimestampColumnDefinition()).Return (timestampColumnDefinition);
 
       var result = _factory.CreateForDataContainerQuery (queryStub);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
+      var command = ((MultiDataContainerLoadCommand) result);
+      Assert.That (command.AllowNulls, Is.True);
+      Assert.That (command.DbCommandBuildersAndReaders.Length, Is.EqualTo (1));
+      Assert.That (command.DbCommandBuildersAndReaders[0].Item1, Is.SameAs (commandBuilderStub));
+      Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.TypeOf<DataContainerReader> ());
+
+      var dataContainerReader = ((DataContainerReader) command.DbCommandBuildersAndReaders[0].Item2);
+      Assert.That (dataContainerReader.IDProperty, Is.TypeOf<ObjectIDStoragePropertyDefinition> ());
       Assert.That (
-          ((MultiDataContainerLoadCommand) result).DbCommandBuilderTuples,
-          Is.EqualTo (new[] { Tuple.Create (commandBuilderStub, _dataContainerReaderStub) }));
-      Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.True);
+          ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ValueProperty,
+          Is.TypeOf<SimpleStoragePropertyDefinition>().With.Property ("ColumnDefinition").SameAs (objectIDColumnDefinition));
+      Assert.That (
+          ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ClassIDProperty,
+          Is.TypeOf<SimpleStoragePropertyDefinition> ().With.Property ("ColumnDefinition").SameAs (classIDColumnDefinition));
+      Assert.That (
+          dataContainerReader.TimestampProperty,
+          Is.TypeOf<SimpleStoragePropertyDefinition>().With.Property ("ColumnDefinition").SameAs (timestampColumnDefinition));
     }
 
     [Test]

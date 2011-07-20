@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
@@ -36,6 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp();
 
+      var storageTypeCalculator = new SqlStorageTypeCalculator();
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _valueConverter = new ValueConverter (TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
       _commandFactory = new RdbmsProviderCommandFactory (
@@ -45,7 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               _storageNameProvider),
           new LegacyDataContainerReader (_valueConverter),
           new LegacyObjectIDReader (_valueConverter),
-          new RdbmsPersistenceModelProvider());
+          new RdbmsPersistenceModelProvider(),
+          new InfrastructureStoragePropertyDefinitionProvider (storageTypeCalculator, _storageNameProvider));
 
       _provider = new SqlProvider (TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, _commandFactory);
     }

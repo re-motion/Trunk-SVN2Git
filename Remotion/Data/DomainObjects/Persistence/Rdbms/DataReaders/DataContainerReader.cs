@@ -100,10 +100,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      var id = _idProperty.Read (dataReader, _ordinalProvider) as ObjectID;
-      var timestamp = _timestampProperty.Read (dataReader, _ordinalProvider);
+      var id = (ObjectID) _idProperty.Read (dataReader, _ordinalProvider);
       if (id != null)
       {
+        var timestamp = _timestampProperty.Read (dataReader, _ordinalProvider);
         return DataContainer.CreateForExisting (
             id,
             timestamp,

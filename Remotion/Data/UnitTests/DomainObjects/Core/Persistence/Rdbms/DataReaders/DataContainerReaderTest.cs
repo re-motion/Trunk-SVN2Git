@@ -19,6 +19,7 @@ using System.Data;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -76,16 +77,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     {
       _dataReaderStub.Stub (stub => stub.Read()).Return (true);
 
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_objectID);
-      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_timestamp);
       StubPersistenceModelProviderForProperty (typeof (OrderTicket), "FileName", _fileNamePropertyStub);
       StubPersistenceModelProviderForProperty (typeof (OrderTicket), "Order", _orderPropertyStub);
-      
+
+      StubPropertyReadsForOrderTicket (DomainObjectIDs.OrderTicket1, 17, "abc", DomainObjectIDs.Order1);
+
       var dataContainer = _dataContainerReader.Read (_dataReaderStub);
 
       Assert.That (dataContainer, Is.Not.Null);
-      Assert.That (dataContainer.ID, Is.SameAs (_objectID));
-      Assert.That (dataContainer.Timestamp, Is.SameAs (_timestamp));
+      CheckLoadedDataContainer(dataContainer, DomainObjectIDs.OrderTicket1, 17, "abc", DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void Read_DataReaderReadTrue_ValueIDNull ()
+    {
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true);
+
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (null);
+      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).WhenCalled (mi => Assert.Fail ("Should not be called."));
+
+      var dataContainer = _dataContainerReader.Read (_dataReaderStub);
+
+      Assert.That (dataContainer, Is.Null);
     }
 
     [Test]
@@ -122,54 +135,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       StubPersistenceModelProviderForProperty (typeof (OrderTicket), "FileName", _fileNamePropertyStub);
       StubPersistenceModelProviderForProperty (typeof (OrderTicket), "Order", _orderPropertyStub);
 
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (DomainObjectIDs.OrderTicket1).Repeat.Once();
-      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_timestamp);
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (DomainObjectIDs.OrderTicket2).Repeat.Once ();
-      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_timestamp);
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (DomainObjectIDs.OrderTicket3).Repeat.Once ();
-      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_timestamp);
+      StubPropertyReadsForOrderTicket (DomainObjectIDs.OrderTicket1, 0, "first", DomainObjectIDs.Order1);
+      StubPropertyReadsForOrderTicket (DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order2);
+      StubPropertyReadsForOrderTicket (DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order3);
 
-      var count = 0;
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).WhenCalled (
-          mi =>
-          {
-            count++;
-            if (count > 2)
-            {
-              _dataReaderStub.BackToRecord ();
-              _dataReaderStub.Stub (stub => stub.Read ()).Return (false);
-            }
-          });
+      _dataReaderStub.Stub (stub => stub.Read()).Return (true).Repeat.Times (3);
+      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
 
       var result = _dataContainerReader.ReadSequence (_dataReaderStub).ToArray ();
+
       Assert.That (result.Length, Is.EqualTo (3));
-      Assert.That (result[0].ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (result[1].ID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
-      Assert.That (result[2].ID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
+
+      CheckLoadedDataContainer (result[0], DomainObjectIDs.OrderTicket1, 0, "first", DomainObjectIDs.Order1);
+      CheckLoadedDataContainer (result[1], DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order2);
+      CheckLoadedDataContainer (result[2], DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order3);
     }
 
     [Test]
-    public void ReadSequence_DataReaderReadTrue_NullIDIsReturned_Supported ()
+    public void ReadSequence_DataReaderReadTrue_NullIDIsReturned ()
     {
-      _dataReaderStub.Stub (stub => stub.Read()).Return (true).WhenCalled (
-          mi =>
-          {
-            _dataReaderStub.BackToRecord();
-            _dataReaderStub.Stub (stub => stub.Read()).Return (false);
-          });
-
+      _dataReaderStub.Stub (stub => stub.Read()).Return (true).Repeat.Once();
+      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+      
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (null);
+      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).WhenCalled (mi => Assert.Fail ("Should not be called."));
+      
       var result = _dataContainerReader.ReadSequence (_dataReaderStub).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.Null);
     }
 
-    public void StubPersistenceModelProviderForProperty (
+    private void StubPropertyReadsForOrderTicket (ObjectID objectID, object timestamp, string fileName, ObjectID order)
+    {
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (objectID).Repeat.Once ();
+      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (timestamp).Repeat.Once ();
+      _fileNamePropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (fileName).Repeat.Once ();
+      _orderPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (order).Repeat.Once ();
+    }
+
+    private void StubPersistenceModelProviderForProperty (
         Type declaringType, string shortPropertyName, IRdbmsStoragePropertyDefinition storagePropertyDefinitionStub)
     {
       var propertyDefinition = GetPropertyDefinition (declaringType, shortPropertyName);
       _persistenceModelProviderStub.Stub (stub => stub.GetColumnDefinition (propertyDefinition)).Return (storagePropertyDefinitionStub);
-      storagePropertyDefinitionStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (propertyDefinition.DefaultValue);
+    }
+
+    private void CheckLoadedDataContainer (DataContainer dataContainer, ObjectID expectedID, int expectedTimestamp, string expectedFileName, ObjectID expectedOrder)
+    {
+      Assert.That (dataContainer.ID, Is.EqualTo (expectedID));
+      Assert.That (dataContainer.Timestamp, Is.EqualTo (expectedTimestamp));
+
+      Assert.That (dataContainer.PropertyValues[typeof (OrderTicket).FullName + ".FileName"].Value, Is.EqualTo (expectedFileName));
+      Assert.That (dataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.EqualTo (expectedOrder));
     }
   }
 }

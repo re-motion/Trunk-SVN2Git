@@ -24,9 +24,9 @@ using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -40,22 +40,41 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IDataContainerReader _dataContainerReader;
     private readonly IObjectIDReader _objectIDReader;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
+    private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
 
     public RdbmsProviderCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IDataContainerReader dataContainerReader,
         IObjectIDReader objectIDReader,
-        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
+        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
+        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
       ArgumentUtility.CheckNotNull ("objectIDReader", objectIDReader);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
+      ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _dataContainerReader = dataContainerReader;
       _objectIDReader = objectIDReader;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
+      _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
+    }
+
+    public IDbCommandBuilderFactory DbCommandBuilderFactory
+    {
+      get { return _dbCommandBuilderFactory; }
+    }
+
+    public IRdbmsPersistenceModelProvider RdbmsPersistenceModelProvider
+    {
+      get { return _rdbmsPersistenceModelProvider; }
+    }
+
+    public IInfrastructureStoragePropertyDefinitionProvider InfrastructureStoragePropertyDefinitionProvider
+    {
+      get { return _infrastructureStoragePropertyDefinitionProvider; }
     }
 
     public IStorageProviderCommand<DataContainerLookupResult, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
@@ -105,12 +124,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      //var ordinalProvider = new NameBasedColumnOrdinalProvider();
-      ////_rdbmsPersistenceModelProvider.GetEntityDefinition(query.CollectionType)
-      //new DataContainerReader (idProperty, timestampProperty, ordinalProvider, _rdbmsPersistenceModelProvider);
-      //var dataContainerReader = CreateDataContainerReader (query., ordinalProvider);
-
-      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), _dataContainerReader) }, true);
+      var ordinalProvider = new NameBasedColumnOrdinalProvider();
+      var objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition()),
+          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition()));
+      var timestampPropertyDefinition =
+          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition());
+      IDataContainerReader dataContainerReader = new DataContainerReader (
+          objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
+      
+      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), dataContainerReader) }, true);
     }
 
     public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)

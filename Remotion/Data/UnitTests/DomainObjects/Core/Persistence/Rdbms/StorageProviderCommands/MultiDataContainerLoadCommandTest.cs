@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       Assert.That (command.AllowNulls, Is.True);
       Assert.That (
-          command.DbCommandBuilderTuples,
+          command.DbCommandBuildersAndReaders,
           Is.EqualTo (
               new[]
               { Tuple.Create (_dbCommandBuilder1Mock, _dataContainerReader1Stub), Tuple.Create (_dbCommandBuilder2Mock, _dataContainerReader2Stub) }));
