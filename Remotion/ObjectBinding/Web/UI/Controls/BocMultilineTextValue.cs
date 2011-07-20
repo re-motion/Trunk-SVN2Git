@@ -168,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public new IBusinessObjectStringProperty Property
     {
       get { return (IBusinessObjectStringProperty) base.Property; }
-      set { base.Property = ArgumentUtility.CheckType<IBusinessObjectStringProperty> ("value", value); }
+      set { base.Property = value; }
     }
 
     /// <summary> Gets or sets the current value. </summary>
