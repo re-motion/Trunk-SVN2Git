@@ -127,7 +127,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public new IBusinessObjectBooleanProperty Property
     {
       get { return (IBusinessObjectBooleanProperty) base.Property; }
-      set { base.Property = ArgumentUtility.CheckType<IBusinessObjectBooleanProperty> ("value", value); }
+      set { base.Property = value; }
     }
 
     /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
