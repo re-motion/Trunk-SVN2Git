@@ -1488,20 +1488,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/LoadValue/*' />
     public override void SaveValue (bool interim)
     {
-      if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
-      {
-        if (! interim)
-        {
-          if (_editModeController.IsRowEditModeActive)
-            EndRowEditMode (true);
-          else if (_editModeController.IsListEditModeActive)
-            EndListEditMode (true);
-        }
+      if (Property == null)
+        return;
 
-        if (IsDirty && Property.ListInfo.RequiresWriteBack)
+      if (DataSource == null)
+        return;
+
+      if (!interim)
+      {
+        if (_editModeController.IsRowEditModeActive)
+          EndRowEditMode (true);
+        else if (_editModeController.IsListEditModeActive)
+          EndListEditMode (true);
+      }
+
+      if (IsDirty)
+      {
+        if (Property.ListInfo.RequiresWriteBack && DataSource.BusinessObject != null && !IsReadOnly)
           DataSource.BusinessObject.SetProperty (Property, Value);
 
-        if (! interim)
+        if (!interim)
           IsDirty = false;
       }
     }

@@ -275,5 +275,165 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.AreSame (value, _bocList.Value);
       Assert.IsFalse (_bocList.IsDirty);
     }
+
+    [Test]
+    public void SaveValueAndInterimTrue ()
+    {
+      _businessObject.ReferenceList = new[] { TypeWithReference.Create() };
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      TypeWithReference[] newValue = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
+      _bocList.Value = newValue;
+      _bocList.IsDirty = true;
+
+      _bocList.SaveValue (true);
+      Assert.AreEqual (newValue, _businessObject.ReferenceList);
+      Assert.IsTrue (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalse ()
+    {
+      _businessObject.ReferenceList = new[] { TypeWithReference.Create() };
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      TypeWithReference[] newValue = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
+      _bocList.Value = newValue;
+      _bocList.IsDirty = true;
+
+      _bocList.SaveValue (false);
+      Assert.AreEqual (newValue, _businessObject.ReferenceList);
+      Assert.IsFalse (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndDataSourceNull ()
+    {
+      var oldValue = new[] { TypeWithReference.Create() };
+      _businessObject.ReferenceList = oldValue;
+      _bocList.DataSource = null;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
+      _bocList.IsDirty = true;
+
+      _bocList.SaveValue (false);
+      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
+      Assert.IsTrue (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndPropertyNull ()
+    {
+      var oldValue = new[] { TypeWithReference.Create() };
+      _businessObject.ReferenceList = oldValue;
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = null;
+      ;
+      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
+      _bocList.IsDirty = true;
+
+      _bocList.SaveValue (false);
+      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
+      Assert.IsTrue (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    {
+      var oldValue = new[] { TypeWithReference.Create() };
+      _businessObject.ReferenceList = oldValue;
+      _dataSource.BusinessObject = null;
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
+      _bocList.IsDirty = true;
+
+      _bocList.SaveValue (false);
+      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
+      Assert.IsFalse (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndIsDirtyFalse ()
+    {
+      var oldValue = new[] { TypeWithReference.Create() };
+      _businessObject.ReferenceList = oldValue;
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
+      _bocList.IsDirty = false;
+
+      _bocList.SaveValue (false);
+      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
+      Assert.IsFalse (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndReadOnlyTrue ()
+    {
+      var oldValue = new[] { TypeWithReference.Create() };
+      _businessObject.ReferenceList = oldValue;
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
+      _bocList.IsDirty = true;
+      _bocList.ReadOnly = true;
+
+      _bocList.SaveValue (false);
+      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
+      Assert.IsFalse (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndIsRowEditModeActiveTrueAndInterimTrue ()
+    {
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create() };
+      _bocList.SwitchRowIntoEditMode (0);
+      Assert.IsTrue (_bocList.IsRowEditModeActive);
+
+      _bocList.SaveValue (true);
+      Assert.IsTrue (_bocList.IsRowEditModeActive);
+    }
+
+    [Test]
+    public void SaveValueAndIsRowEditModeActiveTrueAndInterimFalse ()
+    {
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create() };
+      _bocList.SwitchRowIntoEditMode (0);
+      Assert.IsTrue (_bocList.IsRowEditModeActive);
+
+      _bocList.SaveValue (false);
+      Assert.IsFalse (_bocList.IsRowEditModeActive);
+    }
+
+    [Test]
+    public void SaveValueAndIsListEditModeActiveTrueAndInterimTrue ()
+    {
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create() };
+      _bocList.SwitchListIntoEditMode();
+      Assert.IsTrue (_bocList.IsListEditModeActive);
+
+      _bocList.SaveValue (true);
+      Assert.IsTrue (_bocList.IsListEditModeActive);
+    }
+
+    [Test]
+    public void SaveValueAndIsListEditModeActiveTrueAndInterimFalse ()
+    {
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create() };
+      _bocList.SwitchListIntoEditMode();
+      Assert.IsTrue (_bocList.IsListEditModeActive);
+
+      _bocList.SaveValue (false);
+      Assert.IsFalse (_bocList.IsListEditModeActive);
+    }
   }
 }
