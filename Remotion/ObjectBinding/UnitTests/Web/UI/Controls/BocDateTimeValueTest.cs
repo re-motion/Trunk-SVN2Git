@@ -322,6 +322,46 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.IsFalse (_bocDateTimeValue.IsDirty);
     }
 
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      _bocDateTimeValue.DataSource = null;
+      _bocDateTimeValue.Property = _propertyDateTimeValue;
+      _bocDateTimeValue.Value = new DateTime (2000, 1, 1);
+      _bocDateTimeValue.IsDirty = true;
+
+      _bocDateTimeValue.LoadValue (false);
+      Assert.AreEqual (new DateTime (2000, 1, 1), _bocDateTimeValue.Value);
+      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocDateTimeValue.DataSource = _dataSource;
+      _bocDateTimeValue.Property = null;
+      _bocDateTimeValue.Value = new DateTime (2000, 1, 1);
+      _bocDateTimeValue.IsDirty = true;
+
+      _bocDateTimeValue.LoadValue (false);
+      Assert.AreEqual (new DateTime (2000, 1, 1), _bocDateTimeValue.Value);
+      Assert.IsTrue (_bocDateTimeValue.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocDateTimeValue.DataSource = _dataSource;
+      _bocDateTimeValue.Property = _propertyDateTimeValue;
+      _bocDateTimeValue.Value = DateTime.Now;
+      _bocDateTimeValue.IsDirty = true;
+
+      _bocDateTimeValue.LoadValue (false);
+      Assert.AreEqual (null, _bocDateTimeValue.Value);
+      Assert.IsFalse (_bocDateTimeValue.IsDirty);
+    }
 
     [Test]
     public void LoadUnboundValueAndInterimTrue()

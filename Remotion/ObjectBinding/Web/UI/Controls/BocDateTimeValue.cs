@@ -311,14 +311,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocDateTimeValue.xml' path='BocDateTimeValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
-      if (! interim)
-      {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-        {
-          DateTime? value = (DateTime?) DataSource.BusinessObject.GetProperty (Property);
-          LoadValueInternal (value, interim);
-        }
-      }
+      if (interim)
+        return;
+
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      DateTime? value = null;
+
+      if (DataSource.BusinessObject != null)
+        value = (DateTime?) DataSource.BusinessObject.GetProperty (Property);
+
+      LoadValueInternal (value, interim);
     }
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
