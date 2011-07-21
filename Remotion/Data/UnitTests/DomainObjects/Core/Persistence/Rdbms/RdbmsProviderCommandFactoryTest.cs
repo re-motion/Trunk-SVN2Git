@@ -45,8 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class RdbmsProviderCommandFactoryTest : StandardMappingTest
   {
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStub;
-    private IDataContainerReader _dataContainerReaderStub;
-    private IObjectIDReader _objectIDReaderStub;
     private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProviderStub;
 
@@ -68,15 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       _dbCommandBuilderFactoryStub = MockRepository.GenerateStub<IDbCommandBuilderFactory>();
-      _dataContainerReaderStub = MockRepository.GenerateStub<IDataContainerReader>();
-      _objectIDReaderStub = MockRepository.GenerateStub<IObjectIDReader>();
       _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       _infrastructureStoragePropertyDefinitionProviderStub = MockRepository.GenerateStub<IInfrastructureStoragePropertyDefinitionProvider>();
 
       _factory = new RdbmsProviderCommandFactory (
           _dbCommandBuilderFactoryStub,
-          _dataContainerReaderStub,
-          _objectIDReaderStub,
           _rdbmsPersistenceModelProvider,
           _infrastructureStoragePropertyDefinitionProviderStub);
 

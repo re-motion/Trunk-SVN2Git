@@ -259,8 +259,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var objectIDReader = new LegacyObjectIDReader (valueConverter);
       return new RdbmsProviderCommandFactory (
           dbCommandBuilderFactory,
-          dataContainerReader,
-          objectIDReader,
           CreateRdbmsPersistenceModelProvider(),
           infrastructureStoragePropertyDefinitionProvider);
     }

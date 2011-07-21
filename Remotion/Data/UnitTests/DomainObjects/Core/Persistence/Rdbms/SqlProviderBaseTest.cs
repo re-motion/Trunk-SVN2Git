@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
@@ -45,8 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               SqlDialect.Instance,
               _valueConverter,
               _storageNameProvider),
-          new LegacyDataContainerReader (_valueConverter),
-          new LegacyObjectIDReader (_valueConverter),
           new RdbmsPersistenceModelProvider(),
           new InfrastructureStoragePropertyDefinitionProvider (storageTypeCalculator, _storageNameProvider));
 

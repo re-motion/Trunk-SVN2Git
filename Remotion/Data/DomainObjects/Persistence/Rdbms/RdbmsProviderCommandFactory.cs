@@ -37,27 +37,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class RdbmsProviderCommandFactory : IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
-    private readonly IDataContainerReader _dataContainerReader;
-    private readonly IObjectIDReader _objectIDReader;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
 
     public RdbmsProviderCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
-        IDataContainerReader dataContainerReader,
-        IObjectIDReader objectIDReader,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
-      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
-      ArgumentUtility.CheckNotNull ("objectIDReader", objectIDReader);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
-      _dataContainerReader = dataContainerReader;
-      _objectIDReader = objectIDReader;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
     }
