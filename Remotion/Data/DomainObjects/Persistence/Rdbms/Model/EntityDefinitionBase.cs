@@ -75,6 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _viewName; }
     }
 
+    // TODO Review 4143: Rename to IDColumn
     public ColumnDefinition ObjectIDColumn
     {
       get { return _objectIDColumn; }

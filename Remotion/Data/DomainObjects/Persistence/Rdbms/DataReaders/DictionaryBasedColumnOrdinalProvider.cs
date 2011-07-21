@@ -37,6 +37,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       _ordinals = ordinals;
     }
 
+    public IDictionary<ColumnDefinition, int> Ordinals
+    {
+      get { return _ordinals; }
+    }
+
     public int GetOrdinal (ColumnDefinition columnDefinition, IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);

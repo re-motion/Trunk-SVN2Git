@@ -78,7 +78,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var columnOrdinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
       var dataContainerReader = CreateDataContainerReader (tableDefinition, columnOrdinalProvider);
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
-          tableDefinition, new SelectedColumnsSpecification (selectProjection), objectID);
+          tableDefinition, 
+          new SelectedColumnsSpecification (selectProjection), 
+          objectID);
       var singleDataContainerLoadCommand = new SingleDataContainerLoadCommand (dbCommandBuilder, dataContainerReader);
       return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new DataContainerLookupResult (objectID, result));
     }
