@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
@@ -154,26 +155,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
         return script;
 
       string requiredFlag = renderingContext.Control.IsRequired ? "true" : "false";
-      string image = "document.getElementById ('" + imageControl.ClientID + "')";
-      string label = renderingContext.Control.ShowDescription ? "document.getElementById ('" + labelControl.ClientID + "')" : "null";
-      string hiddenField = "document.getElementById ('" + hiddenFieldControl.ClientID + "')";
-      script = "BocBooleanValue_SelectNextCheckboxValue ("
-               + "'" + resourceSet.ResourceKey + "', "
-               + image + ", "
-               + label + ", "
-               + hiddenField + ", "
-               + requiredFlag + ", "
-               + (string.IsNullOrEmpty (renderingContext.Control.TrueDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (renderingContext.Control.TrueDescription) + "'")
-               + ", "
-               + (string.IsNullOrEmpty (renderingContext.Control.FalseDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (renderingContext.Control.FalseDescription) + "'")
-               + ", "
-               + (string.IsNullOrEmpty (renderingContext.Control.NullDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (renderingContext.Control.NullDescription) + "'")
-               + ");";
+
+      var scriptBuilder = new StringBuilder(500);
+      scriptBuilder.Append ("BocBooleanValue_SelectNextCheckboxValue (");
+      scriptBuilder.Append ("'").Append (resourceSet.ResourceKey).Append ("'");
+      scriptBuilder.Append (", ");
+      scriptBuilder.Append ("document.getElementById ('").Append (imageControl.ClientID).Append ("')");
+      scriptBuilder.Append (", ");
+      if (renderingContext.Control.ShowDescription)
+        scriptBuilder.Append ("document.getElementById ('").Append (labelControl.ClientID).Append ("')");
+      else
+        scriptBuilder.Append ("null");
+      scriptBuilder.Append (", ");
+      scriptBuilder.Append ("document.getElementById ('").Append (hiddenFieldControl.ClientID).Append ("')");
+      scriptBuilder.Append (", ");
+      scriptBuilder.Append (requiredFlag);
+      scriptBuilder.Append (", ");
+      AppendStringValueOrNull (scriptBuilder, renderingContext.Control.TrueDescription);
+      scriptBuilder.Append (", ");
+      AppendStringValueOrNull (scriptBuilder, renderingContext.Control.FalseDescription);
+      scriptBuilder.Append (", ");
+      AppendStringValueOrNull(scriptBuilder, renderingContext.Control.NullDescription);
+      scriptBuilder.Append (");");
+
+      script = scriptBuilder.ToString();
 
       if (renderingContext.Control.IsAutoPostBackEnabled)
         script += renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, "") + ";";
       script += "return false;";
       return script;
+    }
+
+    private void AppendStringValueOrNull (StringBuilder scriptBuilder, string stringValue)
+    {
+      if (string.IsNullOrEmpty (stringValue))
+        scriptBuilder.Append ("null");
+      else
+        scriptBuilder.Append ("'").Append (ScriptUtility.EscapeClientScript (stringValue)).Append ("'");
     }
 
     private void PrepareVisibleControls (BocBooleanValueRenderingContext renderingContext, BocBooleanValueResourceSet resourceSet, Image imageControl, 
