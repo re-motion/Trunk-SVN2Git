@@ -29,11 +29,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class DataContainerReaderTest : SqlProviderBaseTest
+  public class DataContainerReaderTest : StandardMappingTest
   {
     private IDataReader _dataReaderStub;
     private DataContainerReader _dataContainerReader;
-    private ObjectID _objectID;
     private object _timestamp;
     private IRdbmsStoragePropertyDefinition _idPropertyStub;
     private IRdbmsStoragePropertyDefinition _timestampPropertyStub;
@@ -58,7 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       _dataContainerReader = new DataContainerReader (_idPropertyStub, _timestampPropertyStub, _ordinalProviderStub, _persistenceModelProviderStub);
 
-      _objectID = new ObjectID ("OrderTicket", Guid.NewGuid());
       _timestamp = new object();
     }
 
@@ -103,18 +101,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
     [Test]
     [ExpectedException(typeof(RdbmsProviderException), ExpectedMessage =
-      "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName' of object 'OrderTicket*", 
-      MatchType = MessageMatch.Regex)]
+      "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName' of object "
+      + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid': TestException")]
     public void Read_DataReaderReadTrue_ThrowsException ()
     {
       _dataReaderStub.Stub (stub => stub.Read ()).Return (true);
 
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_objectID);
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (DomainObjectIDs.OrderTicket1);
       _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_timestamp);
       var propertyDefinition = GetPropertyDefinition (typeof(OrderTicket), "FileName");
       _persistenceModelProviderStub
         .Stub (stub => stub.GetColumnDefinition (propertyDefinition))
-        .WhenCalled (mi => { throw new InvalidOperationException ("TestException"); });
+        .Throw (new InvalidOperationException ("TestException"));
       
       _dataContainerReader.Read (_dataReaderStub);
     }

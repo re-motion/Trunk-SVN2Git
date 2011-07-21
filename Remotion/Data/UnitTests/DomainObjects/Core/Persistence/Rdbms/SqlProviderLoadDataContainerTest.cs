@@ -28,8 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   [TestFixture]
   public class SqlProviderLoadDataContainerTest : SqlProviderBaseTest
   {
-    //TODO 4141: discuss if it would be a good idea do also display the message of the inner exception!
-
     [Test]
     public void LoadDataContainerWithGuidID ()
     {
@@ -42,7 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "Error while executing SQL command: Operand type clash: uniqueidentifier is incompatible with datetime")]
     public void LoadDataContainerWithInvalidIDType ()
     {
       ObjectID id = new ObjectID (typeof (ClassWithKeyOfInvalidType), new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
@@ -54,12 +53,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       catch (RdbmsProviderException e)
       {
         Assert.AreEqual (typeof (SqlException), e.InnerException.GetType ());
-        throw e;
+        throw;
       }
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "Error while executing SQL command: Invalid column name 'ID'.\r\nInvalid column name 'ID'.")]
     public void LoadDataContainerWithoutIDColumn ()
     {
       ObjectID id = new ObjectID (typeof (ClassWithoutIDColumn), new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
@@ -71,12 +71,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       catch (RdbmsProviderException e)
       {
         Assert.AreEqual (typeof (SqlException), e.InnerException.GetType ());
-        throw e;
+        throw;
       }
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "Error while executing SQL command: Invalid column name 'ClassID'.")]
     public void LoadDataContainerWithoutClassIDColumn ()
     {
       ObjectID id = new ObjectID (typeof (ClassWithoutClassIDColumn), new Guid ("{DDD02092-355B-4820-90B6-7F1540C0547E}"));
@@ -85,7 +86,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "Error while executing SQL command: Invalid column name 'Timestamp'.")]
     public void LoadDataContainerWithoutTimestampColumn ()
     {
       ObjectID id = new ObjectID (typeof (ClassWithoutTimestampColumn), new Guid ("{027DCBD7-ED68-461d-AE80-B8E145A7B816}"));
@@ -102,10 +104,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.LoadDataContainer (id);
     }
 
-    //TODO: Improove this message to state that the passed ClassID and the ClassID in the database to not match.
-    /// <summary>
-    /// Loads the data container with class ID from other class.
-    /// </summary>
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
         "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' of object "
@@ -186,7 +184,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "Error while executing SQL command: Invalid column name 'DistributorIDClassID'.")]
     public void LoadDataContainerWithoutRelatedIDColumn ()
     {
       ObjectID id = new ObjectID (typeof (ClassWithoutRelatedClassIDColumn), new Guid ("{CD3BE83E-FBB7-4251-AAE4-B216485C5638}"));
@@ -195,7 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Error while executing SQL command.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "Error while executing SQL command: Invalid column name 'CompanyIDClassID'.")]
     public void LoadDataContainerWithoutRelatedIDColumnAndDerivation ()
     {
       ObjectID id = new ObjectID (typeof (ClassWithoutRelatedClassIDColumnAndDerivation),
@@ -215,18 +215,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.LoadDataContainer (invalidID);
     }
 
-    [Ignore("TODO RM-4141")]
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
-        "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithRelatedClassIDColumnAndNoInheritance.ClassWithGuidKey' "
-        +"of object 'ClassWithRelatedClassIDColumnAndNoInheritance|cb72715d-f419-4ab9-8d49-abcba4e9edb4|System.Guid':"
-        + " Incorrect database format encountered."
-        + " Entity 'TableWithRelatedClassIDColumnAndNoInheritance' must not contain column 'TableWithGuidKeyIDClassID',"
-        + " because opposite class 'ClassWithGuidKey' is not part of an inheritance hierarchy.")]
     public void LoadDataContainerWithRelatedClassIDColumnAndNoInheritance ()
     {
       ObjectID id = new ObjectID ("ClassWithRelatedClassIDColumnAndNoInheritance", new Guid ("{CB72715D-F419-4ab9-8D49-ABCBA4E9EDB4}"));
 
+      // The storage provider does not check whether a superfluous ClassID column is present. Therefore, the next line succeeds.
       Provider.LoadDataContainer (id);
     }
   }

@@ -16,6 +16,7 @@
 // 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  // TODO Review 4141: Remove this interface, use IRdbmsStoragePropertyDefinition instead
   /// <summary>
   /// Denotes a <see cref="IRdbmsStoragePropertyDefinition"/> that refers to another <see cref="DomainObject"/>.
   /// </summary>

@@ -255,8 +255,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
       var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter, storageNameProvider);
 
-      var dataContainerReader = new LegacyDataContainerReader (valueConverter);
-      var objectIDReader = new LegacyObjectIDReader (valueConverter);
       return new RdbmsProviderCommandFactory (
           dbCommandBuilderFactory,
           CreateRdbmsPersistenceModelProvider(),

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
@@ -84,16 +85,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      var loadedIDs = new HashSet<ObjectID>();
-
       while (dataReader.Read())
-      {
-        var dataContainer = CreateDataContainerFromReader (dataReader);
-        if (dataContainer != null)
-          loadedIDs.Add (dataContainer.ID);
-
-        yield return dataContainer;
-      }
+        yield return CreateDataContainerFromReader (dataReader);
     }
 
     protected virtual DataContainer CreateDataContainerFromReader (IDataReader dataReader)
@@ -101,31 +94,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       var id = (ObjectID) _idProperty.Read (dataReader, _ordinalProvider);
-      if (id != null)
+      if (id == null)
+        return null;
+
+      var timestamp = _timestampProperty.Read (dataReader, _ordinalProvider);
+      return DataContainer.CreateForExisting (id, timestamp, pd => ReadPropertyValue (pd, dataReader, id));
+    }
+
+    private object ReadPropertyValue (PropertyDefinition propertyDefinition, IDataReader dataReader, ObjectID id)
+    {
+      try
       {
-        var timestamp = _timestampProperty.Read (dataReader, _ordinalProvider);
-        return DataContainer.CreateForExisting (
-            id,
-            timestamp,
-            pd =>
-            {
-              try
-              {
-                return _persistenceModelProvider.GetColumnDefinition (pd).Read (dataReader, _ordinalProvider) ?? pd.DefaultValue;
-              }
-              catch (Exception e)
-              {
-                throw new RdbmsProviderException (
-                    string.Format (
-                        "Error while reading property '{0}' of object '{1}': {2}",
-                        pd.PropertyName,
-                        id,
-                        e.Message),
-                    e);
-              }
-            });
+        var storagePropertyDefinition = _persistenceModelProvider.GetColumnDefinition (propertyDefinition);
+        return storagePropertyDefinition.Read (dataReader, _ordinalProvider) ?? propertyDefinition.DefaultValue;
       }
-      return null;
+      catch (Exception e)
+      {
+        var message = string.Format ("Error while reading property '{0}' of object '{1}': {2}", propertyDefinition.PropertyName, id, e.Message);
+        throw new RdbmsProviderException (message, e);
+      }
     }
   }
 }

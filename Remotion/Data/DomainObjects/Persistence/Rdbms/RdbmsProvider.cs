@@ -320,7 +320,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
       catch (Exception e)
       {
-        throw CreateRdbmsProviderException (e, "Error while executing SQL command.");
+        throw CreateRdbmsProviderException (e, "Error while executing SQL command: " + e.Message);
       }
     }
 

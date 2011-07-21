@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       while (dataReader.Read ())
-        yield return (ObjectID)_idProperty.Read(dataReader, _columnOrdinalProvider);
+        yield return (ObjectID)_idProperty.Read (dataReader, _columnOrdinalProvider);
     }
   }
 }
