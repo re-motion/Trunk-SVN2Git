@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string Name
     {
-      get { return SeparatedStringBuilder.Build (", ", _properties.Select (p => p.StoragePropertyDefinition.Name)); }
+      get { return SeparatedStringBuilder.Build ("_", _properties.Select (p => p.StoragePropertyDefinition.Name)); }
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()

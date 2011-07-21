@@ -17,12 +17,11 @@
 using System;
 using System.ComponentModel;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Text;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -50,14 +49,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _property1Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       _property2Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _property3Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
-      
-      _yearProperty = new CompoundStoragePropertyDefinition.NestedPropertyInfo (_property1Stub, o => ((DateTime)o).Year );
+      _property3Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+
+      _yearProperty = new CompoundStoragePropertyDefinition.NestedPropertyInfo (_property1Stub, o => ((DateTime) o).Year);
       _monthProperty = new CompoundStoragePropertyDefinition.NestedPropertyInfo (_property2Stub, o => ((DateTime) o).Month);
       _dayProperty = new CompoundStoragePropertyDefinition.NestedPropertyInfo (_property3Stub, o => ((DateTime) o).Day);
-      
+
       _compoundStoragePropertyDefinition = new CompoundStoragePropertyDefinition (
-          new[] { _yearProperty, _monthProperty, _dayProperty }, objects => SeparatedStringBuilder.Build (".", objects));
+          new[] { _yearProperty, _monthProperty, _dayProperty },
+          objects => new DateTime ((int) objects[0], (int) objects[1], (int) objects[2]));
     }
 
     [Test]
@@ -66,8 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _property1Stub.Stub (stub => stub.Name).Return ("Year");
       _property2Stub.Stub (stub => stub.Name).Return ("Month");
       _property3Stub.Stub (stub => stub.Name).Return ("Day");
-      
-      Assert.That (_compoundStoragePropertyDefinition.Name, Is.EqualTo ("Year, Month, Day"));
+
+      Assert.That (_compoundStoragePropertyDefinition.Name, Is.EqualTo ("Year_Month_Day"));
     }
 
     [Test]
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _property1Stub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition1 });
       _property2Stub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition2 });
-      _property3Stub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition3 });
+      _property3Stub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition3 });
 
       var result = _compoundStoragePropertyDefinition.GetColumns();
 
@@ -102,15 +102,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       var columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
 
-      var dataTime = DateTime.Now;
+      _property1Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (2011);
+      _property2Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (5);
+      _property3Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (17);
 
-      _property1Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (dataTime.Year);
-      _property2Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (dataTime.Month);
-      _property3Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (dataTime.Day);
+      var result = _compoundStoragePropertyDefinition.Read (dataReaderStub, columnOrdinalProviderStub);
 
-      var result = _compoundStoragePropertyDefinition.Read (dataReaderStub, columnOrdinalProviderStub).ToString();
-
-      Assert.That (result, Is.EqualTo (dataTime.Year+"."+dataTime.Month+"."+dataTime.Day));
+      Assert.That (result, Is.EqualTo (new DateTime (2011, 5, 17)));
     }
 
     [Test]
@@ -120,11 +118,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var columnValue1 = new ColumnValue (_columnDefinition1, dateTime);
       var columnValue2 = new ColumnValue (_columnDefinition2, dateTime);
       var columnValue3 = new ColumnValue (_columnDefinition3, dateTime);
-      
-      _property1Stub.Stub (stub => stub.SplitValue (2011)).Return(new[]{ columnValue1});
-      _property2Stub.Stub (stub => stub.SplitValue (7)).Return(new[]{columnValue2});
+
+      _property1Stub.Stub (stub => stub.SplitValue (2011)).Return (new[] { columnValue1 });
+      _property2Stub.Stub (stub => stub.SplitValue (7)).Return (new[] { columnValue2 });
       _property3Stub.Stub (stub => stub.SplitValue (18)).Return (new[] { columnValue3 });
-      
+
       var result = _compoundStoragePropertyDefinition.SplitValue (dateTime).ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { columnValue1, columnValue2, columnValue3 }));
