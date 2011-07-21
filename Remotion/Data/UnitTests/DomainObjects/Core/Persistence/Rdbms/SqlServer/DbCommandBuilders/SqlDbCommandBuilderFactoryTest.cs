@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var result = _factory.CreateForSingleIDLookupFromTable (_tableDefinition, _selectedColumnsStub, _objectID);
 
-      Assert.That (result, Is.TypeOf (typeof (SingleIDLookupSelectDbCommandBuilder)));
+      Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
     }
 
     [Test]

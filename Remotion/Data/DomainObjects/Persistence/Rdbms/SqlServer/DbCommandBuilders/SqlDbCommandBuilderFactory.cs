@@ -59,7 +59,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return new SingleIDLookupSelectDbCommandBuilder (table, selectedColumns, objectID, _sqlDialect, _valueConverter);
+      var columnValue = new ColumnValue (table.ObjectIDColumn, objectID);
+      return new SelectDbCommandBuilder (
+          table, selectedColumns, new ComparedColumnsSpecification (new[] { columnValue }), _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForMultiIDLookupFromTable (

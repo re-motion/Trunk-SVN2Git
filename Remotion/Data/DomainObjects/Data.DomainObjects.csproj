@@ -275,7 +275,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\ISelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\OrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecification.cs" />
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\IDataContainerReader.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\IObjectIDReader.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\LegacyObjectIDReader.cs" />

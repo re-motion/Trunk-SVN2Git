@@ -311,7 +311,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\EmptyOrderedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\OrderedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SelectedColumnsSpecificationTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SingleIDLookupSelectDbCommandBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SelectDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\LegacyObjectIDReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilderTest.cs" />
