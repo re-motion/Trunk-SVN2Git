@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                               group id by tableDefinition
                               into idsByTable
                               select CreateIDLookupDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
-      var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders, false);
+      var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders);
       return new MultiDataContainerSortCommand (objectIDList, multiDataContainerLoadCommand);
     }
 
@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       IDataContainerReader dataContainerReader = new DataContainerReader (
           objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
       
-      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), dataContainerReader) }, true);
+      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), dataContainerReader) });
     }
 
     public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)
@@ -201,7 +201,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
-      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) }, false);
+      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForIndirectRelationLookup (

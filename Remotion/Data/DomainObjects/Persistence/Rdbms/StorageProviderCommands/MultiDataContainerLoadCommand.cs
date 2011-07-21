@@ -32,16 +32,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// </summary>
   public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
-    private readonly bool _allowNulls;
     private readonly Tuple<IDbCommandBuilder, IDataContainerReader>[] _dbCommandBuildersAndReaders;
 
-    public MultiDataContainerLoadCommand (
-        IEnumerable<Tuple<IDbCommandBuilder, IDataContainerReader>> dbCommandBuildersAndReaders, bool allowNulls)
+    public MultiDataContainerLoadCommand (IEnumerable<Tuple<IDbCommandBuilder, IDataContainerReader>> dbCommandBuildersAndReaders)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuildersAndReaders", dbCommandBuildersAndReaders);
 
       _dbCommandBuildersAndReaders = dbCommandBuildersAndReaders.ToArray();
-      _allowNulls = allowNulls;
     }
 
     public Tuple<IDbCommandBuilder, IDataContainerReader>[] DbCommandBuildersAndReaders
@@ -49,10 +46,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandBuildersAndReaders; }
     }
 
-    public bool AllowNulls
-    {
-      get { return _allowNulls; }
-    }
 
     public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {

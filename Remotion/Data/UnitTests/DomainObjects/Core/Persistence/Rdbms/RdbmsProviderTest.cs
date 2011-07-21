@@ -374,7 +374,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "The relation lookup returned an object with a NULL ID, this is not allowed.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "A relation lookup returned a NULL ID, which is not allowed.")]
     public void LoadDataContainersByRelatedID_NullContainer ()
     {
       var objectID = DomainObjectIDs.Order1;
@@ -399,7 +399,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "A database query returned duplicates returned duplicates, which is not allowed.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "A relation lookup returned duplicates of object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', which is not allowed.")]
     public void LoadDataContainersByRelatedID_Duplicates ()
     {
       var objectID = DomainObjectIDs.Order1;
@@ -408,16 +409,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new[] { new SortedPropertySpecification (GetPropertyDefinition (typeof (Official), "Name"), SortOrder.Ascending) });
       var fakeResult = DataContainer.CreateNew (objectID);
 
-      var commandMock =
-          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
-      using (_mockRepository.Ordered ())
-      {
-        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
-        _commandFactoryMock
-            .Expect (mock => mock.CreateForRelationLookup (relationEndPointDefinition, objectID, sortExpression))
-            .Return (commandMock);
-        commandMock.Expect (mock => mock.Execute (_provider)).Return (new[] { fakeResult, fakeResult });
-      }
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
+      _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+      _commandFactoryMock
+          .Expect (mock => mock.CreateForRelationLookup (relationEndPointDefinition, objectID, sortExpression))
+          .Return (commandMock);
+      commandMock.Expect (mock => mock.Execute (_provider)).Return (new[] { fakeResult, fakeResult });
+
       _mockRepository.ReplayAll ();
 
       _provider.LoadDataContainersByRelatedID (relationEndPointDefinition, sortExpression, objectID);

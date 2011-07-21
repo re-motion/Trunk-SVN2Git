@@ -403,7 +403,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
       var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
@@ -461,7 +460,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new SortExpressionDefinition (new[] { sortedPropertySpecification1, sortedPropertySpecification2 }));
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      Assert.That (((MultiDataContainerLoadCommand) result).AllowNulls, Is.False);
       var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
@@ -622,7 +620,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       var command = ((MultiDataContainerLoadCommand) result);
-      Assert.That (command.AllowNulls, Is.True);
       Assert.That (command.DbCommandBuildersAndReaders.Length, Is.EqualTo (1));
       Assert.That (command.DbCommandBuildersAndReaders[0].Item1, Is.SameAs (commandBuilderStub));
       Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.TypeOf<DataContainerReader> ());

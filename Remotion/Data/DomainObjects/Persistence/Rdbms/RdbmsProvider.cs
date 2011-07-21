@@ -194,6 +194,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
+    // TODO Review 4141: Add tests: one for the ordered sequence of method calls, one with duplicates (exception), one with duplicate null values (works)
     public override DataContainer[] ExecuteCollectionQuery (IQuery query)
     {
       CheckDisposed();
@@ -203,9 +204,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Connect();
 
       var command = _storageProviderCommandFactory.CreateForDataContainerQuery (query);
-      var dataContainers = command.Execute (this).ToArray();
-      CheckForDuplicates (dataContainers);
-      return dataContainers;
+      var dataContainers = command.Execute (this);
+
+      var checkedSequence = CheckForDuplicates (dataContainers, "database query");
+      return checkedSequence.ToArray();
     }
 
     public override object ExecuteScalarQuery (IQuery query)
@@ -276,13 +278,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           relatedID,
           sortExpressionDefinition);
       var dataContainers = storageProviderCommand.Execute (this);
-      
-      if (dataContainers.Where (dc => dc == null).Any ())
-        throw new RdbmsProviderException ("The relation lookup returned an object with a NULL ID, this is not allowed.");
 
-      CheckForDuplicates(dataContainers);
-
-      return new DataContainerCollection (dataContainers, true);
+      var checkedSequence = CheckForNulls (CheckForDuplicates (dataContainers, "relation lookup"), "relation lookup");
+      return new DataContainerCollection (checkedSequence, true);
     }
 
     public override void Save (DataContainerCollection dataContainers)
@@ -498,10 +496,34 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    private void CheckForDuplicates (IEnumerable<DataContainer> dataContainers)
+    private IEnumerable<DataContainer> CheckForDuplicates (IEnumerable<DataContainer> dataContainers, string operation)
     {
-      if (dataContainers.Where(c=>c!=null).GroupBy (c => c.ID).Where (g => g.Count() > 1).Any())
-        throw new RdbmsProviderException ("A database query returned duplicates returned duplicates, which is not allowed."); //TODO 4141: change error message!?
+      var loadedIDs = new HashSet<ObjectID> ();
+      foreach (var dataContainer in dataContainers)
+      {
+        if (dataContainer != null)
+        {
+          if (loadedIDs.Contains (dataContainer.ID))
+          {
+            var message = string.Format ("A {0} returned duplicates of object '{1}', which is not allowed.", operation, dataContainer.ID);
+            throw new RdbmsProviderException (message);
+          }
+          loadedIDs.Add (dataContainer.ID);
+        }
+
+        yield return dataContainer;
+      }
+    }
+
+    private IEnumerable<DataContainer> CheckForNulls (IEnumerable<DataContainer> dataContainers, string operation)
+    {
+      foreach (var dataContainer in dataContainers)
+      {
+        if (dataContainer == null)
+          throw new RdbmsProviderException (string.Format ("A {0} returned a NULL ID, which is not allowed.", operation));
+
+        yield return dataContainer;
+      }
     }
 
     /// <summary> Gets a value converter that converts database types to .NET types according to the providers type mapping rules. </summary>
