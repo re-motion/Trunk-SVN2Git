@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _storageProviderDefinition);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
-      _fakeObjectIDStorageProperty = SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty;
+      _fakeObjectIDStorageProperty = SimpleStoragePropertyDefinitionObjectMother.IDProperty;
       _fakeStorageProperty1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test1");
       _fakeTimestampStorageProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
 

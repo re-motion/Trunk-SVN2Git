@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetIDColumnDefinition ()
     {
       var columnDefinition = new ObjectIDStoragePropertyDefinition (
-          SimpleStoragePropertyDefinitionObjectMother.ObjectIDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
+          SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, "OrderNo", true, true, null, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);

@@ -172,7 +172,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new ColumnDefinitionResolver();
     }
 
-    // TODO 4148: Rename to CreateStoragePropertyDefinitionFactory
     protected virtual IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (
         IStorageNameProvider storageNameProvider)
     {

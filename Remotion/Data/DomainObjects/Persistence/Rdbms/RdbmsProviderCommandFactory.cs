@@ -74,13 +74,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       var tableDefinition = GetTableDefinition (objectID);
-      var selectProjection = tableDefinition.GetAllColumns();
-      var columnOrdinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
-      var dataContainerReader = CreateDataContainerReader (tableDefinition, columnOrdinalProvider);
+      var selectedColumns = tableDefinition.GetAllColumns().ToArray();
+      var dataContainerReader = CreateDataContainerReader (tableDefinition, selectedColumns);
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
           tableDefinition, 
-          new SelectedColumnsSpecification (selectProjection), 
+          new SelectedColumnsSpecification (selectedColumns), 
           objectID);
+
       var singleDataContainerLoadCommand = new SingleDataContainerLoadCommand (dbCommandBuilder, dataContainerReader);
       return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new DataContainerLookupResult (objectID, result));
     }
@@ -95,7 +95,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                               let tableDefinition = GetTableDefinition (id)
                               group id by tableDefinition
                               into idsByTable
-                              select CreateIDLookupDbCommandBuilder (idsByTable.Key, idsByTable.ToArray());
+                              let selectedColumns = idsByTable.Key.GetAllColumns().ToArray()
+                              let dataContainerReader = CreateDataContainerReader (idsByTable.Key, selectedColumns)
+                              let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
+                              select Tuple.Create (dbCommandBuilder, dataContainerReader);
+
       var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders);
       return new MultiDataContainerSortCommand (objectIDList, multiDataContainerLoadCommand);
     }
@@ -163,28 +167,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           (nullEntity, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a NullEntityDefinition."); });
     }
 
-    private Tuple<IDbCommandBuilder, IDataContainerReader> CreateIDLookupDbCommandBuilder (TableDefinition tableDefinition, ObjectID[] objectIDs)
+    private IDbCommandBuilder CreateIDLookupDbCommandBuilder (
+        TableDefinition tableDefinition,
+        IEnumerable<ColumnDefinition> selectedColumns,
+        ObjectID[] objectIDs)
     {
-      var selectProjection = tableDefinition.GetAllColumns();
-      var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
-      var dataContainerReader = CreateDataContainerReader (tableDefinition, ordinalProvider);
-
       if (objectIDs.Length > 1)
-      {
-        return
-            Tuple.Create (
-                _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (
-                    tableDefinition, new SelectedColumnsSpecification (selectProjection), objectIDs),
-                dataContainerReader);
-      }
+        return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (
+            tableDefinition, new SelectedColumnsSpecification (selectedColumns), objectIDs);
       else
-      {
-        return
-            Tuple.Create (
-                _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
-                    tableDefinition, new SelectedColumnsSpecification (selectProjection), objectIDs[0]),
-                dataContainerReader);
-      }
+        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
+            tableDefinition, new SelectedColumnsSpecification (selectedColumns), objectIDs[0]);
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDirectRelationLookup (
@@ -194,8 +187,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         SortExpressionDefinition sortExpression)
     {
       var selectProjection = tableDefinition.GetAllColumns();
-      var columnOrdinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection);
-      var dataContainerReader = CreateDataContainerReader (tableDefinition, columnOrdinalProvider);
+      var dataContainerReader = CreateDataContainerReader (tableDefinition, selectProjection);
 
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
           tableDefinition,
@@ -212,18 +204,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression)
     {
+      var selectedColumns = new[] { unionViewDefinition.ObjectIDColumn, unionViewDefinition.ClassIDColumn };
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
           unionViewDefinition,
-          new SelectedColumnsSpecification (new[] { unionViewDefinition.ObjectIDColumn, unionViewDefinition.ClassIDColumn }),
+          new SelectedColumnsSpecification (selectedColumns),
           _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
 
-      var objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (unionViewDefinition.ObjectIDColumn),
-          new SimpleStoragePropertyDefinition (unionViewDefinition.ClassIDColumn));
-      var ordinalProvider = CreateOrdinalProviderForKnownProjection (unionViewDefinition.GetAllColumns());
-      var objectIDReader = new ObjectIDReader (objectIDStoragePropertyDefinition, ordinalProvider);
+      var objectIDReader = CreateObjectIDReader (unionViewDefinition, selectedColumns);
 
       var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, objectIDReader);
       var indirectDataContainerLoadCommand = new IndirectDataContainerLoadCommand (objectIDLoadCommand, this);
@@ -252,24 +241,35 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Assertion.IsTrue (sortExpression.SortedProperties.Count > 0, "The sort-epression must have at least one sorted property.");
 
-      var columns = from spec in sortExpression.SortedProperties
-                    let column = _rdbmsPersistenceModelProvider.GetColumnDefinition (spec.PropertyDefinition)
-                    from simpleColumn in column.GetColumns()
-                    select Tuple.Create (simpleColumn, spec.Order);
+      var columns = from sortedProperty in sortExpression.SortedProperties
+                    let storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetColumnDefinition (sortedProperty.PropertyDefinition)
+                    from column in storagePropertyDefinition.GetColumns()
+                    select Tuple.Create (column, sortedProperty.Order);
 
       return new OrderedColumnsSpecification (columns);
     }
 
-    private IDataContainerReader CreateDataContainerReader (TableDefinition tableDefinition, IColumnOrdinalProvider columnOrdinalProvider)
+    private IDataContainerReader CreateDataContainerReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
     {
-      var objectIDStoragePropertyDefinition =
-          new ObjectIDStoragePropertyDefinition (
-              new SimpleStoragePropertyDefinition (tableDefinition.ObjectIDColumn),
-              new SimpleStoragePropertyDefinition (tableDefinition.ClassIDColumn));
-      var timestampPropertyDefinition = new SimpleStoragePropertyDefinition (tableDefinition.TimestampColumn);
+      var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
+      var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);
+      var timestampPropertyDefinition = new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
 
-      return new DataContainerReader (
-          objectIDStoragePropertyDefinition, timestampPropertyDefinition, columnOrdinalProvider, _rdbmsPersistenceModelProvider);
+      return new DataContainerReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
+    }
+
+    private IObjectIDReader CreateObjectIDReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
+    {
+      var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
+      var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);
+      return new ObjectIDReader (objectIDStoragePropertyDefinition, ordinalProvider);
+    }
+
+    private ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    {
+      return new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (entityDefinition.ObjectIDColumn),
+          new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
     }
 
     private IColumnOrdinalProvider CreateOrdinalProviderForKnownProjection (IEnumerable<ColumnDefinition> selectedColumns)
