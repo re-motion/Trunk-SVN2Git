@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
 
     public override StorageTypeInformation ObjectIDStorageType
     {
-      get { return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new DefaultConverter(typeof(Guid))); }
+      get { return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid?), new NullableConverter (typeof(Guid?))); }
     }
 
     public override StorageTypeInformation SerializedObjectIDStorageType
@@ -93,31 +93,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (ReflectionUtility.IsBinaryPropertyValueType (propertyType))
       {
         string storageType = GetStorageTypeStringForVarType ("varbinary", maxLength);
-        return new StorageTypeInformation (storageType, DbType.Binary, typeof (byte[]), new DefaultConverter(typeof(Byte[])));
+        return new StorageTypeInformation (storageType, DbType.Binary, typeof (byte[]), new DefaultConverter (typeof (Byte[])));
       }
 
       if (propertyType == typeof (Boolean))
-        return new StorageTypeInformation ("bit", DbType.Boolean, typeof (bool), new DefaultConverter(typeof(bool)));
+        return new StorageTypeInformation ("bit", DbType.Boolean, typeof (bool), new DefaultConverter (typeof (bool)));
       if (propertyType == typeof (Byte))
-        return new StorageTypeInformation ("tinyint", DbType.Byte, typeof (byte), new DefaultConverter(typeof(byte)));
+        return new StorageTypeInformation ("tinyint", DbType.Byte, typeof (byte), new DefaultConverter (typeof (byte)));
       if (propertyType == typeof (DateTime))
-        return new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DefaultConverter(typeof(DateTime)));
+        return new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DefaultConverter (typeof (DateTime)));
       if (propertyType == typeof (Decimal))
-        return new StorageTypeInformation ("decimal (38, 3)", DbType.Decimal, typeof (Decimal), new DefaultConverter(typeof(Decimal)));
+        return new StorageTypeInformation ("decimal (38, 3)", DbType.Decimal, typeof (Decimal), new DefaultConverter (typeof (Decimal)));
       if (propertyType == typeof (Double))
-        return new StorageTypeInformation ("float", DbType.Double, typeof (Double), new DefaultConverter(typeof(Double)));
+        return new StorageTypeInformation ("float", DbType.Double, typeof (Double), new DefaultConverter (typeof (Double)));
       if (propertyType == typeof (Guid))
-        return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new DefaultConverter(typeof(Guid)));
+        return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new DefaultConverter (typeof (Guid)));
       if (propertyType == typeof (Int16))
-        return new StorageTypeInformation ("smallint", DbType.Int16, typeof (Int16), new DefaultConverter(typeof(Int16)));
+        return new StorageTypeInformation ("smallint", DbType.Int16, typeof (Int16), new DefaultConverter (typeof (Int16)));
       if (propertyType == typeof (Int32))
-        return new StorageTypeInformation ("int", DbType.Int32, typeof (Int32), new DefaultConverter(typeof(Int32)));
+        return new StorageTypeInformation ("int", DbType.Int32, typeof (Int32), new DefaultConverter (typeof (Int32)));
       if (propertyType == typeof (Int64))
-        return new StorageTypeInformation ("bigint", DbType.Int64, typeof (Int64), new DefaultConverter(typeof(Int64)));
+        return new StorageTypeInformation ("bigint", DbType.Int64, typeof (Int64), new DefaultConverter (typeof (Int64)));
       if (propertyType == typeof (Single))
-        return new StorageTypeInformation ("real", DbType.Single, typeof (Single), new DefaultConverter(typeof(Single)));
+        return new StorageTypeInformation ("real", DbType.Single, typeof (Single), new DefaultConverter (typeof (Single)));
 
-      return null; // TODO Review 4150: Throw NotSupportedException ("Type '...' is not supported by this storage provider.");
+      return null; // TODO Review 4167: Throw NotSupportedException ("Type '...' is not supported by this storage provider.");
     }
 
     private StorageTypeInformation GetStorageTypeForNullableValueType (Type type, Type underlyingType, int? maxLength)
