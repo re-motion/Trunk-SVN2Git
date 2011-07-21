@@ -229,6 +229,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         }
         catch (Exception e)
         {
+          // TODO Review 4141: Include e.Message in the new exception message, like with ExecuteReader.
           throw CreateRdbmsProviderException (e, "Error while executing SQL command for query '{0}'.", query.ID);
         }
       }
