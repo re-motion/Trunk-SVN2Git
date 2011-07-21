@@ -58,10 +58,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
           statement.Append (" AND ");
 
         statement.Append (sqlDialect.DelimitIdentifier (comparedColumnValue.Column.Name));
-        statement.Append ("=");
+        statement.Append (" = ");
         
         var parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
-        parameter.ParameterName = comparedColumnValue.Column.Name;
+        parameter.ParameterName = sqlDialect.GetParameterName (comparedColumnValue.Column.Name);
+        command.Parameters.Add (parameter);
+
         statement.Append (parameter.ParameterName);
 
         first = false;

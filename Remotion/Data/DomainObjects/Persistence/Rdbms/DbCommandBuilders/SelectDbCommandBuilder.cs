@@ -23,19 +23,19 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   /// <summary>
-  /// The <see cref="SelectDbCommandBuilder"/> builds a command that allows retrieving a set of records where a certain column matches 
-  /// a given <see cref="ObjectID"/> value.
+  /// The <see cref="SelectDbCommandBuilder"/> builds a command that allows retrieving a set of records as specified by a given 
+  /// <see cref="IComparedColumnsSpecification"/>.
   /// </summary>
   public class SelectDbCommandBuilder : DbCommandBuilder
   {
     private readonly TableDefinition _table;
     private readonly ISelectedColumnsSpecification _selectedColumns;
-    private readonly ComparedColumnsSpecification _comparedColumnsSpecification;
+    private readonly IComparedColumnsSpecification _comparedColumnsSpecification;
 
     public SelectDbCommandBuilder (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        ComparedColumnsSpecification comparedColumnsSpecification,
+        IComparedColumnsSpecification comparedColumnsSpecification,
         ISqlDialect sqlDialect,
         IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
@@ -44,14 +44,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("comparedColumnsSpecification", comparedColumnsSpecification);
 
-      if(comparedColumnsSpecification.ComparedColumnValues.Count!=1) //TODO RM-4182: or add parameter for each column value?
-        throw new ArgumentException ("Invalid compared columns count.", "comparedColumnsSpecification");
-
       _table = table;
       _selectedColumns = selectedColumns;
       _comparedColumnsSpecification = comparedColumnsSpecification;
-
-      
     }
 
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
@@ -63,9 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var statement = new StringBuilder();
       AppendSelectClause (statement, _selectedColumns);
       AppendFromClause (statement, _table);
-
-      var parameter = AddCommandParameter (command, _table.ObjectIDColumn.Name, _comparedColumnsSpecification.ComparedColumnValues[0].Value);
-      AppendComparingWhereClause (statement, _table.ObjectIDColumn, parameter);
+      AppendComparingWhereClause (statement, command, _comparedColumnsSpecification);
       statement.Append (SqlDialect.StatementDelimiter);
 
       command.CommandText = statement.ToString();

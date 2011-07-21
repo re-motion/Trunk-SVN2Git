@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
 
     public override StorageTypeInformation ObjectIDStorageType
     {
-      get { return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid?), new NullableConverter (typeof(Guid?))); }
+      get { return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid?), new DefaultConverter (typeof(Guid?))); }
     }
 
     public override StorageTypeInformation SerializedObjectIDStorageType
@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
           underlyingStorageInformation.StorageType,
           underlyingStorageInformation.DbType,
           typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.ParameterValueType),
-          new NullableConverter (type));
+          new DefaultConverter (type));
     }
 
     private string GetStorageTypeStringForVarType (string varType, int? maxLength)

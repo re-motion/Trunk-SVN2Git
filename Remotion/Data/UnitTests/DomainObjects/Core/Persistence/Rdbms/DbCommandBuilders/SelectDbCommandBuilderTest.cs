@@ -66,11 +66,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
     }
 
+    // TODO Review 4182: Change to use ComparedColumnsSpecification mock
+
     [Test]
     public void Create_DefaultSchema ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
-      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.ObjectIDColumn, _objectID) });
+      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.ObjectIDColumn, _objectID.Value) });
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
@@ -102,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
-      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.ObjectIDColumn, _objectID) });
+      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.ObjectIDColumn, _objectID.Value) });
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
@@ -128,24 +130,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [ID] = @ID;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_objectID.Value));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Invalid compared columns count.\r\nParameter name: comparedColumnsSpecification")]
-    public void Create_InvalidColumnCount_ThrowsException ()
-    {
-      var tableDefinition = TableDefinitionObjectMother.Create (
-          TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
-      var comparedColumnsSpecifaction =
-          new ComparedColumnsSpecification (
-              new[] { new ColumnValue (tableDefinition.ObjectIDColumn, _objectID), new ColumnValue (tableDefinition.ObjectIDColumn, _objectID) });
-
-      new SelectDbCommandBuilder (
-          tableDefinition,
-          _selectedColumnsStub,
-          comparedColumnsSpecifaction,
-          _sqlDialectMock,
-          _valueConverterStub);
     }
   }
 }

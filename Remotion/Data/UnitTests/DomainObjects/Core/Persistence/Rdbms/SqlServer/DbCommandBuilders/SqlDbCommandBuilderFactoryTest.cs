@@ -71,6 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.CreateForSingleIDLookupFromTable (_tableDefinition, _selectedColumnsStub, _objectID);
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
+      // TODO Review 4182: Check data passed to command builder
     }
 
     [Test]
@@ -79,6 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.CreateForMultiIDLookupFromTable (_tableDefinition, _selectedColumnsStub, new[] { _objectID });
 
       Assert.That (result, Is.TypeOf (typeof (SqlXmlMultiIDLookupSelectDbCommandBuilder)));
+      // TODO Review 4182: Check data passed to command builder
     }
 
     [Test]
@@ -88,6 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _tableDefinition, _selectedColumnsStub, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
 
       Assert.That (result, Is.TypeOf (typeof (TableRelationLookupSelectDbCommandBuilder)));
+      // TODO Review 4182: Check data passed to command builder
     }
 
     [Test]
@@ -102,6 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           unionViewDefinition, _selectedColumnsStub, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
 
       Assert.That (result, Is.TypeOf (typeof (UnionRelationLookupSelectDbCommandBuilder)));
+      // TODO Review 4182: Check data passed to command builder
     }
 
     [Test]

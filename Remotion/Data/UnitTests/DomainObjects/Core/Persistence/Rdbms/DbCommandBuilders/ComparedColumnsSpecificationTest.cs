@@ -19,7 +19,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -40,6 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IStorageTypeInformation _storageTypeInformationMock2;
 
     private StringBuilder _statement;
+
+    private IDataParameterCollection _parametersCollectionMock;
     private IDbCommand _commandStub;
     private ISqlDialect _sqlDialectStub;
 
@@ -55,7 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _value2 = 18;
 
       _statement = new StringBuilder();
+
+      _parametersCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
       _commandStub = MockRepository.GenerateStub<IDbCommand> ();
+      _commandStub.Stub (stub => stub.Parameters).Return (_parametersCollectionMock);
+
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
     }
 
@@ -82,10 +87,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _statement.Append ("<existingtext>");
 
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pFirst");
+
       var parameterStrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameterStrictMock.Expect (mock => mock.ParameterName = "First");
+      parameterStrictMock.Expect (mock => mock.ParameterName = "pFirst");
       parameterStrictMock.Expect (mock => mock.ParameterName).Return ("pFirst");
       parameterStrictMock.Replay();
+
+      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock)).Return (0);
+      _parametersCollectionMock.Replay();
 
       _storageTypeInformationMock1
           .Expect (mock => mock.CreateDataParameter (_commandStub, _value1))
@@ -96,10 +106,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub);
 
-      parameterStrictMock.VerifyAllExpectations();
+      _parametersCollectionMock.VerifyAllExpectations();
+      parameterStrictMock.VerifyAllExpectations ();
       _storageTypeInformationMock1.VerifyAllExpectations();
 
-      Assert.That (_statement.ToString(), Is.EqualTo ("<existingtext>[First]=pFirst"));
+      Assert.That (_statement.ToString(), Is.EqualTo ("<existingtext>[First] = pFirst"));
     }
 
     [Test]
@@ -109,15 +120,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _statement.Append ("<existingtext>");
 
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pFirst");
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("Second")).Return ("pSecond");
+      
       var parameterStrictMock1 = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameterStrictMock1.Expect (mock => mock.ParameterName = "First");
+      parameterStrictMock1.Expect (mock => mock.ParameterName = "pFirst");
       parameterStrictMock1.Expect (mock => mock.ParameterName).Return ("pFirst");
       parameterStrictMock1.Replay ();
 
       var parameterStrictMock2 = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameterStrictMock2.Expect (mock => mock.ParameterName = "Second");
+      parameterStrictMock2.Expect (mock => mock.ParameterName = "pSecond");
       parameterStrictMock2.Expect (mock => mock.ParameterName).Return ("pSecond");
       parameterStrictMock2.Replay ();
+
+      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock1)).Return (0);
+      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock2)).Return (1);
+      _parametersCollectionMock.Replay ();
 
       _storageTypeInformationMock1
           .Expect (mock => mock.CreateDataParameter (_commandStub, _value1))
@@ -134,12 +152,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub);
 
+      _parametersCollectionMock.VerifyAllExpectations ();
       parameterStrictMock1.VerifyAllExpectations ();
       parameterStrictMock2.VerifyAllExpectations ();
       _storageTypeInformationMock1.VerifyAllExpectations ();
       _storageTypeInformationMock2.VerifyAllExpectations ();
 
-      Assert.That (_statement.ToString (), Is.EqualTo ("<existingtext>[First]=pFirst AND [Second]=pSecond"));
+      Assert.That (_statement.ToString (), Is.EqualTo ("<existingtext>[First] = pFirst AND [Second] = pSecond"));
     }
     
   }
