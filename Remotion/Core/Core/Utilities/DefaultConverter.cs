@@ -22,12 +22,13 @@ namespace Remotion.Utilities
   /// <summary>
   /// The <see cref="DefaultConverter"/> provides a default implementation of <see cref="TypeConverter"/> that does not actually modify the converted 
   /// values and can only convert from and to a given <see cref="Type"/>. It is, therefore, de-facto a no-op implementation of 
-  /// <see cref="TypeConverter"/>.
+  /// <see cref="TypeConverter"/>. It also supports converting from the underlying type to a nullable value type.
   /// </summary>
   public class DefaultConverter : TypeConverter
   {
     private readonly Type _type;
     private readonly bool _isNullableType;
+    private readonly Type _underlyingType;
 
     public DefaultConverter (Type type)
     {
@@ -35,6 +36,7 @@ namespace Remotion.Utilities
 
       _type = type;
       _isNullableType = NullableTypeUtility.IsNullableType (type);
+      _underlyingType = Nullable.GetUnderlyingType (type) ?? type;
     }
 
     public Type Type
@@ -50,15 +52,15 @@ namespace Remotion.Utilities
     public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
     {
       ArgumentUtility.CheckNotNull ("sourceType", sourceType);
-      
-      return _type == sourceType;
+
+      return _type == sourceType || _underlyingType == sourceType;
     }
 
     public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 
-      return destinationType == _type;
+      return destinationType == _type || Nullable.GetUnderlyingType (destinationType) == _type;
     }
 
     public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)

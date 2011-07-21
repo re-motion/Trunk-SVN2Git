@@ -66,6 +66,8 @@ namespace Remotion.UnitTests.Utilities
     {
       // same type
       Assert.That (_converterForString.CanConvertFrom (_typeDescriptorContext, typeof (string)), Is.True);
+      // from non-nullable to nullable
+      Assert.That (_converterForNullableInt.CanConvertFrom (_typeDescriptorContext, typeof (int)), Is.True);
     }
 
     [Test]
@@ -79,8 +81,6 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (_converterForObject.CanConvertFrom (_typeDescriptorContext, typeof (string)), Is.False);
       // from nullable to non-nullable
       Assert.That (_converterForInt.CanConvertFrom (_typeDescriptorContext, typeof (int?)), Is.False);
-      // from non-nullable to nullable
-      Assert.That (_converterForNullableInt.CanConvertFrom (_typeDescriptorContext, typeof (int)), Is.False);
     }
 
     [Test]
@@ -88,6 +88,8 @@ namespace Remotion.UnitTests.Utilities
     {
       // same type
       Assert.That (_converterForString.CanConvertTo (_typeDescriptorContext, typeof (string)), Is.True);
+      // from non-nullable to nullable
+      Assert.That (_converterForInt.CanConvertTo (_typeDescriptorContext, typeof (int?)), Is.True);
     }
 
     [Test]
@@ -101,8 +103,6 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (_converterForString.CanConvertTo (_typeDescriptorContext, typeof (object)), Is.False);
       // from nullable to non-nullable
       Assert.That (_converterForNullableInt.CanConvertTo (_typeDescriptorContext, typeof (int)), Is.False);
-      // from non-nullable to nullable
-      Assert.That (_converterForInt.CanConvertTo (_typeDescriptorContext, typeof (int?)), Is.False);
     }
 
     [Test]
@@ -141,6 +141,14 @@ namespace Remotion.UnitTests.Utilities
       var result = _converterForString.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, "test");
 
       Assert.That (result, Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void ConvertFrom_ValueIsUnderlyingType ()
+    {
+      var result = _converterForNullableInt.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, 17);
+
+      Assert.That (result, Is.EqualTo (17));
     }
     
     [Test]
@@ -188,6 +196,14 @@ namespace Remotion.UnitTests.Utilities
       var result = _converterForString.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, "test", typeof (string));
 
       Assert.That (result, Is.EqualTo ("test"));
+    }
+
+    [Test]
+    public void ConvertTo_DestinationTypeIsNullableValueType ()
+    {
+      var result = _converterForInt.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, 17, typeof (int?));
+
+      Assert.That (result, Is.EqualTo (17));
     }
   }
 }
