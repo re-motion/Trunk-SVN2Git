@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (objectID == null)
         return _valueProperty.SplitValue (null);
 
-      return _valueProperty.SplitValue (objectID.Value).Concat(_classIDProperty.SplitValue(objectID.ClassID));
+      return _valueProperty.SplitValue (objectID.Value).Concat(_classIDProperty.SplitValue (objectID.ClassID));
     }
   }
 }

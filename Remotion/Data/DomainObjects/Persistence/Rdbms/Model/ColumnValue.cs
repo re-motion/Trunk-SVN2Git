@@ -18,6 +18,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  /// <summary>
+  /// Associates a value with a <see cref="ColumnDefinition"/>.
+  /// </summary>
   public struct ColumnValue
   {
     private readonly ColumnDefinition _column;

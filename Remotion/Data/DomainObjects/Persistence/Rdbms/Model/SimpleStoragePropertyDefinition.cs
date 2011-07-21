@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
-      yield return new ColumnValue(_columnDefinition, value);
+      yield return new ColumnValue (_columnDefinition, value);
     }
   }
 }

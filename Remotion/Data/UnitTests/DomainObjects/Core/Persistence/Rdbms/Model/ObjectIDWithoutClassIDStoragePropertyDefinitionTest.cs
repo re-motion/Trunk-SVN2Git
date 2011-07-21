@@ -119,13 +119,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void SplitValue ()
     {
-      var columnValue1 = new ColumnValue (_columnDefinition, DomainObjectIDs.Order1);
+      var columnValue = new ColumnValue (_columnDefinition, DomainObjectIDs.Order1);
 
-      _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
+      _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue });
 
       var result = _objectIDWithoutClassIDStorageDefinition.SplitValue (DomainObjectIDs.Order1);
 
-      Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
+      Assert.That (result, Is.EqualTo (new[] { columnValue }));
     }
 
     [Test]
@@ -141,12 +141,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The specified object-id has an invalid class definition.\r\nParameter name: value")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The specified ObjectID has an invalid ClassDefinition.\r\nParameter name: value")]
     public void SplitValue_InvalidClassDefinition ()
     {
-      var columnValue1 = new ColumnValue (_columnDefinition, DomainObjectIDs.OrderItem1);
+      var columnValue = new ColumnValue (_columnDefinition, DomainObjectIDs.OrderItem1);
 
-      _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.OrderItem1.Value)).Return (new[] { columnValue1 });
+      _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.OrderItem1.Value)).Return (new[] { columnValue });
 
       _objectIDWithoutClassIDStorageDefinition.SplitValue (DomainObjectIDs.OrderItem1);
     }

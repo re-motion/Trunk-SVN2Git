@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (objectID.ClassDefinition == _classDefinition)
         return _valueProperty.SplitValue (objectID.Value);
 
-      throw new ArgumentException ("The specified object-id has an invalid class definition.", "value");
+      throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", "value");
     }
   }
 }
