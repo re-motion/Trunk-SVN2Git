@@ -26,125 +26,166 @@ namespace Remotion.UnitTests.Utilities
   [TestFixture]
   public class DefaultConverterTest
   {
-    private DefaultConverter _converterWithNullableType;
+    private DefaultConverter _converterForString;
+    private DefaultConverter _converterForObject;
+    private DefaultConverter _converterForInt;
+    private DefaultConverter _converterForNullableInt;
+
     private ITypeDescriptorContext _typeDescriptorContext;
-    private DefaultConverter _converterWithoutNullableType;
 
     [SetUp]
     public void SetUp ()
     {
-      _converterWithNullableType = new DefaultConverter (typeof (string));
-      _converterWithoutNullableType = new DefaultConverter (typeof (int));
+      _converterForString = new DefaultConverter (typeof (string));
+      _converterForObject = new DefaultConverter (typeof (object));
+      _converterForInt = new DefaultConverter (typeof (int));
+      _converterForNullableInt = new DefaultConverter (typeof (int?));
+
       _typeDescriptorContext = MockRepository.GenerateStub<ITypeDescriptorContext>();
     }
 
     [Test]
-    public void Initialization ()
+    public void Initialization_ReferenceType ()
     {
-      Assert.That (_converterWithNullableType.Type, Is.SameAs(typeof (string)));
-      Assert.That (_converterWithNullableType.IsNullableType, Is.True);
+      Assert.That (_converterForString.Type, Is.SameAs(typeof (string)));
+      Assert.That (_converterForString.IsNullableType, Is.True);
     }
 
     [Test]
-    public void Initialization_ValuerType ()
+    public void Initialization_NonNullableValueType ()
     {
-      Assert.That (_converterWithoutNullableType.Type, Is.SameAs(typeof (int)));
-      Assert.That (_converterWithoutNullableType.IsNullableType, Is.False);
+      var converterForInt = new DefaultConverter (typeof (int));
+      Assert.That (converterForInt.Type, Is.SameAs(typeof (int)));
+      Assert.That (converterForInt.IsNullableType, Is.False);
     }
+
+    // TODO Review 4167: Add initialization test for nullable int
 
     [Test]
     public void CanConvertFrom_True ()
     {
-      var converter = new DefaultConverter (typeof (object));
-
-      var result = converter.CanConvertFrom (_typeDescriptorContext, typeof (string));
-
-      Assert.That (result, Is.True);
+      // same type
+      Assert.That (_converterForString.CanConvertFrom (_typeDescriptorContext, typeof (string)), Is.True);
     }
 
     [Test]
     public void CanConvertFrom_False ()
     {
-      var result = _converterWithNullableType.CanConvertFrom (_typeDescriptorContext, typeof (int));
-
-      Assert.That (result, Is.False);
+      // completely unrelated
+      Assert.That (_converterForString.CanConvertFrom (_typeDescriptorContext, typeof (int)), Is.False);
+      // from base to derived type
+      Assert.That (_converterForString.CanConvertFrom (_typeDescriptorContext, typeof (object)), Is.False);
+      // from derived to base type
+      Assert.That (_converterForObject.CanConvertFrom (_typeDescriptorContext, typeof (string)), Is.False);
+      // from nullable to non-nullable
+      Assert.That (_converterForInt.CanConvertFrom (_typeDescriptorContext, typeof (int?)), Is.False);
+      // from non-nullable to nullable
+      Assert.That (_converterForNullableInt.CanConvertFrom (_typeDescriptorContext, typeof (int)), Is.False);
     }
 
     [Test]
     public void CanConvertTo_True ()
     {
-      var result = _converterWithNullableType.CanConvertTo (_typeDescriptorContext, typeof (object));
-
-      Assert.That (result, Is.True);
+      // same type
+      Assert.That (_converterForString.CanConvertTo (_typeDescriptorContext, typeof (string)), Is.True);
     }
 
     [Test]
     public void CanConvertTo_False ()
     {
-      var result = _converterWithNullableType.CanConvertTo (_typeDescriptorContext, typeof (int));
-
-      Assert.That (result, Is.False);
+      // completely unrelated
+      Assert.That (_converterForString.CanConvertTo (_typeDescriptorContext, typeof (int)), Is.False);
+      // from base to derived type
+      Assert.That (_converterForObject.CanConvertTo (_typeDescriptorContext, typeof (string)), Is.False);
+      // from derived to base type
+      Assert.That (_converterForString.CanConvertTo (_typeDescriptorContext, typeof (object)), Is.False);
+      // from nullable to non-nullable
+      Assert.That (_converterForNullableInt.CanConvertTo (_typeDescriptorContext, typeof (int)), Is.False);
+      // from non-nullable to nullable
+      Assert.That (_converterForInt.CanConvertTo (_typeDescriptorContext, typeof (int?)), Is.False);
     }
 
-    [Ignore("TODO: RM-4167")]
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Null cannot be converted to type 'Int32'")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Null cannot be converted to type 'System.Int32'.")]
     public void ConvertFrom_ValueIsNullAndNoNullableType ()
     {
-      _converterWithoutNullableType.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, null);
+      _converterForInt.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, null);
     }
 
     [Test]
-    public void ConvertFrom_ValueIsNullAndNullableType ()
+    public void ConvertFrom_ValueIsNullAndReferenceType ()
     {
-      var result = _converterWithNullableType.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, null);
+      var result = _converterForString.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, null);
 
       Assert.That (result, Is.Null);
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Value of type 'Object' cannot be connverted to type 'String'.")]
+    public void ConvertFrom_ValueIsNullAndNullableValueType ()
+    {
+      var result = _converterForNullableInt.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, null);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Value of type 'System.Object' cannot be connverted to type 'System.String'.")]
     public void ConvertFrom_ValueIsNotNullAndCannotConvertFromType ()
     {
-      _converterWithNullableType.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, new object());
+      _converterForString.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, new object());
     }
 
     [Test]
     public void ConvertFrom_ValueIsNotNullAndCanConvertFromType ()
     {
-      var converter = new DefaultConverter (typeof (object));
-
-      var result = converter.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, "test");
+      var result = _converterForString.ConvertFrom (_typeDescriptorContext, CultureInfo.CurrentCulture, "test");
 
       Assert.That (result, Is.EqualTo ("test"));
     }
     
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Null cannot be converted by this TypeConverter.")]
-    public void ConvertTo_ValueIsNullAndNoNullableType ()
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The given value cannot be converted by this TypeConverter.")]
+    [Ignore ("TODO 4167")]
+    public void ConvertTo_ValueIsNullAndNotValid ()
     {
-      _converterWithoutNullableType.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, null, typeof(int));
+      _converterForInt.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, null, typeof (int));
     }
 
     [Test]
-    public void ConvertTo_ValueIsNullAndNullableType ()
+    public void ConvertTo_ValueIsNullAndReferenceType ()
     {
-      var result = _converterWithNullableType.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, null, typeof(string));
+      var result = _converterForString.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, null, typeof(string));
 
       Assert.That (result, Is.Null);
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Values of type 'Int32' cannot be converted by this TypeConverter.")]
-    public void ConvertTo_ValueIsNotNullAndTypeNotAssignable ()
+    public void ConvertTo_ValueIsNullAndNullableValueType ()
     {
-      _converterWithNullableType.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, 5, typeof (string));
+      var result = _converterForNullableInt.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, null, typeof (int?));
+
+      Assert.That (result, Is.Null);
     }
 
     [Test]
+    [Ignore ("TODO 4167")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The given value cannot be converted by this TypeConverter.")]
+    public void ConvertTo_ValueIsNotNullAndNotValid ()
+    {
+      _converterForString.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, 5, typeof (string));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This TypeConverter cannot convert to type 'System.Object'.")]
     public void ConvertTo_ValueIsNotNullAndCannotConvertToDestinationType ()
     {
-      var result = _converterWithNullableType.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, "test", typeof (object));
+      _converterForString.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, "test", typeof (object));
+    }
+
+    [Test]
+    public void ConvertTo_ValueIsNotNullAndCanConvertToDestinationType ()
+    {
+      var result = _converterForString.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, "test", typeof (string));
 
       Assert.That (result, Is.EqualTo ("test"));
     }

@@ -20,7 +20,9 @@ using System.ComponentModel;
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// The <see cref="DefaultConverter"/> provides default type conversions.
+  /// The <see cref="DefaultConverter"/> provides a default implementation of <see cref="TypeConverter"/> that does not actually modify the converted 
+  /// values and can only convert from and to a given <see cref="Type"/>. It is, therefore, de-facto a no-op implementation of 
+  /// <see cref="TypeConverter"/>.
   /// </summary>
   public class DefaultConverter : TypeConverter
   {
@@ -49,14 +51,14 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("sourceType", sourceType);
       
-      return _type.IsAssignableFrom (sourceType);
+      return _type == sourceType;
     }
 
     public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 
-      return destinationType.IsAssignableFrom (_type);
+      return destinationType == _type;
     }
 
     public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
@@ -65,16 +67,16 @@ namespace Remotion.Utilities
       // ReSharper disable HeuristicUnreachableCode
       if (value == null)
       {
-        //if (!IsNullableType) //TODO RM-4167
-        //  throw new NotSupportedException (string.Format ("Null cannot be converted to type '{0}'", _type.Name));
+        if (!IsNullableType)
+          throw new NotSupportedException (string.Format ("Null cannot be converted to type '{0}'.", _type));
         return null;
       }
-      // ReSharper restore ConditionIsAlwaysTrueOrFalse
-      // ReSharper restore HeuristicUnreachableCode
+          // ReSharper restore ConditionIsAlwaysTrueOrFalse
+          // ReSharper restore HeuristicUnreachableCode
       else
       {
         if (!CanConvertFrom (context, value.GetType ()))
-          throw new NotSupportedException (string.Format ("Value of type '{0}' cannot be connverted to type '{1}'.", value.GetType().Name, _type.Name));
+          throw new NotSupportedException (string.Format ("Value of type '{0}' cannot be connverted to type '{1}'.", value.GetType(), _type));
           
         return value;
       }
@@ -84,26 +86,17 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 
-      // ReSharper disable ConditionIsAlwaysTrueOrFalse
-      // ReSharper disable HeuristicUnreachableCode
-      if (value == null)
-      {
-        if (!IsNullableType)
-          throw new NotSupportedException ("Null cannot be converted by this TypeConverter.");
-        return null;
-      }
-      // ReSharper restore ConditionIsAlwaysTrueOrFalse
-      // ReSharper restore HeuristicUnreachableCode
-      else
-      {
-        if (!_type.IsAssignableFrom (value.GetType ()))
-          throw new NotSupportedException (string.Format ("Values of type '{0}' cannot be converted by this TypeConverter.", value.GetType().Name));
+      if (!CanConvertTo (destinationType))
+        throw new NotSupportedException (string.Format ("This TypeConverter cannot convert to type '{0}'.", destinationType));
+      // TODO Review 4167: Check if IsValid (value); if not, throw NotSupportedException ("The given value cannot be converted by this TypeConverter.");
 
-        if (!CanConvertTo (context, destinationType))
-          throw new NotSupportedException (string.Format ("Cannot convert type '{0}' to type '{1}.", _type, destinationType));
+      return value;
+    }
 
-        return value;
-      }
+    public override bool IsValid (ITypeDescriptorContext context, object value)
+    {
+      // TODO Review 4167: Implement this value: if value == null return IsNullable, otherwise, return CanConvertFrom (value.GetType())
+      return base.IsValid (context, value);
     }
   }
 }
