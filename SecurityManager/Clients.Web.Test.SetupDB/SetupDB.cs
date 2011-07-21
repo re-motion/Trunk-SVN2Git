@@ -85,7 +85,6 @@ public class SetupDB
             connection.Open();
 
             Console.WriteLine ("Ensure DB exists...");
-            DBUtility.ExecuteSqlFile (Path.Combine (databaseSetupFilesPath, "TearDownDB.sql"), connection, _databaseName, databaseFilesPath);  
             DBUtility.ExecuteSqlFile (Path.Combine (databaseSetupFilesPath, "CreateDB.sql"), connection, _databaseName, databaseFilesPath);  
           }
         }
@@ -101,6 +100,7 @@ public class SetupDB
         if (_setupDatabase)
         {
           Console.WriteLine ("SetupDB...");
+          DBUtility.ExecuteSqlFile (Path.Combine (databaseSetupFilesPath, "TearDownDB.sql"), connection, _databaseName, databaseFilesPath);
           DBUtility.ExecuteSqlFile (Path.Combine (databaseSetupFilesPath, "SecurityManagerSetupDB.sql"), connection, _databaseName, databaseFilesPath);
           DBUtility.ExecuteSqlFile (Path.Combine (databaseSetupFilesPath, "SecurityManagerSetupConstraints.sql"), connection, _databaseName, databaseFilesPath);
           DBUtility.ExecuteSqlFile (Path.Combine (databaseSetupFilesPath, "SecurityManagerSetupDBSpecialTables.sql"), connection, _databaseName, databaseFilesPath);
