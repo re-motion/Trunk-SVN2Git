@@ -199,6 +199,63 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      TypeWithReference[] value = new[] { TypeWithReference.Create (), TypeWithReference.Create () };
+      _bocList.DataSource = null;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = value;
+      _bocList.IsDirty = true;
+
+      _bocList.LoadValue (false);
+      Assert.AreEqual (value, _bocList.Value);
+      Assert.IsTrue (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithPropertyNull ()
+    {
+      TypeWithReference[] value = new[] { TypeWithReference.Create (), TypeWithReference.Create () };
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = null;
+      _bocList.Value = value;
+      _bocList.IsDirty = true;
+
+      _bocList.LoadValue (false);
+      Assert.AreEqual (value, _bocList.Value);
+      Assert.IsTrue (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create (), TypeWithReference.Create () };
+      _bocList.IsDirty = true;
+
+      _bocList.LoadValue (false);
+      Assert.AreEqual (null, _bocList.Value);
+      Assert.IsFalse (_bocList.IsDirty);
+    }
+
+    [Test]
+    public void LoadValueAndInterimTrueWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocList.DataSource = _dataSource;
+      _bocList.Property = _propertyReferenceList;
+      _bocList.Value = new[] { TypeWithReference.Create (), TypeWithReference.Create () };
+      _bocList.IsDirty = true;
+
+      _bocList.LoadValue (true);
+      Assert.AreEqual (null, _bocList.Value);
+      Assert.IsTrue (_bocList.IsDirty);
+    }
+
+
+    [Test]
     public void LoadUnboundValueAndInterimTrueWithListAndDirty ()
     {
       TypeWithReference[] value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };

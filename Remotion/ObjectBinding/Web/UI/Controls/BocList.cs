@@ -1433,11 +1433,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
-      if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-      {
-        IList value = (IList) DataSource.BusinessObject.GetProperty (Property);
-        LoadValueInternal (value, interim);
-      }
+      if (Property == null)
+        return;
+
+      if (DataSource == null)
+        return;
+
+      IList value = null;
+
+      if (DataSource.BusinessObject != null)
+        value = (IList) DataSource.BusinessObject.GetProperty (Property);
+
+      LoadValueInternal (value, interim);
     }
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
