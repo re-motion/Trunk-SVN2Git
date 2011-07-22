@@ -178,8 +178,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _factory.CreateForSingleIDLookup (objectID);
     }
 
-    // TODO Review 4143: Refactor remaining tests to use CheckDataContainerReaderForKnownProjection instead of manually inspecting the DataContainerReaders
-
     [Test]
     public void CreateForMultiIDLookup_TableDefinition_SingleIDLookup ()
     {
@@ -195,21 +193,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
+      
       var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
-      Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.IDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ClassIDProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.ClassIDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((DataContainerReader) dbCommandBuilderTuples[0].Item2).TimestampProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.TimestampColumn));
+      CheckDataContainerReaderForKnownProjection (dbCommandBuilderTuples[0].Item2, _tableDefinition1.GetAllColumns().ToArray());
     }
 
     [Test]
@@ -243,33 +230,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (dbCommandBuilderDictionary.ContainsKey (_dbCommandBuilder1Stub), Is.True);
       var readerForCommandBuilder1 = dbCommandBuilderDictionary[_dbCommandBuilder1Stub];
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) readerForCommandBuilder1).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.IDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) readerForCommandBuilder1).IDProperty).ClassIDProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.ClassIDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((DataContainerReader) readerForCommandBuilder1).TimestampProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.TimestampColumn));
-
+      CheckDataContainerReaderForKnownProjection (readerForCommandBuilder1, _tableDefinition1.GetAllColumns().ToArray());
+      
       Assert.That (dbCommandBuilderDictionary.ContainsKey (_dbCommandBuilder2Stub), Is.True);
       var readerForCommandBuilder2 = dbCommandBuilderDictionary[_dbCommandBuilder2Stub];
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) readerForCommandBuilder2).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition2.IDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) readerForCommandBuilder2).IDProperty).ClassIDProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition2.ClassIDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((DataContainerReader) readerForCommandBuilder2).TimestampProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition2.TimestampColumn));
+      CheckDataContainerReaderForKnownProjection (readerForCommandBuilder2, _tableDefinition2.GetAllColumns().ToArray());
     }
 
     [Test]
@@ -296,19 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
-      Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.IDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ClassIDProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.ClassIDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((DataContainerReader) dbCommandBuilderTuples[0].Item2).TimestampProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.TimestampColumn));
+      CheckDataContainerReaderForKnownProjection (dbCommandBuilderTuples[0].Item2, _tableDefinition1.GetAllColumns().ToArray());
     }
 
     [Test]
@@ -358,19 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
       var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
-      Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.IDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ClassIDProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.ClassIDColumn));
-      Assert.That (
-          ((SimpleStoragePropertyDefinition)
-           ((DataContainerReader) dbCommandBuilderTuples[0].Item2).TimestampProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.TimestampColumn));
+      CheckDataContainerReaderForKnownProjection (dbCommandBuilderTuples[0].Item2, _tableDefinition1.GetAllColumns().ToArray());
     }
 
     [Test]
