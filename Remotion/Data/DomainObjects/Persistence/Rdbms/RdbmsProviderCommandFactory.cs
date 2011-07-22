@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var ordinalProvider = new NameBasedColumnOrdinalProvider();
       var objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition()),
+          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition()),
           new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition()));
       var timestampPropertyDefinition =
           new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition());
@@ -204,7 +204,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression)
     {
-      var selectedColumns = new[] { unionViewDefinition.ObjectIDColumn, unionViewDefinition.ClassIDColumn };
+      var selectedColumns = new[] { unionViewDefinition.IDColumn, unionViewDefinition.ClassIDColumn };
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
           unionViewDefinition,
           new SelectedColumnsSpecification (selectedColumns),
@@ -268,7 +268,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
     {
       return new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (entityDefinition.ObjectIDColumn),
+          new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
           new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
     }
 

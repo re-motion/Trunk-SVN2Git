@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void GetObjectIDColumnDefinition ()
     {
-      var result = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition();
+      var result = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
 
       Assert.That (result.Name, Is.EqualTo ("ID"));
       Assert.That (result.IsNullable, Is.False);

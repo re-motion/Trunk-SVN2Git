@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeDerivedColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty1");
       _fakeDerivedColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty2");
       _fakeDerivedDerivedColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedDerivedProperty");
-      _fakeObjectIDColumn = new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition ());
+      _fakeObjectIDColumn = new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ());
       _fakeClassIDColumn = new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ());
       _fakeIDColumnDefinition = new ObjectIDStoragePropertyDefinition (_fakeObjectIDColumn, _fakeClassIDColumn);
       _fakeTimestampColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();

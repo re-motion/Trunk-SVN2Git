@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var officialClassDefinition = Configuration.GetClassDefinition ("Official");
 
       _infrastructureStoragePropertyDefintionProviderMock
-          .Expect (mock => mock.GetObjectIDColumnDefinition ())
+          .Expect (mock => mock.GetIDColumnDefinition ())
           .Return (_fakeIdColumnDefinition.GetColumnForForeignKey());
       _infrastructureStoragePropertyDefintionProviderMock.Replay ();
 
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var officialClassDefinition = Configuration.GetClassDefinition ("Official");
 
       _infrastructureStoragePropertyDefintionProviderMock
-          .Expect (mock => mock.GetObjectIDColumnDefinition())
+          .Expect (mock => mock.GetIDColumnDefinition())
           .Return (_fakeIdColumnDefinition.ValueProperty.GetColumnForForeignKey());
       _infrastructureStoragePropertyDefintionProviderMock.Replay();
 
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var officialClassDefinition = Configuration.GetClassDefinition ("Official");
 
       _infrastructureStoragePropertyDefintionProviderMock
-          .Expect (mock => mock.GetObjectIDColumnDefinition ())
+          .Expect (mock => mock.GetIDColumnDefinition ())
           .Return (_fakeIdColumnDefinition.ValueProperty.GetColumnForForeignKey ());
       _infrastructureStoragePropertyDefintionProviderMock.Replay ();
 
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var employeeClassDefinition = Configuration.GetClassDefinition ("Employee");
 
       _infrastructureStoragePropertyDefintionProviderMock
-          .Expect (mock => mock.GetObjectIDColumnDefinition())
+          .Expect (mock => mock.GetIDColumnDefinition())
           .Return (_fakeIdColumnDefinition.ValueProperty.GetColumnForForeignKey ()).Repeat.Any ();
       _infrastructureStoragePropertyDefintionProviderMock.Replay();
 

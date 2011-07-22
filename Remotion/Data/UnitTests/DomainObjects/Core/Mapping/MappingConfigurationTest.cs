@@ -357,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           {
               TableDefinitionObjectMother.Create (UnitTestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Test"))
           },
-          _fakeStorageEntityDefinition.ObjectIDColumn,
+          _fakeStorageEntityDefinition.IDColumn,
           _fakeStorageEntityDefinition.ClassIDColumn,
           _fakeStorageEntityDefinition.TimestampColumn,
           new ColumnDefinition[0],

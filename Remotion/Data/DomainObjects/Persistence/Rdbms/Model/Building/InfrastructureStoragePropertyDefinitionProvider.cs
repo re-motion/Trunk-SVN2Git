@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _storageNameProvider = storageNameProvider;
     }
 
-    public ColumnDefinition GetObjectIDColumnDefinition ()
+    public ColumnDefinition GetIDColumnDefinition ()
     {
       return new ColumnDefinition (
           _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeCalculator.ObjectIDStorageType, false, true);

@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return null; }
     }
 
-    public ColumnDefinition ObjectIDColumn
+    public ColumnDefinition IDColumn
     {
       get { return null; }
     }

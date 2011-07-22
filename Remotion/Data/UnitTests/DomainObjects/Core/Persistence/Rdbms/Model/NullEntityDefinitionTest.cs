@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void ObjectIDColumn ()
     {
-      Assert.That (_nullEntityDefinition.ObjectIDColumn, Is.Null);
+      Assert.That (_nullEntityDefinition.IDColumn, Is.Null);
     }
 
     [Test]

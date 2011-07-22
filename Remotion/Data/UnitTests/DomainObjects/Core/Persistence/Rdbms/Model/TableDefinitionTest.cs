@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_tableDefintion.StorageProviderID, Is.EqualTo ("SPID"));
       Assert.That (_tableDefintion.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
 
-      Assert.That (_tableDefintion.ObjectIDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
+      Assert.That (_tableDefintion.IDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
       Assert.That (_tableDefintion.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
       Assert.That (_tableDefintion.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
       Assert.That (_tableDefintion.DataColumns, Is.EqualTo (new[] { _column }));

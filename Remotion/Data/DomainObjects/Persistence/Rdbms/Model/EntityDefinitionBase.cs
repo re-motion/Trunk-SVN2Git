@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
-    private readonly ColumnDefinition _objectIDColumn;
+    private readonly ColumnDefinition _idColumn;
     private readonly ColumnDefinition _classIDColumn;
     private readonly ColumnDefinition _timestampColumn;
     private readonly ReadOnlyCollection<ColumnDefinition> _dataColumns;
@@ -38,21 +38,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     protected EntityDefinitionBase (
         EntityNameDefinition viewName,
-        ColumnDefinition objectIDColumn,
+        ColumnDefinition idColumn,
         ColumnDefinition classIDColumn,
         ColumnDefinition timstampColumn,
         IEnumerable<ColumnDefinition> dataColumns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
     {
-      ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
+      ArgumentUtility.CheckNotNull ("idColumn", idColumn);
       ArgumentUtility.CheckNotNull ("classIDColumn", classIDColumn);
       ArgumentUtility.CheckNotNull ("timstampColumn", timstampColumn);
       ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
       ArgumentUtility.CheckNotNull ("synonyms", synonyms);
 
       _viewName = viewName;
-      _objectIDColumn = objectIDColumn;
+      _idColumn = idColumn;
       _classIDColumn = classIDColumn;
       _timestampColumn = timstampColumn;
       _dataColumns = dataColumns.ToList().AsReadOnly();
@@ -75,10 +75,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _viewName; }
     }
 
-    // TODO Review 4143: Rename to IDColumn
-    public ColumnDefinition ObjectIDColumn
+    public ColumnDefinition IDColumn
     {
-      get { return _objectIDColumn; }
+      get { return _idColumn; }
     }
 
     public ColumnDefinition ClassIDColumn
@@ -98,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnDefinition> GetAllColumns ()
     {
-      yield return _objectIDColumn;
+      yield return _idColumn;
       yield return _classIDColumn;
       yield return _timestampColumn;
 

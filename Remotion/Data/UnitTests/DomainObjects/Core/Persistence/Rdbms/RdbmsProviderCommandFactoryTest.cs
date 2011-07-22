@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.ObjectIDColumn));
+          Is.SameAs (_tableDefinition1.IDColumn));
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ClassIDProperty).ColumnDefinition,
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) readerForCommandBuilder1).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.ObjectIDColumn));
+          Is.SameAs (_tableDefinition1.IDColumn));
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) readerForCommandBuilder1).IDProperty).ClassIDProperty).ColumnDefinition,
@@ -261,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) readerForCommandBuilder2).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition2.ObjectIDColumn));
+          Is.SameAs (_tableDefinition2.IDColumn));
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) readerForCommandBuilder2).IDProperty).ClassIDProperty).ColumnDefinition,
@@ -300,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.ObjectIDColumn));
+          Is.SameAs (_tableDefinition1.IDColumn));
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ClassIDProperty).ColumnDefinition,
@@ -362,7 +362,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ValueProperty).ColumnDefinition,
-          Is.SameAs (_tableDefinition1.ObjectIDColumn));
+          Is.SameAs (_tableDefinition1.IDColumn));
       Assert.That (
           ((SimpleStoragePropertyDefinition)
            ((ObjectIDStoragePropertyDefinition) ((DataContainerReader) dbCommandBuilderTuples[0].Item2).IDProperty).ClassIDProperty).ColumnDefinition,
@@ -418,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var classDefinition = CreateClassDefinition (_unionViewDefinition);
       var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
 
-      var expectedSelectedColumns = new[] { _unionViewDefinition.ObjectIDColumn, _unionViewDefinition.ClassIDColumn };
+      var expectedSelectedColumns = new[] { _unionViewDefinition.IDColumn, _unionViewDefinition.ClassIDColumn };
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForRelationLookupFromUnionView (
@@ -459,7 +459,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                                        Tuple.Create (ColumnDefinitionObjectMother.TimestampColumn, SortOrder.Ascending)
                                    };
 
-      var expectedSelectedColumns = new[] { _unionViewDefinition.ObjectIDColumn, _unionViewDefinition.ClassIDColumn };
+      var expectedSelectedColumns = new[] { _unionViewDefinition.IDColumn, _unionViewDefinition.ClassIDColumn };
 
       _dbCommandBuilderFactoryStrictMock
           .Expect (
@@ -515,7 +515,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var classIDColumnDefinition = ColumnDefinitionObjectMother.ClassIDColumn;
       var timestampColumnDefinition = ColumnDefinitionObjectMother.TimestampColumn;
 
-      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetObjectIDColumnDefinition ()).Return (objectIDColumnDefinition);
+      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetIDColumnDefinition ()).Return (objectIDColumnDefinition);
       _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetClassIDColumnDefinition ()).Return (classIDColumnDefinition);
       _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetTimestampColumnDefinition()).Return (timestampColumnDefinition);
 
@@ -719,7 +719,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var dataContainerReader = (DataContainerReader) reader;
       CheckInfrastructureProperties (
           dataContainerReader,
-          _tableDefinition1.ObjectIDColumn,
+          _tableDefinition1.IDColumn,
           _tableDefinition1.ClassIDColumn,
           _tableDefinition1.TimestampColumn);
       Assert.That (dataContainerReader.PersistenceModelProvider, Is.SameAs (_rdbmsPersistenceModelProvider));

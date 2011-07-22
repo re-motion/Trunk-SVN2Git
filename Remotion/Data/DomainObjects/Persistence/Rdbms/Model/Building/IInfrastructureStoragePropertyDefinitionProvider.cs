@@ -22,8 +22,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public interface IInfrastructureStoragePropertyDefinitionProvider
   {
-    // TODO Review 4143: Rename to GetIDColumnDefinition
-    ColumnDefinition GetObjectIDColumnDefinition ();
+    ColumnDefinition GetIDColumnDefinition ();
     ColumnDefinition GetClassIDColumnDefinition ();
     ColumnDefinition GetTimestampColumnDefinition ();
   }

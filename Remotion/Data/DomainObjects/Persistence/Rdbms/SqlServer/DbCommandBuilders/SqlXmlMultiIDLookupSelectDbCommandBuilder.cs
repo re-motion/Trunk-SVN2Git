@@ -64,13 +64,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       foreach (var value in GetObjectIDValueStrings (_objectIDs))
         xmlString.Append ("<I>").Append (value).Append ("</I>");
       xmlString.Append ("</L>");
-      var xmlStringParameter = AddCommandParameter (command, _table.ObjectIDColumn.Name, xmlString.ToString());
+      var xmlStringParameter = AddCommandParameter (command, _table.IDColumn.Name, xmlString.ToString());
       xmlStringParameter.DbType = DbType.Xml;
 
       statement.Append (" WHERE ");
-      statement.Append (SqlDialect.DelimitIdentifier (_table.ObjectIDColumn.Name));
+      statement.Append (SqlDialect.DelimitIdentifier (_table.IDColumn.Name));
       statement.Append (" IN (");
-      statement.Append ("SELECT T.c.value('.', '").Append (_table.ObjectIDColumn.StorageTypeInfo.StorageType).Append ("')");
+      statement.Append ("SELECT T.c.value('.', '").Append (_table.IDColumn.StorageTypeInfo.StorageType).Append ("')");
       statement.Append (" FROM ");
       statement.Append (xmlStringParameter.ParameterName);
       statement.Append (".nodes('/L/I') T(c))");

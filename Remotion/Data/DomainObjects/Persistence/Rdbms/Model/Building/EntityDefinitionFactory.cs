@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (string.IsNullOrEmpty (tableName))
         throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
-      var objectIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition();
+      var objectIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
       var classIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ();
       var timestampColumn = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();
       var columns = GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition));
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          _infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition (),
+          _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition (),
           GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition)),
@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           unionedEntities,
-          _infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition (),
+          _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition (),
           GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition)),

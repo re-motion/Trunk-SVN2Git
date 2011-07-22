@@ -354,7 +354,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private void MockSpecialColumns ()
     {
       _infrastructureStoragePropertyDefinitionProviderMock
-          .Expect (mock => mock.GetObjectIDColumnDefinition())
+          .Expect (mock => mock.GetIDColumnDefinition())
           .Return (_fakeObjectIDStorageProperty.ColumnDefinition);
       _infrastructureStoragePropertyDefinitionProviderMock
           .Expect (mock => mock.GetClassIDColumnDefinition())

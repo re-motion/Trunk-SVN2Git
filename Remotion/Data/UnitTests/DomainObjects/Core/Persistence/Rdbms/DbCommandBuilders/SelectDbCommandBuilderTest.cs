@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create_DefaultSchema ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
-      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.ObjectIDColumn, _objectID.Value) });
+      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.IDColumn, _objectID.Value) });
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
-      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.ObjectIDColumn, _objectID.Value) });
+      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.IDColumn, _objectID.Value) });
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,

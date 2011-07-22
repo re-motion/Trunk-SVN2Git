@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           continue;
 
         // We can't access the opposite ID column from here, but columns implement equality, so we can just recreate it
-        var oppositeObjectIDColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition();
+        var oppositeObjectIDColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
         var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
         var referencingColumn = oppositeObjectIDColumnDefinition;
         var referencedColumn = endPointColumnDefinition.GetColumnForForeignKey ();
