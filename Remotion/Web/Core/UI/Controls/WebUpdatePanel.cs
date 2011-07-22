@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.ComponentModel;
+using System.Reflection;
 using System.Web.UI;
 using Remotion.Utilities;
 using AttributeCollection = System.Web.UI.AttributeCollection;
@@ -28,9 +30,27 @@ namespace Remotion.Web.UI.Controls
   /// </summary>
   public class WebUpdatePanel : UpdatePanel, IAttributeAccessor
   {
+    private static readonly FieldInfo s_renderedFieldInfo;
+    private static readonly MethodInfo s_renderChildrenInternalMethodInfo;
+
+    static WebUpdatePanel ()
+    {
+      s_renderedFieldInfo = typeof (UpdatePanel).GetField ("_rendered", BindingFlags.NonPublic | BindingFlags.Instance);
+      s_renderChildrenInternalMethodInfo = typeof (Control).GetMethod (
+          "RenderChildrenInternal",
+          BindingFlags.NonPublic | BindingFlags.Instance,
+          null,
+          new[]
+          {
+              typeof (HtmlTextWriter), typeof (ICollection)
+          },
+          null);
+    }
+
     private string _cssClass = "";
     private AttributeCollection _attributeCollection;
     private StateBag _attributeStateBag;
+    private WebUpdatePanelRenderMode _renderMode;
 
     public WebUpdatePanel ()
     {
@@ -73,6 +93,21 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
+    [Description ("Indicates whether the UpdatePanel should render as a block tag (<div>), an inline tag (<span>), or a table section (tbody, thead, tfoot).")]
+    [DefaultValue (WebUpdatePanelRenderMode.Div)]
+    [Category ("Layout")]
+    public new WebUpdatePanelRenderMode RenderMode
+    {
+      get
+      {
+        return _renderMode;
+      }
+      set
+      {
+        _renderMode = ArgumentUtility.CheckValidEnumValueAndTypeAndNotNull<WebUpdatePanelRenderMode> ("value", value);
+      }
+    }
+ 
     protected override void LoadViewState (object savedState)
     {
       if (savedState != null)
@@ -122,10 +157,52 @@ namespace Remotion.Web.UI.Controls
 
     protected override void RenderChildren (HtmlTextWriter writer)
     {
-      if (!IsInPartialRendering)
+      if (IsInPartialRendering)
+      {
+        base.RenderChildren (writer);
+      }
+      else
+      {
         AddAttributesToRender (writer);
+        writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID);
+        writer.RenderBeginTag (GetTagName());
 
-      base.RenderChildren (writer);
+        //((Control) base).RenderChildren (writer);
+        s_renderChildrenInternalMethodInfo.Invoke (this, new object[] { writer, Controls });
+
+        writer.RenderEndTag ();
+
+        //((UpdatePanel) this)._rendered = true;
+        s_renderedFieldInfo.SetValue (this, true);
+      }
+    }
+
+    private HtmlTextWriterTag GetTagName ()
+    {
+#pragma warning disable 612,618
+      switch (_renderMode)
+      {
+        case WebUpdatePanelRenderMode.Block:
+        case WebUpdatePanelRenderMode.Div:
+          return HtmlTextWriterTag.Div;
+
+        case WebUpdatePanelRenderMode.Inline:
+        case WebUpdatePanelRenderMode.Span:
+          return HtmlTextWriterTag.Span;
+
+        case WebUpdatePanelRenderMode.Tbody:
+          return HtmlTextWriterTag.Tbody;
+
+        case WebUpdatePanelRenderMode.Thead:
+          return HtmlTextWriterTag.Thead;
+        
+        case WebUpdatePanelRenderMode.Tfoot:
+          return HtmlTextWriterTag.Tfoot;
+
+        default:
+          throw new InvalidOperationException(string.Format ("The RenderMode '{0}' is not valid.", _renderMode));
+      }
+#pragma warning restore 612,618
     }
 
     string IAttributeAccessor.GetAttribute (string name)

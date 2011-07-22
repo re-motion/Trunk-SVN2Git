@@ -251,6 +251,7 @@
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\IWebTreeView.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\WebTreeViewRenderer.cs" />
+    <Compile Include="UI\Controls\WebUpdatePanelRenderMode.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
