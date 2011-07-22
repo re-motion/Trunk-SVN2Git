@@ -111,7 +111,7 @@ function SmartPage_Context(
   var _elementFocusHandler = function(evt) { SmartPage_Context.Instance.OnElementFocus(evt); };
   var _elementBlurHandler = function(evt) { SmartPage_Context.Instance.OnElementBlur(evt); };
 
-  this.Init = function()
+  this.Init = function ()
   {
     _theForm = window.document.forms[theFormID];
     {
@@ -177,7 +177,7 @@ function SmartPage_Context(
 
   // Called after page's html content is complete.
   // Used to perform initalization code that only requires complete the HTML source but not necessarily all images.
-  this.OnStartUp = function(isAsynchronous, isDirty)
+  this.OnStartUp = function (isAsynchronous, isDirty)
   {
     ArgumentUtility.CheckNotNullAndTypeIsBoolean('isAsynchronous', isAsynchronous);
     ArgumentUtility.CheckNotNullAndTypeIsBoolean('isDirty', isDirty);
@@ -192,7 +192,31 @@ function SmartPage_Context(
 
     if (!TypeUtility.IsUndefined(window.WebForm_FireDefaultButton))
       WebForm_FireDefaultButton = _fireDefaultButtonHandler;
+
+    if (!TypeUtility.IsUndefined(window.Sys) && !TypeUtility.IsUndefined(Sys.WebForms) && !TypeUtility.IsUndefined(Sys.WebForms.PageRequestManager))
+    {
+      Sys.WebForms.PageRequestManager.prototype._updatePanel = Sys$WebForms$PageRequestManager$_updatePanel;
+    }
   };
+
+  // Replacement for Sys.WebForms.PageRequestManager.prototype._updatePanel
+  function Sys$WebForms$PageRequestManager$_updatePanel(updatePanelElement, rendering)
+  {
+    for (var updatePanelID in this._scriptDisposes)
+    {
+      if (this._elementContains(updatePanelElement, document.getElementById(updatePanelID)))
+      {
+        var disposeScripts = this._scriptDisposes[updatePanelID];
+        for (var i = 0, l = disposeScripts.length; i < l; i++)
+        {
+          eval(disposeScripts[i]);
+        }
+        delete this._scriptDisposes[updatePanelID];
+      }
+    }
+    this._destroyTree(updatePanelElement);
+    $(updatePanelElement).empty().append(rendering);
+  }
 
   // Attached the OnValueChanged event handler to all form data elements listed in _trackedIDs.
   function SetDataChangedEventHandlers(theForm)
