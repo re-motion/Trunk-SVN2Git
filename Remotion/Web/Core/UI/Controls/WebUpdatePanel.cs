@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 using AttributeCollection = System.Web.UI.AttributeCollection;
 
 namespace Remotion.Web.UI.Controls
@@ -30,27 +31,11 @@ namespace Remotion.Web.UI.Controls
   /// </summary>
   public class WebUpdatePanel : UpdatePanel, IAttributeAccessor
   {
-    private static readonly FieldInfo s_renderedFieldInfo;
-    private static readonly MethodInfo s_renderChildrenInternalMethodInfo;
-
-    static WebUpdatePanel ()
-    {
-      s_renderedFieldInfo = typeof (UpdatePanel).GetField ("_rendered", BindingFlags.NonPublic | BindingFlags.Instance);
-      s_renderChildrenInternalMethodInfo = typeof (Control).GetMethod (
-          "RenderChildrenInternal",
-          BindingFlags.NonPublic | BindingFlags.Instance,
-          null,
-          new[]
-          {
-              typeof (HtmlTextWriter), typeof (ICollection)
-          },
-          null);
-    }
-
     private string _cssClass = "";
     private AttributeCollection _attributeCollection;
     private StateBag _attributeStateBag;
     private WebUpdatePanelRenderMode _renderMode;
+    private InternalControlMemberCaller _memberCaller = new InternalControlMemberCaller();
 
     public WebUpdatePanel ()
     {
@@ -167,13 +152,11 @@ namespace Remotion.Web.UI.Controls
         writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID);
         writer.RenderBeginTag (GetTagName());
 
-        //((Control) base).RenderChildren (writer);
-        s_renderChildrenInternalMethodInfo.Invoke (this, new object[] { writer, Controls });
+        _memberCaller.RenderChildrenInternal (this, writer, Controls);
 
         writer.RenderEndTag ();
 
-        //((UpdatePanel) this)._rendered = true;
-        s_renderedFieldInfo.SetValue (this, true);
+        _memberCaller.SetUpdatePanelRendered (this, true);
       }
     }
 

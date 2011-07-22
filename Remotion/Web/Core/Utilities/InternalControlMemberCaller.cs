@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using Remotion.Reflection;
@@ -29,6 +28,9 @@ namespace Remotion.Web.Utilities
   {
     private const BindingFlags c_bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
     public static readonly Type InternalControlStateType = typeof (Control).Assembly.GetType ("System.Web.UI.ControlState", true, false);
+
+    //  private System.Web.UI.UpdatePanel._rendered
+    private static readonly FieldInfo s_updatePanelRenderedFieldInfo = typeof (UpdatePanel).GetField ("_rendered", c_bindingFlags);
 
     public void SetControlState (Control control, ControlState value)
     {
@@ -174,7 +176,7 @@ namespace Remotion.Web.Utilities
     /// <summary>Encapsulates the get-access the the <see cref="Page"/>'s PageStatePersister property.</summary>
     public PageStatePersister GetPageStatePersister (Page page)
     {
-      ArgumentUtility.CheckNotNull ("target", page);
+      ArgumentUtility.CheckNotNull ("page", page);
 
       //  protected PageStatePersister System.Web.UI.Page.PageStatePersister
       return MethodCaller.CallFunc<PageStatePersister> ("get_PageStatePersister", c_bindingFlags).With (page);
@@ -186,6 +188,25 @@ namespace Remotion.Web.Utilities
 
       //  internal void System.Web.UI.ControlCollection.SetCollectionReadOnly
       return MethodCaller.CallFunc<string> ("SetCollectionReadOnly", c_bindingFlags).With (collection, exceptionMessage);
+    }
+
+    /// <summary>Calls the <b>RenderChildrenInternal</b> method of the <see cref="Control"/>.</summary>
+    public void RenderChildrenInternal (Control control, HtmlTextWriter writer, ICollection controls)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("controls", controls);
+
+      //  internal void System.Web.UI.Control.RenderChildrenInternal
+      MethodCaller.CallAction ("RenderChildrenInternal", c_bindingFlags).With (control, writer, controls);
+    }
+
+    /// <summary>Sets the <b>_rendered</b> flag of the <see cref="UpdatePanel"/>.</summary>
+    public void SetUpdatePanelRendered (UpdatePanel updatePanel, bool value)
+    {
+      ArgumentUtility.CheckNotNull ("updatePanel", updatePanel);
+
+      s_updatePanelRenderedFieldInfo.SetValue (updatePanel, value);
     }
   }
 }
