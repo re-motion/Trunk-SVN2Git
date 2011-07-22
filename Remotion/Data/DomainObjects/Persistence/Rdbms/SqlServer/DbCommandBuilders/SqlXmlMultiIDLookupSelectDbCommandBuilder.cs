@@ -50,6 +50,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       _objectIDs = objectIDs;
     }
 
+    public TableDefinition Table
+    {
+      get { return _table; }
+    }
+
+    public ISelectedColumnsSpecification SelectedColumns
+    {
+      get { return _selectedColumns; }
+    }
+
+    public ObjectID[] ObjectIDs
+    {
+      get { return _objectIDs; }
+    }
+
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);

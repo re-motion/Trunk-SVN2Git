@@ -71,7 +71,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.CreateForSingleIDLookupFromTable (_tableDefinition, _selectedColumnsStub, _objectID);
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
-      // TODO Review 4182: Check data passed to command builder
+      var dbCommandBuilder = (SelectDbCommandBuilder) result;
+      Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
+      Assert.That (dbCommandBuilder.SelectedColumns, Is.SameAs (_selectedColumnsStub));
+      Assert.That (
+          ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumnsSpecification).ComparedColumnValues[0].Column,
+          Is.SameAs (_tableDefinition.IDColumn));
+      Assert.That (
+          ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumnsSpecification).ComparedColumnValues[0].Value, Is.SameAs (_objectID.Value));
     }
 
     [Test]
@@ -80,7 +87,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.CreateForMultiIDLookupFromTable (_tableDefinition, _selectedColumnsStub, new[] { _objectID });
 
       Assert.That (result, Is.TypeOf (typeof (SqlXmlMultiIDLookupSelectDbCommandBuilder)));
-      // TODO Review 4182: Check data passed to command builder
+      var dbCommandBuilder = (SqlXmlMultiIDLookupSelectDbCommandBuilder) result;
+      Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
+      Assert.That (dbCommandBuilder.SelectedColumns, Is.SameAs (_selectedColumnsStub));
+      Assert.That (dbCommandBuilder.ObjectIDs, Is.EqualTo(new[]{_objectID}));
+      
     }
 
     [Test]
@@ -90,7 +101,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _tableDefinition, _selectedColumnsStub, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
 
       Assert.That (result, Is.TypeOf (typeof (TableRelationLookupSelectDbCommandBuilder)));
-      // TODO Review 4182: Check data passed to command builder
+      var dbCommandBuilder = (TableRelationLookupSelectDbCommandBuilder) result;
+      Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
+      Assert.That (dbCommandBuilder.SelectedColumns, Is.SameAs (_selectedColumnsStub));
+      Assert.That (dbCommandBuilder.ForeignKeyValue, Is.EqualTo (_objectID));
+      Assert.That (dbCommandBuilder.ForeignKeyColumn, Is.SameAs (_foreignKeyColumnDefinition));
+      Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs(_orderedColumnStub));
     }
 
     [Test]
@@ -105,7 +121,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           unionViewDefinition, _selectedColumnsStub, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
 
       Assert.That (result, Is.TypeOf (typeof (UnionRelationLookupSelectDbCommandBuilder)));
-      // TODO Review 4182: Check data passed to command builder
+      var dbCommandBuilder = (UnionRelationLookupSelectDbCommandBuilder) result;
+      Assert.That (dbCommandBuilder.UnionViewDefinition, Is.SameAs (unionViewDefinition));
+      Assert.That (dbCommandBuilder.SelectedColumns, Is.SameAs (_selectedColumnsStub));
+      Assert.That (dbCommandBuilder.ForeignKeyValue, Is.EqualTo (_objectID));
+      Assert.That (dbCommandBuilder.ForeignKeyColumn, Is.SameAs (_foreignKeyColumnDefinition));
+      Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs (_orderedColumnStub));
     }
 
     [Test]

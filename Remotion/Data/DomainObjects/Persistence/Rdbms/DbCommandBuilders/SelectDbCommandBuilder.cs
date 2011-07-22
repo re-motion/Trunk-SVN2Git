@@ -49,6 +49,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _comparedColumnsSpecification = comparedColumnsSpecification;
     }
 
+    public TableDefinition Table
+    {
+      get { return _table; }
+    }
+
+    public ISelectedColumnsSpecification SelectedColumns
+    {
+      get { return _selectedColumns; }
+    }
+
+    public IComparedColumnsSpecification ComparedColumnsSpecification
+    {
+      get { return _comparedColumnsSpecification; }
+    }
+
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);

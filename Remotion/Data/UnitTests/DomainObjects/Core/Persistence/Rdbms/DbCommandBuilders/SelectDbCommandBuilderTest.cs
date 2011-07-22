@@ -38,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IValueConverter _valueConverterStub;
     private ObjectID _objectID;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
+    private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
 
     public override void SetUp ()
     {
@@ -53,6 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
 
+      _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification>();
+
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub);
       _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
@@ -66,37 +69,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
     }
 
-    // TODO Review 4182: Change to use ComparedColumnsSpecification mock
-
     [Test]
     public void Create_DefaultSchema ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
-      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.IDColumn, _objectID.Value) });
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
-          comparedColumnsSpecifaction,
+          _comparedColumnsSpecificationStub,
           _sqlDialectMock,
           _valueConverterStub);
 
       _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("Table")).Return ("[Table]");
-      _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("ID")).Return ("[ID]");
-      _sqlDialectMock.Expect (stub => stub.GetParameterName ("ID")).Return ("@ID");
       _sqlDialectMock.Replay();
 
-      _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
-      _dataParameterCollectionMock.Replay();
+      _comparedColumnsSpecificationStub
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Matches (sb => sb.ToString () == "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE "),
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 
       var result = builder.Create (_commandExecutionContextStub);
 
       _sqlDialectMock.VerifyAllExpectations();
-      _dataParameterCollectionMock.VerifyAllExpectations();
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [ID] = @ID;"));
-      Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_objectID.Value));
     }
 
     [Test]
@@ -104,32 +105,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
-      var comparedColumnsSpecifaction = new ComparedColumnsSpecification (new[] { new ColumnValue (tableDefinition.IDColumn, _objectID.Value) });
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
-          comparedColumnsSpecifaction,
+          _comparedColumnsSpecificationStub,
           _sqlDialectMock,
           _valueConverterStub);
 
       _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
       _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("Table")).Return ("[Table]");
-      _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("ID")).Return ("[ID]");
-      _sqlDialectMock.Expect (stub => stub.GetParameterName ("ID")).Return ("@ID");
       _sqlDialectMock.Replay();
 
-      _dataParameterCollectionMock.Expect (mock => mock.Add (_dbDataParameterStub)).Return (1);
-      _dataParameterCollectionMock.Replay();
-
+      _comparedColumnsSpecificationStub
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Matches (sb => sb.ToString() == "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE "),
+                  Arg.Is(_dbCommandStub),
+                  Arg.Is(_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
+      
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 
       var result = builder.Create (_commandExecutionContextStub);
 
       _sqlDialectMock.VerifyAllExpectations();
-      _dataParameterCollectionMock.VerifyAllExpectations();
 
       Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [ID] = @ID;"));
-      Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_objectID.Value));
     }
   }
 }

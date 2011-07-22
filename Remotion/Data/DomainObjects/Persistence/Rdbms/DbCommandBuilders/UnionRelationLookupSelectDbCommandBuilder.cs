@@ -57,6 +57,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _orderedColumns = orderedColumns;
     }
 
+    public UnionViewDefinition UnionViewDefinition
+    {
+      get { return _unionViewDefinition; }
+    }
+
+    public ISelectedColumnsSpecification SelectedColumns
+    {
+      get { return _selectedColumns; }
+    }
+
+    public IRdbmsStoragePropertyDefinition ForeignKeyColumn
+    {
+      get { return _foreignKeyColumn; }
+    }
+
+    public ObjectID ForeignKeyValue
+    {
+      get { return _foreignKeyValue; }
+    }
+
+    public IOrderedColumnsSpecification OrderedColumns
+    {
+      get { return _orderedColumns; }
+    }
+
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
