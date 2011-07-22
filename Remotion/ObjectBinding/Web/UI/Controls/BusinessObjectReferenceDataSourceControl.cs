@@ -163,7 +163,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       // Do not include check for IsDirty.
       // The wrapped reference data source has its own mechanism to prevent unnecessary write-backs.
       // The bound controls also have their own IsDirty-checks and do not concern the DataSourceControl's write-back semantics.
-      if (!IsReadOnly)
+      if (!IsReadOnly || (DataSource != null && DataSource.BusinessObject == null)) // null-check is special work around since busines object != null is part of regular IsReadOnly condition
         _internalDataSource.SaveValue (interim);
     }
 
@@ -178,7 +178,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     public virtual void SaveValues (bool interim) // inherited data source interface
     {
-      if (!IsReadOnly)
+      if (!IsReadOnly || (DataSource != null && DataSource.BusinessObject == null)) // null-check is special work around since busines object != null is part of regular IsReadOnly condition
         _internalDataSource.SaveValues (interim);
     }
 
