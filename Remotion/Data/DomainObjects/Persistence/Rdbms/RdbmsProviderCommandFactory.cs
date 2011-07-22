@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition()));
       var timestampPropertyDefinition =
           new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition());
-      IDataContainerReader dataContainerReader = new DataContainerReader (
+      IObjectReader<DataContainer> dataContainerReader = new DataContainerReader (
           objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
       
       return new MultiDataContainerLoadCommand (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), dataContainerReader) });
@@ -250,7 +250,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new OrderedColumnsSpecification (columns);
     }
 
-    private IDataContainerReader CreateDataContainerReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
+    private IObjectReader<DataContainer> CreateDataContainerReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
     {
       var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
       var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);
@@ -259,7 +259,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new DataContainerReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
     }
 
-    private IObjectIDReader CreateObjectIDReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
+    private IObjectReader<ObjectID> CreateObjectIDReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
     {
       var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
       var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);

@@ -32,16 +32,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// </summary>
   public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
   {
-    private readonly Tuple<IDbCommandBuilder, IDataContainerReader>[] _dbCommandBuildersAndReaders;
+    private readonly Tuple<IDbCommandBuilder, IObjectReader<DataContainer>>[] _dbCommandBuildersAndReaders;
 
-    public MultiDataContainerLoadCommand (IEnumerable<Tuple<IDbCommandBuilder, IDataContainerReader>> dbCommandBuildersAndReaders)
+    public MultiDataContainerLoadCommand (IEnumerable<Tuple<IDbCommandBuilder, IObjectReader<DataContainer>>> dbCommandBuildersAndReaders)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuildersAndReaders", dbCommandBuildersAndReaders);
 
       _dbCommandBuildersAndReaders = dbCommandBuildersAndReaders.ToArray();
     }
 
-    public Tuple<IDbCommandBuilder, IDataContainerReader>[] DbCommandBuildersAndReaders
+    public Tuple<IDbCommandBuilder, IObjectReader<DataContainer>>[] DbCommandBuildersAndReaders
     {
       get { return _dbCommandBuildersAndReaders; }
     }
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     }
 
     private IEnumerable<DataContainer> LoadDataContainersFromCommandBuilder (
-        Tuple<IDbCommandBuilder, IDataContainerReader> commandBuilderTuple, IRdbmsProviderCommandExecutionContext executionContext)
+        Tuple<IDbCommandBuilder, IObjectReader<DataContainer>> commandBuilderTuple, IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilderTuple", commandBuilderTuple);
 

@@ -39,11 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommand _dbCommandMock2;
     private IDbCommandBuilder _dbCommandBuilder1Mock;
     private IDbCommandBuilder _dbCommandBuilder2Mock;
-    private IDataContainerReader _dataContainerReader1Stub;
+    private IObjectReader<DataContainer> _dataContainerReader1Stub;
     private DataContainer _container;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
     private MockRepository _repository;
-    private IDataContainerReader _dataContainerReader2Stub;
+    private IObjectReader<DataContainer> _dataContainerReader2Stub;
 
     public override void SetUp ()
     {
@@ -62,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilder1Mock = _repository.StrictMock<IDbCommandBuilder>();
       _dbCommandBuilder2Mock = _repository.StrictMock<IDbCommandBuilder>();
 
-      _dataContainerReader1Stub = _repository.Stub<IDataContainerReader>();
-      _dataContainerReader2Stub = _repository.Stub<IDataContainerReader>();
+      _dataContainerReader1Stub = _repository.Stub<IObjectReader<DataContainer>> ();
+      _dataContainerReader2Stub = _repository.Stub<IObjectReader<DataContainer>> ();
     }
 
     [Test]

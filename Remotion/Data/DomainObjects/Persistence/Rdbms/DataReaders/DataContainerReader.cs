@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="DataContainer"/> instances.
   /// </summary>
-  public class DataContainerReader : IDataContainerReader
+  public class DataContainerReader : IObjectReader<DataContainer>
   {
     private readonly IRdbmsStoragePropertyDefinition _idProperty;
     private readonly IRdbmsStoragePropertyDefinition _timestampProperty;

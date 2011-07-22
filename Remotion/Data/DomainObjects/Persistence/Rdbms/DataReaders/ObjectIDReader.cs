@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="ObjectID"/> instances.
   /// </summary>
-  public class ObjectIDReader : IObjectIDReader
+  public class ObjectIDReader : IObjectReader<ObjectID>
   {
     private readonly IRdbmsStoragePropertyDefinition _idProperty;
     private readonly IColumnOrdinalProvider _columnOrdinalProvider;

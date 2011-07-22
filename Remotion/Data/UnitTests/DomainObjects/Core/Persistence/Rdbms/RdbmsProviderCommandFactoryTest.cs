@@ -656,7 +656,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Assert.That (ordinals[expectedSelectedColumns[i]], Is.EqualTo (i));
     }
 
-    private void CheckDataContainerReaderForKnownProjection (IDataContainerReader reader, ColumnDefinition[] expectedSelectedColumns)
+    private void CheckDataContainerReaderForKnownProjection (IObjectReader<DataContainer> reader, ColumnDefinition[] expectedSelectedColumns)
     {
       var dataContainerReader = (DataContainerReader) reader;
       CheckInfrastructureProperties (

@@ -246,6 +246,7 @@
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\DataContainerReader.cs" />
+    <Compile Include="Persistence\Rdbms\DataReaders\IObjectReader.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\ObjectIDReader.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\DictionaryBasedColumnOrdinalProvider.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\IColumnOrdinalProvider.cs" />
@@ -274,8 +275,6 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\OrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectDbCommandBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\DataReaders\IDataContainerReader.cs" />
-    <Compile Include="Persistence\Rdbms\DataReaders\IObjectIDReader.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilder.cs" />

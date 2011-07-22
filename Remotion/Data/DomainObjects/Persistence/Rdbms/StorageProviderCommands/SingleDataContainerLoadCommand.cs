@@ -29,9 +29,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   public class SingleDataContainerLoadCommand : IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilder _dbCommandBuilder;
-    private readonly IDataContainerReader _dataContainerReader;
-    
-    public SingleDataContainerLoadCommand (IDbCommandBuilder dbCommandBuilder, IDataContainerReader dataContainerReader)
+    private readonly IObjectReader<DataContainer> _dataContainerReader;
+
+    public SingleDataContainerLoadCommand (IDbCommandBuilder dbCommandBuilder, IObjectReader<DataContainer> dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilder", dbCommandBuilder);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandBuilder; }
     }
 
-    public IDataContainerReader DataContainerReader
+    public IObjectReader<DataContainer> DataContainerReader
     {
       get { return _dataContainerReader; }
     }

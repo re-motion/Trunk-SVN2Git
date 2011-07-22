@@ -31,9 +31,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   public class MultiObjectIDLoadCommand : IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IEnumerable<IDbCommandBuilder> _dbCommandBuilders;
-    private readonly IObjectIDReader _objectIDReader;
+    private readonly IObjectReader<ObjectID> _objectIDReader;
 
-    public MultiObjectIDLoadCommand (IEnumerable<IDbCommandBuilder> dbCommandBuilders, IObjectIDReader objectIDReader)
+    public MultiObjectIDLoadCommand (IEnumerable<IDbCommandBuilder> dbCommandBuilders, IObjectReader<ObjectID> objectIDReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilders", dbCommandBuilders);
       ArgumentUtility.CheckNotNull ("objectIDReader", objectIDReader);
@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandBuilders; }
     }
 
-    public IObjectIDReader ObjectIDReader
+    public IObjectReader<ObjectID> ObjectIDReader
     {
       get { return _objectIDReader; }
     }

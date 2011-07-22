@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommand _dbCommandMock1;
     private IDbCommand _dbCommandMock2;
     private IDataReader _dataReaderMock;
-    private IObjectIDReader _objectIDReaderStub;
+    private IObjectReader<ObjectID> _objectIDReaderStub;
     private ObjectID[] _fakeResult;
     private ObjectID _objectID1;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilder2Mock = _repository.StrictMock<IDbCommandBuilder>();
 
       _commandExecutionContextStub = _repository.Stub<IRdbmsProviderCommandExecutionContext> ();
-      _objectIDReaderStub = _repository.Stub<IObjectIDReader> ();
+      _objectIDReaderStub = _repository.Stub<IObjectReader<ObjectID>> ();
 
       _dbCommandMock1 = _repository.StrictMock<IDbCommand>();
       _dbCommandMock2 = _repository.StrictMock<IDbCommand> ();

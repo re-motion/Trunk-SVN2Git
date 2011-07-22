@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommand _dbCommandMock;
     private IDataReader _dataReaderMock;
     private SingleDataContainerLoadCommand _command;
-    private IDataContainerReader _dataContainerReaderMock;
+    private IObjectReader<DataContainer> _dataContainerReaderMock;
     private DataContainer _container;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextMock;
 
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _commandExecutionContextMock = MockRepository.GenerateStrictMock<IRdbmsProviderCommandExecutionContext>();
       _dbCommandMock = MockRepository.GenerateStrictMock<IDbCommand>();
       _dbCommandBuilderMock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
-      _dataContainerReaderMock = MockRepository.GenerateStrictMock<IDataContainerReader> ();
+      _dataContainerReaderMock = MockRepository.GenerateStrictMock<IObjectReader<DataContainer>> ();
 
       _command = new SingleDataContainerLoadCommand (_dbCommandBuilderMock, _dataContainerReaderMock);
     }
