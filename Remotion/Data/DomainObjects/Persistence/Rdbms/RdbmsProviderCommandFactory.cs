@@ -192,7 +192,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
           tableDefinition,
           new SelectedColumnsSpecification (selectProjection),
-          _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
+          _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
       return new MultiDataContainerLoadCommand (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
           unionViewDefinition,
           new SelectedColumnsSpecification (selectedColumns),
-          _rdbmsPersistenceModelProvider.GetIDColumnDefinition (foreignKeyEndPoint),
+          _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
 
@@ -242,7 +242,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Assertion.IsTrue (sortExpression.SortedProperties.Count > 0, "The sort-epression must have at least one sorted property.");
 
       var columns = from sortedProperty in sortExpression.SortedProperties
-                    let storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetColumnDefinition (sortedProperty.PropertyDefinition)
+                    let storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (sortedProperty.PropertyDefinition)
                     from column in storagePropertyDefinition.GetColumns()
                     select Tuple.Create (column, sortedProperty.Order);
 

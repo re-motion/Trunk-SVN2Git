@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     {
       try
       {
-        var storagePropertyDefinition = _persistenceModelProvider.GetColumnDefinition (propertyDefinition);
+        var storagePropertyDefinition = _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
         return storagePropertyDefinition.Read (dataReader, _ordinalProvider) ?? propertyDefinition.DefaultValue;
       }
       catch (Exception e)

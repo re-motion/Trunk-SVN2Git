@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_timestamp);
       var propertyDefinition = GetPropertyDefinition (typeof(OrderTicket), "FileName");
       _persistenceModelProviderStub
-        .Stub (stub => stub.GetColumnDefinition (propertyDefinition))
+        .Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition))
         .Throw (new InvalidOperationException ("TestException"));
       
       _dataContainerReader.Read (_dataReaderStub);
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
         Type declaringType, string shortPropertyName, IRdbmsStoragePropertyDefinition storagePropertyDefinitionStub)
     {
       var propertyDefinition = GetPropertyDefinition (declaringType, shortPropertyName);
-      _persistenceModelProviderStub.Stub (stub => stub.GetColumnDefinition (propertyDefinition)).Return (storagePropertyDefinitionStub);
+      _persistenceModelProviderStub.Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition)).Return (storagePropertyDefinitionStub);
     }
 
     private void CheckLoadedDataContainer (DataContainer dataContainer, ObjectID expectedID, int expectedTimestamp, string expectedFileName, ObjectID expectedOrder)

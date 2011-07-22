@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
 
-      var result = _provider.GetColumnDefinition (propertyDefinition);
+      var result = _provider.GetStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result, Is.SameAs (columnDefinition));
     }
@@ -85,35 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var propertyDefinition = PropertyDefinitionFactory.Create (
           _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
 
-      _provider.GetColumnDefinition (propertyDefinition);
-    }
-
-    [Test]
-    public void GetIDColumnDefinition ()
-    {
-      var columnDefinition = new ObjectIDStoragePropertyDefinition (
-          SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          _classDefinition, "OrderNo", true, true, null, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
-      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
-
-      var result = _provider.GetIDColumnDefinition (relationEndPointDefinition);
-
-      Assert.That (result, Is.SameAs (columnDefinition));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The RdbmsProvider expected a storage definition object of type 'ObjectIDStoragePropertyDefinition' for property 'OrderNo' of class-definition 'Order', "
-        + "but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
-    public void GetIDColumnDefinition_NoIDColumnDefinition ()
-    {
-      var columnDefinition = MockRepository.GenerateStub<IStoragePropertyDefinition>();
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          _classDefinition, "OrderNo", true, true, null, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
-      var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
-
-      _provider.GetIDColumnDefinition (relationEndPointDefinition);
+      _provider.GetStoragePropertyDefinition (propertyDefinition);
     }
   }
 }

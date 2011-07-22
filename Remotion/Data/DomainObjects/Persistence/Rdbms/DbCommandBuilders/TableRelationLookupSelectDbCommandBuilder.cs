@@ -30,14 +30,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     private readonly TableDefinition _table;
     private readonly ISelectedColumnsSpecification _selectedColumns;
-    private readonly IObjectIDStoragePropertyDefinition _foreignKeyColumn;
+    private readonly IRdbmsStoragePropertyDefinition _foreignKeyColumn;
     private readonly ObjectID _foreignKeyValue;
     private readonly IOrderedColumnsSpecification _orderedColumns;
 
     public TableRelationLookupSelectDbCommandBuilder (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        IObjectIDStoragePropertyDefinition foreignKeyColumn,
+        IRdbmsStoragePropertyDefinition foreignKeyColumn,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns,
         ISqlDialect sqlDialect,

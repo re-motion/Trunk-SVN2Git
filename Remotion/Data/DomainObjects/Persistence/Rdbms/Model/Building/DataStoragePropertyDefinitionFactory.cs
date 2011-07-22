@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition);
     }
 
-    protected virtual IObjectIDStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
+    protected virtual IRdbmsStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
         PropertyDefinition propertyDefinition,
         RelationEndPointDefinition relationEndPointDefinition)
     {

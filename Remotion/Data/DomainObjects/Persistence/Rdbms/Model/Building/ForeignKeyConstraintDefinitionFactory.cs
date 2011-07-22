@@ -84,13 +84,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         // We can't access the opposite ID column from here, but columns implement equality, so we can just recreate it
         var oppositeObjectIDColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDColumnDefinition();
         var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
-        
-        var endPointIDColumnDefinition = endPointColumnDefinition as IObjectIDStoragePropertyDefinition;
-        if (endPointIDColumnDefinition == null)
-          throw new InvalidOperationException ("The non virtual constraint column definition has to be an ID column definition.");
-
         var referencingColumn = oppositeObjectIDColumnDefinition;
-        var referencedColumn = endPointIDColumnDefinition.GetColumnForForeignKey();
+        var referencedColumn = endPointColumnDefinition.GetColumnForForeignKey ();
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
             _storageNameProvider.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),

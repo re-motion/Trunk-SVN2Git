@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// ClassID column. This can only be used when the <see cref="ClassDefinition"/> of the referenced <see cref="ObjectID"/> is known in advance
   /// (i.e., if there is no inheritance involved).
   /// </summary>
-  public class ObjectIDWithoutClassIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
+  public class ObjectIDWithoutClassIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
     private readonly IRdbmsStoragePropertyDefinition _valueProperty;
     private readonly ClassDefinition _classDefinition;

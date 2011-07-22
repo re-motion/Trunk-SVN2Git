@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return storageEntityDefinitionAsIEntityDefinition;
     }
 
-    public IRdbmsStoragePropertyDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
+    public IRdbmsStoragePropertyDefinition GetStoragePropertyDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
@@ -63,24 +63,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       return storagePropertyDefinitionAsIColumnDefinition;
     }
-
-    public IObjectIDStoragePropertyDefinition GetIDColumnDefinition (RelationEndPointDefinition relationEndPointDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
-
-      var storagePropertyDefinitionAsIDColumnDefinition = relationEndPointDefinition.PropertyDefinition.StoragePropertyDefinition as IObjectIDStoragePropertyDefinition;
-      if (storagePropertyDefinitionAsIDColumnDefinition == null)
-      {
-        throw new InvalidOperationException (
-          string.Format ("The RdbmsProvider expected a storage definition object of type '{0}' for property '{1}' of class-definition '{2}', "
-                + "but found a storage definition object of type '{3}'.",
-                typeof (ObjectIDStoragePropertyDefinition).Name,
-                relationEndPointDefinition.PropertyDefinition.PropertyName,
-                relationEndPointDefinition.PropertyDefinition.ClassDefinition.ID,
-                relationEndPointDefinition.PropertyDefinition.StoragePropertyDefinition.GetType ().Name));
-      }
-
-      return storagePropertyDefinitionAsIDColumnDefinition;
-    }
+    
   }
 }

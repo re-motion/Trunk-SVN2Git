@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
         var  propertyDefinitionsByName = new MultiDictionary<string, PropertyDefinition>();
         foreach (var propertyDefinition in allPropertyDefinitions)
         {
-          foreach (var simpleColumnDefinition in _rdbmsPersistenceModelProvider.GetColumnDefinition(propertyDefinition).GetColumns())
+          foreach (var simpleColumnDefinition in _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition(propertyDefinition).GetColumns())
             propertyDefinitionsByName[simpleColumnDefinition.Name].Add (propertyDefinition);
         }
         foreach (var keyValuePair in propertyDefinitionsByName)

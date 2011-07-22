@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/> property that is stored in a single string-typed column.
   /// </summary>
-  public class SerializedObjectIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
+  public class SerializedObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
     private readonly IRdbmsStoragePropertyDefinition _serializedIDProperty;
 
