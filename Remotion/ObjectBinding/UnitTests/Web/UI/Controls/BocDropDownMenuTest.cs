@@ -187,6 +187,31 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      var value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+      _bocDropDownMenu.DataSource = null;
+      _bocDropDownMenu.Property = _propertyReferenceValue;
+      _bocDropDownMenu.Value = value;
+
+      _bocDropDownMenu.LoadValue (false);
+      Assert.AreEqual (value, _bocDropDownMenu.Value);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocDropDownMenu.DataSource = _dataSource;
+      _bocDropDownMenu.Property = _propertyReferenceValue;
+      _bocDropDownMenu.Value = (IBusinessObjectWithIdentity) TypeWithReference.Create ();
+
+      _bocDropDownMenu.LoadValue (false);
+      Assert.AreEqual (null, _bocDropDownMenu.Value);
+    }
+
+
+    [Test]
     public void LoadUnboundValueAndInterimTrueWithObject ()
     {
       IBusinessObject value = (IBusinessObject) TypeWithReference.Create();

@@ -186,17 +186,18 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
   /// <include file='doc\include\UI\Controls\BocDropDownMenu.xml' path='BocDropDownMenu/LoadValue/*' />
   public override void LoadValue (bool interim)
   {
-    if (DataSource != null && DataSource.BusinessObject != null)
-    {
-      IBusinessObject value;
-      if (Property == null)
-        value = DataSource.BusinessObject;
-      else
-        value = (IBusinessObject) DataSource.BusinessObject.GetProperty (Property);
-      LoadValueInternal (value, interim);
-    }
+    if (DataSource == null)
+      return;
+
+    IBusinessObject value = null;
+    if (Property == null)
+      value = DataSource.BusinessObject;
+    else if (DataSource.BusinessObject != null)
+      value = (IBusinessObject) DataSource.BusinessObject.GetProperty (Property);
+
+    LoadValueInternal (value, interim);
   }
-  
+
   /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
   /// <param name="value"> 
   ///   The object implementing <see cref="IBusinessObject"/> to load, or <see langword="null"/>. 
