@@ -146,17 +146,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void QueryWithExtensibleEnums_Linq ()
-    {
-      var query = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
-                  where cwadt.ExtensibleEnumProperty == Color.Values.Red()
-                  select cwadt;
-
-      var result = query.ToArray();
-      Assert.That (result, Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1) }));
-    }
-
-    [Test]
     public void ScalarQueryWithoutParameter ()
     {
       Assert.AreEqual (42, _queryManager.GetScalar (QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter")));
