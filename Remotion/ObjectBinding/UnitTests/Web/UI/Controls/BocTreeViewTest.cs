@@ -139,6 +139,30 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.AreEqual (1, actual.Count);
       Assert.AreEqual (_businessObject, actual[0]);
     }
+    
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceNull ()
+    {
+      var value = new[] { TypeWithReference.Create () };
+      _bocTreeView.DataSource = null;
+      _bocTreeView.Value = value;
+
+      _bocTreeView.LoadValue (false);
+      Assert.AreEqual (value, _bocTreeView.Value);
+    }
+
+    [Test]
+    public void LoadValueAndInterimFalseWithDataSourceBusinessObjectNull ()
+    {
+      _dataSource.BusinessObject = null;
+      _bocTreeView.DataSource = _dataSource;
+      _bocTreeView.Value = new[] { TypeWithReference.Create () };
+
+      _bocTreeView.LoadValue (false);
+      Assert.AreEqual (null, _bocTreeView.Value);
+    }
+
 
     [Test]
     public void LoadUnboundValueAndInterimTrueWithList ()

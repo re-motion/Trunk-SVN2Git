@@ -396,11 +396,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
-      if (DataSource != null && DataSource.BusinessObject != null)
-      {
-        IBusinessObjectWithIdentity value = (IBusinessObjectWithIdentity) DataSource.BusinessObject;
-        LoadValueInternal (value, interim);
-      }
+      if (DataSource == null)
+        return;
+
+      IBusinessObjectWithIdentity value = null;
+
+      if (DataSource.BusinessObject != null)
+        value = (IBusinessObjectWithIdentity) DataSource.BusinessObject;
+
+      LoadValueInternal (value, interim);
     }
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
