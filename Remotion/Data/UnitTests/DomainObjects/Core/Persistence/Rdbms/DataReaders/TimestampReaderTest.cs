@@ -16,60 +16,54 @@
 // 
 using System;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class ObjectIDReaderTest : SqlProviderBaseTest
+  public class TimestampReaderTest : SqlProviderBaseTest
   {
-    private IDataReader _dataReaderStub;
-    private ObjectIDReader _reader;
     private IRdbmsStoragePropertyDefinition _idPropertyStub;
-    private ObjectID _objectID;
+    private IRdbmsStoragePropertyDefinition _timestampStub;
     private IColumnOrdinalProvider _columnOrdinalProviderStub;
+    private TimestampReader _reader;
+    private ObjectID _objectID;
+    private IDataReader _dataReaderStub;
+    private object _timestamp;
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
-      _idPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      _dataReaderStub = MockRepository.GenerateStub<IDataReader> ();
+      _idPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      _timestampStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
 
-      _reader = new ObjectIDReader (_idPropertyStub, _columnOrdinalProviderStub);
+      _reader = new TimestampReader (_idPropertyStub, _timestampStub, _columnOrdinalProviderStub);
 
-      _objectID = new ObjectID ("Order", Guid.NewGuid());
+      _objectID = new ObjectID ("Order", Guid.NewGuid ());
+      _timestamp = new object();
     }
 
     [Test]
     public void Read_DataReaderReadFalse ()
     {
-      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (false);
 
-     var result = _reader.Read (_dataReaderStub);
+      var result = _reader.Read (_dataReaderStub);
 
       Assert.That (result, Is.Null);
     }
 
     [Test]
-    public void Read_DataReaderReadTrue ()
-    {
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_objectID);
-
-      var result = _reader.Read (_dataReaderStub);
-
-      Assert.That (result, Is.SameAs (_objectID));
-    }
-
-    [Test]
-    public void Read_DataReaderReadTrue_Null ()
+    public void Read_DataReaderReadTrue_NullValue ()
     {
       _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once ();
       _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (null);
@@ -80,21 +74,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     }
 
     [Test]
+    public void Read_DataReaderReadTrue_NonNullValue ()
+    {
+      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once ();
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_objectID);
+      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_timestamp);
+      
+      var result = _reader.Read (_dataReaderStub);
+
+      Assert.That (result, Is.EqualTo (Tuple.Create(_objectID, _timestamp)));
+    }
+
+    [Test]
     public void ReadSequence ()
     {
       var objectID2 = new ObjectID ("OrderItem", Guid.NewGuid ());
+      var timestamp2 = new object ();
       _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Times (3);
       _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
       _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_objectID).Repeat.Once ();
       _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (null).Repeat.Once ();
       _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (objectID2).Repeat.Once ();
-
+      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_timestamp).Repeat.Once();
+      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (timestamp2).Repeat.Once();
+      
       var result = _reader.ReadSequence (_dataReaderStub).ToArray ();
 
       Assert.That (result.Length, Is.EqualTo (3));
-      Assert.That (result[0], Is.SameAs (_objectID));
+      Assert.That (result[0], Is.EqualTo (Tuple.Create (_objectID, _timestamp)));
       Assert.That (result[1], Is.Null);
-      Assert.That (result[2], Is.SameAs (objectID2));
+      Assert.That (result[2], Is.EqualTo(Tuple.Create (objectID2, timestamp2)));
     }
 
     [Test]
@@ -106,6 +115,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       Assert.That (result, Is.Empty);
     }
-    
   }
 }
