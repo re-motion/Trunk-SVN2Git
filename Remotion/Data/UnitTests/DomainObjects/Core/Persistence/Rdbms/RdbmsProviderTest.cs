@@ -29,6 +29,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -232,6 +233,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _providerWithSqlConnection.GetParameterName ("xy");
       Assert.That (result, Is.EqualTo ("#1"));
+    }
+
+    [Test]
+    public void ExecutesCollectionQuery ()
+    {
+      var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
+
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForDataContainerQuery (queryStub))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (new[] { dataContainer1, dataContainer2 });
+      }
+      _mockRepository.ReplayAll ();
+
+      var result = _provider.ExecuteCollectionQuery (queryStub);
+
+      Assert.That (result, Is.EqualTo (new[] { dataContainer1, dataContainer2 }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+      "A database query returned duplicates of object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', which is not allowed.")]
+    public void ExecutesCollectionQuery_DuplicatedIDs ()
+    {
+      var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order1);
+
+      var queryStub = MockRepository.GenerateStub<IQuery>();
+      queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
+
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForDataContainerQuery (queryStub))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (new[]{dataContainer1, dataContainer2});
+      }
+      _mockRepository.ReplayAll ();
+
+      _provider.ExecuteCollectionQuery (queryStub);
+    }
+
+    [Test]
+    public void ExecutesCollectionQuery_DuplicatedNullValues ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
+
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForDataContainerQuery (queryStub))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (new DataContainer[] { null, null });
+      }
+      _mockRepository.ReplayAll ();
+
+      var result = _provider.ExecuteCollectionQuery (queryStub);
+
+      Assert.That (result, Is.EqualTo (new DataContainer[] { null, null }));
     }
 
     [Test]

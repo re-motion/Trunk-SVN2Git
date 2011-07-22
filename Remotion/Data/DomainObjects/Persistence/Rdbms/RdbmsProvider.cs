@@ -194,7 +194,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    // TODO Review 4141: Add tests: one for the ordered sequence of method calls, one with duplicates (exception), one with duplicate null values (works)
     public override DataContainer[] ExecuteCollectionQuery (IQuery query)
     {
       CheckDisposed();
@@ -212,8 +211,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public override object ExecuteScalarQuery (IQuery query)
     {
-      // TODO: ExecuteScalarQuery must not return DBNull.Value, but null instead. Verify this with a unit test.
-
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("query", query);
       CheckQuery (query, QueryType.Scalar, "query");
@@ -229,8 +226,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         }
         catch (Exception e)
         {
-          // TODO Review 4141: Include e.Message in the new exception message, like with ExecuteReader.
-          throw CreateRdbmsProviderException (e, "Error while executing SQL command for query '{0}'.", query.ID);
+          throw CreateRdbmsProviderException (e, "Error while executing SQL command for query '{0}': {1}", query.ID, e.Message);
         }
       }
     }
