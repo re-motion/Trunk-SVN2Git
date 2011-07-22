@@ -19,12 +19,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Text;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   public class ComparedColumnsSpecification : IComparedColumnsSpecification
   {

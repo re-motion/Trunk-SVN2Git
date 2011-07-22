@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Data;
 using System.Text;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
-  /// Provides an interface for classes defining a set of comparisons in a WHERE clause. Multiple comparisons are separated by "AND" operators.
+  /// <see cref="IOrderedColumnsSpecification"/> defines the API for all implementations that specify the selected data ordering. 
   /// </summary>
-  public interface IComparedColumnsSpecification
+  public interface IOrderedColumnsSpecification
   {
-    void AppendComparisons (StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect);
+    void AppendOrderByClause (StringBuilder stringBuilder, ISqlDialect sqlDialect);
+    ISelectedColumnsSpecification UnionWithSelectedColumns (ISelectedColumnsSpecification selectedColumns);
   }
 }

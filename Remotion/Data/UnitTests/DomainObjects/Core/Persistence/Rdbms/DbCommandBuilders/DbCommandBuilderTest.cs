@@ -19,6 +19,7 @@ using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;

@@ -14,17 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using System.Collections.Generic;
 using System.Text;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
-  /// <see cref="IOrderedColumnsSpecification"/> defines the API for all implementations that specify the selected data ordering. 
+  /// <see cref="ISelectedColumnsSpecification"/> defines the API for all implementations that specify how to select columns in a relational
+  /// database.
   /// </summary>
-  public interface IOrderedColumnsSpecification
+  public interface ISelectedColumnsSpecification
   {
-    void AppendOrderByClause (StringBuilder stringBuilder, ISqlDialect sqlDialect);
-    ISelectedColumnsSpecification UnionWithSelectedColumns (ISelectedColumnsSpecification selectedColumns);
+    void AppendProjection (StringBuilder stringBuilder, ISqlDialect sqlDialect);
+    ISelectedColumnsSpecification Union (IEnumerable<ColumnDefinition> additionalColumns);
   }
 }

@@ -25,7 +25,7 @@ using Remotion.Text;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
   /// The <see cref="OrderedColumnsSpecification"/> defines that the selected data should be ordered by the given columns.

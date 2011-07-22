@@ -14,13 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
   /// The <see cref="AllSelectedColumnsSpecification"/> specifies that all possible columns should be selected. It emits a '*' into the

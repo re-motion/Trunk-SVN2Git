@@ -14,27 +14,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   [TestFixture]
-  public class OrderedColumnsSpecificationTest
+  public class SelectedColumnsSpecificationTest
   {
     private ColumnDefinition _column1;
     private ColumnDefinition _column2;
     private ColumnDefinition _column3;
-    private OrderedColumnsSpecification _specification;
+    private SelectedColumnsSpecification _specification;
     private ISqlDialect _sqlDialectStub;
 
     [SetUp]
@@ -43,13 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
       _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
-      _specification =
-          new OrderedColumnsSpecification (
-              new[]
-              {
-                  Tuple.Create (_column1, SortOrder.Ascending), Tuple.Create (_column2, SortOrder.Descending),
-                  Tuple.Create (_column3, SortOrder.Ascending)
-              });
+      _specification = new SelectedColumnsSpecification (new[] { _column1, _column2, _column3 });
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[Column1]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column2")).Return ("[Column2]");
@@ -59,47 +49,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Initialization ()
     {
-      Assert.That (_specification.Columns, Is.EqualTo (new[]
-              {
-                  Tuple.Create (_column1, SortOrder.Ascending), Tuple.Create (_column2, SortOrder.Descending),
-                  Tuple.Create (_column3, SortOrder.Ascending)
-              }));
+      Assert.That (_specification.SelectedColumns, Is.EqualTo (new[] { _column1, _column2, _column3 }));
     }
 
     [Test]
-    public void AppendOrderByClause_StringBuilderEmpty ()
+    public void AppendProjection_StringBuilderIsEmpty ()
     {
       var sb = new StringBuilder();
 
-      _specification.AppendOrderByClause (sb, _sqlDialectStub);
+      _specification.AppendProjection (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString(), Is.EqualTo (" ORDER BY [Column1] ASC, [Column2] DESC, [Column3] ASC"));
+      Assert.That (sb.ToString(), Is.EqualTo ("[Column1], [Column2], [Column3]"));
     }
 
     [Test]
-    public void AppendOrderByClause_StringBuilderNotEmpty ()
+    public void Union ()
     {
-      var sb = new StringBuilder ("Test");
+      var column4 = ColumnDefinitionObjectMother.CreateColumn ("Column4");
+      var column5 = ColumnDefinitionObjectMother.CreateColumn ("Column5");
 
-      _specification.AppendOrderByClause (sb, _sqlDialectStub);
+      var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column5 });
 
-      Assert.That (sb.ToString (), Is.EqualTo ("Test ORDER BY [Column1] ASC, [Column2] DESC, [Column3] ASC"));
+      Assert.That (result.SelectedColumns, Is.EqualTo (new[] { _column1, _column2, _column3, column4, column5 }));
     }
 
     [Test]
-    public void UnionWithSelectedColumns ()
+    public void Union_DuplicatedColumns()
     {
-      var selectedColumns = MockRepository.GenerateStrictMock<ISelectedColumnsSpecification>();
+      var column4 = ColumnDefinitionObjectMother.CreateColumn ("Column4");
+      
+      var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column4 });
 
-      selectedColumns
-        .Expect (mock => mock.Union (Arg<IEnumerable<ColumnDefinition>>.List.Equal (new[] { _column1, _column2, _column3 })))
-        .Return (selectedColumns);
-      selectedColumns.Replay();
-
-      var result = _specification.UnionWithSelectedColumns (selectedColumns);
-
-      Assert.That (result, Is.SameAs (selectedColumns));
-      selectedColumns.VerifyAllExpectations();
+      Assert.That (result.SelectedColumns, Is.EqualTo (new[] { _column1, _column2, _column3, column4 }));
     }
   }
 }

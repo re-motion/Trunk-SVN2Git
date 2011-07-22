@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Text;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
   /// The <see cref="SelectedColumnsSpecification"/> specifies that all specified columns should be selected.

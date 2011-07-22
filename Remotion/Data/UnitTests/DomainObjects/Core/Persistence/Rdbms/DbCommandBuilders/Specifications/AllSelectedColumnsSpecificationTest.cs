@@ -14,20 +14,34 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
 using System.Text;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Rhino.Mocks;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
-  /// <summary>
-  /// <see cref="ISelectedColumnsSpecification"/> defines the API for all implementations that specify how to select columns in a relational
-  /// database.
-  /// </summary>
-  public interface ISelectedColumnsSpecification
+  [TestFixture]
+  public class AllSelectedColumnsSpecificationTest
   {
-    void AppendProjection (StringBuilder stringBuilder, ISqlDialect sqlDialect);
-    ISelectedColumnsSpecification Union (IEnumerable<ColumnDefinition> additionalColumns);
+    [Test]
+    public void AppendProjection_StringBuilderEmpty ()
+    {
+      var sb = new StringBuilder();
+
+      AllSelectedColumnsSpecification.Instance.AppendProjection (sb, MockRepository.GenerateStub<ISqlDialect>());
+
+      Assert.That (sb.ToString(), Is.EqualTo ("*"));
+    }
+
+    [Test]
+    public void Union ()
+    {
+      var instance = AllSelectedColumnsSpecification.Instance;
+
+      Assert.That (instance.Union (new ColumnDefinition[0]), Is.SameAs (instance));
+    }
   }
 }
