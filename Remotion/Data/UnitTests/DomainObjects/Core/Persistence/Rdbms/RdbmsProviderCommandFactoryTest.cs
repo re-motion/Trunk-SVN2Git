@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var objectID = CreateObjectID (_tableDefinition1);
       var expectedSelectedColumns = _tableDefinition1.GetAllColumns().ToArray();
-      
+
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForSingleIDLookupFromTable (
@@ -111,12 +111,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForSingleIDLookup (objectID);
 
       var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, ObjectLookupResult<DataContainer>> (result);
-      Assert.That (innerCommand, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
-      var loadCommand = ((SingleDataContainerLoadCommand) innerCommand);
+      Assert.That (innerCommand, Is.TypeOf (typeof (SingleObjectLoadCommand<DataContainer>)));
+      var loadCommand = ((SingleObjectLoadCommand<DataContainer>) innerCommand);
       Assert.That (loadCommand.DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (loadCommand.DataContainerReader, Is.TypeOf (typeof (DataContainerReader)));
-      
-      CheckDataContainerReaderForKnownProjection( loadCommand.DataContainerReader, expectedSelectedColumns);
+
+      CheckDataContainerReaderForKnownProjection (loadCommand.DataContainerReader, expectedSelectedColumns);
     }
 
     [Test]
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "ViewName"),
           _tableDefinition1);
-      var expectedSelectedColumns = _tableDefinition1.GetAllColumns ().ToArray ();
+      var expectedSelectedColumns = _tableDefinition1.GetAllColumns().ToArray();
 
       var objectID = CreateObjectID (filterViewDefinition);
 
@@ -156,8 +156,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForSingleIDLookup (objectID);
 
       var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, ObjectLookupResult<DataContainer>> (result);
-      Assert.That (innerCommand, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
-      var loadCommand = ((SingleDataContainerLoadCommand) innerCommand);
+      Assert.That (innerCommand, Is.TypeOf (typeof (SingleObjectLoadCommand<DataContainer>)));
+      var loadCommand = ((SingleObjectLoadCommand<DataContainer>) innerCommand);
       Assert.That (loadCommand.DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (loadCommand.DataContainerReader, Is.TypeOf (typeof (DataContainerReader)));
 
@@ -193,9 +193,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForMultiIDLookup (new[] { _objectID1 });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
-      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
+      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+
+      var dbCommandBuilderTuples =
+          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       CheckDataContainerReaderForKnownProjection (dbCommandBuilderTuples[0].Item2, _tableDefinition1.GetAllColumns().ToArray());
     }
@@ -221,9 +222,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForMultiIDLookup (new[] { _objectID1, _objectID2, _objectID3 });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
-      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
+      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
 
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
+      var dbCommandBuilderTuples =
+          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (2));
 
       // Convert to Dictionary because the order of tuples is not defined
@@ -232,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (dbCommandBuilderDictionary.ContainsKey (_dbCommandBuilder1Stub), Is.True);
       var readerForCommandBuilder1 = dbCommandBuilderDictionary[_dbCommandBuilder1Stub];
       CheckDataContainerReaderForKnownProjection (readerForCommandBuilder1, _tableDefinition1.GetAllColumns().ToArray());
-      
+
       Assert.That (dbCommandBuilderDictionary.ContainsKey (_dbCommandBuilder2Stub), Is.True);
       var readerForCommandBuilder2 = dbCommandBuilderDictionary[_dbCommandBuilder2Stub];
       CheckDataContainerReaderForKnownProjection (readerForCommandBuilder2, _tableDefinition2.GetAllColumns().ToArray());
@@ -259,8 +261,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForMultiIDLookup (new[] { objectID });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
-      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
+      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+      var dbCommandBuilderTuples =
+          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       CheckDataContainerReaderForKnownProjection (dbCommandBuilderTuples[0].Item2, _tableDefinition1.GetAllColumns().ToArray());
     }
@@ -301,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           .Stub (
               stub => stub.CreateForRelationLookupFromTable (
                   Arg.Is ((TableDefinition) classDefinition.StorageEntityDefinition),
-                  Arg<SelectedColumnsSpecification>.Matches(c=>c.SelectedColumns.SequenceEqual(_tableDefinition1.GetAllColumns())),
+                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (_tableDefinition1.GetAllColumns())),
                   Arg.Is (_foreignKeyColumnDefinition),
                   Arg.Is (_foreignKeyValue),
                   Arg.Is (EmptyOrderedColumnsSpecification.Instance)))
@@ -309,8 +312,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      var dbCommandBuilderTuples = ((MultiDataContainerLoadCommand) result).DbCommandBuildersAndReaders;
+      Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+      var dbCommandBuilderTuples = ((MultiObjectLoadCommand<DataContainer>) result).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       CheckDataContainerReaderForKnownProjection (dbCommandBuilderTuples[0].Item2, _tableDefinition1.GetAllColumns().ToArray());
     }
@@ -322,9 +325,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
 
       var spec1 = CreateSortedPropertySpecification (
-          classDefinition, 
+          classDefinition,
           SortOrder.Descending,
-          ColumnDefinitionObjectMother.IDColumn, 
+          ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn);
       var spec2 = CreateSortedPropertySpecification (classDefinition, SortOrder.Ascending, ColumnDefinitionObjectMother.TimestampColumn);
 
@@ -334,12 +337,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                                        Tuple.Create (ColumnDefinitionObjectMother.ClassIDColumn, SortOrder.Descending),
                                        Tuple.Create (ColumnDefinitionObjectMother.TimestampColumn, SortOrder.Ascending)
                                    };
-      
+
       _dbCommandBuilderFactoryStrictMock
           .Expect (
               stub => stub.CreateForRelationLookupFromTable (
                   Arg.Is ((TableDefinition) classDefinition.StorageEntityDefinition),
-                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (_tableDefinition1.GetAllColumns ())),
+                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (_tableDefinition1.GetAllColumns())),
                   Arg.Is (_foreignKeyColumnDefinition),
                   Arg.Is (_foreignKeyValue),
                   Arg<OrderedColumnsSpecification>.Matches (o => o.Columns.SequenceEqual (expectedOrderedColumns))))
@@ -373,19 +376,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
-      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IEnumerable<DataContainer>> (result);
+      var innerCommand =
+          CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IEnumerable<DataContainer>> (result);
       Assert.That (innerCommand, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
       var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
       Assert.That (((MultiObjectIDLoadCommand) (command.ObjectIDLoadCommand)).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
-      Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.TypeOf(typeof(ObjectIDReader)));
+      Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.TypeOf (typeof (ObjectIDReader)));
     }
 
     [Test]
     public void CreateForRelationLookup_UnionViewDefinition_WithSortExpression ()
     {
       var classDefinition = CreateClassDefinition (_unionViewDefinition);
-      var relationEndPointDefinition = CreateForeignKeyEndPointDefinition(classDefinition);
+      var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
 
       var spec1 = CreateSortedPropertySpecification (
           classDefinition,
@@ -457,26 +461,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var classIDColumnDefinition = ColumnDefinitionObjectMother.ClassIDColumn;
       var timestampColumnDefinition = ColumnDefinitionObjectMother.TimestampColumn;
 
-      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetIDColumnDefinition ()).Return (objectIDColumnDefinition);
-      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetClassIDColumnDefinition ()).Return (classIDColumnDefinition);
+      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetIDColumnDefinition()).Return (objectIDColumnDefinition);
+      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetClassIDColumnDefinition()).Return (classIDColumnDefinition);
       _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetTimestampColumnDefinition()).Return (timestampColumnDefinition);
 
       var result = _factory.CreateForDataContainerQuery (queryStub);
 
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerLoadCommand)));
-      var command = ((MultiDataContainerLoadCommand) result);
+      Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+      var command = ((MultiObjectLoadCommand<DataContainer>) result);
       Assert.That (command.DbCommandBuildersAndReaders.Length, Is.EqualTo (1));
       Assert.That (command.DbCommandBuildersAndReaders[0].Item1, Is.SameAs (commandBuilderStub));
-      Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.TypeOf<DataContainerReader> ());
+      Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.TypeOf<DataContainerReader>());
 
       var dataContainerReader = ((DataContainerReader) command.DbCommandBuildersAndReaders[0].Item2);
-      Assert.That (dataContainerReader.IDProperty, Is.TypeOf<ObjectIDStoragePropertyDefinition> ());
+      Assert.That (dataContainerReader.IDProperty, Is.TypeOf<ObjectIDStoragePropertyDefinition>());
       Assert.That (
           ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ValueProperty,
           Is.TypeOf<SimpleStoragePropertyDefinition>().With.Property ("ColumnDefinition").SameAs (objectIDColumnDefinition));
       Assert.That (
           ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ClassIDProperty,
-          Is.TypeOf<SimpleStoragePropertyDefinition> ().With.Property ("ColumnDefinition").SameAs (classIDColumnDefinition));
+          Is.TypeOf<SimpleStoragePropertyDefinition>().With.Property ("ColumnDefinition").SameAs (classIDColumnDefinition));
       Assert.That (
           dataContainerReader.TimestampProperty,
           Is.TypeOf<SimpleStoragePropertyDefinition>().With.Property ("ColumnDefinition").SameAs (timestampColumnDefinition));
@@ -588,26 +592,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (
-      ClassDefinition classDefinition,
-      SortOrder sortOrder,
-      ColumnDefinition sortedColumn)
-    {
-      return CreateSortedPropertySpecification (
-          classDefinition, 
-          typeof (Order).GetProperty ("OrderNumber"), 
-          new SimpleStoragePropertyDefinition (sortedColumn), sortOrder);
-    }
-
-    private SortedPropertySpecification CreateSortedPropertySpecification (
-  ClassDefinition classDefinition,
-  SortOrder sortOrder,
-  ColumnDefinition sortedColumn1,
-      ColumnDefinition sortedColumn2)
+        ClassDefinition classDefinition,
+        SortOrder sortOrder,
+        ColumnDefinition sortedColumn)
     {
       return CreateSortedPropertySpecification (
           classDefinition,
           typeof (Order).GetProperty ("OrderNumber"),
-          new ObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (sortedColumn1), new SimpleStoragePropertyDefinition (sortedColumn2)), 
+          new SimpleStoragePropertyDefinition (sortedColumn),
+          sortOrder);
+    }
+
+    private SortedPropertySpecification CreateSortedPropertySpecification (
+        ClassDefinition classDefinition,
+        SortOrder sortOrder,
+        ColumnDefinition sortedColumn1,
+        ColumnDefinition sortedColumn2)
+    {
+      return CreateSortedPropertySpecification (
+          classDefinition,
+          typeof (Order).GetProperty ("OrderNumber"),
+          new ObjectIDStoragePropertyDefinition (
+              new SimpleStoragePropertyDefinition (sortedColumn1), new SimpleStoragePropertyDefinition (sortedColumn2)),
           sortOrder);
     }
 
@@ -630,9 +636,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     private void CheckInfrastructureProperties (
-        DataContainerReader dataContainerReader, 
-        ColumnDefinition expectedIDColumn, 
-        ColumnDefinition expectedClassIDColumn, 
+        DataContainerReader dataContainerReader,
+        ColumnDefinition expectedIDColumn,
+        ColumnDefinition expectedClassIDColumn,
         ColumnDefinition expectedTimestampColumn)
     {
       Assert.That (
@@ -668,6 +674,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       CheckDictionaryBasedColumnOrdinalProvider (dataContainerReader.OrdinalProvider, expectedSelectedColumns);
     }
-
   }
 }

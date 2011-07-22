@@ -529,7 +529,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new ValueConverter (StorageProviderDefinition, StorageNameProvider, TypeConversionProvider);
     }
 
-    [Obsolete ("This method has been superseded by MultiDataContainerLoadCommand. Use that instead. (1.13.112)", true)]
+    [Obsolete ("This method has been superseded by MultiObjectLoadCommand. Use that instead. (1.13.112)", true)]
     protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
     {
       throw new NotImplementedException ();

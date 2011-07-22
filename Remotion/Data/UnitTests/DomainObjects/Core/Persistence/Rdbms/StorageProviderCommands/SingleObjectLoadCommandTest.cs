@@ -28,12 +28,12 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands
 {
   [TestFixture]
-  public class SingleDataContainerLoadCommandTest : SqlProviderBaseTest
+  public class SingleObjectLoadCommandTest : SqlProviderBaseTest
   {
     private IDbCommandBuilder _dbCommandBuilderMock;
     private IDbCommand _dbCommandMock;
     private IDataReader _dataReaderMock;
-    private SingleDataContainerLoadCommand _command;
+    private SingleObjectLoadCommand<DataContainer> _command;
     private IObjectReader<DataContainer> _dataContainerReaderMock;
     private DataContainer _container;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextMock;
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilderMock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
       _dataContainerReaderMock = MockRepository.GenerateStrictMock<IObjectReader<DataContainer>> ();
 
-      _command = new SingleDataContainerLoadCommand (_dbCommandBuilderMock, _dataContainerReaderMock);
+      _command = new SingleObjectLoadCommand<DataContainer> (_dbCommandBuilderMock, _dataContainerReaderMock);
     }
 
     [Test]

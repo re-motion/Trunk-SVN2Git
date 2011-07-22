@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           new SelectedColumnsSpecification (selectedColumns), 
           objectID);
 
-      var singleDataContainerLoadCommand = new SingleDataContainerLoadCommand (dbCommandBuilder, dataContainerReader);
+      var singleDataContainerLoadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
       return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new ObjectLookupResult<DataContainer> (objectID, result));
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                               let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
                               select Tuple.Create (dbCommandBuilder, dataContainerReader);
 
-      var multiDataContainerLoadCommand = new MultiDataContainerLoadCommand (dbCommandBuilders);
+      var multiDataContainerLoadCommand = new MultiObjectLoadCommand<DataContainer> (dbCommandBuilders);
       return new MultiDataContainerSortCommand (objectIDList, multiDataContainerLoadCommand);
     }
 
@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       IObjectReader<DataContainer> dataContainerReader = new DataContainerReader (
           objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
       
-      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), dataContainerReader) });
+      return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), dataContainerReader) });
     }
 
     public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)
@@ -196,7 +196,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
           GetOrderedColumns (sortExpression));
-      return new MultiDataContainerLoadCommand (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
+      return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForIndirectRelationLookup (

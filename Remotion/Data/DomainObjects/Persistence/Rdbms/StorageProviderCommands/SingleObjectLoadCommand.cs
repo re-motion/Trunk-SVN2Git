@@ -26,12 +26,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// <summary>
   /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a single <see cref="DataContainer"/>.
   /// </summary>
-  public class SingleDataContainerLoadCommand : IStorageProviderCommand<DataContainer, IRdbmsProviderCommandExecutionContext>
+  public class SingleObjectLoadCommand<T> : IStorageProviderCommand<T, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilder _dbCommandBuilder;
-    private readonly IObjectReader<DataContainer> _dataContainerReader;
+    private readonly IObjectReader<T> _dataContainerReader;
 
-    public SingleDataContainerLoadCommand (IDbCommandBuilder dbCommandBuilder, IObjectReader<DataContainer> dataContainerReader)
+    public SingleObjectLoadCommand (IDbCommandBuilder dbCommandBuilder, IObjectReader<T> dataContainerReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilder", dbCommandBuilder);
       ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
@@ -45,12 +45,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandBuilder; }
     }
 
-    public IObjectReader<DataContainer> DataContainerReader
+    public IObjectReader<T> DataContainerReader
     {
       get { return _dataContainerReader; }
     }
 
-    public DataContainer Execute (IRdbmsProviderCommandExecutionContext executionContext)
+    public T Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 

@@ -441,11 +441,11 @@
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlIndexDefinitionBase.cs" />
     <Compile Include="Persistence\Rdbms\InlineEntityDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommand.cs" />
-    <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerLoadCommand.cs" />
+    <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSaveCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSortCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommand.cs" />
-    <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleDataContainerLoadCommand.cs" />
+    <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleObjectLoadCommand.cs" />
     <Compile Include="Persistence\DelegateBasedStorageProviderCommand.cs" />
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />

@@ -30,31 +30,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a sequence of <see cref="DataContainer"/>
   /// instances.
   /// </summary>
-  public class MultiDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>
+  public class MultiObjectLoadCommand<T> : IStorageProviderCommand<IEnumerable<T>, IRdbmsProviderCommandExecutionContext>
   {
-    private readonly Tuple<IDbCommandBuilder, IObjectReader<DataContainer>>[] _dbCommandBuildersAndReaders;
+    private readonly Tuple<IDbCommandBuilder, IObjectReader<T>>[] _dbCommandBuildersAndReaders;
 
-    public MultiDataContainerLoadCommand (IEnumerable<Tuple<IDbCommandBuilder, IObjectReader<DataContainer>>> dbCommandBuildersAndReaders)
+    public MultiObjectLoadCommand (IEnumerable<Tuple<IDbCommandBuilder, IObjectReader<T>>> dbCommandBuildersAndReaders)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuildersAndReaders", dbCommandBuildersAndReaders);
 
       _dbCommandBuildersAndReaders = dbCommandBuildersAndReaders.ToArray();
     }
 
-    public Tuple<IDbCommandBuilder, IObjectReader<DataContainer>>[] DbCommandBuildersAndReaders
+    public Tuple<IDbCommandBuilder, IObjectReader<T>>[] DbCommandBuildersAndReaders
     {
       get { return _dbCommandBuildersAndReaders; }
     }
-
-
-    public IEnumerable<DataContainer> Execute (IRdbmsProviderCommandExecutionContext executionContext)
+    
+    public IEnumerable<T> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
       return _dbCommandBuildersAndReaders.SelectMany (b => LoadDataContainersFromCommandBuilder (b, executionContext)).ToArray();
     }
 
-    private IEnumerable<DataContainer> LoadDataContainersFromCommandBuilder (
-        Tuple<IDbCommandBuilder, IObjectReader<DataContainer>> commandBuilderTuple, IRdbmsProviderCommandExecutionContext executionContext)
+    private IEnumerable<T> LoadDataContainersFromCommandBuilder (
+        Tuple<IDbCommandBuilder, IObjectReader<T>> commandBuilderTuple, IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("commandBuilderTuple", commandBuilderTuple);
 
