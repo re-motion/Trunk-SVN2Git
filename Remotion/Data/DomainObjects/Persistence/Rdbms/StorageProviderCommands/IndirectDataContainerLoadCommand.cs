@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
@@ -29,7 +28,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// load <see cref="DataContainer"/> instances via two queries, where the first yields only IDs, for example for concrete table inheritance 
   /// relation lookup.
   /// </summary>
-  public class IndirectDataContainerLoadCommand : IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext>
+  public class IndirectDataContainerLoadCommand
+      : IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> _objectIDLoadCommand;
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
@@ -55,12 +55,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _storageProviderCommandFactory; }
     }
 
-    public IEnumerable<DataContainerLookupResult> Execute (IRdbmsProviderCommandExecutionContext executionContext)
+    public IEnumerable<ObjectLookupResult<DataContainer>> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
       var objectIds = _objectIDLoadCommand.Execute (executionContext);
-      return _storageProviderCommandFactory.CreateForMultiIDLookup (objectIds.ToArray ()).Execute (executionContext);
+      return _storageProviderCommandFactory.CreateForMultiIDLookup (objectIds.ToArray()).Execute (executionContext);
     }
   }
 }

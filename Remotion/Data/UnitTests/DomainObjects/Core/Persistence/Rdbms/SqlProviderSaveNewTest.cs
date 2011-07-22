@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private DataContainer LoadDataContainer (ObjectID id)
     {
-      DataContainer dataContainer = Provider.LoadDataContainer (id).LocatedDataContainer;
+      DataContainer dataContainer = Provider.LoadDataContainer (id).LocatedObject;
 
       return dataContainer;
     }
@@ -359,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (SqlProvider sqlProvider = CreateSqlProvider())
       {
-        DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedDataContainer;
+        DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedObject;
         Assert.IsNull (dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
       }
     }
@@ -385,7 +385,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (SqlProvider sqlProvider = CreateSqlProvider())
       {
-        DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedDataContainer;
+        DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedObject;
         ResourceManager.IsEmptyImage (
             (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
       }
@@ -412,7 +412,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (SqlProvider sqlProvider = CreateSqlProvider())
       {
-        DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedDataContainer;
+        DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedObject;
         ResourceManager.IsEqualToImageLarger1MB (
             (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
       }

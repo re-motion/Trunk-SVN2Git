@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private DataContainer LoadDataContainer (SqlProvider sqlProvider, ObjectID id)
     {
-      DataContainer dataContainer = sqlProvider.LoadDataContainer (id).LocatedDataContainer;
+      DataContainer dataContainer = sqlProvider.LoadDataContainer (id).LocatedObject;
       return dataContainer;
     }
 

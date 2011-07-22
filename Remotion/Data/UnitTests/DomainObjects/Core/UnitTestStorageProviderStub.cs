@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       get { return _innerMockStorageProvider.Current; }
     }
 
-    public override DataContainerLookupResult LoadDataContainer (ObjectID id)
+    public override ObjectLookupResult<DataContainer> LoadDataContainer (ObjectID id)
     {
       if (InnerProvider != null)
         return InnerProvider.LoadDataContainer (id);
@@ -117,11 +117,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         int idAsInt = (int) id.Value;
         if (s_nextID <= idAsInt)
           s_nextID = idAsInt + 1;
-        return new DataContainerLookupResult(id, container);
+        return new ObjectLookupResult<DataContainer>(id, container);
       }
     }
 
-    public override IEnumerable<DataContainerLookupResult> LoadDataContainers (IEnumerable<ObjectID> ids)
+    public override IEnumerable<ObjectLookupResult<DataContainer>> LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       if (InnerProvider != null)
         return InnerProvider.LoadDataContainers (ids);

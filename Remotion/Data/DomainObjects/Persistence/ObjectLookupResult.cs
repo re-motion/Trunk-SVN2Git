@@ -22,15 +22,15 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// <summary>
   /// Holds the result from looking up the <see cref="DataContainer"/> for a specific <see cref="ObjectID"/>.
   /// </summary>
-  public struct DataContainerLookupResult
+  public struct ObjectLookupResult<T>
   {
     private readonly ObjectID _objectID;
-    private readonly DataContainer _locatedDataContainer;
+    private readonly T _locatedObject;
 
-    public DataContainerLookupResult (ObjectID objectID, DataContainer locatedDataContainer)
+    public ObjectLookupResult (ObjectID objectID, T locatedObject)
     {
       _objectID = objectID;
-      _locatedDataContainer = locatedDataContainer;
+      _locatedObject = locatedObject;
     }
 
     public ObjectID ObjectID
@@ -38,9 +38,9 @@ namespace Remotion.Data.DomainObjects.Persistence
       get { return _objectID; }
     }
 
-    public DataContainer LocatedDataContainer
+    public T LocatedObject
     {
-      get { return _locatedDataContainer; }
+      get { return _locatedObject; }
     }
   }
 }

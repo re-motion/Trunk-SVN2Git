@@ -118,19 +118,19 @@ namespace Remotion.Data.DomainObjects.Persistence
       if (exception != null)
         throw exception;
 
-      return result.LocatedDataContainer;
+      return result.LocatedObject;
     }
 
-    private Exception CheckLoadedDataContainer (DataContainerLookupResult lookupResult, bool throwOnNotFound)
+    private Exception CheckLoadedDataContainer (ObjectLookupResult<DataContainer> lookupResult, bool throwOnNotFound)
     {
-      if (lookupResult.LocatedDataContainer != null)
+      if (lookupResult.LocatedObject != null)
       {
-        if (lookupResult.ObjectID.ClassID != lookupResult.LocatedDataContainer.ID.ClassID)
+        if (lookupResult.ObjectID.ClassID != lookupResult.LocatedObject.ID.ClassID)
         {
           return CreatePersistenceException (
               "The ClassID of the provided ObjectID '{0}' and the ClassID of the loaded DataContainer '{1}' differ.",
               lookupResult.ObjectID,
-              lookupResult.LocatedDataContainer.ID);
+              lookupResult.LocatedObject.ID);
         }
         else
           return null;
@@ -158,8 +158,8 @@ namespace Remotion.Data.DomainObjects.Persistence
           var exception = CheckLoadedDataContainer (dataContainerLookupResult, throwOnNotFound);
           if (exception != null)
             exceptions.Add (exception);
-          else if (dataContainerLookupResult.LocatedDataContainer != null)
-            unorderedResultCollection.Add (dataContainerLookupResult.LocatedDataContainer);
+          else if (dataContainerLookupResult.LocatedObject != null)
+            unorderedResultCollection.Add (dataContainerLookupResult.LocatedObject);
         }
       }
 
@@ -269,7 +269,7 @@ namespace Remotion.Data.DomainObjects.Persistence
         return GetNullDataContainerWithRelationCheck (relationEndPointID);
 
       var oppositeProvider = _storageProviderManager.GetMandatory (oppositeID.StorageProviderDefinition.Name);
-      var oppositeDataContainer = oppositeProvider.LoadDataContainer (oppositeID).LocatedDataContainer;
+      var oppositeDataContainer = oppositeProvider.LoadDataContainer (oppositeID).LocatedObject;
       if (oppositeDataContainer == null)
       {
         throw CreatePersistenceException (

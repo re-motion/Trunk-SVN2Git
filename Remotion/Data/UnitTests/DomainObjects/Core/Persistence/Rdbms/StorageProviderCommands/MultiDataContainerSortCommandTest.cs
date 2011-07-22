@@ -54,11 +54,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = command.Execute (_executionContext).ToList ();
 
       Assert.That (result.Count, Is.EqualTo (3));
-      Assert.That (result[0].LocatedDataContainer, Is.SameAs (_order1Container));
+      Assert.That (result[0].LocatedObject, Is.SameAs (_order1Container));
       Assert.That (result[0].ObjectID, Is.EqualTo(DomainObjectIDs.Order1));
-      Assert.That (result[1].LocatedDataContainer, Is.SameAs (_order2Container));
+      Assert.That (result[1].LocatedObject, Is.SameAs (_order2Container));
       Assert.That (result[1].ObjectID, Is.EqualTo(DomainObjectIDs.Order2));
-      Assert.That (result[2].LocatedDataContainer, Is.Null);
+      Assert.That (result[2].LocatedObject, Is.Null);
       Assert.That (result[2].ObjectID, Is.EqualTo(DomainObjectIDs.OrderItem1));
     }
 
@@ -72,9 +72,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = command.Execute (_executionContext).ToList ();
 
       Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result[0].LocatedDataContainer, Is.SameAs(_order1Container));
+      Assert.That (result[0].LocatedObject, Is.SameAs(_order1Container));
       Assert.That (result[0].ObjectID, Is.EqualTo(DomainObjectIDs.Order1));
-      Assert.That (result[1].LocatedDataContainer, Is.SameAs (_order1Container));
+      Assert.That (result[1].LocatedObject, Is.SameAs (_order1Container));
       Assert.That (result[1].ObjectID, Is.EqualTo(DomainObjectIDs.Order1));
     }
 
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = command.Execute (_executionContext).ToList ();
 
       Assert.That (result.Count, Is.EqualTo (1));
-      Assert.That (result[0].LocatedDataContainer, Is.SameAs (otherOrder1DataContainer));
+      Assert.That (result[0].LocatedObject, Is.SameAs (otherOrder1DataContainer));
       Assert.That (result[0].ObjectID, Is.EqualTo(DomainObjectIDs.Order1));
     }
 
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = command.Execute (_executionContext).ToList ();
 
       Assert.That (result.Count, Is.EqualTo (1));
-      Assert.That (result[0].LocatedDataContainer, Is.SameAs(_order1Container));
+      Assert.That (result[0].LocatedObject, Is.SameAs(_order1Container));
       Assert.That (result[0].ObjectID, Is.EqualTo(DomainObjectIDs.Order1));
     }
 
@@ -118,9 +118,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = command.Execute (_executionContext).ToList ();
 
       Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result[0].LocatedDataContainer, Is.SameAs (_order1Container));
+      Assert.That (result[0].LocatedObject, Is.SameAs (_order1Container));
       Assert.That (result[0].ObjectID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (result[1].LocatedDataContainer, Is.Null);
+      Assert.That (result[1].LocatedObject, Is.Null);
       Assert.That (result[1].ObjectID, Is.Null);
     }
   }

@@ -36,12 +36,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
     }
 
-    public override DataContainerLookupResult LoadDataContainer (ObjectID id)
+    public override ObjectLookupResult<DataContainer> LoadDataContainer (ObjectID id)
     {
       throw new NotImplementedException ();
     }
 
-    public override IEnumerable<DataContainerLookupResult> LoadDataContainers (IEnumerable<ObjectID> ids)
+    public override IEnumerable<ObjectLookupResult<DataContainer>> LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       throw new NotImplementedException ();
     }

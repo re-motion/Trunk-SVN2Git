@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _infrastructureStoragePropertyDefinitionProvider; }
     }
 
-    public IStorageProviderCommand<DataContainerLookupResult, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
+    public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
@@ -83,10 +83,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           objectID);
 
       var singleDataContainerLoadCommand = new SingleDataContainerLoadCommand (dbCommandBuilder, dataContainerReader);
-      return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new DataContainerLookupResult (objectID, result));
+      return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new ObjectLookupResult<DataContainer> (objectID, result));
     }
 
-    public IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext> CreateForMultiIDLookup (
+    public IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForMultiIDLookup (
         IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
@@ -223,9 +223,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
               result =>
               {
                 Assertion.IsNotNull (
-                    result.LocatedDataContainer,
+                    result.LocatedObject,
                     "Because ID lookup and DataContainer lookup are executed within the same database transaction, the DataContainer can never be null.");
-                return result.LocatedDataContainer;
+                return result.LocatedObject;
               }));
     }
 

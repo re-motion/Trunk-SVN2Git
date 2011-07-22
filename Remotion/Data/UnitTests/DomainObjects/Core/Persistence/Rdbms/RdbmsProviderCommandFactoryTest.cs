@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForSingleIDLookup (objectID);
 
-      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, DataContainerLookupResult> (result);
+      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, ObjectLookupResult<DataContainer>> (result);
       Assert.That (innerCommand, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       var loadCommand = ((SingleDataContainerLoadCommand) innerCommand);
       Assert.That (loadCommand.DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForSingleIDLookup (objectID);
 
-      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, DataContainerLookupResult> (result);
+      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, ObjectLookupResult<DataContainer>> (result);
       Assert.That (innerCommand, Is.TypeOf (typeof (SingleDataContainerLoadCommand)));
       var loadCommand = ((SingleDataContainerLoadCommand) innerCommand);
       Assert.That (loadCommand.DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
@@ -373,7 +373,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
-      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<DataContainerLookupResult>, IEnumerable<DataContainer>> (result);
+      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IEnumerable<DataContainer>> (result);
       Assert.That (innerCommand, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
       var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));

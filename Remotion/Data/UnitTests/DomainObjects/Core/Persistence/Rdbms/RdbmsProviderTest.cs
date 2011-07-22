@@ -311,9 +311,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainer ()
     {
       var objectID = DomainObjectIDs.Order1;
-      var fakeResult = new DataContainerLookupResult (objectID, DataContainer.CreateNew (objectID));
+      var fakeResult = new ObjectLookupResult<DataContainer> (objectID, DataContainer.CreateNew (objectID));
 
-      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<DataContainerLookupResult, IRdbmsProviderCommandExecutionContext>>();
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext>>();
       using (_mockRepository.Ordered())
       {
         _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
@@ -364,12 +364,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var objectID2 = DomainObjectIDs.Order2;
       var objectID3 = DomainObjectIDs.Order3;
 
-      var lookupResult1 = new DataContainerLookupResult (objectID1, DataContainer.CreateNew (objectID1));
-      var lookupResult2 = new DataContainerLookupResult (objectID2, DataContainer.CreateNew (objectID2));
-      var lookupResult3 = new DataContainerLookupResult (objectID3, DataContainer.CreateNew (objectID3));
+      var lookupResult1 = new ObjectLookupResult<DataContainer> (objectID1, DataContainer.CreateNew (objectID1));
+      var lookupResult2 = new ObjectLookupResult<DataContainer> (objectID2, DataContainer.CreateNew (objectID2));
+      var lookupResult3 = new ObjectLookupResult<DataContainer> (objectID3, DataContainer.CreateNew (objectID3));
 
       var commandMock =
-          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext>>();
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext>>();
       using (_mockRepository.Ordered())
       {
         _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
@@ -405,7 +405,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var objectID = DomainObjectIDs.Official1;
       var commandMock =
-          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext>>();
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext>>();
       _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
       _commandFactoryMock
           .Expect (mock => mock.CreateForMultiIDLookup (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { objectID })))

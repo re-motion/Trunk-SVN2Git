@@ -27,7 +27,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
   /// Executes a given <see cref="IStorageProviderCommand{T,TExecutionContext}"/> and sorts the resulting <see cref="DataContainer"/> instances
   /// according to a given list of <see cref="ObjectID"/> values.
   /// </summary>
-  public class MultiDataContainerSortCommand : IStorageProviderCommand<IEnumerable<DataContainerLookupResult>, IRdbmsProviderCommandExecutionContext>
+  public class MultiDataContainerSortCommand
+      : IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly ObjectID[] _objectIDs;
     private readonly IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> _command;
@@ -53,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _command; }
     }
 
-    public IEnumerable<DataContainerLookupResult> Execute (IRdbmsProviderCommandExecutionContext executionContext)
+    public IEnumerable<ObjectLookupResult<DataContainer>> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
@@ -63,12 +64,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
         dataContainersByID[dataContainer.ID] = dataContainer;
 
       return
-          _objectIDs.Select (id => CreateLookupResult(id, dataContainersByID));
+          _objectIDs.Select (id => CreateLookupResult (id, dataContainersByID));
     }
 
-    private DataContainerLookupResult CreateLookupResult (ObjectID id, Dictionary<ObjectID, DataContainer> dataContainersByID)
+    private ObjectLookupResult<DataContainer> CreateLookupResult (ObjectID id, Dictionary<ObjectID, DataContainer> dataContainersByID)
     {
-      return id != null ? new DataContainerLookupResult (id, dataContainersByID.GetValueOrDefault (id)) : new DataContainerLookupResult (null, null);
+      return id != null
+                 ? new ObjectLookupResult<DataContainer> (id, dataContainersByID.GetValueOrDefault (id))
+                 : new ObjectLookupResult<DataContainer> (null, null);
     }
   }
 }

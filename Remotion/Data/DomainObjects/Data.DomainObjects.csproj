@@ -241,7 +241,7 @@
     <Compile Include="Mapping\RelationDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
-    <Compile Include="Persistence\DataContainerLookupResult.cs" />
+    <Compile Include="Persistence\ObjectLookupResult.cs" />
     <Compile Include="Persistence\FixedValueStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />

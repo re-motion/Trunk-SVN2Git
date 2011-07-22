@@ -95,9 +95,9 @@ namespace Remotion.Data.DomainObjects.Persistence
       _disposed = true;
     }
 
-    public abstract DataContainerLookupResult LoadDataContainer (ObjectID id);
+    public abstract ObjectLookupResult<DataContainer> LoadDataContainer (ObjectID id);
 
-    public abstract IEnumerable<DataContainerLookupResult> LoadDataContainers (IEnumerable<ObjectID> ids);
+    public abstract IEnumerable<ObjectLookupResult<DataContainer>> LoadDataContainers (IEnumerable<ObjectID> ids);
 
     public abstract DataContainerCollection LoadDataContainersByRelatedID (
         RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID);

@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
@@ -88,9 +87,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       var officialDC1 = DataContainer.CreateNew (DomainObjectIDs.Official1);
       var officialDC2 = DataContainer.CreateNew (DomainObjectIDs.Official2);
 
-      var officialDCs = new List<DataContainerLookupResult>();
-      officialDCs.Add (new DataContainerLookupResult(DomainObjectIDs.Official1, officialDC1));
-      officialDCs.Add (new DataContainerLookupResult(DomainObjectIDs.Official2, officialDC2));
+      var officialDCs = new List<ObjectLookupResult<DataContainer>>();
+      officialDCs.Add (new ObjectLookupResult<DataContainer>(DomainObjectIDs.Official1, officialDC1));
+      officialDCs.Add (new ObjectLookupResult<DataContainer>(DomainObjectIDs.Official2, officialDC2));
 
       Expect.Call (mockProvider.LoadDataContainers (null)).Constraints (
           Mocks_List.Equal (

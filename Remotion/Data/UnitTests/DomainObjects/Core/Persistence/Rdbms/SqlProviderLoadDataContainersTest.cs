@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = Provider.LoadDataContainers (new[] { id }).ToList();
 
       Assert.That (result.Count, Is.EqualTo(1));
-      Assert.That (result[0].LocatedDataContainer, Is.Null);
+      Assert.That (result[0].LocatedObject, Is.Null);
       Assert.That (result[0].ObjectID, Is.SameAs(id));
     }
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      var actualContainer = Provider.LoadDataContainers (new[] { id }).ToArray()[0].LocatedDataContainer;
+      var actualContainer = Provider.LoadDataContainers (new[] { id }).ToArray()[0].LocatedObject;
 
       var expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
 
@@ -57,10 +57,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var containers = Provider.LoadDataContainers (ids).ToArray ();
 
       Assert.IsNotNull (containers);
-      Assert.AreEqual (ids[0], containers[0].LocatedDataContainer.ID);
-      Assert.AreEqual (ids[1], containers[1].LocatedDataContainer.ID);
-      Assert.AreEqual (ids[2], containers[2].LocatedDataContainer.ID);
-      Assert.AreEqual (ids[3], containers[3].LocatedDataContainer.ID);
+      Assert.AreEqual (ids[0], containers[0].LocatedObject.ID);
+      Assert.AreEqual (ids[1], containers[1].LocatedObject.ID);
+      Assert.AreEqual (ids[2], containers[2].LocatedObject.ID);
+      Assert.AreEqual (ids[3], containers[3].LocatedObject.ID);
     }
   }
 }
