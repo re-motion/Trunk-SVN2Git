@@ -223,18 +223,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocLiteral.xml' path='BocLiteral/LoadValue/*' />
     public virtual void LoadValue (bool interim)
     {
-      if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-      {
-        object value = DataSource.BusinessObject.GetProperty (Property);
-        LoadValueInternal (value, interim);
-      }
-    }
+      if (Property == null)
+        return;
 
-    /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
-    /// <param name="value"> A <see cref="String"/> to load or <see langword="null"/>. </param>
-    /// <include file='doc\include\UI\Controls\BocLiteral.xml' path='BocLiteral/LoadUnboundValue/*' />
-    public void LoadUnboundValue (object value, bool interim)
-    {
+      if (DataSource == null)
+        return;
+      
+      string value = null;
+
+      if (DataSource.BusinessObject != null)
+        value = (string) DataSource.BusinessObject.GetProperty (Property);
+
       LoadValueInternal (value, interim);
     }
 
@@ -247,9 +246,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
-    protected virtual void LoadValueInternal (object value, bool interim)
+    protected virtual void LoadValueInternal (string value, bool interim)
     {
-      Value = (string) value;
+      Value = value;
     }
 
     /// <summary> Gets or sets the current value. </summary>
@@ -265,7 +264,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary>Gets a flag indicating whether the <see cref="BocLiteral"/> contains a value. </summary>
     public bool HasValue
     {
-      get { return !string.IsNullOrEmpty (_value); }
+      get { return _value != null && _value.Trim ().Length > 0; }
     }
 
     object IBusinessObjectBoundControl.Value

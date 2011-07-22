@@ -404,6 +404,7 @@
     <Compile Include="Web\UI\Controls\BocListSortingOrderProviderMock.cs" />
     <Compile Include="Web\UI\Controls\BocListTest.cs" />
     <Compile Include="Web\UI\Controls\BocListWcagTest.cs" />
+    <Compile Include="Web\UI\Controls\BocLiteralTest.cs" />
     <Compile Include="Web\UI\Controls\BocMultilineTextBoxValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocMultilineTextValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\IBocAutoCompleteReferenceValueRendererTest.cs" />
