@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.Data;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
@@ -219,6 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type 'System.Char' is not supported by this storage provider.")]
     public void GetStorageType_WithNotSupportedType ()
     {
       var propertyDefinition = CreatePropertyDefinition (typeof (Char));

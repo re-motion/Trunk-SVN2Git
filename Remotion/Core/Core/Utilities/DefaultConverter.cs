@@ -90,15 +90,23 @@ namespace Remotion.Utilities
 
       if (!CanConvertTo (destinationType))
         throw new NotSupportedException (string.Format ("This TypeConverter cannot convert to type '{0}'.", destinationType));
-      // TODO Review 4167: Check if IsValid (value); if not, throw NotSupportedException ("The given value cannot be converted by this TypeConverter.");
+
+      if (!IsValid (context, value))
+        throw new NotSupportedException ("The given value cannot be converted by this TypeConverter.");
 
       return value;
     }
 
     public override bool IsValid (ITypeDescriptorContext context, object value)
     {
-      // TODO Review 4167: Implement this value: if value == null return IsNullable, otherwise, return CanConvertFrom (value.GetType())
-      return base.IsValid (context, value);
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
+      // ReSharper disable HeuristicUnreachableCode
+      if (value == null)
+        return IsNullableType;
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
+      // ReSharper restore HeuristicUnreachableCode
+
+      return CanConvertFrom (context, value.GetType());
     }
   }
 }

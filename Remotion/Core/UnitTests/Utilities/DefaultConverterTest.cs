@@ -54,12 +54,16 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void Initialization_NonNullableValueType ()
     {
-      var converterForInt = new DefaultConverter (typeof (int));
-      Assert.That (converterForInt.Type, Is.SameAs(typeof (int)));
-      Assert.That (converterForInt.IsNullableType, Is.False);
+      Assert.That (_converterForInt.Type, Is.SameAs (typeof (int)));
+      Assert.That (_converterForInt.IsNullableType, Is.False);
     }
 
-    // TODO Review 4167: Add initialization test for nullable int
+    [Test]
+    public void Initialization_NullableValueType ()
+    {
+      Assert.That (_converterForNullableInt.Type, Is.SameAs (typeof (int?)));
+      Assert.That (_converterForNullableInt.IsNullableType, Is.True);    
+    }
 
     [Test]
     public void CanConvertFrom_True ()
@@ -153,7 +157,6 @@ namespace Remotion.UnitTests.Utilities
     
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The given value cannot be converted by this TypeConverter.")]
-    [Ignore ("TODO 4167")]
     public void ConvertTo_ValueIsNullAndNotValid ()
     {
       _converterForInt.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, null, typeof (int));
@@ -176,7 +179,6 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [Ignore ("TODO 4167")]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The given value cannot be converted by this TypeConverter.")]
     public void ConvertTo_ValueIsNotNullAndNotValid ()
     {
@@ -204,6 +206,46 @@ namespace Remotion.UnitTests.Utilities
       var result = _converterForInt.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, 17, typeof (int?));
 
       Assert.That (result, Is.EqualTo (17));
+    }
+
+    [Test]
+    public void IsValid_NullValue_NullableType ()
+    {
+      var result = _converterForObject.IsValid (null);
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void IsValid_NullValue_NonNullableType ()
+    {
+      var result = _converterForInt.IsValid (null);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void IsValid_CannotConvertFrom ()
+    {
+      var result = _converterForInt.IsValid ("test");
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void IsValid_CanConvertFrom ()
+    {
+      var result = _converterForInt.IsValid (5);
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void IsValid_CanConvertFromUnderlyingType ()
+    {
+      var result = _converterForInt.IsValid (new int?(5));
+
+      Assert.That (result, Is.True);
     }
   }
 }
