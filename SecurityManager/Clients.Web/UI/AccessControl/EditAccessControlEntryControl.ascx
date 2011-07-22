@@ -23,85 +23,89 @@
 <remotion:FormGridManager ID="FormGridManager" runat="server" ShowHelpProviders="False" />
 <asp:ScriptManagerProxy runat="server" />
 
-<tr class="<%= CssClass %>">
-  <td class="buttonCell">
-    <remotion:WebButton ID="ToggleAccessControlEntryButton" runat="server" CssClass="imageButton" OnClick="ToggleAccessControlEntryButton_Click" CausesValidation="false"/>
-  </td>
-  <td>
-    <remotion:WebButton ID="DeleteAccessControlEntryButton" runat="server" CssClass="imageButton" OnClick="DeleteAccessControlEntryButton_Click" CausesValidation="false"
-      RequiresSynchronousPostBack="True" />
-  </td>
-  <td class="conditionCell">
-    <asp:PlaceHolder ID="CollapsedTenantInformation" runat="server" />
-  </td>
-  <td class="conditionCell">
-    <asp:PlaceHolder ID="CollapsedGroupInformation" runat="server" />
-  </td>
-  <td class="conditionCell">
-    <asp:PlaceHolder ID="CollapsedUserInformation" runat="server" />
-  </td>
-  <td class="conditionCell">
-    <asp:PlaceHolder ID="CollapsedAbstractRoleInformation" runat="server" />
-  </td>
-  <td class="buttonCell">
-    <remotion:DropDownMenu ID="AllPermisionsMenu" runat="server" />
-  </td>
-  <asp:PlaceHolder ID="PermissionsPlaceHolder" runat="server" />
-</tr>
+<remotion:WebUpdatePanel ID="AceUpdatePanel" runat="server" UpdateMode="Conditional" RenderMode="Tbody">
+  <ContentTemplate>
+    <tr class="<%= CssClass %>">
+      <td class="buttonCell">
+        <remotion:WebButton ID="ToggleAccessControlEntryButton" runat="server" CssClass="imageButton" OnClick="ToggleAccessControlEntryButton_Click" CausesValidation="false"/>
+      </td>
+      <td>
+        <remotion:WebButton ID="DeleteAccessControlEntryButton" runat="server" CssClass="imageButton" OnClick="DeleteAccessControlEntryButton_Click" CausesValidation="false"
+          RequiresSynchronousPostBack="True" />
+      </td>
+      <td class="conditionCell">
+        <asp:PlaceHolder ID="CollapsedTenantInformation" runat="server" />
+      </td>
+      <td class="conditionCell">
+        <asp:PlaceHolder ID="CollapsedGroupInformation" runat="server" />
+      </td>
+      <td class="conditionCell">
+        <asp:PlaceHolder ID="CollapsedUserInformation" runat="server" />
+      </td>
+      <td class="conditionCell">
+        <asp:PlaceHolder ID="CollapsedAbstractRoleInformation" runat="server" />
+      </td>
+      <td class="buttonCell">
+        <remotion:DropDownMenu ID="AllPermisionsMenu" runat="server" />
+      </td>
+      <asp:PlaceHolder ID="PermissionsPlaceHolder" runat="server" />
+    </tr>
 
-<asp:PlaceHolder ID="DetailsView" runat="server">
-  <tr class="<%= CssClass %>">
-    <td id="DetailsCell" runat="server">
-      <asp:UpdatePanel ID="DetailsViewUpdatePanel" runat="server" UpdateMode="Conditional">
-        <ContentTemplate>
-          <table id="FormGrid" runat="server" class="accessControlEntryExpanded">
-            <tr>
-              <td colspan="2"></td>
-            </tr>
-            <tr>
-              <td><remotion:SmartLabel ID="TenantLabel" runat="server" ForControl="TenantConditionField"/></td>
-              <td>
-                <remotion:BocEnumValue ID="TenantConditionField" runat="server" PropertyIdentifier="TenantCondition" DataSourceControl="CurrentObject" OnSelectionChanged="TenantConditionField_SelectionChanged" Width="32%" >
-                  <ListControlStyle AutoPostBack="True"/>
-                </remotion:BocEnumValue>
-                <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" OnSelectionChanged="SpecificTenantField_SelectionChanged" Width="32%">
-                  <DropDownListStyle AutoPostBack="true" />
-                </remotion:BocReferenceValue>
-                <remotion:BocEnumValue ID="TenantHierarchyConditionField" runat="server" PropertyIdentifier="TenantHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
-              </td>
-            </tr>
-            <tr>
-              <td><remotion:SmartLabel ID="GroupConditionLabel" runat="server" ForControl="GroupConditionField"/></td>
-              <td>
-                <remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="GroupConditionField_SelectionChanged" Width="32%">
-                  <ListControlStyle AutoPostBack="True"/>
-                </remotion:BocEnumValue>
-                <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
-                <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
-                <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
-              </td>      
-            </tr>
-            <tr>
-              <td><remotion:SmartLabel ID="UserConditionLabel" runat="server" ForControl="UserConditionField"/></td>
-              <td>
-                <remotion:BocEnumValue ID="UserConditionField" runat="server" PropertyIdentifier="UserCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="UserConditionField_SelectionChanged" Width="32%">
-                  <ListControlStyle AutoPostBack="True"/>
-                </remotion:BocEnumValue>
-                <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
-                <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
-              </td>
-            </tr>
-            <tr>
-              <td><remotion:SmartLabel ID="SpecificAbstractRoleLabel" runat="server" ForControl="SpecificAbstractRoleField"/></td>
-              <td>
-                <remotion:BocReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" Width="32%">
-                  <DropDownListStyle AutoPostBack="True" />
-                </remotion:BocReferenceValue>
-              </td>
-            </tr>
-        </table>
-        </ContentTemplate>
-      </asp:UpdatePanel>
-    </td>
-  </tr>
-</asp:PlaceHolder>
+    <asp:PlaceHolder ID="DetailsView" runat="server">
+      <tr class="<%= CssClass %>">
+        <td id="DetailsCell" runat="server">
+          <asp:UpdatePanel ID="DetailsViewUpdatePanel" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+              <table id="FormGrid" runat="server" class="accessControlEntryExpanded">
+                <tr>
+                  <td colspan="2"></td>
+                </tr>
+                <tr>
+                  <td><remotion:SmartLabel ID="TenantLabel" runat="server" ForControl="TenantConditionField"/></td>
+                  <td>
+                    <remotion:BocEnumValue ID="TenantConditionField" runat="server" PropertyIdentifier="TenantCondition" DataSourceControl="CurrentObject" OnSelectionChanged="TenantConditionField_SelectionChanged" Width="32%" >
+                      <ListControlStyle AutoPostBack="True"/>
+                    </remotion:BocEnumValue>
+                    <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" OnSelectionChanged="SpecificTenantField_SelectionChanged" Width="32%">
+                      <DropDownListStyle AutoPostBack="true" />
+                    </remotion:BocReferenceValue>
+                    <remotion:BocEnumValue ID="TenantHierarchyConditionField" runat="server" PropertyIdentifier="TenantHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td><remotion:SmartLabel ID="GroupConditionLabel" runat="server" ForControl="GroupConditionField"/></td>
+                  <td>
+                    <remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="GroupConditionField_SelectionChanged" Width="32%">
+                      <ListControlStyle AutoPostBack="True"/>
+                    </remotion:BocEnumValue>
+                    <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
+                    <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
+                    <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
+                  </td>      
+                </tr>
+                <tr>
+                  <td><remotion:SmartLabel ID="UserConditionLabel" runat="server" ForControl="UserConditionField"/></td>
+                  <td>
+                    <remotion:BocEnumValue ID="UserConditionField" runat="server" PropertyIdentifier="UserCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="UserConditionField_SelectionChanged" Width="32%">
+                      <ListControlStyle AutoPostBack="True"/>
+                    </remotion:BocEnumValue>
+                    <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
+                    <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td><remotion:SmartLabel ID="SpecificAbstractRoleLabel" runat="server" ForControl="SpecificAbstractRoleField"/></td>
+                  <td>
+                    <remotion:BocReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" Width="32%">
+                      <DropDownListStyle AutoPostBack="True" />
+                    </remotion:BocReferenceValue>
+                  </td>
+                </tr>
+            </table>
+            </ContentTemplate>
+          </asp:UpdatePanel>
+        </td>
+      </tr>
+    </asp:PlaceHolder>
+  </ContentTemplate>
+</remotion:WebUpdatePanel>
