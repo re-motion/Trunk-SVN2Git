@@ -79,7 +79,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       var result = query.Single ();
 
-      Console.WriteLine (result);
       Assert.That (result, Is.EqualTo (Color.Values.Red ().ID));
     }
 
