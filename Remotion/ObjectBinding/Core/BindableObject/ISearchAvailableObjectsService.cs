@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <paramref name="property"/>, and <paramref name="searchArguments"/>. 
     /// </summary>
     /// <param name="referencingObject">
-    /// The object containing the <paramref name="property"/> for which the list of possible values is to be retrieved.
+    /// The object containing the <paramref name="property"/> for which the list of possible values is to be retrieved. Can be <see langword="null" />.
     /// </param>
     /// <param name="property">
     /// The <see cref="IBusinessObjectReferenceProperty"/> that will be assigned with one of the objects from the result. Must not be <see langword="null" />.
