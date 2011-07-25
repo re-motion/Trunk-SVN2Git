@@ -306,10 +306,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         if (dataContainer.State != StateType.Deleted)
         {
-          if (!timestampDictionary.ContainsKey (dataContainer.ID))
-            throw new RdbmsProviderException (string.Format ("No timestamp found for object '{0}'.", dataContainer.ID)); 
+          object timestamp;
+          if (!timestampDictionary.TryGetValue (dataContainer.ID, out timestamp))
+            throw new RdbmsProviderException (string.Format ("No timestamp found for object '{0}'.", dataContainer.ID));
 
-          dataContainer.SetTimestamp (timestampDictionary[dataContainer.ID]);
+          dataContainer.SetTimestamp (timestamp);
         }
       }
     }

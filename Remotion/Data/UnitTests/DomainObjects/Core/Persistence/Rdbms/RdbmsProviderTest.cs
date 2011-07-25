@@ -208,14 +208,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SetTimestamp ()
     {
+      // TODO Review 4169: Test with 2 DataContainers
+
       var timestamp = new object ();
       var storageProviderCommandStub =
           MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>>();
-      storageProviderCommandStub.Stub (stub => stub.Execute (_providerWithSqlConnection)).Return (
-          new[] { new ObjectLookupResult<object> (DomainObjectIDs.Order1, timestamp) });
+      storageProviderCommandStub
+          .Stub (stub => stub.Execute (_providerWithSqlConnection))
+          .Return (new[] { new ObjectLookupResult<object> (DomainObjectIDs.Order1, timestamp) });
 
       _commandFactoryMock
-        .Expect (mock => mock.CreateForMultiTimestampLookup (Arg<IEnumerable<ObjectID>>.Is.Anything))
+        .Expect (mock => mock.CreateForMultiTimestampLookup (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 })))
         .Return (storageProviderCommandStub);
       _commandFactoryMock.Replay();
 
@@ -234,12 +237,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var timestamp = new object ();
       var storageProviderCommandStub =
           MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>> ();
-      storageProviderCommandStub.Stub (stub => stub.Execute (_providerWithSqlConnection)).Return (
-          new[] { new ObjectLookupResult<object> (DomainObjectIDs.Order2, timestamp) });
+      storageProviderCommandStub
+          .Stub (stub => stub.Execute (_providerWithSqlConnection))
+          .Return (new[] { new ObjectLookupResult<object> (DomainObjectIDs.Order2, timestamp) });
 
       _commandFactoryMock
-        .Expect (mock => mock.CreateForMultiTimestampLookup (Arg<IEnumerable<ObjectID>>.Is.Anything))
-        .Return (storageProviderCommandStub);
+          .Expect (mock => mock.CreateForMultiTimestampLookup (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 })))
+          .Return (storageProviderCommandStub);
       _commandFactoryMock.Replay ();
 
       _providerWithSqlConnection.SetTimestamp (new DataContainerCollection (new[] { DataContainer.CreateNew (DomainObjectIDs.Order1) }, true));
