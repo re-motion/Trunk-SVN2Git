@@ -54,6 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           (RelationEndPointDefinition) propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition == null)
       {
+        // TODO Review 4167: Catch NotSupportedException here instead of checking for null.
         var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
         if (storageType == null)
           return new UnsupportedStoragePropertyDefinition();
