@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <summary>
     /// Gets a flag that describes whether the serivce can be used to retrieve the available objects for this property.
     /// </summary>
-    /// <param name="property">The <see cref="IBusinessObjectReferenceProperty"/> to be tested.</param>
+    /// <param name="property">The <see cref="IBusinessObjectReferenceProperty"/> to be tested. Must not be <see langword="null" />.</param>
     /// <returns><see langword="true" /> if the search service is compatible with this <paramref name="property"/>.</returns>
     bool SupportsProperty (IBusinessObjectReferenceProperty property);
 
