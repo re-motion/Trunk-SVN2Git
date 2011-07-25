@@ -1171,7 +1171,6 @@
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\OppositeAnonymousBindableDomainObject.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\SecurableBindableMixinDomainObjectWithOverriddenDisplayName.cs" />
     <Compile Include="DomainObjects\Core\Persistence\MixedStorageProviderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlProviderLoadDataContainersTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\StorageProviderWithFixedGuidMixin.cs" />
@@ -1445,9 +1444,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderDefinitionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SingleIDLookupDbCommandBuilderTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlProviderBaseTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1522,9 +1518,6 @@
     </Compile>
     <Compile Include="DomainObjects\SetupFixture.cs" />
     <Compile Include="DomainObjects\Factories\StandardConfiguration.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\DataContainerFactoryTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\DomainObjectIDs.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1608,9 +1601,6 @@
     </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\TableInheritanceTestDomainAttribute.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\UnidirectionalRelationTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\ValueConverterTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\TestDomain\AbstractClass.cs" />
     <Compile Include="DomainObjects\TestDomain\Ceo.cs">
       <SubType>Code</SubType>

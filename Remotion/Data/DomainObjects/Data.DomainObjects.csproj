@@ -840,9 +840,6 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\DbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\DataContainerFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\DeleteDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -859,9 +856,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\Rdbms\RdbmsProviderException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\SingleIDLookupDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\Rdbms\SqlServer\SqlProvider.cs">

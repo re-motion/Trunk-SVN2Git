@@ -298,10 +298,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
+      var objectIds = dataContainers.Where (dc => dc.State != StateType.Deleted).Select (dc => dc.ID);
+      var multiTimestampLookupCommand = _storageProviderCommandFactory.CreateForMultiTimestampLookup (objectIds);
+      var timestampDictionary = multiTimestampLookupCommand.Execute (this).ToDictionary (result => result.ObjectID, result => result.LocatedObject);
+      
       foreach (DataContainer dataContainer in dataContainers)
       {
         if (dataContainer.State != StateType.Deleted)
-          SetTimestamp (dataContainer);
+        {
+          if (!timestampDictionary.ContainsKey (dataContainer.ID))
+            throw new RdbmsProviderException (string.Format ("No timestamp found for object '{0}'.", dataContainer.ID)); 
+
+          dataContainer.SetTimestamp (timestampDictionary[dataContainer.ID]);
+        }
       }
     }
 
@@ -357,43 +366,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       return "uniqueidentifier";
     }
-
-    protected virtual void SetTimestamp (DataContainer dataContainer)
-    {
-      CheckDisposed();
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      if (dataContainer.State == StateType.Deleted)
-        throw CreateArgumentException ("dataContainer", "Timestamp cannot be set for a deleted DataContainer.");
-
-      string columnName = DelimitIdentifier (StorageNameProvider.TimestampColumnName);
-      string entityName = dataContainer.ClassDefinition.GetEntityName();
-      var commandBuilder = new SingleIDLookupDbCommandBuilder (
-          columnName,
-          entityName,
-          StorageNameProvider.IDColumnName,
-          dataContainer.ID,
-          null,
-          SqlDialect,
-          CreateValueConverter());
-
-      using (IDbCommand command = commandBuilder.Create (this))
-      {
-        object timestamp;
-        try
-        {
-          timestamp = command.ExecuteScalar();
-        }
-        catch (Exception e)
-        {
-          throw CreateRdbmsProviderException (e, "Error while setting timestamp for object '{0}'.", dataContainer.ID);
-        }
-
-        // TODO: Check timestamp for null or DbNull.Value.
-        dataContainer.SetTimestamp (timestamp);
-      }
-    }
-
+    
     public new RdbmsProviderDefinition StorageProviderDefinition
     {
       get
