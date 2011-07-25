@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -37,6 +38,6 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <param name="uniqueIdentifier">The unique identifier of the object. Must not be <see langword="null" /> or empty.</param>
     /// <returns>The object specified by <paramref name="uniqueIdentifier"/>.</returns>
     /// <remarks>The behavior for missing objects is not defined and depends on the specific implementation of the <see cref="IGetObjectService"/>.</remarks>
-    IBusinessObjectWithIdentity GetObject (BindableObjectClassWithIdentity classWithIdentity, string uniqueIdentifier);
+    IBusinessObjectWithIdentity GetObject ([NotNull] BindableObjectClassWithIdentity classWithIdentity, [NotNull] string uniqueIdentifier);
   }
 }

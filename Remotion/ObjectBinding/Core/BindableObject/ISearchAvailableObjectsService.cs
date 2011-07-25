@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -34,7 +35,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </summary>
     /// <param name="property">The <see cref="IBusinessObjectReferenceProperty"/> to be tested. Must not be <see langword="null" />.</param>
     /// <returns><see langword="true" /> if the search service is compatible with this <paramref name="property"/>.</returns>
-    bool SupportsProperty (IBusinessObjectReferenceProperty property);
+    bool SupportsProperty ([NotNull] IBusinessObjectReferenceProperty property);
 
     /// <summary>
     /// Retrieves the list of <see cref="IBusinessObject"/> intances for the specified <paramref name="referencingObject"/>, 
@@ -48,6 +49,6 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </param>
     /// <param name="searchArguments">A parameter-object containing additional information for executing the search. Can be <see langword="null"/>.</param>
     /// <returns>A list of <see cref="IBusinessObject"/> instances. The result may be empty.</returns>
-    IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments);
+    IBusinessObject[] Search ([CanBeNull] IBusinessObject referencingObject, [NotNull] IBusinessObjectReferenceProperty property, [CanBeNull] ISearchAvailableObjectsArguments searchArguments);
   }
 }
