@@ -17,47 +17,44 @@
 using System;
 using System.Data;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands
 {
   [TestFixture]
-  public class SingleObjectLoadCommandTest : SqlProviderBaseTest
+  public class SingleObjectLoadCommandTest
   {
     private IDbCommandBuilder _dbCommandBuilderMock;
     private IDbCommand _dbCommandMock;
     private IDataReader _dataReaderMock;
-    private SingleObjectLoadCommand<DataContainer> _command;
-    private IObjectReader<DataContainer> _dataContainerReaderMock;
-    private DataContainer _container;
+    private SingleObjectLoadCommand<object> _command;
+    private IObjectReader<object> _objectReaderMock;
+    private object _fakeResult;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextMock;
 
-    public override void SetUp ()
+    [SetUp]
+    public void SetUp ()
     {
-      base.SetUp();
-
-      _container = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
+      _fakeResult = new object();
      
       _dataReaderMock = MockRepository.GenerateStub<IDataReader>();
       _commandExecutionContextMock = MockRepository.GenerateStrictMock<IRdbmsProviderCommandExecutionContext>();
       _dbCommandMock = MockRepository.GenerateStrictMock<IDbCommand>();
       _dbCommandBuilderMock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
-      _dataContainerReaderMock = MockRepository.GenerateStrictMock<IObjectReader<DataContainer>> ();
+      _objectReaderMock = MockRepository.GenerateStrictMock<IObjectReader<object>> ();
 
-      _command = new SingleObjectLoadCommand<DataContainer> (_dbCommandBuilderMock, _dataContainerReaderMock);
+      _command = new SingleObjectLoadCommand<object> (_dbCommandBuilderMock, _objectReaderMock);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_command.DbCommandBuilder, Is.SameAs (_dbCommandBuilderMock));
-      Assert.That (_command.DataContainerReader, Is.SameAs(_dataContainerReaderMock));
+      Assert.That (_command.ObjectReader, Is.SameAs(_objectReaderMock));
     }
 
     [Test]
@@ -66,8 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _commandExecutionContextMock.Expect (mock => mock.ExecuteReader (_dbCommandMock, CommandBehavior.SingleRow)).Return (_dataReaderMock);
       _commandExecutionContextMock.Replay();
 
-      _dataContainerReaderMock.Expect (mock => mock.Read (_dataReaderMock)).Return (_container);
-      _dataContainerReaderMock.Replay();
+      _objectReaderMock.Expect (mock => mock.Read (_dataReaderMock)).Return (_fakeResult);
+      _objectReaderMock.Replay();
 
       _dbCommandBuilderMock.Expect (mock => mock.Create (_commandExecutionContextMock)).Return (_dbCommandMock);
       _dbCommandBuilderMock.Replay();
@@ -78,10 +75,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = _command.Execute(_commandExecutionContextMock);
 
       _commandExecutionContextMock.VerifyAllExpectations();
-      _dataContainerReaderMock.VerifyAllExpectations();
+      _objectReaderMock.VerifyAllExpectations();
       _dbCommandBuilderMock.VerifyAllExpectations();
       _dbCommandMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (_container));
+      Assert.That (result, Is.SameAs (_fakeResult));
     }
 
     [Test]
@@ -90,8 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _commandExecutionContextMock.Expect (mock => mock.ExecuteReader (_dbCommandMock, CommandBehavior.SingleRow)).Return (_dataReaderMock);
       _commandExecutionContextMock.Replay ();
 
-      _dataContainerReaderMock.Expect (mock => mock.Read (_dataReaderMock)).Return (null);
-      _dataContainerReaderMock.Replay ();
+      _objectReaderMock.Expect (mock => mock.Read (_dataReaderMock)).Return (null);
+      _objectReaderMock.Replay ();
 
       _dbCommandBuilderMock.Expect (mock => mock.Create (_commandExecutionContextMock)).Return (_dbCommandMock);
       _dbCommandBuilderMock.Replay ();
@@ -102,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = _command.Execute (_commandExecutionContextMock);
 
       _commandExecutionContextMock.VerifyAllExpectations ();
-      _dataContainerReaderMock.VerifyAllExpectations ();
+      _objectReaderMock.VerifyAllExpectations ();
       _dbCommandBuilderMock.VerifyAllExpectations ();
       _dbCommandMock.VerifyAllExpectations ();
       Assert.That (result, Is.Null);

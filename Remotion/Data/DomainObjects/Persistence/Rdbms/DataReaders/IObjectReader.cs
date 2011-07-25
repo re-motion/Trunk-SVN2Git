@@ -21,7 +21,7 @@ using System.Data;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 {
   /// <summary>
-  /// Defines an interface for classes reading data from an <see cref="IDataReader"/>.
+  /// Defines an interface for classes reading data from an <see cref="IDataReader"/> and composing objects from the result.
   /// </summary>
   public interface IObjectReader<T>
   {

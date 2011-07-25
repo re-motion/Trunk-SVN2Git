@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Utilities;
@@ -24,20 +23,21 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
   /// <summary>
-  /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a single <see cref="DataContainer"/>.
+  /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a single object using the specified
+  /// <see cref="IObjectReader{T}"/>.
   /// </summary>
   public class SingleObjectLoadCommand<T> : IStorageProviderCommand<T, IRdbmsProviderCommandExecutionContext>
   {
     private readonly IDbCommandBuilder _dbCommandBuilder;
-    private readonly IObjectReader<T> _dataContainerReader;
+    private readonly IObjectReader<T> _objectReader;
 
-    public SingleObjectLoadCommand (IDbCommandBuilder dbCommandBuilder, IObjectReader<T> dataContainerReader)
+    public SingleObjectLoadCommand (IDbCommandBuilder dbCommandBuilder, IObjectReader<T> objectReader)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilder", dbCommandBuilder);
-      ArgumentUtility.CheckNotNull ("dataContainerReader", dataContainerReader);
+      ArgumentUtility.CheckNotNull ("objectReader", objectReader);
 
       _dbCommandBuilder = dbCommandBuilder;
-      _dataContainerReader = dataContainerReader;
+      _objectReader = objectReader;
     }
 
     public IDbCommandBuilder DbCommandBuilder
@@ -45,9 +45,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       get { return _dbCommandBuilder; }
     }
 
-    public IObjectReader<T> DataContainerReader
+    public IObjectReader<T> ObjectReader
     {
-      get { return _dataContainerReader; }
+      get { return _objectReader; }
     }
 
     public T Execute (IRdbmsProviderCommandExecutionContext executionContext)
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleRow))
         {
-          return _dataContainerReader.Read (reader);
+          return _objectReader.Read (reader);
         }
       }
     }

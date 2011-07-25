@@ -114,9 +114,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (innerCommand, Is.TypeOf (typeof (SingleObjectLoadCommand<DataContainer>)));
       var loadCommand = ((SingleObjectLoadCommand<DataContainer>) innerCommand);
       Assert.That (loadCommand.DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (loadCommand.DataContainerReader, Is.TypeOf (typeof (DataContainerReader)));
+      Assert.That (loadCommand.ObjectReader, Is.TypeOf (typeof (DataContainerReader)));
 
-      CheckDataContainerReaderForKnownProjection (loadCommand.DataContainerReader, expectedSelectedColumns);
+      CheckDataContainerReaderForKnownProjection (loadCommand.ObjectReader, expectedSelectedColumns);
     }
 
     [Test]
@@ -159,9 +159,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (innerCommand, Is.TypeOf (typeof (SingleObjectLoadCommand<DataContainer>)));
       var loadCommand = ((SingleObjectLoadCommand<DataContainer>) innerCommand);
       Assert.That (loadCommand.DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (loadCommand.DataContainerReader, Is.TypeOf (typeof (DataContainerReader)));
+      Assert.That (loadCommand.ObjectReader, Is.TypeOf (typeof (DataContainerReader)));
 
-      CheckDataContainerReaderForKnownProjection (loadCommand.DataContainerReader, expectedSelectedColumns);
+      CheckDataContainerReaderForKnownProjection (loadCommand.ObjectReader, expectedSelectedColumns);
     }
 
     [Test]

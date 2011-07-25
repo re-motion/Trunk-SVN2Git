@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Utilities;
@@ -27,8 +26,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 {
   /// <summary>
-  /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a sequence of <see cref="DataContainer"/>
-  /// instances.
+  /// Executes the command created by the given <see cref="IDbCommandBuilder"/> and parses the result into a sequence of objects using the specified
+  /// <see cref="IObjectReader{T}"/>.
   /// </summary>
   public class MultiObjectLoadCommand<T> : IStorageProviderCommand<IEnumerable<T>, IRdbmsProviderCommandExecutionContext>
   {
@@ -49,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     public IEnumerable<T> Execute (IRdbmsProviderCommandExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
-      return _dbCommandBuildersAndReaders.SelectMany (b => LoadDataContainersFromCommandBuilder (b, executionContext)).ToArray();
+      return _dbCommandBuildersAndReaders.SelectMany (b => LoadDataContainersFromCommandBuilder (b, executionContext));
     }
 
     private IEnumerable<T> LoadDataContainersFromCommandBuilder (
