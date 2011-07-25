@@ -22,6 +22,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
@@ -29,13 +30,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
   [TestFixture]
   public class TimestampReaderTest : SqlProviderBaseTest
   {
+    private IDataReader _dataReaderStub;
     private IRdbmsStoragePropertyDefinition _idPropertyStub;
     private IRdbmsStoragePropertyDefinition _timestampStub;
     private IColumnOrdinalProvider _columnOrdinalProviderStub;
+
     private TimestampReader _reader;
-    private ObjectID _objectID;
-    private IDataReader _dataReaderStub;
-    private object _timestamp;
+    
+    private ObjectID _fakeObjectIDResult;
+    private object _fakeTimestampResult;
 
     public override void SetUp ()
     {
@@ -48,8 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       _reader = new TimestampReader (_idPropertyStub, _timestampStub, _columnOrdinalProviderStub);
 
-      _objectID = new ObjectID ("Order", Guid.NewGuid ());
-      _timestamp = new object();
+      _fakeObjectIDResult = new ObjectID (typeof (Order), Guid.NewGuid ());
+      _fakeTimestampResult = new object();
     }
 
     [Test]
@@ -77,33 +80,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     public void Read_DataReaderReadTrue_NonNullValue ()
     {
       _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_objectID);
-      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_timestamp);
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_fakeObjectIDResult);
+      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_fakeTimestampResult);
       
       var result = _reader.Read (_dataReaderStub);
 
-      Assert.That (result, Is.EqualTo (Tuple.Create(_objectID, _timestamp)));
+      Assert.That (result, Is.EqualTo (Tuple.Create(_fakeObjectIDResult, _fakeTimestampResult)));
     }
 
     [Test]
     public void ReadSequence ()
     {
-      var objectID2 = new ObjectID ("OrderItem", Guid.NewGuid ());
-      var timestamp2 = new object ();
+      var fakeObjectIDResult2 = new ObjectID (typeof (OrderItem), Guid.NewGuid ());
+      var fakeTimestampResult2 = new object ();
+
       _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Times (3);
       _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_objectID).Repeat.Once ();
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_fakeObjectIDResult).Repeat.Once ();
       _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (null).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (objectID2).Repeat.Once ();
-      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_timestamp).Repeat.Once();
-      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (timestamp2).Repeat.Once();
+      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (fakeObjectIDResult2).Repeat.Once ();
+      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_fakeTimestampResult).Repeat.Once();
+      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (fakeTimestampResult2).Repeat.Once();
       
       var result = _reader.ReadSequence (_dataReaderStub).ToArray ();
 
       Assert.That (result.Length, Is.EqualTo (3));
-      Assert.That (result[0], Is.EqualTo (Tuple.Create (_objectID, _timestamp)));
+      Assert.That (result[0], Is.EqualTo (Tuple.Create (_fakeObjectIDResult, _fakeTimestampResult)));
       Assert.That (result[1], Is.Null);
-      Assert.That (result[2], Is.EqualTo(Tuple.Create (objectID2, timestamp2)));
+      Assert.That (result[2], Is.EqualTo(Tuple.Create (fakeObjectIDResult2, fakeTimestampResult2)));
     }
 
     [Test]

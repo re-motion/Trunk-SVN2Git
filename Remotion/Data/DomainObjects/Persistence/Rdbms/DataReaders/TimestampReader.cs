@@ -25,6 +25,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 {
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into timestamp instances.
+  /// The command whose data is converted must return an ID and a timestamp (as defined by the given <see cref="IRdbmsStoragePropertyDefinition"/>
+  /// instances).
   /// </summary>
   public class TimestampReader : IObjectReader<Tuple<ObjectID, object>>
   {

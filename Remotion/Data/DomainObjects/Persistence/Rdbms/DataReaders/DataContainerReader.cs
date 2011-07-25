@@ -26,6 +26,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 {
   /// <summary>
   /// Reads data from an <see cref="IDataReader"/> and converts it into <see cref="DataContainer"/> instances.
+  /// The command whose data is converted must return an ID, a timestamp (as defined by the given <see cref="IRdbmsStoragePropertyDefinition"/> 
+  /// instances), and values for each persistent property of the <see cref="ClassDefinition"/> matching the <see cref="ObjectID"/> read from the 
+  /// <see cref="IDataReader"/>.
   /// </summary>
   public class DataContainerReader : IObjectReader<DataContainer>
   {
