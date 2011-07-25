@@ -487,6 +487,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
+    public void CreateForMultiTimestampLookup ()
+    {
+      _dbCommandBuilderFactoryStrictMock
+          .Expect (
+              mock => mock.CreateForMultiIDLookupFromTable (
+                  Arg.Is (_tableDefinition1),
+                  Arg<SelectedColumnsSpecification>.Matches (
+                      c =>
+                      c.SelectedColumns.SequenceEqual (
+                          new[] { _tableDefinition1.IDColumn, _tableDefinition1.ClassIDColumn, _tableDefinition1.TimestampColumn })),
+                  Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 })))
+          .Return (_dbCommandBuilder1Stub);
+      _dbCommandBuilderFactoryStrictMock
+          .Expect (
+              mock => mock.CreateForMultiIDLookupFromTable (
+                  Arg.Is (_tableDefinition2),
+                  Arg<SelectedColumnsSpecification>.Matches (
+                      c =>
+                      c.SelectedColumns.SequenceEqual (
+                          new[] { _tableDefinition2.IDColumn, _tableDefinition2.ClassIDColumn, _tableDefinition2.TimestampColumn })),
+                  Arg<ObjectID[]>.List.Equal (new[] { _objectID3 })))
+          .Return (_dbCommandBuilder2Stub);
+      _dbCommandBuilderFactoryStrictMock.Replay();
+
+      var result = _factory.CreateForMultiTimestampLookup (new[] { _objectID1, _objectID2, _objectID3 });
+
+      Assert.That (
+          result,
+          Is.TypeOf (
+              typeof (DelegateBasedStorageProviderCommand
+                  <IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>)));
+      var innerCommand = ((DelegateBasedStorageProviderCommand
+                               <IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>)
+                          result).Command;
+      Assert.That (innerCommand, Is.TypeOf (typeof (MultiObjectLoadCommand<Tuple<ObjectID, object>>)));
+      var commandBuildersAndReaders = ((MultiObjectLoadCommand<Tuple<ObjectID, object>>) innerCommand).DbCommandBuildersAndReaders;
+      Assert.That (commandBuildersAndReaders.Length, Is.EqualTo (2));
+      Assert.That (commandBuildersAndReaders[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
+      Assert.That (commandBuildersAndReaders[0].Item2, Is.TypeOf(typeof(TimestampReader)));
+      CheckTimestampProperties (
+          ((TimestampReader) commandBuildersAndReaders[0].Item2),
+          _tableDefinition1.IDColumn,
+          _tableDefinition1.ClassIDColumn,
+          _tableDefinition1.TimestampColumn);
+      Assert.That (commandBuildersAndReaders[1].Item1, Is.SameAs (_dbCommandBuilder2Stub));
+      Assert.That (commandBuildersAndReaders[1].Item2, Is.TypeOf (typeof (TimestampReader)));
+      CheckTimestampProperties (
+          ((TimestampReader) commandBuildersAndReaders[1].Item2),
+          _tableDefinition2.IDColumn,
+          _tableDefinition2.ClassIDColumn,
+          _tableDefinition2.TimestampColumn);
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
+    }
+
+    [Test]
     public void CreateForSave ()
     {
       var dataContainerNew1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
@@ -649,6 +704,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           Is.SameAs (expectedClassIDColumn));
       Assert.That (
           ((SimpleStoragePropertyDefinition) dataContainerReader.TimestampProperty).ColumnDefinition, Is.SameAs (expectedTimestampColumn));
+    }
+
+    private void CheckTimestampProperties (
+        TimestampReader timestampReader,
+        ColumnDefinition expectedIDColumn,
+        ColumnDefinition expectedClassIDColumn,
+        ColumnDefinition expectedTimestampColumn)
+    {
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) timestampReader.IDProperty).ValueProperty).ColumnDefinition,
+          Is.SameAs (expectedIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) timestampReader.IDProperty).ClassIDProperty).ColumnDefinition,
+          Is.SameAs (expectedClassIDColumn));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) timestampReader.TimestampProperty).ColumnDefinition, Is.SameAs (expectedTimestampColumn));
     }
 
     private void CheckDictionaryBasedColumnOrdinalProvider (IColumnOrdinalProvider ordinalProvider, ColumnDefinition[] expectedSelectedColumns)

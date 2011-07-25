@@ -70,7 +70,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _infrastructureStoragePropertyDefinitionProvider; }
     }
 
-    public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
+    public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
+        ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
@@ -78,12 +79,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var selectedColumns = tableDefinition.GetAllColumns().ToArray();
       var dataContainerReader = CreateDataContainerReader (tableDefinition, selectedColumns);
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
-          tableDefinition, 
-          new SelectedColumnsSpecification (selectedColumns), 
+          tableDefinition,
+          new SelectedColumnsSpecification (selectedColumns),
           objectID);
 
       var singleDataContainerLoadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
-      return DelegateBasedStorageProviderCommand.Create (singleDataContainerLoadCommand, result => new ObjectLookupResult<DataContainer> (objectID, result));
+      return DelegateBasedStorageProviderCommand.Create (
+          singleDataContainerLoadCommand, result => new ObjectLookupResult<DataContainer> (objectID, result));
     }
 
     public IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForMultiIDLookup (
@@ -131,8 +133,43 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition());
       IObjectReader<DataContainer> dataContainerReader = new DataContainerReader (
           objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
-      
+
       return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), dataContainerReader) });
+    }
+
+    public IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext> CreateForMultiTimestampLookup (
+        IEnumerable<ObjectID> objectIDs)
+    {
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+
+      var objectIDsByTable = objectIDs.GroupBy (GetTableDefinition);
+      var commandReaderTuples =
+          (from tableGroup in objectIDsByTable
+           let selectProjection =
+               new[] { tableGroup.Key.IDColumn, tableGroup.Key.ClassIDColumn, tableGroup.Key.TimestampColumn }
+           let multiIDLookupCommand =
+               _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (
+                   tableGroup.Key, new SelectedColumnsSpecification (selectProjection), tableGroup.ToArray())
+           let ordinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection)
+           let timestampReader =
+               new TimestampReader (
+               new ObjectIDStoragePropertyDefinition (
+                   new SimpleStoragePropertyDefinition (selectProjection[0]), new SimpleStoragePropertyDefinition (selectProjection[1])),
+               new SimpleStoragePropertyDefinition (selectProjection[2]),
+               ordinalProvider)
+           select new Tuple<IDbCommandBuilder, IObjectReader<Tuple<ObjectID, object>>> (multiIDLookupCommand, timestampReader)).ToList();
+
+      var multiObjectLoadCommand = new MultiObjectLoadCommand<Tuple<ObjectID, object>> (commandReaderTuples);
+      return DelegateBasedStorageProviderCommand.Create (
+          multiObjectLoadCommand,
+          lookupResults => lookupResults.Select (
+              result =>
+              {
+                Assertion.IsNotNull (
+                    result,
+                    "Because we included IDColumn into the projection and used it for the lookup, every row in the result set certainly has an ID.");
+                return new ObjectLookupResult<object> (result.Item1, result.Item2);
+              }));
     }
 
     public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)
@@ -174,11 +211,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ObjectID[] objectIDs)
     {
       if (objectIDs.Length > 1)
+      {
         return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (
             tableDefinition, new SelectedColumnsSpecification (selectedColumns), objectIDs);
+      }
       else
+      {
         return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
             tableDefinition, new SelectedColumnsSpecification (selectedColumns), objectIDs[0]);
+      }
     }
 
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDirectRelationLookup (

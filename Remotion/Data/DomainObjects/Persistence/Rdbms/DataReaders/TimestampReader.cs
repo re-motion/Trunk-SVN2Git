@@ -44,6 +44,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       _columnOrdinalProvider = columnOrdinalProvider;
     }
 
+    public IRdbmsStoragePropertyDefinition IDProperty
+    {
+      get { return _idProperty; }
+    }
+
+    public IRdbmsStoragePropertyDefinition TimestampProperty
+    {
+      get { return _timestampProperty; }
+    }
+
+    public IColumnOrdinalProvider ColumnOrdinalProvider
+    {
+      get { return _columnOrdinalProvider; }
+    }
+
     public Tuple<ObjectID, object> Read (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
