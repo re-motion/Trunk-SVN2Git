@@ -47,7 +47,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       object[] baseMemberValues;
       if (serializeBaseMembers)
       {
-        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (mixin.GetType ().BaseType);
+        var baseType = mixin.GetType ().BaseType;
+        Assertion.IsNotNull (baseType, "Generated mixin types always have a base type.");
+        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (baseType);
         baseMemberValues = FormatterServices.GetObjectData (mixin, baseMembers);
       }
       else
@@ -120,7 +122,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       if (_baseMemberValues != null)
       {
-        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (_deserializedObject.GetType ().BaseType);
+        var baseType = _deserializedObject.GetType ().BaseType;
+        Assertion.IsNotNull (baseType, "Mixed types always have a base type.");
+        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (baseType);
         FormatterServices.PopulateObjectMembers (_deserializedObject, baseMembers, _baseMemberValues);
       }
 
