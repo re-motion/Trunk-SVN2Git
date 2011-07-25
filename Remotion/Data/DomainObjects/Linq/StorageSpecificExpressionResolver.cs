@@ -19,7 +19,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
@@ -88,25 +87,22 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("leftEndPoint", leftEndPoint);
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
-      var keyType = typeof (DomainObject).GetProperty ("ID").PropertyType;
-
+      Expression leftKey = GetJoinColumn (leftEndPoint, originatingEntity);
+      
       var resolvedSimpleTableInfo = ResolveTable (rightEndPoint.ClassDefinition, tableAlias);
+      var rightEntity = ResolveEntity (rightEndPoint.ClassDefinition, tableAlias);
 
-      var leftKey = originatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual);
-      var rightKey = new SqlColumnDefinitionExpression (
-          keyType,
-          tableAlias,
-          GetJoinColumnName (rightEndPoint),
-          rightEndPoint.IsVirtual);
+      Expression rightKey = GetJoinColumn(rightEndPoint, rightEntity);
 
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
 
-    private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
+    private Expression GetJoinColumn (IRelationEndPointDefinition endPoint, SqlEntityExpression entityDefinition)
     {
-      return endPoint.IsVirtual
-                 ? _storageNameProvider.IDColumnName
-                 : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StoragePropertyDefinition.Name;
+      if (endPoint.IsVirtual)
+        return ResolveIDColumn (entityDefinition, endPoint.ClassDefinition);
+      else
+        return ResolveColumn (entityDefinition, ((RelationEndPointDefinition) endPoint).PropertyDefinition, false);
     }
   }
 }
