@@ -106,7 +106,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         
         first = false;
       }
-      _orderedColumns.AppendOrderByClause (statement, SqlDialect);
+
+      AppendOrderByClause (statement, _orderedColumns);
+
       statement.Append (SqlDialect.StatementDelimiter);
 
       command.CommandText = statement.ToString();

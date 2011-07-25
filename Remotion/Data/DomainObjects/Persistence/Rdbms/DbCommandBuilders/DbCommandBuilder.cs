@@ -131,10 +131,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       statement.Append (expectedValue.ParameterName);
     }
 
-    protected void AppendComparingWhereClause (StringBuilder statement, IDbCommand command, IComparedColumnsSpecification comparedColumns)
+    protected void AppendWhereClause (StringBuilder statement, IComparedColumnsSpecification comparedColumns, IDbCommand command)
     {
       statement.Append (" WHERE ");
       comparedColumns.AppendComparisons (statement, command, SqlDialect);
+    }
+
+    // TODO Review 4131: Add tests
+    protected void AppendOrderByClause (StringBuilder statement, IOrderedColumnsSpecification orderedColumnsSpecification)
+    {
+      ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("orderedColumnsSpecification", orderedColumnsSpecification);
+
+      // TODO Review 4131: Change to check if orderedColumnsSpecification.IsEmpty; if not, append " ORDER BY ", then call comparedColumns.AppendOrderings
+      orderedColumnsSpecification.AppendOrderByClause (statement, SqlDialect);
     }
   }
 }

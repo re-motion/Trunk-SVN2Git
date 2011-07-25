@@ -63,9 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       base.AppendComparingWhereClause (statement, comparedColumn, expectedValue);
     }
 
-    public new void AppendComparingWhereClause (StringBuilder statement, IDbCommand command, IComparedColumnsSpecification comparedColumns)
+    public new void AppendWhereClause (StringBuilder statement, IComparedColumnsSpecification comparedColumns, IDbCommand command)
     {
-      base.AppendComparingWhereClause (statement, command, comparedColumns);
+      base.AppendWhereClause (statement, comparedColumns, command);
     }
   }
 }

@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       //if (_foreignKeyValue.ClassDefinition.IsPartOfInheritanceHierarchy && ValueProvider.IsOfSameStorageProvider (_foreignKeyValue))
       //  statement.Append (" AND ").Append (Delimit(_foreignKeyColumn.classIDProperty.Name)).Append (" = ").Append (ParameterOf (_foreignKeyValue.ClassID));
 
-      _orderedColumns.AppendOrderByClause (statement, SqlDialect);
+      AppendOrderByClause(statement, _orderedColumns);
       statement.Append (SqlDialect.StatementDelimiter);
 
       command.CommandText = statement.ToString();

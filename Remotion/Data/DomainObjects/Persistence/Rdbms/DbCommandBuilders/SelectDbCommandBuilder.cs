@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var statement = new StringBuilder();
       AppendSelectClause (statement, _selectedColumns);
       AppendFromClause (statement, _table);
-      AppendComparingWhereClause (statement, command, _comparedColumnsSpecification);
+      AppendWhereClause (statement, _comparedColumnsSpecification, command);
       statement.Append (SqlDialect.StatementDelimiter);
 
       command.CommandText = statement.ToString();

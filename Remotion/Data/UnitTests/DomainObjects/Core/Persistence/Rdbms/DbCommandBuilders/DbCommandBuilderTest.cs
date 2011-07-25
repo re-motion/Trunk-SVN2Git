@@ -18,7 +18,6 @@ using System.Data;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Rhino.Mocks;
@@ -88,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void AppendComparingWhereClause ()
+    public void AppendWhereClause ()
     {
       var statement = new StringBuilder();
       var command = MockRepository.GenerateStub<IDbCommand>();
@@ -104,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
               });
       specificationMock.Replay();
 
-      _commandBuilder.AppendComparingWhereClause (statement, command, specificationMock);
+      _commandBuilder.AppendWhereClause (statement, specificationMock, command);
 
       specificationMock.VerifyAllExpectations();
     }
