@@ -254,6 +254,8 @@
     <Compile Include="Persistence\Rdbms\DataReaders\TimestampReader.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\ComparedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\IComparedColumnsSpecification.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\IInsertedColumnsSpecification.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\InsertedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
