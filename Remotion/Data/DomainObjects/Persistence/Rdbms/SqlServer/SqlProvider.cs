@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -33,11 +34,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     {
     }
 
-    protected override TracingDbConnection CreateConnection ()
+    protected override IDbConnection CreateConnection ()
     {
       CheckDisposed();
 
-      return new TracingDbConnection (new SqlConnection(), PersistenceListener);
+      return new SqlConnection();
     }
 
     public new SqlConnection Connection

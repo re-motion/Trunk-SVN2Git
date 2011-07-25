@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Data;
-using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -45,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _connectionCreator = connectionCreator;
     }
 
-    protected override TracingDbConnection CreateConnection ()
+    protected override IDbConnection CreateConnection ()
     {
-      return new TracingDbConnection (_connectionCreator.CreateConnection(), PersistenceListener);
+      return _connectionCreator.CreateConnection();
     }
   }
 }

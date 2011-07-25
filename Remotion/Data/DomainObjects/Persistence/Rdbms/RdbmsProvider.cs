@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    protected abstract TracingDbConnection CreateConnection ();
+    protected abstract IDbConnection CreateConnection ();
 
     /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
     public virtual string StatementDelimiter
@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         try
         {
-          _connection = CreateConnection();
+          _connection = new TracingDbConnection (CreateConnection (), PersistenceListener);
           if (string.IsNullOrEmpty (_connection.ConnectionString))
             _connection.ConnectionString = StorageProviderDefinition.ConnectionString;
 
