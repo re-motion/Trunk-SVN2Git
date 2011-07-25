@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
       var objectIds = _objectIDLoadCommand.Execute (executionContext);
-      return _storageProviderCommandFactory.CreateForMultiIDLookup (objectIds.ToArray()).Execute (executionContext);
+      return _storageProviderCommandFactory.CreateForSortedMultiIDLookup (objectIds.ToArray()).Execute (executionContext);
     }
   }
 }

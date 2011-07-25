@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _storageProviderFactoryStub = MockRepository.GenerateStub<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
       _storageProviderFactoryStub
-          .Stub (stub => stub.CreateForMultiIDLookup (Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 })))
+          .Stub (stub => stub.CreateForSortedMultiIDLookup (Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 })))
           .Return (_dataContainerLoadCommandStub);
 
       _loadCommand = new IndirectDataContainerLoadCommand (_objectIDLoadCommandStub, _storageProviderFactoryStub);

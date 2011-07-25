@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void CreateForMultiIDLookup_TableDefinition_SingleIDLookup ()
+    public void CreateForSortedMultiIDLookup_TableDefinition_SingleIDLookup ()
     {
       _dbCommandBuilderFactoryStrictMock
           .Stub (
@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                   Arg.Is (_objectID1)))
           .Return (_dbCommandBuilder1Stub);
 
-      var result = _factory.CreateForMultiIDLookup (new[] { _objectID1 });
+      var result = _factory.CreateForSortedMultiIDLookup (new[] { _objectID1 });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
@@ -202,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void CreateForMultiIDLookup_TableDefinition_MultipleIDLookup_AndMultipleTables ()
+    public void CreateForSortedMultiIDLookup_TableDefinition_MultipleIDLookup_AndMultipleTables ()
     {
       _dbCommandBuilderFactoryStrictMock
           .Stub (
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                   Arg.Is (new[] { _objectID1, _objectID2 })))
           .Return (_dbCommandBuilder2Stub);
 
-      var result = _factory.CreateForMultiIDLookup (new[] { _objectID1, _objectID2, _objectID3 });
+      var result = _factory.CreateForSortedMultiIDLookup (new[] { _objectID1, _objectID2, _objectID3 });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void CreateForMultiIDLookup_FilterViewDefinition ()
+    public void CreateForSortedMultiIDLookup_FilterViewDefinition ()
     {
       var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                   Arg.Is (objectID)))
           .Return (_dbCommandBuilder1Stub);
 
-      var result = _factory.CreateForMultiIDLookup (new[] { objectID });
+      var result = _factory.CreateForSortedMultiIDLookup (new[] { objectID });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
@@ -270,7 +270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a UnionViewDefinition.")]
-    public void CreateForMultiIDLookup_UnionViewDefinition ()
+    public void CreateForSortedMultiIDLookup_UnionViewDefinition ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
@@ -280,18 +280,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var objectID = CreateObjectID (unionViewDefinition);
 
-      _factory.CreateForMultiIDLookup (new[] { objectID });
+      _factory.CreateForSortedMultiIDLookup (new[] { objectID });
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a NullEntityDefinition.")]
-    public void CreateForMultiIDLookup_NullEntityDefinition ()
+    public void CreateForSortedMultiIDLookup_NullEntityDefinition ()
     {
       var nullEntityDefintion = new NullEntityDefinition (TestDomainStorageProviderDefinition);
 
       var objectID = CreateObjectID (nullEntityDefintion);
 
-      _factory.CreateForMultiIDLookup (new[] { objectID });
+      _factory.CreateForSortedMultiIDLookup (new[] { objectID });
     }
 
     [Test]
@@ -539,6 +539,76 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _tableDefinition2.ClassIDColumn,
           _tableDefinition2.TimestampColumn);
       _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void CreateForMultiTimestampLookup_FilterViewDefinition ()
+    {
+      var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "FileView"),
+          _tableDefinition1);
+
+      var objectID = CreateObjectID (filterViewDefinition);
+
+      _dbCommandBuilderFactoryStrictMock
+          .Expect (
+              mock => mock.CreateForMultiIDLookupFromTable (
+                  Arg.Is (_tableDefinition1),
+                  Arg<SelectedColumnsSpecification>.Matches (
+                      c =>
+                      c.SelectedColumns.SequenceEqual (
+                          new[] { _tableDefinition1.IDColumn, _tableDefinition1.ClassIDColumn, _tableDefinition1.TimestampColumn })),
+                  Arg<ObjectID[]>.List.Equal (new[] { objectID })))
+          .Return (_dbCommandBuilder1Stub);
+
+      var result = _factory.CreateForMultiTimestampLookup (new[] { objectID });
+
+      Assert.That (
+          result,
+          Is.TypeOf (
+              typeof (DelegateBasedStorageProviderCommand
+                  <IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>)));
+      var innerCommand = ((DelegateBasedStorageProviderCommand
+                               <IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>)
+                          result).Command;
+      Assert.That (innerCommand, Is.TypeOf (typeof (MultiObjectLoadCommand<Tuple<ObjectID, object>>)));
+      var commandBuildersAndReaders = ((MultiObjectLoadCommand<Tuple<ObjectID, object>>) innerCommand).DbCommandBuildersAndReaders;
+      Assert.That (commandBuildersAndReaders.Length, Is.EqualTo (1));
+      Assert.That (commandBuildersAndReaders[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
+      Assert.That (commandBuildersAndReaders[0].Item2, Is.TypeOf (typeof (TimestampReader)));
+      CheckTimestampProperties (
+          ((TimestampReader) commandBuildersAndReaders[0].Item2),
+          _tableDefinition1.IDColumn,
+          _tableDefinition1.ClassIDColumn,
+          _tableDefinition1.TimestampColumn);
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a UnionViewDefinition.")]
+    public void CreateForMultiTimestampLookup_UnionViewDefinition ()
+    {
+      var tableDefinition = TableDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "Table"));
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"), tableDefinition);
+
+      var objectID = CreateObjectID (unionViewDefinition);
+
+      _factory.CreateForMultiTimestampLookup (new[] { objectID });
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a NullEntityDefinition.")]
+    public void CreateForMultiTimestampLookup_NullEntityDefinition ()
+    {
+      var nullEntityDefintion = new NullEntityDefinition (TestDomainStorageProviderDefinition);
+
+      var objectID = CreateObjectID (nullEntityDefintion);
+
+      _factory.CreateForMultiTimestampLookup (new[] { objectID });
     }
 
     [Test]
