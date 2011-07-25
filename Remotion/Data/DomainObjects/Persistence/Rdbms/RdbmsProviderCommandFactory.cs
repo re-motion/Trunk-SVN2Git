@@ -94,17 +94,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       var objectIDList = objectIDs.ToList();
-      var dbCommandBuilders = from id in objectIDList
-                              let tableDefinition = GetTableDefinition (id)
-                              group id by tableDefinition
-                              into idsByTable
-                              let selectedColumns = idsByTable.Key.GetAllColumns().ToArray()
-                              let dataContainerReader = CreateDataContainerReader (idsByTable.Key, selectedColumns)
-                              let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
-                              select Tuple.Create (dbCommandBuilder, dataContainerReader);
+      var dbCommandBuildersAndReaders = 
+          from id in objectIDList
+          let tableDefinition = GetTableDefinition (id)
+          group id by tableDefinition
+          into idsByTable
+          let selectedColumns = idsByTable.Key.GetAllColumns().ToArray()
+          let dataContainerReader = CreateDataContainerReader (idsByTable.Key, selectedColumns)
+          let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
+          select Tuple.Create (dbCommandBuilder, dataContainerReader);
 
-      var multiDataContainerLoadCommand = new MultiObjectLoadCommand<DataContainer> (dbCommandBuilders);
-      return new MultiDataContainerSortCommand (objectIDList, multiDataContainerLoadCommand);
+      var loadCommand = new MultiObjectLoadCommand<DataContainer> (dbCommandBuildersAndReaders);
+      return new MultiDataContainerSortCommand (objectIDList, loadCommand);
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForRelationLookup (
@@ -142,26 +143,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      var objectIDsByTable = objectIDs.GroupBy (GetTableDefinition);
-      var commandReaderTuples =
-          (from tableGroup in objectIDsByTable
-           let selectProjection =
-               new[] { tableGroup.Key.IDColumn, tableGroup.Key.ClassIDColumn, tableGroup.Key.TimestampColumn }
-           let multiIDLookupCommand =
-               _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (
-                   tableGroup.Key, new SelectedColumnsSpecification (selectProjection), tableGroup.ToArray())
-           let ordinalProvider = CreateOrdinalProviderForKnownProjection (selectProjection)
-           let timestampReader =
-               new TimestampReader (
-               new ObjectIDStoragePropertyDefinition (
-                   new SimpleStoragePropertyDefinition (selectProjection[0]), new SimpleStoragePropertyDefinition (selectProjection[1])),
-               new SimpleStoragePropertyDefinition (selectProjection[2]),
-               ordinalProvider)
-           select new Tuple<IDbCommandBuilder, IObjectReader<Tuple<ObjectID, object>>> (multiIDLookupCommand, timestampReader)).ToList();
+      var dbCommandBuildersAndReaders =
+          from id in objectIDs
+          let tableDefinition = GetTableDefinition (id)
+          group id by tableDefinition
+          into idsByTable
+          let selectedColumns = new[] { idsByTable.Key.IDColumn, idsByTable.Key.ClassIDColumn, idsByTable.Key.TimestampColumn }
+          let timestampReader = CreateTimestampReader (idsByTable.Key, selectedColumns)
+          let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
+          select Tuple.Create (dbCommandBuilder, timestampReader);
 
-      var multiObjectLoadCommand = new MultiObjectLoadCommand<Tuple<ObjectID, object>> (commandReaderTuples);
+      var loadCommand = new MultiObjectLoadCommand<Tuple<ObjectID, object>> (dbCommandBuildersAndReaders);
       return DelegateBasedStorageProviderCommand.Create (
-          multiObjectLoadCommand,
+          loadCommand,
           lookupResults => lookupResults.Select (
               result =>
               {
@@ -295,7 +289,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
       var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);
-      var timestampPropertyDefinition = new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
+      var timestampPropertyDefinition = GetTimestampStoragePropertyDefinition (entityDefinition);
 
       return new DataContainerReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
     }
@@ -307,11 +301,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new ObjectIDReader (objectIDStoragePropertyDefinition, ordinalProvider);
     }
 
+    private IObjectReader<Tuple<ObjectID, object>> CreateTimestampReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
+    {
+      var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
+      var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);
+      var timestampPropertyDefinition = GetTimestampStoragePropertyDefinition (entityDefinition);
+
+      return new TimestampReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider);
+    }
+
     private ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
     {
       return new ObjectIDStoragePropertyDefinition (
           new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
           new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
+    }
+
+    private SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    {
+      return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
     }
 
     private IColumnOrdinalProvider CreateOrdinalProviderForKnownProjection (IEnumerable<ColumnDefinition> selectedColumns)

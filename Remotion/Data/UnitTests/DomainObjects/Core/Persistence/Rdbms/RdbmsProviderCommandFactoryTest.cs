@@ -489,56 +489,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateForMultiTimestampLookup ()
     {
+      var expectedSelection1 = new[] { _tableDefinition1.IDColumn, _tableDefinition1.ClassIDColumn, _tableDefinition1.TimestampColumn };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
               mock => mock.CreateForMultiIDLookupFromTable (
                   Arg.Is (_tableDefinition1),
-                  Arg<SelectedColumnsSpecification>.Matches (
-                      c =>
-                      c.SelectedColumns.SequenceEqual (
-                          new[] { _tableDefinition1.IDColumn, _tableDefinition1.ClassIDColumn, _tableDefinition1.TimestampColumn })),
+                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (expectedSelection1)),
                   Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 })))
           .Return (_dbCommandBuilder1Stub);
+      var expectedSelection2 = new[] { _tableDefinition2.IDColumn, _tableDefinition2.ClassIDColumn, _tableDefinition2.TimestampColumn };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
-              mock => mock.CreateForMultiIDLookupFromTable (
+              mock => mock.CreateForSingleIDLookupFromTable (
                   Arg.Is (_tableDefinition2),
-                  Arg<SelectedColumnsSpecification>.Matches (
-                      c =>
-                      c.SelectedColumns.SequenceEqual (
-                          new[] { _tableDefinition2.IDColumn, _tableDefinition2.ClassIDColumn, _tableDefinition2.TimestampColumn })),
-                  Arg<ObjectID[]>.List.Equal (new[] { _objectID3 })))
+                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (expectedSelection2)),
+                  Arg.Is (_objectID3)))
           .Return (_dbCommandBuilder2Stub);
       _dbCommandBuilderFactoryStrictMock.Replay();
 
       var result = _factory.CreateForMultiTimestampLookup (new[] { _objectID1, _objectID2, _objectID3 });
 
-      Assert.That (
-          result,
-          Is.TypeOf (
-              typeof (DelegateBasedStorageProviderCommand
-                  <IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>)));
-      var innerCommand = ((DelegateBasedStorageProviderCommand
-                               <IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>)
-                          result).Command;
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
+
+      var innerCommand =
+          CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>> (result);
       Assert.That (innerCommand, Is.TypeOf (typeof (MultiObjectLoadCommand<Tuple<ObjectID, object>>)));
+
       var commandBuildersAndReaders = ((MultiObjectLoadCommand<Tuple<ObjectID, object>>) innerCommand).DbCommandBuildersAndReaders;
       Assert.That (commandBuildersAndReaders.Length, Is.EqualTo (2));
       Assert.That (commandBuildersAndReaders[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (commandBuildersAndReaders[0].Item2, Is.TypeOf(typeof(TimestampReader)));
       CheckTimestampProperties (
-          ((TimestampReader) commandBuildersAndReaders[0].Item2),
+          (TimestampReader) commandBuildersAndReaders[0].Item2,
           _tableDefinition1.IDColumn,
           _tableDefinition1.ClassIDColumn,
           _tableDefinition1.TimestampColumn);
+      
       Assert.That (commandBuildersAndReaders[1].Item1, Is.SameAs (_dbCommandBuilder2Stub));
       Assert.That (commandBuildersAndReaders[1].Item2, Is.TypeOf (typeof (TimestampReader)));
       CheckTimestampProperties (
-          ((TimestampReader) commandBuildersAndReaders[1].Item2),
+          (TimestampReader) commandBuildersAndReaders[1].Item2,
           _tableDefinition2.IDColumn,
           _tableDefinition2.ClassIDColumn,
           _tableDefinition2.TimestampColumn);
-      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -551,27 +544,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var objectID = CreateObjectID (filterViewDefinition);
 
+      var expectedSelection = new[] { _tableDefinition1.IDColumn, _tableDefinition1.ClassIDColumn, _tableDefinition1.TimestampColumn };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
-              mock => mock.CreateForMultiIDLookupFromTable (
+              mock => mock.CreateForSingleIDLookupFromTable (
                   Arg.Is (_tableDefinition1),
-                  Arg<SelectedColumnsSpecification>.Matches (
-                      c =>
-                      c.SelectedColumns.SequenceEqual (
-                          new[] { _tableDefinition1.IDColumn, _tableDefinition1.ClassIDColumn, _tableDefinition1.TimestampColumn })),
-                  Arg<ObjectID[]>.List.Equal (new[] { objectID })))
+                  Arg<SelectedColumnsSpecification>.Matches (c => c.SelectedColumns.SequenceEqual (expectedSelection)),
+                  Arg.Is (objectID)))
           .Return (_dbCommandBuilder1Stub);
 
       var result = _factory.CreateForMultiTimestampLookup (new[] { objectID });
 
-      Assert.That (
-          result,
-          Is.TypeOf (
-              typeof (DelegateBasedStorageProviderCommand
-                  <IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>)));
-      var innerCommand = ((DelegateBasedStorageProviderCommand
-                               <IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>)
-                          result).Command;
+      var innerCommand =
+          CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>> (result);
+
       Assert.That (innerCommand, Is.TypeOf (typeof (MultiObjectLoadCommand<Tuple<ObjectID, object>>)));
       var commandBuildersAndReaders = ((MultiObjectLoadCommand<Tuple<ObjectID, object>>) innerCommand).DbCommandBuildersAndReaders;
       Assert.That (commandBuildersAndReaders.Length, Is.EqualTo (1));
@@ -752,12 +738,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     private IStorageProviderCommand<TIn, IRdbmsProviderCommandExecutionContext> CheckDelegateBasedCommandAndReturnInnerCommand<TIn, TResult> (
-        IStorageProviderCommand<TResult, IRdbmsProviderCommandExecutionContext> result)
+        IStorageProviderCommand<TResult, IRdbmsProviderCommandExecutionContext> command)
     {
       Assert.That (
-          result,
+          command,
           Is.TypeOf (typeof (DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>)));
-      return ((DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>) result).Command;
+      return ((DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>) command).Command;
     }
 
     private void CheckInfrastructureProperties (
