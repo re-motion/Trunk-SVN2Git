@@ -222,8 +222,12 @@
         Loads the <see cref="BocReferenceValueBase.Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
         if <paramref name="interim"/> is <see langword="false"/>. 
       </para><para>
-        Requires a <see cref="BocReferenceValueBase.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
-        a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
+        Requires a <see cref="BusinessObjectBoundWebControl.Property"/>, and a <see cref="BusinessObjectBoundWebControl.DataSource"/>.
+        If the <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see> is not set, the <see cref="Value"/> will
+        still be loaded but set to <see langword="null"/>.
+      </para><para>
+        <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> is <see langword="false"/> after invoking
+        <see cref="LoadValue"/> with <paramref name="interim"/> <see langword="false"/>.
       </para>
     </remarks>
     <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
@@ -237,6 +241,9 @@
       </para><para>
         Requires a <see cref="BocReferenceValueBase.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
         a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
+      </para><para>
+        <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> is <see langword="false"/> after invoking
+        <see cref="LoadValue"/> with <paramref name="interim"/> <see langword="false"/>.
       </para>
     </remarks>
   </LoadUnboundValue>
@@ -248,8 +255,9 @@
         if <paramref name="interim"/> is <see langword="false"/> and the control's 
         <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/> property evaluates <see langword="false"/>. 
       </para><para>
-        Requires a <see cref="BocReferenceValueBase.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and a 
-        <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
+        Requires a <see cref="BusinessObjectBoundWebControl.Property"/> and a <see cref="BusinessObjectBoundWebControl.DataSource"/>.
+        If the <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see> is not set, the <see cref="Value"/> will
+        not be saved.
       </para><para>
         <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> will be <see langword="false"/> after invoking
         <see cref="SaveValue"/> with <paramref name="interim"/> <see langword="false"/>.

@@ -63,10 +63,10 @@
         The <see cref="BocTreeView"/> uses the <see cref="BusinessObjectBoundWebControl.DataSource"/>'s 
         <see cref="BusinessObjectDataSourceControl.BusinessObject"/> as the root node.
       </para><para>
-        Requires a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
-        a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
-        If a <see cref="Property"/> is provided, only the business objects accessed through this proeprty will 
-        be shown in the tree.
+        Requires a <see cref="BusinessObjectBoundWebControl.DataSource"/>.
+        If a <see cref="Property"/> is provided, only the business objects accessed through this proeprty will be shown in the tree.
+        If the <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see> is not set, the <see cref="Value"/> will 
+        still be loaded but set to <see langword="null"/>.
       </para>
     </remarks>
     <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>

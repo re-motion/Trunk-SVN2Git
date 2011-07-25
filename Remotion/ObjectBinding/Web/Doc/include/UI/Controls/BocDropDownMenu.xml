@@ -24,9 +24,10 @@
       <para>
         Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> . 
       </para><para>
-        Requires a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
-        a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
+        Requires a <see cref="BusinessObjectBoundWebControl.DataSource"/>.
         If no <see cref="Property"/> is provided, the datasource's bound business object itself is used as the value.
+        If the <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see> is not set, the <see cref="Value"/> will
+        still be loaded but set to <see langword="null"/>.
       </para>
     </remarks>
     <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
