@@ -97,12 +97,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (!IsConnected)
       {
+        _connection = new TracingDbConnection (CreateConnection(), PersistenceListener);
+        if (string.IsNullOrEmpty (_connection.ConnectionString))
+          _connection.ConnectionString = StorageProviderDefinition.ConnectionString;
+
         try
         {
-          _connection = new TracingDbConnection (CreateConnection (), PersistenceListener);
-          if (string.IsNullOrEmpty (_connection.ConnectionString))
-            _connection.ConnectionString = StorageProviderDefinition.ConnectionString;
-
           _connection.Open();
         }
         catch (Exception e)
