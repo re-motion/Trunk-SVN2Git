@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -25,7 +26,9 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
-  // TODO Review 4170: 
+  /// <summary>
+  /// The <see cref="InsertedColumnsSpecification"/> specifies the values which should be inserted into the specified columns.
+  /// </summary>
   public class InsertedColumnsSpecification : IInsertedColumnsSpecification
   {
     private readonly ColumnValue[] _columnValues;
@@ -37,10 +40,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       _columnValues = columnValues.ToArray();
     }
 
-    // TODO Review 4170: ReadOnlyCollection
-    public ColumnValue[] ColumnValues
+    public ReadOnlyCollection<ColumnValue> ColumnValues
     {
-      get { return _columnValues; }
+      get { return Array.AsReadOnly(_columnValues); }
     }
 
     public void AppendColumnNames (StringBuilder statement, IDbCommand dbCommand, ISqlDialect sqlDialect)

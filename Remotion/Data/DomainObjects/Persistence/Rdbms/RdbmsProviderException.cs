@@ -30,8 +30,6 @@ public class RdbmsProviderException : StorageProviderException
 
   // construction and disposing
 
-  // TODO Review 4170: Remove default ctor
-  public RdbmsProviderException () : this ("An RDBMS exception has occurred.") {}
   public RdbmsProviderException (string message) : base (message) {}
   public RdbmsProviderException (string message, Exception inner) : base (message, inner) {}
   protected RdbmsProviderException (SerializationInfo info, StreamingContext context) : base (info, context) {}

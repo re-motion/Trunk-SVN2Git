@@ -179,15 +179,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var dataContainersByState = dataContainers.ToLookup (dc => dc.State);
 
       foreach (var dataContainer in dataContainersByState[StateType.New])
-      {
-        // TODO Review 4170: Move to separate method: CreateDbCommandForInsert
-        var tableDefinition = GetTableDefinition (dataContainer.ID);
-        var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
-
-        var dbCommandBuilder = _dbCommandBuilderFactory.CreateForInsert (tableDefinition, new InsertedColumnsSpecification (columnValues));
-        yield return Tuple.Create (dataContainer.ID, dbCommandBuilder);
-      }
-
+        yield return Tuple.Create (dataContainer.ID, CreateDbCommandForInsert(dataContainer));
+      
       var changedContainers =
           dataContainersByState[StateType.New].Concat (dataContainersByState[StateType.Changed]).Concat (dataContainersByState[StateType.Deleted]);
       foreach (var dataContainer in changedContainers)
@@ -195,6 +188,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       foreach (var dataContainer in dataContainersByState[StateType.Deleted])
         yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForDelete (dataContainer));
+    }
+
+    private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer)
+    {
+      var tableDefinition = GetTableDefinition (dataContainer.ID);
+      var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
+
+      return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, new InsertedColumnsSpecification (columnValues));
     }
 
     private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)

@@ -601,9 +601,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateForSave ()
     {
-      // TODO Review 4170: Use Computer for new DCs, set SerialNumber property
-      var dataContainerNew1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var dataContainerNew2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      var dataContainerNew1 = DataContainer.CreateNew (DomainObjectIDs.Computer1);
+      dataContainerNew1.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "1234567");
+      var dataContainerNew2 = DataContainer.CreateNew (DomainObjectIDs.Computer2);
+      dataContainerNew2.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "7654321");
       var dataContainerUnchanged = DataContainer.CreateForExisting (DomainObjectIDs.Order3, null, pd => pd.DefaultValue);
       var dataContainerChanged1 = DataContainer.CreateForExisting (DomainObjectIDs.Order4, null, pd => pd.DefaultValue);
       dataContainerChanged1.MarkAsChanged();

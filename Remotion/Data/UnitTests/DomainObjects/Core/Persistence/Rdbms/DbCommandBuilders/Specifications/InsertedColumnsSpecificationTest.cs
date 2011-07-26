@@ -75,18 +75,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void AppendColumnValues ()
     {
-      // TODO Review 4170: Use mocks for the parameters, expect that the name is set.
-      var parameter1Stub = MockRepository.GenerateStub<IDbDataParameter>();
-      var parameter2Stub = MockRepository.GenerateStub<IDbDataParameter> ();
-      
+      var parameter1StrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
+      parameter1StrictMock.Expect (mock => mock.ParameterName = "@ID");
+      parameter1StrictMock.Expect (mock => mock.ParameterName).Return ("@ID");
+      parameter1StrictMock.Expect (mock => mock.Value = _value1);
+      parameter1StrictMock.Expect (mock => mock.DbType = DbType.Guid);
+      parameter1StrictMock.Replay ();
+
+      var parameter2StrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
+      parameter2StrictMock.Expect (mock => mock.ParameterName = "@Timestamp");
+      parameter2StrictMock.Expect (mock => mock.ParameterName).Return ("@Timestamp");
+      parameter2StrictMock.Expect (mock => mock.Value = _value2);
+      parameter2StrictMock.Expect (mock => mock.DbType = DbType.DateTime);
+      parameter2StrictMock.Replay ();
+
       var dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
       
       _dbCommandStub.Stub (stub => stub.Parameters).Return (dataParameterCollectionMock);
-      _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (parameter1Stub).Repeat.Once();
-      _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (parameter2Stub).Repeat.Once ();
+      _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (parameter1StrictMock).Repeat.Once();
+      _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (parameter2StrictMock).Repeat.Once ();
 
-      dataParameterCollectionMock.Expect (mock => mock.Add (parameter1Stub)).Return (0).Repeat.Once ();
-      dataParameterCollectionMock.Expect (mock => mock.Add (parameter2Stub)).Return (1).Repeat.Once ();
+      dataParameterCollectionMock.Expect (mock => mock.Add (parameter1StrictMock)).Return (0).Repeat.Once ();
+      dataParameterCollectionMock.Expect (mock => mock.Add (parameter2StrictMock)).Return (1).Repeat.Once ();
       dataParameterCollectionMock.Replay ();
       
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("ID")).Return ("@ID");
@@ -95,6 +105,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _insertedColumnsSpecification.AppendColumnValues (_statement, _dbCommandStub, _sqlDialectStub);
 
       dataParameterCollectionMock.VerifyAllExpectations();
+      parameter1StrictMock.VerifyAllExpectations();
+      parameter2StrictMock.VerifyAllExpectations();
       Assert.That (_dbCommandStub.Parameters, Is.SameAs(dataParameterCollectionMock));
     }
   }

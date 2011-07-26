@@ -20,7 +20,10 @@ using System.Text;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
-  // TODO Review 4170: Add docs
+  /// <summary>
+  /// <see cref="IInsertedColumnsSpecification"/> defines the API for all implementations that specify how to insert columns in a relational
+  /// database.
+  /// </summary>
   public interface IInsertedColumnsSpecification
   {
     void AppendColumnNames (StringBuilder statement, IDbCommand dbCommand, ISqlDialect sqlDialect);

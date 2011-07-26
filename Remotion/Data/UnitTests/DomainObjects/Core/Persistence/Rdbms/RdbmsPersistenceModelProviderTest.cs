@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -52,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "The RdbmsProvider expected a storage definition object of type 'IEntityDefinition' for class-definition 'Order', "
         + "but found a storage definition object of type 'IStorageEntityDefinition*.", MatchType = MessageMatch.Regex)]
     public void GetEntityDefinition_NoIEntityDefinition ()
@@ -76,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "The RdbmsProvider expected a storage definition object of type 'IRdbmsStoragePropertyDefinition' for property 'OrderNumber' of class-definition 'Order', "
         + "but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
     public void GetColumnDefinition_NoIColumnDefinition ()
