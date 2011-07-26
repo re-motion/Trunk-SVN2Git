@@ -33,6 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var storageEntityDefinitionAsIEntityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
       if (storageEntityDefinitionAsIEntityDefinition == null)
       {
+        // TODO Review 4170: RdbmsProviderException
         throw new InvalidOperationException (
             string.Format (
                 "The RdbmsProvider expected a storage definition object of type '{0}' for class-definition '{1}', "
@@ -52,7 +53,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var storagePropertyDefinitionAsIColumnDefinition = propertyDefinition.StoragePropertyDefinition as IRdbmsStoragePropertyDefinition;
       if (storagePropertyDefinitionAsIColumnDefinition == null)
       {
-        throw new InvalidOperationException(
+        // TODO Review 4170: RdbmsProviderException
+        throw new InvalidOperationException (
           string.Format("The RdbmsProvider expected a storage definition object of type '{0}' for property '{1}' of class-definition '{2}', "
                 + "but found a storage definition object of type '{3}'.",
                 typeof (IRdbmsStoragePropertyDefinition).Name,

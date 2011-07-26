@@ -77,10 +77,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
       ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
 
+      // TODO Review 4170: Read both value and classID. If value is null, classID must also be null. If value != null, classID must not be null. 
+      // Throw RdbmsProviderException otherwise: "Incorrect database value encountered. The value read from 'x', 'y' must not contain null."/"must contain null."
+      // Get the column names via _classIDProperty.GetColumns(), separate with ",", enclose in "'"
       var value = _valueProperty.Read (dataReader, ordinalProvider);
       if (value == null)
         return null;
-      return new ObjectID ((string) _classIDProperty.Read(dataReader, ordinalProvider), value);
+
+      var classID = (string) _classIDProperty.Read(dataReader, ordinalProvider);
+      return new ObjectID (classID, value);
     }
 
     public IEnumerable<ColumnValue> SplitValue (object value)
