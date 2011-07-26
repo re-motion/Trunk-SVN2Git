@@ -597,9 +597,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _factory.CreateForMultiTimestampLookup (new[] { objectID });
     }
 
+    // TODO Review 4170: Split into three tests: CreateForSave_New, _Changed, _Deleted, _Unchanged
     [Test]
     public void CreateForSave ()
     {
+      // TODO Review 4170: Use Computer for new DCs, set SerialNumber property
       var dataContainerNew1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
       var dataContainerNew2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
       var dataContainerUnchanged = DataContainer.CreateForExisting (DomainObjectIDs.Order3, null, pd => pd.DefaultValue);
@@ -623,6 +625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var deleteDbCommandBuilderDeleted1 = MockRepository.GenerateStub<IDbCommandBuilder>();
       var deleteDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder>();
 
+      // TODO Review 4170: Check inserted columns: no foreign key properties, no non-persistent properties: Add a helper method CheckInsertedComputerColumns (IInsertedColumnsSpecification, DataContainer); checks that IInsertedColumnsSpecification contains SerialNumber, but not DateTimeTransactionProperty, not Employee; checks that the values are the same as in the DataContainer
       _dbCommandBuilderFactoryStrictMock.Stub (
           stub =>
           stub.CreateForInsert (

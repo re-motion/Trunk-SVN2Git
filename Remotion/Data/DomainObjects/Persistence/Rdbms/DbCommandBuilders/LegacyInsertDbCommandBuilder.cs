@@ -24,6 +24,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
+  // TODO Review 4170: Remove
   public class LegacyInsertDbCommandBuilder : DbCommandBuilder
   {
     private readonly DataContainer _dataContainer;

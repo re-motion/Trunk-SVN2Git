@@ -75,17 +75,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void AppendColumnValues ()
     {
+      // TODO Review 4170: Use mocks for the parameters, expect that the name is set.
       var parameter1Stub = MockRepository.GenerateStub<IDbDataParameter>();
       var parameter2Stub = MockRepository.GenerateStub<IDbDataParameter> ();
       
       var dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
-      dataParameterCollectionMock.Expect (mock => mock.Add (parameter1Stub)).Return(0).Repeat.Once();
-      dataParameterCollectionMock.Expect (mock => mock.Add (parameter2Stub)).Return(1).Repeat.Once ();
-      dataParameterCollectionMock.Replay();
       
       _dbCommandStub.Stub (stub => stub.Parameters).Return (dataParameterCollectionMock);
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (parameter1Stub).Repeat.Once();
       _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (parameter2Stub).Repeat.Once ();
+
+      dataParameterCollectionMock.Expect (mock => mock.Add (parameter1Stub)).Return (0).Repeat.Once ();
+      dataParameterCollectionMock.Expect (mock => mock.Add (parameter2Stub)).Return (1).Repeat.Once ();
+      dataParameterCollectionMock.Replay ();
       
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("ID")).Return ("@ID");
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("Timestamp")).Return ("@Timestamp");

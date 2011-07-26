@@ -20,6 +20,7 @@ using System.Text;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
+  // TODO Review 4170: Add docs
   public interface IInsertedColumnsSpecification
   {
     void AppendColumnNames (StringBuilder statement, IDbCommand dbCommand, ISqlDialect sqlDialect);

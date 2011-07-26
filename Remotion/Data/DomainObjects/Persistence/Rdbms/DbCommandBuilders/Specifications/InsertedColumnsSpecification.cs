@@ -25,6 +25,7 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
+  // TODO Review 4170: 
   public class InsertedColumnsSpecification : IInsertedColumnsSpecification
   {
     private readonly ColumnValue[] _columnValues;
@@ -36,11 +37,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       _columnValues = columnValues.ToArray();
     }
 
+    // TODO Review 4170: ReadOnlyCollection
     public ColumnValue[] ColumnValues
     {
       get { return _columnValues; }
     }
-
 
     public void AppendColumnNames (StringBuilder statement, IDbCommand dbCommand, ISqlDialect sqlDialect)
     {
@@ -48,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("dbCommand", dbCommand);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      var columNames = SeparatedStringBuilder.Build (", ", _columnValues, cv => sqlDialect.DelimitIdentifier(cv.Column.Name));
+      var columNames = SeparatedStringBuilder.Build (", ", _columnValues, cv => sqlDialect.DelimitIdentifier (cv.Column.Name));
       statement.Append (columNames);
     }
 

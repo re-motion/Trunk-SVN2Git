@@ -180,6 +180,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       foreach (var dataContainer in dataContainersByState[StateType.New])
       {
+        // TODO Review 4170: Move to separate method: CreateDbCommandForInsert
         var tableDefinition = GetTableDefinition (dataContainer.ID);
         var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
 
@@ -206,8 +207,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           };
 
 
-      var dataStorageProperties = dataContainer.PropertyValues.Cast<PropertyValue>().Where (
-          pv => pv.Definition.StorageClass == StorageClass.Persistent && !pv.Definition.IsObjectID).Select (
+      var dataStorageProperties = dataContainer.PropertyValues.Cast<PropertyValue>()
+          .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && !pv.Definition.IsObjectID)
+          .Select (
               pv => new
                     {
                         StorageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (pv.Definition),

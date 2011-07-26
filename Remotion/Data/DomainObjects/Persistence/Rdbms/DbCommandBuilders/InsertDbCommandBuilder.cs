@@ -38,8 +38,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("insertedColumnsSpecification", insertedColumnsSpecification);
 
-      //TODO RM-4170: check that state is new !??
-
       _tableDefinition = tableDefinition;
       _insertedColumnsSpecification = insertedColumnsSpecification;
     }
