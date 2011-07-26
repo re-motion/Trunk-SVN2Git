@@ -17,10 +17,13 @@
 
 using System;
 using System.Data;
+using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -29,104 +32,73 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class InsertDbCommandBuilderTest : SqlProviderBaseTest
   {
     private IValueConverter _valueConverterStub;
+    private IInsertedColumnsSpecification _insertedColumnsSpecificationStub;
+    private ISqlDialect _sqlDialectMock;
+    private IDbCommand _dbCommandStub;
+    private IDbDataParameter _dbDataParameterStub;
+    private IDataParameterCollection _dataParameterCollectionMock;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
+
+      _insertedColumnsSpecificationStub = MockRepository.GenerateStub<IInsertedColumnsSpecification>();
+      _insertedColumnsSpecificationStub
+          .Stub (stub => stub.AppendColumnNames (Arg<StringBuilder>.Is.Anything, Arg<IDbCommand>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
+      _insertedColumnsSpecificationStub
+          .Stub (stub => stub.AppendColumnValues (Arg<StringBuilder>.Is.Anything, Arg<IDbCommand>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("5, 'test', true"));
+
+      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect> ();
+      _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
+
+      _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
+      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
+
+      _dbCommandStub = MockRepository.GenerateStub<IDbCommand> ();
+      _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub);
+      _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
+
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "State of provided DataContainer must be 'New', but is 'Unchanged'.\r\nParameter name: dataContainer")]
-    public void InitializeWithDataContainerOfInvalidState ()
+    public void Create_DefaultSchema ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
+      var builder = new InsertDbCommandBuilder (tableDefinition, _insertedColumnsSpecificationStub, _sqlDialectMock, _valueConverterStub);
 
-      Provider.Connect();
-      new LegacyInsertDbCommandBuilder (StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, _valueConverterStub);
+      _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("Table")).Return ("[Table]");
+      _sqlDialectMock.Replay ();
+
+      var result = builder.Create (_commandExecutionContextStub);
+
+      _sqlDialectMock.VerifyAllExpectations ();
+      Assert.That (result.CommandText, Is.EqualTo ("INSERT INTO [Table] ([Column1], [Column2], [Column3]) VALUES (5, 'test', true);"));
     }
 
     [Test]
-    public void Create ()
+    public void Create_CustomSchema ()
     {
-      Provider.Connect();
+      var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
+      var builder = new InsertDbCommandBuilder (tableDefinition, _insertedColumnsSpecificationStub, _sqlDialectMock, _valueConverterStub);
 
-      Order order = Order.NewObject();
-      order.OrderNumber = 212;
-      order.DeliveryDate = new DateTime (2008, 7, 1);
+      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
+      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
+      _sqlDialectMock.Replay ();
 
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return(order.ID.Value).Repeat.Once();
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (order.ID.ClassID).Repeat.Once();
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (order.OrderNumber).Repeat.Once();
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (order.DeliveryDate).Repeat.Once();
-      
-      var builder = new LegacyInsertDbCommandBuilder (StorageNameProvider,
-          order.InternalDataContainer,
-          Provider.SqlDialect,
-          _valueConverterStub);
-      using (IDbCommand command = builder.Create(Provider))
-      {
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (
-            command.CommandText,
-            Is.EqualTo ("INSERT INTO [Order] ([ID], [ClassID], [OrderNo], [DeliveryDate]) VALUES (@ID, @ClassID, @OrderNo, @DeliveryDate);"));
+      var result = builder.Create (_commandExecutionContextStub);
 
-        Assert.That (command.Parameters.Count, Is.EqualTo (4));
-        Assert.That (((IDbDataParameter) command.Parameters["@ID"]).Value, Is.EqualTo (order.ID.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@ClassID"]).Value, Is.EqualTo (order.ID.ClassID));
-        Assert.That (((IDbDataParameter) command.Parameters["@OrderNo"]).Value, Is.EqualTo (order.OrderNumber));
-        Assert.That (((IDbDataParameter) command.Parameters["@DeliveryDate"]).Value, Is.EqualTo (order.DeliveryDate));
-      }
+      _sqlDialectMock.VerifyAllExpectations ();
+      Assert.That (result.CommandText, Is.EqualTo ("INSERT INTO [customSchema].[Table] ([Column1], [Column2], [Column3]) VALUES (5, 'test', true);"));
     }
 
-    [Test]
-    public void Create_WithForeignKey_HasNoParameterForIDColumn ()
-    {
-      Provider.Connect();
-
-      Computer computer = Computer.NewObject();
-      computer.Employee = Employee.NewObject();
-      computer.SerialNumber = "123";
-
-      LegacyInsertDbCommandBuilder builder = new LegacyInsertDbCommandBuilder (StorageNameProvider,
-          computer.InternalDataContainer,
-          Provider.SqlDialect,
-          _valueConverterStub);
-      using (var command = builder.Create(Provider))
-      {
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (
-            command.CommandText,
-            Is.EqualTo ("INSERT INTO [Computer] ([ID], [ClassID], [SerialNumber]) VALUES (@ID, @ClassID, @SerialNumber);"));
-
-        Assert.That (command.Parameters.Count, Is.EqualTo (3));
-      }
-    }
-
-    [Test]
-    public void Create_WithStorageClassTransactionPrropety ()
-    {
-      Provider.Connect();
-
-      OrderTicket orderTicket = OrderTicket.NewObject();
-      orderTicket.FileName = "fx.txt";
-      orderTicket.Order = Order.NewObject();
-      orderTicket.Int32TransactionProperty = 7;
-
-      var builder = new LegacyInsertDbCommandBuilder (StorageNameProvider,
-          orderTicket.InternalDataContainer,
-          Provider.SqlDialect,
-         _valueConverterStub);
-      using (var command = builder.Create(Provider))
-      {
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (command.CommandText, Is.EqualTo ("INSERT INTO [OrderTicket] ([ID], [ClassID], [FileName]) VALUES (@ID, @ClassID, @FileName);"));
-
-        Assert.That (command.Parameters.Count, Is.EqualTo (3));
-        Assert.That (command.Parameters.Contains ("@Int32TransactionProperty"), Is.False);
-      }
-    }
+   
+   
   }
 }

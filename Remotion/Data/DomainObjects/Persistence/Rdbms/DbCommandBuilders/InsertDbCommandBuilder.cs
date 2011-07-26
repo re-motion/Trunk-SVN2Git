@@ -17,92 +17,52 @@
 using System;
 using System.Data;
 using System.Text;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public class InsertDbCommandBuilder : DbCommandBuilder
   {
-    private readonly DataContainer _dataContainer;
-    private readonly IStorageNameProvider _storageNameProvider;
+    private readonly TableDefinition _tableDefinition;
+    private readonly IInsertedColumnsSpecification _insertedColumnsSpecification;
 
     public InsertDbCommandBuilder (
-        IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect, IValueConverter valueConverter)
+        TableDefinition tableDefinition,
+        IInsertedColumnsSpecification insertedColumnsSpecification,
+        ISqlDialect sqlDialect,
+        IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      ArgumentUtility.CheckNotNull ("insertedColumnsSpecification", insertedColumnsSpecification);
 
-      if (dataContainer.State != StateType.New)
-      {
-        throw new ArgumentException (
-            string.Format ("State of provided DataContainer must be 'New', but is '{0}'.", dataContainer.State), "dataContainer");
-      }
+      //TODO RM-4170: check that state is new !??
 
-      _storageNameProvider = storageNameProvider;
-      _dataContainer = dataContainer;
-    }
-
-    public IStorageNameProvider StorageNameProvider
-    {
-      get { return _storageNameProvider; }
+      _tableDefinition = tableDefinition;
+      _insertedColumnsSpecification = insertedColumnsSpecification;
     }
 
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
-      IDbCommand command = commandExecutionContext.CreateDbCommand ();
+      var command = commandExecutionContext.CreateDbCommand();
+      var statement = new StringBuilder();
 
-      var columnBuilder = new StringBuilder();
-      var valueBuilder = new StringBuilder();
+      statement.Append ("INSERT INTO ");
+      AppendTableName (statement, _tableDefinition);
+      statement.Append (" (");
+      _insertedColumnsSpecification.AppendColumnNames (statement, command, SqlDialect);
+      statement.Append (") VALUES (");
+      _insertedColumnsSpecification.AppendColumnValues (statement, command, SqlDialect);
+      statement.Append (")");
+      statement.Append (SqlDialect.StatementDelimiter);
 
-      string idColumn = StorageNameProvider.IDColumnName;
-      string classIDColumn = StorageNameProvider.ClassIDColumnName;
-
-      AppendColumn (columnBuilder, valueBuilder, idColumn, idColumn);
-      AppendColumn (columnBuilder, valueBuilder, classIDColumn, classIDColumn);
-
-      AddCommandParameter (command, idColumn, _dataContainer.ID);
-      AddCommandParameter (command, classIDColumn, _dataContainer.ID.ClassID);
-
-      foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
-      {
-        if (propertyValue.Definition.StorageClass == StorageClass.Persistent && !propertyValue.Definition.IsObjectID)
-        {
-          AppendColumn (
-              columnBuilder,
-              valueBuilder,
-              propertyValue.Definition.StoragePropertyDefinition.Name,
-              propertyValue.Definition.StoragePropertyDefinition.Name);
-          AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue);
-        }
-      }
-
-      command.CommandText = string.Format (
-          "INSERT INTO {0} ({1}) VALUES ({2}){3}",
-          SqlDialect.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
-          columnBuilder,
-          valueBuilder,
-          SqlDialect.StatementDelimiter);
+      command.CommandText = statement.ToString();
 
       return command;
-    }
-
-    protected virtual void AppendColumn (StringBuilder columnBuilder, StringBuilder valueBuilder, string columnName, string parameterName)
-    {
-      if (columnBuilder.Length > 0)
-        columnBuilder.Append (", ");
-
-      columnBuilder.Append (SqlDialect.DelimitIdentifier (columnName));
-
-      if (valueBuilder.Length > 0)
-        valueBuilder.Append (", ");
-
-      valueBuilder.Append (SqlDialect.GetParameterName (parameterName));
     }
   }
 }
