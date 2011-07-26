@@ -985,54 +985,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))] //TODO RM-4170: check
-    public void AddInvalidPropertyValueTest ()
-    {
-      Employee employee = Employee.NewObject();
-
-      PropertyDefinition propertyDefinition =
-          PropertyDefinitionFactory.CreateForFakePropertyInfo (
-              employee.InternalDataContainer.ClassDefinition,
-              "testproperty",
-              "testproperty",
-              typeof (string),
-              true,
-              10, 
-              StorageClass.Persistent);
-      PropertyValueCollection propertyValues = employee.InternalDataContainer.PropertyValues;
-
-      Assert.IsFalse (propertyValues.Contains ("testproperty"));
-
-      propertyValues.Add (new PropertyValue (propertyDefinition));
-
-      Assert.IsTrue (propertyValues.Contains ("testproperty"));
-      Assert.IsNotNull (propertyValues["testproperty"]);
-
-      ClientTransactionMock.Commit();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException))]
-    public void AddPropertyValueWithExistingNameTest ()
-    {
-      Employee employee = Employee.NewObject();
-
-      PropertyDefinition propertyDefinition =
-          PropertyDefinitionFactory.Create (
-              employee.InternalDataContainer.ClassDefinition,
-              typeof (Employee), 
-              "Name",
-              "Name",
-              true,
-              10);
-      PropertyValueCollection propertyValues = employee.InternalDataContainer.PropertyValues;
-
-      Assert.IsTrue (propertyValues.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"));
-
-      propertyValues.Add (new PropertyValue (propertyDefinition));
-    }
-
-    [Test]
     public void PropertyEventsOfNewObjectPropertyChangeTest ()
     {
       Order newOrder = Order.NewObject();
