@@ -509,7 +509,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForMultiTimestampLookup (new[] { _objectID1, _objectID2, _objectID3 });
 
-      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
 
       var innerCommand =
           CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>> (result);
@@ -518,13 +518,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var commandBuildersAndReaders = ((MultiObjectLoadCommand<Tuple<ObjectID, object>>) innerCommand).DbCommandBuildersAndReaders;
       Assert.That (commandBuildersAndReaders.Length, Is.EqualTo (2));
       Assert.That (commandBuildersAndReaders[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (commandBuildersAndReaders[0].Item2, Is.TypeOf(typeof(TimestampReader)));
+      Assert.That (commandBuildersAndReaders[0].Item2, Is.TypeOf (typeof (TimestampReader)));
       CheckTimestampProperties (
           (TimestampReader) commandBuildersAndReaders[0].Item2,
           _tableDefinition1.IDColumn,
           _tableDefinition1.ClassIDColumn,
           _tableDefinition1.TimestampColumn);
-      
+
       Assert.That (commandBuildersAndReaders[1].Item1, Is.SameAs (_dbCommandBuilder2Stub));
       Assert.That (commandBuildersAndReaders[1].Item2, Is.TypeOf (typeof (TimestampReader)));
       CheckTimestampProperties (
@@ -568,7 +568,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _tableDefinition1.IDColumn,
           _tableDefinition1.ClassIDColumn,
           _tableDefinition1.TimestampColumn);
-      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -623,8 +623,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var deleteDbCommandBuilderDeleted1 = MockRepository.GenerateStub<IDbCommandBuilder>();
       var deleteDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder>();
 
-      _dbCommandBuilderFactoryStrictMock.Stub (stub => stub.CreateForInsert (dataContainerNew1)).Return (insertDbCommandBuilderNew1);
-      _dbCommandBuilderFactoryStrictMock.Stub (stub => stub.CreateForInsert (dataContainerNew2)).Return (insertDbCommandBuilderNew2);
+      _dbCommandBuilderFactoryStrictMock.Stub (
+          stub =>
+          stub.CreateForInsert (
+              Arg.Is ((TableDefinition) dataContainerNew1.ID.ClassDefinition.StorageEntityDefinition), Arg<IInsertedColumnsSpecification>.Is.Anything))
+          .Return (insertDbCommandBuilderNew1).Repeat.Once();
+      _dbCommandBuilderFactoryStrictMock.Stub (
+          stub =>
+          stub.CreateForInsert (
+              Arg.Is ((TableDefinition) dataContainerNew2.ID.ClassDefinition.StorageEntityDefinition), Arg<IInsertedColumnsSpecification>.Is.Anything))
+          .Return (insertDbCommandBuilderNew2).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock.Stub (stub => stub.CreateForUpdate (dataContainerNew1)).Return (updateDbCommandBuilderNew1);
       _dbCommandBuilderFactoryStrictMock.Stub (stub => stub.CreateForUpdate (dataContainerNew2)).Return (updateDbCommandBuilderNew2);
       _dbCommandBuilderFactoryStrictMock.Stub (stub => stub.CreateForUpdate (dataContainerChanged1)).Return (updateDbCommandBuilderChanged1);

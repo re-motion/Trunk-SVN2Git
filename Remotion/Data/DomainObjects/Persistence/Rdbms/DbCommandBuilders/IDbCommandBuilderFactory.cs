@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         IOrderedColumnsSpecification orderedColumns);
     IDbCommandBuilder CreateForQuery (IQuery query);
 
-    IDbCommandBuilder CreateForInsert (DataContainer dataContainer);
+    IDbCommandBuilder CreateForInsert (TableDefinition tableDefinition, IInsertedColumnsSpecification insertedColumnsSpecification);
     IDbCommandBuilder CreateForUpdate (DataContainer dataContainer);
     IDbCommandBuilder CreateForDelete (DataContainer dataContainer);
   }

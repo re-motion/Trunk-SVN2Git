@@ -45,6 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private ObjectID _objectID;
     private IStorageNameProvider _storageNameProviderStub;
     private DataContainer _dataContainer;
+    private IInsertedColumnsSpecification _insertedColumnsStub;
 
     public override void SetUp ()
     {
@@ -61,6 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _orderedColumnStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
+      _insertedColumnsStub = MockRepository.GenerateStub<IInsertedColumnsSpecification>();
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
       _dataContainer = DataContainer.CreateNew (_objectID);
@@ -146,12 +148,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateForInsert ()
     {
-      var result = _factory.CreateForInsert (_dataContainer);
+      var result = _factory.CreateForInsert (_tableDefinition, _insertedColumnsStub);
 
-      Assert.That (result, Is.TypeOf (typeof (LegacyInsertDbCommandBuilder)));
-      Assert.That (((LegacyInsertDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((LegacyInsertDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
-      Assert.That (((LegacyInsertDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
+      Assert.That (result, Is.TypeOf (typeof (InsertDbCommandBuilder)));
+      Assert.That (((InsertDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
+      Assert.That (((InsertDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+      Assert.That (((InsertDbCommandBuilder) result).TableDefinition, Is.SameAs (_tableDefinition));
+      Assert.That (((InsertDbCommandBuilder) result).InsertedColumnsSpecification, Is.SameAs (_insertedColumnsStub));
     }
 
     [Test]

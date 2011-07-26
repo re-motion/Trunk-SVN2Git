@@ -985,7 +985,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException))]
+    [ExpectedException (typeof (InvalidOperationException))] //TODO RM-4170: check
     public void AddInvalidPropertyValueTest ()
     {
       Employee employee = Employee.NewObject();

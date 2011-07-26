@@ -88,13 +88,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           singleDataContainerLoadCommand, result => new ObjectLookupResult<DataContainer> (objectID, result));
     }
 
-    public IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForSortedMultiIDLookup (
+    public IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForSortedMultiIDLookup
+        (
         IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       var objectIDList = objectIDs.ToList();
-      var dbCommandBuildersAndReaders = 
+      var dbCommandBuildersAndReaders =
           from id in objectIDList
           let tableDefinition = GetTableDefinition (id)
           group id by tableDefinition
@@ -178,7 +179,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var dataContainersByState = dataContainers.ToLookup (dc => dc.State);
 
       foreach (var dataContainer in dataContainersByState[StateType.New])
-        yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForInsert (dataContainer));
+      {
+        var tableDefinition = GetTableDefinition (dataContainer.ID);
+        var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
+
+        var dbCommandBuilder = _dbCommandBuilderFactory.CreateForInsert (tableDefinition, new InsertedColumnsSpecification (columnValues));
+        yield return Tuple.Create (dataContainer.ID, dbCommandBuilder);
+      }
 
       var changedContainers =
           dataContainersByState[StateType.New].Concat (dataContainersByState[StateType.Changed]).Concat (dataContainersByState[StateType.Deleted]);
@@ -187,6 +194,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       foreach (var dataContainer in dataContainersByState[StateType.Deleted])
         yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForDelete (dataContainer));
+    }
+
+    private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      var objectIDStorageProperty =
+          new
+          {
+              StorageProperty = (IRdbmsStoragePropertyDefinition) GetObjectIDStoragePropertyDefinition (tableDefinition),
+              Value = (object) dataContainer.ID
+          };
+
+
+      var dataStorageProperties = dataContainer.PropertyValues.Cast<PropertyValue>().Where (
+          pv => pv.Definition.StorageClass == StorageClass.Persistent && !pv.Definition.IsObjectID).Select (
+              pv => new
+                    {
+                        StorageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (pv.Definition),
+                        Value = pv.GetValueWithoutEvents (ValueAccess.Current)
+                    }
+          );
+      var allStorageProperties = new[] { objectIDStorageProperty }.Concat (dataStorageProperties);
+
+      return allStorageProperties.SelectMany (storageProperty => storageProperty.StorageProperty.SplitValue (storageProperty.Value));
     }
 
     private TableDefinition GetTableDefinition (ObjectID objectID)
@@ -301,7 +331,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new ObjectIDReader (objectIDStoragePropertyDefinition, ordinalProvider);
     }
 
-    private IObjectReader<Tuple<ObjectID, object>> CreateTimestampReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
+    private IObjectReader<Tuple<ObjectID, object>> CreateTimestampReader (
+        IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
     {
       var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
       var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);

@@ -44,6 +44,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       _insertedColumnsSpecification = insertedColumnsSpecification;
     }
 
+    public TableDefinition TableDefinition
+    {
+      get { return _tableDefinition; }
+    }
+
+    public IInsertedColumnsSpecification InsertedColumnsSpecification
+    {
+      get { return _insertedColumnsSpecification; }
+    }
+
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
