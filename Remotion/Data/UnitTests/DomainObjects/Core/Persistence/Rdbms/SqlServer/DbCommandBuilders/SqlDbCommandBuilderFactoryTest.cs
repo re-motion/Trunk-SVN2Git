@@ -148,10 +148,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var result = _factory.CreateForInsert (_dataContainer);
 
-      Assert.That (result, Is.TypeOf (typeof (InsertDbCommandBuilder)));
-      Assert.That (((InsertDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((InsertDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
-      Assert.That (((InsertDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
+      Assert.That (result, Is.TypeOf (typeof (LegacyInsertDbCommandBuilder)));
+      Assert.That (((LegacyInsertDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
+      Assert.That (((LegacyInsertDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+      Assert.That (((LegacyInsertDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
     }
 
     [Test]

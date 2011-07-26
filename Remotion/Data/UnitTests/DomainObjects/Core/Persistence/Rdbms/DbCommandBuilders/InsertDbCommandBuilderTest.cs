@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
       Provider.Connect();
-      new InsertDbCommandBuilder (StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, _valueConverterStub);
+      new LegacyInsertDbCommandBuilder (StorageNameProvider, order.InternalDataContainer, Provider.SqlDialect, _valueConverterStub);
     }
 
     [Test]
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (order.OrderNumber).Repeat.Once();
       _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (order.DeliveryDate).Repeat.Once();
       
-      var builder = new InsertDbCommandBuilder (StorageNameProvider,
+      var builder = new LegacyInsertDbCommandBuilder (StorageNameProvider,
           order.InternalDataContainer,
           Provider.SqlDialect,
           _valueConverterStub);
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       computer.Employee = Employee.NewObject();
       computer.SerialNumber = "123";
 
-      InsertDbCommandBuilder builder = new InsertDbCommandBuilder (StorageNameProvider,
+      LegacyInsertDbCommandBuilder builder = new LegacyInsertDbCommandBuilder (StorageNameProvider,
           computer.InternalDataContainer,
           Provider.SqlDialect,
           _valueConverterStub);
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       orderTicket.Order = Order.NewObject();
       orderTicket.Int32TransactionProperty = 7;
 
-      var builder = new InsertDbCommandBuilder (StorageNameProvider,
+      var builder = new LegacyInsertDbCommandBuilder (StorageNameProvider,
           orderTicket.InternalDataContainer,
           Provider.SqlDialect,
          _valueConverterStub);

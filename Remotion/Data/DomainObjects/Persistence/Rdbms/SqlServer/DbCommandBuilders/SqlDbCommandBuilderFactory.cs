@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForInsert (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      return new InsertDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
+      return new LegacyInsertDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForUpdate (DataContainer dataContainer)

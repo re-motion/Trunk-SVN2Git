@@ -252,6 +252,7 @@
     <Compile Include="Persistence\Rdbms\DataReaders\IColumnOrdinalProvider.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\NameBasedColumnOrdinalProvider.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\TimestampReader.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\InsertDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\ComparedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\IComparedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\IInsertedColumnsSpecification.cs" />
@@ -845,7 +846,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\DeleteDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\InsertDbCommandBuilder.cs">
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\LegacyInsertDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\QueryDbCommandBuilder.cs">
