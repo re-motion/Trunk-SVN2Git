@@ -16,69 +16,57 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using System.Text;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public class DeleteDbCommandBuilder : DbCommandBuilder
   {
-    private readonly DataContainer _dataContainer;
-    private readonly IStorageNameProvider _storageNameProvider;
-
+    private readonly TableDefinition _tableDefinition;
+    private readonly IComparedColumnsSpecification _comparedColumnsSpecification;
+    
     public DeleteDbCommandBuilder (
-        IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect, IValueConverter valueConverter)
+        TableDefinition tableDefinition,
+        IComparedColumnsSpecification comparedColumnsSpecification,
+        ISqlDialect sqlDialect,
+        IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      ArgumentUtility.CheckNotNull ("comparedColumnsSpecification", comparedColumnsSpecification);
 
-      if (dataContainer.State != StateType.Deleted)
-      {
-        throw new ArgumentException (
-            string.Format ("State of provided DataContainer must be 'Deleted', but is '{0}'.", dataContainer.State), "dataContainer");
-      }
-
-      _storageNameProvider = storageNameProvider;
-      _dataContainer = dataContainer;
+      _tableDefinition = tableDefinition;
+      _comparedColumnsSpecification = comparedColumnsSpecification;
     }
 
-    public IStorageNameProvider StorageNameProvider
+    public TableDefinition TableDefinition
     {
-      get { return _storageNameProvider; }
+      get { return _tableDefinition; }
+    }
+
+    public IComparedColumnsSpecification ComparedColumnsSpecification
+    {
+      get { return _comparedColumnsSpecification; }
     }
 
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
-      IDbCommand command = commandExecutionContext.CreateDbCommand ();
+      var command = commandExecutionContext.CreateDbCommand ();
+      var statement = new StringBuilder ();
 
-      WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
-      whereClauseBuilder.Add (StorageNameProvider.IDColumnName, _dataContainer.ID.Value);
+      statement.Append ("DELETE FROM ");
+      AppendTableName (statement, _tableDefinition);
+      AppendWhereClause (statement, _comparedColumnsSpecification, command);
+      statement.Append (SqlDialect.StatementDelimiter);
 
-      if (MustAddTimestampToWhereClause())
-        whereClauseBuilder.Add (StorageNameProvider.TimestampColumnName, _dataContainer.Timestamp);
-
-      command.CommandText = string.Format (
-          "DELETE FROM {0} WHERE {1}{2}",
-          SqlDialect.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
-          whereClauseBuilder,
-          SqlDialect.StatementDelimiter);
-
+      command.CommandText = statement.ToString ();
       return command;
     }
-
-    private bool MustAddTimestampToWhereClause ()
-    {
-      foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
-      {
-        if (propertyValue.Definition.IsObjectID)
-          return false;
-      }
-
-      return true;
-    }
+    
   }
 }

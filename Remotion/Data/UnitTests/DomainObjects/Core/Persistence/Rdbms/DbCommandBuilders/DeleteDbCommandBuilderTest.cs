@@ -17,12 +17,13 @@
 
 using System;
 using System.Data;
+using System.Text;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Mixins;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -31,110 +32,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class DeleteDbCommandBuilderTest : SqlProviderBaseTest
   {
     private IValueConverter _valueConverterStub;
+    private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
+    private ISqlDialect _sqlDialectMock;
+    private IDbDataParameter _dbDataParameterStub;
+    private IDataParameterCollection _dataParameterCollectionMock;
+    private IDbCommand _dbCommandStub;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
+      _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification> ();
+
+      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect> ();
+      _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
+      _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
+      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
+
+      _dbCommandStub = MockRepository.GenerateStub<IDbCommand> ();
+      _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub);
+      _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
+
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
     }
 
     [Test]
-    public void CreateWithoutForeignKeyColumn ()
+    public void Create_WithDefaultSchema ()
     {
-      var timestamp = new object();
-
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (DomainObjectIDs.ClassWithAllDataTypes1.Value).Repeat.Once();
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (timestamp).Repeat.Once ();
-
-      var classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      
-      classWithAllDataTypes.Delete();
-      var deletedContainer = classWithAllDataTypes.InternalDataContainer;
-
-      Provider.Connect();
-      var commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
-          deletedContainer,
-          Provider.SqlDialect,
+      var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
+      var builder = new DeleteDbCommandBuilder (
+          tableDefinition,
+          _comparedColumnsSpecificationStub,
+          _sqlDialectMock,
           _valueConverterStub);
 
-      using (var deleteCommand = commandBuilder.Create(Provider))
-      {
-        string expectedCommandText = "DELETE FROM [TableWithAllDataTypes] WHERE [ID] = @ID AND [Timestamp] = @Timestamp;";
-        Assert.AreEqual (expectedCommandText, deleteCommand.CommandText);
+      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
+      _sqlDialectMock.Replay ();
 
-        Assert.AreEqual (2, deleteCommand.Parameters.Count);
+      _comparedColumnsSpecificationStub
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Matches (sb => sb.ToString () == "DELETE FROM [Table] WHERE "),
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
-        var idParameter = (IDataParameter) deleteCommand.Parameters["@ID"];
-        var timestampParameter = (IDataParameter) deleteCommand.Parameters["@Timestamp"];
+      var result = builder.Create (_commandExecutionContextStub);
 
-        Assert.That (idParameter.Value, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.Value));
-        Assert.That (timestampParameter.Value, Is.EqualTo(timestamp));
-      }
+      _sqlDialectMock.VerifyAllExpectations ();
+      Assert.That (result.CommandText, Is.EqualTo ("DELETE FROM [Table] WHERE [ID] = @ID;"));
     }
 
     [Test]
-    public void CreateWithForeignKeyColumn ()
+    public void Create_WithCustomSchema ()
     {
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (DomainObjectIDs.ClassWithAllDataTypes1.Value).Repeat.Once ();
-      
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      order.Delete();
-      DataContainer deletedOrderContainer = order.InternalDataContainer;
-
-      Provider.Connect();
-      var commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
-          deletedOrderContainer,
-          Provider.SqlDialect,
+      var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
+      var builder = new DeleteDbCommandBuilder (
+          tableDefinition,
+          _comparedColumnsSpecificationStub,
+          _sqlDialectMock,
           _valueConverterStub);
 
-      using (IDbCommand deleteCommand = commandBuilder.Create(Provider))
-      {
-        string expectedCommandText = "DELETE FROM [Order] WHERE [ID] = @ID;";
-        Assert.AreEqual (expectedCommandText, deleteCommand.CommandText);
+      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
+      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
+      _sqlDialectMock.Replay ();
 
-        Assert.AreEqual (1, deleteCommand.Parameters.Count);
+      _comparedColumnsSpecificationStub
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Matches (sb => sb.ToString () == "DELETE FROM [customSchema].[Table] WHERE "),
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
-        var idParameter = (IDataParameter) deleteCommand.Parameters["@ID"];
-        Assert.That (idParameter.Value, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.Value));
-      }
-    }
+      var result = builder.Create (_commandExecutionContextStub);
 
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "State of provided DataContainer must be 'Deleted', but is 'Unchanged'.\r\nParameter name: dataContainer")]
-    public void InitializeWithDataContainerOfInvalidState ()
-    {
-      Provider.Connect();
-      new DeleteDbCommandBuilder (StorageNameProvider,
-          TestDataContainerFactory.CreateOrder1DataContainer(),
-          Provider.SqlDialect,
-          Provider.CreateValueConverter());
-    }
-
-    [Test]
-    public void WhereClauseBuilder_CanBeMixed ()
-    {
-      ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      classWithAllDataTypes.Delete();
-      using (
-          MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope(
-              
-              ))
-      {
-        DataContainer deletedContainer = classWithAllDataTypes.InternalDataContainer;
-
-        Provider.Connect();
-        DbCommandBuilder commandBuilder = new DeleteDbCommandBuilder (StorageNameProvider,
-            deletedContainer,
-            Provider.SqlDialect,
-            Provider.CreateValueConverter());
-
-        using (IDbCommand deleteCommand = commandBuilder.Create(Provider))
-        {
-          Assert.IsTrue (deleteCommand.CommandText.Contains ("Mixed!"));
-        }
-      }
+      _sqlDialectMock.VerifyAllExpectations ();
+      Assert.That (result.CommandText, Is.EqualTo ("DELETE FROM [customSchema].[Table] WHERE [ID] = @ID;"));
     }
   }
 }
