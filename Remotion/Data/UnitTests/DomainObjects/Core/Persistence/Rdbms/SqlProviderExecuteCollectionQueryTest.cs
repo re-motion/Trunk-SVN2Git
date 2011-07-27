@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var query = QueryFactory.CreateCollectionQuery (
           "test",
           Provider.StorageProviderDefinition,
-          "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
+          "SELECT NULL AS [ID], NULL As [ClassID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
 

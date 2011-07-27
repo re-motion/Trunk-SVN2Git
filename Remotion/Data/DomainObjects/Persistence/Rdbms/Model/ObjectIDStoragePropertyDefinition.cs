@@ -80,7 +80,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var value = _valueProperty.Read (dataReader, ordinalProvider);
       var classID = (string) _classIDProperty.Read (dataReader, ordinalProvider);
-
       if (value == null)
       {
         if (classID != null)
