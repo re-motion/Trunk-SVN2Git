@@ -19,161 +19,66 @@ using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public class UpdateDbCommandBuilder : DbCommandBuilder
   {
-    private readonly DataContainer _dataContainer;
-    private readonly IStorageNameProvider _storageNameProvider;
+    private readonly TableDefinition _tableDefinition;
+    private readonly IUpdatedColumnsSpecification _updatedColumnsSpecification;
+    private readonly IComparedColumnsSpecification _comparedColumnsSpecification;
 
     public UpdateDbCommandBuilder (
-        IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect, IValueConverter valueConverter)
+        TableDefinition tableDefinition,
+        IUpdatedColumnsSpecification updatedColumnsSpecification,
+        IComparedColumnsSpecification comparedColumnsSpecification,
+        ISqlDialect sqlDialect,
+        IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      ArgumentUtility.CheckNotNull ("updatedColumnsSpecification", updatedColumnsSpecification);
+      ArgumentUtility.CheckNotNull ("comparedColumnsSpecification", comparedColumnsSpecification);
 
-      if (dataContainer.State == StateType.Unchanged)
-        throw new ArgumentException ("State of provided DataContainer must not be 'Unchanged'.", "dataContainer");
-
-      _storageNameProvider = storageNameProvider;
-      _dataContainer = dataContainer;
+      _tableDefinition = tableDefinition;
+      _updatedColumnsSpecification = updatedColumnsSpecification;
+      _comparedColumnsSpecification = comparedColumnsSpecification;
     }
 
-    public IStorageNameProvider StorageNameProvider
+    public TableDefinition TableDefinition
     {
-      get { return _storageNameProvider; }
+      get { return _tableDefinition; }
+    }
+
+    public IUpdatedColumnsSpecification UpdatedColumnsSpecification
+    {
+      get { return _updatedColumnsSpecification; }
+    }
+
+    public IComparedColumnsSpecification ComparedColumnsSpecification
+    {
+      get { return _comparedColumnsSpecification; }
     }
 
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
-      IDbCommand command = commandExecutionContext.CreateDbCommand ();
-      var updateSetBuilder = new StringBuilder();
+      var command = commandExecutionContext.CreateDbCommand ();
+      var statement = new StringBuilder ();
 
-      foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
-      {
-        if (propertyValue.Definition.StorageClass == StorageClass.Persistent && MustBeUpdated (propertyValue))
-          AddPropertyValue (updateSetBuilder, command, propertyValue);
-      }
+      statement.Append ("UPDATE ");
+      AppendTableName (statement, _tableDefinition);
+      AppendUpdateClause (statement, _updatedColumnsSpecification, command);
+      AppendWhereClause (statement, _comparedColumnsSpecification, command);
+      statement.Append (SqlDialect.StatementDelimiter);
 
-      if (command.Parameters.Count == 0 && !_dataContainer.HasBeenMarkedChanged)
-      {
-        command.Dispose();
-        return null;
-      }
-
-      WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
-      whereClauseBuilder.Add (StorageNameProvider.IDColumnName, _dataContainer.ID.Value);
-
-      if (_dataContainer.State != StateType.New)
-        whereClauseBuilder.Add (StorageNameProvider.TimestampColumnName, _dataContainer.Timestamp);
-
-      if (updateSetBuilder.Length == 0)
-      {
-        // SET [ClassID] = [ClassID] => dummy set if no other property is set
-        // This occurs whenever the Timestamp should be incremented even though no property was changed. Used, e.g., via DomainObject.MarkAsChanged.
-        updateSetBuilder.AppendFormat (
-            "{0} = {1}",
-            SqlDialect.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
-            SqlDialect.DelimitIdentifier (StorageNameProvider.ClassIDColumnName));
-      }
-
-      command.CommandText = string.Format (
-          "UPDATE {0} SET {1} WHERE {2}{3}",
-          SqlDialect.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
-          updateSetBuilder,
-          whereClauseBuilder,
-          SqlDialect.StatementDelimiter);
-
+      command.CommandText = statement.ToString ();
       return command;
     }
-
-    protected virtual void AppendColumn (StringBuilder updateSetBuilder, string columnName, string parameterName)
-    {
-      if (updateSetBuilder.Length > 0)
-        updateSetBuilder.Append (", ");
-
-      updateSetBuilder.AppendFormat (
-          "{0} = {1}",
-          SqlDialect.DelimitIdentifier (columnName),
-          SqlDialect.GetParameterName (parameterName));
-    }
-
-    protected void AddObjectIDAndClassIDParameters (
-        StringBuilder updateSetBuilder,
-        IDbCommand command,
-        ClassDefinition classDefinition,
-        PropertyValue propertyValue)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-
-      ClassDefinition relatedClassDefinition;
-      object relatedIDValue;
-      if (propertyValue.GetValueWithoutEvents (ValueAccess.Current) != null)
-      {
-        var relatedID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current);
-        relatedClassDefinition = relatedID.ClassDefinition;
-        relatedIDValue = relatedID;
-      }
-      else
-      {
-        relatedClassDefinition = classDefinition.GetMandatoryOppositeClassDefinition (propertyValue.Name);
-        relatedIDValue = null;
-      }
-
-      AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, relatedIDValue);
-
-      if (classDefinition.StorageEntityDefinition.StorageProviderDefinition
-          == relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition)
-        AddClassIDParameter (updateSetBuilder, command, relatedClassDefinition, propertyValue);
-    }
-
-    protected void AddClassIDParameter (
-        StringBuilder updateSetBuilder,
-        IDbCommand command,
-        ClassDefinition relatedClassDefinition,
-        PropertyValue propertyValue)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNull ("relatedClassDefinition", relatedClassDefinition);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-
-      if (relatedClassDefinition.IsPartOfInheritanceHierarchy)
-      {
-        string classIDColumnName = StorageNameProvider.GetRelationClassIDColumnName (propertyValue.Definition);
-        AppendColumn (updateSetBuilder, classIDColumnName, classIDColumnName);
-
-        string classID = null;
-        if (propertyValue.GetValueWithoutEvents (ValueAccess.Current) != null)
-          classID = relatedClassDefinition.ID;
-
-        AddCommandParameter (command, classIDColumnName, classID);
-      }
-    }
-
-    private bool MustBeUpdated (PropertyValue propertyValue)
-    {
-      return (_dataContainer.State == StateType.New && propertyValue.Definition.IsObjectID)
-             || (_dataContainer.State == StateType.Deleted && propertyValue.Definition.IsObjectID)
-             || (_dataContainer.State == StateType.Changed && propertyValue.HasChanged);
-    }
-
-    private void AddPropertyValue (StringBuilder updateSetBuilder, IDbCommand command, PropertyValue propertyValue)
-    {
-      AppendColumn (
-          updateSetBuilder, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue.Definition.StoragePropertyDefinition.Name);
-
-      if (!propertyValue.Definition.IsObjectID)
-        AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue);
-      else
-        AddObjectIDAndClassIDParameters (updateSetBuilder, command, _dataContainer.ClassDefinition, propertyValue);
-    }
+    
   }
 }

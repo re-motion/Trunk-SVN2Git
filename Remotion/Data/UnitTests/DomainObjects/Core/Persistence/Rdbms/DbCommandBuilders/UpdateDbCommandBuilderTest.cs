@@ -17,11 +17,13 @@
 
 using System;
 using System.Data;
+using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Mixins;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -30,226 +32,97 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class UpdateDbCommandBuilderTest : SqlProviderBaseTest
   {
     private IValueConverter _valueConverterStub;
+    private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
+    private IUpdatedColumnsSpecification _updatedColumnsSpecificationStub;
+    private ISqlDialect _sqlDialectMock;
+    private IDbDataParameter _dbDataParameterStub;
+    private IDataParameterCollection _dataParameterCollectionMock;
+    private IDbCommand _dbCommandStub;
+    private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "State of provided DataContainer must not be 'Unchanged'.\r\nParameter name: dataContainer")]
-    public void InitializeWithDataContainerOfInvalidState ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-
-      Provider.Connect();
-      new UpdateDbCommandBuilder (StorageNameProvider,
-          order.InternalDataContainer,
-          Provider.SqlDialect,
-          _valueConverterStub);
-    }
-
-    [Test]
-    public void WhereClauseBuilder_CanBeMixed ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ++order.OrderNumber;
-      Provider.Connect();
-      using (
-          MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope(
-              
-              ))
-      {
-        DbCommandBuilder commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
-            order.InternalDataContainer,
-            Provider.SqlDialect,
-            _valueConverterStub);
-        using (IDbCommand command = commandBuilder.Create(Provider))
-        {
-          Assert.IsTrue (command.CommandText.Contains ("Mixed!"));
-        }
-      }
-    }
-
-    [Test]
-    public void Create_WithChangedObject ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ++order.OrderNumber;
-
-      _valueConverterStub.Stub (stub => stub.GetDBValue (order.ID.Value)).Return (order.ID.Value);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (order.OrderNumber)).Return (order.OrderNumber);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (order.InternalDataContainer.Timestamp)).Return (order.InternalDataContainer.Timestamp);
+      _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification> ();
       
-      Provider.Connect();
-      var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
-          order.InternalDataContainer,
-          Provider.SqlDialect,
-          _valueConverterStub);
-      using (IDbCommand command = commandBuilder.Create(Provider))
-      {
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (command.CommandText, Is.EqualTo ("UPDATE [Order] SET [OrderNo] = @OrderNo WHERE [ID] = @ID AND [Timestamp] = @Timestamp;"));
-        Assert.That (command.Parameters.Count, Is.EqualTo (3));
-        Assert.That (((IDbDataParameter) command.Parameters["@ID"]).Value, Is.EqualTo (order.ID.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@OrderNo"]).Value, Is.EqualTo (order.OrderNumber));
-        Assert.That (((IDbDataParameter) command.Parameters["@Timestamp"]).Value, Is.EqualTo (order.InternalDataContainer.Timestamp));
-      }
+      _updatedColumnsSpecificationStub = MockRepository.GenerateStub<IUpdatedColumnsSpecification>();
+      _updatedColumnsSpecificationStub
+          .Stub (stub => stub.AppendColumnValueAssignments(Arg<StringBuilder>.Is.Anything, Arg<IDbCommand>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1] = 5, [Column2] = 'test', [Column3] = true"));
+
+
+      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect> ();
+      _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
+      _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
+      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
+
+      _dbCommandStub = MockRepository.GenerateStub<IDbCommand> ();
+      _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub);
+      _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
+
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
     }
 
     [Test]
-    public void Create_WithForeignKeyChange ()
+    public void Create_WithDefaultSchema ()
     {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
-      computer.Employee = Employee.NewObject();
-
-      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.ID.Value)).Return (computer.ID.Value);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.InternalDataContainer.Timestamp)).Return (computer.InternalDataContainer.Timestamp);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (computer.Employee.ID.Value);
-      
-      Provider.Connect();
-      var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
-          computer.InternalDataContainer,
-          Provider.SqlDialect,
+      var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
+      var builder = new UpdateDbCommandBuilder (
+          tableDefinition,
+          _updatedColumnsSpecificationStub,
+          _comparedColumnsSpecificationStub,
+          _sqlDialectMock,
           _valueConverterStub);
-      using (IDbCommand command = commandBuilder.Create(Provider))
-      {
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (
-            command.CommandText, Is.EqualTo ("UPDATE [Computer] SET [EmployeeID] = @EmployeeID WHERE [ID] = @ID AND [Timestamp] = @Timestamp;"));
-        Assert.That (command.Parameters.Count, Is.EqualTo (3));
-        Assert.That (((IDbDataParameter) command.Parameters["@ID"]).Value, Is.EqualTo (computer.ID.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@EmployeeID"]).Value, Is.EqualTo (computer.Employee.ID.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@Timestamp"]).Value, Is.EqualTo (computer.InternalDataContainer.Timestamp));
-      }
+
+      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
+      _sqlDialectMock.Replay ();
+
+      _comparedColumnsSpecificationStub
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Matches (sb => sb.ToString () == "UPDATE [Table] SET [Column1] = 5, [Column2] = 'test', [Column3] = true WHERE "),
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
+
+      var result = builder.Create (_commandExecutionContextStub);
+
+      _sqlDialectMock.VerifyAllExpectations ();
+      Assert.That (result.CommandText, Is.EqualTo ("UPDATE [Table] SET [Column1] = 5, [Column2] = 'test', [Column3] = true WHERE [ID] = @ID;"));
     }
 
     [Test]
-    public void Create_WithNewObject ()
+    public void Create_WithCustomSchema ()
     {
-      Computer computer = Computer.NewObject();
-      computer.Employee = Employee.NewObject();
-      computer.SerialNumber = "12345";
-
-      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.ID.Value)).Return (computer.ID.Value);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (computer.Employee.ID.Value);
-
-      Provider.Connect();
-
-      var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
-          computer.InternalDataContainer,
-          Provider.SqlDialect,
+      var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
+      var builder = new UpdateDbCommandBuilder (
+          tableDefinition,
+          _updatedColumnsSpecificationStub,
+          _comparedColumnsSpecificationStub,
+          _sqlDialectMock,
           _valueConverterStub);
-      using (IDbCommand command = commandBuilder.Create(Provider))
-      {
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (command.CommandText, Is.EqualTo ("UPDATE [Computer] SET [EmployeeID] = @EmployeeID WHERE [ID] = @ID;"));
-        Assert.That (command.Parameters.Count, Is.EqualTo (2));
-        Assert.That (((IDbDataParameter) command.Parameters["@ID"]).Value, Is.EqualTo (computer.ID.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@EmployeeID"]).Value, Is.EqualTo (computer.Employee.ID.Value));
-      }
+
+      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
+      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
+      _sqlDialectMock.Replay ();
+
+      _comparedColumnsSpecificationStub
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Matches (sb => sb.ToString () == "UPDATE [customSchema].[Table] SET [Column1] = 5, [Column2] = 'test', [Column3] = true WHERE "),
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
+
+      var result = builder.Create (_commandExecutionContextStub);
+
+      _sqlDialectMock.VerifyAllExpectations ();
+      Assert.That (result.CommandText, Is.EqualTo ("UPDATE [customSchema].[Table] SET [Column1] = 5, [Column2] = 'test', [Column3] = true WHERE [ID] = @ID;"));
     }
 
-    [Test]
-    public void Create_WithDeletedObject ()
-    {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
-      computer.Employee = Employee.NewObject();
-      computer.SerialNumber = "12345";
-      computer.Delete();
-
-      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.ID.Value)).Return (computer.ID.Value);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.InternalDataContainer.Timestamp)).Return (computer.InternalDataContainer.Timestamp);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Arg<object>.Is.Anything)).Return (DBNull.Value);
-
-      Provider.Connect();
-
-      var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
-          computer.InternalDataContainer,
-          Provider.SqlDialect,
-          _valueConverterStub);
-      using (IDbCommand command = commandBuilder.Create(Provider))
-      {
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (
-            command.CommandText, Is.EqualTo ("UPDATE [Computer] SET [EmployeeID] = @EmployeeID WHERE [ID] = @ID AND [Timestamp] = @Timestamp;"));
-        Assert.That (command.Parameters.Count, Is.EqualTo (3));
-        Assert.That (((IDbDataParameter) command.Parameters["@ID"]).Value, Is.EqualTo (computer.ID.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@EmployeeID"]).Value, Is.EqualTo (DBNull.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@Timestamp"]).Value, Is.EqualTo (computer.InternalDataContainer.Timestamp));
-      }
-    }
-
-    [Test]
-    public void Create_WithNoPropertyAffected ()
-    {
-      var computer = Computer.GetObject (DomainObjectIDs.Computer1);
-      computer.Int32TransactionProperty = 12; // change non-persistent property
-      Provider.Connect();
-      var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
-          computer.InternalDataContainer,
-          Provider.SqlDialect,
-          _valueConverterStub);
-      using (IDbCommand command = commandBuilder.Create(Provider))
-      {
-        Assert.That (command, Is.Null);
-      }
-    }
-
-    [Test]
-    public void Create_WithNoPropertyAffected_ButMarkedAsChanged ()
-    {
-      var computer = Computer.GetObject (DomainObjectIDs.Computer1);
-      computer.MarkAsChanged();
-      Provider.Connect();
-
-      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.ID.Value)).Return (computer.ID.Value);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (computer.InternalDataContainer.Timestamp)).Return (computer.InternalDataContainer.Timestamp);
-
-      var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
-          computer.InternalDataContainer,
-          Provider.SqlDialect,
-          _valueConverterStub);
-      using (IDbCommand command = commandBuilder.Create(Provider))
-      {
-        Assert.That (command, Is.Not.Null);
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (command.CommandText, Is.EqualTo ("UPDATE [Computer] SET [ClassID] = [ClassID] WHERE [ID] = @ID AND [Timestamp] = @Timestamp;"));
-        Assert.That (command.Parameters.Count, Is.EqualTo (2));
-        Assert.That (((IDbDataParameter) command.Parameters["@ID"]).Value, Is.EqualTo (computer.ID.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@Timestamp"]).Value, Is.EqualTo (computer.InternalDataContainer.Timestamp));
-      }
-    }
-
-    [Test]
-    public void Create_WithStorageClassTransactionProperty ()
-    {
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      orderTicket.FileName = "new.txt";
-      orderTicket.Int32TransactionProperty = 5;
-
-      _valueConverterStub.Stub (stub => stub.GetDBValue (orderTicket.ID.Value)).Return (orderTicket.ID.Value);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (orderTicket.FileName)).Return (orderTicket.FileName);
-      _valueConverterStub.Stub (stub => stub.GetDBValue (orderTicket.InternalDataContainer.Timestamp)).Return (orderTicket.InternalDataContainer.Timestamp);
-
-      Provider.Connect();
-      var commandBuilder = new UpdateDbCommandBuilder (StorageNameProvider,
-          orderTicket.InternalDataContainer,
-          Provider.SqlDialect,
-          _valueConverterStub);
-      using (IDbCommand command = commandBuilder.Create(Provider))
-      {
-        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
-        Assert.That (
-            command.CommandText, Is.EqualTo ("UPDATE [OrderTicket] SET [FileName] = @FileName WHERE [ID] = @ID AND [Timestamp] = @Timestamp;"));
-        Assert.That (command.Parameters.Count, Is.EqualTo (3));
-        Assert.That (((IDbDataParameter) command.Parameters["@ID"]).Value, Is.EqualTo (orderTicket.ID.Value));
-        Assert.That (((IDbDataParameter) command.Parameters["@FileName"]).Value, Is.EqualTo (orderTicket.FileName));
-        Assert.That (((IDbDataParameter) command.Parameters["@Timestamp"]).Value, Is.EqualTo (orderTicket.InternalDataContainer.Timestamp));
-      }
-    }
+    
   }
 }
