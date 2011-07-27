@@ -28,6 +28,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// using either the <see cref="IDefaultValueService"/> type or a derived type as the key to identify this service. If you register a service using 
   /// a derived type, you also have to apply the <see cref="DefaultValueServiceTypeAttribute"/> to the bindable object for which the service is intended.
   /// </remarks>
+  /// <seealso cref="DefaultValueServiceTypeAttribute"/>
   public interface IDefaultValueService : IBusinessObjectService
   {
     /// <summary>

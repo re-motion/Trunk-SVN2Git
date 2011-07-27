@@ -28,6 +28,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// using either the <see cref="ISearchAvailableObjectsService"/> type or a derived type as the key to identify this service. If you register a service using 
   /// a derived type, you also have to apply the <see cref="SearchAvailableObjectsServiceTypeAttribute"/> to the bindable object for which the service is intended.
   /// </remarks>
+  /// <seealso cref="SearchAvailableObjectsServiceTypeAttribute"/>
   public interface ISearchAvailableObjectsService : IBusinessObjectService
   {
     /// <summary>
