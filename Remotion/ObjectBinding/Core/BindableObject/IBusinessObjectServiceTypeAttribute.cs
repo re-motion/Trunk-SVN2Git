@@ -18,7 +18,7 @@ using System;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  public interface IBusinessObjectServiceTypeAttribute
+  public interface IBusinessObjectServiceTypeAttribute<T> where T : IBusinessObjectService
   {
     Type Type { get; }
   }

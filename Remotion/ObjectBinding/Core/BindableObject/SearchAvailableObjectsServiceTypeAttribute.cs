@@ -21,7 +21,7 @@ namespace Remotion.ObjectBinding.BindableObject
 {
   //TODO: doc
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public sealed class SearchAvailableObjectsServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
+  public sealed class SearchAvailableObjectsServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute<ISearchAvailableObjectsService>
   {
     private readonly Type _type;
 

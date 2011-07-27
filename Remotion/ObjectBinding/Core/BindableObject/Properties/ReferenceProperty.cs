@@ -42,9 +42,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
       _concreteType = parameters.ConcreteType;
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
-      _searchServiceDefinition = GetServiceDeclaration<SearchAvailableObjectsServiceTypeAttribute, ISearchAvailableObjectsService>();
-      _defaultValueServiceDefinition = GetServiceDeclaration<DefaultValueServiceTypeAttribute, IDefaultValueService>();
-      _deleteObjectServiceDefinition = GetServiceDeclaration<DeleteObjectServiceTypeAttribute, IDeleteObjectService> ();
+      _searchServiceDefinition = GetServiceDeclaration<ISearchAvailableObjectsService>();
+      _defaultValueServiceDefinition = GetServiceDeclaration<IDefaultValueService>();
+      _deleteObjectServiceDefinition = GetServiceDeclaration<IDeleteObjectService> ();
     }
 
     /// <summary> Gets the class information for elements of this property. </summary>
@@ -293,7 +293,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private ISearchAvailableObjectsService GetSearchService ()
     {
-      return GetService < ISearchAvailableObjectsService> (_searchServiceDefinition);
+      return GetService<ISearchAvailableObjectsService> (_searchServiceDefinition);
     }
 
     private IDefaultValueService GetDefaultValueService ()
@@ -325,15 +325,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return (TService) provider.GetService (serviceDefinition.Item2);
     }
 
-    private Tuple<ServiceProvider, Type> GetServiceDeclaration<TServiceTypeAttribute, TService> () 
-        where TServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
+    private Tuple<ServiceProvider, Type> GetServiceDeclaration<TService> () 
         where TService : IBusinessObjectService
     {
-      var attributeFromDeclaringType = PropertyInfo.GetCustomAttribute<TServiceTypeAttribute> (true);
+      var attributeFromDeclaringType = PropertyInfo.GetCustomAttribute<IBusinessObjectServiceTypeAttribute<TService>> (true);
       if (attributeFromDeclaringType != null)
         return new Tuple<ServiceProvider, Type> (ServiceProvider.DeclaringType, attributeFromDeclaringType.Type);
 
-      var attributeFromPropertyType = AttributeUtility.GetCustomAttribute<TServiceTypeAttribute> (_concreteType, true);
+      var attributeFromPropertyType = AttributeUtility.GetCustomAttribute<IBusinessObjectServiceTypeAttribute<TService>> (_concreteType, true);
       if (attributeFromPropertyType != null)
         return new Tuple<ServiceProvider, Type> (ServiceProvider.PropertyType, attributeFromPropertyType.Type);
 

@@ -21,7 +21,7 @@ namespace Remotion.ObjectBinding.BindableObject
 {
   //TODO: doc
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public sealed class DeleteObjectServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
+  public sealed class DeleteObjectServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute<IDeleteObjectService>
   {
     private readonly Type _type;
 

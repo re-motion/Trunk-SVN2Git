@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private IGetObjectService GetGetObjectService ()
     {
-      IGetObjectService service = (IGetObjectService) BusinessObjectProvider.GetService (_getObjectServiceType);
+      var service = (IGetObjectService) BusinessObjectProvider.GetService (_getObjectServiceType);
       if (service == null)
       {
         throw new InvalidOperationException (
@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private Type GetGetObjectServiceType ()
     {
-      GetObjectServiceTypeAttribute attribute = AttributeUtility.GetCustomAttribute<GetObjectServiceTypeAttribute> (ConcreteType, true);
+      var attribute = AttributeUtility.GetCustomAttribute<IBusinessObjectServiceTypeAttribute<IGetObjectService>> (ConcreteType, true);
       if (attribute == null)
         return typeof (IGetObjectService);
       return attribute.Type;

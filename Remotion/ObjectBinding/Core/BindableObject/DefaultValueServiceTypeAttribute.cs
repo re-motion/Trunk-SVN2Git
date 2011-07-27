@@ -21,7 +21,7 @@ namespace Remotion.ObjectBinding.BindableObject
 {
   //TODO: doc
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public sealed class DefaultValueServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute
+  public sealed class DefaultValueServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute<IDefaultValueService>
   {
     private readonly Type _type;
 
