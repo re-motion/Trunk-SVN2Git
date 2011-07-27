@@ -20,6 +20,10 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding.BindableObject
 {
   //TODO: doc
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <seealso cref="ISearchAvailableObjectsService"/>
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public sealed class SearchAvailableObjectsServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute<ISearchAvailableObjectsService>
   {

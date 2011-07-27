@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
       _searchServiceDefinition = GetServiceDeclaration<ISearchAvailableObjectsService>();
       _defaultValueServiceDefinition = GetServiceDeclaration<IDefaultValueService>();
-      _deleteObjectServiceDefinition = GetServiceDeclaration<IDeleteObjectService> ();
+      _deleteObjectServiceDefinition = GetServiceDeclaration<IDeleteObjectService>();
     }
 
     /// <summary> Gets the class information for elements of this property. </summary>
@@ -54,15 +54,22 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return _referenceClass.Value; }
     }
 
-    /// <summary>Gets a flag indicating whether it is possible to get a list of the objects that can be assigned to this property.</summary>
-    /// <returns> <see langword="true"/> if it is possible to get the available objects from the object model. </returns>
+    /// <summary>
+    ///   Gets a flag indicating whether it is possible to get a list of the objects that can be assigned to this property.
+    /// </summary>
+    /// <returns> 
+    ///   <see langword="true"/> if it is possible to get the available objects from the object model. 
+    /// </returns>
     /// <remarks>
-    /// <para>Use the <see cref="SearchAvailableObjects"/> method to get the list of objects.</para>
     /// <para>
-    /// The <see cref="ISearchAvailableObjectsService.SupportsProperty"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
-    /// is evaluated in order to determine the return value of this property.
+    ///   Use the <see cref="SearchAvailableObjects"/> method to get the list of objects.
+    /// </para><para>
+    ///   The <see cref="ISearchAvailableObjectsService.SupportsProperty"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
+    ///   is evaluated in order to determine the return value of this property.
     /// </para>
     /// </remarks>
+    /// <seealso cref="SearchAvailableObjectsServiceTypeAttribute"/>
+    /// <seealso cref="ISearchAvailableObjectsService"/>
     public bool SupportsSearchAvailableObjects
     {
       get
@@ -75,16 +82,26 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
     }
 
-    /// <summary>Searches the object model for the <see cref="IBusinessObject"/> instances that can be assigned to this property.</summary>
-    /// <param name="referencingObject"> The <see cref="IBusinessObject"/> for which to search for the possible objects to be referenced. Can be <see langword="null"/>.</param>
-    /// <param name="searchArguments">A parameter object containing additional information for executing the search. Can be <see langword="null"/>.</param>
-    /// <returns>A list of the <see cref="IBusinessObject"/> instances available. Must not return <see langword="null"/>.</returns>
+    /// <summary>
+    ///   Searches the object model for the <see cref="IBusinessObject"/> instances that can be assigned to this property.
+    /// </summary>
+    /// <param name="referencingObject">
+    ///   The <see cref="IBusinessObject"/> for which to search for the possible objects to be referenced. Can be <see langword="null"/>.
+    /// </param>
+    /// <param name="searchArguments">
+    ///   A parameter object containing additional information for executing the search. Can be <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    ///   A list of the <see cref="IBusinessObject"/> instances available. Must not return <see langword="null"/>.
+    /// </returns>
     /// <exception cref="NotSupportedException">
     ///   Thrown if <see cref="SupportsSearchAvailableObjects"/> evaluated <see langword="false"/> but this method has been called anyways.
     /// </exception>
     /// <remarks>
-    /// The implementation delegates to the <see cref="ISearchAvailableObjectsService.Search"/> method of the <see cref="ISearchAvailableObjectsService"/> interface.
+    ///   The implementation delegates to the <see cref="ISearchAvailableObjectsService.Search"/> method of the <see cref="ISearchAvailableObjectsService"/> interface.
     /// </remarks>
+    /// <seealso cref="SearchAvailableObjectsServiceTypeAttribute"/>
+    /// <seealso cref="ISearchAvailableObjectsService"/>
     public IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, ISearchAvailableObjectsArguments searchArguments)
     {
       if (!SupportsSearchAvailableObjects)
@@ -96,7 +113,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      ISearchAvailableObjectsService service = GetSearchService ();
+      ISearchAvailableObjectsService service = GetSearchService();
       Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.Item2.FullName);
 
       return service.Search (referencingObject, this, searchArguments);
@@ -107,14 +124,16 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///   to implicitly create a new <see cref="IBusinessObject"/> instance for editing in case the object reference is <see langword="null" />.
     /// </summary>
     /// <remarks>
-    /// The <see cref="IDefaultValueService.SupportsProperty"/> method of the <see cref="IDefaultValueService"/> interface 
-    /// is evaluated in order to determine the return value of this property.
+    ///   The <see cref="IDefaultValueService.SupportsProperty"/> method of the <see cref="IDefaultValueService"/> interface 
+    ///   is evaluated in order to determine the return value of this property.
     /// </remarks>
+    /// <seealso cref="DefaultValueServiceTypeAttribute"/>
+    /// <seealso cref="IDefaultValueService"/>
     public bool SupportsDefaultValue
     {
       get
       {
-        IDefaultValueService service = GetDefaultValueService ();
+        IDefaultValueService service = GetDefaultValueService();
         if (service == null)
           return false;
 
@@ -134,6 +153,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <remarks>
     /// The implementation delegates to the <see cref="IDefaultValueService.Create"/> method of the <see cref="IDefaultValueService"/> interface.
     /// </remarks>
+    /// <seealso cref="DefaultValueServiceTypeAttribute"/>
+    /// <seealso cref="IDefaultValueService"/>
     public IBusinessObject CreateDefaultValue (IBusinessObject referencingObject)
     {
       if (!SupportsDefaultValue)
@@ -172,6 +193,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <remarks>
     /// The implementation delegates to the <see cref="IDefaultValueService.IsDefaultValue"/> method of the <see cref="IDefaultValueService"/> interface.
     /// </remarks>
+    /// <seealso cref="DefaultValueServiceTypeAttribute"/>
+    /// <seealso cref="IDefaultValueService"/>
     public bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -186,10 +209,10 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      IDefaultValueService service = GetDefaultValueService ();
+      IDefaultValueService service = GetDefaultValueService();
       Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _defaultValueServiceDefinition.Item2.FullName);
 
-      return service.IsDefaultValue(referencingObject, this, value, emptyProperties);
+      return service.IsDefaultValue (referencingObject, this, value, emptyProperties);
     }
 
     /// <summary>
@@ -199,11 +222,13 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// The <see cref="IDeleteObjectService.SupportsProperty"/> method of the <see cref="IDeleteObjectService"/> interface 
     /// is evaluated in order to determine the return value of this property.
     /// </remarks>
+    /// <seealso cref="DeleteObjectServiceTypeAttribute"/>
+    /// <seealso cref="IDeleteObjectService"/>
     public bool SupportsDelete
     {
       get
       {
-        IDeleteObjectService service = GetDeleteObjectService ();
+        IDeleteObjectService service = GetDeleteObjectService();
         if (service == null)
           return false;
 
@@ -226,6 +251,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <remarks>
     /// The implementation delegates to the <see cref="IDeleteObjectService.Delete"/> method of the <see cref="IDeleteObjectService"/> interface.
     /// </remarks>
+    /// <seealso cref="DeleteObjectServiceTypeAttribute"/>
+    /// <seealso cref="IDeleteObjectService"/>
     public void Delete (IBusinessObject referencingObject, IBusinessObject value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -242,7 +269,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       IDeleteObjectService service = GetDeleteObjectService();
       Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _deleteObjectServiceDefinition.Item2.FullName);
 
-      service.Delete(referencingObject, this, value);
+      service.Delete (referencingObject, this, value);
     }
 
     private IBusinessObjectClass GetReferenceClass ()
@@ -307,7 +334,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     private TService GetService<TService> (Tuple<ServiceProvider, Type> serviceDefinition)
-        where TService : IBusinessObjectService
+        where TService: IBusinessObjectService
     {
       IBusinessObjectProvider provider;
       switch (serviceDefinition.Item1)
@@ -325,8 +352,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return (TService) provider.GetService (serviceDefinition.Item2);
     }
 
-    private Tuple<ServiceProvider, Type> GetServiceDeclaration<TService> () 
-        where TService : IBusinessObjectService
+    private Tuple<ServiceProvider, Type> GetServiceDeclaration<TService> ()
+        where TService: IBusinessObjectService
     {
       var attributeFromDeclaringType = PropertyInfo.GetCustomAttribute<IBusinessObjectServiceTypeAttribute<TService>> (true);
       if (attributeFromDeclaringType != null)
