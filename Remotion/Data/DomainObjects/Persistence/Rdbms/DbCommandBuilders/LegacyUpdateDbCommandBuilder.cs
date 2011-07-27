@@ -24,12 +24,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
-  public class UpdateDbCommandBuilder : DbCommandBuilder
+  public class LegacyUpdateDbCommandBuilder : DbCommandBuilder
   {
     private readonly DataContainer _dataContainer;
     private readonly IStorageNameProvider _storageNameProvider;
 
-    public UpdateDbCommandBuilder (
+    public LegacyUpdateDbCommandBuilder (
         IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
