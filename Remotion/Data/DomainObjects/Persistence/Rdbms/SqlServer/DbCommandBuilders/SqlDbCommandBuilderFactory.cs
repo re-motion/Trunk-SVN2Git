@@ -130,10 +130,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       return new UpdateDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
     }
 
-    public IDbCommandBuilder CreateForDelete (DataContainer dataContainer)
+    public IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IComparedColumnsSpecification comparedColumnsSpecification)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      return new LegacyDeleteDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      ArgumentUtility.CheckNotNull ("comparedColumnsSpecification", comparedColumnsSpecification);
+
+      return new DeleteDbCommandBuilder (tableDefinition, comparedColumnsSpecification, _sqlDialect, _valueConverter);
     }
   }
 }

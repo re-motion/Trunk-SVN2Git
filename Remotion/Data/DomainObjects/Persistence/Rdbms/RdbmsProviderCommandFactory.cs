@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForUpdate (dataContainer));
 
       foreach (var dataContainer in dataContainersByState[StateType.Deleted])
-        yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForDelete (dataContainer));
+        yield return Tuple.Create (dataContainer.ID, CreateDbCommandForDelete(dataContainer));
     }
 
     private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer)
@@ -196,6 +196,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
 
       return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, new InsertedColumnsSpecification (columnValues));
+    }
+
+    private IDbCommandBuilder CreateDbCommandForDelete (DataContainer dataContainer)
+    {
+      var tableDefinition = GetTableDefinition (dataContainer.ID);
+      var columnValues = GetComparedColumnValuesForDelete (dataContainer, tableDefinition);
+
+      return _dbCommandBuilderFactory.CreateForDelete (tableDefinition, new ComparedColumnsSpecification (columnValues));
+    }
+
+    private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      yield return new ColumnValue(tableDefinition.IDColumn, dataContainer.ID.Value);
+      if(MustAddTimestampToWhereClause(dataContainer))
+        yield return new ColumnValue(tableDefinition.TimestampColumn, dataContainer.Timestamp);
+    }
+
+    private bool MustAddTimestampToWhereClause (DataContainer dataContainer)
+    {
+      return dataContainer.PropertyValues.Cast<PropertyValue>().All (propertyValue => !propertyValue.Definition.IsObjectID);
     }
 
     private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)

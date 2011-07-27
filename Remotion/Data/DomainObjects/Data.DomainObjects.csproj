@@ -844,9 +844,6 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\DbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\LegacyDeleteDbCommandBuilder.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\QueryDbCommandBuilder.cs">
       <SubType>Code</SubType>
     </Compile>

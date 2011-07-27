@@ -46,6 +46,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     IDbCommandBuilder CreateForInsert (TableDefinition tableDefinition, IInsertedColumnsSpecification insertedColumnsSpecification);
     IDbCommandBuilder CreateForUpdate (DataContainer dataContainer);
-    IDbCommandBuilder CreateForDelete (DataContainer dataContainer);
+    IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IComparedColumnsSpecification comparedColumnsSpecification);
   }
 }

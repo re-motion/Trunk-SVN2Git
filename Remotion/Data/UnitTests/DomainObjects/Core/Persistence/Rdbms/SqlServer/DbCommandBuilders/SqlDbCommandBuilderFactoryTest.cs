@@ -46,6 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private IStorageNameProvider _storageNameProviderStub;
     private DataContainer _dataContainer;
     private IInsertedColumnsSpecification _insertedColumnsStub;
+    private IComparedColumnsSpecification _comparedColumnsStub;
 
     public override void SetUp ()
     {
@@ -63,6 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
       _orderedColumnStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
       _insertedColumnsStub = MockRepository.GenerateStub<IInsertedColumnsSpecification>();
+      _comparedColumnsStub = MockRepository.GenerateStub<IComparedColumnsSpecification>();
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
       _dataContainer = DataContainer.CreateNew (_objectID);
@@ -171,13 +173,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateForDelete ()
     {
-      PrivateInvoke.SetNonPublicField (_dataContainer, "_state", 2);
-      var result = _factory.CreateForDelete (_dataContainer);
+      var result = _factory.CreateForDelete (_tableDefinition, _comparedColumnsStub);
 
-      Assert.That (result, Is.TypeOf (typeof (LegacyDeleteDbCommandBuilder)));
-      Assert.That (((LegacyDeleteDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((LegacyDeleteDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
-      Assert.That (((LegacyDeleteDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
+      Assert.That (result, Is.TypeOf (typeof (DeleteDbCommandBuilder)));
+      Assert.That (((DeleteDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
+      Assert.That (((DeleteDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+      Assert.That (((DeleteDbCommandBuilder) result).TableDefinition, Is.SameAs (_tableDefinition));
+      Assert.That (((DeleteDbCommandBuilder) result).ComparedColumnsSpecification, Is.SameAs (_comparedColumnsStub));
     }
   }
 }
