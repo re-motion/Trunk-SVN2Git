@@ -18,23 +18,22 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Text;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
-  /// <see cref="InsertedColumnsSpecification"/> defines the API for all implementations that specify the values to insert into the the specified columns 
-  /// in a relational  database.
+  /// <see cref="UpdatedColumnsSpecification"/> defines the API for all implementations that specify the columns to update with the specified columns.
   /// </summary>
-  public class InsertedColumnsSpecification : IInsertedColumnsSpecification
+  public class UpdatedColumnsSpecification : IUpdatedColumnsSpecification
   {
     private readonly ColumnValue[] _columnValues;
 
-    public InsertedColumnsSpecification (IEnumerable<ColumnValue> columnValues)
+    public UpdatedColumnsSpecification (IEnumerable<ColumnValue> columnValues)
     {
       ArgumentUtility.CheckNotNull ("columnValues", columnValues);
 
@@ -43,36 +42,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
 
     public ReadOnlyCollection<ColumnValue> ColumnValues
     {
-      get { return Array.AsReadOnly(_columnValues); }
+      get { return Array.AsReadOnly (_columnValues); }
     }
 
-    public void AppendColumnNames (StringBuilder statement, IDbCommand dbCommand, ISqlDialect sqlDialect)
+    public void AppendColumnValueAssignments (StringBuilder statement, IDbCommand dbCommand, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("dbCommand", dbCommand);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      var columNames = SeparatedStringBuilder.Build (", ", _columnValues, cv => sqlDialect.DelimitIdentifier (cv.Column.Name));
-      statement.Append (columNames);
-    }
-
-    public void AppendColumnValues (StringBuilder statement, IDbCommand dbCommand, ISqlDialect sqlDialect)
-    {
-      ArgumentUtility.CheckNotNull ("statement", statement);
-      ArgumentUtility.CheckNotNull ("dbCommand", dbCommand);
-      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-
-      var parameters = _columnValues.Select (
+      var columnsWithParameter = _columnValues.Select (
           cv =>
           {
             var parameter = cv.Column.StorageTypeInfo.CreateDataParameter (dbCommand, cv.Value);
             parameter.ParameterName = sqlDialect.GetParameterName (cv.Column.Name);
             dbCommand.Parameters.Add (parameter);
-            return parameter;
+            return new { ColumnDefinition = cv.Column, Parameter = parameter };
           });
 
-      var parameterNames = SeparatedStringBuilder.Build (", ", parameters, p => p.ParameterName);
-      statement.Append (parameterNames);
+      var updateStatement = SeparatedStringBuilder.Build (
+          ", ", columnsWithParameter, cp => string.Format ("{0} = {1}", cp.ColumnDefinition.Name, cp.Parameter.ParameterName));
+      statement.Append (updateStatement);
     }
   }
 }
