@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForDelete (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      return new DeleteDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
+      return new LegacyDeleteDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
     }
   }
 }

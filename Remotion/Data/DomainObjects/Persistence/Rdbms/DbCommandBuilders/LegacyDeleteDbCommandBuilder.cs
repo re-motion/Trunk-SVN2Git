@@ -22,12 +22,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
-  public class DeleteDbCommandBuilder : DbCommandBuilder
+  public class LegacyDeleteDbCommandBuilder : DbCommandBuilder
   {
     private readonly DataContainer _dataContainer;
     private readonly IStorageNameProvider _storageNameProvider;
 
-    public DeleteDbCommandBuilder (
+    public LegacyDeleteDbCommandBuilder (
         IStorageNameProvider storageNameProvider, DataContainer dataContainer, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {

@@ -174,10 +174,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       PrivateInvoke.SetNonPublicField (_dataContainer, "_state", 2);
       var result = _factory.CreateForDelete (_dataContainer);
 
-      Assert.That (result, Is.TypeOf (typeof (DeleteDbCommandBuilder)));
-      Assert.That (((DeleteDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((DeleteDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
-      Assert.That (((DeleteDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
+      Assert.That (result, Is.TypeOf (typeof (LegacyDeleteDbCommandBuilder)));
+      Assert.That (((LegacyDeleteDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
+      Assert.That (((LegacyDeleteDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+      Assert.That (((LegacyDeleteDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
     }
   }
 }
