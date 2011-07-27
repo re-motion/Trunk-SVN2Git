@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -44,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       base.SetUp();
 
-      _columnDefinition1 = ColumnDefinitionObjectMother.CreateColumn();
-      _columnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ();
+      _columnDefinition1 = ColumnDefinitionObjectMother.CreateColumn("Column1");
+      _columnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
 
       _objectIDColumn = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       _objectIDColumn.Stub (stub => stub.Name).Return ("ID");
@@ -108,13 +109,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Read_ValueIsNull_ReturnsNull ()
+    public void Read_ValueAndClassIdIsNull_ReturnsNull ()
     {
-      _objectIDColumn.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (null);
-
       var result = _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
       Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+      "Incorrect database value encountered. The value read from 'Column2' must contain null.")]
+    public void Read_ValueIsNullAndClassIDIsNotNull_ThrowsException ()
+    {
+      _classIDColumn.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition1 });
+      _classIDColumn.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return ("Order");
+
+      _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
+      "Incorrect database value encountered. The value read from 'Column2' must not contain null.")]
+    public void Read_ValueIsNotNullAndClassIDIsNull_ThrowsException ()
+    {
+      _classIDColumn.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition1 });
+      _objectIDColumn.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
+
+      _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
     }
 
     [Test]

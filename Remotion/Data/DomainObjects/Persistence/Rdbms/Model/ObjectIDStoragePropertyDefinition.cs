@@ -17,10 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
+using Remotion.Text;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -77,14 +78,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
       ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
 
-      // TODO Review 4170: Read both value and classID. If value is null, classID must also be null. If value != null, classID must not be null. 
-      // Throw RdbmsProviderException otherwise: "Incorrect database value encountered. The value read from 'x', 'y' must not contain null."/"must contain null."
-      // Get the column names via _classIDProperty.GetColumns(), separate with ",", enclose in "'"
       var value = _valueProperty.Read (dataReader, ordinalProvider);
-      if (value == null)
-        return null;
+      var classID = (string) _classIDProperty.Read (dataReader, ordinalProvider);
 
-      var classID = (string) _classIDProperty.Read(dataReader, ordinalProvider);
+      if (value == null)
+      {
+        if (classID != null)
+        {
+          throw new RdbmsProviderException (
+              string.Format (
+                  "Incorrect database value encountered. The value read from '{0}' must contain null.",
+                  SeparatedStringBuilder.Build (", ", _classIDProperty.GetColumns(), c => c.Name)));
+        }
+
+        return null;
+      }
+
+      if (classID == null)
+      {
+        throw new RdbmsProviderException (
+            string.Format (
+                "Incorrect database value encountered. The value read from '{0}' must not contain null.",
+                SeparatedStringBuilder.Build (", ", _classIDProperty.GetColumns(), c => c.Name)));
+      }
+
       return new ObjectID (classID, value);
     }
 
@@ -94,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (objectID == null)
         return _valueProperty.SplitValue (null);
 
-      return _valueProperty.SplitValue (objectID.Value).Concat(_classIDProperty.SplitValue (objectID.ClassID));
+      return _valueProperty.SplitValue (objectID.Value).Concat (_classIDProperty.SplitValue (objectID.ClassID));
     }
   }
 }
