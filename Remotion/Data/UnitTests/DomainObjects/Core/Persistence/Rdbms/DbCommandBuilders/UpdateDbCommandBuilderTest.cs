@@ -64,8 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
     }
 
-    // TODO Review 4171: In UpdateDbCommandBuilderTest, InsertDbCommandBuilderTest, SelectDbCommandBuilderTest, DeleteDbCommandBuilderTest, UnionSelectDbCommandBuilderTest,
-    
     [Test]
     public void Create_WithDefaultSchema ()
     {
