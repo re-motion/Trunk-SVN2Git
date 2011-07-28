@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       dataParameterCollectionMock.VerifyAllExpectations ();
       parameter1StrictMock.VerifyAllExpectations ();
       parameter2StrictMock.VerifyAllExpectations ();
-      Assert.That (_statement.ToString (), Is.EqualTo ("ID = @ID, Timestamp = @Timestamp"));
+      Assert.That (_statement.ToString (), Is.EqualTo ("[ID] = @ID, [Timestamp] = @Timestamp"));
       Assert.That (_dbCommandStub.Parameters, Is.SameAs (dataParameterCollectionMock));
     }
   }

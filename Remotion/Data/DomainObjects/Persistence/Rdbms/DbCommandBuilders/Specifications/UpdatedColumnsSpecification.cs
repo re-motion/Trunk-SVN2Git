@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
           });
 
       var updateStatement = SeparatedStringBuilder.Build (
-          ", ", columnsWithParameter, cp => string.Format ("{0} = {1}", cp.ColumnDefinition.Name, cp.Parameter.ParameterName));
+          ", ", columnsWithParameter, cp => string.Format ("{0} = {1}", sqlDialect.DelimitIdentifier (cp.ColumnDefinition.Name), cp.Parameter.ParameterName));
       statement.Append (updateStatement);
     }
   }

@@ -179,15 +179,68 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var dataContainersByState = dataContainers.ToLookup (dc => dc.State);
 
       foreach (var dataContainer in dataContainersByState[StateType.New])
-        yield return Tuple.Create (dataContainer.ID, CreateDbCommandForInsert(dataContainer));
-      
+        yield return Tuple.Create (dataContainer.ID, CreateDbCommandForInsert (dataContainer));
+
       var changedContainers =
           dataContainersByState[StateType.New].Concat (dataContainersByState[StateType.Changed]).Concat (dataContainersByState[StateType.Deleted]);
       foreach (var dataContainer in changedContainers)
-        yield return Tuple.Create (dataContainer.ID, _dbCommandBuilderFactory.CreateForUpdate (dataContainer));
+      {
+        var dbCommandForUpdate = CreateDbCommandForUpdate (dataContainer);
+        if(dbCommandForUpdate!=null)
+          yield return Tuple.Create (dataContainer.ID, dbCommandForUpdate);
+      }
 
       foreach (var dataContainer in dataContainersByState[StateType.Deleted])
-        yield return Tuple.Create (dataContainer.ID, CreateDbCommandForDelete(dataContainer));
+        yield return Tuple.Create (dataContainer.ID, CreateDbCommandForDelete (dataContainer));
+    }
+
+    private IDbCommandBuilder CreateDbCommandForUpdate (DataContainer dataContainer)
+    {
+      var tableDefinition = GetTableDefinition (dataContainer.ID);
+      var updatedColumnValues = GetUpdatedColumnValues(dataContainer, tableDefinition);
+      if (!updatedColumnValues.Any ())
+        return null;
+      var updatedColumnsSpecification = new UpdatedColumnsSpecification (updatedColumnValues);
+      var comparedColumnSpecification = new ComparedColumnsSpecification (GetComparedColumnValue(dataContainer, tableDefinition));
+
+      return _dbCommandBuilderFactory.CreateForUpdate (tableDefinition, updatedColumnsSpecification, comparedColumnSpecification);
+    }
+
+    private IEnumerable<ColumnValue> GetComparedColumnValue (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
+      if(dataContainer.State!=StateType.New)
+        yield return new ColumnValue(tableDefinition.TimestampColumn, dataContainer.Timestamp);
+    }
+
+    private ColumnValue[] GetUpdatedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue> ()
+          .Where (
+              pv => pv.Definition.StorageClass == StorageClass.Persistent
+                    && ((dataContainer.State == StateType.New && pv.Definition.IsObjectID)
+                    || (dataContainer.State == StateType.Deleted && pv.Definition.IsObjectID)
+                    || (dataContainer.State == StateType.Changed && pv.HasChanged)))
+          .SelectMany (
+              pv =>
+              {
+                var storageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (pv.Definition);
+                var columnValues = storageProperty.SplitValue (pv.GetValueWithoutEvents (ValueAccess.Current));
+
+                return columnValues;
+              }
+          )
+          .ToArray();
+
+      if (!dataStorageColumnValues.Any () && dataContainer.HasBeenMarkedChanged)
+      {
+        //dummy column value for the case that the data container should only change its timestamp
+        return new[] { new ColumnValue (tableDefinition.ClassIDColumn, dataContainer.ID.ClassID) };
+      }
+      else
+      {
+        return dataStorageColumnValues;
+      }
     }
 
     private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer)
@@ -208,9 +261,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
-      yield return new ColumnValue(tableDefinition.IDColumn, dataContainer.ID.Value);
-      if(MustAddTimestampToWhereClause(dataContainer))
-        yield return new ColumnValue(tableDefinition.TimestampColumn, dataContainer.Timestamp);
+      yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
+      if (MustAddTimestampToWhereClause (dataContainer))
+        yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
     }
 
     private bool MustAddTimestampToWhereClause (DataContainer dataContainer)

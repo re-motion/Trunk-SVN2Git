@@ -17,6 +17,7 @@
 using System;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -94,6 +95,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
           .RelationEndPointDefinition;
       Assertion.IsNotNull (endPointDefinition, "Property '{0}.{1}' is not a relation end-point.", declaringType, shortPropertyName);
       return endPointDefinition;
+    }
+
+    protected object GetPropertyValue (DataContainer dataContainer, Type declaringType, string shortPropertyName)
+    {
+      return dataContainer[declaringType.FullName + "." + shortPropertyName];
     }
   }
 }

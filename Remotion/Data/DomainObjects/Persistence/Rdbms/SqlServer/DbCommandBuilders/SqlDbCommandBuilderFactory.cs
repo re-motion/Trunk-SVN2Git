@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -124,10 +123,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       return new InsertDbCommandBuilder (tableDefinition, insertedColumnsSpecification, _sqlDialect, _valueConverter);
     }
 
-    public IDbCommandBuilder CreateForUpdate (DataContainer dataContainer)
+    public IDbCommandBuilder CreateForUpdate (
+        TableDefinition tableDefinition,
+        IUpdatedColumnsSpecification updatedColumnsSpecification,
+        IComparedColumnsSpecification comparedColumnsSpecification)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      return new LegacyUpdateDbCommandBuilder (_storageNameProvider, dataContainer, _sqlDialect, _valueConverter);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      ArgumentUtility.CheckNotNull ("updatedColumnsSpecification", updatedColumnsSpecification);
+      ArgumentUtility.CheckNotNull ("comparedColumnsSpecification", comparedColumnsSpecification);
+
+      return new UpdateDbCommandBuilder (tableDefinition, updatedColumnsSpecification, comparedColumnsSpecification, _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IComparedColumnsSpecification comparedColumnsSpecification)

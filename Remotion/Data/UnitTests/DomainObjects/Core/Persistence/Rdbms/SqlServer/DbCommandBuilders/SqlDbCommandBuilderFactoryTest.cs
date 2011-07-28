@@ -27,7 +27,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.DbCommandBuilders
@@ -47,6 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private DataContainer _dataContainer;
     private IInsertedColumnsSpecification _insertedColumnsStub;
     private IComparedColumnsSpecification _comparedColumnsStub;
+    private IUpdatedColumnsSpecification _updatedColumnsStub;
 
     public override void SetUp ()
     {
@@ -65,6 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _orderedColumnStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
       _insertedColumnsStub = MockRepository.GenerateStub<IInsertedColumnsSpecification>();
       _comparedColumnsStub = MockRepository.GenerateStub<IComparedColumnsSpecification>();
+      _updatedColumnsStub = MockRepository.GenerateStub<IUpdatedColumnsSpecification> ();
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
       _dataContainer = DataContainer.CreateNew (_objectID);
@@ -162,12 +163,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateForUpdate ()
     {
-      var result = _factory.CreateForUpdate (_dataContainer);
+      var result = _factory.CreateForUpdate (_tableDefinition, _updatedColumnsStub, _comparedColumnsStub);
 
-      Assert.That (result, Is.TypeOf (typeof (LegacyUpdateDbCommandBuilder)));
-      Assert.That (((LegacyUpdateDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((LegacyUpdateDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
-      Assert.That (((LegacyUpdateDbCommandBuilder) result).StorageNameProvider, Is.SameAs (_storageNameProviderStub));
+      Assert.That (result, Is.TypeOf (typeof (UpdateDbCommandBuilder)));
+      Assert.That (((UpdateDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
+      Assert.That (((UpdateDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
+      Assert.That (((UpdateDbCommandBuilder) result).TableDefinition, Is.SameAs (_tableDefinition));
+      Assert.That (((UpdateDbCommandBuilder) result).UpdatedColumnsSpecification, Is.SameAs (_updatedColumnsStub));
+      Assert.That (((UpdateDbCommandBuilder) result).ComparedColumnsSpecification, Is.SameAs (_comparedColumnsStub));
     }
 
     [Test]
