@@ -18,7 +18,6 @@ using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -32,24 +31,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     private readonly ISqlDialect _sqlDialect;
     private readonly IValueConverter _valueConverter;
 
-    // TODO Review 4171: Remove
-    private readonly IStorageNameProvider _storageNameProvider;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlDbCommandBuilderFactory"/> class.
     /// </summary>
     /// <param name="sqlDialect">The SQL dialect.</param>
     /// <param name="valueConverter">The value converter.</param>
-    /// <param name="storageNameProvider">The storage name provider.</param>
-    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, IValueConverter valueConverter, IStorageNameProvider storageNameProvider)
+    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, IValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       _sqlDialect = sqlDialect;
       _valueConverter = valueConverter;
-      _storageNameProvider = storageNameProvider;
     }
 
     public IDbCommandBuilder CreateForSingleIDLookupFromTable (

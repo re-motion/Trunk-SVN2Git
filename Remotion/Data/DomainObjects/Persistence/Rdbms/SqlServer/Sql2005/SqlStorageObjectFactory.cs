@@ -264,7 +264,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
-      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, valueConverter, storageNameProvider);
+      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, valueConverter);
     }
 
     protected virtual IValueConverter CreateValueConverter (

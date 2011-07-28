@@ -23,7 +23,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
-  // TODO Review 4171: Doc comment
+  /// <summary>
+  /// The <see cref="UpdateDbCommandBuilder"/> builds a command that allows updating a set of records as specified by a given 
+  /// <see cref="IUpdatedColumnsSpecification"/>.
+  /// </summary>
   public class UpdateDbCommandBuilder : DbCommandBuilder
   {
     private readonly TableDefinition _tableDefinition;
@@ -78,6 +81,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       command.CommandText = statement.ToString ();
       return command;
     }
-    
+
+    private void AppendUpdateClause (StringBuilder statement, IUpdatedColumnsSpecification updatedColumnsSpecification, IDbCommand command)
+    {
+      ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("updatedColumnsSpecification", updatedColumnsSpecification);
+      ArgumentUtility.CheckNotNull ("command", command);
+
+      statement.Append (" SET ");
+      updatedColumnsSpecification.AppendColumnValueAssignments (statement, command, SqlDialect);
+    }
   }
 }

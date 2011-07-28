@@ -598,25 +598,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _factory.CreateForMultiTimestampLookup (new[] { objectID });
     }
 
-    // TODO Review 4171: Add StandardMappingTest.SetPropertyValue and use instead of manually calling DataContainer.SetValue
-
     [Test]
     public void CreateForSave_New ()
     {
       var dataContainerNew1 = DataContainer.CreateNew (DomainObjectIDs.Computer1);
-      dataContainerNew1.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "123456");
+      SetPropertyValue (dataContainerNew1, typeof (Computer), "SerialNumber", "123456");
       var dataContainerNew2 = DataContainer.CreateNew (DomainObjectIDs.Computer2);
+      SetPropertyValue (dataContainerNew2, typeof (Computer), "SerialNumber", "654321");
+
       dataContainerNew2.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "654321");
-      // TODO Review 4171: Add third object: Official - dataContainerNewWithoutRelations => should not have an UpdateCommand
+      var dataContainerNewWithoutRelations = DataContainer.CreateNew (DomainObjectIDs.Official1);
 
       var insertDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder>();
       var insertDbCommandBuilderNew2 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var insertDbCommandBuilderNew3 = MockRepository.GenerateStub<IDbCommandBuilder> ();
       var updateDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder>();
       var updateDbCommandBuilderNew2 = MockRepository.GenerateStub<IDbCommandBuilder>();
 
       var tableDefinition1 = (TableDefinition) dataContainerNew1.ID.ClassDefinition.StorageEntityDefinition;
       var tableDefinition2 = (TableDefinition) dataContainerNew2.ID.ClassDefinition.StorageEntityDefinition;
-
+      var tableDefinition3 = (TableDefinition) dataContainerNewWithoutRelations.ID.ClassDefinition.StorageEntityDefinition;
+      
       _dbCommandBuilderFactoryStrictMock
         .Stub (stub =>
           stub.CreateForInsert (
@@ -629,6 +631,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               Arg.Is (tableDefinition2),
               Arg<IInsertedColumnsSpecification>.Matches (c => CheckInsertedComputerColumns (c, dataContainerNew2))))
           .Return (insertDbCommandBuilderNew2).Repeat.Once();
+      _dbCommandBuilderFactoryStrictMock
+        .Stub (stub =>
+          stub.CreateForInsert (
+              Arg.Is (tableDefinition3),
+              Arg<IInsertedColumnsSpecification>.Is.Anything))
+          .Return (insertDbCommandBuilderNew3).Repeat.Once ();
       _dbCommandBuilderFactoryStrictMock
           .Stub (stub => stub.CreateForUpdate (
                   Arg.Is (tableDefinition1),
@@ -646,21 +654,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new[]
           {
               dataContainerNew1,
-              dataContainerNew2
+              dataContainerNew2,
+              dataContainerNewWithoutRelations
           });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
       var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
 
-      Assert.That (tuples.Count, Is.EqualTo (4));
+      Assert.That (tuples.Count, Is.EqualTo (5));
       Assert.That (tuples[0].Item1, Is.EqualTo (dataContainerNew1.ID));
       Assert.That (tuples[0].Item2, Is.SameAs (insertDbCommandBuilderNew1));
       Assert.That (tuples[1].Item1, Is.EqualTo (dataContainerNew2.ID));
       Assert.That (tuples[1].Item2, Is.SameAs (insertDbCommandBuilderNew2));
-      Assert.That (tuples[2].Item1, Is.EqualTo (dataContainerNew1.ID));
-      Assert.That (tuples[2].Item2, Is.SameAs (updateDbCommandBuilderNew1));
-      Assert.That (tuples[3].Item1, Is.EqualTo (dataContainerNew2.ID));
-      Assert.That (tuples[3].Item2, Is.SameAs (updateDbCommandBuilderNew2));
+      Assert.That (tuples[2].Item1, Is.EqualTo (dataContainerNewWithoutRelations.ID));
+      Assert.That (tuples[2].Item2, Is.SameAs (insertDbCommandBuilderNew3));
+      Assert.That (tuples[3].Item1, Is.EqualTo (dataContainerNew1.ID));
+      Assert.That (tuples[3].Item2, Is.SameAs (updateDbCommandBuilderNew1));
+      Assert.That (tuples[4].Item1, Is.EqualTo (dataContainerNew2.ID));
+      Assert.That (tuples[4].Item2, Is.SameAs (updateDbCommandBuilderNew2));
     }
 
     [Test]
@@ -722,16 +733,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       dataContainerDeletedWithoutRelations.Delete();
       var dataContainerDeletedWithRelations1 = DataContainer.CreateForExisting (DomainObjectIDs.Computer1, null, pd => pd.DefaultValue);
       dataContainerDeletedWithRelations1.Delete();
-      // TODO Review 4171: Add second Computer dataContainerDeletedWithRelations2
-
-      // TODO Review 4171: Rename variables
-
+      var dataContainerDeletedWithRelations2 = DataContainer.CreateForExisting (DomainObjectIDs.Computer2, null, pd => pd.DefaultValue);
+      dataContainerDeletedWithRelations2.Delete ();
+      
       var tableDefinition1 = (TableDefinition) dataContainerDeletedWithoutRelations.ID.ClassDefinition.StorageEntityDefinition;
       var tableDefinition2 = (TableDefinition) dataContainerDeletedWithRelations1.ID.ClassDefinition.StorageEntityDefinition;
-
+      var tableDefinition3 = (TableDefinition) dataContainerDeletedWithRelations2.ID.ClassDefinition.StorageEntityDefinition;
+      
       var updateDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var updateDbCommandBuilderDeleted3 = MockRepository.GenerateStub<IDbCommandBuilder> ();
       var deleteDbCommandBuilderDeleted1 = MockRepository.GenerateStub<IDbCommandBuilder>();
       var deleteDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var deleteDbCommandBuilderDeleted3 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+
 
      _dbCommandBuilderFactoryStrictMock
           .Stub (stub => stub.CreateForUpdate (
@@ -739,6 +753,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                   Arg<IUpdatedColumnsSpecification>.Matches (c => CheckUpdatedComputerColumns (c, dataContainerDeletedWithRelations1, true, false, false)),
                   Arg<IComparedColumnsSpecification>.Matches(c=>CheckComparedColumns(c, dataContainerDeletedWithRelations1, tableDefinition2))))
           .Return (updateDbCommandBuilderDeleted2).Repeat.Once();
+     _dbCommandBuilderFactoryStrictMock
+         .Stub (stub => stub.CreateForUpdate (
+                 Arg.Is (tableDefinition3),
+                 Arg<IUpdatedColumnsSpecification>.Matches (c => CheckUpdatedComputerColumns (c, dataContainerDeletedWithRelations2, true, false, false)),
+                 Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations2, tableDefinition3))))
+         .Return (updateDbCommandBuilderDeleted3).Repeat.Once ();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForDelete (
@@ -751,24 +771,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                   Arg.Is (tableDefinition2),
                   Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations1, tableDefinition2))))
           .Return (deleteDbCommandBuilderDeleted2).Repeat.Once();
+      _dbCommandBuilderFactoryStrictMock
+          .Stub (
+              stub => stub.CreateForDelete (
+                  Arg.Is (tableDefinition3),
+                  Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations2, tableDefinition3))))
+          .Return (deleteDbCommandBuilderDeleted3).Repeat.Once ();
 
       var result = _factory.CreateForSave (
           new[]
           {
               dataContainerDeletedWithoutRelations,
               dataContainerDeletedWithRelations1,
+              dataContainerDeletedWithRelations2
           });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
       var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
 
-      Assert.That (tuples.Count, Is.EqualTo (3));
+      Assert.That (tuples.Count, Is.EqualTo (5));
       Assert.That (tuples[0].Item1, Is.EqualTo (dataContainerDeletedWithRelations1.ID));
       Assert.That (tuples[0].Item2, Is.SameAs (updateDbCommandBuilderDeleted2));
-      Assert.That (tuples[1].Item1, Is.EqualTo (dataContainerDeletedWithoutRelations.ID));
-      Assert.That (tuples[1].Item2, Is.SameAs (deleteDbCommandBuilderDeleted1));
-      Assert.That (tuples[2].Item1, Is.EqualTo (dataContainerDeletedWithRelations1.ID));
-      Assert.That (tuples[2].Item2, Is.SameAs (deleteDbCommandBuilderDeleted2));
+      Assert.That (tuples[1].Item1, Is.EqualTo (dataContainerDeletedWithRelations2.ID));
+      Assert.That (tuples[1].Item2, Is.SameAs (updateDbCommandBuilderDeleted3));
+      Assert.That (tuples[2].Item1, Is.EqualTo (dataContainerDeletedWithoutRelations.ID));
+      Assert.That (tuples[2].Item2, Is.SameAs (deleteDbCommandBuilderDeleted1));
+      Assert.That (tuples[3].Item1, Is.EqualTo (dataContainerDeletedWithRelations1.ID));
+      Assert.That (tuples[3].Item2, Is.SameAs (deleteDbCommandBuilderDeleted2));
+      Assert.That (tuples[4].Item1, Is.EqualTo (dataContainerDeletedWithRelations2.ID));
+      Assert.That (tuples[4].Item2, Is.SameAs (deleteDbCommandBuilderDeleted3));
     }
 
     [Test]

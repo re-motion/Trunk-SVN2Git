@@ -101,5 +101,10 @@ namespace Remotion.Data.UnitTests.DomainObjects
     {
       return dataContainer[declaringType.FullName + "." + shortPropertyName];
     }
+
+    protected void SetPropertyValue (DataContainer dataContainer, Type declaringType, string shortPropertyName, object value)
+    {
+      dataContainer.SetValue (declaringType.FullName + "." + shortPropertyName, value);
+    }
   }
 }

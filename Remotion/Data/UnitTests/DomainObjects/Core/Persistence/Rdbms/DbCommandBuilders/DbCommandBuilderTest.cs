@@ -109,29 +109,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void AppendUpdateClause()
-    {
-      var statement = new StringBuilder();
-      var command = MockRepository.GenerateStub<IDbCommand>();
-
-      var specificationMock = MockRepository.GenerateStrictMock<IUpdatedColumnsSpecification>();
-      specificationMock
-          .Expect (mock => mock.AppendColumnValueAssignments(statement, command, _sqlDialectStub))
-          .WhenCalled (
-              mi =>
-              {
-                Assert.That (statement.ToString(), Is.EqualTo(" SET "));
-                statement.Append ("updates...");
-              });
-      specificationMock.Replay();
-
-      _commandBuilder.AppendUpdateClause (statement, specificationMock, command);
-
-      specificationMock.VerifyAllExpectations ();
-      Assert.That (statement.ToString(), Is.EqualTo (" SET updates..."));
-    }
-
-    [Test]
     public void AppendOrderByClause ()
     {
       var statement = new StringBuilder ();

@@ -23,6 +23,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
+  /// <summary>
+  /// The <see cref="InsertDbCommandBuilder"/> builds a command that allows inserting a set of records as specified by a given 
+  /// <see cref="IInsertedColumnsSpecification"/>.
+  /// </summary>
   public class InsertDbCommandBuilder : DbCommandBuilder
   {
     private readonly TableDefinition _tableDefinition;

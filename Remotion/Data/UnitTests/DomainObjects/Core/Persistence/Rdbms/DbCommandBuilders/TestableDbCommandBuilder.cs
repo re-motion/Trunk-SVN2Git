@@ -68,11 +68,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       base.AppendWhereClause (statement, comparedColumns, command);
     }
 
-    public new void AppendUpdateClause (StringBuilder statement, IUpdatedColumnsSpecification updatedColumnsSpecification, IDbCommand command)
-    {
-      base.AppendUpdateClause (statement, updatedColumnsSpecification, command);
-    }
-
     public new void AppendOrderByClause (StringBuilder statement, IOrderedColumnsSpecification orderedColumnsSpecification)
     {
       base.AppendOrderByClause (statement, orderedColumnsSpecification);

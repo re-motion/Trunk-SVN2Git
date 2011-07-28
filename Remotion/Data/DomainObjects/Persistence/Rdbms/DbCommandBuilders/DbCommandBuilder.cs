@@ -137,17 +137,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       comparedColumns.AppendComparisons (statement, command, SqlDialect);
     }
 
-    // TODO Review 4171: Push down to UpdateDbCommandBuilder, make private
-    protected void AppendUpdateClause (StringBuilder statement, IUpdatedColumnsSpecification updatedColumnsSpecification, IDbCommand command)
-    {
-      ArgumentUtility.CheckNotNull ("statement", statement);
-      ArgumentUtility.CheckNotNull ("updatedColumnsSpecification", updatedColumnsSpecification);
-      ArgumentUtility.CheckNotNull ("command", command);
-
-      statement.Append (" SET ");
-      updatedColumnsSpecification.AppendColumnValueAssignments (statement, command, SqlDialect);
-    }
-
     protected void AppendOrderByClause (StringBuilder statement, IOrderedColumnsSpecification orderedColumnsSpecification)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);

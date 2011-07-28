@@ -23,7 +23,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
-  // TODO Review 4171: Doc comment
+  /// <summary>
+  /// The <see cref="DeleteDbCommandBuilder"/> builds a command that allows deleting a set of records as specified by a given 
+  /// <see cref="IComparedColumnsSpecification"/>.
+  /// </summary>
   public class DeleteDbCommandBuilder : DbCommandBuilder
   {
     private readonly TableDefinition _tableDefinition;

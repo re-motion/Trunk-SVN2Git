@@ -42,8 +42,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private ISelectedColumnsSpecification _selectedColumnsStub;
     private IOrderedColumnsSpecification _orderedColumnStub;
     private ObjectID _objectID;
-    private IStorageNameProvider _storageNameProviderStub;
-    private DataContainer _dataContainer;
     private IInsertedColumnsSpecification _insertedColumnsStub;
     private IComparedColumnsSpecification _comparedColumnsStub;
     private IUpdatedColumnsSpecification _updatedColumnsStub;
@@ -54,8 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
-      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
-      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub, _storageNameProviderStub);
+      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub);
 
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
           SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
@@ -68,7 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _updatedColumnsStub = MockRepository.GenerateStub<IUpdatedColumnsSpecification> ();
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
-      _dataContainer = DataContainer.CreateNew (_objectID);
     }
 
     [Test]
