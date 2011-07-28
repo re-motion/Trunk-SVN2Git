@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -34,23 +35,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void AppendOrderByClause_StringBuilderEmpty ()
+    public void IsEmpty ()
     {
-      var stringBuilder = new StringBuilder();
+      var result = _specification.IsEmpty;
 
-      _specification.AppendOrderByClause (stringBuilder, MockRepository.GenerateStub<ISqlDialect>());
-
-      Assert.That (stringBuilder.ToString(), Is.Empty);
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void AppendOrderByClause_StringBuilderNotEmpty ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This method should never be called.")]
+    public void AppendOrderings_StringBuilderEmpty ()
     {
-      var stringBuilder = new StringBuilder ("Test");
+      var stringBuilder = new StringBuilder();
 
-      _specification.AppendOrderByClause (stringBuilder, MockRepository.GenerateStub<ISqlDialect> ());
-
-      Assert.That (stringBuilder.ToString (), Is.EqualTo("Test"));
+      _specification.AppendOrderings (stringBuilder, MockRepository.GenerateStub<ISqlDialect>());
     }
 
     [Test]

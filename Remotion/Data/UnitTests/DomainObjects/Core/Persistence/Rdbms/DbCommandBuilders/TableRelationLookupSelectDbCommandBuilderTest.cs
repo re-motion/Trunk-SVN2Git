@@ -57,9 +57,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       _orderedColumnsStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
+      _orderedColumnsStub.Stub (stub => stub.IsEmpty).Return (false);
       _orderedColumnsStub
-          .Stub (stub => stub.AppendOrderByClause (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" ORDER BY [Column1] ASC, [Column2] DESC"));
+          .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1] ASC, [Column2] DESC"));
 
       _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
       _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");

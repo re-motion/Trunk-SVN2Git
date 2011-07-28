@@ -137,12 +137,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var statement = new StringBuilder ();
 
       var specificationMock = MockRepository.GenerateStrictMock<IOrderedColumnsSpecification> ();
+      specificationMock.Expect (mock => mock.IsEmpty).Return (false);
       specificationMock
-          .Expect (mock => mock.AppendOrderByClause(statement, _sqlDialectStub))
+          .Expect (mock => mock.AppendOrderings(statement, _sqlDialectStub))
           .WhenCalled (
               mi =>
               {
-                Assert.That (statement.ToString (), Is.Empty);
+                Assert.That (statement.ToString (), Is.EqualTo(" ORDER BY "));
                 statement.Append ("orders...");
               });
       specificationMock.Replay ();
@@ -150,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _commandBuilder.AppendOrderByClause (statement, specificationMock);
 
       specificationMock.VerifyAllExpectations();
-      Assert.That (statement.ToString (), Is.EqualTo("orders..."));
+      Assert.That (statement.ToString (), Is.EqualTo(" ORDER BY orders..."));
     }
     
   }

@@ -66,23 +66,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void AppendOrderByClause_StringBuilderEmpty ()
+    public void IsEmpty ()
     {
-      var sb = new StringBuilder();
+      var result = _specification.IsEmpty;
 
-      _specification.AppendOrderByClause (sb, _sqlDialectStub);
-
-      Assert.That (sb.ToString(), Is.EqualTo (" ORDER BY [Column1] ASC, [Column2] DESC, [Column3] ASC"));
+      Assert.That (result, Is.False);
     }
 
     [Test]
-    public void AppendOrderByClause_StringBuilderNotEmpty ()
+    public void AppendOrderings_StringBuilderEmpty ()
     {
-      var sb = new StringBuilder ("Test");
+      var sb = new StringBuilder();
 
-      _specification.AppendOrderByClause (sb, _sqlDialectStub);
+      _specification.AppendOrderings (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString (), Is.EqualTo ("Test ORDER BY [Column1] ASC, [Column2] DESC, [Column3] ASC"));
+      Assert.That (sb.ToString(), Is.EqualTo ("[Column1] ASC, [Column2] DESC, [Column3] ASC"));
+    }
+
+    [Test]
+    public void AppendOrderings_StringBuilderNotEmpty ()
+    {
+      var sb = new StringBuilder ("test ");
+
+      _specification.AppendOrderings (sb, _sqlDialectStub);
+
+      Assert.That (sb.ToString (), Is.EqualTo ("test [Column1] ASC, [Column2] DESC, [Column3] ASC"));
     }
 
     [Test]

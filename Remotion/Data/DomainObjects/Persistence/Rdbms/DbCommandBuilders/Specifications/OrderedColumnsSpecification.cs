@@ -46,15 +46,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       get { return Array.AsReadOnly(_columns); }
     }
 
-    public void AppendOrderByClause (StringBuilder stringBuilder, ISqlDialect sqlDialect)
+    public bool IsEmpty
+    {
+      get { return false; }
+    }
+
+    public void AppendOrderings (StringBuilder stringBuilder, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      stringBuilder.Append (" ORDER BY ");
       stringBuilder.Append (
           SeparatedStringBuilder.Build (
-              ", ", 
+              ", ",
               _columns, tuple => sqlDialect.DelimitIdentifier (tuple.Item1.Name) + (tuple.Item2 == SortOrder.Ascending ? " ASC" : " DESC")));
     }
 

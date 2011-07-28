@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Text;
+using System.Threading;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
@@ -30,12 +32,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
     {
     }
 
-    public void AppendOrderByClause (StringBuilder stringBuilder, ISqlDialect sqlDialect)
+    public bool IsEmpty
+    {
+      get { return true; }
+    }
+
+    public void AppendOrderings (StringBuilder stringBuilder, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      //Nothing to do here
+      throw new InvalidOperationException ("This method should never be called.");
     }
 
     public ISelectedColumnsSpecification UnionWithSelectedColumns (ISelectedColumnsSpecification selectedColumns)

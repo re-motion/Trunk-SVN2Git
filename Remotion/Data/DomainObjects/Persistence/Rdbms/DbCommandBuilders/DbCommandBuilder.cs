@@ -153,9 +153,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("orderedColumnsSpecification", orderedColumnsSpecification);
 
-      // TODO Review 4131: Change to check if orderedColumnsSpecification.IsEmpty; if not, append " ORDER BY ", then call comparedColumns.AppendOrderings
+      if (!orderedColumnsSpecification.IsEmpty)
+      {
+        statement.Append (" ORDER BY ");
+        orderedColumnsSpecification.AppendOrderings (statement, SqlDialect);
+      }
       
-      orderedColumnsSpecification.AppendOrderByClause (statement, SqlDialect);
     }
   }
 }

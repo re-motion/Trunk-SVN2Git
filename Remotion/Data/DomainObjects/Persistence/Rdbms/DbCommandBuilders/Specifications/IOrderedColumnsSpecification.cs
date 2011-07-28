@@ -23,8 +23,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
   /// </summary>
   public interface IOrderedColumnsSpecification
   {
-    // TODO Review 4131: Add an bool IsEmpty property and an AppendOrderings method. AppendOrderings only appends the '... ASC, ... DESC' part, not the ORDER BY clause. EmptyOrderedColumnsSpecification throws an InvalidOperationException. Then, remove AppendOrderByClause.
-    void AppendOrderByClause (StringBuilder stringBuilder, ISqlDialect sqlDialect);
+    bool IsEmpty { get; }
+    void AppendOrderings (StringBuilder stringBuilder, ISqlDialect sqlDialect);
+    
     ISelectedColumnsSpecification UnionWithSelectedColumns (ISelectedColumnsSpecification selectedColumns);
   }
 }
