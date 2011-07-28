@@ -73,11 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Replay ();
 
       _comparedColumnsSpecificationStub
-          .Stub (
-              stub => stub.AppendComparisons (
-                  Arg<StringBuilder>.Matches (sb => sb.ToString () == "DELETE FROM [Table] WHERE "),
-                  Arg.Is (_dbCommandStub),
-                  Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       var result = builder.Create (_commandExecutionContextStub);
@@ -101,11 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Replay ();
 
       _comparedColumnsSpecificationStub
-          .Stub (
-              stub => stub.AppendComparisons (
-                  Arg<StringBuilder>.Matches (sb => sb.ToString () == "DELETE FROM [customSchema].[Table] WHERE "),
-                  Arg.Is (_dbCommandStub),
-                  Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       var result = builder.Create (_commandExecutionContextStub);

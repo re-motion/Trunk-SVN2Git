@@ -46,12 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
 
       _insertedColumnsSpecificationStub = MockRepository.GenerateStub<IInsertedColumnsSpecification>();
-      _insertedColumnsSpecificationStub
-          .Stub (stub => stub.AppendColumnNames (Arg<StringBuilder>.Is.Anything, Arg<IDbCommand>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
-      _insertedColumnsSpecificationStub
-          .Stub (stub => stub.AppendColumnValues (Arg<StringBuilder>.Is.Anything, Arg<IDbCommand>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("5, 'test', true"));
 
       _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect> ();
       _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
@@ -76,6 +70,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Expect (stub => stub.DelimitIdentifier ("Table")).Return ("[Table]");
       _sqlDialectMock.Replay ();
 
+      _insertedColumnsSpecificationStub
+          .Stub (stub => stub.AppendColumnNames (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
+      _insertedColumnsSpecificationStub
+          .Stub (stub => stub.AppendColumnValues (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("5, 'test', true"));
+
       var result = builder.Create (_commandExecutionContextStub);
 
       _sqlDialectMock.VerifyAllExpectations ();
@@ -91,6 +92,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
       _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
       _sqlDialectMock.Replay ();
+
+      _insertedColumnsSpecificationStub
+          .Stub (stub => stub.AppendColumnNames (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
+      _insertedColumnsSpecificationStub
+          .Stub (stub => stub.AppendColumnValues (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("5, 'test', true"));
 
       var result = builder.Create (_commandExecutionContextStub);
 

@@ -85,11 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Replay();
 
       _comparedColumnsSpecificationStub
-          .Stub (
-              stub => stub.AppendComparisons (
-                  Arg<StringBuilder>.Matches (sb => sb.ToString () == "SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE "),
-                  Arg.Is (_dbCommandStub),
-                  Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
@@ -118,11 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectMock.Replay();
 
       _comparedColumnsSpecificationStub
-          .Stub (
-              stub => stub.AppendComparisons (
-                  Arg<StringBuilder>.Matches (sb => sb.ToString() == "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE "),
-                  Arg.Is(_dbCommandStub),
-                  Arg.Is(_sqlDialectMock)))
+          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
       
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);

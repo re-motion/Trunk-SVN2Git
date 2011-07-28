@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     private readonly ISqlDialect _sqlDialect;
     private readonly IValueConverter _valueConverter;
 
-    // TODO: Remove as soon as command builders have been rewritten
+    // TODO Review 4171: Remove
     private readonly IStorageNameProvider _storageNameProvider;
 
     /// <summary>

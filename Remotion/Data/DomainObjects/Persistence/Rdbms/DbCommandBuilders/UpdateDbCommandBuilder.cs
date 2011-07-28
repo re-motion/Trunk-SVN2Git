@@ -17,14 +17,13 @@
 using System;
 using System.Data;
 using System.Text;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
+  // TODO Review 4171: Doc comment
   public class UpdateDbCommandBuilder : DbCommandBuilder
   {
     private readonly TableDefinition _tableDefinition;

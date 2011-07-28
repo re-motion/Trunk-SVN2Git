@@ -21,8 +21,7 @@ using System.Text;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
-  /// <see cref="IUpdatedColumnsSpecification"/> defines the API for all implementations that specify the columns tu update with the specified values 
-  /// in a relational  database.
+  /// <see cref="IUpdatedColumnsSpecification"/> defines the API for all implementations that specify columns to be updated in a SQL statement.
   /// </summary>
   public interface IUpdatedColumnsSpecification
   {

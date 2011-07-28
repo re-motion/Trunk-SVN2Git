@@ -62,6 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void AppendColumnValueAssignments ()
     {
+      // TODO Review 4171: Use special syntax instead of SQL Server syntax (also for all other specification tests)
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("ID")).Return ("[ID]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Timestamp")).Return ("[Timestamp]");
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("ID")).Return ("@ID");

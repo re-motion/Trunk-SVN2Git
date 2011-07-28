@@ -176,51 +176,54 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private IEnumerable<Tuple<ObjectID, IDbCommandBuilder>> CreateDbCommandsForSave (IEnumerable<DataContainer> dataContainers)
     {
-      var dataContainersByState = dataContainers.ToLookup (dc => dc.State);
-
-      foreach (var dataContainer in dataContainersByState[StateType.New])
-        yield return Tuple.Create (dataContainer.ID, CreateDbCommandForInsert (dataContainer));
-
-      var changedContainers =
-          dataContainersByState[StateType.New].Concat (dataContainersByState[StateType.Changed]).Concat (dataContainersByState[StateType.Deleted]);
-      foreach (var dataContainer in changedContainers)
+      var insertCommands = new List<Tuple<ObjectID, IDbCommandBuilder>> ();
+      var updateCommands = new List<Tuple<ObjectID, IDbCommandBuilder>> ();
+      var deleteCommands = new List<Tuple<ObjectID, IDbCommandBuilder>> ();
+      
+      foreach (var dataContainer in dataContainers)
       {
-        var dbCommandForUpdate = CreateDbCommandForUpdate (dataContainer);
-        if(dbCommandForUpdate!=null)
-          yield return Tuple.Create (dataContainer.ID, dbCommandForUpdate);
+        var tableDefinition = GetTableDefinition (dataContainer.ID);
+
+        if (dataContainer.State == StateType.New)
+          insertCommands.Add (Tuple.Create (dataContainer.ID, CreateDbCommandForInsert (dataContainer, tableDefinition)));
+        if (dataContainer.State == StateType.Deleted)
+          deleteCommands.Add (Tuple.Create (dataContainer.ID, CreateDbCommandForDelete (dataContainer, tableDefinition)));
+
+        var updatedColumnValues = GetUpdatedColumnValues (dataContainer, tableDefinition);
+        if (updatedColumnValues.Any ())
+        {
+          var dbCommandForUpdate = CreateDbCommandForUpdate (dataContainer, tableDefinition, updatedColumnValues);
+          updateCommands.Add (Tuple.Create (dataContainer.ID, dbCommandForUpdate));
+        }
       }
 
-      foreach (var dataContainer in dataContainersByState[StateType.Deleted])
-        yield return Tuple.Create (dataContainer.ID, CreateDbCommandForDelete (dataContainer));
+      return insertCommands.Concat (updateCommands).Concat (deleteCommands);
     }
 
-    private IDbCommandBuilder CreateDbCommandForUpdate (DataContainer dataContainer)
+    private IDbCommandBuilder CreateDbCommandForUpdate (
+        DataContainer dataContainer, 
+        TableDefinition tableDefinition, 
+        IEnumerable<ColumnValue> updatedColumnValues)
     {
-      var tableDefinition = GetTableDefinition (dataContainer.ID);
-      var updatedColumnValues = GetUpdatedColumnValues(dataContainer, tableDefinition);
-      if (!updatedColumnValues.Any ())
-        return null;
       var updatedColumnsSpecification = new UpdatedColumnsSpecification (updatedColumnValues);
-      var comparedColumnSpecification = new ComparedColumnsSpecification (GetComparedColumnValue(dataContainer, tableDefinition));
+      var comparedColumnSpecification = new ComparedColumnsSpecification (GetComparedColumnValuesForUpdate (dataContainer, tableDefinition));
 
       return _dbCommandBuilderFactory.CreateForUpdate (tableDefinition, updatedColumnsSpecification, comparedColumnSpecification);
     }
 
-    private IEnumerable<ColumnValue> GetComparedColumnValue (DataContainer dataContainer, TableDefinition tableDefinition)
+    private IEnumerable<ColumnValue> GetComparedColumnValuesForUpdate (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
-      if(dataContainer.State!=StateType.New)
-        yield return new ColumnValue(tableDefinition.TimestampColumn, dataContainer.Timestamp);
+      if (dataContainer.State != StateType.New)
+        yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
     }
-
+    
     private ColumnValue[] GetUpdatedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
     {
+      var propertyFilter = GetUpdatedPropertyFilter (dataContainer);
+
       var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue> ()
-          .Where (
-              pv => pv.Definition.StorageClass == StorageClass.Persistent
-                    && ((dataContainer.State == StateType.New && pv.Definition.IsObjectID)
-                    || (dataContainer.State == StateType.Deleted && pv.Definition.IsObjectID)
-                    || (dataContainer.State == StateType.Changed && pv.HasChanged)))
+          .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && propertyFilter (pv))
           .SelectMany (
               pv =>
               {
@@ -243,17 +246,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer)
+    private Func<PropertyValue, bool> GetUpdatedPropertyFilter (DataContainer dataContainer)
     {
-      var tableDefinition = GetTableDefinition (dataContainer.ID);
+      if (dataContainer.State == StateType.New || dataContainer.State == StateType.Deleted)
+        return pv => pv.Definition.IsObjectID;
+      else if (dataContainer.State == StateType.Changed)
+        return pv => pv.HasChanged;
+      else
+        return pv => false;
+    }
+
+    private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
       var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
 
       return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, new InsertedColumnsSpecification (columnValues));
     }
 
-    private IDbCommandBuilder CreateDbCommandForDelete (DataContainer dataContainer)
+    private IDbCommandBuilder CreateDbCommandForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
-      var tableDefinition = GetTableDefinition (dataContainer.ID);
       var columnValues = GetComparedColumnValuesForDelete (dataContainer, tableDefinition);
 
       return _dbCommandBuilderFactory.CreateForDelete (tableDefinition, new ComparedColumnsSpecification (columnValues));
@@ -262,13 +273,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
-      if (MustAddTimestampToWhereClause (dataContainer))
+      var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue> ().Any (propertyValue => propertyValue.Definition.IsObjectID);
+      if (mustAddTimestamp)
         yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
-    }
-
-    private bool MustAddTimestampToWhereClause (DataContainer dataContainer)
-    {
-      return dataContainer.PropertyValues.Cast<PropertyValue>().All (propertyValue => !propertyValue.Definition.IsObjectID);
     }
 
     private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
@@ -336,7 +343,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           new SelectedColumnsSpecification (selectProjection),
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
-          GetOrderedColumns (sortExpression));
+          CreateOrderedColumnsSpecification (sortExpression));
       return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
@@ -352,7 +359,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           new SelectedColumnsSpecification (selectedColumns),
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
-          GetOrderedColumns (sortExpression));
+          CreateOrderedColumnsSpecification (sortExpression));
 
       var objectIDReader = CreateObjectIDReader (unionViewDefinition, selectedColumns);
 
@@ -376,7 +383,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           new FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> (Enumerable.Empty<DataContainer>());
     }
 
-    private IOrderedColumnsSpecification GetOrderedColumns (SortExpressionDefinition sortExpression)
+    private IOrderedColumnsSpecification CreateOrderedColumnsSpecification (SortExpressionDefinition sortExpression)
     {
       if (sortExpression == null)
         return EmptyOrderedColumnsSpecification.Instance;
@@ -389,6 +396,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                     select Tuple.Create (column, sortedProperty.Order);
 
       return new OrderedColumnsSpecification (columns);
+    }
+
+    private ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    {
+      return new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
+          new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
     }
 
     private IObjectReader<DataContainer> CreateDataContainerReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
@@ -415,13 +429,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var timestampPropertyDefinition = GetTimestampStoragePropertyDefinition (entityDefinition);
 
       return new TimestampReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider);
-    }
-
-    private ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
-    {
-      return new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
-          new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
     }
 
     private SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)

@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class UnionRelationLookupSelectDbCommandBuilderTest : StandardMappingTest
   {
-    private ISelectedColumnsSpecification _selectedColumnsStub;
+    private ISelectedColumnsSpecification _originalSelectedColumnsStub;
     private ISqlDialect _sqlDialectMock;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private TableDefinition _table2;
     private TableDefinition _table3;
     private IValueConverter _valueConverterStub;
-    private ISelectedColumnsSpecification _unionedColumnsStub;
+    private ISelectedColumnsSpecification _fullSelectedColumnsStub;
     private ObjectID _objectID;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
 
@@ -52,24 +52,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp();
 
+      _originalSelectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification> ();
+      _fullSelectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification> ();
+      _orderedColumnsStub = MockRepository.GenerateStub<IOrderedColumnsSpecification> ();
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("FKID"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("FKIDClassID"));
-
-      _selectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
-      _selectedColumnsStub
-          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2]"));
-      _unionedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
-      _unionedColumnsStub
-          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
-
-      _orderedColumnsStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
-      _orderedColumnsStub.Stub (stub => stub.UnionWithSelectedColumns (_selectedColumnsStub)).Return (_unionedColumnsStub);
-      _orderedColumnsStub
-          .Stub (stub => stub.AppendOrderByClause (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
-          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" ORDER BY [Column1] ASC, [Column2] DESC"));
 
       _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
       _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
@@ -100,23 +88,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Create_WithOneUnionedTable ()
     {
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
-      _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
-      _sqlDialectMock.Replay();
-
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, null, _table1);
 
       var builder = new UnionRelationLookupSelectDbCommandBuilder (
           unionViewDefinition,
-          _selectedColumnsStub,
+          _originalSelectedColumnsStub,
           _foreignKeyColumnDefinition,
           _objectID,
           _orderedColumnsStub,
           _sqlDialectMock,
           _valueConverterStub);
 
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
+      _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
+      _sqlDialectMock.Replay ();
+
+      _orderedColumnsStub.Stub (stub => stub.UnionWithSelectedColumns (_originalSelectedColumnsStub)).Return (_fullSelectedColumnsStub);
+      _orderedColumnsStub
+          .Stub (stub => stub.AppendOrderByClause (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" ORDER BY [Column1] ASC, [Column2] DESC"));
+
+      _fullSelectedColumnsStub
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
+      
       var result = builder.Create (_commandExecutionContextStub);
 
       Assert.That (
@@ -130,14 +127,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Create_WithSeveralUnionedTables ()
     {
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table2")).Return ("[Table2]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table3")).Return ("[Table3]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
-      _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
-      _sqlDialectMock.Replay();
-
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           null,
@@ -147,12 +136,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       var builder = new UnionRelationLookupSelectDbCommandBuilder (
           unionViewDefinition,
-          _selectedColumnsStub,
+          _originalSelectedColumnsStub,
           _foreignKeyColumnDefinition,
           _objectID,
           _orderedColumnsStub,
           _sqlDialectMock,
           _valueConverterStub);
+
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table2")).Return ("[Table2]");
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table3")).Return ("[Table3]");
+      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
+      _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
+      _sqlDialectMock.Replay ();
+
+      _orderedColumnsStub.Stub (stub => stub.UnionWithSelectedColumns (_originalSelectedColumnsStub)).Return (_fullSelectedColumnsStub);
+      _orderedColumnsStub
+          .Stub (stub => stub.AppendOrderByClause (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append (" ORDER BY [Column1] ASC, [Column2] DESC"));
+
+      _fullSelectedColumnsStub
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectMock)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       var result = builder.Create (_commandExecutionContextStub);
 

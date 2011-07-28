@@ -155,13 +155,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void SplitValue_NullValue ()
     {
-      var columnValue = new ColumnValue (_columnDefinition1, DomainObjectIDs.Order1);
+      var columnValue1 = new ColumnValue (_columnDefinition1, null);
+      var columnValue2 = new ColumnValue (_columnDefinition2, null);
 
-      _objectIDColumn.Stub (stub => stub.SplitValue (null)).Return (new[]{ columnValue });
+      _objectIDColumn.Stub (stub => stub.SplitValue (null)).Return (new[]{ columnValue1 });
+      _classIDColumn.Stub (stub => stub.SplitValue (null)).Return (new[] { columnValue2});
 
       var result = _objectIDStoragePropertyDefinition.SplitValue (null);
 
-      Assert.That (result, Is.EqualTo (new[] { columnValue }));
+      Assert.That (result, Is.EqualTo (new[] { columnValue1, columnValue2 }));
     }
   }
 }

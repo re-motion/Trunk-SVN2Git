@@ -23,6 +23,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
+  // TODO Review 4171: Doc comment
   public class DeleteDbCommandBuilder : DbCommandBuilder
   {
     private readonly TableDefinition _tableDefinition;

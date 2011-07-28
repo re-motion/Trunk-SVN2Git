@@ -899,7 +899,6 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedDerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForBehavioralMixin.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\MultiIDLookupDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\TestableRdbmsProvider.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderTest.cs" />

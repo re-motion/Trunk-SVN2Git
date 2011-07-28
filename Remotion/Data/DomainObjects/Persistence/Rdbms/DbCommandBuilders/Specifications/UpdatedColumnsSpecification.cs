@@ -27,7 +27,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
-  /// <see cref="UpdatedColumnsSpecification"/> defines the API for all implementations that specify the columns to update with the specified columns.
+  /// <see cref="UpdatedColumnsSpecification"/> defines the API for all implementations that specify the columns to update with the specified values.
   /// </summary>
   public class UpdatedColumnsSpecification : IUpdatedColumnsSpecification
   {
@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("dbCommand", dbCommand);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      var columnsWithParameter = _columnValues.Select (
+      var columnsWithParameters = _columnValues.Select (
           cv =>
           {
             var parameter = cv.Column.StorageTypeInfo.CreateDataParameter (dbCommand, cv.Value);
@@ -61,7 +61,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
           });
 
       var updateStatement = SeparatedStringBuilder.Build (
-          ", ", columnsWithParameter, cp => string.Format ("{0} = {1}", sqlDialect.DelimitIdentifier (cp.ColumnDefinition.Name), cp.Parameter.ParameterName));
+          ", ", 
+          columnsWithParameters, 
+          cp => string.Format ("{0} = {1}", sqlDialect.DelimitIdentifier (cp.ColumnDefinition.Name), cp.Parameter.ParameterName));
       statement.Append (updateStatement);
     }
   }

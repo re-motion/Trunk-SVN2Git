@@ -96,14 +96,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var foreignKeyParameter = AddCommandParameter (command, lookupColumn.Name, _foreignKeyValue);
       AppendComparingWhereClause (statement, lookupColumn, foreignKeyParameter);
       
-      // TODO in case of integer primary keys: 
-      // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,
-      // the code below must be selectively actived to run only for integer primary keys.
-      // Note: This behaviour is not desired in case of GUID primary keys, because two same foreign key GUIDs pointing 
-      //       to different classIDs must be an error! In this case PersistenceManager.CheckClassIDForVirtualEndPoint raises an exception. 
-      //if (_foreignKeyValue.ClassDefinition.IsPartOfInheritanceHierarchy && ValueProvider.IsOfSameStorageProvider (_foreignKeyValue))
-      //  statement.Append (" AND ").Append (Delimit(_foreignKeyColumn.classIDProperty.Name)).Append (" = ").Append (ParameterOf (_foreignKeyValue.ClassID));
-
       AppendOrderByClause(statement, _orderedColumns);
       statement.Append (SqlDialect.StatementDelimiter);
 
