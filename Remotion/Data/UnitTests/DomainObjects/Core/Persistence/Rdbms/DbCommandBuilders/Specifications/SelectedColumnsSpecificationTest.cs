@@ -41,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
       _specification = new SelectedColumnsSpecification (new[] { _column1, _column2, _column3 });
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[Column1]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column2")).Return ("[Column2]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column3")).Return ("[Column3]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[delimited Column1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column2")).Return ("[delimited Column2]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column3")).Return ("[delimited Column3]");
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _specification.AppendProjection (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString(), Is.EqualTo ("[Column1], [Column2], [Column3]"));
+      Assert.That (sb.ToString(), Is.EqualTo ("[delimited Column1], [delimited Column2], [delimited Column3]"));
     }
 
     [Test]

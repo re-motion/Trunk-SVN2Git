@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class SelectDbCommandBuilderTest : StandardMappingTest
   {
     private ISelectedColumnsSpecification _selectedColumnsStub;
-    private ISqlDialect _sqlDialectMock;
+    private ISqlDialect _sqlDialectStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
-      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
-      _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
+      _sqlDialectStub.Stub (stub => stub.StatementDelimiter).Return (";");
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
 
@@ -78,23 +78,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           tableDefinition,
           _selectedColumnsStub,
           _comparedColumnsSpecificationStub,
-          _sqlDialectMock,
+          _sqlDialectStub,
           _valueConverterStub);
 
-      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
-      _sqlDialectMock.Replay();
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
       _comparedColumnsSpecificationStub
-          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      _sqlDialectMock.VerifyAllExpectations();
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [Table] WHERE [ID] = @ID;"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [delimited Table] WHERE [ID] = @ID;"));
     }
 
     [Test]
@@ -106,24 +103,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           tableDefinition,
           _selectedColumnsStub,
           _comparedColumnsSpecificationStub,
-          _sqlDialectMock,
+          _sqlDialectStub,
           _valueConverterStub);
 
-      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
-      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
-      _sqlDialectMock.Replay();
+      _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
+      _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
       _comparedColumnsSpecificationStub
-          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
       
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      _sqlDialectMock.VerifyAllExpectations();
-
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table] WHERE [ID] = @ID;"));
+      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [delimited customSchema].[delimited Table] WHERE [ID] = @ID;"));
     }
   }
 }

@@ -62,22 +62,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void AppendColumnValueAssignments ()
     {
-      // TODO Review 4171: Use special syntax instead of SQL Server syntax (also for all other specification tests)
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("ID")).Return ("[ID]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Timestamp")).Return ("[Timestamp]");
-      _sqlDialectStub.Stub (stub => stub.GetParameterName ("ID")).Return ("@ID");
-      _sqlDialectStub.Stub (stub => stub.GetParameterName ("Timestamp")).Return ("@Timestamp");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("ID")).Return ("[delimited ID]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Timestamp")).Return ("[delimited Timestamp]");
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("ID")).Return ("pID");
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("Timestamp")).Return ("pTimestamp");
 
       var parameter1StrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameter1StrictMock.Expect (mock => mock.ParameterName = "@ID");
-      parameter1StrictMock.Expect (mock => mock.ParameterName).Return ("@ID");
+      parameter1StrictMock.Expect (mock => mock.ParameterName = "pID");
+      parameter1StrictMock.Expect (mock => mock.ParameterName).Return ("pID");
       parameter1StrictMock.Expect (mock => mock.Value = _value1);
       parameter1StrictMock.Expect (mock => mock.DbType = DbType.Guid);
       parameter1StrictMock.Replay ();
 
       var parameter2StrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameter2StrictMock.Expect (mock => mock.ParameterName = "@Timestamp");
-      parameter2StrictMock.Expect (mock => mock.ParameterName).Return ("@Timestamp");
+      parameter2StrictMock.Expect (mock => mock.ParameterName = "pTimestamp");
+      parameter2StrictMock.Expect (mock => mock.ParameterName).Return ("pTimestamp");
       parameter2StrictMock.Expect (mock => mock.Value = _value2);
       parameter2StrictMock.Expect (mock => mock.DbType = DbType.DateTime);
       parameter2StrictMock.Replay ();
@@ -97,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       dataParameterCollectionMock.VerifyAllExpectations ();
       parameter1StrictMock.VerifyAllExpectations ();
       parameter2StrictMock.VerifyAllExpectations ();
-      Assert.That (_statement.ToString (), Is.EqualTo ("[ID] = @ID, [Timestamp] = @Timestamp"));
+      Assert.That (_statement.ToString (), Is.EqualTo ("[delimited ID] = pID, [delimited Timestamp] = pTimestamp"));
       Assert.That (_dbCommandStub.Parameters, Is.SameAs (dataParameterCollectionMock));
     }
   }

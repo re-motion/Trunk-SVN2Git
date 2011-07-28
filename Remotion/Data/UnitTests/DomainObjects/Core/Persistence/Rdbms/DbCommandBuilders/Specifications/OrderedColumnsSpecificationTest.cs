@@ -50,9 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
                   Tuple.Create (_column3, SortOrder.Ascending)
               });
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[Column1]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column2")).Return ("[Column2]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column3")).Return ("[Column3]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[delimited Column1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column2")).Return ("[delimited Column2]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column3")).Return ("[delimited Column3]");
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _specification.AppendOrderings (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString(), Is.EqualTo ("[Column1] ASC, [Column2] DESC, [Column3] ASC"));
+      Assert.That (sb.ToString(), Is.EqualTo ("[delimited Column1] ASC, [delimited Column2] DESC, [delimited Column3] ASC"));
     }
 
     [Test]
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _specification.AppendOrderings (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString (), Is.EqualTo ("test [Column1] ASC, [Column2] DESC, [Column3] ASC"));
+      Assert.That (sb.ToString (), Is.EqualTo ("test [delimited Column1] ASC, [delimited Column2] DESC, [delimited Column3] ASC"));
     }
 
     [Test]

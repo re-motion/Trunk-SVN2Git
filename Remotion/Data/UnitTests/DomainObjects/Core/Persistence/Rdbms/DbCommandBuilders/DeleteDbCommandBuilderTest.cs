@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   {
     private IValueConverter _valueConverterStub;
     private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
-    private ISqlDialect _sqlDialectMock;
+    private ISqlDialect _sqlDialectStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
     private IDbCommand _dbCommandStub;
@@ -46,8 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
       _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification> ();
 
-      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect> ();
-      _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
+      _sqlDialectStub.Stub (stub => stub.StatementDelimiter).Return (";");
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
 
@@ -66,20 +66,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var builder = new DeleteDbCommandBuilder (
           tableDefinition,
           _comparedColumnsSpecificationStub,
-          _sqlDialectMock,
+          _sqlDialectStub,
           _valueConverterStub);
 
-      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
-      _sqlDialectMock.Replay ();
+      _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
       _comparedColumnsSpecificationStub
-          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      _sqlDialectMock.VerifyAllExpectations ();
-      Assert.That (result.CommandText, Is.EqualTo ("DELETE FROM [Table] WHERE [ID] = @ID;"));
+      Assert.That (result.CommandText, Is.EqualTo ("DELETE FROM [delimited Table] WHERE [ID] = @ID;"));
     }
 
     [Test]
@@ -89,21 +87,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var builder = new DeleteDbCommandBuilder (
           tableDefinition,
           _comparedColumnsSpecificationStub,
-          _sqlDialectMock,
+          _sqlDialectStub,
           _valueConverterStub);
 
-      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[Table]");
-      _sqlDialectMock.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
-      _sqlDialectMock.Replay ();
+      _sqlDialectStub.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
+      _sqlDialectStub.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
 
       _comparedColumnsSpecificationStub
-          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      _sqlDialectMock.VerifyAllExpectations ();
-      Assert.That (result.CommandText, Is.EqualTo ("DELETE FROM [customSchema].[Table] WHERE [ID] = @ID;"));
+      Assert.That (result.CommandText, Is.EqualTo ("DELETE FROM [delimited customSchema].[delimited Table] WHERE [ID] = @ID;"));
     }
   }
 }

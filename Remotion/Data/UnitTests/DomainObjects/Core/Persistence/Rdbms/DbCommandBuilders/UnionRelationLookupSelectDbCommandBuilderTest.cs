@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class UnionRelationLookupSelectDbCommandBuilderTest : StandardMappingTest
   {
     private ISelectedColumnsSpecification _originalSelectedColumnsStub;
-    private ISqlDialect _sqlDialectMock;
+    private ISqlDialect _sqlDialectStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
@@ -59,8 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("FKID"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("FKIDClassID"));
 
-      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
-      _sqlDialectMock.Stub (stub => stub.StatementDelimiter).Return (";");
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
+      _sqlDialectStub.Stub (stub => stub.StatementDelimiter).Return (";");
 
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
 
@@ -96,33 +96,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _foreignKeyColumnDefinition,
           _objectID,
           _orderedColumnsStub,
-          _sqlDialectMock,
+          _sqlDialectStub,
           _valueConverterStub);
 
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
-      _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
-      _sqlDialectMock.Replay ();
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[delimited Table1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[delimited FKID]");
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("FKID")).Return ("pFKID");
 
       _orderedColumnsStub.Stub (stub => stub.UnionWithSelectedColumns (_originalSelectedColumnsStub)).Return (_fullSelectedColumnsStub);
       _orderedColumnsStub.Stub (stub => stub.IsEmpty).Return (false);
       _orderedColumnsStub
-          .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1] ASC, [Column2] DESC"));
 
       _fullSelectedColumnsStub
-          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
       
       var result = builder.Create (_commandExecutionContextStub);
 
       Assert.That (
           result.CommandText,
-          Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [Table1] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
+          Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [delimited Table1] WHERE [delimited FKID] = pFKID ORDER BY [Column1] ASC, [Column2] DESC;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
       _dataParameterCollectionMock.VerifyAllExpectations();
-      _sqlDialectMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -141,25 +139,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _foreignKeyColumnDefinition,
           _objectID,
           _orderedColumnsStub,
-          _sqlDialectMock,
+          _sqlDialectStub,
           _valueConverterStub);
 
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[customSchema]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[Table1]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table2")).Return ("[Table2]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("Table3")).Return ("[Table3]");
-      _sqlDialectMock.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[FKID]");
-      _sqlDialectMock.Stub (stub => stub.GetParameterName ("FKID")).Return ("@FKID");
-      _sqlDialectMock.Replay ();
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[delimited Table1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table2")).Return ("[delimited Table2]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table3")).Return ("[delimited Table3]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("FKID")).Return ("[delimited FKID]");
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("FKID")).Return ("pFKID");
 
       _orderedColumnsStub.Stub (stub => stub.UnionWithSelectedColumns (_originalSelectedColumnsStub)).Return (_fullSelectedColumnsStub);
       _orderedColumnsStub.Stub (stub => stub.IsEmpty).Return (false);
       _orderedColumnsStub
-          .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1] ASC, [Column2] DESC"));
 
       _fullSelectedColumnsStub
-          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectMock)))
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       var result = builder.Create (_commandExecutionContextStub);
@@ -167,12 +164,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       Assert.That (
           result.CommandText,
           Is.EqualTo (
-              "SELECT [Column1], [Column2], [Column3] FROM [Table1] WHERE [FKID] = @FKID UNION ALL "
-              + "SELECT [Column1], [Column2], [Column3] FROM [Table2] WHERE [FKID] = @FKID UNION ALL "
-              + "SELECT [Column1], [Column2], [Column3] FROM [customSchema].[Table3] WHERE [FKID] = @FKID ORDER BY [Column1] ASC, [Column2] DESC;"));
+              "SELECT [Column1], [Column2], [Column3] FROM [delimited Table1] WHERE [delimited FKID] = pFKID UNION ALL "
+              + "SELECT [Column1], [Column2], [Column3] FROM [delimited Table2] WHERE [delimited FKID] = pFKID UNION ALL "
+              + "SELECT [Column1], [Column2], [Column3] FROM [delimited customSchema].[delimited Table3] WHERE [delimited FKID] = pFKID ORDER BY [Column1] ASC, [Column2] DESC;"));
       Assert.That (_dbDataParameterStub.Value, Is.EqualTo (_guid));
       _dataParameterCollectionMock.VerifyAllExpectations();
-      _sqlDialectMock.VerifyAllExpectations();
+      _sqlDialectStub.VerifyAllExpectations();
     }
   }
 }
