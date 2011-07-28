@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private PropertyInfo _propertyInfoStub;
 
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
-    private StorageTypeCalculator _storageTypeCalculatorStub;
+    private ITypeInformationProvider _storageTypeCalculatorStub;
     private IStorageNameProvider _storageNameProviderStub;
 
     private ClassDefinition _classWithAllDataTypesDefinition;
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _propertyInfoStub = typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty");
       
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> ();
+      _storageTypeCalculatorStub = MockRepository.GenerateStub<ITypeInformationProvider> ();
       _storageTypeCalculatorStub.Stub (stub => stub.ClassIDStorageType).Return (
           new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()));
       _storageTypeCalculatorStub.Stub (stub => stub.ObjectIDStorageType).Return (

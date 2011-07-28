@@ -489,7 +489,7 @@
     <Compile Include="Persistence\Model\IStorageEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionVisitor.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\StorageTypeCalculator.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\ITypeInformationProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\RdbmsPersistenceModelLoader.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\Building\SqlStorageTypeCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\TableDefinition.cs" />

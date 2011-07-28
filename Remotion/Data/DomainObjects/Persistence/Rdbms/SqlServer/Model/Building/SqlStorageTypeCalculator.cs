@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
@@ -29,40 +28,40 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
   /// <summary>
   /// <see cref="SqlStorageTypeCalculator"/> calculates the SQL Server-specific type for a column in a relational database.
   /// </summary>
-  public class SqlStorageTypeCalculator : StorageTypeCalculator
+  public class SqlStorageTypeCalculator : ITypeInformationProvider
   {
     public SqlStorageTypeCalculator ()
     {
     }
 
-    public override StorageTypeInformation ObjectIDStorageType
+    public virtual StorageTypeInformation ObjectIDStorageType
     {
       get { return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid?), new DefaultConverter (typeof(Guid?))); }
     }
 
-    public override StorageTypeInformation SerializedObjectIDStorageType
+    public virtual StorageTypeInformation SerializedObjectIDStorageType
     {
       get { return new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new DefaultConverter (typeof (string))); }
     }
 
-    public override StorageTypeInformation ClassIDStorageType
+    public virtual StorageTypeInformation ClassIDStorageType
     {
       get { return new StorageTypeInformation ("varchar (100)", DbType.String, typeof (string), new DefaultConverter (typeof (string))); }
     }
 
-    public override StorageTypeInformation TimestampStorageType
+    public virtual StorageTypeInformation TimestampStorageType
     {
       get { return new StorageTypeInformation ("rowversion", DbType.Binary, typeof (byte[]), new DefaultConverter(typeof(byte[]))); }
     }
 
-    public override bool IsTypeSupported(Type type)
+    public virtual bool IsTypeSupported(Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
       return GetStorageType (type, null) != null;
     }
 
-    public override StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
+    public virtual StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
@@ -72,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return storageType;
     }
 
-    public override StorageTypeInformation GetStorageType (Type type)
+    public virtual StorageTypeInformation GetStorageType (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 

@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   [TestFixture]
   public class InfrastructureStoragePropertyDefinitionProviderTest : StandardMappingTest
   {
-    private StorageTypeCalculator _storageTypeCalculatorStub;
+    private ITypeInformationProvider _storageTypeCalculatorStub;
     private IStorageNameProvider _storageNameProviderStub;
 
     private InfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       base.SetUp();
 
-      _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> ();
+      _storageTypeCalculatorStub = MockRepository.GenerateStub<ITypeInformationProvider> ();
       _storageTypeCalculatorStub.Stub (stub => stub.ClassIDStorageType).Return (
           new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()));
       _storageTypeCalculatorStub.Stub (stub => stub.ObjectIDStorageType).Return (

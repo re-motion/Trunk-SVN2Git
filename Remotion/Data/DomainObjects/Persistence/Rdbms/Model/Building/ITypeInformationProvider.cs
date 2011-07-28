@@ -21,23 +21,17 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// <see cref="StorageTypeCalculator"/> is the base class for type-calculator implementations which determine the storage-specific type for a 
+  /// <see cref="ITypeInformationProvider"/> is the base class for type-calculator implementations which determine the storage-specific type for a 
   /// storable column definition.
   /// </summary>
-  public abstract class StorageTypeCalculator
+  public interface ITypeInformationProvider
   {
-    public abstract StorageTypeInformation ObjectIDStorageType { get; }
-    public abstract StorageTypeInformation SerializedObjectIDStorageType { get; }
-    public abstract StorageTypeInformation ClassIDStorageType { get; }
-    public abstract StorageTypeInformation TimestampStorageType { get; }
-
-    protected StorageTypeCalculator ()
-    {
-    }
-
-    public abstract bool IsTypeSupported (Type type);
-    public abstract StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition);
-    public abstract StorageTypeInformation GetStorageType (Type type);
-
+    StorageTypeInformation ObjectIDStorageType { get; }
+    StorageTypeInformation SerializedObjectIDStorageType { get; }
+    StorageTypeInformation ClassIDStorageType { get; }
+    StorageTypeInformation TimestampStorageType { get; }
+    bool IsTypeSupported (Type type);
+    StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition);
+    StorageTypeInformation GetStorageType (Type type);
   }
 }

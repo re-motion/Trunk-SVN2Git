@@ -28,12 +28,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class DataStoragePropertyDefinitionFactory : IDataStoragePropertyDefinitionFactory
   {
-    private readonly StorageTypeCalculator _storageTypeCalculator;
+    private readonly ITypeInformationProvider _storageTypeCalculator;
     private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
     private readonly IStorageNameProvider _storageNameProvider;
 
     public DataStoragePropertyDefinitionFactory (
-        StorageTypeCalculator storageTypeCalculator,
+        ITypeInformationProvider storageTypeCalculator,
         IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder)
     {

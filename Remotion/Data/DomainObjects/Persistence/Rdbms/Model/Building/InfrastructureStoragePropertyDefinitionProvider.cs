@@ -26,11 +26,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class InfrastructureStoragePropertyDefinitionProvider : IInfrastructureStoragePropertyDefinitionProvider
   {
-    private readonly StorageTypeCalculator _storageTypeCalculator;
+    private readonly ITypeInformationProvider _storageTypeCalculator;
     private readonly IStorageNameProvider _storageNameProvider;
 
     public InfrastructureStoragePropertyDefinitionProvider (
-        StorageTypeCalculator storageTypeCalculator,
+        ITypeInformationProvider storageTypeCalculator,
         IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("storageTypeCalculator", storageTypeCalculator);
