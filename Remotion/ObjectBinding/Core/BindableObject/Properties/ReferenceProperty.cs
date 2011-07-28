@@ -61,15 +61,18 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///   <see langword="true"/> if it is possible to get the available objects from the object model. 
     /// </returns>
     /// <remarks>
-    /// <para>
-    ///   Use the <see cref="SearchAvailableObjects"/> method to get the list of objects.
-    /// </para><para>
-    ///   The <see cref="ISearchAvailableObjectsService.SupportsProperty"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
-    ///   is evaluated in order to determine the return value of this property.
-    /// </para>
+    ///   <para>
+    ///     Use the <see cref="SearchAvailableObjects"/> method to get the list of objects.
+    ///   </para><para>
+    ///     The <see cref="ISearchAvailableObjectsService.SupportsProperty"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
+    ///     is evaluated in order to determine the return value of this property.
+    ///   </para><para>
+    ///     See <see cref="SearchAvailableObjects"/> on how to specify the <see cref="ISearchAvailableObjectsService"/>.
+    ///   </para>
     /// </remarks>
     /// <seealso cref="SearchAvailableObjectsServiceTypeAttribute"/>
     /// <seealso cref="ISearchAvailableObjectsService"/>
+    /// <seealso cref="SearchAvailableObjects"/>
     public bool SupportsSearchAvailableObjects
     {
       get
@@ -98,10 +101,48 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///   Thrown if <see cref="SupportsSearchAvailableObjects"/> evaluated <see langword="false"/> but this method has been called anyways.
     /// </exception>
     /// <remarks>
-    ///   The implementation delegates to the <see cref="ISearchAvailableObjectsService.Search"/> method of the <see cref="ISearchAvailableObjectsService"/> interface.
+    ///   <para>
+    ///     The implementation delegates to the <see cref="ISearchAvailableObjectsService.Search"/> method of the <see cref="ISearchAvailableObjectsService"/> interface.
+    ///   </para><para>
+    ///   The service lookup uses the following logic to retrieve the service from the <see cref="IBusinessObjectProvider"/>:
+    ///   <list type="table">
+    ///     <item>
+    ///       <term>
+    ///         The <see cref="SearchAvailableObjectsServiceTypeAttribute"/> is declared on the property itself.
+    ///       </term>
+    ///       <description>
+    ///         The service <see cref="Type"/> declared by the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>'s <see cref="SearchAvailableObjectsServiceTypeAttribute.Type"/>
+    ///         property is used to retrieve the specifc implementation of the <see cref="ISearchAvailableObjectsService"/> 
+    ///         from the <see cref="PropertyBase.BusinessObjectProvider"/> of the <see cref="ReferenceProperty"/>.
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         The <see cref="SearchAvailableObjectsServiceTypeAttribute"/> is declared on the property's <see cref="Type"/>.
+    ///       </term>
+    ///       <description>
+    ///         The service <see cref="Type"/> declared by the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>'s <see cref="SearchAvailableObjectsServiceTypeAttribute.Type"/>
+    ///         property is used to retrieve the specifc implementation of the <see cref="ISearchAvailableObjectsService"/> 
+    ///         from the <see cref="IBusinessObjectClass.BusinessObjectProvider"/> of the <see cref="ReferenceProperty"/>'s <see cref="ReferenceClass"/>.
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         No <see cref="SearchAvailableObjectsServiceTypeAttribute"/> has been declared.
+    ///       </term>
+    ///       <description>
+    ///         An instance of the <see cref="ISearchAvailableObjectsService"/> is retrieved from the <see cref="PropertyBase.BusinessObjectProvider"/> of the 
+    ///         <see cref="ReferenceProperty"/>.
+    ///       </description>
+    ///     </item>
+    ///   </list>
+    ///   If no service was registered on the <see cref="IBusinessObjectProvider"/> for the specified <see cref="Type"/>, the feature is disabled and 
+    ///   <see cref="SupportsDelete"/> will evaluate <see langword="false"/>.
+    /// </para>
     /// </remarks>
     /// <seealso cref="SearchAvailableObjectsServiceTypeAttribute"/>
     /// <seealso cref="ISearchAvailableObjectsService"/>
+    /// <seealso cref="SupportsSearchAvailableObjects"/>
     public IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, ISearchAvailableObjectsArguments searchArguments)
     {
       if (!SupportsSearchAvailableObjects)
@@ -124,11 +165,17 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///   to implicitly create a new <see cref="IBusinessObject"/> instance for editing in case the object reference is <see langword="null" />.
     /// </summary>
     /// <remarks>
-    ///   The <see cref="IDefaultValueService.SupportsProperty"/> method of the <see cref="IDefaultValueService"/> interface 
-    ///   is evaluated in order to determine the return value of this property.
+    ///   <para>
+    ///     The <see cref="IDefaultValueService.SupportsProperty"/> method of the <see cref="IDefaultValueService"/> interface 
+    ///     is evaluated in order to determine the return value of this property.
+    ///   </para><para>
+    ///     See <see cref="CreateDefaultValue"/> on how to specify the <see cref="IDefaultValueService"/>.
+    ///   </para>
     /// </remarks>
     /// <seealso cref="DefaultValueServiceTypeAttribute"/>
     /// <seealso cref="IDefaultValueService"/>
+    /// <seealso cref="CreateDefaultValue"/>
+    /// <seealso cref="IsDefaultValue"/>
     public bool SupportsDefaultValue
     {
       get
@@ -151,10 +198,49 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
     /// </exception>
     /// <remarks>
-    /// The implementation delegates to the <see cref="IDefaultValueService.Create"/> method of the <see cref="IDefaultValueService"/> interface.
+    ///   <para>
+    ///     The implementation delegates to the <see cref="IDefaultValueService.Create"/> method of the <see cref="IDefaultValueService"/> interface.
+    ///   </para><para>
+    ///   The service lookup uses the following logic to retrieve the service from the <see cref="IBusinessObjectProvider"/>:
+    ///   <list type="table">
+    ///     <item>
+    ///       <term>
+    ///         The <see cref="DefaultValueServiceTypeAttribute"/> is declared on the property itself.
+    ///       </term>
+    ///       <description>
+    ///         The service <see cref="Type"/> declared by the <see cref="DefaultValueServiceTypeAttribute"/>'s <see cref="DefaultValueServiceTypeAttribute.Type"/>
+    ///         property is used to retrieve the specifc implementation of the <see cref="IDefaultValueService"/> 
+    ///         from the <see cref="PropertyBase.BusinessObjectProvider"/> of the <see cref="ReferenceProperty"/>.
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         The <see cref="DefaultValueServiceTypeAttribute"/> is declared on the property's <see cref="Type"/>.
+    ///       </term>
+    ///       <description>
+    ///         The service <see cref="Type"/> declared by the <see cref="DefaultValueServiceTypeAttribute"/>'s <see cref="DefaultValueServiceTypeAttribute.Type"/>
+    ///         property is used to retrieve the specifc implementation of the <see cref="IDefaultValueService"/> 
+    ///         from the <see cref="IBusinessObjectClass.BusinessObjectProvider"/> of the <see cref="ReferenceProperty"/>'s <see cref="ReferenceClass"/>.
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         No <see cref="DefaultValueServiceTypeAttribute"/> has been declared.
+    ///       </term>
+    ///       <description>
+    ///         An instance of the <see cref="IDefaultValueService"/> is retrieved from the <see cref="PropertyBase.BusinessObjectProvider"/> of the 
+    ///         <see cref="ReferenceProperty"/>.
+    ///       </description>
+    ///     </item>
+    ///   </list>
+    ///   If no service was registered on the <see cref="IBusinessObjectProvider"/> for the specified <see cref="Type"/>, the feature is disabled and 
+    ///   <see cref="SupportsDelete"/> will evaluate <see langword="false"/>.
+    /// </para>
     /// </remarks>
     /// <seealso cref="DefaultValueServiceTypeAttribute"/>
     /// <seealso cref="IDefaultValueService"/>
+    /// <seealso cref="SupportsDefaultValue"/>
+    /// <seealso cref="IsDefaultValue"/>
     public IBusinessObject CreateDefaultValue (IBusinessObject referencingObject)
     {
       if (!SupportsDefaultValue)
@@ -191,10 +277,16 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///   Thrown if this method is called although <see cref="SupportsDefaultValue"/> evaluated <see langword="false"/>. 
     /// </exception>
     /// <remarks>
-    /// The implementation delegates to the <see cref="IDefaultValueService.IsDefaultValue"/> method of the <see cref="IDefaultValueService"/> interface.
+    ///   <para>
+    ///     The implementation delegates to the <see cref="IDefaultValueService.IsDefaultValue"/> method of the <see cref="IDefaultValueService"/> interface.
+    ///   </para><para>
+    ///     See <see cref="CreateDefaultValue"/> on how to specify the <see cref="IDefaultValueService"/>.
+    ///   </para> 
     /// </remarks>
     /// <seealso cref="DefaultValueServiceTypeAttribute"/>
     /// <seealso cref="IDefaultValueService"/>
+    /// <seealso cref="SupportsDefaultValue"/>
+    /// <seealso cref="CreateDefaultValue"/>
     public bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -219,11 +311,16 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///   Gets a flag indicating if <see cref="Delete"/> may be called to automatically delete the current value of this object reference.
     /// </summary>
     /// <remarks>
-    /// The <see cref="IDeleteObjectService.SupportsProperty"/> method of the <see cref="IDeleteObjectService"/> interface 
-    /// is evaluated in order to determine the return value of this property.
+    /// <para>
+    ///   The <see cref="IDeleteObjectService.SupportsProperty"/> method of the <see cref="IDeleteObjectService"/> interface 
+    ///   is evaluated in order to determine the return value of this property.
+    /// </para><para>
+    ///   See <see cref="Delete"/> on how to specify the <see cref="IDeleteObjectService"/>.
+    /// </para>
     /// </remarks>
     /// <seealso cref="DeleteObjectServiceTypeAttribute"/>
     /// <seealso cref="IDeleteObjectService"/>
+    /// <seealso cref="Delete"/>
     public bool SupportsDelete
     {
       get
@@ -249,10 +346,48 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///   Thrown if this method is called although <see cref="SupportsDelete"/> evaluated <see langword="false"/>. 
     /// </exception>
     /// <remarks>
-    /// The implementation delegates to the <see cref="IDeleteObjectService.Delete"/> method of the <see cref="IDeleteObjectService"/> interface.
+    /// <para>
+    ///   The implementation delegates to the <see cref="IDeleteObjectService.Delete"/> method of the <see cref="IDeleteObjectService"/> interface.
+    /// </para><para>
+    ///   The service lookup uses the following logic to retrieve the service from the <see cref="IBusinessObjectProvider"/>:
+    ///   <list type="table">
+    ///     <item>
+    ///       <term>
+    ///         The <see cref="DeleteObjectServiceTypeAttribute"/> is declared on the property itself.
+    ///       </term>
+    ///       <description>
+    ///         The service <see cref="Type"/> declared by the <see cref="DeleteObjectServiceTypeAttribute"/>'s <see cref="DeleteObjectServiceTypeAttribute.Type"/>
+    ///         property is used to retrieve the specifc implementation of the <see cref="IDeleteObjectService"/> 
+    ///         from the <see cref="PropertyBase.BusinessObjectProvider"/> of the <see cref="ReferenceProperty"/>.
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         The <see cref="DeleteObjectServiceTypeAttribute"/> is declared on the property's <see cref="Type"/>.
+    ///       </term>
+    ///       <description>
+    ///         The service <see cref="Type"/> declared by the <see cref="DeleteObjectServiceTypeAttribute"/>'s <see cref="DeleteObjectServiceTypeAttribute.Type"/>
+    ///         property is used to retrieve the specifc implementation of the <see cref="IDeleteObjectService"/> 
+    ///         from the <see cref="IBusinessObjectClass.BusinessObjectProvider"/> of the <see cref="ReferenceProperty"/>'s <see cref="ReferenceClass"/>.
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         No <see cref="DeleteObjectServiceTypeAttribute"/> has been declared.
+    ///       </term>
+    ///       <description>
+    ///         An instance of the <see cref="IDeleteObjectService"/> is retrieved from the <see cref="PropertyBase.BusinessObjectProvider"/> of the 
+    ///         <see cref="ReferenceProperty"/>.
+    ///       </description>
+    ///     </item>
+    ///   </list>
+    ///   If no service was registered on the <see cref="IBusinessObjectProvider"/> for the specified <see cref="Type"/>, the feature is disabled and 
+    ///   <see cref="SupportsDelete"/> will evaluate <see langword="false"/>.
+    /// </para>
     /// </remarks>
     /// <seealso cref="DeleteObjectServiceTypeAttribute"/>
     /// <seealso cref="IDeleteObjectService"/>
+    /// <seealso cref="SupportsDelete"/>
     public void Delete (IBusinessObject referencingObject, IBusinessObject value)
     {
       ArgumentUtility.CheckNotNull ("value", value);

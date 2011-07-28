@@ -15,15 +15,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  //TODO: doc
   /// <summary>
-  /// 
+  ///   The <see cref="SearchAvailableObjectsServiceTypeAttribute"/> declares the spefic implementation of <see cref="ISearchAvailableObjectsService"/> 
+  ///   to be used by the <see cref="ReferenceProperty"/>'s <see cref="ReferenceProperty.SearchAvailableObjects"/> method when searching 
+  ///   for the list of <see cref="IBusinessObject"/> instances that may be assigned to the property.
   /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///     The <see cref="SearchAvailableObjectsServiceTypeAttribute"/> may be assigned to the property's <see cref="Type"/> or to the property declaration itself, 
+  ///     in case a property specific behavior is required.
+  ///   </para><para>
+  ///     See <see cref="ReferenceProperty.SearchAvailableObjects"/> on how to use the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
+  ///   </para>
+  /// </remarks>
   /// <seealso cref="ISearchAvailableObjectsService"/>
+  /// <seealso cref="ReferenceProperty"/>
+  /// <seealso cref="ReferenceProperty.SearchAvailableObjects"/>
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public sealed class SearchAvailableObjectsServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute<ISearchAvailableObjectsService>
   {
