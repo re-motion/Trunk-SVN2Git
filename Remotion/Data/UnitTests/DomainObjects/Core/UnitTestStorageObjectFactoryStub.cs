@@ -70,9 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
-          new SqlStorageTypeCalculator (), storageNameProvider);
+          new SqlStorageTypeCalculator(), storageNameProvider);
       var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
-          new SqlStorageTypeCalculator (), storageNameProvider, storageProviderDefinitionFinder);
+          new SqlStorageTypeCalculator(), storageNameProvider, storageProviderDefinitionFinder);
       var columnDefinitionResolver = new ColumnDefinitionResolver();
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
@@ -108,7 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
       var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
-      return new DomainObjectQueryExecutor (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
+      var sqlStorageTypeCalculator = ObjectFactory.Create<SqlStorageTypeCalculator> (ParamList.Empty);
+      return new DomainObjectQueryExecutor (
+          startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, sqlStorageTypeCalculator);
     }
   }
 }
