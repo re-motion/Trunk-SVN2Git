@@ -55,11 +55,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       get { return new StorageTypeInformation ("rowversion", DbType.Binary, typeof (byte[]), new DefaultConverter(typeof(byte[]))); }
     }
 
+    public override bool IsTypeSupported(Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      return GetStorageType (type, null) != null;
+    }
+
     public override StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return GetStorageType (propertyDefinition.PropertyType, propertyDefinition.MaxLength);
+      var storageType = GetStorageType (propertyDefinition.PropertyType, propertyDefinition.MaxLength);
+      if (storageType == null)
+        throw new NotSupportedException (string.Format ("Type '{0}' is not supported by this storage provider.", propertyDefinition.PropertyType));
+      return storageType;
+    }
+
+    public override StorageTypeInformation GetStorageType (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      var storageType= GetStorageType (type, null);
+      if(storageType==null)
+        throw new NotSupportedException (string.Format ("Type '{0}' is not supported by this storage provider.", type));
+      return storageType;
     }
 
     private StorageTypeInformation GetStorageType (Type propertyType, int? maxLength)
@@ -117,7 +137,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (propertyType == typeof (Single))
         return new StorageTypeInformation ("real", DbType.Single, typeof (Single), new DefaultConverter (typeof (Single)));
 
-      throw new NotSupportedException (string.Format ("Type '{0}' is not supported by this storage provider.", propertyType));
+      return null;
     }
 
     private StorageTypeInformation GetStorageTypeForNullableValueType (Type type, Type underlyingType, int? maxLength)

@@ -52,6 +52,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
+    public void IsTypeSupported_SupportedType ()
+    {
+      var result = _typeCalculator.IsTypeSupported (typeof (string));
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void IsTypeSupported_UnsupportedType ()
+    {
+      var result = _typeCalculator.IsTypeSupported (typeof (Char));
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
     public void GetStorageType ()
     {
       CheckGetStorageType (
@@ -223,9 +239,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var propertyDefinition = CreatePropertyDefinition (typeof (Char));
 
-      var result = _typeCalculator.GetStorageType (propertyDefinition);
+      _typeCalculator.GetStorageType (propertyDefinition);
+    }
 
-      Assert.That (result, Is.Null);
+    [Test]
+    public void GetStorageType_TypeParameterOverload_SupportedType ()
+    {
+      var result = _typeCalculator.GetStorageType (typeof (string));
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.StorageType, Is.EqualTo ("nvarchar (max)"));
+      Assert.That (result.DbType, Is.EqualTo (DbType.String));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type 'System.Char' is not supported by this storage provider.")]
+    public void GetStorageType_TypeParameterOverload_UnsupportedType ()
+    {
+      _typeCalculator.GetStorageType (typeof (Char));
     }
 
     private void CheckGetStorageType (
