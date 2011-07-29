@@ -21,10 +21,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// <see cref="ITypeInformationProvider"/> is the base class for type-calculator implementations which determine the storage-specific type for a 
+  /// <see cref="IStorageTypeInformationProvider"/> is the base class for type-calculator implementations which determine the storage-specific type for a 
   /// storable column definition.
   /// </summary>
-  public interface ITypeInformationProvider
+  public interface IStorageTypeInformationProvider
   {
     StorageTypeInformation ObjectIDStorageType { get; }
     StorageTypeInformation SerializedObjectIDStorageType { get; }

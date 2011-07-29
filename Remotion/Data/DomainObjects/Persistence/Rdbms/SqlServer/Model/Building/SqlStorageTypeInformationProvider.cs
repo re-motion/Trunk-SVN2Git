@@ -26,11 +26,11 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
 {
   /// <summary>
-  /// <see cref="SqlStorageTypeCalculator"/> calculates the SQL Server-specific type for a column in a relational database.
+  /// <see cref="SqlStorageTypeInformationProvider"/> calculates the SQL Server-specific type for a column in a relational database.
   /// </summary>
-  public class SqlStorageTypeCalculator : ITypeInformationProvider
+  public class SqlStorageTypeInformationProvider : IStorageTypeInformationProvider
   {
-    public SqlStorageTypeCalculator ()
+    public SqlStorageTypeInformationProvider ()
     {
     }
 

@@ -28,20 +28,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class DataStoragePropertyDefinitionFactory : IDataStoragePropertyDefinitionFactory
   {
-    private readonly ITypeInformationProvider _storageTypeCalculator;
+    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
     private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
     private readonly IStorageNameProvider _storageNameProvider;
 
     public DataStoragePropertyDefinitionFactory (
-        ITypeInformationProvider storageTypeCalculator,
+        IStorageTypeInformationProvider storageTypeInformationProvider,
         IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
-      ArgumentUtility.CheckNotNull ("storageTypeCalculator", storageTypeCalculator);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
-      _storageTypeCalculator = storageTypeCalculator;
+      _storageTypeInformationProvider = storageTypeInformationProvider;
       _storageNameProvider = storageNameProvider;
       _providerDefinitionFinder = providerDefinitionFinder;
     }
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (relationEndPointDefinition == null)
       {
         // TODO Review 4167: Catch NotSupportedException here instead of checking for null.
-        var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
+        var storageType = _storageTypeInformationProvider.GetStorageType (propertyDefinition);
         if (storageType == null)
           return new UnsupportedStoragePropertyDefinition();
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         var columnDefinition = new ColumnDefinition (
             _storageNameProvider.GetRelationColumnName (propertyDefinition),
             propertyDefinition.PropertyType,
-            _storageTypeCalculator.SerializedObjectIDStorageType,
+            _storageTypeInformationProvider.SerializedObjectIDStorageType,
             propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
             false);
         return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (columnDefinition));
@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         var valueColumnDefinition = new ColumnDefinition (
             _storageNameProvider.GetRelationColumnName (propertyDefinition),
             propertyDefinition.PropertyType,
-            _storageTypeCalculator.ObjectIDStorageType,
+            _storageTypeInformationProvider.ObjectIDStorageType,
             true,
             false);
 
@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           var classIDColumnDefinition = new ColumnDefinition (
               _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
               typeof (string),
-              _storageTypeCalculator.ClassIDStorageType,
+              _storageTypeInformationProvider.ClassIDStorageType,
               true,
               false);
           return new ObjectIDStoragePropertyDefinition (

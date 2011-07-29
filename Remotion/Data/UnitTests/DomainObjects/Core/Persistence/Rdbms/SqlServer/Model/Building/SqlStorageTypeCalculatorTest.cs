@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlStorageTypeCalculatorTest
   {
-    private SqlStorageTypeCalculator _typeCalculator;
+    private SqlStorageTypeInformationProvider _storageTypeInformationProvider;
 
     // We explicitly want an _int_ enum
     // ReSharper disable EnumUnderlyingTypeIsInt
@@ -48,13 +48,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _typeCalculator = new SqlStorageTypeCalculator ();
+      _storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
     }
 
     [Test]
     public void IsTypeSupported_SupportedType ()
     {
-      var result = _typeCalculator.IsTypeSupported (typeof (string));
+      var result = _storageTypeInformationProvider.IsTypeSupported (typeof (string));
 
       Assert.That (result, Is.True);
     }
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void IsTypeSupported_UnsupportedType ()
     {
-      var result = _typeCalculator.IsTypeSupported (typeof (Char));
+      var result = _storageTypeInformationProvider.IsTypeSupported (typeof (Char));
 
       Assert.That (result, Is.False);
     }
@@ -208,29 +208,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetStorageTypeForSpecialColumns ()
     {
-      Assert.That (_typeCalculator.ObjectIDStorageType.StorageType, Is.EqualTo ("uniqueidentifier"));
-      Assert.That (_typeCalculator.ObjectIDStorageType.DbType, Is.EqualTo (DbType.Guid));
-      Assert.That (_typeCalculator.ObjectIDStorageType.ParameterValueType, Is.EqualTo (typeof (Guid?)));
-      Assert.That (_typeCalculator.ObjectIDStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").SameAs (typeof (Guid?)));
+      Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.StorageType, Is.EqualTo ("uniqueidentifier"));
+      Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.DbType, Is.EqualTo (DbType.Guid));
+      Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.ParameterValueType, Is.EqualTo (typeof (Guid?)));
+      Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").SameAs (typeof (Guid?)));
 
-      Assert.That (_typeCalculator.SerializedObjectIDStorageType.StorageType, Is.EqualTo ("varchar (255)"));
-      Assert.That (_typeCalculator.SerializedObjectIDStorageType.DbType, Is.EqualTo (DbType.String));
-      Assert.That (_typeCalculator.SerializedObjectIDStorageType.ParameterValueType, Is.EqualTo (typeof (String)));
+      Assert.That (_storageTypeInformationProvider.SerializedObjectIDStorageType.StorageType, Is.EqualTo ("varchar (255)"));
+      Assert.That (_storageTypeInformationProvider.SerializedObjectIDStorageType.DbType, Is.EqualTo (DbType.String));
+      Assert.That (_storageTypeInformationProvider.SerializedObjectIDStorageType.ParameterValueType, Is.EqualTo (typeof (String)));
       Assert.That (
-          _typeCalculator.SerializedObjectIDStorageType.TypeConverter,
+          _storageTypeInformationProvider.SerializedObjectIDStorageType.TypeConverter,
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
-      Assert.That (_typeCalculator.ClassIDStorageType.StorageType, Is.EqualTo ("varchar (100)"));
-      Assert.That (_typeCalculator.ClassIDStorageType.DbType, Is.EqualTo (DbType.String));
-      Assert.That (_typeCalculator.ClassIDStorageType.ParameterValueType, Is.EqualTo (typeof (String)));
+      Assert.That (_storageTypeInformationProvider.ClassIDStorageType.StorageType, Is.EqualTo ("varchar (100)"));
+      Assert.That (_storageTypeInformationProvider.ClassIDStorageType.DbType, Is.EqualTo (DbType.String));
+      Assert.That (_storageTypeInformationProvider.ClassIDStorageType.ParameterValueType, Is.EqualTo (typeof (String)));
       Assert.That (
-          _typeCalculator.ClassIDStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
+          _storageTypeInformationProvider.ClassIDStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
-      Assert.That (_typeCalculator.TimestampStorageType.StorageType, Is.EqualTo ("rowversion"));
-      Assert.That (_typeCalculator.TimestampStorageType.DbType, Is.EqualTo (DbType.Binary));
-      Assert.That (_typeCalculator.TimestampStorageType.ParameterValueType, Is.EqualTo (typeof (Byte[])));
+      Assert.That (_storageTypeInformationProvider.TimestampStorageType.StorageType, Is.EqualTo ("rowversion"));
+      Assert.That (_storageTypeInformationProvider.TimestampStorageType.DbType, Is.EqualTo (DbType.Binary));
+      Assert.That (_storageTypeInformationProvider.TimestampStorageType.ParameterValueType, Is.EqualTo (typeof (Byte[])));
       Assert.That (
-          _typeCalculator.TimestampStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
+          _storageTypeInformationProvider.TimestampStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
     }
 
     [Test]
@@ -239,13 +239,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var propertyDefinition = CreatePropertyDefinition (typeof (Char));
 
-      _typeCalculator.GetStorageType (propertyDefinition);
+      _storageTypeInformationProvider.GetStorageType (propertyDefinition);
     }
 
     [Test]
     public void GetStorageType_TypeParameterOverload_SupportedType ()
     {
-      var result = _typeCalculator.GetStorageType (typeof (string));
+      var result = _storageTypeInformationProvider.GetStorageType (typeof (string));
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.StorageType, Is.EqualTo ("nvarchar (max)"));
@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type 'System.Char' is not supported by this storage provider.")]
     public void GetStorageType_TypeParameterOverload_UnsupportedType ()
     {
-      _typeCalculator.GetStorageType (typeof (Char));
+      _storageTypeInformationProvider.GetStorageType (typeof (Char));
     }
 
     private void CheckGetStorageType (
@@ -268,7 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         IResolveConstraint expectedTypeConverterConstraint)
     {
       var propertyDefinition = CreatePropertyDefinition (propertyType, maxLength);
-      var info = _typeCalculator.GetStorageType (propertyDefinition);
+      var info = _storageTypeInformationProvider.GetStorageType (propertyDefinition);
       CheckStorageTypeInformation (info, expectedStorageTypeString, expectedDbType, expectedParameterValueType, expectedTypeConverterConstraint);
     }
 

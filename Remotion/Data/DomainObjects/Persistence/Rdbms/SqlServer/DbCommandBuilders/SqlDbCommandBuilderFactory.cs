@@ -70,35 +70,35 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        IRdbmsStoragePropertyDefinition foreignKeyColumn,
+        IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("foreignKeyColumn", foreignKeyColumn);
+      ArgumentUtility.CheckNotNull ("foreignKeyStorageProperty", foreignKeyStorageProperty);
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       return new TableRelationLookupSelectDbCommandBuilder (
-          table, selectedColumns, foreignKeyColumn, foreignKeyValue, orderedColumns, _sqlDialect, _valueConverter);
+          table, selectedColumns, foreignKeyStorageProperty, foreignKeyValue, orderedColumns, _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         ISelectedColumnsSpecification selectedColumns,
-        IRdbmsStoragePropertyDefinition foreignKeyColumn,
+        IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("view", view);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("foreignKeyColumn", foreignKeyColumn);
+      ArgumentUtility.CheckNotNull ("foreignKeyStorageProperty", foreignKeyStorageProperty);
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       return new UnionRelationLookupSelectDbCommandBuilder (
-          view, selectedColumns, foreignKeyColumn, foreignKeyValue, orderedColumns, _sqlDialect, _valueConverter);
+          view, selectedColumns, foreignKeyStorageProperty, foreignKeyValue, orderedColumns, _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForQuery (IQuery query)

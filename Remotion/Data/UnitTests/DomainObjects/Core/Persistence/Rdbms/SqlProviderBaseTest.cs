@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp();
 
-      var storageTypeCalculator = new SqlStorageTypeCalculator();
+      var storageTypeCalculator = new SqlStorageTypeInformationProvider();
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _valueConverter = new ValueConverter (TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
       _commandFactory = new RdbmsProviderCommandFactory (

@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private readonly ISqlGenerationStage _generationStage;
     private readonly IMappingResolutionContext _mappingResolutionContext;
     private readonly ClassDefinition _startingClassDefinition;
-    private readonly ITypeInformationProvider _typeInformationProvider;
+    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
@@ -63,26 +63,26 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="preparationStage">The <see cref="ISqlPreparationStage"/> provides methods to prepare the <see cref="SqlStatement"/> based on a <see cref="QueryModel"/>.</param>
     /// <param name="resolutionStage">The <see cref="IMappingResolutionStage"/> provides methods to resolve the expressions in the <see cref="SqlStatement"/>.</param>
     /// <param name="generationStage">The <see cref="ISqlGenerationStage"/> provides methods to generate sql text for the given <see cref="SqlStatement"/>.</param>
-    /// <param name="typeInformationProvider">The <see cref="ITypeInformationProvider"/> provides methods to determine the storage-specific type for a domain object property type.</param>
+    /// <param name="storageTypeInformationProvider">The <see cref="IStorageTypeInformationProvider"/> provides methods to determine the storage-specific type for a domain object property type.</param>
     public DomainObjectQueryExecutor (
         ClassDefinition startingClassDefinition,
         ISqlPreparationStage preparationStage,
         IMappingResolutionStage resolutionStage,
         ISqlGenerationStage generationStage,
-        ITypeInformationProvider typeInformationProvider)
+        IStorageTypeInformationProvider storageTypeInformationProvider)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
       ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
-      ArgumentUtility.CheckNotNull ("typeInformationProvider", typeInformationProvider);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
       _startingClassDefinition = startingClassDefinition;
       _generationStage = generationStage;
       _resolutionStage = resolutionStage;
       _preparationStage = preparationStage;
       _mappingResolutionContext = new MappingResolutionContext();
-      _typeInformationProvider = typeInformationProvider;
+      _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
     /// <summary>

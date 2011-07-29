@@ -26,36 +26,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class InfrastructureStoragePropertyDefinitionProvider : IInfrastructureStoragePropertyDefinitionProvider
   {
-    private readonly ITypeInformationProvider _storageTypeCalculator;
+    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
     private readonly IStorageNameProvider _storageNameProvider;
 
     public InfrastructureStoragePropertyDefinitionProvider (
-        ITypeInformationProvider storageTypeCalculator,
+        IStorageTypeInformationProvider storageTypeInformationProvider,
         IStorageNameProvider storageNameProvider)
     {
-      ArgumentUtility.CheckNotNull ("storageTypeCalculator", storageTypeCalculator);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
-      _storageTypeCalculator = storageTypeCalculator;
+      _storageTypeInformationProvider = storageTypeInformationProvider;
       _storageNameProvider = storageNameProvider;
     }
 
     public ColumnDefinition GetIDColumnDefinition ()
     {
       return new ColumnDefinition (
-          _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeCalculator.ObjectIDStorageType, false, true);
+          _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeInformationProvider.ObjectIDStorageType, false, true);
     }
 
     public ColumnDefinition GetClassIDColumnDefinition ()
     {
       return new ColumnDefinition (
-          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeCalculator.ClassIDStorageType, false, false);
+          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeInformationProvider.ClassIDStorageType, false, false);
     }
 
     public virtual ColumnDefinition GetTimestampColumnDefinition ()
     {
       return new ColumnDefinition (
-          _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.TimestampStorageType, false, false);
+          _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeInformationProvider.TimestampStorageType, false, false);
     }
   }
 }

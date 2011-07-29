@@ -66,9 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
-          new SqlStorageTypeCalculator (), _storageNameProvider);
+          new SqlStorageTypeInformationProvider (), _storageNameProvider);
       _dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
-          new SqlStorageTypeCalculator (), _storageNameProvider, _storageProviderDefinitionFinder);
+          new SqlStorageTypeInformationProvider (), _storageNameProvider, _storageProviderDefinitionFinder);
       _columnDefinitionResolver = new ColumnDefinitionResolver();
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           _storageNameProvider, _columnDefinitionResolver, _infrastructureStoragePropertyDefinitionProvider, _storageProviderDefinitionFinder);

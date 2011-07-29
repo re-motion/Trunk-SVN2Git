@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private QueryModel _order1QueryModel;
     private DomainObjectQueryExecutor _orderExecutor;
     private DomainObjectQueryExecutor _customerExecutor;
-    private SqlStorageTypeCalculator _sqlStorageTypeCalculator;
+    private SqlStorageTypeInformationProvider _sqlStorageTypeInformationProvider;
 
     public override void SetUp ()
     {
@@ -69,12 +69,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);
       _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _generationStage = new DefaultSqlGenerationStage();
-      _sqlStorageTypeCalculator = new SqlStorageTypeCalculator();
+      _sqlStorageTypeInformationProvider = new SqlStorageTypeInformationProvider();
 
       _order1QueryModel = ParseQuery ((from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber == 1 select o).Expression);
 
-      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator);
-      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator);
+      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
+      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
     }
 
     [Test]
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new QueryParameterCollection());
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new QueryParameterCollection());
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -338,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           typeof (DomainObjectCollection));
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -381,7 +381,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           typeof (DomainObjectCollection));
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -660,7 +660,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (
-            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator));
+            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
 
         executor.CreateQuery ("<dynamic query>", _order1QueryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
@@ -673,7 +673,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (
-            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator));
+            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
 
         executor.CreateQuery ("<dynamic query>", _order1QueryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
@@ -686,7 +686,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (
-            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator));
+            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
 
         executor.CreateQuery ("<dynamic query>", _order1QueryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
@@ -700,7 +700,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = ParseQuery (query.Expression);
       var executor =
           ObjectFactory.Create<DomainObjectQueryExecutor> (
-              ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator));
+              ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
 
       executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
@@ -724,7 +724,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (
-            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeCalculator));
+            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
 
         executor.CreateSqlCommand (_order1QueryModel, false);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateSqlCommandCalled, Is.True);
@@ -742,7 +742,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.PrepareSqlStatement (_order1QueryModel, null))
           .Throw (new NotSupportedException ("Unsupported feature. Expression: 'Foo'"));
 
-      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, preparationStageStub, _resolutionStage, _generationStage, _sqlStorageTypeCalculator);
+      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, preparationStageStub, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
 
       executor.CreateSqlCommand (_order1QueryModel, false);
     }
@@ -758,7 +758,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.ResolveSqlStatement (Arg<SqlStatement>.Is.Anything, Arg<IMappingResolutionContext>.Is.Anything))
           .Throw (new NotSupportedException ("Unsupported feature. Expression: 'Foo'"));
 
-      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, resolutionStageStub, _generationStage, _sqlStorageTypeCalculator);
+      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, resolutionStageStub, _generationStage, _sqlStorageTypeInformationProvider);
 
       executor.CreateSqlCommand (_order1QueryModel, false);
     }
@@ -773,7 +773,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.ResolveSqlStatement (Arg<SqlStatement>.Is.Anything, Arg<IMappingResolutionContext>.Is.Anything))
           .Throw (new UnmappedItemException ("Unsupported item."));
 
-      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, resolutionStageStub, _generationStage, _sqlStorageTypeCalculator);
+      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, resolutionStageStub, _generationStage, _sqlStorageTypeInformationProvider);
 
       executor.CreateSqlCommand (_order1QueryModel, false);
     }
@@ -793,7 +793,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.GenerateTextForOuterSqlStatement (Arg<SqlCommandBuilder>.Is.Anything, Arg<SqlStatement>.Is.Anything))
           .Throw (new NotSupportedException ("Unsupported item. Exception: 'Foo'"));
 
-      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, generationStageStub, _sqlStorageTypeCalculator);
+      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, generationStageStub, _sqlStorageTypeInformationProvider);
       executor.CreateSqlCommand (queryModel, false);
     }
 

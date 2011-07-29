@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   [TestFixture]
   public class InfrastructureStoragePropertyDefinitionProviderTest : StandardMappingTest
   {
-    private ITypeInformationProvider _storageTypeCalculatorStub;
+    private IStorageTypeInformationProvider _storageTypeInformationProviderStub;
     private IStorageNameProvider _storageNameProviderStub;
 
     private InfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
@@ -38,12 +38,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       base.SetUp();
 
-      _storageTypeCalculatorStub = MockRepository.GenerateStub<ITypeInformationProvider> ();
-      _storageTypeCalculatorStub.Stub (stub => stub.ClassIDStorageType).Return (
+      _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider> ();
+      _storageTypeInformationProviderStub.Stub (stub => stub.ClassIDStorageType).Return (
           new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()));
-      _storageTypeCalculatorStub.Stub (stub => stub.ObjectIDStorageType).Return (
+      _storageTypeInformationProviderStub.Stub (stub => stub.ObjectIDStorageType).Return (
           new StorageTypeInformation ("guid", DbType.Guid, typeof (Guid), new GuidConverter()));
-      _storageTypeCalculatorStub.Stub (stub => stub.TimestampStorageType).Return (
+      _storageTypeInformationProviderStub.Stub (stub => stub.TimestampStorageType).Return (
           new StorageTypeInformation ("rowversion", DbType.DateTime, typeof (DateTime), new DateTimeConverter()));
 
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
 
       _infrastructureStoragePropertyDefinitionProvider = 
-          new InfrastructureStoragePropertyDefinitionProvider (_storageTypeCalculatorStub, _storageNameProviderStub);
+          new InfrastructureStoragePropertyDefinitionProvider (_storageTypeInformationProviderStub, _storageNameProviderStub);
     }
 
     [Test]
