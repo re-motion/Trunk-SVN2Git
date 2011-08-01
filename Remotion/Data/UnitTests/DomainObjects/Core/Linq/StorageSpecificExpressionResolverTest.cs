@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _rdbmsPersistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
       _rdbmsStoragePropertyDefinitionStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
 
-      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_storageNameProvider, _rdbmsPersistenceModelProviderStub);
+      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_rdbmsPersistenceModelProviderStub);
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
     }
 
@@ -155,6 +155,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
+          _classDefinition.StorageEntityDefinition as IEntityDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveIDColumn (entityExpression, _classDefinition);
 

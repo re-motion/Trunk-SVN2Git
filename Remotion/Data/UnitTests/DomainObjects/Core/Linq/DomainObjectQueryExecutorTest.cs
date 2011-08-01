@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _customerClassDefinition = DomainObjectIDs.Customer1.ClassDefinition;
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var resolver = new MappingResolver (
-          new StorageSpecificExpressionResolver (storageNameProvider, new RdbmsPersistenceModelProvider()), storageNameProvider);
+          new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider()), storageNameProvider);
       var generator = new UniqueIdentifierGenerator();
       _preparationStage = new DefaultSqlPreparationStage (
           CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);
