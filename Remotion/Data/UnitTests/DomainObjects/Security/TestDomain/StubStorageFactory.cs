@@ -110,7 +110,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
       var sqlStorageTypeCalculator = ObjectFactory.Create<SqlStorageTypeInformationProvider> (ParamList.Empty);
       return new DomainObjectQueryExecutor (
-          startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, sqlStorageTypeCalculator);
+          startingClassDefinition,
+          sqlPreparationStage,
+          mappingResolutionStage,
+          sqlGenerationStage,
+          sqlStorageTypeCalculator,
+          TypeConversionProvider.Create());
     }
 
     public IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)

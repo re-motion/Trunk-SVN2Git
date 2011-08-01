@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -39,8 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           QueryModel queryModel,
           IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
           QueryType queryType,
-          ClassDefinition classDefinitionOfResult,
-          string sortExpression);
+          ClassDefinition classDefinitionOfResult);
 
       SqlCommandData CreateSqlCommand (QueryModel queryModel, bool queryType);
     }
@@ -70,11 +70,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         QueryModel queryModel,
         IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
         QueryType queryType,
-        ClassDefinition classDefinitionOfResult,
-        string sortExpression)
+        ClassDefinition classDefinitionOfResult)
     {
       CreateQueryFromModelWithClassDefinitionCalled = true;
-      return Next.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, classDefinitionOfResult, sortExpression);
+      return Next.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, classDefinitionOfResult);
     }
 
     [OverrideTarget]

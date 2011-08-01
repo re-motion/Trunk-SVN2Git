@@ -27,6 +27,7 @@ using CommandParameter=Remotion.Linq.SqlBackend.SqlGeneration.CommandParameter;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
+  // TODO 4210: Remove
   public class LegacyTestQueryExecutorMixin : Mixin<object, LegacyTestQueryExecutorMixin.IBaseCallRequirements>
   {
     public interface IBaseCallRequirements

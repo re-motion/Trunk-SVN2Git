@@ -16,19 +16,16 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Linq;
@@ -42,6 +39,7 @@ using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using SortOrder = Remotion.Data.DomainObjects.Mapping.SortExpressions.SortOrder;
 using SqlCommandBuilder = Remotion.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -57,6 +55,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private readonly IMappingResolutionContext _mappingResolutionContext;
     private readonly ClassDefinition _startingClassDefinition;
     private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
+    private readonly TypeConversionProvider _typeConversionProvider;
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
@@ -67,18 +66,21 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="resolutionStage">The <see cref="IMappingResolutionStage"/> provides methods to resolve the expressions in the <see cref="SqlStatement"/>.</param>
     /// <param name="generationStage">The <see cref="ISqlGenerationStage"/> provides methods to generate sql text for the given <see cref="SqlStatement"/>.</param>
     /// <param name="storageTypeInformationProvider">The <see cref="IStorageTypeInformationProvider"/> provides methods to determine the storage-specific type for a domain object property type.</param>
+    /// <param name="typeConversionProvider">The <see cref="TypeConversionProvider"/> provides functionality to get the <see cref="TypeConverter"/> for a <see cref="Type"/> and to convert a value from a source <see cref="Type"/> into a destination <see cref="Type"/>.</param>
     public DomainObjectQueryExecutor (
         ClassDefinition startingClassDefinition,
         ISqlPreparationStage preparationStage,
         IMappingResolutionStage resolutionStage,
         ISqlGenerationStage generationStage,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+        IStorageTypeInformationProvider storageTypeInformationProvider,
+        TypeConversionProvider typeConversionProvider)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
       ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
+      ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
       _startingClassDefinition = startingClassDefinition;
       _generationStage = generationStage;
@@ -86,6 +88,7 @@ namespace Remotion.Data.DomainObjects.Linq
       _preparationStage = preparationStage;
       _mappingResolutionContext = new MappingResolutionContext();
       _storageTypeInformationProvider = storageTypeInformationProvider;
+      _typeConversionProvider = typeConversionProvider;
     }
 
     /// <summary>
@@ -219,7 +222,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
 
-      return CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, _startingClassDefinition, null);
+      return CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, _startingClassDefinition);
     }
 
     /// <summary>
@@ -232,7 +235,6 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="queryType">The type of query to create.</param>
     /// <param name="classDefinitionOfResult">The class definition of the result objects to be returned by the query. This is used to obtain the
     /// storage provider to execute the query and to resolve the relation properties of the fetch requests.</param>
-    /// <param name="sortExpression">A SQL expression that is used in an ORDER BY clause to sort the query results.</param>
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
@@ -241,8 +243,7 @@ namespace Remotion.Data.DomainObjects.Linq
         QueryModel queryModel,
         IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
         QueryType queryType,
-        ClassDefinition classDefinitionOfResult,
-        string sortExpression)
+        ClassDefinition classDefinitionOfResult)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -250,15 +251,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
       var command = CreateSqlCommand (queryModel, queryType == QueryType.Collection); // check result for DomainObjects unless it's a scalar query
-
       var statement = command.CommandText;
-      if (!string.IsNullOrEmpty (sortExpression))
-      {
-        Assertion.IsFalse (
-            queryModel.BodyClauses.OfType<OrderByClause>().Any(),
-            "We assume that fetch request query models cannot have OrderBy clauses.");
-        statement = statement + " ORDER BY " + sortExpression;
-      }
 
       var query = CreateQuery (id, StorageProviderDefinition, statement, command.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
@@ -339,26 +332,48 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       foreach (var fetchQueryModelBuilder in fetchQueryModelBuilders)
       {
-        IRelationEndPointDefinition relationEndPointDefinition =
-            GetEagerFetchRelationEndPointDefinition (fetchQueryModelBuilder.FetchRequest, classDefinition);
+        var relationEndPointDefinition = GetEagerFetchRelationEndPointDefinition (fetchQueryModelBuilder.FetchRequest, classDefinition);
 
-        string sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
-
+        // clone the fetch query model because we don't want to modify the source model of all inner requests
         var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel().Clone();
-        // clone because we don't want to modify the source model of all inner requests
+        
+        // for re-store, fetch queries must always be distinct even when the query would return duplicates
+        // e.g., for (from o in Orders select o).FetchOne (o => o.Customer)
+        // when two orders have the same customer, re-store gives an error, unless we add a DISTINCT clause
         fetchQueryModel.ResultOperators.Add (new DistinctResultOperator());
-        // fetch queries should always be distinct even when the query would return duplicates
+
+        var sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
+        if (sortExpression != null)
+        {
+          // If we have a SortExpression, we need to add the ORDER BY clause _after_ the DISTINCT (because re-linq strips out ORDER BY clauses when
+          // seeing a DISTINCT operator); therefore, we put the DISTINCT query into a sub-query, then append the ORDER BY clause
+          fetchQueryModel = fetchQueryModel.ConvertToSubQuery ("#fetch");
+
+          var orderByClause = new OrderByClause ();
+          foreach (var sortedPropertySpecification in sortExpression.SortedProperties)
+            orderByClause.Orderings.Add (GetOrdering (fetchQueryModel, sortedPropertySpecification));
+
+          fetchQueryModel.BodyClauses.Add (orderByClause);
+        }
 
         var fetchQuery = CreateQuery (
             "<fetch query for " + fetchQueryModelBuilder.FetchRequest.RelationMember.Name + ">",
             fetchQueryModel,
             fetchQueryModelBuilder.CreateInnerBuilders(),
             QueryType.Collection,
-            relationEndPointDefinition.GetOppositeClassDefinition(),
-            sortExpression);
+            relationEndPointDefinition.GetOppositeClassDefinition());
 
         query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
       }
+    }
+
+    private SortExpressionDefinition GetSortExpressionForRelation (IRelationEndPointDefinition relationEndPointDefinition)
+    {
+      var virtualEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
+      if (virtualEndPointDefinition != null)
+        return virtualEndPointDefinition.GetSortExpression ();
+      else
+        return null;
     }
 
     private IRelationEndPointDefinition GetEagerFetchRelationEndPointDefinition (FetchRequestBase fetchRequest, ClassDefinition classDefinition)
@@ -385,18 +400,6 @@ namespace Remotion.Data.DomainObjects.Linq
             propertyName);
         throw new NotSupportedException (message, ex);
       }
-    }
-
-    private string GetSortExpressionForRelation (IRelationEndPointDefinition relationEndPointDefinition)
-    {
-      var virtualEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
-      if (virtualEndPointDefinition != null && virtualEndPointDefinition.GetSortExpression() != null)
-      {
-        var generator = new SortExpressionSqlGenerator (SqlDialect.Instance); // TODO: Change when more than this dialect is to be supported
-        return generator.GenerateOrderByExpressionString (virtualEndPointDefinition.GetSortExpression());
-      }
-      else
-        return null;
     }
 
     // TODO Review 2800: Write an integration test similar to the one in the bug report (i.e., with a Cast to an interface). The test should now work.
@@ -440,6 +443,18 @@ namespace Remotion.Data.DomainObjects.Linq
       var commandBuilder = new SqlCommandBuilder();
       _generationStage.GenerateTextForOuterSqlStatement (commandBuilder, sqlStatement);
       return commandBuilder.GetCommand();
+    }
+
+    private Ordering GetOrdering (QueryModel queryModel, SortedPropertySpecification sortedPropertySpecification)
+    {
+      var propertyInfo = (PropertyInfo) _typeConversionProvider.Convert (
+          sortedPropertySpecification.PropertyDefinition.PropertyInfo.GetType (),
+          typeof (PropertyInfo),
+          sortedPropertySpecification.PropertyDefinition.PropertyInfo);
+
+      var memberExpression = Expression.MakeMemberAccess (queryModel.SelectClause.Selector, propertyInfo);
+      var orderingDirection = sortedPropertySpecification.Order == SortOrder.Ascending ? OrderingDirection.Asc : OrderingDirection.Desc;
+      return new Ordering (memberExpression, orderingDirection);
     }
 
     private static ICollection<FetchQueryModelBuilder> RemoveTrailingFetchRequests (QueryModel queryModel)

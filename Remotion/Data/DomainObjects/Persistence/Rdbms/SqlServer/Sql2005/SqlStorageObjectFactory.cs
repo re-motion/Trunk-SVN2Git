@@ -125,9 +125,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
       var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
       var sqlStorageTypeCalculator = ObjectFactory.Create<SqlStorageTypeInformationProvider> (ParamList.Empty);
+      var typeConversionProvider = TypeConversionProvider.Create();
 
       var ctorParameters = ParamList.Create (
-          startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, sqlStorageTypeCalculator);
+          startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, sqlStorageTypeCalculator, typeConversionProvider);
       return ObjectFactory.Create<DomainObjectQueryExecutor> (ctorParameters);
     }
 

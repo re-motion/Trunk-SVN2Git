@@ -38,6 +38,7 @@ using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -54,6 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private DomainObjectQueryExecutor _orderExecutor;
     private DomainObjectQueryExecutor _customerExecutor;
     private SqlStorageTypeInformationProvider _sqlStorageTypeInformationProvider;
+    private TypeConversionProvider _typeConversionProvider;
 
     public override void SetUp ()
     {
@@ -70,11 +72,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _generationStage = new DefaultSqlGenerationStage();
       _sqlStorageTypeInformationProvider = new SqlStorageTypeInformationProvider();
+      _typeConversionProvider = TypeConversionProvider.Create();
 
       _order1QueryModel = ParseQuery ((from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber == 1 select o).Expression);
 
-      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
-      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
+      _orderExecutor = new DomainObjectQueryExecutor (
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
+      _customerExecutor = new DomainObjectQueryExecutor (
+          _customerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
     }
 
     [Test]
@@ -147,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new QueryParameterCollection());
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -191,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new QueryParameterCollection());
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -338,7 +343,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           typeof (DomainObjectCollection));
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -381,7 +386,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           typeof (DomainObjectCollection));
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -583,11 +588,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (
           fetchQuery.Value.Statement,
           Is.EqualTo (
-              "SELECT DISTINCT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[OrderNo],[t3].[DeliveryDate],[t3].[OfficialID],[t3].[CustomerID],[t3].[CustomerIDClassID] "
-              +
-              "FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[Name],[t2].[IndustrialSectorID],[t2].[CustomerSince],[t2].[CustomerType] "
-              + "FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q1] CROSS JOIN [OrderView] AS [t3] WHERE ([q1].[ID] = [t3].[CustomerID]) "
-              + "ORDER BY [OrderNo] ASC"));
+              "SELECT [q2].[ID],[q2].[ClassID],[q2].[Timestamp],[q2].[OrderNo],[q2].[DeliveryDate],[q2].[OfficialID],[q2].[CustomerID],[q2].[CustomerIDClassID] "
+              + "FROM ("
+                + "SELECT DISTINCT [t4].[ID],[t4].[ClassID],[t4].[Timestamp],[t4].[OrderNo],[t4].[DeliveryDate],[t4].[OfficialID],[t4].[CustomerID],[t4].[CustomerIDClassID] "
+                + "FROM ("
+                  + "SELECT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[Name],[t3].[IndustrialSectorID],[t3].[CustomerSince],[t3].[CustomerType] "
+                  + "FROM [CustomerView] AS [t3] WHERE ([t3].[Name] = @1)"
+                + ") AS [q1] "
+                + "CROSS JOIN [OrderView] AS [t4] WHERE ([q1].[ID] = [t4].[CustomerID])"
+              + ") AS [q2] "
+              + "ORDER BY [q2].[OrderNo] ASC"));
 
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
@@ -621,11 +631,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (
           fetchQuery1.Value.Statement,
           Is.EqualTo (
-              "SELECT DISTINCT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[OrderNo],[t3].[DeliveryDate],[t3].[OfficialID],[t3].[CustomerID],[t3].[CustomerIDClassID] "
-              +
-              "FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[Name],[t2].[IndustrialSectorID],[t2].[CustomerSince],[t2].[CustomerType] "
-              + "FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q1] CROSS JOIN [OrderView] AS [t3] "
-              + "WHERE ([q1].[ID] = [t3].[CustomerID]) ORDER BY [OrderNo] ASC"));
+              "SELECT [q2].[ID],[q2].[ClassID],[q2].[Timestamp],[q2].[OrderNo],[q2].[DeliveryDate],[q2].[OfficialID],[q2].[CustomerID],[q2].[CustomerIDClassID] "
+              + "FROM ("
+                + "SELECT DISTINCT [t4].[ID],[t4].[ClassID],[t4].[Timestamp],[t4].[OrderNo],[t4].[DeliveryDate],[t4].[OfficialID],[t4].[CustomerID],[t4].[CustomerIDClassID] "
+                + "FROM ("
+                  + "SELECT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[Name],[t3].[IndustrialSectorID],[t3].[CustomerSince],[t3].[CustomerType] "
+                  + "FROM [CustomerView] AS [t3] WHERE ([t3].[Name] = @1)"
+                + ") AS [q1] "
+                + "CROSS JOIN [OrderView] AS [t4] "
+                + "WHERE ([q1].[ID] = [t4].[CustomerID])"
+              + ") AS [q2] "
+              + "ORDER BY [q2].[OrderNo] ASC"));
       Assert.That (fetchQuery1.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery1.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery1.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
@@ -639,13 +655,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (
           fetchQuery2.Value.Statement,
           Is.EqualTo (
-              "SELECT DISTINCT [t8].[ID],[t8].[ClassID],[t8].[Timestamp],[t8].[Position],[t8].[Product],[t8].[OrderID] "
+              "SELECT DISTINCT [t9].[ID],[t9].[ClassID],[t9].[Timestamp],[t9].[Position],[t9].[Product],[t9].[OrderID] "
               +
-              "FROM (SELECT [t7].[ID],[t7].[ClassID],[t7].[Timestamp],[t7].[OrderNo],[t7].[DeliveryDate],[t7].[OfficialID],[t7].[CustomerID],[t7].[CustomerIDClassID] "
+              "FROM (SELECT [t8].[ID],[t8].[ClassID],[t8].[Timestamp],[t8].[OrderNo],[t8].[DeliveryDate],[t8].[OfficialID],[t8].[CustomerID],[t8].[CustomerIDClassID] "
               +
-              "FROM (SELECT [t6].[ID],[t6].[ClassID],[t6].[Timestamp],[t6].[Name],[t6].[IndustrialSectorID],[t6].[CustomerSince],[t6].[CustomerType] "
-              + "FROM [CustomerView] AS [t6] WHERE ([t6].[Name] = @1)) AS [q4] CROSS JOIN [OrderView] AS [t7] "
-              + "WHERE ([q4].[ID] = [t7].[CustomerID])) AS [q5] CROSS JOIN [OrderItemView] AS [t8] WHERE ([q5].[ID] = [t8].[OrderID])"));
+              "FROM (SELECT [t7].[ID],[t7].[ClassID],[t7].[Timestamp],[t7].[Name],[t7].[IndustrialSectorID],[t7].[CustomerSince],[t7].[CustomerType] "
+              + "FROM [CustomerView] AS [t7] WHERE ([t7].[Name] = @1)) AS [q5] CROSS JOIN [OrderView] AS [t8] "
+              + "WHERE ([q5].[ID] = [t8].[CustomerID])) AS [q6] CROSS JOIN [OrderItemView] AS [t9] WHERE ([q6].[ID] = [t9].[OrderID])"));
       Assert.That (fetchQuery2.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery2.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery2.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
@@ -660,7 +676,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (
-            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
+            ParamList.Create (
+                _orderClassDefinition,
+                _preparationStage,
+                _resolutionStage,
+                _generationStage,
+                _sqlStorageTypeInformationProvider,
+                _typeConversionProvider));
 
         executor.CreateQuery ("<dynamic query>", _order1QueryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
@@ -673,7 +695,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (
-            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
+            ParamList.Create (
+                _orderClassDefinition,
+                _preparationStage,
+                _resolutionStage,
+                _generationStage,
+                _sqlStorageTypeInformationProvider,
+                _typeConversionProvider));
 
         executor.CreateQuery ("<dynamic query>", _order1QueryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
@@ -686,7 +714,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (
-            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
+            ParamList.Create (
+                _orderClassDefinition,
+                _preparationStage,
+                _resolutionStage,
+                _generationStage,
+                _sqlStorageTypeInformationProvider,
+                _typeConversionProvider));
 
         executor.CreateQuery ("<dynamic query>", _order1QueryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
@@ -700,7 +734,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = ParseQuery (query.Expression);
       var executor =
           ObjectFactory.Create<DomainObjectQueryExecutor> (
-              ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
+              ParamList.Create (
+                  _orderClassDefinition,
+                  _preparationStage,
+                  _resolutionStage,
+                  _generationStage,
+                  _sqlStorageTypeInformationProvider,
+                  _typeConversionProvider));
 
       executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
@@ -724,7 +764,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (
-            ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider));
+            ParamList.Create (
+                _orderClassDefinition,
+                _preparationStage,
+                _resolutionStage,
+                _generationStage,
+                _sqlStorageTypeInformationProvider,
+                _typeConversionProvider));
 
         executor.CreateSqlCommand (_order1QueryModel, false);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateSqlCommandCalled, Is.True);
@@ -742,7 +788,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.PrepareSqlStatement (_order1QueryModel, null))
           .Throw (new NotSupportedException ("Unsupported feature. Expression: 'Foo'"));
 
-      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, preparationStageStub, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider);
+      var executor = new DomainObjectQueryExecutor (
+          _orderClassDefinition, preparationStageStub, _resolutionStage, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
 
       executor.CreateSqlCommand (_order1QueryModel, false);
     }
@@ -758,7 +805,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.ResolveSqlStatement (Arg<SqlStatement>.Is.Anything, Arg<IMappingResolutionContext>.Is.Anything))
           .Throw (new NotSupportedException ("Unsupported feature. Expression: 'Foo'"));
 
-      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, resolutionStageStub, _generationStage, _sqlStorageTypeInformationProvider);
+      var executor = new DomainObjectQueryExecutor (
+          _orderClassDefinition, _preparationStage, resolutionStageStub, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
 
       executor.CreateSqlCommand (_order1QueryModel, false);
     }
@@ -773,7 +821,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.ResolveSqlStatement (Arg<SqlStatement>.Is.Anything, Arg<IMappingResolutionContext>.Is.Anything))
           .Throw (new UnmappedItemException ("Unsupported item."));
 
-      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, resolutionStageStub, _generationStage, _sqlStorageTypeInformationProvider);
+      var executor = new DomainObjectQueryExecutor (
+          _orderClassDefinition, _preparationStage, resolutionStageStub, _generationStage, _sqlStorageTypeInformationProvider, _typeConversionProvider);
 
       executor.CreateSqlCommand (_order1QueryModel, false);
     }
@@ -793,7 +842,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.GenerateTextForOuterSqlStatement (Arg<SqlCommandBuilder>.Is.Anything, Arg<SqlStatement>.Is.Anything))
           .Throw (new NotSupportedException ("Unsupported item. Exception: 'Foo'"));
 
-      var executor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, generationStageStub, _sqlStorageTypeInformationProvider);
+      var executor = new DomainObjectQueryExecutor (
+          _orderClassDefinition, _preparationStage, _resolutionStage, generationStageStub, _sqlStorageTypeInformationProvider, _typeConversionProvider);
       executor.CreateSqlCommand (queryModel, false);
     }
 
