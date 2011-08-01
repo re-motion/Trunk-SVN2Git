@@ -60,7 +60,12 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return originatingEntity.GetColumn (propertyDefinition.PropertyType, propertyDefinition.StoragePropertyDefinition.Name, isPrimaryKeyColumn);
+      var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
+      var columns = storagePropertyDefinition.GetColumns ();
+      if (columns.Count () > 1)
+        throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
+
+      return originatingEntity.GetColumn (propertyDefinition.PropertyType, columns.First().Name, isPrimaryKeyColumn);
     }
 
     public SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition)
@@ -87,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("leftEndPoint", leftEndPoint);
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
-      Expression leftKey = GetJoinColumn (leftEndPoint, originatingEntity);
+      var leftKey = GetJoinColumn (leftEndPoint, originatingEntity);
       
       var resolvedSimpleTableInfo = ResolveTable (rightEndPoint.ClassDefinition, tableAlias);
       var rightEntity = ResolveEntity (rightEndPoint.ClassDefinition, tableAlias);
@@ -102,7 +107,12 @@ namespace Remotion.Data.DomainObjects.Linq
       if (endPoint.IsVirtual)
         return ResolveIDColumn (entityDefinition, endPoint.ClassDefinition);
       else
-        return ResolveColumn (entityDefinition, ((RelationEndPointDefinition) endPoint).PropertyDefinition, false);
+      {
+        var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
+        var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
+        var column = storagePropertyDefinition.GetColumnForLookup ();
+        return entityDefinition.GetColumn (propertyDefinition.PropertyType, column.Name, false);
+      }
     }
   }
 }

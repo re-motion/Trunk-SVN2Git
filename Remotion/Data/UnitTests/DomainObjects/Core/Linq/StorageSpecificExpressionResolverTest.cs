@@ -38,6 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private StorageSpecificExpressionResolver _storageSpecificExpressionResolver;
     private ClassDefinition _classDefinition;
     private IStorageNameProvider _storageNameProvider;
+    private IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProviderStub;
+    private IRdbmsStoragePropertyDefinition _rdbmsStoragePropertyDefinitionStub;
 
     [SetUp]
     public override void SetUp ()
@@ -45,7 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       base.SetUp();
       _storageNameProvider = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProvider.Stub (stub => stub.IDColumnName).Return ("ID");
-      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_storageNameProvider, new RdbmsPersistenceModelProvider());
+      _rdbmsPersistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
+      _rdbmsStoragePropertyDefinitionStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+
+      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_storageNameProvider, _rdbmsPersistenceModelProviderStub);
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
     }
 
@@ -67,6 +72,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           foreignKeyColumn,
           simpleColumn);
       _classDefinition.SetStorageEntity (tableDefinition);
+
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
+          _classDefinition.StorageEntityDefinition as IEntityDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
@@ -93,6 +101,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition)).Return (
+          _rdbmsStoragePropertyDefinitionStub);
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns ()).Return (new[] { ColumnDefinitionObjectMother.CreateColumn ("OrderNumber") });
+
       var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, false);
 
       Assert.That (result.ColumnName, Is.EqualTo ("OrderNumber"));
@@ -109,12 +121,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition)).Return (
+          _rdbmsStoragePropertyDefinitionStub);
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns()).Return (new[]{ColumnDefinitionObjectMother.CreateColumn("OrderNumber")});
+
       var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, true);
 
       Assert.That (result.ColumnName, Is.EqualTo ("OrderNumber"));
       Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
       Assert.That (result.IsPrimaryKey, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Compound-column properties are not supported by this LINQ provider.")]
+    public void ResolveColumn_CompoundColumn ()
+    {
+      var property = typeof (Order).GetProperty ("OrderNumber");
+      var propertyDefinition = PropertyDefinitionFactory.Create (_classDefinition, StorageClass.Persistent, property);
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition)).Return (
+          _rdbmsStoragePropertyDefinitionStub);
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns()).Return (
+          new[] { ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn });
+
+      _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, true);
     }
 
     [Test]
@@ -153,6 +186,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (leftEndPointDefinition.ClassDefinition))
+          .Return (
+              rightEndPointDefinition.ClassDefinition.StorageEntityDefinition as IEntityDefinition);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (leftEndPointDefinition.PropertyDefinition))
+          .Return (_rdbmsStoragePropertyDefinitionStub);
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumnForLookup ()).Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
+
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
       Assert.That (result, Is.Not.Null);
@@ -184,6 +226,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (rightEndPointDefinition.ClassDefinition))
+          .Return (
+              rightEndPointDefinition.ClassDefinition.StorageEntityDefinition as IEntityDefinition);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (rightEndPointDefinition.PropertyDefinition))
+          .Return (_rdbmsStoragePropertyDefinitionStub);
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumnForLookup ()).Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
+
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
       Assert.That (((SqlColumnExpression) result.LeftKey).IsPrimaryKey, Is.True);
@@ -200,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           true,
           null,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty(columnName));
+      propertyDefinition.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty (columnName));
       return propertyDefinition;
     }
   }
