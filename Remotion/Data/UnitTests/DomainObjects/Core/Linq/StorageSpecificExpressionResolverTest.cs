@@ -168,8 +168,69 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveTable ()
+    public void ResolveTable_TableDefinition ()
     {
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
+          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("OrderView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    public void ResolveTable_FilterViewDefinition ()
+    {
+      var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "FilterView"),
+          (IEntityDefinition) _classDefinition.StorageEntityDefinition);
+      _classDefinition.SetStorageEntity (filterViewDefinition);
+
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
+          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("FilterView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    public void ResolveTable_UnionViewDefinition ()
+    {
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "UnionView"),
+          new[] { (IEntityDefinition) _classDefinition.StorageEntityDefinition });
+      _classDefinition.SetStorageEntity (unionViewDefinition);
+
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
+          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("UnionView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+      "Class 'Order' does not have an associated database table and can therefore not be queried.")]
+    public void ResolveTable_NullEntityDefinition ()
+    {
+      _classDefinition.SetStorageEntity (new NullEntityDefinition (TestDomainStorageProviderDefinition));
+
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
+          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
       Assert.That (result, Is.Not.Null);

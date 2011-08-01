@@ -43,9 +43,9 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
-      var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition(classDefinition);
+      var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
       var tableColumns = entityDefinition.GetAllColumns().Select (
-              cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey)).ToArray();
+          cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey)).ToArray();
 
       return new SqlEntityDefinitionExpression (
           classDefinition.ClassType, tableAlias, null, tableColumns.Where (c => c.IsPrimaryKey).First(), tableColumns);
@@ -57,8 +57,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
-      var columns = storagePropertyDefinition.GetColumns ();
-      if (columns.Count () > 1)
+      var columns = storagePropertyDefinition.GetColumns();
+      if (columns.Count() > 1)
         throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
 
       return originatingEntity.GetColumn (propertyDefinition.PropertyType, columns.First().Name, isPrimaryKeyColumn);
@@ -79,7 +79,14 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
-      var viewName = classDefinition.StorageEntityDefinition.LegacyViewName;
+      var viewName = InlineEntityDefinitionVisitor.Visit<string> (
+          _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition),
+          (table, continuation) => table.ViewName.EntityName,
+          (filterView, continuation) => filterView.ViewName.EntityName,
+          (unionView, continuation) => unionView.ViewName.EntityName,
+          (nullEntity, continuation) => 
+          { throw new NotSupportedException (string.Format ("Class '{0}' does not have an associated database table and can therefore not be queried.", classDefinition.ID)); });
+
       return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
     }
 
@@ -91,11 +98,11 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
       var leftKey = GetJoinColumn (leftEndPoint, originatingEntity);
-      
+
       var resolvedSimpleTableInfo = ResolveTable (rightEndPoint.ClassDefinition, tableAlias);
       var rightEntity = ResolveEntity (rightEndPoint.ClassDefinition, tableAlias);
 
-      Expression rightKey = GetJoinColumn(rightEndPoint, rightEntity);
+      Expression rightKey = GetJoinColumn (rightEndPoint, rightEntity);
 
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
@@ -108,7 +115,7 @@ namespace Remotion.Data.DomainObjects.Linq
       {
         var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
         var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
-        var column = storagePropertyDefinition.GetColumnForLookup ();
+        var column = storagePropertyDefinition.GetColumnForLookup();
         return entityDefinition.GetColumn (propertyDefinition.PropertyType, column.Name, false);
       }
     }
