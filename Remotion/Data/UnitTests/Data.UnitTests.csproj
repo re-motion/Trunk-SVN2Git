@@ -889,7 +889,6 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MixinAddedPropertyIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\LegacyTestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedMixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassWithDerivedMixinWithInterface.cs" />
