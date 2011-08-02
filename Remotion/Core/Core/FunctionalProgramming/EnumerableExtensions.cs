@@ -95,7 +95,7 @@ namespace Remotion.FunctionalProgramming
         where TException: Exception
     {
       ArgumentUtility.CheckNotNull ("source", source);
-      ArgumentUtility.CheckNotNull ("createNoMatchingElementException", createEmptySequenceException);
+      ArgumentUtility.CheckNotNull ("createEmptySequenceException", createEmptySequenceException);
 
       TSource result = default (TSource);
       bool isElementFound = false;
