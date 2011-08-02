@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
@@ -32,6 +33,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private IStorageNameProvider _storageNameProviderStub;
 
     private InfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
+    private IEntityDefinition _entityDefinitionStub;
+    private ColumnDefinition _idColumn;
+    private ColumnDefinition _classIdColumn;
+    private ColumnDefinition _timestampColumn;
 
     [SetUp]
     public override void SetUp ()
@@ -51,10 +56,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
       _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
 
+      _entityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
+      _idColumn = ColumnDefinitionObjectMother.IDColumn;
+      _classIdColumn = ColumnDefinitionObjectMother.ClassIDColumn;
+      _timestampColumn = ColumnDefinitionObjectMother.TimestampColumn;
+      _entityDefinitionStub.Stub (stub => stub.IDColumn).Return (_idColumn);
+      _entityDefinitionStub.Stub (stub => stub.ClassIDColumn).Return (_classIdColumn);
+      _entityDefinitionStub.Stub (stub => stub.TimestampColumn).Return (_timestampColumn);
+
       _infrastructureStoragePropertyDefinitionProvider = 
           new InfrastructureStoragePropertyDefinitionProvider (_storageTypeInformationProviderStub, _storageNameProviderStub);
     }
 
+    [Test]
+    public void GetObjectIDStoragePropertyDefinition ()
+    {
+      var result = InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (_entityDefinitionStub);
+
+      Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
+      Assert.That (result.ValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
+      Assert.That (((SimpleStoragePropertyDefinition) result.ValueProperty).ColumnDefinition, Is.SameAs (_idColumn));
+      Assert.That (((SimpleStoragePropertyDefinition) result.ClassIDProperty).ColumnDefinition, Is.SameAs (_classIdColumn));
+    }
+
+    [Test]
+    public void GetTimestampStoragePropertyDefinition ()
+    {
+      var result = InfrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (_entityDefinitionStub);
+
+      Assert.That (result.ColumnDefinition, Is.SameAs (_timestampColumn));
+    }
+    
     [Test]
     public void GetObjectIDColumnDefinition ()
     {

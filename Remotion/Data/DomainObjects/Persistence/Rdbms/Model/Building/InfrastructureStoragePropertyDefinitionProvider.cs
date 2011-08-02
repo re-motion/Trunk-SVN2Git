@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -26,6 +25,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class InfrastructureStoragePropertyDefinitionProvider : IInfrastructureStoragePropertyDefinitionProvider
   {
+    public static ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    {
+      return new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
+          new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
+    }
+
+    public static SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    {
+      return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
+    }
+    
     private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
     private readonly IStorageNameProvider _storageNameProvider;
 
@@ -57,5 +68,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return new ColumnDefinition (
           _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeInformationProvider.TimestampStorageType, false, false);
     }
+   
   }
 }

@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
@@ -272,10 +273,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
       var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter);
 
+      var rdbmsPersistenceModelProvider = CreateRdbmsPersistenceModelProvider();
       return new RdbmsProviderCommandFactory (
           dbCommandBuilderFactory,
-          CreateRdbmsPersistenceModelProvider(),
-          infrastructureStoragePropertyDefinitionProvider);
+          rdbmsPersistenceModelProvider,
+          infrastructureStoragePropertyDefinitionProvider,
+          new ObjectReaderFactory(rdbmsPersistenceModelProvider));
     }
 
     protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (IValueConverter valueConverter)

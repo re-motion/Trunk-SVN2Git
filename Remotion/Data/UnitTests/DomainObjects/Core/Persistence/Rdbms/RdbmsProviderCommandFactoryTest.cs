@@ -74,7 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _factory = new RdbmsProviderCommandFactory (
           _dbCommandBuilderFactoryStrictMock,
           _rdbmsPersistenceModelProvider,
-          _infrastructureStoragePropertyDefinitionProviderStub);
+          _infrastructureStoragePropertyDefinitionProviderStub,
+          new ObjectReaderFactory(_rdbmsPersistenceModelProvider));
 
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();

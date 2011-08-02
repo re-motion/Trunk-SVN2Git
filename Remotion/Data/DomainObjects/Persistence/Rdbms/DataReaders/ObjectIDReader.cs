@@ -39,6 +39,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       _columnOrdinalProvider = columnOrdinalProvider;
     }
 
+    public IRdbmsStoragePropertyDefinition IDProperty
+    {
+      get { return _idProperty; }
+    }
+
+    public IColumnOrdinalProvider ColumnOrdinalProvider
+    {
+      get { return _columnOrdinalProvider; }
+    }
+
     public ObjectID Read (IDataReader dataReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);

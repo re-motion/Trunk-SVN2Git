@@ -40,19 +40,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
+    private readonly IObjectReaderFactory _objectReaderFactory;
 
     public RdbmsProviderCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
-        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
+        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
+        IObjectReaderFactory objectReaderFactory)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
+      ArgumentUtility.CheckNotNull ("objectReaderFactory", objectReaderFactory);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
+      _objectReaderFactory = objectReaderFactory;
     }
 
     public IDbCommandBuilderFactory DbCommandBuilderFactory
@@ -70,6 +74,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _infrastructureStoragePropertyDefinitionProvider; }
     }
 
+    public IObjectReaderFactory ObjectReaderFactory
+    {
+      get { return _objectReaderFactory; }
+    }
+
     public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
         ObjectID objectID)
     {
@@ -77,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var tableDefinition = GetTableDefinition (objectID);
       var selectedColumns = tableDefinition.GetAllColumns().ToArray();
-      var dataContainerReader = CreateDataContainerReader (tableDefinition, selectedColumns);
+      var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
           tableDefinition,
           new SelectedColumnsSpecification (selectedColumns),
@@ -101,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           group id by tableDefinition
           into idsByTable
           let selectedColumns = idsByTable.Key.GetAllColumns().ToArray()
-          let dataContainerReader = CreateDataContainerReader (idsByTable.Key, selectedColumns)
+          let dataContainerReader = _objectReaderFactory.CreateDataContainerReader (idsByTable.Key, selectedColumns)
           let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
           select Tuple.Create (dbCommandBuilder, dataContainerReader);
 
@@ -150,7 +159,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           group id by tableDefinition
           into idsByTable
           let selectedColumns = new[] { idsByTable.Key.IDColumn, idsByTable.Key.ClassIDColumn, idsByTable.Key.TimestampColumn }
-          let timestampReader = CreateTimestampReader (idsByTable.Key, selectedColumns)
+          let timestampReader = _objectReaderFactory.CreateTimestampReader (idsByTable.Key, selectedColumns)
           let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
           select Tuple.Create (dbCommandBuilder, timestampReader);
 
@@ -176,10 +185,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private IEnumerable<Tuple<ObjectID, IDbCommandBuilder>> CreateDbCommandsForSave (IEnumerable<DataContainer> dataContainers)
     {
-      var insertCommands = new List<Tuple<ObjectID, IDbCommandBuilder>> ();
-      var updateCommands = new List<Tuple<ObjectID, IDbCommandBuilder>> ();
-      var deleteCommands = new List<Tuple<ObjectID, IDbCommandBuilder>> ();
-      
+      var insertCommands = new List<Tuple<ObjectID, IDbCommandBuilder>>();
+      var updateCommands = new List<Tuple<ObjectID, IDbCommandBuilder>>();
+      var deleteCommands = new List<Tuple<ObjectID, IDbCommandBuilder>>();
+
       foreach (var dataContainer in dataContainers)
       {
         var tableDefinition = GetTableDefinition (dataContainer.ID);
@@ -190,7 +199,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           deleteCommands.Add (Tuple.Create (dataContainer.ID, CreateDbCommandForDelete (dataContainer, tableDefinition)));
 
         var updatedColumnValues = GetUpdatedColumnValues (dataContainer, tableDefinition);
-        if (updatedColumnValues.Any ())
+        if (updatedColumnValues.Any())
         {
           var dbCommandForUpdate = CreateDbCommandForUpdate (dataContainer, tableDefinition, updatedColumnValues);
           updateCommands.Add (Tuple.Create (dataContainer.ID, dbCommandForUpdate));
@@ -201,8 +210,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     private IDbCommandBuilder CreateDbCommandForUpdate (
-        DataContainer dataContainer, 
-        TableDefinition tableDefinition, 
+        DataContainer dataContainer,
+        TableDefinition tableDefinition,
         IEnumerable<ColumnValue> updatedColumnValues)
     {
       var updatedColumnsSpecification = new UpdatedColumnsSpecification (updatedColumnValues);
@@ -217,12 +226,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (dataContainer.State != StateType.New)
         yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
     }
-    
+
     private ColumnValue[] GetUpdatedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var propertyFilter = GetUpdatedPropertyFilter (dataContainer);
 
-      var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue> ()
+      var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue>()
           .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && propertyFilter (pv))
           .SelectMany (
               pv =>
@@ -235,15 +244,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           )
           .ToArray();
 
-      if (!dataStorageColumnValues.Any () && dataContainer.HasBeenMarkedChanged)
+      if (!dataStorageColumnValues.Any() && dataContainer.HasBeenMarkedChanged)
       {
         //dummy column value for the case that the data container should only change its timestamp
         return new[] { new ColumnValue (tableDefinition.ClassIDColumn, dataContainer.ID.ClassID) };
       }
       else
-      {
         return dataStorageColumnValues;
-      }
     }
 
     private Func<PropertyValue, bool> GetUpdatedPropertyFilter (DataContainer dataContainer)
@@ -273,7 +280,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
-      var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue> ().Any (propertyValue => propertyValue.Definition.IsObjectID);
+      var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue>().Any (propertyValue => propertyValue.Definition.IsObjectID);
       if (mustAddTimestamp)
         yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
     }
@@ -283,7 +290,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var objectIDStorageProperty =
           new
           {
-              StorageProperty = (IRdbmsStoragePropertyDefinition) GetObjectIDStoragePropertyDefinition (tableDefinition),
+              StorageProperty =
+                  (IRdbmsStoragePropertyDefinition)
+                  Model.Building.InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (tableDefinition),
               Value = (object) dataContainer.ID
           };
 
@@ -336,7 +345,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         SortExpressionDefinition sortExpression)
     {
       var selectProjection = tableDefinition.GetAllColumns();
-      var dataContainerReader = CreateDataContainerReader (tableDefinition, selectProjection);
+      var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectProjection);
 
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
           tableDefinition,
@@ -361,7 +370,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           foreignKeyValue,
           CreateOrderedColumnsSpecification (sortExpression));
 
-      var objectIDReader = CreateObjectIDReader (unionViewDefinition, selectedColumns);
+      var objectIDReader = _objectReaderFactory.CreateObjectIDReader (unionViewDefinition, selectedColumns);
 
       var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, objectIDReader);
       var indirectDataContainerLoadCommand = new IndirectDataContainerLoadCommand (objectIDLoadCommand, this);
@@ -396,50 +405,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                     select Tuple.Create (column, sortedProperty.Order);
 
       return new OrderedColumnsSpecification (columns);
-    }
-
-    private ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
-    {
-      return new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
-          new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
-    }
-
-    private IObjectReader<DataContainer> CreateDataContainerReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
-    {
-      var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
-      var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);
-      var timestampPropertyDefinition = GetTimestampStoragePropertyDefinition (entityDefinition);
-
-      return new DataContainerReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
-    }
-
-    private IObjectReader<ObjectID> CreateObjectIDReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
-    {
-      var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
-      var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);
-      return new ObjectIDReader (objectIDStoragePropertyDefinition, ordinalProvider);
-    }
-
-    private IObjectReader<Tuple<ObjectID, object>> CreateTimestampReader (
-        IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
-    {
-      var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
-      var objectIDStoragePropertyDefinition = GetObjectIDStoragePropertyDefinition (entityDefinition);
-      var timestampPropertyDefinition = GetTimestampStoragePropertyDefinition (entityDefinition);
-
-      return new TimestampReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider);
-    }
-
-    private SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
-    {
-      return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
-    }
-
-    private IColumnOrdinalProvider CreateOrdinalProviderForKnownProjection (IEnumerable<ColumnDefinition> selectedColumns)
-    {
-      var columnOrdinalsDictionary = selectedColumns.Select ((column, index) => new { column, index }).ToDictionary (t => t.column, t => t.index);
-      return new DictionaryBasedColumnOrdinalProvider (columnOrdinalsDictionary);
     }
   }
 }
