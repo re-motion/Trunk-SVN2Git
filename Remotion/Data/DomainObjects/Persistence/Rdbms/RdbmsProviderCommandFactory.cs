@@ -41,6 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private readonly IObjectReaderFactory _objectReaderFactory;
+    private readonly OrderedColumnsSpecificationFactory _orderedColumnsSpecificationFactory;
 
     public RdbmsProviderCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
@@ -57,6 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
       _objectReaderFactory = objectReaderFactory;
+      _orderedColumnsSpecificationFactory = new OrderedColumnsSpecificationFactory (_rdbmsPersistenceModelProvider);
     }
 
     public IDbCommandBuilderFactory DbCommandBuilderFactory
@@ -77,6 +79,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public IObjectReaderFactory ObjectReaderFactory
     {
       get { return _objectReaderFactory; }
+    }
+
+    public OrderedColumnsSpecificationFactory OrderedColumnsSpecificationFactory
+    {
+      get { return _orderedColumnsSpecificationFactory; }
     }
 
     public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
@@ -352,7 +359,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           new SelectedColumnsSpecification (selectProjection),
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
-          CreateOrderedColumnsSpecification (sortExpression));
+          _orderedColumnsSpecificationFactory.CreateOrderedColumnsSpecification (sortExpression));
       return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
@@ -368,7 +375,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           new SelectedColumnsSpecification (selectedColumns),
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
-          CreateOrderedColumnsSpecification (sortExpression));
+          _orderedColumnsSpecificationFactory.CreateOrderedColumnsSpecification (sortExpression));
 
       var objectIDReader = _objectReaderFactory.CreateObjectIDReader (unionViewDefinition, selectedColumns);
 
@@ -391,20 +398,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return
           new FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> (Enumerable.Empty<DataContainer>());
     }
-
-    private IOrderedColumnsSpecification CreateOrderedColumnsSpecification (SortExpressionDefinition sortExpression)
-    {
-      if (sortExpression == null)
-        return EmptyOrderedColumnsSpecification.Instance;
-
-      Assertion.IsTrue (sortExpression.SortedProperties.Count > 0, "The sort-epression must have at least one sorted property.");
-
-      var columns = from sortedProperty in sortExpression.SortedProperties
-                    let storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (sortedProperty.PropertyDefinition)
-                    from column in storagePropertyDefinition.GetColumns()
-                    select Tuple.Create (column, sortedProperty.Order);
-
-      return new OrderedColumnsSpecification (columns);
-    }
+    
   }
 }
