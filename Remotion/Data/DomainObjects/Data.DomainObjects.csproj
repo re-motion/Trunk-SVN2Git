@@ -267,6 +267,7 @@
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
     <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
+    <Compile Include="Persistence\Rdbms\LookupCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IInfrastructureStoragePropertyDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\InfrastructureStoragePropertyDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnValue.cs" />
@@ -286,6 +287,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\OrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\SelectedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\SelectDbCommandBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SaveCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilder.cs" />

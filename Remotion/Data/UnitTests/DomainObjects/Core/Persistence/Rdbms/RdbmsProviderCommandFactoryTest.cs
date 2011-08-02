@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void CreateForSingleIDLookup_TableDefinition ()
+    public void CreateForSingleIDLookup ()
     {
       var objectID = CreateObjectID (_tableDefinition1);
       var expectedSelectedColumns = _tableDefinition1.GetAllColumns().ToArray();
@@ -934,6 +934,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           Is.TypeOf (typeof (DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>)));
       return ((DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>) command).Command;
     }
+
+
     
   }
 }
