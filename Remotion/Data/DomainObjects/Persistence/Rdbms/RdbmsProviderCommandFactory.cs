@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specificat
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -42,22 +43,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private readonly IObjectReaderFactory _objectReaderFactory;
     private readonly OrderedColumnsSpecificationFactory _orderedColumnsSpecificationFactory;
+    private readonly ITableDefinitionFinder _tableDefinitionFinder;
 
     public RdbmsProviderCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
-        IObjectReaderFactory objectReaderFactory)
+        IObjectReaderFactory objectReaderFactory,
+        ITableDefinitionFinder tableDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
       ArgumentUtility.CheckNotNull ("objectReaderFactory", objectReaderFactory);
+      ArgumentUtility.CheckNotNull ("tableDefinitionFinder", tableDefinitionFinder);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
       _objectReaderFactory = objectReaderFactory;
+      _tableDefinitionFinder = tableDefinitionFinder;
       _orderedColumnsSpecificationFactory = new OrderedColumnsSpecificationFactory (_rdbmsPersistenceModelProvider);
     }
 
@@ -91,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var tableDefinition = GetTableDefinition (objectID);
+      var tableDefinition = _tableDefinitionFinder.GetTableDefinition (objectID);
       var selectedColumns = tableDefinition.GetAllColumns().ToArray();
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
@@ -113,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var objectIDList = objectIDs.ToList();
       var dbCommandBuildersAndReaders =
           from id in objectIDList
-          let tableDefinition = GetTableDefinition (id)
+          let tableDefinition = _tableDefinitionFinder.GetTableDefinition (id)
           group id by tableDefinition
           into idsByTable
           let selectedColumns = idsByTable.Key.GetAllColumns().ToArray()
@@ -162,7 +167,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var dbCommandBuildersAndReaders =
           from id in objectIDs
-          let tableDefinition = GetTableDefinition (id)
+          let tableDefinition = _tableDefinitionFinder.GetTableDefinition (id)
           group id by tableDefinition
           into idsByTable
           let selectedColumns = new[] { idsByTable.Key.IDColumn, idsByTable.Key.ClassIDColumn, idsByTable.Key.TimestampColumn }
@@ -198,7 +203,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       foreach (var dataContainer in dataContainers)
       {
-        var tableDefinition = GetTableDefinition (dataContainer.ID);
+        var tableDefinition = _tableDefinitionFinder.GetTableDefinition (dataContainer.ID);
 
         if (dataContainer.State == StateType.New)
           insertCommands.Add (Tuple.Create (dataContainer.ID, CreateDbCommandForInsert (dataContainer, tableDefinition)));
@@ -316,16 +321,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var allStorageProperties = new[] { objectIDStorageProperty }.Concat (dataStorageProperties);
 
       return allStorageProperties.SelectMany (storageProperty => storageProperty.StorageProperty.SplitValue (storageProperty.Value));
-    }
-
-    private TableDefinition GetTableDefinition (ObjectID objectID)
-    {
-      return InlineEntityDefinitionVisitor.Visit<TableDefinition> (
-          _rdbmsPersistenceModelProvider.GetEntityDefinition (objectID.ClassDefinition),
-          (table, continuation) => table,
-          (filterView, continuation) => continuation (filterView.BaseEntity),
-          (unionView, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a UnionViewDefinition."); },
-          (nullEntity, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a NullEntityDefinition."); });
     }
 
     private IDbCommandBuilder CreateIDLookupDbCommandBuilder (

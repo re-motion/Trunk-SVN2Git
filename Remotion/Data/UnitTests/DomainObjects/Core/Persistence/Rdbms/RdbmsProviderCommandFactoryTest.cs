@@ -34,6 +34,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specificat
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
@@ -83,7 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _dbCommandBuilderFactoryStrictMock,
           _rdbmsPersistenceModelProvider,
           _infrastructureStoragePropertyDefinitionProviderStub,
-          _objectReaderFactoryStrictMock);
+          _objectReaderFactoryStrictMock,
+          new TableDefinitionFinder(_rdbmsPersistenceModelProvider));
 
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();

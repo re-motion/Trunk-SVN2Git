@@ -451,6 +451,8 @@
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlSecondaryXmlIndexKind.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlIndexDefinitionBase.cs" />
     <Compile Include="Persistence\Rdbms\InlineEntityDefinitionVisitor.cs" />
+    <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\ITableDefinitionFinder.cs" />
+    <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\TableDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSaveCommand.cs" />
