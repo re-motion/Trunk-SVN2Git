@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
@@ -69,27 +70,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     protected abstract IDbConnection CreateConnection ();
-
-    /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
-    public virtual string StatementDelimiter
-    {
-      get { return SqlDialect.StatementDelimiter; }
-    }
-
-    /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
-    public virtual string DelimitIdentifier (string identifier)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("identifier", identifier);
-
-      return SqlDialect.DelimitIdentifier (identifier);
-    }
-
-    public virtual string GetParameterName (string name)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-
-      return SqlDialect.GetParameterName (name);
-    }
 
     public virtual void Connect ()
     {

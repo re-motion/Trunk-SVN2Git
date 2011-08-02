@@ -22,8 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
-  /// Generates a SQL order by clause for a <see cref="SortExpressionDefinition"/>. Identifier quotations are
-  /// added via <see cref="RdbmsProvider.DelimitIdentifier"/>
+  /// Generates a SQL order by clause for a <see cref="SortExpressionDefinition"/>.
   /// </summary>
   public class SortExpressionSqlGenerator
   {

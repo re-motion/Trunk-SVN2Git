@@ -259,36 +259,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void StatementDelimiter_UsesDialect ()
-    {
-      _dialectStub.Stub (stub => stub.StatementDelimiter).Return ("&");
-      _dialectStub.Replay();
-
-      var result = _providerWithSqlConnection.StatementDelimiter;
-      Assert.That (result, Is.EqualTo ("&"));
-    }
-
-    [Test]
-    public void DelimitIdentifier_UsesDialect ()
-    {
-      _dialectStub.Stub (stub => stub.DelimitIdentifier ("xy")).Return ("!xy!");
-      _dialectStub.Replay();
-
-      var result = _providerWithSqlConnection.DelimitIdentifier ("xy");
-      Assert.That (result, Is.EqualTo ("!xy!"));
-    }
-
-    [Test]
-    public void GetParameterName_UsesDialect ()
-    {
-      _dialectStub.Stub (stub => stub.GetParameterName ("xy")).Return ("#1");
-      _dialectStub.Replay();
-
-      var result = _providerWithSqlConnection.GetParameterName ("xy");
-      Assert.That (result, Is.EqualTo ("#1"));
-    }
-
-    [Test]
     public void ExecutesCollectionQuery ()
     {
       var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
