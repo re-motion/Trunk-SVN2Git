@@ -29,7 +29,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Model.Building
 {
   [TestFixture]
-  public class SqlStorageTypeCalculatorTest
+  public class SqlStorageTypeInformationProviderTest
   {
     private SqlStorageTypeInformationProvider _storageTypeInformationProvider;
 
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetStorageType_ForNullableValueTypes ()
+    public void GetStorageType_PropertyDefinition_ForNullableValueTypes ()
     {
       CheckGetStorageType (
           typeof (bool?),
@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type 'System.Char' is not supported by this storage provider.")]
-    public void GetStorageType_WithNotSupportedType ()
+    public void GetStorageType_PropertyDefinition_WithNotSupportedType ()
     {
       var propertyDefinition = CreatePropertyDefinition (typeof (Char));
 
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetStorageType_TypeParameterOverload_SupportedType ()
+    public void GetStorageType_Type_SupportedType ()
     {
       var result = _storageTypeInformationProvider.GetStorageType (typeof (string));
 
@@ -254,7 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type 'System.Char' is not supported by this storage provider.")]
-    public void GetStorageType_TypeParameterOverload_UnsupportedType ()
+    public void GetStorageType_Type_UnsupportedType ()
     {
       _storageTypeInformationProvider.GetStorageType (typeof (Char));
     }

@@ -861,13 +861,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SqlProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\LegacyUpdateDbCommandBuilder.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Persistence\Rdbms\ValueConverter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Persistence\Rdbms\WhereClauseBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\StorageProvider.cs">
