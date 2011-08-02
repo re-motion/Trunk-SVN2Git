@@ -66,6 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
+          null,
           primaryKeyColumn,
           classIDColumn,
           timestampColumn,
@@ -103,9 +104,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition)).Return (
           _rdbmsStoragePropertyDefinitionStub);
-      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns ()).Return (new[] { ColumnDefinitionObjectMother.CreateColumn ("OrderNumber") });
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns()).Return (
+          new[] { ColumnDefinitionObjectMother.CreateColumn ("OrderNumber") });
 
-      var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, false);
+      var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition);
 
       Assert.That (result.ColumnName, Is.EqualTo ("OrderNumber"));
       Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
@@ -123,11 +125,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition)).Return (
           _rdbmsStoragePropertyDefinitionStub);
-      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns()).Return (new[]{ColumnDefinitionObjectMother.CreateColumn("OrderNumber")});
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns()).Return (new[] { ColumnDefinitionObjectMother.IDColumn });
 
-      var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, true);
+      var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition);
 
-      Assert.That (result.ColumnName, Is.EqualTo ("OrderNumber"));
+      Assert.That (result.ColumnName, Is.EqualTo ("ID"));
       Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
       Assert.That (result.IsPrimaryKey, Is.True);
@@ -149,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.GetColumns())
           .Return (new[] { ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn });
 
-      _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, true);
+      _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition);
     }
 
     [Test]
@@ -170,10 +172,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.Type, Is.SameAs (typeof (ObjectID)));
     }
 
-    // TODO Review 4199: Use a dedicated TableDefinition object
     [Test]
     public void ResolveTable_TableDefinition ()
     {
+      var tableDefinition = TableDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"), new EntityNameDefinition (null, "TableView"));
+      _classDefinition.SetStorageEntity (tableDefinition);
+
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetEntityDefinition (_classDefinition))
           .Return (_classDefinition.StorageEntityDefinition as IEntityDefinition);
@@ -181,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.TableName, Is.EqualTo ("OrderView"));
+      Assert.That (result.TableName, Is.EqualTo ("TableView"));
       Assert.That (result.TableAlias, Is.EqualTo ("o"));
       Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
     }
@@ -227,8 +232,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-      "Class 'Order' does not have an associated database table and can therefore not be queried.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Class 'Order' does not have an associated database table and can therefore not be queried.")]
     public void ResolveTable_NullEntityDefinition ()
     {
       _classDefinition.SetStorageEntity (new NullEntityDefinition (TestDomainStorageProviderDefinition));
@@ -257,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.GetStoragePropertyDefinition (leftEndPointDefinition.PropertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
       _rdbmsStoragePropertyDefinitionStub
-          .Stub (stub => stub.GetColumnForLookup ())
+          .Stub (stub => stub.GetColumnForLookup())
           .Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
@@ -298,7 +303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.GetStoragePropertyDefinition (rightEndPointDefinition.PropertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
       _rdbmsStoragePropertyDefinitionStub
-          .Stub (stub => stub.GetColumnForLookup ()).Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
+          .Stub (stub => stub.GetColumnForLookup()).Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 

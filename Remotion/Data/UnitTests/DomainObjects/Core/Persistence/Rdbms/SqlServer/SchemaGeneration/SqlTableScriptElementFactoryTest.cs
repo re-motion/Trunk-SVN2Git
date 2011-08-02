@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _tableDefinitionWithoutPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition ("SchemaName", "EntityName"),
+          new EntityNameDefinition ("SchemaName", "EntityName"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,

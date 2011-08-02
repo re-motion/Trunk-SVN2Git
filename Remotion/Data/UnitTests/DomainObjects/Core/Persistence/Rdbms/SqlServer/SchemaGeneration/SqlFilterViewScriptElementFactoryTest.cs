@@ -39,13 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var tableDefinitionWithCustomSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "TableName1"),
+          new EntityNameDefinition (null, "TableName1"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
       var tableDefinitionWithDefaultSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "TableName2"),
+          new EntityNameDefinition (null, "TableName2"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);

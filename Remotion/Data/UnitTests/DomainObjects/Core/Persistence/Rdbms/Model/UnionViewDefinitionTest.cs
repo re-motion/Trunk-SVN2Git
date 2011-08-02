@@ -49,14 +49,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Table1"),
+          new EntityNameDefinition (null, "Table1"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           _column1);
       _tableDefinition2 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Table2"),
+          new EntityNameDefinition (null, "Table2"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var tableDefinition3 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Table3"),
+          new EntityNameDefinition (null, "Table3"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);

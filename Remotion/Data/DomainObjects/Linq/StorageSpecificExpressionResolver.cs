@@ -51,8 +51,7 @@ namespace Remotion.Data.DomainObjects.Linq
           classDefinition.ClassType, tableAlias, null, tableColumns.Where (c => c.IsPrimaryKey).First(), tableColumns);
     }
 
-    // TODO Review 4199: Remove isPrimaryKeyColumn parameter, use column.IsPartOfPrimaryKey instead
-    public Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn)
+    public Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -62,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (columns.Count > 1) 
         throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
 
-      return originatingEntity.GetColumn (propertyDefinition.PropertyType, columns[0].Name, isPrimaryKeyColumn);
+      return originatingEntity.GetColumn (propertyDefinition.PropertyType, columns[0].Name, columns[0].IsPartOfPrimaryKey);
     }
 
     public SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition)

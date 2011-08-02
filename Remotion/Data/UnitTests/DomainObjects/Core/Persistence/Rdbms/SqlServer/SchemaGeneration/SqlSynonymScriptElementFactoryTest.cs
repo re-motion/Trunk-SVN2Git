@@ -45,13 +45,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition ("SchemaName", "TableName1"),
+          new EntityNameDefinition ("SchemaName", "TableName1"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
       _tableDefinition2 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "TableName2"),
+          new EntityNameDefinition (null, "TableName2"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);

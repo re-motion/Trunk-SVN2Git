@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      return _storageSpecificExpressionResolver.ResolveColumn (originatingEntity, propertyDefinition, false);
+      return _storageSpecificExpressionResolver.ResolveColumn (originatingEntity, propertyDefinition);
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)

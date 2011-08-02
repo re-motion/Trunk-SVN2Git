@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var fakeBaseEntityDefiniton = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
+          new EntityNameDefinition (null, "Test"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var fakeBaseEntityDefiniton = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
+          new EntityNameDefinition (null, "Test"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
@@ -225,13 +225,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var fakeUnionEntity1 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test1"),
+          new EntityNameDefinition (null, "Test1"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
       var fakeUnionEntity2 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test2"),
+          new EntityNameDefinition (null, "Test2"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);

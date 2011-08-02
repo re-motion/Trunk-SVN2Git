@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _entityDefinition = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Table"),
+          new EntityNameDefinition (null, "Table"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           {
               TableDefinitionObjectMother.Create (
                   _storageProviderDefinition,
-                  new EntityNameDefinition (null, "Test"),
+                  new EntityNameDefinition (null, "Test"), null,
                   ColumnDefinitionObjectMother.IDColumn,
                   ColumnDefinitionObjectMother.ClassIDColumn,
                   ColumnDefinitionObjectMother.TimestampColumn)

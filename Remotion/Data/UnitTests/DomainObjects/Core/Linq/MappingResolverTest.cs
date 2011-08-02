@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
               property.DeclaringType.FullName + "." + property.Name);
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition, false))
+          .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition))
           .Return (_fakeColumnDefinitionExpression);
 
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
               property.DeclaringType.FullName + "." + property.Name);
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition, false))
+          .Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition))
           .Return (_fakeColumnDefinitionExpression);
 
       var result = _resolver.ResolveMemberExpression (entityExpression, property);

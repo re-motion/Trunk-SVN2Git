@@ -21,21 +21,35 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
-  public class TableDefinitionObjectMother
+  public static class TableDefinitionObjectMother
   {
     public static TableDefinition Create (StorageProviderDefinition storageProviderDefinition, EntityNameDefinition tableName)
     {
-      return TableDefinitionObjectMother.Create (
+      return Create (
           storageProviderDefinition,
           tableName,
+          null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
     }
 
     public static TableDefinition Create (
-        StorageProviderDefinition storageProviderDefinition,  
+        StorageProviderDefinition storageProviderDefinition, EntityNameDefinition tableName, EntityNameDefinition viewName)
+    {
+      return Create (
+          storageProviderDefinition,
+          tableName,
+          viewName,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn);
+    }
+
+    public static TableDefinition Create (
+        StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition tableName,
+        EntityNameDefinition viewName,
         ColumnDefinition objectIdColumnDefinition,
         ColumnDefinition classIdColumnDefinition,
         ColumnDefinition timestampColumnDefinition,
@@ -44,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       return new TableDefinition (
           storageProviderDefinition,
           tableName,
-          null,
+          viewName,
           objectIdColumnDefinition,
           classIdColumnDefinition,
           timestampColumnDefinition,

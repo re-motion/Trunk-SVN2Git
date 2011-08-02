@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition = TableDefinitionObjectMother.Create (
           storageProviderDefinition,
-          new EntityNameDefinition (null, "TableName"),
+          new EntityNameDefinition (null, "TableName"), null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           {
               TableDefinitionObjectMother.Create (
               storageProviderDefinition,
-              new EntityNameDefinition (null, "Test"),
+              new EntityNameDefinition (null, "Test"), null,
               ColumnDefinitionObjectMother.IDColumn,
               ColumnDefinitionObjectMother.ClassIDColumn,
               ColumnDefinitionObjectMother.TimestampColumn)
