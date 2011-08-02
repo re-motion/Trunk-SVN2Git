@@ -142,9 +142,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
       var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, ObjectLookupResult<DataContainer>> (result);
       Assert.That (innerCommand, Is.TypeOf (typeof (SingleObjectLoadCommand<DataContainer>)));
-      var loadCommand = ((SingleObjectLoadCommand<DataContainer>) innerCommand);
-      Assert.That (loadCommand.DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (loadCommand.ObjectReader, Is.SameAs (_dataContainerReader1Stub));
     }
 
     [Test]
@@ -170,12 +167,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _tableDefinitionFinderStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
-
-      var dbCommandBuilderTuples =
-          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
-      Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
-      Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (dbCommandBuilderTuples[0].Item2, Is.SameAs (_dataContainerReader1Stub));
     }
 
     [Test]
@@ -211,18 +202,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
       Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
-
-      var dbCommandBuilderTuples =
-          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
-      Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (2));
-
-      // Convert to Dictionary because the order of tuples is not defined
-      var dbCommandBuilderDictionary = dbCommandBuilderTuples.ToDictionary (tuple => tuple.Item1, tuple => tuple.Item2);
-
-      Assert.That (dbCommandBuilderDictionary.ContainsKey (_dbCommandBuilder1Stub), Is.True);
-      Assert.That (dbCommandBuilderDictionary[_dbCommandBuilder1Stub], Is.SameAs (_dataContainerReader1Stub));
-      Assert.That (dbCommandBuilderDictionary.ContainsKey (_dbCommandBuilder2Stub), Is.True);
-      Assert.That (dbCommandBuilderDictionary[_dbCommandBuilder2Stub], Is.SameAs (_dataContainerReader2Stub));
     }
 
     [Test]
@@ -249,10 +228,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
-      var dbCommandBuilderTuples = ((MultiObjectLoadCommand<DataContainer>) result).DbCommandBuildersAndReaders;
-      Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
-      Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (dbCommandBuilderTuples[0].Item2, Is.SameAs (_dataContainerReader1Stub));
     }
 
     [Test]
@@ -326,8 +301,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (innerCommand, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
       var command = (IndirectDataContainerLoadCommand) innerCommand;
       Assert.That (command.ObjectIDLoadCommand, Is.TypeOf (typeof (MultiObjectIDLoadCommand)));
-      Assert.That (((MultiObjectIDLoadCommand) (command.ObjectIDLoadCommand)).DbCommandBuilders, Is.EqualTo (new[] { _dbCommandBuilder1Stub }));
-      Assert.That (((MultiObjectIDLoadCommand) command.ObjectIDLoadCommand).ObjectIDReader, Is.SameAs(_objectIDReader1Stub));
     }
 
     [Test]
@@ -474,13 +447,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var innerCommand =
           CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>> (result);
       Assert.That (innerCommand, Is.TypeOf (typeof (MultiObjectLoadCommand<Tuple<ObjectID, object>>)));
-
-      var commandBuildersAndReaders = ((MultiObjectLoadCommand<Tuple<ObjectID, object>>) innerCommand).DbCommandBuildersAndReaders;
-      Assert.That (commandBuildersAndReaders.Length, Is.EqualTo (2));
-      Assert.That (commandBuildersAndReaders[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
-      Assert.That (commandBuildersAndReaders[0].Item2, Is.SameAs (_timestampReader1Stub));
-      Assert.That (commandBuildersAndReaders[1].Item1, Is.SameAs (_dbCommandBuilder2Stub));
-      Assert.That (commandBuildersAndReaders[1].Item2, Is.SameAs (_timestampReader2Stub));
     }
 
     [Test]
@@ -555,19 +521,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _tableDefinitionFinderStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
-
-      Assert.That (tuples.Count, Is.EqualTo (5));
-      Assert.That (tuples[0].Item1, Is.EqualTo (dataContainerNew1.ID));
-      Assert.That (tuples[0].Item2, Is.SameAs (insertDbCommandBuilderNew1));
-      Assert.That (tuples[1].Item1, Is.EqualTo (dataContainerNew2.ID));
-      Assert.That (tuples[1].Item2, Is.SameAs (insertDbCommandBuilderNew2));
-      Assert.That (tuples[2].Item1, Is.EqualTo (dataContainerNewWithoutRelations.ID));
-      Assert.That (tuples[2].Item2, Is.SameAs (insertDbCommandBuilderNew3));
-      Assert.That (tuples[3].Item1, Is.EqualTo (dataContainerNew1.ID));
-      Assert.That (tuples[3].Item2, Is.SameAs (updateDbCommandBuilderNew1));
-      Assert.That (tuples[4].Item1, Is.EqualTo (dataContainerNew2.ID));
-      Assert.That (tuples[4].Item2, Is.SameAs (updateDbCommandBuilderNew2));
     }
 
     [Test]
@@ -625,16 +578,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _factory.CreateForSave (new[] { dataContainerChangedSerialNumber, dataContainerChangedEmployee, dataContainerChangedMarkedAsChanged });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
-
-      _tableDefinitionFinderStrictMock.VerifyAllExpectations();
-      Assert.That (tuples.Count, Is.EqualTo (3));
-      Assert.That (tuples[0].Item1, Is.EqualTo (dataContainerChangedSerialNumber.ID));
-      Assert.That (tuples[0].Item2, Is.SameAs (updateDbCommandBuilderChangedSerialNumber));
-      Assert.That (tuples[1].Item1, Is.EqualTo (dataContainerChangedEmployee.ID));
-      Assert.That (tuples[1].Item2, Is.SameAs (updateDbCommandBuilderChangedEmployee));
-      Assert.That (tuples[2].Item1, Is.EqualTo (dataContainerChangedMarkedAsChanged.ID));
-      Assert.That (tuples[2].Item2, Is.SameAs (updateDbCommandBuilderMarkedAsChanged));
     }
 
     [Test]
@@ -709,19 +652,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _tableDefinitionFinderStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
-
-      Assert.That (tuples.Count, Is.EqualTo (5));
-      Assert.That (tuples[0].Item1, Is.EqualTo (dataContainerDeletedWithRelations1.ID));
-      Assert.That (tuples[0].Item2, Is.SameAs (updateDbCommandBuilderDeleted2));
-      Assert.That (tuples[1].Item1, Is.EqualTo (dataContainerDeletedWithRelations2.ID));
-      Assert.That (tuples[1].Item2, Is.SameAs (updateDbCommandBuilderDeleted3));
-      Assert.That (tuples[2].Item1, Is.EqualTo (dataContainerDeletedWithoutRelations.ID));
-      Assert.That (tuples[2].Item2, Is.SameAs (deleteDbCommandBuilderDeleted1));
-      Assert.That (tuples[3].Item1, Is.EqualTo (dataContainerDeletedWithRelations1.ID));
-      Assert.That (tuples[3].Item2, Is.SameAs (deleteDbCommandBuilderDeleted2));
-      Assert.That (tuples[4].Item1, Is.EqualTo (dataContainerDeletedWithRelations2.ID));
-      Assert.That (tuples[4].Item2, Is.SameAs (deleteDbCommandBuilderDeleted3));
     }
 
     [Test]
@@ -736,9 +666,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _tableDefinitionFinderStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
-
-      Assert.That (tuples.Count, Is.EqualTo (0));
     }
 
     private bool CheckInsertedComputerColumns (IInsertedColumnsSpecification insertedColumnsSpecification, DataContainer dataContainer)
