@@ -30,6 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     StorageTypeInformation SerializedObjectIDStorageType { get; }
     StorageTypeInformation ClassIDStorageType { get; }
     StorageTypeInformation TimestampStorageType { get; }
+    
     bool IsTypeSupported (Type type);
     StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition);
     StorageTypeInformation GetStorageType (Type type);

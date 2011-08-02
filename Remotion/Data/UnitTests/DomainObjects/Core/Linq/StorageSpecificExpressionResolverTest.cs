@@ -142,10 +142,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition)).Return (
-          _rdbmsStoragePropertyDefinitionStub);
-      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns()).Return (
-          new[] { ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn });
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition))
+          .Return (_rdbmsStoragePropertyDefinitionStub);
+      _rdbmsStoragePropertyDefinitionStub
+          .Stub (stub => stub.GetColumns())
+          .Return (new[] { ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn });
 
       _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, true);
     }
@@ -156,8 +158,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (_classDefinition.StorageEntityDefinition as IEntityDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveIDColumn (entityExpression, _classDefinition);
 
@@ -167,11 +170,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.Type, Is.SameAs (typeof (ObjectID)));
     }
 
+    // TODO Review 4199: Use a dedicated TableDefinition object
     [Test]
     public void ResolveTable_TableDefinition ()
     {
-      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (_classDefinition.StorageEntityDefinition as IEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -231,12 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
           _classDefinition.StorageEntityDefinition as IEntityDefinition);
 
-      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result.TableName, Is.EqualTo ("OrderView"));
-      Assert.That (result.TableAlias, Is.EqualTo ("o"));
-      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+      _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
     }
 
     [Test]
@@ -252,12 +252,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetEntityDefinition (leftEndPointDefinition.ClassDefinition))
-          .Return (
-              rightEndPointDefinition.ClassDefinition.StorageEntityDefinition as IEntityDefinition);
+          .Return (rightEndPointDefinition.ClassDefinition.StorageEntityDefinition as IEntityDefinition);
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetStoragePropertyDefinition (leftEndPointDefinition.PropertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
-      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumnForLookup ()).Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
+      _rdbmsStoragePropertyDefinitionStub
+          .Stub (stub => stub.GetColumnForLookup ())
+          .Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
@@ -292,12 +293,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetEntityDefinition (rightEndPointDefinition.ClassDefinition))
-          .Return (
-              rightEndPointDefinition.ClassDefinition.StorageEntityDefinition as IEntityDefinition);
+          .Return (rightEndPointDefinition.ClassDefinition.StorageEntityDefinition as IEntityDefinition);
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetStoragePropertyDefinition (rightEndPointDefinition.PropertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
-      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumnForLookup ()).Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
+      _rdbmsStoragePropertyDefinitionStub
+          .Stub (stub => stub.GetColumnForLookup ()).Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 

@@ -49,8 +49,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var rdbmsProviderDefinition =
           ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameProvider = CreateStorageNameProvider();
-      var storagePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (storageNameProvider);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider ();
+      var storageNameProvider = CreateStorageNameProvider ();
+      var storagePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider);
       var commandFactory = CreateStorageProviderCommandFactory (rdbmsProviderDefinition, storageNameProvider, storagePropertyDefinitionFactory);
       return CreateStorageProvider (persistenceListener, rdbmsProviderDefinition, storageNameProvider, commandFactory);
     }
@@ -86,10 +87,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameProvider = CreateStorageNameProvider();
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider ();
+      var storageNameProvider = CreateStorageNameProvider ();
       var columnDefinitionResolver = CreateColumnDefinitionResolver();
-      var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (storageNameProvider);
-      var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (storageNameProvider, storageProviderDefinitionFinder);
+      var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider);
+      var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider, storageProviderDefinitionFinder);
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
           storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionFactory, storageProviderDefinitionFinder);
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
@@ -124,11 +126,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
       var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
-      var sqlStorageTypeCalculator = ObjectFactory.Create<SqlStorageTypeInformationProvider> (ParamList.Empty);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
       var typeConversionProvider = TypeConversionProvider.Create();
 
       var ctorParameters = ParamList.Create (
-          startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, sqlStorageTypeCalculator, typeConversionProvider);
+          startingClassDefinition,
+          sqlPreparationStage,
+          mappingResolutionStage,
+          sqlGenerationStage,
+          storageTypeInformationProvider,
+          typeConversionProvider);
       return ObjectFactory.Create<DomainObjectQueryExecutor> (ctorParameters);
     }
 
@@ -179,20 +186,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     }
 
     protected virtual IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (
+        IStorageTypeInformationProvider storageTypeInformationProvider, 
         IStorageNameProvider storageNameProvider)
     {
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-
-      return new InfrastructureStoragePropertyDefinitionProvider (new SqlStorageTypeInformationProvider(), storageNameProvider);
+      
+      return new InfrastructureStoragePropertyDefinitionProvider (storageTypeInformationProvider, storageNameProvider);
     }
 
     protected virtual IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (
-        IStorageNameProvider storageNameProvider, IStorageProviderDefinitionFinder providerDefinitionFinder)
+        IStorageTypeInformationProvider storageTypeInformationProvider, 
+        IStorageNameProvider storageNameProvider, 
+        IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
-      return new DataStoragePropertyDefinitionFactory (new SqlStorageTypeInformationProvider(), storageNameProvider, providerDefinitionFinder);
+      return new DataStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider, providerDefinitionFinder);
     }
 
     protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
@@ -258,7 +270,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
 
       var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
-      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter, storageNameProvider);
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter);
 
       return new RdbmsProviderCommandFactory (
           dbCommandBuilderFactory,
@@ -266,8 +278,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           infrastructureStoragePropertyDefinitionProvider);
     }
 
-    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (
-        IValueConverter valueConverter, IStorageNameProvider storageNameProvider)
+    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (IValueConverter valueConverter)
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
@@ -282,6 +293,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
       return new ValueConverter ((RdbmsProviderDefinition) storageProviderDefinition, storageNameProvider, typeConversionProvider);
+    }
+
+    protected virtual SqlStorageTypeInformationProvider CreateStorageTypeInformationProvider ()
+    {
+      return new SqlStorageTypeInformationProvider ();
     }
 
     protected virtual IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider ()

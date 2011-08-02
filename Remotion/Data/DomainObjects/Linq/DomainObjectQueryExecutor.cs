@@ -172,7 +172,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
       // Natively supported types can be executed as scalar queries
-      if (_storageTypeInformationProvider.IsTypeSupported(typeof(T)))
+      if (_storageTypeInformationProvider.IsTypeSupported (typeof (T)))
         return ExecuteScalar<T> (queryModel);
 
       var sequence = ExecuteCollection<T> (queryModel);

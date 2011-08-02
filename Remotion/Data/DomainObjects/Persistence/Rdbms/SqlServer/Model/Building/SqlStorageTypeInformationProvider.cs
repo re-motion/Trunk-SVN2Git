@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       ArgumentUtility.CheckNotNull ("type", type);
 
       var storageType= GetStorageType (type, null);
-      if(storageType==null)
+      if(storageType == null)
         throw new NotSupportedException (string.Format ("Type '{0}' is not supported by this storage provider.", type));
       return storageType;
     }

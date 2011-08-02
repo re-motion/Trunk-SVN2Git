@@ -51,17 +51,18 @@ namespace Remotion.Data.DomainObjects.Linq
           classDefinition.ClassType, tableAlias, null, tableColumns.Where (c => c.IsPrimaryKey).First(), tableColumns);
     }
 
+    // TODO Review 4199: Remove isPrimaryKeyColumn parameter, use column.IsPartOfPrimaryKey instead
     public Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
-      var columns = storagePropertyDefinition.GetColumns();
-      if (columns.Count() > 1)
+      var columns = storagePropertyDefinition.GetColumns().ToList();
+      if (columns.Count > 1) 
         throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
 
-      return originatingEntity.GetColumn (propertyDefinition.PropertyType, columns.First().Name, isPrimaryKeyColumn);
+      return originatingEntity.GetColumn (propertyDefinition.PropertyType, columns[0].Name, isPrimaryKeyColumn);
     }
 
     public SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition)
@@ -84,8 +85,13 @@ namespace Remotion.Data.DomainObjects.Linq
           (table, continuation) => table.ViewName.EntityName,
           (filterView, continuation) => filterView.ViewName.EntityName,
           (unionView, continuation) => unionView.ViewName.EntityName,
-          (nullEntity, continuation) => 
-          { throw new NotSupportedException (string.Format ("Class '{0}' does not have an associated database table and can therefore not be queried.", classDefinition.ID)); });
+          (nullEntity, continuation) =>
+          {
+            var message = string.Format (
+                "Class '{0}' does not have an associated database table and can therefore not be queried.",
+                classDefinition.ID);
+            throw new NotSupportedException (message);
+          });
 
       return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
     }
