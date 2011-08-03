@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
     
     [Test]
-    public void GetObjectIDColumnDefinition ()
+    public void GetIDColumnDefinition ()
     {
       var result = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
 
@@ -97,6 +97,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.IsPartOfPrimaryKey, Is.True);
       Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (result.StorageTypeInfo.StorageTypeName, Is.EqualTo ("guid"));
+    }
+
+    [Test]
+    public void GetIDColumnDefinition_CachedInstance ()
+    {
+      var result = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ();
+      var result2 = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ();
+      Assert.That (result2, Is.SameAs (result));
     }
 
     [Test]
@@ -112,6 +120,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
+    public void GetClassIDColumnDefinition_CachedInstance ()
+    {
+      var result = _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ();
+      var result2 = _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ();
+      Assert.That (result2, Is.SameAs (result));
+    }
+
+    [Test]
     public void GetTimestampColumnDefinition ()
     {
       var result = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition();
@@ -121,6 +137,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.PropertyType, Is.SameAs (typeof (object)));
       Assert.That (result.StorageTypeInfo.StorageTypeName, Is.EqualTo ("rowversion"));
       Assert.That (result.IsPartOfPrimaryKey, Is.False);
+    }
+
+    [Test]
+    public void GetTimestampColumnDefinition_CachedInstance ()
+    {
+      var result = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();
+      var result2 = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();
+      Assert.That (result2, Is.SameAs (result));
     }
   }
 }

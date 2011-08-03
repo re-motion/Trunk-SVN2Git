@@ -38,9 +38,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
     }
-    
-    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
-    private readonly IStorageNameProvider _storageNameProvider;
+
+    private readonly ColumnDefinition _idColumnDefinition;
+    private readonly ColumnDefinition _classIDColumnDefinition;
+    private readonly ColumnDefinition _timestampColumnDefinition;
 
     public InfrastructureStoragePropertyDefinitionProvider (
         IStorageTypeInformationProvider storageTypeInformationProvider,
@@ -49,27 +50,39 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
-      _storageTypeInformationProvider = storageTypeInformationProvider;
-      _storageNameProvider = storageNameProvider;
+      _idColumnDefinition = new ColumnDefinition (
+          storageNameProvider.IDColumnName,
+          typeof (ObjectID),
+          storageTypeInformationProvider.ObjectIDStorageType,
+          false,
+          true);
+      _classIDColumnDefinition = new ColumnDefinition (
+          storageNameProvider.ClassIDColumnName,
+          typeof (string),
+          storageTypeInformationProvider.ClassIDStorageType,
+          false,
+          false);
+      _timestampColumnDefinition = new ColumnDefinition (
+          storageNameProvider.TimestampColumnName,
+          typeof (object),
+          storageTypeInformationProvider.TimestampStorageType,
+          false,
+          false);
     }
 
     public ColumnDefinition GetIDColumnDefinition ()
     {
-      return new ColumnDefinition (
-          _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeInformationProvider.ObjectIDStorageType, false, true);
+      return _idColumnDefinition;
     }
 
     public ColumnDefinition GetClassIDColumnDefinition ()
     {
-      return new ColumnDefinition (
-          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeInformationProvider.ClassIDStorageType, false, false);
+      return _classIDColumnDefinition;
     }
 
     public virtual ColumnDefinition GetTimestampColumnDefinition ()
     {
-      return new ColumnDefinition (
-          _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeInformationProvider.TimestampStorageType, false, false);
+      return _timestampColumnDefinition;
     }
-   
   }
 }
