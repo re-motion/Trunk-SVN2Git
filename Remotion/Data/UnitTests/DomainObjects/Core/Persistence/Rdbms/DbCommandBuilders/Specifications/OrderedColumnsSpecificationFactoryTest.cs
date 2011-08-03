@@ -82,9 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       var expectedOrderedColumns = new[]
                                    {
-                                       Tuple.Create (_column1, SortOrder.Descending),
-                                       Tuple.Create (_column2, SortOrder.Descending),
-                                       Tuple.Create (_column3, SortOrder.Ascending)
+                                       new OrderedColumn(_column1, SortOrder.Descending),
+                                       new OrderedColumn(_column2, SortOrder.Descending),
+                                       new OrderedColumn(_column3, SortOrder.Ascending)
                                    };
 
       Assert.That (result, Is.TypeOf(typeof(OrderedColumnsSpecification)));

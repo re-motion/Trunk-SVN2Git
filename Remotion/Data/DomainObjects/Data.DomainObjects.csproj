@@ -274,6 +274,7 @@
     <Compile Include="Persistence\Rdbms\Model\CompoundStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IStorageTypeInformation.cs" />
     <Compile Include="Persistence\Rdbms\Model\ObjectIDWithoutClassIDStoragePropertyDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\OrderedColumn.cs" />
     <Compile Include="Persistence\Rdbms\Model\SerializedObjectIDStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\SimpleStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\StorageTypeInformation.cs" />

@@ -271,9 +271,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var expectedOrderedColumns = new[]
                                    {
-                                       Tuple.Create (ColumnDefinitionObjectMother.IDColumn, SortOrder.Descending),
-                                       Tuple.Create (ColumnDefinitionObjectMother.ClassIDColumn, SortOrder.Descending),
-                                       Tuple.Create (ColumnDefinitionObjectMother.TimestampColumn, SortOrder.Ascending)
+                                       new OrderedColumn(ColumnDefinitionObjectMother.IDColumn, SortOrder.Descending),
+                                       new OrderedColumn(ColumnDefinitionObjectMother.ClassIDColumn, SortOrder.Descending),
+                                       new OrderedColumn(ColumnDefinitionObjectMother.TimestampColumn, SortOrder.Ascending)
                                    };
 
       _dbCommandBuilderFactoryStrictMock
@@ -343,9 +343,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var expectedOrderedColumns = new[]
                                    {
-                                       Tuple.Create (ColumnDefinitionObjectMother.IDColumn, SortOrder.Descending),
-                                       Tuple.Create (ColumnDefinitionObjectMother.ClassIDColumn, SortOrder.Descending),
-                                       Tuple.Create (ColumnDefinitionObjectMother.TimestampColumn, SortOrder.Ascending)
+                                       new OrderedColumn(ColumnDefinitionObjectMother.IDColumn, SortOrder.Descending),
+                                       new OrderedColumn(ColumnDefinitionObjectMother.ClassIDColumn, SortOrder.Descending),
+                                       new OrderedColumn(ColumnDefinitionObjectMother.TimestampColumn, SortOrder.Ascending)
                                    };
 
       var expectedSelectedColumns = new[] { _unionViewDefinition.IDColumn, _unionViewDefinition.ClassIDColumn };

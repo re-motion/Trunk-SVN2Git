@@ -17,6 +17,7 @@
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
@@ -45,8 +46,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
 
       var columns = from sortedProperty in sortExpression.SortedProperties
                     let storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (sortedProperty.PropertyDefinition)
-                    from column in storagePropertyDefinition.GetColumns ()
-                    select Tuple.Create (column, sortedProperty.Order);
+                    from column in storagePropertyDefinition.GetColumns()
+                    select new OrderedColumn (column, sortedProperty.Order);
 
       return new OrderedColumnsSpecification (columns);
     }

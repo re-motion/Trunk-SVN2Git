@@ -46,8 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           new OrderedColumnsSpecification (
               new[]
               {
-                  Tuple.Create (_column1, SortOrder.Ascending), Tuple.Create (_column2, SortOrder.Descending),
-                  Tuple.Create (_column3, SortOrder.Ascending)
+                  new OrderedColumn(_column1, SortOrder.Ascending), new OrderedColumn(_column2, SortOrder.Descending),
+                  new OrderedColumn(_column3, SortOrder.Ascending)
               });
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[delimited Column1]");
@@ -60,8 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       Assert.That (_specification.Columns, Is.EqualTo (new[]
               {
-                  Tuple.Create (_column1, SortOrder.Ascending), Tuple.Create (_column2, SortOrder.Descending),
-                  Tuple.Create (_column3, SortOrder.Ascending)
+                  new OrderedColumn(_column1, SortOrder.Ascending), new OrderedColumn(_column2, SortOrder.Descending),
+                  new OrderedColumn(_column3, SortOrder.Ascending)
               }));
     }
 

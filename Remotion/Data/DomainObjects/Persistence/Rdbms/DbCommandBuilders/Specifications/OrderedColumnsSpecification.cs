@@ -17,13 +17,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Text;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
@@ -32,18 +31,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
   /// </summary>
   public class OrderedColumnsSpecification : IOrderedColumnsSpecification
   {
-    private readonly Tuple<ColumnDefinition, SortOrder>[] _columns;
+    private readonly OrderedColumn[] _columns;
 
-    public OrderedColumnsSpecification (IEnumerable<Tuple<ColumnDefinition, SortOrder>> columns)
+    public OrderedColumnsSpecification (IEnumerable<OrderedColumn> columns)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
 
       _columns = columns.ToArray();
     }
 
-    public ReadOnlyCollection<Tuple<ColumnDefinition, SortOrder>> Columns
+    public ReadOnlyCollection<OrderedColumn> Columns
     {
-      get { return Array.AsReadOnly(_columns); }
+      get { return Array.AsReadOnly (_columns); }
     }
 
     public bool IsEmpty
@@ -59,14 +58,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       stringBuilder.Append (
           SeparatedStringBuilder.Build (
               ", ",
-              _columns, tuple => sqlDialect.DelimitIdentifier (tuple.Item1.Name) + (tuple.Item2 == SortOrder.Ascending ? " ASC" : " DESC")));
+              _columns,
+              orderedColumn =>
+              sqlDialect.DelimitIdentifier (orderedColumn.ColumnDefinition.Name) + (orderedColumn.SortOrder == SortOrder.Ascending ? " ASC" : " DESC")));
     }
 
     public ISelectedColumnsSpecification UnionWithSelectedColumns (ISelectedColumnsSpecification selectedColumns)
     {
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
 
-      return selectedColumns.Union (_columns.Select (tuple => tuple.Item1));
+      return selectedColumns.Union (_columns.Select (orderedColumn => orderedColumn.ColumnDefinition));
     }
   }
 }
