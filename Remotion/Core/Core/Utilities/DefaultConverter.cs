@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace Remotion.Utilities
 {
@@ -43,7 +44,7 @@ namespace Remotion.Utilities
     {
       get { return _type; }
     }
-    
+
     public bool IsNullableType
     {
       get { return _isNullableType; }
@@ -63,7 +64,7 @@ namespace Remotion.Utilities
       return destinationType == _type || Nullable.GetUnderlyingType (destinationType) == _type;
     }
 
-    public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+    public override object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
     {
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
       // ReSharper disable HeuristicUnreachableCode
@@ -77,14 +78,14 @@ namespace Remotion.Utilities
           // ReSharper restore HeuristicUnreachableCode
       else
       {
-        if (!CanConvertFrom (context, value.GetType ()))
+        if (!CanConvertFrom (context, value.GetType()))
           throw new NotSupportedException (string.Format ("Value of type '{0}' cannot be connverted to type '{1}'.", value.GetType(), _type));
-          
+
         return value;
       }
     }
 
-    public override object ConvertTo (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+    public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 
@@ -92,7 +93,10 @@ namespace Remotion.Utilities
         throw new NotSupportedException (string.Format ("This TypeConverter cannot convert to type '{0}'.", destinationType));
 
       if (!IsValid (context, value))
-        throw new NotSupportedException ("The given value cannot be converted by this TypeConverter.");
+      {
+        throw new NotSupportedException (
+            string.Format ("The given value '{0}' cannot be converted by this TypeConverter for type '{1}'.", value, destinationType));
+      }
 
       return value;
     }

@@ -156,7 +156,8 @@ namespace Remotion.UnitTests.Utilities
     }
     
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The given value cannot be converted by this TypeConverter.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+      "The given value '' cannot be converted by this TypeConverter for type 'System.Int32'.")]
     public void ConvertTo_ValueIsNullAndNotValid ()
     {
       _converterForInt.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, null, typeof (int));
@@ -179,7 +180,8 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The given value cannot be converted by this TypeConverter.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+      "The given value '5' cannot be converted by this TypeConverter for type 'System.String'.")]
     public void ConvertTo_ValueIsNotNullAndNotValid ()
     {
       _converterForString.ConvertTo (_typeDescriptorContext, CultureInfo.CurrentCulture, 5, typeof (string));
