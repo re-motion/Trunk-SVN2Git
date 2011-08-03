@@ -300,6 +300,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\ComparedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\InsertedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\OrderedColumnsSpecificationFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\SqlXmlSetComparedColumnSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\UpdatedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\InfrastructureStoragePropertyDefinitionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\CompoundStoragePropertyDefinitionTest.cs" />

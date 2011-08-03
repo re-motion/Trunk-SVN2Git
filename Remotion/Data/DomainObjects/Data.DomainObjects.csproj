@@ -255,6 +255,7 @@
     <Compile Include="Persistence\Rdbms\DataReaders\ObjectReaderFactory.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\TimestampReader.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\OrderedColumnsSpecificationFactory.cs" />
+    <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\SqlXmlSetComparedColumnSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\UpdateDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\DeleteDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\InsertDbCommandBuilder.cs" />
