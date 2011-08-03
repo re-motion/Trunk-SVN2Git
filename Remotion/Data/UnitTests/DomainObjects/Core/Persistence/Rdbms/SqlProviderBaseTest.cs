@@ -33,12 +33,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private ReflectionBasedStorageNameProvider _storageNameProvider;
     private ValueConverter _valueConverter;
     private RdbmsProviderCommandFactory _commandFactory;
+    private SqlStorageTypeInformationProvider _storageTypeInformationProvider;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      var storageTypeCalculator = new SqlStorageTypeInformationProvider();
+      _storageTypeInformationProvider = new SqlStorageTypeInformationProvider();
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _valueConverter = new ValueConverter (TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
@@ -47,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               SqlDialect.Instance,
               _valueConverter),
           rdbmsPersistenceModelProvider,
-          new InfrastructureStoragePropertyDefinitionProvider (storageTypeCalculator, _storageNameProvider),
+          new InfrastructureStoragePropertyDefinitionProvider (_storageTypeInformationProvider, _storageNameProvider),
           new ObjectReaderFactory(rdbmsPersistenceModelProvider),
           new TableDefinitionFinder(rdbmsPersistenceModelProvider));
 
@@ -68,6 +69,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     protected ReflectionBasedStorageNameProvider StorageNameProvider
     {
       get { return _storageNameProvider; }
+    }
+
+    public SqlStorageTypeInformationProvider StorageTypeInformationProvider
+    {
+      get { return _storageTypeInformationProvider; }
     }
 
     public ValueConverter ValueConverter
