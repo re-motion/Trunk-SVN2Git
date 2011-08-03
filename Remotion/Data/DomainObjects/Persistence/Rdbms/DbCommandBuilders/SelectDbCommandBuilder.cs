@@ -32,11 +32,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     private readonly TableDefinition _table;
     private readonly ISelectedColumnsSpecification _selectedColumns;
     private readonly IComparedColumnsSpecification _comparedColumnsSpecification;
+    private readonly IOrderedColumnsSpecification _orderedColumnsSpecification;
 
     public SelectDbCommandBuilder (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
         IComparedColumnsSpecification comparedColumnsSpecification,
+        IOrderedColumnsSpecification  orderedColumnsSpecification,
         ISqlDialect sqlDialect,
         IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
@@ -44,10 +46,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("comparedColumnsSpecification", comparedColumnsSpecification);
+      ArgumentUtility.CheckNotNull ("orderedColumnsSpecification", orderedColumnsSpecification);
 
       _table = table;
       _selectedColumns = selectedColumns;
       _comparedColumnsSpecification = comparedColumnsSpecification;
+      _orderedColumnsSpecification = orderedColumnsSpecification;
     }
 
     public TableDefinition Table
@@ -65,6 +69,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _comparedColumnsSpecification; }
     }
 
+    public IOrderedColumnsSpecification OrderedColumnsSpecification
+    {
+      get { return _orderedColumnsSpecification; }
+    }
+
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
@@ -75,6 +84,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       AppendSelectClause (statement, _selectedColumns);
       AppendFromClause (statement, _table);
       AppendWhereClause (statement, _comparedColumnsSpecification, command);
+      AppendOrderByClause (statement, _orderedColumnsSpecification);
       statement.Append (SqlDialect.StatementDelimiter);
 
       command.CommandText = statement.ToString();

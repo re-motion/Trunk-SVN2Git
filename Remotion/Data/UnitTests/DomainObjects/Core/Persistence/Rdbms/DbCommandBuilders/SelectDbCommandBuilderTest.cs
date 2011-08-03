@@ -40,6 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private ObjectID _objectID;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
     private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
+    private IOrderedColumnsSpecification _orderedColumnsSpecificationStub;
 
     public override void SetUp ()
     {
@@ -56,6 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
 
       _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification>();
+      _orderedColumnsSpecificationStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
 
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub);
@@ -71,13 +73,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void Create_DefaultSchema ()
+    public void Create_DefaultSchema_WithOrderings ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
           _comparedColumnsSpecificationStub,
+          _orderedColumnsSpecificationStub,
           _sqlDialectStub,
           _valueConverterStub);
 
@@ -87,15 +90,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
+      _orderedColumnsSpecificationStub.Stub (stub => stub.IsEmpty).Return (false);
+      _orderedColumnsSpecificationStub
+          .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Name] ASC, [City] DESC"));
+
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [delimited Table] WHERE [ID] = @ID;"));
+      Assert.That (result.CommandText, Is.EqualTo (
+        "SELECT [Column1], [Column2], [Column3] FROM [delimited Table] WHERE [ID] = @ID ORDER BY [Name] ASC, [City] DESC;"));
     }
 
     [Test]
-    public void Create_CustomSchema ()
+    public void Create_CustomSchema_NoOrderings ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
@@ -103,6 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           tableDefinition,
           _selectedColumnsStub,
           _comparedColumnsSpecificationStub,
+          _orderedColumnsSpecificationStub,
           _sqlDialectStub,
           _valueConverterStub);
 
@@ -112,6 +122,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _comparedColumnsSpecificationStub
           .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
+
+      _orderedColumnsSpecificationStub.Stub (stub => stub.IsEmpty).Return (true);
       
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 

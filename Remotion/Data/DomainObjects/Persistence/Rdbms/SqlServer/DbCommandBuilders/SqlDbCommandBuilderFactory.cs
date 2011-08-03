@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -59,6 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           table,
           new SelectedColumnsSpecification (selectedColumns),
           new ComparedColumnsSpecification (new[] { columnValue }),
+          EmptyOrderedColumnsSpecification.Instance,
           _sqlDialect,
           _valueConverter);
     }
