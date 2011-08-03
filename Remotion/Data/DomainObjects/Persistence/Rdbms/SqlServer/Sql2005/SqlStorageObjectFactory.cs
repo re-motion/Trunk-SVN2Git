@@ -164,27 +164,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     protected virtual IEntityDefinitionFactory CreateEntityDefinitionFactory (
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
-        IColumnDefinitionResolver columnDefinitionResolver,
+        IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver,
         IStorageNameProvider storageNameProvider,
         StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinitionFactory", foreignKeyConstraintDefinitionFactory);
-      ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
+      ArgumentUtility.CheckNotNull ("storagePropertyDefinitionResolver", storagePropertyDefinitionResolver);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       return new EntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionProvider,
           foreignKeyConstraintDefinitionFactory,
-          columnDefinitionResolver,
+          storagePropertyDefinitionResolver,
           storageNameProvider,
           storageProviderDefinition);
     }
 
-    protected virtual IColumnDefinitionResolver CreateColumnDefinitionResolver ()
+    protected virtual IStoragePropertyDefinitionResolver CreateColumnDefinitionResolver ()
     {
-      return new ColumnDefinitionResolver();
+      return new StoragePropertyDefinitionResolver();
     }
 
     protected virtual IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (
@@ -211,17 +211,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
     protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
         IStorageNameProvider storageNameProvider,
-        IColumnDefinitionResolver columnDefinitionResolver,
+        IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver,
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
+      ArgumentUtility.CheckNotNull ("storagePropertyDefinitionResolver", storagePropertyDefinitionResolver);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       return new ForeignKeyConstraintDefinitionFactory (
-          storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
+          storageNameProvider, storagePropertyDefinitionResolver, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
     }
 
     protected virtual TableScriptBuilder CreateTableBuilder ()

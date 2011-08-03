@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private string _storageProviderID;
     private EntityDefinitionFactory _factory;
     private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProviderMock;
-    private IColumnDefinitionResolver _columnDefinitionResolverMock;
+    private IStoragePropertyDefinitionResolver _storagePropertyDefinitionResolverMock;
     private IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactoryMock;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private SimpleStoragePropertyDefinition _fakeStorageProperty1;
@@ -47,13 +47,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageProviderID = "DefaultStorageProvider";
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID);
       _infrastructureStoragePropertyDefinitionProviderMock = MockRepository.GenerateStrictMock<IInfrastructureStoragePropertyDefinitionProvider>();
-      _columnDefinitionResolverMock = MockRepository.GenerateStrictMock<IColumnDefinitionResolver>();
+      _storagePropertyDefinitionResolverMock = MockRepository.GenerateStrictMock<IStoragePropertyDefinitionResolver>();
       _storageNameProviderMock = MockRepository.GenerateStrictMock<IStorageNameProvider>();
       _foreignKeyConstraintDefinitionFactoryMock = MockRepository.GenerateStrictMock<IForeignKeyConstraintDefinitionFactory>();
       _factory = new EntityDefinitionFactory (
           _infrastructureStoragePropertyDefinitionProviderMock,
           _foreignKeyConstraintDefinitionFactoryMock,
-          _columnDefinitionResolverMock,
+          _storagePropertyDefinitionResolverMock,
           _storageNameProviderMock,
           _storageProviderDefinition);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
@@ -72,10 +72,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateTableDefinition ()
     {
-      _columnDefinitionResolverMock
-          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.TableClassDefinition1))
+      _storagePropertyDefinitionResolverMock
+          .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.TableClassDefinition1))
           .Return (new[] { _fakeStorageProperty1 });
-      _columnDefinitionResolverMock.Replay();
+      _storagePropertyDefinitionResolverMock.Replay();
 
       _foreignKeyConstraintDefinitionFactoryMock
           .Expect (mock => mock.CreateForeignKeyConstraints (_testModel.TableClassDefinition1))
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var result = _factory.CreateTableDefinition (_testModel.TableClassDefinition1);
 
-      _columnDefinitionResolverMock.VerifyAllExpectations();
+      _storagePropertyDefinitionResolverMock.VerifyAllExpectations();
       _foreignKeyConstraintDefinitionFactoryMock.VerifyAllExpectations();
       _infrastructureStoragePropertyDefinitionProviderMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
@@ -144,10 +144,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
 
-      _columnDefinitionResolverMock
-          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.DerivedClassDefinition1))
+      _storagePropertyDefinitionResolverMock
+          .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.DerivedClassDefinition1))
           .Return (new[] { _fakeStorageProperty1 });
-      _columnDefinitionResolverMock.Replay();
+      _storagePropertyDefinitionResolverMock.Replay();
 
       _storageNameProviderMock
           .Expect (mock => mock.GetViewName (_testModel.DerivedClassDefinition1))
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var result = _factory.CreateFilterViewDefinition (_testModel.DerivedClassDefinition1, fakeBaseEntityDefiniton);
 
-      _columnDefinitionResolverMock.VerifyAllExpectations();
+      _storagePropertyDefinitionResolverMock.VerifyAllExpectations();
       _infrastructureStoragePropertyDefinitionProviderMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
       CheckFilterViewDefinition (
@@ -187,10 +187,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
 
-      _columnDefinitionResolverMock
-          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.DerivedClassDefinition2))
+      _storagePropertyDefinitionResolverMock
+          .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.DerivedClassDefinition2))
           .Return (new[] { _fakeStorageProperty1 });
-      _columnDefinitionResolverMock.Replay();
+      _storagePropertyDefinitionResolverMock.Replay();
 
       _storageNameProviderMock
           .Expect (mock => mock.GetViewName (_testModel.DerivedClassDefinition2))
@@ -202,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       var result = _factory.CreateFilterViewDefinition (_testModel.DerivedClassDefinition2, fakeBaseEntityDefiniton);
 
-      _columnDefinitionResolverMock.VerifyAllExpectations();
+      _storagePropertyDefinitionResolverMock.VerifyAllExpectations();
       _infrastructureStoragePropertyDefinitionProviderMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
       CheckFilterViewDefinition (
@@ -236,10 +236,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn);
 
-      _columnDefinitionResolverMock
-          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.BaseBaseClassDefinition))
+      _storagePropertyDefinitionResolverMock
+          .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.BaseBaseClassDefinition))
           .Return (new[] { _fakeStorageProperty1 });
-      _columnDefinitionResolverMock.Replay();
+      _storagePropertyDefinitionResolverMock.Replay();
 
       _storageNameProviderMock
           .Expect (mock => mock.GetViewName (_testModel.BaseBaseClassDefinition))
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = _factory.CreateUnionViewDefinition (
           _testModel.BaseBaseClassDefinition, new IEntityDefinition[] { fakeUnionEntity1, fakeUnionEntity2 });
 
-      _columnDefinitionResolverMock.VerifyAllExpectations();
+      _storagePropertyDefinitionResolverMock.VerifyAllExpectations();
       _infrastructureStoragePropertyDefinitionProviderMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
       CheckUnionViewDefinition (

@@ -450,7 +450,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InvalidRdbmsStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\DataStoragePropertyDefinitionFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ColumnDefinitionResolverTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\StoragePropertyDefinitionResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\EntityDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ForeignKeyConstraintDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionTest.cs" />

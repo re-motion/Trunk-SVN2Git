@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private ReflectionBasedStorageNameProvider _storageNameProvider;
     private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
-    private ColumnDefinitionResolver _columnDefinitionResolver;
+    private StoragePropertyDefinitionResolver _storagePropertyDefinitionResolver;
     private ForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
     private EntityDefinitionFactory _entityDefinitionFactory;
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
@@ -69,13 +69,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new SqlStorageTypeInformationProvider (), _storageNameProvider);
       _dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
           new SqlStorageTypeInformationProvider (), _storageNameProvider, _storageProviderDefinitionFinder);
-      _columnDefinitionResolver = new ColumnDefinitionResolver();
+      _storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver();
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          _storageNameProvider, _columnDefinitionResolver, _infrastructureStoragePropertyDefinitionProvider, _storageProviderDefinitionFinder);
+          _storageNameProvider, _storagePropertyDefinitionResolver, _infrastructureStoragePropertyDefinitionProvider, _storageProviderDefinitionFinder);
       _entityDefinitionFactory = new EntityDefinitionFactory (
           _infrastructureStoragePropertyDefinitionProvider,
           _foreignKeyConstraintDefinitionFactory,
-          _columnDefinitionResolver,
+          _storagePropertyDefinitionResolver,
           _storageNameProvider,
           _storageProviderDefinition);
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (

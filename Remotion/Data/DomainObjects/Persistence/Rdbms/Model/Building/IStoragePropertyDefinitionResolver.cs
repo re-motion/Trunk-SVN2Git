@@ -20,11 +20,14 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// <see cref="IColumnDefinitionResolver"/> defines the API for all column definition resolver implementations.
+  /// <see cref="IStoragePropertyDefinitionResolver"/> defines the API for classes that calculate the <see cref="IRdbmsStoragePropertyDefinition"/> 
+  /// objects for a <see cref="ClassDefinition"/> or retrieve them from a <see cref="PropertyDefinition"/>. The 
+  /// <see cref="IStoragePropertyDefinitionResolver"/> only returns the <see cref="IRdbmsStoragePropertyDefinition"/> instances, it doesn't create
+  /// any.
   /// </summary>
-  public interface IColumnDefinitionResolver
+  public interface IStoragePropertyDefinitionResolver
   {
-    IRdbmsStoragePropertyDefinition GetColumnDefinition (PropertyDefinition propertyDefinition);
-    IEnumerable<IRdbmsStoragePropertyDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition);
+    IRdbmsStoragePropertyDefinition GetStorageProperty (PropertyDefinition propertyDefinition);
+    IEnumerable<IRdbmsStoragePropertyDefinition> GetStoragePropertiesForHierarchy (ClassDefinition classDefinition);
   }
 }

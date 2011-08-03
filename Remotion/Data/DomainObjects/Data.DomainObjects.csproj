@@ -339,11 +339,11 @@
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlIndexedColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\ISqlIndexDefinitionVisitor.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\ColumnDefinitionResolver.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\StoragePropertyDefinitionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionBase.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityNameDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\ForeignKeyConstraintDefinitionFactory.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\IColumnDefinitionResolver.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\IStoragePropertyDefinitionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IForeignKeyConstraintDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\IIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IIndexDefinitionVisitor.cs" />

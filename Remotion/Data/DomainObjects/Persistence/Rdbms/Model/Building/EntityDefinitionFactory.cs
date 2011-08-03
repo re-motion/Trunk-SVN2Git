@@ -29,26 +29,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   {
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private readonly StorageProviderDefinition _storageProviderDefinition;
-    private readonly IColumnDefinitionResolver _columnDefinitionResolver;
+    private readonly IStoragePropertyDefinitionResolver _storagePropertyDefinitionResolver;
     private readonly IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
     private readonly IStorageNameProvider _storageNameProvider;
 
     public EntityDefinitionFactory (
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
-        IColumnDefinitionResolver columnDefinitionResolver,
+        IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver,
         IStorageNameProvider storageNameProvider,
         StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinitionFactory", foreignKeyConstraintDefinitionFactory);
-      ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
+      ArgumentUtility.CheckNotNull ("storagePropertyDefinitionResolver", storagePropertyDefinitionResolver);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
       _foreignKeyConstraintDefinitionFactory = foreignKeyConstraintDefinitionFactory;
-      _columnDefinitionResolver = columnDefinitionResolver;
+      _storagePropertyDefinitionResolver = storagePropertyDefinitionResolver;
       _storageNameProvider = storageNameProvider;
       _storageProviderDefinition = storageProviderDefinition;
     }
@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var objectIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
       var classIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ();
       var timestampColumn = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();
-      var columns = GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition));
+      var columns = GetSimpleColumnDefinitions (_storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition));
       var allColumns = new[] { objectIDColumn, classIDColumn, timestampColumn }.Concat (columns).ToList();
 
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition (),
-          GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition)),
+          GetSimpleColumnDefinitions (_storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition)),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition (),
-          GetSimpleColumnDefinitions (_columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition)),
+          GetSimpleColumnDefinitions (_storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition)),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }

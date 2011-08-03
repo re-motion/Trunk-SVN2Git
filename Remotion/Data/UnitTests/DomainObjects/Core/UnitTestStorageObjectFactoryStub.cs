@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           new SqlStorageTypeInformationProvider(), storageNameProvider);
       var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
           new SqlStorageTypeInformationProvider(), storageNameProvider, storageProviderDefinitionFinder);
-      var columnDefinitionResolver = new ColumnDefinitionResolver();
+      var columnDefinitionResolver = new StoragePropertyDefinitionResolver();
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
       var entityDefinitionFactory = new EntityDefinitionFactory (

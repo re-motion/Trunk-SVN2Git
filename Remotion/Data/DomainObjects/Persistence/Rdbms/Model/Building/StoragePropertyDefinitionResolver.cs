@@ -26,11 +26,12 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// The <see cref="ColumnDefinitionResolver"/> is responsible to get all <see cref="IRdbmsStoragePropertyDefinition"/>s for a <see cref="ClassDefinition"/>
+  /// The <see cref="StoragePropertyDefinitionResolver"/> is responsible to get all <see cref="IRdbmsStoragePropertyDefinition"/> instances for a 
+  /// <see cref="ClassDefinition"/> (or for one of its <see cref="PropertyDefinition"/> objects).
   /// </summary>
-  public class ColumnDefinitionResolver : IColumnDefinitionResolver
+  public class StoragePropertyDefinitionResolver : IStoragePropertyDefinitionResolver
   {
-    public IEnumerable<IRdbmsStoragePropertyDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
+    public IEnumerable<IRdbmsStoragePropertyDefinition> GetStoragePropertiesForHierarchy (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -43,18 +44,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           (tuple1, tuple2) => tuple1.Item1.Equals (tuple2.Item1),
           tuple => tuple.Item1.GetHashCode ());
 
-      var columnDefinitions =
+      var storageProperties =
           (from cd in allClassesInHierarchy
            from PropertyDefinition pd in cd.MyPropertyDefinitions
            where pd.StorageClass == StorageClass.Persistent
-           select Tuple.Create (pd.PropertyInfo, GetColumnDefinition (pd)))
+           select Tuple.Create (pd.PropertyInfo, GetStorageProperty (pd)))
               .Distinct (equalityComparer)
               .Select (tuple => tuple.Item2);
 
-      return columnDefinitions;
+      return storageProperties;
     }
 
-    public IRdbmsStoragePropertyDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
+    public IRdbmsStoragePropertyDefinition GetStorageProperty (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 

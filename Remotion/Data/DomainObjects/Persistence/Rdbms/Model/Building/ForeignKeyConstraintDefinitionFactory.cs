@@ -30,24 +30,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class ForeignKeyConstraintDefinitionFactory : IForeignKeyConstraintDefinitionFactory
   {
-    private readonly IColumnDefinitionResolver _columnDefinitionResolver;
+    private readonly IStoragePropertyDefinitionResolver _storagePropertyDefinitionResolver;
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     public ForeignKeyConstraintDefinitionFactory (
         IStorageNameProvider storageNameProvider,
-        IColumnDefinitionResolver columnDefinitionResolver,
+        IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver,
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
+      ArgumentUtility.CheckNotNull ("storagePropertyDefinitionResolver", storagePropertyDefinitionResolver);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       _storageNameProvider = storageNameProvider;
-      _columnDefinitionResolver = columnDefinitionResolver;
+      _storagePropertyDefinitionResolver = storagePropertyDefinitionResolver;
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
       _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
     }
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
         // We can't access the opposite ID column from here, but columns implement equality, so we can just recreate it
         var oppositeObjectIDColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
-        var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
+        var endPointColumnDefinition = _storagePropertyDefinitionResolver.GetStorageProperty (propertyDefinition);
         var referencingColumn = oppositeObjectIDColumnDefinition;
         var referencedColumn = endPointColumnDefinition.GetColumnForForeignKey ();
 
