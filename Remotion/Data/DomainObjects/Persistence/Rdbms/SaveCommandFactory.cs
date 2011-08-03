@@ -21,7 +21,6 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
@@ -91,10 +90,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         TableDefinition tableDefinition,
         IEnumerable<ColumnValue> updatedColumnValues)
     {
-      var updatedColumnsSpecification = new UpdatedColumnsSpecification (updatedColumnValues);
-      var comparedColumnSpecification = new ComparedColumnsSpecification (GetComparedColumnValuesForUpdate (dataContainer, tableDefinition));
+      var comparedColumnValues = GetComparedColumnValuesForUpdate (dataContainer, tableDefinition);
 
-      return _dbCommandBuilderFactory.CreateForUpdate (tableDefinition, updatedColumnsSpecification, comparedColumnSpecification);
+      return _dbCommandBuilderFactory.CreateForUpdate (tableDefinition, updatedColumnValues, comparedColumnValues);
     }
 
     private IEnumerable<ColumnValue> GetComparedColumnValuesForUpdate (DataContainer dataContainer, TableDefinition tableDefinition)
@@ -144,14 +142,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
 
-      return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, new InsertedColumnsSpecification (columnValues));
+      return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, columnValues);
     }
 
     private IDbCommandBuilder CreateDbCommandForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var columnValues = GetComparedColumnValuesForDelete (dataContainer, tableDefinition);
 
-      return _dbCommandBuilderFactory.CreateForDelete (tableDefinition, new ComparedColumnsSpecification (columnValues));
+      return _dbCommandBuilderFactory.CreateForDelete (tableDefinition, columnValues);
     }
 
     private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)

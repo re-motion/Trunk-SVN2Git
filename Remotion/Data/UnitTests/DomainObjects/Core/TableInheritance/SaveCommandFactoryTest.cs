@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
@@ -45,17 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _dbCommandBuilderFactoryStrictMock = MockRepository.GenerateStrictMock<IDbCommandBuilderFactory> ();
-      _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
-      _tableDefinitionFinderStrictMock = MockRepository.GenerateStrictMock<ITableDefinitionFinder> ();
+      _dbCommandBuilderFactoryStrictMock = MockRepository.GenerateStrictMock<IDbCommandBuilderFactory>();
+      _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
+      _tableDefinitionFinderStrictMock = MockRepository.GenerateStrictMock<ITableDefinitionFinder>();
 
       _factory = new SaveCommandFactory (_dbCommandBuilderFactoryStrictMock, _rdbmsPersistenceModelProvider, _tableDefinitionFinderStrictMock);
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
     }
-    
+
     [Test]
     public void CreateForSave_New ()
     {
@@ -67,11 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       dataContainerNew2.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "654321");
       var dataContainerNewWithoutRelations = DataContainer.CreateNew (DomainObjectIDs.Official1);
 
-      var insertDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var insertDbCommandBuilderNew2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var insertDbCommandBuilderNew3 = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var updateDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var updateDbCommandBuilderNew2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var insertDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var insertDbCommandBuilderNew2 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var insertDbCommandBuilderNew3 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var updateDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var updateDbCommandBuilderNew2 = MockRepository.GenerateStub<IDbCommandBuilder>();
 
       var tableDefinition1 = (TableDefinition) dataContainerNew1.ID.ClassDefinition.StorageEntityDefinition;
       var tableDefinition2 = (TableDefinition) dataContainerNew2.ID.ClassDefinition.StorageEntityDefinition;
@@ -82,41 +81,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
               stub =>
               stub.CreateForInsert (
                   Arg.Is (tableDefinition1),
-                  Arg<IInsertedColumnsSpecification>.Matches (c => CheckInsertedComputerColumns (c, dataContainerNew1))))
-          .Return (insertDbCommandBuilderNew1).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckInsertedComputerColumns (c, dataContainerNew1))))
+          .Return (insertDbCommandBuilderNew1).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub =>
               stub.CreateForInsert (
                   Arg.Is (tableDefinition2),
-                  Arg<IInsertedColumnsSpecification>.Matches (c => CheckInsertedComputerColumns (c, dataContainerNew2))))
-          .Return (insertDbCommandBuilderNew2).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckInsertedComputerColumns (c, dataContainerNew2))))
+          .Return (insertDbCommandBuilderNew2).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub =>
               stub.CreateForInsert (
                   Arg.Is (tableDefinition3),
-                  Arg<IInsertedColumnsSpecification>.Is.Anything))
-          .Return (insertDbCommandBuilderNew3).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Is.Anything))
+          .Return (insertDbCommandBuilderNew3).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForUpdate (
                   Arg.Is (tableDefinition1),
-                  Arg<IUpdatedColumnsSpecification>.Matches (c => CheckUpdatedComputerColumns (c, dataContainerNew1, true, false, false)),
-                  Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerNew1, tableDefinition1))))
-          .Return (updateDbCommandBuilderNew1).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckUpdatedComputerColumns (c, dataContainerNew1, true, false, false)),
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckComparedColumns (c, dataContainerNew1, tableDefinition1))))
+          .Return (updateDbCommandBuilderNew1).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForUpdate (
                   Arg.Is (tableDefinition2),
-                  Arg<IUpdatedColumnsSpecification>.Matches (c => CheckUpdatedComputerColumns (c, dataContainerNew2, true, false, false)),
-                  Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerNew2, tableDefinition2))))
-          .Return (updateDbCommandBuilderNew2).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckUpdatedComputerColumns (c, dataContainerNew2, true, false, false)),
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckComparedColumns (c, dataContainerNew2, tableDefinition2))))
+          .Return (updateDbCommandBuilderNew2).Repeat.Once();
 
       StubTableDefinitionFinder (dataContainerNew1.ID, tableDefinition1);
       StubTableDefinitionFinder (dataContainerNew2.ID, tableDefinition2);
       StubTableDefinitionFinder (dataContainerNewWithoutRelations.ID, tableDefinition3);
-      _tableDefinitionFinderStrictMock.Replay ();
+      _tableDefinitionFinderStrictMock.Replay();
 
       var result = _factory.CreateForSave (
           new[]
@@ -126,9 +125,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
               dataContainerNewWithoutRelations
           });
 
-      _tableDefinitionFinderStrictMock.VerifyAllExpectations ();
+      _tableDefinitionFinderStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList ();
+      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
 
       Assert.That (tuples.Count, Is.EqualTo (5));
       Assert.That (tuples[0].Item1, Is.EqualTo (dataContainerNew1.ID));
@@ -152,11 +151,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       dataContainerChangedEmployee.SetValue (
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee", DomainObjectIDs.Employee2);
       var dataContainerChangedMarkedAsChanged = DataContainer.CreateForExisting (DomainObjectIDs.Computer3, null, pd => pd.DefaultValue);
-      dataContainerChangedMarkedAsChanged.MarkAsChanged ();
+      dataContainerChangedMarkedAsChanged.MarkAsChanged();
 
-      var updateDbCommandBuilderChangedSerialNumber = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var updateDbCommandBuilderChangedEmployee = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var updateDbCommandBuilderMarkedAsChanged = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var updateDbCommandBuilderChangedSerialNumber = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var updateDbCommandBuilderChangedEmployee = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var updateDbCommandBuilderMarkedAsChanged = MockRepository.GenerateStub<IDbCommandBuilder>();
 
       var tableDefinitionChangedSerialNumber = (TableDefinition) dataContainerChangedSerialNumber.ID.ClassDefinition.StorageEntityDefinition;
       var tableDefinitionChangedEmployee = (TableDefinition) dataContainerChangedEmployee.ID.ClassDefinition.StorageEntityDefinition;
@@ -166,41 +165,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           .Stub (
               stub => stub.CreateForUpdate (
                   Arg.Is (tableDefinitionChangedSerialNumber),
-                  Arg<IUpdatedColumnsSpecification>.Matches (
+                  Arg<IEnumerable<ColumnValue>>.Matches (
                       c => CheckUpdatedComputerColumns (c, dataContainerChangedSerialNumber, false, true, false)),
-                  Arg<IComparedColumnsSpecification>.Matches (
+                  Arg<IEnumerable<ColumnValue>>.Matches (
                       c => CheckComparedColumns (c, dataContainerChangedSerialNumber, tableDefinitionChangedSerialNumber))))
-          .Return (updateDbCommandBuilderChangedSerialNumber).Repeat.Once ();
+          .Return (updateDbCommandBuilderChangedSerialNumber).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForUpdate (
                   Arg.Is (tableDefinitionChangedEmployee),
-                  Arg<IUpdatedColumnsSpecification>.Matches (c => CheckUpdatedComputerColumns (c, dataContainerChangedEmployee, true, false, false)),
-                  Arg<IComparedColumnsSpecification>.Matches (
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckUpdatedComputerColumns (c, dataContainerChangedEmployee, true, false, false)),
+                  Arg<IEnumerable<ColumnValue>>.Matches (
                       c => CheckComparedColumns (c, dataContainerChangedEmployee, tableDefinitionChangedSerialNumber))))
-          .Return (updateDbCommandBuilderChangedEmployee).Repeat.Once ();
+          .Return (updateDbCommandBuilderChangedEmployee).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForUpdate (
                   Arg.Is (tableDefinitionMarkedAsChanged),
-                  Arg<IUpdatedColumnsSpecification>.Matches (
+                  Arg<IEnumerable<ColumnValue>>.Matches (
                       c => CheckUpdatedComputerColumns (c, dataContainerChangedMarkedAsChanged, false, false, true)),
-                  Arg<IComparedColumnsSpecification>.Matches (
+                  Arg<IEnumerable<ColumnValue>>.Matches (
                       c => CheckComparedColumns (c, dataContainerChangedMarkedAsChanged, tableDefinitionMarkedAsChanged))))
-          .Return (updateDbCommandBuilderMarkedAsChanged).Repeat.Once ();
+          .Return (updateDbCommandBuilderMarkedAsChanged).Repeat.Once();
 
       StubTableDefinitionFinder (dataContainerChangedSerialNumber.ID, tableDefinitionChangedSerialNumber);
       StubTableDefinitionFinder (dataContainerChangedEmployee.ID, tableDefinitionChangedSerialNumber);
       StubTableDefinitionFinder (dataContainerChangedMarkedAsChanged.ID, tableDefinitionMarkedAsChanged);
-      _tableDefinitionFinderStrictMock.Replay ();
+      _tableDefinitionFinderStrictMock.Replay();
 
       var result =
           _factory.CreateForSave (new[] { dataContainerChangedSerialNumber, dataContainerChangedEmployee, dataContainerChangedMarkedAsChanged });
 
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList ();
+      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
 
-      _tableDefinitionFinderStrictMock.VerifyAllExpectations ();
+      _tableDefinitionFinderStrictMock.VerifyAllExpectations();
       Assert.That (tuples.Count, Is.EqualTo (3));
       Assert.That (tuples[0].Item1, Is.EqualTo (dataContainerChangedSerialNumber.ID));
       Assert.That (tuples[0].Item2, Is.SameAs (updateDbCommandBuilderChangedSerialNumber));
@@ -214,63 +213,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void CreateForSave_Deleted ()
     {
       var dataContainerDeletedWithoutRelations = DataContainer.CreateForExisting (DomainObjectIDs.Official1, null, pd => pd.DefaultValue);
-      dataContainerDeletedWithoutRelations.Delete ();
+      dataContainerDeletedWithoutRelations.Delete();
       var dataContainerDeletedWithRelations1 = DataContainer.CreateForExisting (DomainObjectIDs.Computer1, null, pd => pd.DefaultValue);
-      dataContainerDeletedWithRelations1.Delete ();
+      dataContainerDeletedWithRelations1.Delete();
       var dataContainerDeletedWithRelations2 = DataContainer.CreateForExisting (DomainObjectIDs.Computer2, null, pd => pd.DefaultValue);
-      dataContainerDeletedWithRelations2.Delete ();
+      dataContainerDeletedWithRelations2.Delete();
 
       var tableDefinition1 = (TableDefinition) dataContainerDeletedWithoutRelations.ID.ClassDefinition.StorageEntityDefinition;
       var tableDefinition2 = (TableDefinition) dataContainerDeletedWithRelations1.ID.ClassDefinition.StorageEntityDefinition;
       var tableDefinition3 = (TableDefinition) dataContainerDeletedWithRelations2.ID.ClassDefinition.StorageEntityDefinition;
 
-      var updateDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var updateDbCommandBuilderDeleted3 = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var deleteDbCommandBuilderDeleted1 = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var deleteDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder> ();
-      var deleteDbCommandBuilderDeleted3 = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var updateDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var updateDbCommandBuilderDeleted3 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var deleteDbCommandBuilderDeleted1 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var deleteDbCommandBuilderDeleted2 = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var deleteDbCommandBuilderDeleted3 = MockRepository.GenerateStub<IDbCommandBuilder>();
 
 
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForUpdate (
                   Arg.Is (tableDefinition2),
-                  Arg<IUpdatedColumnsSpecification>.Matches (
+                  Arg<IEnumerable<ColumnValue>>.Matches (
                       c => CheckUpdatedComputerColumns (c, dataContainerDeletedWithRelations1, true, false, false)),
-                  Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations1, tableDefinition2))))
-          .Return (updateDbCommandBuilderDeleted2).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations1, tableDefinition2))))
+          .Return (updateDbCommandBuilderDeleted2).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForUpdate (
                   Arg.Is (tableDefinition3),
-                  Arg<IUpdatedColumnsSpecification>.Matches (
+                  Arg<IEnumerable<ColumnValue>>.Matches (
                       c => CheckUpdatedComputerColumns (c, dataContainerDeletedWithRelations2, true, false, false)),
-                  Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations2, tableDefinition3))))
-          .Return (updateDbCommandBuilderDeleted3).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations2, tableDefinition3))))
+          .Return (updateDbCommandBuilderDeleted3).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForDelete (
                   Arg.Is (tableDefinition1),
-                  Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithoutRelations, tableDefinition1))))
-          .Return (deleteDbCommandBuilderDeleted1).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithoutRelations, tableDefinition1))))
+          .Return (deleteDbCommandBuilderDeleted1).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForDelete (
                   Arg.Is (tableDefinition2),
-                  Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations1, tableDefinition2))))
-          .Return (deleteDbCommandBuilderDeleted2).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations1, tableDefinition2))))
+          .Return (deleteDbCommandBuilderDeleted2).Repeat.Once();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
               stub => stub.CreateForDelete (
                   Arg.Is (tableDefinition3),
-                  Arg<IComparedColumnsSpecification>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations2, tableDefinition3))))
-          .Return (deleteDbCommandBuilderDeleted3).Repeat.Once ();
+                  Arg<IEnumerable<ColumnValue>>.Matches (c => CheckComparedColumns (c, dataContainerDeletedWithRelations2, tableDefinition3))))
+          .Return (deleteDbCommandBuilderDeleted3).Repeat.Once();
 
 
       StubTableDefinitionFinder (dataContainerDeletedWithoutRelations.ID, tableDefinition1);
       StubTableDefinitionFinder (dataContainerDeletedWithRelations1.ID, tableDefinition2);
       StubTableDefinitionFinder (dataContainerDeletedWithRelations2.ID, tableDefinition3);
-      _tableDefinitionFinderStrictMock.Replay ();
+      _tableDefinitionFinderStrictMock.Replay();
 
       var result = _factory.CreateForSave (
           new[]
@@ -280,9 +279,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
               dataContainerDeletedWithRelations2
           });
 
-      _tableDefinitionFinderStrictMock.VerifyAllExpectations ();
+      _tableDefinitionFinderStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList ();
+      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
 
       Assert.That (tuples.Count, Is.EqualTo (5));
       Assert.That (tuples[0].Item1, Is.EqualTo (dataContainerDeletedWithRelations1.ID));
@@ -303,13 +302,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var dataContainerUnchanged = DataContainer.CreateForExisting (DomainObjectIDs.Order3, null, pd => pd.DefaultValue);
 
       StubTableDefinitionFinder (DomainObjectIDs.Order3, _tableDefinition1);
-      _tableDefinitionFinderStrictMock.Replay ();
+      _tableDefinitionFinderStrictMock.Replay();
 
       var result = _factory.CreateForSave (new[] { dataContainerUnchanged });
 
-      _tableDefinitionFinderStrictMock.VerifyAllExpectations ();
+      _tableDefinitionFinderStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList ();
+      var tuples = ((MultiDataContainerSaveCommand) result).Tuples.ToList();
 
       Assert.That (tuples.Count, Is.EqualTo (0));
     }
@@ -319,7 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       classDefinition.SetStorageEntity (entityDefinition);
 
-      return new ObjectID (classDefinition, Guid.NewGuid ());
+      return new ObjectID (classDefinition, Guid.NewGuid());
     }
 
     private void StubTableDefinitionFinder (ObjectID objectID, TableDefinition tableDefinition)
@@ -328,60 +327,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     private bool CheckComparedColumns (
-        IComparedColumnsSpecification comparedColumnsSpecification, DataContainer dataContainer, TableDefinition tableDefinition)
+        IEnumerable<ColumnValue> columnValues, DataContainer dataContainer, TableDefinition tableDefinition)
     {
-      if (comparedColumnsSpecification is ComparedColumnsSpecification)
-      {
-        var columnSpecification = (ComparedColumnsSpecification) comparedColumnsSpecification;
-        Assert.That (columnSpecification.ComparedColumnValues[0].Column, Is.SameAs (tableDefinition.IDColumn));
-        Assert.That (columnSpecification.ComparedColumnValues[0].Value, Is.SameAs (dataContainer.ID.Value));
-        if (dataContainer.PropertyValues.Cast<PropertyValue> ().All (propertyValue => !propertyValue.Definition.IsObjectID))
-        {
-          Assert.That (columnSpecification.ComparedColumnValues[1].Column, Is.SameAs (tableDefinition.TimestampColumn));
-          Assert.That (columnSpecification.ComparedColumnValues[1].Value, Is.SameAs (dataContainer.Timestamp));
-        }
-        return true;
-      }
+      var comparedColumnValues = columnValues.ToArray();
 
-      return false;
+      Assert.That (comparedColumnValues[0].Column, Is.SameAs (tableDefinition.IDColumn));
+      Assert.That (comparedColumnValues[0].Value, Is.SameAs (dataContainer.ID.Value));
+      if (dataContainer.PropertyValues.Cast<PropertyValue>().All (propertyValue => !propertyValue.Definition.IsObjectID))
+      {
+        Assert.That (comparedColumnValues[1].Column, Is.SameAs (tableDefinition.TimestampColumn));
+        Assert.That (comparedColumnValues[1].Value, Is.SameAs (dataContainer.Timestamp));
+      }
+      return true;
     }
 
+
     private bool CheckUpdatedComputerColumns (
-        IUpdatedColumnsSpecification updatedColumnsSpecification,
+        IEnumerable<ColumnValue> columnValues,
         DataContainer dataContainer,
         bool expectEmployee = false,
         bool expectSerialNumber = false,
         bool expectClassID = false)
     {
-      Assert.That (updatedColumnsSpecification, Is.TypeOf (typeof (UpdatedColumnsSpecification)));
-
-      var columnSpecification = (UpdatedColumnsSpecification) updatedColumnsSpecification;
       CheckColumnValue (
-          "SerialNumber", expectSerialNumber, columnSpecification.ColumnValues, GetPropertyValue (dataContainer, typeof (Computer), "SerialNumber"));
+          "SerialNumber", expectSerialNumber, columnValues, GetPropertyValue (dataContainer, typeof (Computer), "SerialNumber"));
       CheckColumnValue (
-          "EmployeeID", expectEmployee, columnSpecification.ColumnValues, GetObjectIDValue (dataContainer, typeof (Computer), "Employee"));
-      CheckColumnValue ("ClassID", expectClassID, columnSpecification.ColumnValues, dataContainer.ID.ClassID);
+          "EmployeeID", expectEmployee, columnValues, GetObjectIDValue (dataContainer, typeof (Computer), "Employee"));
+      CheckColumnValue ("ClassID", expectClassID, columnValues, dataContainer.ID.ClassID);
 
       var expectedColumnCount =
           (expectEmployee ? 1 : 0)
           + (expectSerialNumber ? 1 : 0)
           + (expectClassID ? 1 : 0);
-      Assert.That (columnSpecification.ColumnValues.Count, Is.EqualTo (expectedColumnCount));
+      Assert.That (columnValues.Count(), Is.EqualTo (expectedColumnCount));
 
       return true;
     }
 
-    private bool CheckInsertedComputerColumns (IInsertedColumnsSpecification insertedColumnsSpecification, DataContainer dataContainer)
+    private bool CheckInsertedComputerColumns (IEnumerable<ColumnValue> columnValues, DataContainer dataContainer)
     {
-      Assert.That (insertedColumnsSpecification, Is.TypeOf (typeof (InsertedColumnsSpecification)));
+      CheckColumnValue ("ID", true, columnValues, dataContainer.ID.Value);
+      CheckColumnValue ("ClassID", true, columnValues, dataContainer.ID.ClassID);
+      CheckColumnValue ("SerialNumber", true, columnValues, GetPropertyValue (dataContainer, typeof (Computer), "SerialNumber"));
+      CheckColumnValue ("EmployeeID", false, columnValues, GetObjectIDValue (dataContainer, typeof (Computer), "Employee"));
 
-      var columnSpecification = (InsertedColumnsSpecification) insertedColumnsSpecification;
-      CheckColumnValue ("ID", true, columnSpecification.ColumnValues, dataContainer.ID.Value);
-      CheckColumnValue ("ClassID", true, columnSpecification.ColumnValues, dataContainer.ID.ClassID);
-      CheckColumnValue ("SerialNumber", true, columnSpecification.ColumnValues, GetPropertyValue (dataContainer, typeof (Computer), "SerialNumber"));
-      CheckColumnValue ("EmployeeID", false, columnSpecification.ColumnValues, GetObjectIDValue (dataContainer, typeof (Computer), "Employee"));
-
-      Assert.That (columnSpecification.ColumnValues.Count, Is.EqualTo (3));
+      Assert.That (columnValues.Count(), Is.EqualTo (3));
 
       return true;
     }
@@ -395,7 +385,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     private void CheckColumnValue (
         string columnName,
         bool shouldBeIncluded,
-        ReadOnlyCollection<ColumnValue> columnValues,
+        IEnumerable<ColumnValue> columnValues,
         object expectedValue)
     {
       var column = columnValues.FirstOrDefault (cv => cv.Column.Name == columnName);

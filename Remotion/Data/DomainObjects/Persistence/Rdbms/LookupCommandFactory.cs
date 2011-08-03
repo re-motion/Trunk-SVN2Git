@@ -77,10 +77,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var tableDefinition = _tableDefinitionFinder.GetTableDefinition (objectID);
       var selectedColumns = tableDefinition.GetAllColumns ().ToArray ();
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
-          tableDefinition,
-          new SelectedColumnsSpecification (selectedColumns),
-          objectID);
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, selectedColumns, objectID);
 
       var singleDataContainerLoadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
       return DelegateBasedStorageProviderCommand.Create (
@@ -173,13 +170,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       if (objectIDs.Length > 1)
       {
-        return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (
-            tableDefinition, new SelectedColumnsSpecification (selectedColumns), objectIDs);
+        return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (tableDefinition, selectedColumns, objectIDs);
       }
       else
       {
-        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (
-            tableDefinition, new SelectedColumnsSpecification (selectedColumns), objectIDs[0]);
+        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, selectedColumns, objectIDs[0]);
       }
     }
 
@@ -194,7 +189,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
           tableDefinition,
-          new SelectedColumnsSpecification (selectProjection),
+          selectProjection,
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
           _orderedColumnsSpecificationFactory.CreateOrderedColumnsSpecification (sortExpression));
@@ -210,7 +205,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var selectedColumns = new[] { unionViewDefinition.IDColumn, unionViewDefinition.ClassIDColumn };
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
           unionViewDefinition,
-          new SelectedColumnsSpecification (selectedColumns),
+          selectedColumns,
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
           _orderedColumnsSpecificationFactory.CreateOrderedColumnsSpecification (sortExpression));

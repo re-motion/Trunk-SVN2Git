@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
@@ -27,30 +28,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// </summary>
   public interface IDbCommandBuilderFactory
   {
-    IDbCommandBuilder CreateForSingleIDLookupFromTable (TableDefinition table, ISelectedColumnsSpecification selectedColumns, ObjectID objectID);
-    IDbCommandBuilder CreateForMultiIDLookupFromTable (TableDefinition table, ISelectedColumnsSpecification selectedColumns, ObjectID[] objectIDs);
+    IDbCommandBuilder CreateForSingleIDLookupFromTable (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID objectID);
+    IDbCommandBuilder CreateForMultiIDLookupFromTable (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID[] objectIDs);
 
     IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
-        ISelectedColumnsSpecification selectedColumns,
+        IEnumerable<ColumnDefinition> selectedColumns,
         IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns);
 
     IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
-        ISelectedColumnsSpecification selectedColumns,
+        IEnumerable<ColumnDefinition> selectedColumns,
         IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
         ObjectID foreignKeyValue,
         IOrderedColumnsSpecification orderedColumns);
 
     IDbCommandBuilder CreateForQuery (IQuery query);
 
-    IDbCommandBuilder CreateForInsert (TableDefinition tableDefinition, IInsertedColumnsSpecification insertedColumnsSpecification);
+    IDbCommandBuilder CreateForInsert (TableDefinition tableDefinition, IEnumerable<ColumnValue> insertedColumns);
     IDbCommandBuilder CreateForUpdate (
         TableDefinition tableDefinition,
-        IUpdatedColumnsSpecification updatedColumnsSpecification,
-        IComparedColumnsSpecification comparedColumnsSpecification);
-    IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IComparedColumnsSpecification comparedColumnsSpecification);
+        IEnumerable<ColumnValue> updatedColumns,
+        IEnumerable<ColumnValue> comparedColumns);
+    IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IEnumerable<ColumnValue> comparedColumns);
   }
 }
