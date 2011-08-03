@@ -25,6 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class InfrastructureStoragePropertyDefinitionProvider : IInfrastructureStoragePropertyDefinitionProvider
   {
+    // TODO Review 4207: Should be an instance method, and part of the interface
     public static ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
     {
       return new ObjectIDStoragePropertyDefinition (
@@ -32,6 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
     }
 
+    // TODO Review 4207: Should be an instance method, and part of the interface
     public static SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
     {
       return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
