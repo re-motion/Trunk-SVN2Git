@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var objectIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
       var classIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ();
       var timestampColumn = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();
-      var columns = GetSimpleColumnDefinitions (_storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition));
+      var columns = GetColumnsForHierarchy (classDefinition);
       var allColumns = new[] { objectIDColumn, classIDColumn, timestampColumn }.Concat (columns).ToList();
 
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition (),
-          GetSimpleColumnDefinitions (_storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition)),
+          GetColumnsForHierarchy (classDefinition),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition (),
-          GetSimpleColumnDefinitions (_storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition)),
+          GetColumnsForHierarchy(classDefinition),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -128,9 +128,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses()).Select (cd => cd.ID);
     }
 
-    private IEnumerable<ColumnDefinition> GetSimpleColumnDefinitions (IEnumerable<IRdbmsStoragePropertyDefinition> columns)
+    private IEnumerable<ColumnDefinition> GetColumnsForHierarchy (ClassDefinition classDefinition)
     {
-      return columns.SelectMany (c => c.GetColumns());
+      return _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition).SelectMany (c => c.GetColumns ());
     }
   }
 }
