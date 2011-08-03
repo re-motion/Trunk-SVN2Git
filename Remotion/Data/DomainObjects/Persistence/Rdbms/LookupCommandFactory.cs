@@ -123,6 +123,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
+      // TODO Review 4207: Move to ObjectReaderFactory.
       var ordinalProvider = new NameBasedColumnOrdinalProvider ();
       var objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
           new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ()),
