@@ -60,6 +60,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _storageTypeName; }
     }
 
+    /// <summary>
+    /// Gets the <see cref="DbType"/> value corresponding to the storage type.
+    /// </summary>
+    /// <value>The <see cref="DbType"/> of the storage type.</value>
     public DbType StorageDbType
     {
       get { return _storageDbType; }
@@ -75,7 +79,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     }
 
     /// <summary>
-    /// Converts a value from the actual .NET type (e.g., an enum type) to the <see cref="StorageTypeInMemory"/> (e.g., <see cref="int"/>) and back.
+    /// Gets a <see cref="System.ComponentModel.TypeConverter"/> that can converts a value from the actual .NET type (e.g., an enum type) to the 
+    /// <see cref="StorageTypeInMemory"/> (e.g., <see cref="int"/>) and back.
     /// </summary>
     /// <value>The type converter for the actual .NET type.</value>
     /// <remarks>
