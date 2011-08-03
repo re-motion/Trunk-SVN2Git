@@ -90,11 +90,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var result = _factory.CreateForMultiIDLookupFromTable (_tableDefinition, new[] { _column1, _column2 }, new[] { _objectID });
 
-      Assert.That (result, Is.TypeOf (typeof (SqlXmlMultiIDLookupSelectDbCommandBuilder)));
-      var dbCommandBuilder = (SqlXmlMultiIDLookupSelectDbCommandBuilder) result;
+      Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
+      var dbCommandBuilder = (SelectDbCommandBuilder) result;
       Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
-      Assert.That (dbCommandBuilder.ObjectIDs, Is.EqualTo (new[] { _objectID }));
+      Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ColumnDefinition, Is.SameAs(_tableDefinition.IDColumn));
+      Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ObjectValues, Is.EqualTo(new[]{_objectID.Value}));
     }
 
     [Test]

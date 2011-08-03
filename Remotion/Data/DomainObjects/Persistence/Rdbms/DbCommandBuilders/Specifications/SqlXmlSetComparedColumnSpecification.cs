@@ -70,9 +70,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       }
       xmlWriter.WriteEndElement();
       
-      var parameter = _columnDefinition.StorageTypeInfo.CreateDataParameter (command, stringWriter.ToString());
+      var parameter = command.CreateParameter ();
       parameter.ParameterName = sqlDialect.GetParameterName (_columnDefinition.Name);
       parameter.DbType = DbType.Xml;
+      parameter.Value = stringWriter.ToString();
       command.Parameters.Add (parameter);
 
       statement.Append (sqlDialect.DelimitIdentifier (_columnDefinition.Name));

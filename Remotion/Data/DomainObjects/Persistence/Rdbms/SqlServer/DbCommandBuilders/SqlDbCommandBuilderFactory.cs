@@ -71,8 +71,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      return new SqlXmlMultiIDLookupSelectDbCommandBuilder (
-          table, new SelectedColumnsSpecification (selectedColumns), objectIDs, _sqlDialect, _valueConverter);
+      return new SelectDbCommandBuilder (
+          table,
+          new SelectedColumnsSpecification (selectedColumns),
+          new SqlXmlSetComparedColumnSpecification (table.IDColumn, objectIDs.Select(id=>id.Value)),
+          EmptyOrderedColumnsSpecification.Instance,
+          _sqlDialect,
+          _valueConverter);
     }
 
     public IDbCommandBuilder CreateForRelationLookupFromTable (
@@ -165,5 +170,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
 
       return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumns), _sqlDialect, _valueConverter);
     }
+
+    // TODO 4183
+    //private IEnumerable<string> GetObjectIDValueStrings (IEnumerable<ObjectID> objectIDs)
+    //{
+    //  foreach (ObjectID t in objectIDs)
+    //  {
+    //    if (!ValueConverter.IsOfSameStorageProvider (t))
+    //      throw new ArgumentException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.", "objectIDs");
+    //    yield return t.Value.ToString ();
+    //  }
+    //}
   }
 }
