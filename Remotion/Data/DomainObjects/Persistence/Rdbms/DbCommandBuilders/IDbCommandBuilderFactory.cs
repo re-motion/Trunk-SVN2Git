@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 
@@ -36,14 +35,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         IEnumerable<ColumnDefinition> selectedColumns,
         IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
         ObjectID foreignKeyValue,
-        IOrderedColumnsSpecification orderedColumns);
+        IEnumerable<OrderedColumn> orderedColumns);
 
     IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
         IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
         ObjectID foreignKeyValue,
-        IOrderedColumnsSpecification orderedColumns);
+        IEnumerable<OrderedColumn> orderedColumns);
 
     IDbCommandBuilder CreateForQuery (IQuery query);
 

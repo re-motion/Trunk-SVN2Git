@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -37,19 +37,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
     }
 
-    public IOrderedColumnsSpecification CreateOrderedColumnsSpecification (SortExpressionDefinition sortExpression)
+    public IEnumerable<OrderedColumn> CreateOrderedColumnsSpecification (SortExpressionDefinition sortExpression)
     {
       if (sortExpression == null)
-        return EmptyOrderedColumnsSpecification.Instance;
+        return new OrderedColumn[0];
 
       Assertion.IsTrue (sortExpression.SortedProperties.Count > 0, "The sort-epression must have at least one sorted property.");
 
-      var columns = from sortedProperty in sortExpression.SortedProperties
+      return from sortedProperty in sortExpression.SortedProperties
                     let storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (sortedProperty.PropertyDefinition)
                     from column in storagePropertyDefinition.GetColumns()
                     select new OrderedColumn (column, sortedProperty.Order);
-
-      return new OrderedColumnsSpecification (columns);
     }
   }
 }

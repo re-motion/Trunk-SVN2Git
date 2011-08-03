@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -74,13 +75,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           table, new SelectedColumnsSpecification (selectedColumns), objectIDs, _sqlDialect, _valueConverter);
     }
 
-    // TODO 4183: Replace IOrderedColumnsSpecification with IEnumerable<OrderedColumn>
     public IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         IEnumerable<ColumnDefinition> selectedColumns,
         IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
         ObjectID foreignKeyValue,
-        IOrderedColumnsSpecification orderedColumns)
+        IEnumerable<OrderedColumn> orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
@@ -88,22 +88,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
+      var orderedColumnsSpecification = orderedColumns.Any()
+                                            ? (IOrderedColumnsSpecification) new OrderedColumnsSpecification (orderedColumns)
+                                            : EmptyOrderedColumnsSpecification.Instance;
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
           new ComparedColumnsSpecification (foreignKeyStorageProperty.SplitValueForComparison (foreignKeyValue)),
-          orderedColumns,
+          orderedColumnsSpecification,
           _sqlDialect,
           _valueConverter);
     }
 
-    // TODO 4183: Replace IOrderedColumnsSpecification with IEnumerable<OrderedColumn>
     public IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
         IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
         ObjectID foreignKeyValue,
-        IOrderedColumnsSpecification orderedColumns)
+        IEnumerable<OrderedColumn> orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("view", view);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
@@ -111,12 +113,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
+      var orderedColumnsSpecification = orderedColumns.Any ()
+                                            ? (IOrderedColumnsSpecification) new OrderedColumnsSpecification (orderedColumns)
+                                            : EmptyOrderedColumnsSpecification.Instance;
       return new UnionRelationLookupSelectDbCommandBuilder (
           view,
           new SelectedColumnsSpecification (selectedColumns),
           foreignKeyStorageProperty,
           foreignKeyValue,
-          orderedColumns,
+          orderedColumnsSpecification,
           _sqlDialect,
           _valueConverter);
     }

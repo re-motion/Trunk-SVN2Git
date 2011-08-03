@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
@@ -37,12 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlDbCommandBuilderFactory _factory;
     private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
     private TableDefinition _tableDefinition;
-    private IOrderedColumnsSpecification _orderedColumnStub;
     private ObjectID _objectID;
     private ColumnDefinition _column1;
     private ColumnDefinition _column2;
     private ColumnValue _columnValue1;
     private ColumnValue _columnValue2;
+    private OrderedColumn _orderColumn1;
+    private OrderedColumn _orderColumn2;
 
     public override void SetUp ()
     {
@@ -55,12 +57,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
           SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
-      _orderedColumnStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
 
       _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
       _columnValue1 = new ColumnValue (_column1, new object());
       _columnValue2 = new ColumnValue (_column2, new object());
+
+      _orderColumn1 = new OrderedColumn (_column1, SortOrder.Ascending);
+      _orderColumn2 = new OrderedColumn (_column2, SortOrder.Descending);
 
       _objectID = new ObjectID ("Order", Guid.NewGuid());
     }
@@ -97,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void CreateForRelationLookupFromTable ()
     {
       var result = _factory.CreateForRelationLookupFromTable (
-          _tableDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
+          _tableDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, new[] { _orderColumn1, _orderColumn2 });
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
       var dbCommandBuilder = (SelectDbCommandBuilder) result;
@@ -108,7 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           Is.EqualTo (
               new[]
               { new ColumnValue (((SimpleStoragePropertyDefinition) _foreignKeyColumnDefinition.ValueProperty).ColumnDefinition, _objectID.Value) }));
-      Assert.That (dbCommandBuilder.OrderedColumnsSpecification, Is.SameAs (_orderedColumnStub));
+      Assert.That (
+          ((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumnsSpecification).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
     }
 
     [Test]
@@ -120,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _tableDefinition);
 
       var result = _factory.CreateForRelationLookupFromUnionView (
-          unionViewDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
+          unionViewDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, new[]{_orderColumn1, _orderColumn2});
 
       Assert.That (result, Is.TypeOf (typeof (UnionRelationLookupSelectDbCommandBuilder)));
       var dbCommandBuilder = (UnionRelationLookupSelectDbCommandBuilder) result;
@@ -129,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (dbCommandBuilder.ForeignKeyValue, Is.EqualTo (_objectID));
       Assert.That (dbCommandBuilder.ForeignKeyColumn, Is.SameAs (_foreignKeyColumnDefinition));
-      Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs (_orderedColumnStub));
+      Assert.That (((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo(new[]{_orderColumn1, _orderColumn2}));
     }
 
     [Test]

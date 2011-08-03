@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (_tableDefinition1.GetAllColumns()),
                   Arg.Is (_foreignKeyColumnDefinition),
                   Arg.Is (_foreignKeyValue),
-                  Arg.Is (EmptyOrderedColumnsSpecification.Instance)))
+                  Arg<IEnumerable<OrderedColumn>>.List.Equal(new OrderedColumn[0])))
           .Return (_dbCommandBuilder1Stub);
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
@@ -283,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (_tableDefinition1.GetAllColumns()),
                   Arg.Is (_foreignKeyColumnDefinition),
                   Arg.Is (_foreignKeyValue),
-                  Arg<OrderedColumnsSpecification>.Matches (o => o.Columns.SequenceEqual (expectedOrderedColumns))))
+                  Arg<IEnumerable<OrderedColumn>>.List.Equal(expectedOrderedColumns)))
           .Return (_dbCommandBuilder1Stub);
       _dbCommandBuilderFactoryStrictMock.Replay();
 
@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
                   Arg.Is (_foreignKeyColumnDefinition),
                   Arg.Is (_foreignKeyValue),
-                  Arg.Is (EmptyOrderedColumnsSpecification.Instance)))
+                  Arg<IEnumerable<OrderedColumn>>.List.Equal (new OrderedColumn[0])))
           .Return (_dbCommandBuilder1Stub);
 
       StubObjectIDReader (_unionViewDefinition, _objectIDReader1Stub);
@@ -357,8 +357,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
                   Arg.Is (_foreignKeyColumnDefinition),
                   Arg.Is (_foreignKeyValue),
-                  Arg<OrderedColumnsSpecification>.Matches (o => o.Columns.SequenceEqual (expectedOrderedColumns)))
-          ).Return (_dbCommandBuilder1Stub);
+                  Arg<IEnumerable<OrderedColumn>>.List.Equal(expectedOrderedColumns)))
+          .Return (_dbCommandBuilder1Stub);
       _dbCommandBuilderFactoryStrictMock.Replay();
 
       StubObjectIDReader ((UnionViewDefinition) classDefinition.StorageEntityDefinition, _objectIDReader1Stub);

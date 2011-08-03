@@ -87,8 +87,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
                                        new OrderedColumn(_column3, SortOrder.Ascending)
                                    };
 
-      Assert.That (result, Is.TypeOf(typeof(OrderedColumnsSpecification)));
-      Assert.That (((OrderedColumnsSpecification) result).Columns, Is.EqualTo (expectedOrderedColumns));
+      Assert.That (result, Is.EqualTo (expectedOrderedColumns));
+    }
+
+    [Test]
+    public void CreateOrderedColumnsSpecification_NoSortExpression ()
+    {
+      var result = _factory.CreateOrderedColumnsSpecification (null);
+
+      Assert.That (result, Is.Empty);
     }
 
     private ClassDefinition CreateClassDefinition (IStorageEntityDefinition entityDefinition)
