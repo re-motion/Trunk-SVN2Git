@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
 
       statement.Append (sqlDialect.DelimitIdentifier (_columnDefinition.Name));
       statement.Append (" IN (");
-      statement.Append ("SELECT T.c.value('.', '").Append (_columnDefinition.StorageTypeInfo.StorageType).Append ("')");
+      statement.Append ("SELECT T.c.value('.', '").Append (_columnDefinition.StorageTypeInfo.StorageTypeName).Append ("')");
       statement.Append (" FROM ");
       statement.Append (parameter.ParameterName);
       statement.Append (".nodes('/L/I') T(c))");

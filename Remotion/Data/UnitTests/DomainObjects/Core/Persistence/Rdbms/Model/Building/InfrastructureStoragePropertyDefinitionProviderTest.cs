@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.IsPartOfPrimaryKey, Is.True);
       Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (result.StorageTypeInfo.StorageType, Is.EqualTo ("guid"));
+      Assert.That (result.StorageTypeInfo.StorageTypeName, Is.EqualTo ("guid"));
     }
 
     [Test]
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.Name, Is.EqualTo ("ClassID"));
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (result.StorageTypeInfo.StorageType, Is.EqualTo ("varchar(100)"));
+      Assert.That (result.StorageTypeInfo.StorageTypeName, Is.EqualTo ("varchar(100)"));
       Assert.That (result.IsPartOfPrimaryKey, Is.False);
     }
 
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.Name, Is.EqualTo ("Timestamp"));
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.PropertyType, Is.SameAs (typeof (object)));
-      Assert.That (result.StorageTypeInfo.StorageType, Is.EqualTo ("rowversion"));
+      Assert.That (result.StorageTypeInfo.StorageTypeName, Is.EqualTo ("rowversion"));
       Assert.That (result.IsPartOfPrimaryKey, Is.False);
     }
   }

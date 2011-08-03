@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public override string ToString ()
     {
-      return string.Format ("{0} {1} {2}", Name, StorageTypeInfo.StorageType, IsNullable ? "NULL" : "NOT NULL");
+      return string.Format ("{0} {1} {2}", Name, StorageTypeInfo.StorageTypeName, IsNullable ? "NULL" : "NOT NULL");
     }
   }
 }

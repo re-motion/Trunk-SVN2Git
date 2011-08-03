@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = (SimpleStoragePropertyDefinition) _DataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("FakeColumnName"));
-      Assert.That (result.ColumnDefinition.StorageTypeInfo.StorageType, Is.EqualTo ("storage type"));
+      Assert.That (result.ColumnDefinition.StorageTypeInfo.StorageTypeName, Is.EqualTo ("storage type"));
     }
 
     [Test]
@@ -293,12 +293,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (valueIDColumn.Name, Is.EqualTo ("FakeColumnNameID"));
       Assert.That (valueIDColumn.IsNullable, Is.True);
       Assert.That (valueIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (valueIDColumn.StorageTypeInfo.StorageType, Is.EqualTo ("guid"));
+      Assert.That (valueIDColumn.StorageTypeInfo.StorageTypeName, Is.EqualTo ("guid"));
       Assert.That (valueIDColumn.IsPartOfPrimaryKey, Is.False);
       Assert.That (classIDColumn.Name, Is.EqualTo ("FakeRelationClassID"));
       Assert.That (classIDColumn.IsNullable, Is.True);
       Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (classIDColumn.StorageTypeInfo.StorageType, Is.EqualTo ("varchar(100)"));
+      Assert.That (classIDColumn.StorageTypeInfo.StorageTypeName, Is.EqualTo ("varchar(100)"));
       Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
     }
 

@@ -39,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization ()
     {
-      Assert.That (_storageTypeInformation.StorageType, Is.EqualTo ("test"));
-      Assert.That (_storageTypeInformation.DbType, Is.EqualTo (DbType.Boolean));
-      Assert.That (_storageTypeInformation.ParameterValueType, Is.EqualTo(typeof(bool)));
+      Assert.That (_storageTypeInformation.StorageTypeName, Is.EqualTo ("test"));
+      Assert.That (_storageTypeInformation.StorageDbType, Is.EqualTo (DbType.Boolean));
+      Assert.That (_storageTypeInformation.StorageTypeInMemory, Is.EqualTo(typeof(bool)));
       Assert.That (_storageTypeInformation.TypeConverter, Is.SameAs(_typeConverterStub));
     }
 
@@ -51,12 +51,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
       var dataParameterMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
 
-      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.ParameterValueType)).Return ("converted value");
+      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.StorageTypeInMemory)).Return ("converted value");
 
       commandMock.Expect (mock => mock.CreateParameter()).Return (dataParameterMock);
       commandMock.Replay();
 
-      dataParameterMock.Expect (mock => mock.DbType = _storageTypeInformation.DbType);
+      dataParameterMock.Expect (mock => mock.DbType = _storageTypeInformation.StorageDbType);
       dataParameterMock.Expect (mock => mock.Value = "converted value");
       dataParameterMock.Replay();
 
@@ -74,12 +74,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
       var dataParameterMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
 
-      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.ParameterValueType)).Return (null);
+      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.StorageTypeInMemory)).Return (null);
 
       commandMock.Expect (mock => mock.CreateParameter ()).Return (dataParameterMock);
       commandMock.Replay ();
 
-      dataParameterMock.Expect (mock => mock.DbType = _storageTypeInformation.DbType);
+      dataParameterMock.Expect (mock => mock.DbType = _storageTypeInformation.StorageDbType);
       dataParameterMock.Expect (mock => mock.Value = DBNull.Value);
       dataParameterMock.Replay ();
 

@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IStorageTypeInformation
   {
-    string StorageType { get; }
+    string StorageTypeName { get; }
     
     IDbDataParameter CreateDataParameter (IDbCommand command, object value);
     object Read (IDataReader dataReader, int ordinal);

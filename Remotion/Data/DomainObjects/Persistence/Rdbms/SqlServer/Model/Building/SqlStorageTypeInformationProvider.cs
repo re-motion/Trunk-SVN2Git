@@ -91,9 +91,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       {
         var underlyingStorageType = GetStorageType (Enum.GetUnderlyingType (propertyType), maxLength);
         return new StorageTypeInformation (
-            underlyingStorageType.StorageType,
-            underlyingStorageType.DbType,
-            underlyingStorageType.ParameterValueType,
+            underlyingStorageType.StorageTypeName,
+            underlyingStorageType.StorageDbType,
+            underlyingStorageType.StorageTypeInMemory,
             new AdvancedEnumConverter (propertyType));
       }
 
@@ -145,16 +145,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (underlyingType.IsEnum)
       {
         return new StorageTypeInformation (
-            underlyingStorageInformation.StorageType,
-            underlyingStorageInformation.DbType,
-            typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.ParameterValueType),
+            underlyingStorageInformation.StorageTypeName,
+            underlyingStorageInformation.StorageDbType,
+            typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageTypeInMemory),
             new AdvancedEnumConverter (type));
       }
 
       return new StorageTypeInformation (
-          underlyingStorageInformation.StorageType,
-          underlyingStorageInformation.DbType,
-          typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.ParameterValueType),
+          underlyingStorageInformation.StorageTypeName,
+          underlyingStorageInformation.StorageDbType,
+          typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageTypeInMemory),
           new DefaultConverter (type));
     }
 
