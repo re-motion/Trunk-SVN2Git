@@ -31,7 +31,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
     private readonly StorageProviderDefinition _storageProviderDefinition;
-    private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
     public UnionViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
@@ -66,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       _storageProviderDefinition = storageProviderDefinition;
       _unionedEntities = unionedEntitiesList;
-      _indexes = indexes.ToList().AsReadOnly();
+      indexes.ToList().AsReadOnly();
     }
 
     public override string StorageProviderID
@@ -94,12 +93,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
       var availableColumnsAsDictionary = availableColumns.ToDictionary (c => c);
-      var fullColumnList = new List<ColumnDefinition>();
 
-      foreach (var columnDefinition in GetAllColumns())
-        fullColumnList.Add (availableColumnsAsDictionary.GetValueOrDefault (columnDefinition));
-
-      return fullColumnList.ToArray();
+      return GetAllColumns().Select (columnDefinition => availableColumnsAsDictionary.GetValueOrDefault (columnDefinition)).ToArray();
     }
 
     // Always returns at least one table
