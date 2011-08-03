@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+
 namespace Remotion.Data.DomainObjects.Persistence.Model
 {
   /// <summary>
@@ -23,5 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
   {
     // TODO: To be removed from this interface
     string Name { get; }
+
+    IEnumerable<ColumnValue> SplitValueForComparison (object value);
   }
 }

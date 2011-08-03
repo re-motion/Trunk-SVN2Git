@@ -99,5 +99,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return _properties.SelectMany (p => p.StoragePropertyDefinition.SplitValue (p.ValueAccessor (value)));
     }
+
+    public IEnumerable<ColumnValue> SplitValueForComparison (object value)
+    {
+      throw new NotSupportedException ("Compound properties cannot be used to look up values for comparison.");
+    }
   }
 }

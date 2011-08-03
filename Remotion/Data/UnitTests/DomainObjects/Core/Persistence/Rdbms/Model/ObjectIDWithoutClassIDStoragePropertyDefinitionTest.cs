@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -149,6 +150,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.OrderItem1.Value)).Return (new[] { columnValue });
 
       _objectIDWithoutClassIDStorageDefinition.SplitValue (DomainObjectIDs.OrderItem1);
+    }
+
+    [Test]
+    public void SplitValueForComparison ()
+    {
+      var columnValue1 = new ColumnValue (_columnDefinition, null);
+      _valuePropertyStub.Stub (stub => stub.SplitValueForComparison (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
+
+      var result = _objectIDWithoutClassIDStorageDefinition.SplitValueForComparison (DomainObjectIDs.Order1).ToArray ();
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
+    }
+
+    [Test]
+    public void SplitValueForComparison_NullValue ()
+    {
+      var columnValue1 = new ColumnValue (_columnDefinition, null);
+      _valuePropertyStub.Stub (stub => stub.SplitValueForComparison (null)).Return (new[] { columnValue1 });
+
+      var result = _objectIDWithoutClassIDStorageDefinition.SplitValueForComparison (null).ToArray ();
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
     }
   }
 }

@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -164,6 +165,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _objectIDStoragePropertyDefinition.SplitValue (null);
 
       Assert.That (result, Is.EqualTo (new[] { columnValue1, columnValue2 }));
+    }
+
+    [Test]
+    public void SplitValueForComparison ()
+    {
+      var columnValue1 = new ColumnValue (_columnDefinition1, null);
+      _objectIDColumn.Stub (stub => stub.SplitValueForComparison (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
+
+      var result = _objectIDStoragePropertyDefinition.SplitValueForComparison (DomainObjectIDs.Order1).ToArray();
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
+    }
+
+    [Test]
+    public void SplitValueForComparison_NullValue ()
+    {
+      var columnValue1 = new ColumnValue (_columnDefinition1, null);
+      _objectIDColumn.Stub (stub => stub.SplitValueForComparison (null)).Return (new[] { columnValue1 });
+
+      var result = _objectIDStoragePropertyDefinition.SplitValueForComparison (null).ToArray ();
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
     }
   }
 }

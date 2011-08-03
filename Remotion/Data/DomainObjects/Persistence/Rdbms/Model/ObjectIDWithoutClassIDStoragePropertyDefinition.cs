@@ -94,5 +94,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", "value");
     }
+
+    public IEnumerable<ColumnValue> SplitValueForComparison (object value)
+    {
+      var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
+
+      return ValueProperty.SplitValueForComparison (objectID != null ? objectID.Value : null);
+    }
   }
 }

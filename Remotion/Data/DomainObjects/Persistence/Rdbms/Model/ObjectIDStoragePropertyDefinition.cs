@@ -117,5 +117,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return _valueProperty.SplitValue (objectID.Value).Concat (_classIDProperty.SplitValue (objectID.ClassID));
     }
+
+    public IEnumerable<ColumnValue> SplitValueForComparison (object value)
+    {
+      var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
+
+      return ValueProperty.SplitValueForComparison (objectID != null ? objectID.Value : null);
+    }
   }
 }

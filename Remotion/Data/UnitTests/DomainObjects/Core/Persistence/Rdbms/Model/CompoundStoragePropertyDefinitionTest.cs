@@ -127,5 +127,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (result, Is.EqualTo (new[] { columnValue1, columnValue2, columnValue3 }));
     }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Compound properties cannot be used to look up values for comparison.")]
+    public void SplitValueForComparison ()
+    {
+      _compoundStoragePropertyDefinition.SplitValueForComparison (null);
+    }
   }
 }

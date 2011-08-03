@@ -67,5 +67,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _columnDefinition.SplitValue (null);
     }
+
+    [Test]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void SplitValueForComparison ()
+    {
+      _columnDefinition.SplitValueForComparison (null);
+    }
   }
 }
