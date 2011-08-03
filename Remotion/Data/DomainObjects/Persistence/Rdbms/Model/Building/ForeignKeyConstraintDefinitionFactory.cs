@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         if (FindTableName (oppositeClassDefinition) == null)
           continue;
 
-        // We can't access the opposite ID column from here, but columns implement equality, so we can just recreate it
+        // We can't access the opposite entity definition from here, but we can get the ID column from the provider
         var oppositeObjectIDColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
         var endPointColumnDefinition = _storagePropertyDefinitionResolver.GetStorageProperty (propertyDefinition);
         var referencingColumn = oppositeObjectIDColumnDefinition;
