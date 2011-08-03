@@ -74,6 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           table, new SelectedColumnsSpecification (selectedColumns), objectIDs, _sqlDialect, _valueConverter);
     }
 
+    // TODO 4183: Replace IOrderedColumnsSpecification with IEnumerable<OrderedColumn>
     public IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         IEnumerable<ColumnDefinition> selectedColumns,
@@ -87,16 +88,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
-      return new TableRelationLookupSelectDbCommandBuilder (
+      return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
-          foreignKeyStorageProperty,
-          foreignKeyValue,
+          new ComparedColumnsSpecification (foreignKeyStorageProperty.SplitValueForComparison (foreignKeyValue)),
           orderedColumns,
           _sqlDialect,
           _valueConverter);
     }
 
+    // TODO 4183: Replace IOrderedColumnsSpecification with IEnumerable<OrderedColumn>
     public IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
@@ -157,7 +158,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
 
-      return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification(comparedColumns), _sqlDialect, _valueConverter);
+      return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumns), _sqlDialect, _valueConverter);
     }
   }
 }

@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SplitValueForComparison ()
     {
       var columnValue1 = new ColumnValue (_columnDefinition, null);
-      _serializedIDPropertyStub.Stub (stub => stub.SplitValueForComparison (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
+      _serializedIDPropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.ToString())).Return (new[] { columnValue1 });
 
       var result = _serializedObjectIDStoragePropertyDefinition.SplitValueForComparison (DomainObjectIDs.Order1).ToArray ();
 
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SplitValueForComparison_NullValue ()
     {
       var columnValue1 = new ColumnValue (_columnDefinition, null);
-      _serializedIDPropertyStub.Stub (stub => stub.SplitValueForComparison (null)).Return (new[] { columnValue1 });
+      _serializedIDPropertyStub.Stub (stub => stub.SplitValue (null)).Return (new[] { columnValue1 });
 
       var result = _serializedObjectIDStoragePropertyDefinition.SplitValueForComparison (null).ToArray ();
 

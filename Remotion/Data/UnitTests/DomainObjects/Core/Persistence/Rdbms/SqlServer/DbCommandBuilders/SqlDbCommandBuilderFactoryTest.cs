@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
       _orderedColumnStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
-      
+
       _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
       _columnValue1 = new ColumnValue (_column1, new object());
@@ -99,13 +99,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.CreateForRelationLookupFromTable (
           _tableDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, _orderedColumnStub);
 
-      Assert.That (result, Is.TypeOf (typeof (TableRelationLookupSelectDbCommandBuilder)));
-      var dbCommandBuilder = (TableRelationLookupSelectDbCommandBuilder) result;
+      Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
+      var dbCommandBuilder = (SelectDbCommandBuilder) result;
       Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
-      Assert.That (dbCommandBuilder.ForeignKeyValue, Is.EqualTo (_objectID));
-      Assert.That (dbCommandBuilder.ForeignKeyColumn, Is.SameAs (_foreignKeyColumnDefinition));
-      Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs (_orderedColumnStub));
+      Assert.That (
+          ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumnsSpecification).ComparedColumnValues,
+          Is.EqualTo (
+              new[]
+              { new ColumnValue (((SimpleStoragePropertyDefinition) _foreignKeyColumnDefinition.ValueProperty).ColumnDefinition, _objectID.Value) }));
+      Assert.That (dbCommandBuilder.OrderedColumnsSpecification, Is.SameAs (_orderedColumnStub));
     }
 
     [Test]

@@ -292,7 +292,6 @@
     <Compile Include="Persistence\Rdbms\SaveCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlXmlMultiIDLookupSelectDbCommandBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\TableRelationLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\UnionRelationLookupSelectDbCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\EntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IEntityDefinitionProvider.cs" />
