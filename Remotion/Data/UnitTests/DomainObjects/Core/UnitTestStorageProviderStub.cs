@@ -151,10 +151,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         InnerProvider.Save (dataContainers);
     }
 
-    public override void SetTimestamp (DataContainerCollection dataContainers)
+    public override void UpdateTimestamps (IEnumerable<DataContainer> dataContainers)
     {
       if (InnerProvider != null)
-        InnerProvider.SetTimestamp (dataContainers);
+        InnerProvider.UpdateTimestamps (dataContainers);
     }
 
     public override DataContainerCollection LoadDataContainersByRelatedID (RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID)

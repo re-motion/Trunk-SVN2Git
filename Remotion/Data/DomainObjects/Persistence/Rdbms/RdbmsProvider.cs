@@ -271,7 +271,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       saveCommand.Execute (this);
     }
 
-    public override void SetTimestamp (DataContainerCollection dataContainers)
+    public override void UpdateTimestamps (IEnumerable<DataContainer> dataContainers)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);

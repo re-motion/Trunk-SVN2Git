@@ -66,12 +66,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void SetTimestampOfDeletedDataContainer ()
+    public void UpdateTimestampOfDeletedDataContainer ()
     {
       DataContainerCollection containers = CreateDataContainerCollection (GetDeletedOrderTicketContainer());
       _provider.Connect();
       _provider.Save (containers);
-      _provider.SetTimestamp (containers);
+      _provider.UpdateTimestamps (containers);
 
       // expectation: no exception
     }

@@ -461,7 +461,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void SetTimestamp ()
+    public void UpdateTimestamps ()
     {
       object oldTimestamp = null;
       using (SqlProvider sqlProvider = CreateSqlProvider())
@@ -474,14 +474,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         collection.Add (orderContainer);
 
         sqlProvider.Save (collection);
-        sqlProvider.SetTimestamp (collection);
+        sqlProvider.UpdateTimestamps (collection);
 
         Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
       }
     }
 
     [Test]
-    public void SetTimestampWithConnect ()
+    public void UpdateTimestampsWithConnect ()
     {
       DataContainerCollection collection = new DataContainerCollection();
       DataContainer orderContainer = null;
@@ -497,14 +497,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (SqlProvider sqlProvider = CreateSqlProvider())
       {
-        sqlProvider.SetTimestamp (collection);
+        sqlProvider.UpdateTimestamps (collection);
       }
 
       Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
     }
 
     [Test]
-    public void SetTimestampForMultipleDataContainers ()
+    public void UpdateTimestampsForMultipleDataContainers ()
     {
       object oldOrderTimestamp = null;
       object oldOrderItemTimestamp = null;
@@ -528,7 +528,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         collection.Add (orderItemContainer);
 
         sqlProvider.Save (collection);
-        sqlProvider.SetTimestamp (collection);
+        sqlProvider.UpdateTimestamps (collection);
       }
 
       Assert.IsFalse (oldOrderTimestamp.Equals (orderContainer.Timestamp));
@@ -627,7 +627,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         collection.Add (orderContainer);
 
         sqlProvider.Save (collection);
-        sqlProvider.SetTimestamp (collection);
+        sqlProvider.UpdateTimestamps (collection);
         sqlProvider.Commit();
       }
 
@@ -671,7 +671,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         collection.Add (orderContainer);
 
         sqlProvider.Save (collection);
-        sqlProvider.SetTimestamp (collection);
+        sqlProvider.UpdateTimestamps (collection);
         sqlProvider.Rollback();
       }
 

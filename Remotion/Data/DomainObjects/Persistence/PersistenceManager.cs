@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       try
       {
         provider.Save (dataContainers);
-        provider.SetTimestamp (dataContainers);
+        provider.UpdateTimestamps (dataContainers);
         provider.Commit();
       }
       catch

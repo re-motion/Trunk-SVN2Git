@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void SetTimestamp ()
+    public void UpdateTimestamps ()
     {
       var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
       var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           .Return (storageProviderCommandStub);
       _commandFactoryMock.Replay();
 
-      _providerWithSqlConnection.SetTimestamp (new DataContainerCollection (new[] { dataContainer1, dataContainer2 }, true));
+      _providerWithSqlConnection.UpdateTimestamps (new DataContainerCollection (new[] { dataContainer1, dataContainer2 }, true));
 
       _commandFactoryMock.VerifyAllExpectations();
       Assert.That (dataContainer1.Timestamp, Is.SameAs (timestamp1));
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "No timestamp found for object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
-    public void SetTimestamp_ObjectIDCannotBeFound ()
+    public void UpdateTimestamps_ObjectIDCannotBeFound ()
     {
       var timestamp = new object();
       var storageProviderCommandStub =
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           .Return (storageProviderCommandStub);
       _commandFactoryMock.Replay();
 
-      _providerWithSqlConnection.SetTimestamp (new DataContainerCollection (new[] { DataContainer.CreateNew (DomainObjectIDs.Order1) }, true));
+      _providerWithSqlConnection.UpdateTimestamps (new DataContainerCollection (new[] { DataContainer.CreateNew (DomainObjectIDs.Order1) }, true));
     }
 
     [Test]

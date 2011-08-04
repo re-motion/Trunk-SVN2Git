@@ -17,7 +17,6 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Tracing;
 
