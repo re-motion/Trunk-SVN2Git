@@ -101,10 +101,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       var orderedColumnsSpecification = CreateOrderedColumnsSpecification(orderedColumns);
+      var comparedColumnValues = foreignKeyStorageProperty.SplitValueForComparison (foreignKeyValue);
+
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
-          new ComparedColumnsSpecification (foreignKeyStorageProperty.SplitValueForComparison (foreignKeyValue)),
+          new ComparedColumnsSpecification (comparedColumnValues),
           orderedColumnsSpecification,
           _sqlDialect,
           _valueConverter);
