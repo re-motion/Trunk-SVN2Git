@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
@@ -42,7 +41,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private readonly IObjectReaderFactory _objectReaderFactory;
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
-    private readonly OrderedColumnsSpecificationFactory _orderedColumnsSpecificationFactory;
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
 
     public LookupCommandFactory (
@@ -66,7 +64,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
       _objectReaderFactory = objectReaderFactory;
       _tableDefinitionFinder = tableDefinitionFinder;
-      _orderedColumnsSpecificationFactory = new OrderedColumnsSpecificationFactory (_rdbmsPersistenceModelProvider);
     }
 
     public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
@@ -84,8 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           singleDataContainerLoadCommand, result => new ObjectLookupResult<DataContainer> (objectID, result));
     }
 
-    public IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForSortedMultiIDLookup
-        (
+    public IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForSortedMultiIDLookup (
         IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
@@ -193,7 +189,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           selectProjection,
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
-          _orderedColumnsSpecificationFactory.CreateOrderedColumnsSpecification (sortExpression));
+          GetOrderedColumnsFromSortExpression (sortExpression));
       return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
@@ -209,7 +205,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           selectedColumns,
           _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (foreignKeyEndPoint.PropertyDefinition),
           foreignKeyValue,
-          _orderedColumnsSpecificationFactory.CreateOrderedColumnsSpecification (sortExpression));
+          GetOrderedColumnsFromSortExpression (sortExpression));
 
       var objectIDReader = _objectReaderFactory.CreateObjectIDReader (unionViewDefinition, selectedColumns);
 
@@ -230,7 +226,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForNullRelationLookup ()
     {
       return
-          new FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> (Enumerable.Empty<DataContainer> ());
+          new FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> (Enumerable.Empty<DataContainer>());
+    }
+
+    private IEnumerable<OrderedColumn> GetOrderedColumnsFromSortExpression (SortExpressionDefinition sortExpression)
+    {
+      if (sortExpression == null)
+        return new OrderedColumn[0];
+
+      Assertion.IsTrue (sortExpression.SortedProperties.Count > 0, "The sort-epression must have at least one sorted property.");
+
+      return from sortedProperty in sortExpression.SortedProperties
+             let storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (sortedProperty.PropertyDefinition)
+             from column in storagePropertyDefinition.GetColumns()
+             select new OrderedColumn (column, sortedProperty.Order);
     }
   }
 }

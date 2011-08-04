@@ -38,7 +38,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private readonly IObjectReaderFactory _objectReaderFactory;
-    private readonly OrderedColumnsSpecificationFactory _orderedColumnsSpecificationFactory;
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
     private readonly LookupCommandFactory _lookupCommandFactory;
     private readonly SaveCommandFactory _saveCommandFactory;
@@ -69,7 +68,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _objectReaderFactory,
           _tableDefinitionFinder);
       _saveCommandFactory = new SaveCommandFactory (_dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder);
-      _orderedColumnsSpecificationFactory = new OrderedColumnsSpecificationFactory (_rdbmsPersistenceModelProvider);
     }
 
     public IDbCommandBuilderFactory DbCommandBuilderFactory
@@ -90,11 +88,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public IObjectReaderFactory ObjectReaderFactory
     {
       get { return _objectReaderFactory; }
-    }
-
-    public OrderedColumnsSpecificationFactory OrderedColumnsSpecificationFactory
-    {
-      get { return _orderedColumnsSpecificationFactory; }
     }
 
     public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
