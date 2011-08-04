@@ -20,18 +20,16 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   [TestFixture]
   public class SaveCommandFactoryTest : StandardMappingTest
@@ -313,14 +311,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       Assert.That (tuples.Count, Is.EqualTo (0));
     }
 
-    private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
-    {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      classDefinition.SetStorageEntity (entityDefinition);
-
-      return new ObjectID (classDefinition, Guid.NewGuid());
-    }
-
     private void StubTableDefinitionFinder (ObjectID objectID, TableDefinition tableDefinition)
     {
       _tableDefinitionFinderStrictMock.Expect (mock => mock.GetTableDefinition (objectID)).Return (tableDefinition);
@@ -345,9 +335,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     private bool CheckUpdatedComputerColumns (
         IEnumerable<ColumnValue> columnValues,
         DataContainer dataContainer,
-        bool expectEmployee = false,
-        bool expectSerialNumber = false,
-        bool expectClassID = false)
+        bool expectEmployee,
+        bool expectSerialNumber,
+        bool expectClassID)
     {
       CheckColumnValue (
           "SerialNumber", expectSerialNumber, columnValues, GetPropertyValue (dataContainer, typeof (Computer), "SerialNumber"));

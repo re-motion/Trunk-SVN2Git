@@ -30,6 +30,11 @@ namespace Remotion.Data.DomainObjects.Persistence
       _value = value;
     }
 
+    public T Value
+    {
+      get { return _value; }
+    }
+
     public T Execute (TExecutionContext executionContext)
     {
       return _value;

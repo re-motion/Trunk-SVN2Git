@@ -373,8 +373,8 @@
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedVirtualObjectRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\DelegatingFetchedRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedCollectionRelationDataRegistrationAgentTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\LookupCommandFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\SaveCommandFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\LookupCommandFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\SaveCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorTest.cs" />
@@ -1486,9 +1486,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Persistence\StubValueConverterBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\ValueConverterBaseTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Queries\QueryManagerTest.cs">

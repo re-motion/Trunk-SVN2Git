@@ -24,12 +24,10 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   /// <summary>
   /// The <see cref="LookupCommandFactory"/> is responsible to reate lookup commands for a relational database.

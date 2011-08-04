@@ -15,13 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -29,7 +26,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -79,12 +75,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateForSingleIDLookup ()
     {
-      var objectID = CreateObjectID (_tableDefinition1);
-      
-      var result = _factory.CreateForSingleIDLookup (objectID);
+      var result = _factory.CreateForSingleIDLookup (_objectID1);
 
-      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, ObjectLookupResult<DataContainer>> (result);
-      Assert.That (innerCommand, Is.TypeOf (typeof (SingleObjectLoadCommand<DataContainer>)));
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
@@ -92,8 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var result = _factory.CreateForSortedMultiIDLookup (new[] { _objectID1 });
 
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
-      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
@@ -104,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
-      Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
@@ -114,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _factory.CreateForDataContainerQuery (queryStub);
 
-      Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
@@ -122,79 +114,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var result = _factory.CreateForMultiTimestampLookup (new[] { _objectID1, _objectID2, _objectID3 });
 
-      var innerCommand =
-          CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<Tuple<ObjectID, object>>, IEnumerable<ObjectLookupResult<object>>> (result);
-      Assert.That (innerCommand, Is.TypeOf (typeof (MultiObjectLoadCommand<Tuple<ObjectID, object>>)));
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
-    public void CreateForSave_New ()
+    public void CreateForSave ()
     {
-      var dataContainerNew1 = DataContainer.CreateNew (DomainObjectIDs.Computer1);
-      SetPropertyValue (dataContainerNew1, typeof (Computer), "SerialNumber", "123456");
-      var dataContainerNew2 = DataContainer.CreateNew (DomainObjectIDs.Computer2);
-      SetPropertyValue (dataContainerNew2, typeof (Computer), "SerialNumber", "654321");
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Computer1);
+      SetPropertyValue (dataContainer, typeof (Computer), "SerialNumber", "123456");
+      var result = _factory.CreateForSave (new[] { dataContainer });
 
-      dataContainerNew2.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "654321");
-      var dataContainerNewWithoutRelations = DataContainer.CreateNew (DomainObjectIDs.Official1);
-
-      var result = _factory.CreateForSave (
-          new[]
-          {
-              dataContainerNew1,
-              dataContainerNew2,
-              dataContainerNewWithoutRelations
-          });
-
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-    }
-
-    [Test]
-    public void CreateForSave_Changed ()
-    {
-      var dataContainerChangedSerialNumber = DataContainer.CreateForExisting (DomainObjectIDs.Computer1, null, pd => pd.DefaultValue);
-      dataContainerChangedSerialNumber.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "123456");
-      var dataContainerChangedEmployee = DataContainer.CreateForExisting (DomainObjectIDs.Computer2, null, pd => pd.DefaultValue);
-      dataContainerChangedEmployee.SetValue (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee", DomainObjectIDs.Employee2);
-      var dataContainerChangedMarkedAsChanged = DataContainer.CreateForExisting (DomainObjectIDs.Computer3, null, pd => pd.DefaultValue);
-      dataContainerChangedMarkedAsChanged.MarkAsChanged();
-
-      var result =
-          _factory.CreateForSave (new[] { dataContainerChangedSerialNumber, dataContainerChangedEmployee, dataContainerChangedMarkedAsChanged });
-
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-    }
-
-    [Test]
-    public void CreateForSave_Deleted ()
-    {
-      var dataContainerDeletedWithoutRelations = DataContainer.CreateForExisting (DomainObjectIDs.Official1, null, pd => pd.DefaultValue);
-      dataContainerDeletedWithoutRelations.Delete();
-      var dataContainerDeletedWithRelations1 = DataContainer.CreateForExisting (DomainObjectIDs.Computer1, null, pd => pd.DefaultValue);
-      dataContainerDeletedWithRelations1.Delete();
-      var dataContainerDeletedWithRelations2 = DataContainer.CreateForExisting (DomainObjectIDs.Computer2, null, pd => pd.DefaultValue);
-      dataContainerDeletedWithRelations2.Delete();
-
-      var result = _factory.CreateForSave (
-          new[]
-          {
-              dataContainerDeletedWithoutRelations,
-              dataContainerDeletedWithRelations1,
-              dataContainerDeletedWithRelations2
-          });
-
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
-    }
-
-    [Test]
-    public void CreateForSave_Unchanged ()
-    {
-      var dataContainerUnchanged = DataContainer.CreateForExisting (DomainObjectIDs.Order3, null, pd => pd.DefaultValue);
-
-      var result = _factory.CreateForSave (new[] { dataContainerUnchanged });
-
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSaveCommand)));
+      Assert.That (result, Is.Not.Null);
     }
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
@@ -207,27 +137,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private RelationEndPointDefinition CreateForeignKeyEndPointDefinition (ClassDefinition classDefinition)
     {
-      var idPropertyDefinition = CreateForeignKeyPropertyDefinition (classDefinition);
-      return new RelationEndPointDefinition (idPropertyDefinition, false);
-    }
-
-    private PropertyDefinition CreateForeignKeyPropertyDefinition (ClassDefinition classDefinition)
-    {
-      return PropertyDefinitionFactory.Create (
+      var idPropertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
           _foreignKeyColumnDefinition);
-    }
 
-    
-    private IStorageProviderCommand<TIn, IRdbmsProviderCommandExecutionContext> CheckDelegateBasedCommandAndReturnInnerCommand<TIn, TResult> (
-        IStorageProviderCommand<TResult, IRdbmsProviderCommandExecutionContext> command)
-    {
-      Assert.That (
-          command,
-          Is.TypeOf (typeof (DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>)));
-      return ((DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>) command).Command;
+      return new RelationEndPointDefinition (idPropertyDefinition, false);
     }
   }
 }

@@ -23,11 +23,9 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   /// <summary>
   /// The <see cref="SaveCommandFactory"/> is responsible to reate save commands for a relational database.
@@ -116,21 +114,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
     }
 
+    private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
+      var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue> ().Any (propertyValue => propertyValue.Definition.IsObjectID);
+      if (mustAddTimestamp)
+        yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
+    }
+
     private ColumnValue[] GetUpdatedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var propertyFilter = GetUpdatedPropertyFilter (dataContainer);
 
       var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue> ()
           .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && propertyFilter (pv))
-          .SelectMany (
-              pv =>
-              {
-                var storageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (pv.Definition);
-                var columnValues = storageProperty.SplitValue (pv.GetValueWithoutEvents (ValueAccess.Current));
-
-                return columnValues;
-              }
-          )
+          .SelectMany (GetColumnValuesForPropertyValue)
           .ToArray ();
 
       if (!dataStorageColumnValues.Any () && dataContainer.HasBeenMarkedChanged)
@@ -138,8 +136,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         //dummy column value for the case that the data container should only change its timestamp
         return new[] { new ColumnValue (tableDefinition.ClassIDColumn, dataContainer.ID.ClassID) };
       }
-      else
-        return dataStorageColumnValues;
+
+      return dataStorageColumnValues;
+    }
+
+    private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      var objectIDStoragePropertyDefinition = InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (tableDefinition);
+      var columnValuesForID = objectIDStoragePropertyDefinition.SplitValue (dataContainer.ID);
+
+      var columnValuesForDataProperties = dataContainer.PropertyValues.Cast<PropertyValue>()
+          .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && !pv.Definition.IsObjectID)
+          .SelectMany (GetColumnValuesForPropertyValue);
+      return columnValuesForID.Concat (columnValuesForDataProperties);
     }
 
     private Func<PropertyValue, bool> GetUpdatedPropertyFilter (DataContainer dataContainer)
@@ -152,38 +161,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return pv => false;
     }
 
-    private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
+    private IEnumerable<ColumnValue> GetColumnValuesForPropertyValue (PropertyValue propertyValue)
     {
-      yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
-      var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue>().Any (propertyValue => propertyValue.Definition.IsObjectID);
-      if (mustAddTimestamp)
-        yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
-    }
-
-    private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
-    {
-      var objectIDStorageProperty =
-          new
-          {
-              StorageProperty =
-                  (IRdbmsStoragePropertyDefinition)
-                  InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (tableDefinition),
-              Value = (object) dataContainer.ID
-          };
-
-
-      var dataStorageProperties = dataContainer.PropertyValues.Cast<PropertyValue>()
-          .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && !pv.Definition.IsObjectID)
-          .Select (
-              pv => new
-                    {
-                        StorageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (pv.Definition),
-                        Value = pv.GetValueWithoutEvents (ValueAccess.Current)
-                    }
-          );
-      var allStorageProperties = new[] { objectIDStorageProperty }.Concat (dataStorageProperties);
-
-      return allStorageProperties.SelectMany (storageProperty => storageProperty.StorageProperty.SplitValue (storageProperty.Value));
+      var storageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyValue.Definition);
+      var columnValues = storageProperty.SplitValue (propertyValue.GetValueWithoutEvents (ValueAccess.Current));
+      return columnValues;
     }
   }
 }
