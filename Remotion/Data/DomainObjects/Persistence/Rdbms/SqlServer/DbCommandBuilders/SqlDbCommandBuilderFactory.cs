@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -32,19 +33,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
   {
     private readonly ISqlDialect _sqlDialect;
     private readonly IValueConverter _valueConverter;
+    private readonly StorageProviderDefinition _storageProviderDefinition;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlDbCommandBuilderFactory"/> class.
     /// </summary>
     /// <param name="sqlDialect">The SQL dialect.</param>
     /// <param name="valueConverter">The value converter.</param>
-    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, IValueConverter valueConverter)
+    /// <param name="storageProviderDefinition">The storage provider definition of the relational database.</param>
+    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, IValueConverter valueConverter, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       _sqlDialect = sqlDialect;
       _valueConverter = valueConverter;
+      _storageProviderDefinition = storageProviderDefinition;
     }
 
     public IDbCommandBuilder CreateForSingleIDLookupFromTable (
@@ -74,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
-          new SqlXmlSetComparedColumnSpecification (table.IDColumn, objectIDs.Select(id=>id.Value)),
+          new SqlXmlSetComparedColumnSpecification (table.IDColumn, GetObjectIDValues(objectIDs)),
           EmptyOrderedColumnsSpecification.Instance,
           _sqlDialect,
           _valueConverter);
@@ -171,15 +176,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumns), _sqlDialect, _valueConverter);
     }
 
-    // TODO 4183
-    //private IEnumerable<string> GetObjectIDValueStrings (IEnumerable<ObjectID> objectIDs)
-    //{
-    //  foreach (ObjectID t in objectIDs)
-    //  {
-    //    if (!ValueConverter.IsOfSameStorageProvider (t))
-    //      throw new ArgumentException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.", "objectIDs");
-    //    yield return t.Value.ToString ();
-    //  }
-    //}
+    
+    private IEnumerable<object > GetObjectIDValues (IEnumerable<ObjectID> objectIDs)
+    {
+      foreach (var t in objectIDs)
+      {
+        if (t.StorageProviderDefinition!=_storageProviderDefinition)
+          throw new ArgumentException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.", "objectIDs");
+        yield return t.Value;
+      }
+    }
   }
 }

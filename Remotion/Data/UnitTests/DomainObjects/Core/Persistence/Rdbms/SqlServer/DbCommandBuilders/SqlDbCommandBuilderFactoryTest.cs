@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
-      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub);
+      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub, TestDomainStorageProviderDefinition);
 
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
           SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
@@ -96,6 +96,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
       Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ColumnDefinition, Is.SameAs(_tableDefinition.IDColumn));
       Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ObjectValues, Is.EqualTo(new[]{_objectID.Value}));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+      "Multi-ID lookups can only be performed for ObjectIDs from this storage provider.\r\nParameter name: objectIDs")]
+    public void CreateForMultiIDLookupFromTable_DifferentStorageProvider ()
+    {
+      _factory.CreateForMultiIDLookupFromTable (_tableDefinition, new[] { _column1, _column2 }, new[] { DomainObjectIDs.Official1 });
     }
 
     [Test]

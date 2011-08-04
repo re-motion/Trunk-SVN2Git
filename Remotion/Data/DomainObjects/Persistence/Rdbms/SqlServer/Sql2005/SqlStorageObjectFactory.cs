@@ -51,9 +51,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var rdbmsProviderDefinition =
           ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageTypeInformationProvider = CreateStorageTypeInformationProvider ();
-      var storageNameProvider = CreateStorageNameProvider ();
-      var storagePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
+      var storageNameProvider = CreateStorageNameProvider();
+      var storagePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (
+          storageTypeInformationProvider, storageNameProvider);
       var commandFactory = CreateStorageProviderCommandFactory (rdbmsProviderDefinition, storageNameProvider, storagePropertyDefinitionFactory);
       return CreateStorageProvider (persistenceListener, rdbmsProviderDefinition, storageNameProvider, commandFactory);
     }
@@ -89,11 +90,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageTypeInformationProvider = CreateStorageTypeInformationProvider ();
-      var storageNameProvider = CreateStorageNameProvider ();
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
+      var storageNameProvider = CreateStorageNameProvider();
       var columnDefinitionResolver = CreateColumnDefinitionResolver();
-      var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider);
-      var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider, storageProviderDefinitionFinder);
+      var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (
+          storageTypeInformationProvider, storageNameProvider);
+      var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (
+          storageTypeInformationProvider, storageNameProvider, storageProviderDefinitionFinder);
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
           storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionFactory, storageProviderDefinitionFinder);
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
@@ -188,18 +191,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     }
 
     protected virtual IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (
-        IStorageTypeInformationProvider storageTypeInformationProvider, 
+        IStorageTypeInformationProvider storageTypeInformationProvider,
         IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      
+
       return new InfrastructureStoragePropertyDefinitionProvider (storageTypeInformationProvider, storageNameProvider);
     }
 
     protected virtual IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (
-        IStorageTypeInformationProvider storageTypeInformationProvider, 
-        IStorageNameProvider storageNameProvider, 
+        IStorageTypeInformationProvider storageTypeInformationProvider,
+        IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
@@ -272,22 +275,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
 
       var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
-      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter);
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter, storageProviderDefinition);
 
       var rdbmsPersistenceModelProvider = CreateRdbmsPersistenceModelProvider();
       return new RdbmsProviderCommandFactory (
           dbCommandBuilderFactory,
           rdbmsPersistenceModelProvider,
           infrastructureStoragePropertyDefinitionProvider,
-          new ObjectReaderFactory(rdbmsPersistenceModelProvider),
-          new TableDefinitionFinder(rdbmsPersistenceModelProvider));
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider),
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider));
     }
 
-    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (IValueConverter valueConverter)
+    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (
+        IValueConverter valueConverter, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, valueConverter);
+      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, valueConverter, storageProviderDefinition);
     }
 
     protected virtual IValueConverter CreateValueConverter (
@@ -302,7 +307,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
     protected virtual SqlStorageTypeInformationProvider CreateStorageTypeInformationProvider ()
     {
-      return new SqlStorageTypeInformationProvider ();
+      return new SqlStorageTypeInformationProvider();
     }
 
     protected virtual IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider ()
