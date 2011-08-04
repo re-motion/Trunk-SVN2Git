@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
       ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
 
-      var ordinal = ordinalProvider.GetOrdinal (_columnDefinition, dataReader);
+      int ordinal = ordinalProvider.GetOrdinal (_columnDefinition, dataReader);
       return _columnDefinition.StorageTypeInfo.Read (dataReader, ordinal);
     }
 

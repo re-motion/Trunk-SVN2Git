@@ -32,33 +32,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     private ColumnDefinition _columnDefinition;
     private DictionaryBasedColumnOrdinalProvider _dictionaryBasedColumnOrdinalProvider;
     private IDataReader _dataReaderStub;
-    private Dictionary<ColumnDefinition, int> _ordinals;
+    private Dictionary<string, int> _ordinals;
 
     [SetUp]
     public void SetUp ()
     {
       _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Testcolumn");
       _dataReaderStub = MockRepository.GenerateStub<IDataReader> ();
-      _ordinals = new Dictionary<ColumnDefinition, int>();
+      _ordinals = new Dictionary<string, int> { { _columnDefinition.Name, 5 } };
       _dictionaryBasedColumnOrdinalProvider = new DictionaryBasedColumnOrdinalProvider (_ordinals);
     }
 
     [Test]
     public void GetOrdinal ()
     {
-      _ordinals[_columnDefinition] = 5;
-
       var result = _dictionaryBasedColumnOrdinalProvider.GetOrdinal (_columnDefinition, _dataReaderStub);
 
       Assert.That (result, Is.EqualTo (5));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The column 'Testcolumn' could not be found.\r\nParameter name: columnDefinition")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "The column 'other column' is not included in the query result and is not expected for this operation. The included and expected columns are: "
+        + "Testcolumn.")]
     public void GetOrdinal_IndexOutOfRange_ThrowsException ()
     {
-      _dictionaryBasedColumnOrdinalProvider.GetOrdinal (_columnDefinition, _dataReaderStub);
+      var otherColumn = ColumnDefinitionObjectMother.CreateColumn ("other column");
+      _dictionaryBasedColumnOrdinalProvider.GetOrdinal (otherColumn, _dataReaderStub);
     }
   }
 }

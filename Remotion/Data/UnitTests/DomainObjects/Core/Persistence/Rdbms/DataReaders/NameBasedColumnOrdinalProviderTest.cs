@@ -51,10 +51,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "The column 'Testcolumn' was not found in the query result.")]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "The column 'Testcolumn' was not found in the query result. The included columns are: Column 1, Column 2.")]
     public void GetOrdinal_IndexOutOfRange_ThrowsException ()
     {
       _dataReaderStub.Stub (stub => stub.GetOrdinal (_columnDefinition.Name)).Return(0).WhenCalled (mi => { throw new IndexOutOfRangeException(); });
+      _dataReaderStub.Stub (stub => stub.FieldCount).Return (2);
+      _dataReaderStub.Stub (stub => stub.GetName (0)).Return ("Column 1");
+      _dataReaderStub.Stub (stub => stub.GetName (1)).Return ("Column 2");
 
       _nameBasedColumnOrdinalProvider.GetOrdinal (_columnDefinition, _dataReaderStub);
     }

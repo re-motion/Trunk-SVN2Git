@@ -105,9 +105,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' of object "
-        + "'Order|895853eb-06cd-4291-b467-160560ae8ec1|System.Guid': The column 'OrderNo' could not be found.\r\nParameter name: columnDefinition")]
+        + "'Order|895853eb-06cd-4291-b467-160560ae8ec1|System.Guid': The column 'OrderNo' is not included in the query result and is not expected "
+        + "for this operation. The included and expected columns are: ID, ClassID, Timestamp.")]
     public void LoadDataContainerWithClassIDFromOtherClass ()
     {
       ObjectID id = new ObjectID (typeof (ClassWithGuidKey), new Guid ("{895853EB-06CD-4291-B467-160560AE8EC1}"));

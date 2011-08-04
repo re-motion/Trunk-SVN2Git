@@ -74,7 +74,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 
     private IColumnOrdinalProvider CreateOrdinalProviderForKnownProjection (IEnumerable<ColumnDefinition> selectedColumns)
     {
-      var columnOrdinalsDictionary = selectedColumns.Select ((column, index) => new { column, index }).ToDictionary (t => t.column, t => t.index);
+      // TODO 4213: Currently, there is one possibility of duplicate columns for the same property being created: when a mixin adds a property 
+      // to more than  one subclass of the same type, the corresponding ColumnDefinition will be created twice. Therefore, we can't simply match 
+      // ColumnDefinition references - as we'd like to -, but have to check for ordinals by name.
+      var columnOrdinalsDictionary = selectedColumns.Select ((column, index) => new { column, index }).ToDictionary (t => t.column.Name, t => t.index);
       return new DictionaryBasedColumnOrdinalProvider (columnOrdinalsDictionary);
     }
   }

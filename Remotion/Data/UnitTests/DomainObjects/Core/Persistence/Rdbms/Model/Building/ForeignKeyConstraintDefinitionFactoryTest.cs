@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (foreignKeyConstraint.ConstraintName, Is.EqualTo ("FakeConstraintName"));
       Assert.That (foreignKeyConstraint.ReferencingColumns, Is.EqualTo (new[] { _fakeIdColumnDefinition.ValueProperty.GetColumnForForeignKey () }));
       Assert.That (
-          foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeObjectIDStoragePropertyDefinition.ValueProperty.GetColumnForForeignKey () }));
+          foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeObjectIDWithoutClassIDStoragePropertyDefinition.ValueProperty.GetColumnForForeignKey () }));
     }
     
     [Test]
