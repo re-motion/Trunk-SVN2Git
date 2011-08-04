@@ -430,33 +430,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilderFactoryStrictMock.Stub (stub => stub.CreateForQuery (queryStub)).Return (commandBuilderStub);
 
-      var objectIDColumnDefinition = ColumnDefinitionObjectMother.IDColumn;
-      var classIDColumnDefinition = ColumnDefinitionObjectMother.ClassIDColumn;
-      var timestampColumnDefinition = ColumnDefinitionObjectMother.TimestampColumn;
-
-      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetIDColumnDefinition()).Return (objectIDColumnDefinition);
-      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetClassIDColumnDefinition()).Return (classIDColumnDefinition);
-      _infrastructureStoragePropertyDefinitionProviderStub.Stub (stub => stub.GetTimestampColumnDefinition()).Return (timestampColumnDefinition);
+      _objectReaderFactoryStrictMock.Expect (mock => mock.CreateDataContainerReader()).Return (_dataContainerReader1Stub);
+      _objectReaderFactoryStrictMock.Replay();
 
       var result = _factory.CreateForDataContainerQuery (queryStub);
 
+      _objectReaderFactoryStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
       var command = ((MultiObjectLoadCommand<DataContainer>) result);
       Assert.That (command.DbCommandBuildersAndReaders.Length, Is.EqualTo (1));
       Assert.That (command.DbCommandBuildersAndReaders[0].Item1, Is.SameAs (commandBuilderStub));
-      Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.TypeOf<DataContainerReader>());
-
-      var dataContainerReader = ((DataContainerReader) command.DbCommandBuildersAndReaders[0].Item2);
-      Assert.That (dataContainerReader.IDProperty, Is.TypeOf<ObjectIDStoragePropertyDefinition>());
-      Assert.That (
-          ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ValueProperty,
-          Is.TypeOf<SimpleStoragePropertyDefinition>().With.Property ("ColumnDefinition").SameAs (objectIDColumnDefinition));
-      Assert.That (
-          ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ClassIDProperty,
-          Is.TypeOf<SimpleStoragePropertyDefinition>().With.Property ("ColumnDefinition").SameAs (classIDColumnDefinition));
-      Assert.That (
-          dataContainerReader.TimestampProperty,
-          Is.TypeOf<SimpleStoragePropertyDefinition>().With.Property ("ColumnDefinition").SameAs (timestampColumnDefinition));
+      Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.SameAs(_dataContainerReader1Stub));
     }
 
     [Test]

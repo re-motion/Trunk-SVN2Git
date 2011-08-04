@@ -117,16 +117,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      // TODO Review 4207: Move to ObjectReaderFactory.
-      var ordinalProvider = new NameBasedColumnOrdinalProvider ();
-      var objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ()),
-          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ()));
-      var timestampPropertyDefinition =
-          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ());
-      IObjectReader<DataContainer> dataContainerReader = new DataContainerReader (
-          objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
-
+      var dataContainerReader = _objectReaderFactory.CreateDataContainerReader();
       return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query), dataContainerReader) });
     }
 

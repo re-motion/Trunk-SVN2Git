@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
    /// </summary>
   public interface IObjectReaderFactory
   {
+    IObjectReader<DataContainer> CreateDataContainerReader ();
     IObjectReader<DataContainer> CreateDataContainerReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns);
     IObjectReader<ObjectID> CreateObjectIDReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns);
     IObjectReader<Tuple<ObjectID, object>> CreateTimestampReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns);

@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   public class ObjectReaderFactory : IObjectReaderFactory
   {
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
-    private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
+    private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
 
     public ObjectReaderFactory (
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
@@ -42,6 +42,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
+    }
+
+    public IObjectReader<DataContainer> CreateDataContainerReader ()
+    {
+      var ordinalProvider = new NameBasedColumnOrdinalProvider ();
+      var objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ()),
+          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ()));
+      var timestampPropertyDefinition =
+          new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ());
+      return new DataContainerReader (
+          objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
     }
 
     public IObjectReader<DataContainer> CreateDataContainerReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)

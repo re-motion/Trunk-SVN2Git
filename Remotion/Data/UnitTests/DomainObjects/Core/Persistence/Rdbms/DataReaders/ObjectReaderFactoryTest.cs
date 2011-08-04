@@ -36,6 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     private ColumnDefinition _idColumn;
     private ColumnDefinition _classIdColumn;
     private ColumnDefinition _timestampColumn;
+    private InfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
 
     public override void SetUp ()
     {
@@ -53,9 +54,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
 
+      _infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
+          StorageTypeInformationProvider, StorageNameProvider);
       _factory = new ObjectReaderFactory (
           _rdbmsPersistenceModelProviderStub,
-          new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider));
+          _infrastructureStoragePropertyDefinitionProvider);
+    }
+
+    [Test]
+    public void CreateDataContainerReader_OverloadWithNoParameters ()
+    {
+      var result = _factory.CreateDataContainerReader();
+
+      Assert.That (result, Is.TypeOf (typeof (DataContainerReader)));
+      var dataContainerReader = (DataContainerReader) result;
+      Assert.That (dataContainerReader.OrdinalProvider, Is.TypeOf (typeof (NameBasedColumnOrdinalProvider)));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) dataContainerReader.TimestampProperty).ColumnDefinition,
+          Is.SameAs (_infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition()));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ValueProperty).ColumnDefinition,
+           Is.SameAs (_infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ()));
+      Assert.That (
+          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ClassIDProperty).ColumnDefinition,
+           Is.SameAs (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ()));
     }
 
     [Test]
