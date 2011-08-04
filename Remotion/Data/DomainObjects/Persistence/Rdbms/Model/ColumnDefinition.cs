@@ -20,9 +20,9 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// Defines a column in a relational database.
+  /// Represents a column in a relational database.
   /// </summary>
-  public class ColumnDefinition : IEquatable<ColumnDefinition>
+  public class ColumnDefinition
   {
     private readonly string _name;
     private readonly Type _propertyType;
@@ -66,27 +66,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public bool IsPartOfPrimaryKey
     {
       get { return _isPartOfPrimaryKey; }
-    }
-
-    public bool Equals (ColumnDefinition other)
-    {
-      if (other == null)
-        return false;
-
-      return other.Name == Name
-          && other.PropertyType == PropertyType
-          && other.StorageTypeInfo.Equals (StorageTypeInfo)
-          && other.IsNullable == IsNullable;
-    }
-
-    public override bool Equals (object obj)
-    {
-      return Equals (obj as ColumnDefinition);
-    }
-
-    public override int GetHashCode ()
-    {
-      return EqualityUtility.GetRotatedHashCode (Name, PropertyType, StorageTypeInfo, IsNullable);
     }
 
     public override string ToString ()

@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel;
 using System.Data;
-using Remotion.Utilities;
 using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -116,23 +115,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         value = null;
 
       return TypeConverter.ConvertFrom (value);
-    }
-
-    public override bool Equals (object obj)
-    {
-      if (obj == null || obj.GetType() != GetType())
-        return false;
-
-      var other = (StorageTypeInformation) obj;
-      return other.StorageTypeName == StorageTypeName 
-          && other.StorageDbType == StorageDbType 
-          && other.StorageTypeInMemory == StorageTypeInMemory
-          && other.TypeConverter.GetType() == TypeConverter.GetType();
-    }
-
-    public override int GetHashCode ()
-    {
-      return EqualityUtility.GetRotatedHashCode (StorageTypeName, StorageDbType, StorageTypeInMemory, TypeConverter.GetType());
     }
   }
 }
