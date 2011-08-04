@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    public void CreateForRelationLookup_NoSortExpression ()
+    public void CreateForRelationLookup_TableDefinition_NoSortExpression ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
       var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);

@@ -95,6 +95,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _dbCommandBuilderFactory.CreateForUpdate (tableDefinition, updatedColumnValues, comparedColumnValues);
     }
 
+    private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
+
+      return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, columnValues);
+    }
+
+    private IDbCommandBuilder CreateDbCommandForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      var columnValues = GetComparedColumnValuesForDelete (dataContainer, tableDefinition);
+
+      return _dbCommandBuilderFactory.CreateForDelete (tableDefinition, columnValues);
+    }
+
     private IEnumerable<ColumnValue> GetComparedColumnValuesForUpdate (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
@@ -106,7 +120,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       var propertyFilter = GetUpdatedPropertyFilter (dataContainer);
 
-      var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue>()
+      var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue> ()
           .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && propertyFilter (pv))
           .SelectMany (
               pv =>
@@ -117,9 +131,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                 return columnValues;
               }
           )
-          .ToArray();
+          .ToArray ();
 
-      if (!dataStorageColumnValues.Any() && dataContainer.HasBeenMarkedChanged)
+      if (!dataStorageColumnValues.Any () && dataContainer.HasBeenMarkedChanged)
       {
         //dummy column value for the case that the data container should only change its timestamp
         return new[] { new ColumnValue (tableDefinition.ClassIDColumn, dataContainer.ID.ClassID) };
@@ -136,20 +150,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return pv => pv.HasChanged;
       else
         return pv => false;
-    }
-
-    private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer, TableDefinition tableDefinition)
-    {
-      var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
-
-      return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, columnValues);
-    }
-
-    private IDbCommandBuilder CreateDbCommandForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
-    {
-      var columnValues = GetComparedColumnValuesForDelete (dataContainer, tableDefinition);
-
-      return _dbCommandBuilderFactory.CreateForDelete (tableDefinition, columnValues);
     }
 
     private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
