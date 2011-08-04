@@ -19,13 +19,14 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class ObjectReaderFactoryTest
+  public class ObjectReaderFactoryTest : SqlProviderBaseTest
   {
     private IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProviderStub;
     private ObjectReaderFactory _factory;
@@ -36,9 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     private ColumnDefinition _classIdColumn;
     private ColumnDefinition _timestampColumn;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _rdbmsPersistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
       _entityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
       _idColumn = ColumnDefinitionObjectMother.IDColumn;
@@ -51,7 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
 
-      _factory = new ObjectReaderFactory (_rdbmsPersistenceModelProviderStub);
+      _factory = new ObjectReaderFactory (
+          _rdbmsPersistenceModelProviderStub,
+          new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider));
     }
 
     [Test]
@@ -63,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       var dataContainerReader = (DataContainerReader) result;
       CheckOrdinalProvider (dataContainerReader.OrdinalProvider);
       CheckObjectIDStoragePropertyDefinition (dataContainerReader.IDProperty);
-      Assert.That (((SimpleStoragePropertyDefinition) dataContainerReader.TimestampProperty).ColumnDefinition, Is.SameAs(_timestampColumn));
+      Assert.That (((SimpleStoragePropertyDefinition) dataContainerReader.TimestampProperty).ColumnDefinition, Is.SameAs (_timestampColumn));
     }
 
     [Test]

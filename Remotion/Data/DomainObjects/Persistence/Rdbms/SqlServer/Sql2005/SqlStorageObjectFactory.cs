@@ -282,7 +282,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           dbCommandBuilderFactory,
           rdbmsPersistenceModelProvider,
           infrastructureStoragePropertyDefinitionProvider,
-          new ObjectReaderFactory (rdbmsPersistenceModelProvider),
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
           new TableDefinitionFinder (rdbmsPersistenceModelProvider));
     }
 

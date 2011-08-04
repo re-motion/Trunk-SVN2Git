@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
@@ -67,7 +66,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _infrastructureStoragePropertyDefinitionProvider,
           _objectReaderFactory,
           _tableDefinitionFinder);
-      _saveCommandFactory = new SaveCommandFactory (_dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder);
+      _saveCommandFactory = new SaveCommandFactory (
+          _dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder, _infrastructureStoragePropertyDefinitionProvider);
     }
 
     public IDbCommandBuilderFactory DbCommandBuilderFactory
@@ -90,7 +90,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _objectReaderFactory; }
     }
 
-    public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
+    public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
+        ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
@@ -136,6 +137,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       return _saveCommandFactory.CreateForSave (dataContainers);
     }
-    
   }
 }

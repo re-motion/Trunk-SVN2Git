@@ -25,20 +25,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class InfrastructureStoragePropertyDefinitionProvider : IInfrastructureStoragePropertyDefinitionProvider
   {
-    // TODO Review 4207: Should be an instance method, and part of the interface
-    public static ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
-    {
-      return new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
-          new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
-    }
-
-    // TODO Review 4207: Should be an instance method, and part of the interface
-    public static SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
-    {
-      return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
-    }
-
     private readonly ColumnDefinition _idColumnDefinition;
     private readonly ColumnDefinition _classIDColumnDefinition;
     private readonly ColumnDefinition _timestampColumnDefinition;
@@ -83,6 +69,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     public virtual ColumnDefinition GetTimestampColumnDefinition ()
     {
       return _timestampColumnDefinition;
+    }
+
+    public ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    {
+      return new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
+          new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
+    }
+
+    public SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    {
+      return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
     }
   }
 }

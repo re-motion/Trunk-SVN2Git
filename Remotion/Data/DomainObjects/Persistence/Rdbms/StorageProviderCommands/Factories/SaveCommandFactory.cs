@@ -35,19 +35,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
+    private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
 
     public SaveCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
-        ITableDefinitionFinder tableDefinitionFinder)
+        ITableDefinitionFinder tableDefinitionFinder,
+        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("tableDefinitionFinder", tableDefinitionFinder);
+      ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _tableDefinitionFinder = tableDefinitionFinder;
+      _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
     }
 
     public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)
@@ -117,7 +121,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
-      var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue> ().Any (propertyValue => propertyValue.Definition.IsObjectID);
+      var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue>().Any (propertyValue => propertyValue.Definition.IsObjectID);
       if (mustAddTimestamp)
         yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
     }
@@ -126,12 +130,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     {
       var propertyFilter = GetUpdatedPropertyFilter (dataContainer);
 
-      var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue> ()
+      var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue>()
           .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && propertyFilter (pv))
           .SelectMany (GetColumnValuesForPropertyValue)
-          .ToArray ();
+          .ToArray();
 
-      if (!dataStorageColumnValues.Any () && dataContainer.HasBeenMarkedChanged)
+      if (!dataStorageColumnValues.Any() && dataContainer.HasBeenMarkedChanged)
       {
         //dummy column value for the case that the data container should only change its timestamp
         return new[] { new ColumnValue (tableDefinition.ClassIDColumn, dataContainer.ID.ClassID) };
@@ -142,7 +146,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
     {
-      var objectIDStoragePropertyDefinition = InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (tableDefinition);
+      var objectIDStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (tableDefinition);
       var columnValuesForID = objectIDStoragePropertyDefinition.SplitValue (dataContainer.ID);
 
       var columnValuesForDataProperties = dataContainer.PropertyValues.Cast<PropertyValue>()

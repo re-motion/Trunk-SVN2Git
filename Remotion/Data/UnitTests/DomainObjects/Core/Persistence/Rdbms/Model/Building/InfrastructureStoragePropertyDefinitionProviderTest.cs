@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void GetObjectIDStoragePropertyDefinition ()
     {
-      var result = InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (_entityDefinitionStub);
+      var result = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (_entityDefinitionStub);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
       Assert.That (result.ValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void GetTimestampStoragePropertyDefinition ()
     {
-      var result = InfrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (_entityDefinitionStub);
+      var result = _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (_entityDefinitionStub);
 
       Assert.That (result.ColumnDefinition, Is.SameAs (_timestampColumn));
     }

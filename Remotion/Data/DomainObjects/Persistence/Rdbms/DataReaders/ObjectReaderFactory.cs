@@ -31,12 +31,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   public class ObjectReaderFactory : IObjectReaderFactory
   {
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
+    private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
 
-    public ObjectReaderFactory (IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
+    public ObjectReaderFactory (
+        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
+        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
-
+      ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
+      
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
+      _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
     }
 
     public IObjectReader<DataContainer> CreateDataContainerReader (IEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns)
@@ -45,8 +50,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
 
       var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
-      var objectIDStoragePropertyDefinition = InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (entityDefinition);
-      var timestampPropertyDefinition = InfrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (entityDefinition);
+      var objectIDStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (entityDefinition);
+      var timestampPropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (entityDefinition);
       return new DataContainerReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider, _rdbmsPersistenceModelProvider);
     }
 
@@ -56,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
 
       var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
-      var objectIDStoragePropertyDefinition = InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (entityDefinition);
+      var objectIDStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (entityDefinition);
       return new ObjectIDReader (objectIDStoragePropertyDefinition, ordinalProvider);
     }
 
@@ -67,8 +72,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
 
       var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
-      var objectIDStoragePropertyDefinition = InfrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (entityDefinition);
-      var timestampPropertyDefinition = InfrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (entityDefinition);
+      var objectIDStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (entityDefinition);
+      var timestampPropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (entityDefinition);
       return new TimestampReader (objectIDStoragePropertyDefinition, timestampPropertyDefinition, ordinalProvider);
     }
 

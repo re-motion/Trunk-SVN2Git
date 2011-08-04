@@ -47,22 +47,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private ObjectID _objectID3;
     private ObjectID _foreignKeyValue;
     private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
-    
+
     public override void SetUp ()
     {
       base.SetUp();
 
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       _factory = new RdbmsProviderCommandFactory (
-          new SqlDbCommandBuilderFactory(SqlDialect.Instance, ValueConverter, TestDomainStorageProviderDefinition),
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance, ValueConverter, TestDomainStorageProviderDefinition),
           rdbmsPersistenceModelProvider,
           new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider),
-          new ObjectReaderFactory (rdbmsPersistenceModelProvider),
+          new ObjectReaderFactory (
+              rdbmsPersistenceModelProvider, new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider)),
           new TableDefinitionFinder (rdbmsPersistenceModelProvider));
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
       _tableDefinition2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));
-      
+
       _foreignKeyValue = CreateObjectID (_tableDefinition1);
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
           SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
@@ -93,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
       var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
-      
+
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
       Assert.That (result, Is.Not.Null);

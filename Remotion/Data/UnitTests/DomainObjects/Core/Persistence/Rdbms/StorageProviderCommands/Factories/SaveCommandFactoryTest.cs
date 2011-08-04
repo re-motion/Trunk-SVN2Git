@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
@@ -32,7 +33,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   [TestFixture]
-  public class SaveCommandFactoryTest : StandardMappingTest
+  public class SaveCommandFactoryTest : SqlProviderBaseTest
   {
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStrictMock;
     private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
@@ -48,7 +49,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       _tableDefinitionFinderStrictMock = MockRepository.GenerateStrictMock<ITableDefinitionFinder>();
 
-      _factory = new SaveCommandFactory (_dbCommandBuilderFactoryStrictMock, _rdbmsPersistenceModelProvider, _tableDefinitionFinderStrictMock);
+      _factory = new SaveCommandFactory (
+          _dbCommandBuilderFactoryStrictMock,
+          _rdbmsPersistenceModelProvider,
+          _tableDefinitionFinderStrictMock,
+          new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider));
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
     }
