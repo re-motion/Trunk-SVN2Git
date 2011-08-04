@@ -60,12 +60,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      var stringWriter = new StringWriter (new StringBuilder());
+      var stringWriter = new StringWriter ();
       var xmlWriter = new XmlTextWriter (stringWriter);
       xmlWriter.WriteStartElement ("L");
       foreach (var value in ObjectValues)
       {
         xmlWriter.WriteStartElement ("I");
+        // TODO Review 4183: Throw a NotSupportedException when value == null: "SQL Server cannot represent NULL values in an XML data type."
         xmlWriter.WriteString (value == null ? null : value.ToString());
         xmlWriter.WriteEndElement();
       }

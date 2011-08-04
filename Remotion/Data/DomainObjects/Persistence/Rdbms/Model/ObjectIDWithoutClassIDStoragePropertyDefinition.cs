@@ -89,17 +89,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (objectID == null)
         return _valueProperty.SplitValue (null);
 
-      if (objectID.ClassDefinition == _classDefinition)
-        return _valueProperty.SplitValue (objectID.Value);
+      if (objectID.ClassDefinition != _classDefinition)
+        throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", "value");
 
-      throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", "value");
+      return _valueProperty.SplitValue (objectID.Value);
     }
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
 
-      return ValueProperty.SplitValueForComparison (objectID != null ? objectID.Value : null);
+      if (objectID == null)
+        return _valueProperty.SplitValueForComparison (null);
+
+      // TODO Review 4183: Test case where ClassDefinition is invalid
+      if (objectID.ClassDefinition != _classDefinition)
+        throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", "value");
+
+      return _valueProperty.SplitValueForComparison (objectID.Value);
     }
   }
 }

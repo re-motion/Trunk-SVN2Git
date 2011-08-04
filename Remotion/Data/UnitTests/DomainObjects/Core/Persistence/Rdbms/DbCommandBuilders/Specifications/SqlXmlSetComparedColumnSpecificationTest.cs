@@ -78,6 +78,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar') FROM pColumn.nodes('/L/I') T(c))delimiter"));
       Assert.That (_parameterStub.Value, Is.EqualTo ("<L><I>&lt;Test1</I><I>689</I><I /></L>"));
+      Assert.That (_parameterStub.DbType, Is.EqualTo (DbType.Xml));
+      Assert.That (_parameterStub.ParameterName, Is.EqualTo ("pColumn"));
     }
   }
 }

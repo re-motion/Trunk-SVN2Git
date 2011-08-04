@@ -59,6 +59,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
+      // TODO Review 4183: Check OrderedColumnsSpecification in test
       var columnValue = new ColumnValue (table.IDColumn, objectID.Value);
       return new SelectDbCommandBuilder (
           table,
@@ -76,6 +77,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
+      // TODO Review 4183: Check OrderedColumnsSpecification in test
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
@@ -98,9 +100,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
-      var orderedColumnsSpecification = orderedColumns.Any()
-                                            ? (IOrderedColumnsSpecification) new OrderedColumnsSpecification (orderedColumns)
-                                            : EmptyOrderedColumnsSpecification.Instance;
+      var orderedColumnsSpecification = CreateOrderedColumnsSpecification(orderedColumns);
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
@@ -123,9 +123,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
-      var orderedColumnsSpecification = orderedColumns.Any ()
-                                            ? (IOrderedColumnsSpecification) new OrderedColumnsSpecification (orderedColumns)
-                                            : EmptyOrderedColumnsSpecification.Instance;
+      var orderedColumnsSpecification = CreateOrderedColumnsSpecification (orderedColumns);
       var comparedColumnValues = foreignKeyStorageProperty.SplitValueForComparison (foreignKeyValue);
       
       return new UnionSelectDbCommandBuilder (
@@ -186,6 +184,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           throw new ArgumentException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.", "objectIDs");
         yield return t.Value;
       }
+    }
+
+    private IOrderedColumnsSpecification CreateOrderedColumnsSpecification (IEnumerable<OrderedColumn> orderedColumns)
+    {
+      return orderedColumns.Any ()
+                 ? (IOrderedColumnsSpecification) new OrderedColumnsSpecification (orderedColumns)
+                 : EmptyOrderedColumnsSpecification.Instance;
     }
   }
 }

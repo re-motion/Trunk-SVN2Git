@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -33,11 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public string Name
     {
       get { return _name; }
-    }
-
-    public IEnumerable<ColumnValue> SplitValueForComparison (object value)
-    {
-      throw new NotImplementedException();
     }
   }
 }

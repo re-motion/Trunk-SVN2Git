@@ -26,7 +26,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
   {
     // TODO: To be removed from this interface
     string Name { get; }
-
-    IEnumerable<ColumnValue> SplitValueForComparison (object value);
   }
 }

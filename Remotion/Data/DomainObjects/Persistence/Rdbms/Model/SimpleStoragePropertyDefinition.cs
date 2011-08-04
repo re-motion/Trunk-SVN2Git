@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
-      yield return new ColumnValue (_columnDefinition, value);
+      return SplitValue (value);
     }
   }
 }

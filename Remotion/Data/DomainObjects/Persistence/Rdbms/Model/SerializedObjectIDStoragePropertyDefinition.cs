@@ -84,7 +84,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
-      return SplitValue (value);
+      var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
+
+      if (objectID == null)
+        return _serializedIDProperty.SplitValueForComparison (null);
+
+      return _serializedIDProperty.SplitValueForComparison (objectID.ToString ());
     }
   }
 }
