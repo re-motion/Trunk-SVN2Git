@@ -66,8 +66,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       foreach (var value in ObjectValues)
       {
         xmlWriter.WriteStartElement ("I");
-        // TODO Review 4183: Throw a NotSupportedException when value == null: "SQL Server cannot represent NULL values in an XML data type."
-        xmlWriter.WriteString (value == null ? null : value.ToString());
+        if (value == null)
+          throw new NotSupportedException ("SQL Server cannot represent NULL values in an XML data type.");
+        xmlWriter.WriteString (value.ToString());
         xmlWriter.WriteEndElement();
       }
       xmlWriter.WriteEndElement();

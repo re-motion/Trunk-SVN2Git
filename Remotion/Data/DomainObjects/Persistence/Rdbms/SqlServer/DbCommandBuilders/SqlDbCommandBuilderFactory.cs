@@ -59,7 +59,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      // TODO Review 4183: Check OrderedColumnsSpecification in test
       var columnValue = new ColumnValue (table.IDColumn, objectID.Value);
       return new SelectDbCommandBuilder (
           table,
@@ -77,7 +76,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      // TODO Review 4183: Check OrderedColumnsSpecification in test
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),

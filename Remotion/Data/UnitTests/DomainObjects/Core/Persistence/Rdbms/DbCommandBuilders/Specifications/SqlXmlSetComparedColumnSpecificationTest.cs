@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Column");
       _objectValue1 = "<Test1";
       _objectValue2 = 689;
-      _objectValue3 = null;
+      _objectValue3 = true;
       
       _specification = new SqlXmlSetComparedColumnSpecification (_columnDefinition, new[] { _objectValue1, _objectValue2, _objectValue3 });
 
@@ -77,9 +77,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, null);
 
       Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar') FROM pColumn.nodes('/L/I') T(c))delimiter"));
-      Assert.That (_parameterStub.Value, Is.EqualTo ("<L><I>&lt;Test1</I><I>689</I><I /></L>"));
+      Assert.That (_parameterStub.Value, Is.EqualTo ("<L><I>&lt;Test1</I><I>689</I><I>True</I></L>"));
       Assert.That (_parameterStub.DbType, Is.EqualTo (DbType.Xml));
       Assert.That (_parameterStub.ParameterName, Is.EqualTo ("pColumn"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "SQL Server cannot represent NULL values in an XML data type.")]
+    public void AppendComparisons_NullValue ()
+    {
+      _specification = new SqlXmlSetComparedColumnSpecification (_columnDefinition, new[] { _objectValue1, null, _objectValue3 });
+
+      _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, null);
     }
   }
 }

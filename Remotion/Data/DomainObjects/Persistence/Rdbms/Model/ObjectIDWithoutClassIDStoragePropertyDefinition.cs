@@ -102,7 +102,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (objectID == null)
         return _valueProperty.SplitValueForComparison (null);
 
-      // TODO Review 4183: Test case where ClassDefinition is invalid
       if (objectID.ClassDefinition != _classDefinition)
         throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", "value");
 

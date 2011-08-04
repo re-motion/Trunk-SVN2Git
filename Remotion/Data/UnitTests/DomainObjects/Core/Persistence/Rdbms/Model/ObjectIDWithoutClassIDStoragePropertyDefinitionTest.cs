@@ -173,5 +173,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
     }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The specified ObjectID has an invalid ClassDefinition.\r\nParameter name: value")]
+    public void SplitValueForComparison_InvalidClassDefinition ()
+    {
+      _objectIDWithoutClassIDStorageDefinition.SplitValueForComparison (DomainObjectIDs.OrderItem2);
+    }
   }
 }

@@ -83,6 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           Is.SameAs (_tableDefinition.IDColumn));
       Assert.That (
           ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumnsSpecification).ComparedColumnValues[0].Value, Is.SameAs (_objectID.Value));
+      Assert.That (dbCommandBuilder.OrderedColumnsSpecification, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
     }
 
     [Test]
@@ -99,6 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           Is.SameAs (_tableDefinition.IDColumn));
       Assert.That (
           ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ObjectValues, Is.EqualTo (new[] { _objectID.Value }));
+      Assert.That (dbCommandBuilder.OrderedColumnsSpecification, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
     }
 
     [Test]
