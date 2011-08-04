@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       
       var specificationMock = MockRepository.GenerateStrictMock<IComparedColumnsSpecification>();
       specificationMock
-          .Expect (mock => mock.AppendComparisons (statement, command, _sqlDialectStub))
+          .Expect (mock => mock.AppendComparisons (statement, command, _sqlDialectStub, null))
           .WhenCalled (
               mi =>
               {

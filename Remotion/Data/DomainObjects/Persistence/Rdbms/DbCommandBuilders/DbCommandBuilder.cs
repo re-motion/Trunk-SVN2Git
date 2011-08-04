@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     protected void AppendWhereClause (StringBuilder statement, IComparedColumnsSpecification comparedColumns, IDbCommand command)
     {
       statement.Append (" WHERE ");
-      comparedColumns.AppendComparisons (statement, command, SqlDialect);
+      comparedColumns.AppendComparisons (statement, command, SqlDialect, null);
     }
 
     protected void AppendOrderByClause (StringBuilder statement, IOrderedColumnsSpecification orderedColumnsSpecification)

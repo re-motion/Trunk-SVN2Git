@@ -14,8 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
@@ -24,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
   /// </summary>
   public interface IComparedColumnsSpecification
   {
-    void AppendComparisons (StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect);
+    void AppendComparisons (
+        StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache);
   }
 }

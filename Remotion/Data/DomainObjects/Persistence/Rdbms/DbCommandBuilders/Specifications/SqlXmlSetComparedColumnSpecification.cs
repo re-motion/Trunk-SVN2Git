@@ -18,11 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
@@ -53,7 +53,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       get { return _objectValues; }
     }
 
-    public void AppendComparisons (StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect)
+    public void AppendComparisons (
+        StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("command", command);
@@ -66,11 +67,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       {
         xmlWriter.WriteStartElement ("I");
         xmlWriter.WriteString (value == null ? null : value.ToString());
-        xmlWriter.WriteEndElement ();
+        xmlWriter.WriteEndElement();
       }
       xmlWriter.WriteEndElement();
-      
-      var parameter = command.CreateParameter ();
+
+      var parameter = command.CreateParameter();
       parameter.ParameterName = sqlDialect.GetParameterName (_columnDefinition.Name);
       parameter.DbType = DbType.Xml;
       parameter.Value = stringWriter.ToString();
@@ -84,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       statement.Append (".nodes('/L/I') T(c))");
       statement.Append (sqlDialect.StatementDelimiter);
 
-      command.CommandText = statement.ToString ();
+      command.CommandText = statement.ToString();
     }
   }
 }

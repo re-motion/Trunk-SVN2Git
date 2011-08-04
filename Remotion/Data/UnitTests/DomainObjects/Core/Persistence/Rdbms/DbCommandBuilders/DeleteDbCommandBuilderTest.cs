@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using NUnit.Framework;
@@ -41,22 +41,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
-      _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification> ();
+      _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification>();
 
-      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _sqlDialectStub.Stub (stub => stub.StatementDelimiter).Return (";");
-      _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
-      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection> ();
+      _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
+      _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
 
-      _dbCommandStub = MockRepository.GenerateStub<IDbCommand> ();
-      _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub);
+      _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
+      _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub);
       _dbCommandStub.Stub (stub => stub.Parameters).Return (_dataParameterCollectionMock);
 
-      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext> ();
-      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand ()).Return (_dbCommandStub);
+      _commandExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
+      _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
     }
 
     [Test]
@@ -72,7 +72,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
       _comparedColumnsSpecificationStub
-          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
+          .Stub (
+              stub =>
+              stub.AppendComparisons (
+                  Arg<StringBuilder>.Is.Anything,
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectStub),
+                  Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       var result = builder.Create (_commandExecutionContextStub);
@@ -83,7 +89,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     [Test]
     public void Create_WithCustomSchema ()
     {
-      var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
+      var tableDefinition = TableDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
       var builder = new DeleteDbCommandBuilder (
           tableDefinition,
           _comparedColumnsSpecificationStub,
@@ -94,7 +101,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
 
       _comparedColumnsSpecificationStub
-          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Is.Anything,
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectStub),
+                  Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       var result = builder.Create (_commandExecutionContextStub);

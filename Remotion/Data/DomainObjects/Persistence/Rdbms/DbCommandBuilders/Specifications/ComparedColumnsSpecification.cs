@@ -18,10 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
@@ -43,7 +43,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       get { return Array.AsReadOnly (_comparedColumnValues); }
     }
 
-    public void AppendComparisons (StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect)
+    public void AppendComparisons (
+        StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("command", command);
@@ -58,9 +59,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
 
         statement.Append (sqlDialect.DelimitIdentifier (comparedColumnValue.Column.Name));
         statement.Append (" = ");
-        
-        var parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
-        parameter.ParameterName = sqlDialect.GetParameterName (comparedColumnValue.Column.Name);
+
+        IDbDataParameter parameter;
+        if (parameterCache != null && parameterCache.ContainsKey (comparedColumnValue))
+        {
+          parameter = parameterCache[comparedColumnValue];
+        }
+        else
+        {
+          parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
+          parameter.ParameterName = sqlDialect.GetParameterName (comparedColumnValue.Column.Name);
+          if (parameterCache != null)
+            parameterCache.Add (comparedColumnValue, parameter);
+        }
         command.Parameters.Add (parameter);
 
         statement.Append (parameter.ParameterName);

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using NUnit.Framework;
@@ -87,7 +88,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
       _comparedColumnsSpecificationStub
-          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Is.Anything,
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectStub),
+                  Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       _orderedColumnsSpecificationStub.Stub (stub => stub.IsEmpty).Return (false);
@@ -99,8 +105,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      Assert.That (result.CommandText, Is.EqualTo (
-        "SELECT [Column1], [Column2], [Column3] FROM [delimited Table] WHERE [ID] = @ID ORDER BY [Name] ASC, [City] DESC;"));
+      Assert.That (
+          result.CommandText,
+          Is.EqualTo (
+              "SELECT [Column1], [Column2], [Column3] FROM [delimited Table] WHERE [ID] = @ID ORDER BY [Name] ASC, [City] DESC;"));
     }
 
     [Test]
@@ -120,16 +128,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
       _comparedColumnsSpecificationStub
-          .Stub (stub => stub.AppendComparisons (Arg<StringBuilder>.Is.Anything, Arg.Is (_dbCommandStub), Arg.Is (_sqlDialectStub)))
+          .Stub (
+              stub => stub.AppendComparisons (
+                  Arg<StringBuilder>.Is.Anything,
+                  Arg.Is (_dbCommandStub),
+                  Arg.Is (_sqlDialectStub),
+                  Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       _orderedColumnsSpecificationStub.Stub (stub => stub.IsEmpty).Return (true);
-      
+
       _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      Assert.That (result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [delimited customSchema].[delimited Table] WHERE [ID] = @ID;"));
+      Assert.That (
+          result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [delimited customSchema].[delimited Table] WHERE [ID] = @ID;"));
     }
   }
 }

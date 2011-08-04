@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _parametersCollectionMock.Expect (mock => mock.Add (_parameterStub)).Return (0);
       _parametersCollectionMock.Replay ();
 
-      _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub);
+      _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, null);
 
       Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar') FROM pColumn.nodes('/L/I') T(c))delimiter"));
       Assert.That (_parameterStub.Value, Is.EqualTo ("<L><I>&lt;Test1</I><I>689</I><I /></L>"));
