@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -52,9 +53,9 @@ namespace Remotion.SecurityManager.Persistence
 
     // methods and properties
 
-    public override void Save (DataContainerCollection dataContainers)
+    public override void Save (IEnumerable<DataContainer> dataContainers)
     {
-      _revisionExtension.Saving (Connection, Transaction , dataContainers);
+      _revisionExtension.Saving (Connection, Transaction, dataContainers);
       base.Save (dataContainers);
     }
   }

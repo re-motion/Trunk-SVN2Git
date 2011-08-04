@@ -260,7 +260,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new DataContainerCollection (checkedSequence, true);
     }
 
-    public override void Save (DataContainerCollection dataContainers)
+    public override void Save (IEnumerable<DataContainer> dataContainers)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
@@ -278,20 +278,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var objectIds = dataContainers.Where (dc => dc.State != StateType.Deleted).Select (dc => dc.ID);
+      var objectIds = dataContainers.Select (dc => dc.ID);
       var multiTimestampLookupCommand = _storageProviderCommandFactory.CreateForMultiTimestampLookup (objectIds);
       var timestampDictionary = multiTimestampLookupCommand.Execute (this).ToDictionary (result => result.ObjectID, result => result.LocatedObject);
       
       foreach (DataContainer dataContainer in dataContainers)
       {
-        if (dataContainer.State != StateType.Deleted)
-        {
-          object timestamp;
+        object timestamp;
           if (!timestampDictionary.TryGetValue (dataContainer.ID, out timestamp))
             throw new RdbmsProviderException (string.Format ("No timestamp found for object '{0}'.", dataContainer.ID));
 
           dataContainer.SetTimestamp (timestamp);
-        }
       }
     }
 

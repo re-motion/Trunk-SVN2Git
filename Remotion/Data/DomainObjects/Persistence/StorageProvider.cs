@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     public abstract DataContainerCollection LoadDataContainersByRelatedID (
         RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID);
 
-    public abstract void Save (DataContainerCollection dataContainers);
+    public abstract void Save (IEnumerable<DataContainer> dataContainers);
     public abstract void UpdateTimestamps (IEnumerable<DataContainer> dataContainers);
     public abstract void BeginTransaction ();
     public abstract void Commit ();

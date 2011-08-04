@@ -66,17 +66,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void UpdateTimestampOfDeletedDataContainer ()
-    {
-      DataContainerCollection containers = CreateDataContainerCollection (GetDeletedOrderTicketContainer());
-      _provider.Connect();
-      _provider.Save (containers);
-      _provider.UpdateTimestamps (containers);
-
-      // expectation: no exception
-    }
-
-    [Test]
     public void DeleteRelatedDataContainers ()
     {
       Employee supervisor = Employee.GetObject (DomainObjectIDs.Employee2);

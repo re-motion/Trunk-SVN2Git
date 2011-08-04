@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         return null;
     }
 
-    public override void Save (DataContainerCollection dataContainers)
+    public override void Save (IEnumerable<DataContainer> dataContainers)
     {
       if (InnerProvider != null)
         InnerProvider.Save (dataContainers);

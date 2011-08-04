@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       throw new NotImplementedException ();
     }
 
-    public override void Save (DataContainerCollection dataContainers)
+    public override void Save (IEnumerable<DataContainer> dataContainers)
     {
     }
 

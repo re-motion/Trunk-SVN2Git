@@ -45,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
     public override void TearDown ()
     {
-      base.TearDown();
-      _persistenceManager.Dispose();
+      _persistenceManager.Dispose ();
+      base.TearDown ();
     }
 
     [Test]
@@ -439,6 +439,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       officialContainer[typeof (Official).FullName + ".Name"] = "Zaphod"; //Stub implementation
 
       _persistenceManager.Save (dataContainers);
+    }
+
+    [Test]
+    public void Save_DeletedDataContainersAreIgnored ()
+    {
+      SetDatabaseModifyable();
+
+      var dataContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
+      Assert.That (dataContainer, Is.Not.Null);
+      dataContainer.Delete ();
+
+      _persistenceManager.Save (new DataContainerCollection { dataContainer });
+
+      Assert.That (() => _persistenceManager.LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1), Throws.TypeOf<ObjectNotFoundException>());
     }
 
     [Test]

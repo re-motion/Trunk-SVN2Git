@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -44,11 +45,11 @@ namespace Remotion.SecurityManager.Persistence
     // methods and properties
 
 
-    public virtual void Saving (IDbConnection connection, IDbTransaction transaction, DataContainerCollection dataContainers)
+    public virtual void Saving (IDbConnection connection, IDbTransaction transaction, IEnumerable<DataContainer> dataContainers)
     {
       ArgumentUtility.CheckNotNull ("connection", connection);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
-      ArgumentUtility.CheckNotNullOrItemsNull ("datacContainers", dataContainers);
+      ArgumentUtility.CheckNotNullOrItemsNull ("dataContainers", dataContainers);
 
       Type securityManagerDomainLayerSuperType = typeof (BaseSecurityManagerObject);
       foreach (DataContainer dataContainer in dataContainers)
