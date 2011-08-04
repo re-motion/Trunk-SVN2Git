@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.RdbmsPersistenceModelLoaderTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -254,6 +255,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _testModel.DerivedDerivedPropertyDefinition.SetStorageProperty (new FakeStoragePropertyDefinition ("Fake"));
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_testModel.DerivedDerivedClassDefinition);
+    }
+
+    [Test]
+    public void ApplyPersistenceModelToHierarchy_ReusesStoragePropertiesWithinHierarchy_WhenTwoPropertiesHaveTheSamePropertyInfo()
+    {
+      var baseClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (BaseClass), null);
+      var derivedClass1 = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Table1Class), baseClass);
+      var derivedClass2 = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Table2Class), baseClass);
+      baseClass.SetDerivedClasses (new[] { derivedClass1, derivedClass2 });
+      derivedClass1.SetDerivedClasses (new ClassDefinition[0]);
+      derivedClass2.SetDerivedClasses (new ClassDefinition[0]);
+
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (baseClass)).Return (null);
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass1)).Return ("Table1");
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass2)).Return ("Table2");
+
+      // In reality, this would be the PropertyInfo of some mixin that's applied to both subclasses
+      var propertyInfo = typeof (BaseClass).GetProperty ("BaseProperty");
+      baseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      var propertyInClass1 = RdbmsPersistenceModelLoaderTestHelper.CreateAndAddPropertyDefinition (derivedClass1, "PropertyInClass1", propertyInfo);
+      var propertyInClass2 = RdbmsPersistenceModelLoaderTestHelper.CreateAndAddPropertyDefinition (derivedClass2, "PropertyInClass2", propertyInfo);
+
+      _dataStoragePropertyDefinitionFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (propertyInClass1))
+          .Return (_fakeColumnDefinition1);
+      _dataStoragePropertyDefinitionFactoryMock.Replay ();
+
+      _entityDefinitionFactoryMock
+          .Expect (mock => mock.CreateUnionViewDefinition (Arg.Is (baseClass), Arg<IEnumerable<IEntityDefinition>>.Is.Anything))
+          .Return (_fakeEntityDefinitionBase);
+      _entityDefinitionFactoryMock
+          .Expect (mock => mock.CreateTableDefinition (derivedClass1))
+          .Return (_fakeEntityDefinitionTable1);
+      _entityDefinitionFactoryMock
+          .Expect (mock => mock.CreateTableDefinition (derivedClass2))
+          .Return (_fakeEntityDefinitionTable2);
+      _entityDefinitionFactoryMock.Replay ();
+
+      _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (baseClass);
+
+      _dataStoragePropertyDefinitionFactoryMock.VerifyAllExpectations ();
+      _entityDefinitionFactoryMock.VerifyAllExpectations ();
+
+      Assert.That (propertyInClass1.StoragePropertyDefinition, Is.SameAs (propertyInClass2.StoragePropertyDefinition));
     }
   }
 }

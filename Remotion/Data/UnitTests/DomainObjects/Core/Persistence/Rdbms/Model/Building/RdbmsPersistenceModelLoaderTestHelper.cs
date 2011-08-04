@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       get { return _derivedDerivedPropertyDefinition; }
     }
 
-    private PropertyDefinition CreateAndAddPropertyDefinition (
+    public static PropertyDefinition CreateAndAddPropertyDefinition (
         ClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
     {
       var propertyDefinition = PropertyDefinitionFactory.Create (

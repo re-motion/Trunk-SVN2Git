@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.FunctionalProgramming;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -134,20 +135,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     private void EnsureAllStoragePropertiesCreated (IEnumerable<ClassDefinition> classDefinitions)
     {
+      // The context is used to storage the PropertyInfo -> StorageProperty association. That way, if two PropertyDefinitions within an inheritance 
+      // hierarchy have the same PropertyInfo (currently only because of mixins), they will get the same storage property.
+      var storagePropertyContext = new Dictionary<IPropertyInformation, IRdbmsStoragePropertyDefinition> ();
       foreach (var classDefinition in classDefinitions)
-        EnsureStoragePropertiesCreated (classDefinition);
+        EnsureStoragePropertiesCreated (classDefinition, storagePropertyContext);
     }
 
-    private void EnsureStoragePropertiesCreated (ClassDefinition classDefinition)
+    private void EnsureStoragePropertiesCreated (
+        ClassDefinition classDefinition, 
+        Dictionary<IPropertyInformation, IRdbmsStoragePropertyDefinition> storagePropertyContext)
     {
       foreach (var propertyDefinition in classDefinition.MyPropertyDefinitions.Where (pd => pd.StorageClass == StorageClass.Persistent))
       {
         if (propertyDefinition.StoragePropertyDefinition == null)
         {
-          var storagePropertyDefinition = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+          IRdbmsStoragePropertyDefinition storagePropertyDefinition;
+          if (!storagePropertyContext.TryGetValue (propertyDefinition.PropertyInfo, out storagePropertyDefinition))
+          {
+            storagePropertyDefinition = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+            storagePropertyContext.Add (propertyDefinition.PropertyInfo, storagePropertyDefinition);
+          }
           propertyDefinition.SetStorageProperty (storagePropertyDefinition);
         }
-        else if(!(propertyDefinition.StoragePropertyDefinition is IRdbmsStoragePropertyDefinition))
+        else if (!(propertyDefinition.StoragePropertyDefinition is IRdbmsStoragePropertyDefinition))
         {
           throw new InvalidOperationException (
             string.Format (
