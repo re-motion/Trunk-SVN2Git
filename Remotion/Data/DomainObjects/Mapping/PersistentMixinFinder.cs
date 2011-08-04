@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       // otherwise the mapping might be inconsistent with the actual property types. With generic parameter substitution, an inherited mixin
       // might change with the derived class, so we can't allow it.
       // (The need to specify all generic arguments is also consistent with the mapping rule disallowing generic domain object types in the mapping;
-      // and Extends and Uses both provide a means to specify generic type arguments as a workaround for when substitution doesn't work.)
+      // and Extends and Uses both provide means to explicitly specify generic type arguments.)
       CheckForSuppressedMixins ();
 
       return from mixin in MixinConfiguration.Mixins
