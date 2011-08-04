@@ -73,8 +73,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           Is.EqualTo (
               new[]
               {
-                  _fakeStorageProperyDefinition1, _fakeStorageProperyDefinition2, _fakeStorageProperyDefinition3, _fakeStorageProperyDefinition4, _fakeStorageProperyDefinition5,
-                  _fakeStorageProperyDefinition6, _fakeStorageProperyDefinition7
+                  _fakeStorageProperyDefinition1, 
+                  _fakeStorageProperyDefinition2, 
+                  _fakeStorageProperyDefinition3, 
+                  _fakeStorageProperyDefinition4, 
+                  _fakeStorageProperyDefinition5,
+                  _fakeStorageProperyDefinition6, 
+                  _fakeStorageProperyDefinition7
               }));
     }
 
@@ -83,7 +88,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var columns = _resolver.GetStoragePropertiesForHierarchy (_testModel.DerivedClassDefinition1).ToArray ();
 
-      Assert.That (columns, Is.EqualTo (new[] { _fakeStorageProperyDefinition1, _fakeStorageProperyDefinition2,  _fakeStorageProperyDefinition4, _fakeStorageProperyDefinition5 }));
+      Assert.That (columns, Is.EqualTo (
+          new[]
+          {
+              _fakeStorageProperyDefinition1,
+              _fakeStorageProperyDefinition2, _fakeStorageProperyDefinition4, _fakeStorageProperyDefinition5
+          }));
     }
 
     [Test]
@@ -101,12 +111,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void GetStoragePropertiesForHierarchy_PropertiesWithSamePropertyInfoAreFiltered ()
+    public void GetStoragePropertiesForHierarchy_DuplicateStoragePropertiesAreFiltered ()
     {
       var classDefinition =
           ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
-      var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
+      var propertyInfo1 = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("NoAttribute");
+      var propertyInfo2 = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
           "Test1", 
@@ -114,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           true,
           null,
           StorageClass.Persistent,
-          propertyInfo,
+          propertyInfo1,
           null);
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
@@ -123,12 +134,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           true,
           null,
           StorageClass.Persistent,
-          propertyInfo,
+          propertyInfo2,
           null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       propertyDefinition1.SetStorageProperty (_fakeStorageProperyDefinition1);
-      propertyDefinition2.SetStorageProperty (_fakeStorageProperyDefinition2);
+      propertyDefinition2.SetStorageProperty (_fakeStorageProperyDefinition1);
 
       var columns = _resolver.GetStoragePropertiesForHierarchy (classDefinition).ToArray ();
 

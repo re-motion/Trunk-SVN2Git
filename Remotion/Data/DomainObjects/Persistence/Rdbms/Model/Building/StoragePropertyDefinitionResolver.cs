@@ -17,10 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -40,17 +38,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           .Reverse ()
           .Concat (classDefinition.GetAllDerivedClasses ());
 
-      var equalityComparer = new DelegateBasedEqualityComparer<Tuple<IPropertyInformation, IRdbmsStoragePropertyDefinition>> (
-          (tuple1, tuple2) => tuple1.Item1.Equals (tuple2.Item1),
-          tuple => tuple.Item1.GetHashCode ());
-
       var storageProperties =
           (from cd in allClassesInHierarchy
            from PropertyDefinition pd in cd.MyPropertyDefinitions
            where pd.StorageClass == StorageClass.Persistent
-           select Tuple.Create (pd.PropertyInfo, GetStorageProperty (pd)))
-              .Distinct (equalityComparer)
-              .Select (tuple => tuple.Item2);
+           select GetStorageProperty (pd))
+           .Distinct ();
 
       return storageProperties;
     }
