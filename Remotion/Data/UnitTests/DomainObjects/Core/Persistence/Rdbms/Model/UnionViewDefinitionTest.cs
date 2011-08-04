@@ -204,31 +204,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateFullColumnList_ChecksByContentNotByReference ()
-    {
-      var column1WithDifferentReference = new ColumnDefinition (
-          _column1.Name, _column1.PropertyType, _column1.StorageTypeInfo, _column1.IsNullable, false);
-      var availableColumns = new[]
-                             {
-                                 ColumnDefinitionObjectMother.IDColumn,
-                                 ColumnDefinitionObjectMother.ClassIDColumn,
-                                 ColumnDefinitionObjectMother.TimestampColumn, column1WithDifferentReference, _column2, _column3
-                             };
-
-      var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
-
-      Assert.That (
-          result,
-          Is.EqualTo (
-              new[]
-              {
-                  ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn,
-                  ColumnDefinitionObjectMother.TimestampColumn,
-                  column1WithDifferentReference, _column2, _column3
-              }));
-    }
-
-    [Test]
     public void CreateFullColumnList_OneColumnNotFound ()
     {
       var unionViewDefinition = new UnionViewDefinition (

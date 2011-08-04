@@ -92,12 +92,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
-      // TODO 4213: Currently, there is one possibility of duplicate columns for the same property being created: when a mixin adds a property 
-      // to more than  one subclass of the same type, the corresponding ColumnDefinition will be created twice. Therefore, we can't simply match 
-      // ColumnDefinition references - as we'd like to -, but have to check for ordinals by name.
-      var availableColumnsAsDictionary = availableColumns.ToDictionary (c => c.Name);
+      var availableColumnsAsDictionary = availableColumns.ToDictionary (c => c);
 
-      return GetAllColumns().Select (columnDefinition => availableColumnsAsDictionary.GetValueOrDefault (columnDefinition.Name)).ToArray();
+      return GetAllColumns().Select (columnDefinition => availableColumnsAsDictionary.GetValueOrDefault (columnDefinition)).ToArray();
     }
 
     // Always returns at least one table

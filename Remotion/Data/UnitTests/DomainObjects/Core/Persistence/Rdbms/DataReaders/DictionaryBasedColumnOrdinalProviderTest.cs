@@ -32,14 +32,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     private ColumnDefinition _columnDefinition;
     private DictionaryBasedColumnOrdinalProvider _dictionaryBasedColumnOrdinalProvider;
     private IDataReader _dataReaderStub;
-    private Dictionary<string, int> _ordinals;
+    private Dictionary<ColumnDefinition, int> _ordinals;
 
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Testcolumn");
+      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Testcolumn 1");
+      var columnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("Testcolumn 2");
       _dataReaderStub = MockRepository.GenerateStub<IDataReader> ();
-      _ordinals = new Dictionary<string, int> { { _columnDefinition.Name, 5 } };
+      _ordinals = new Dictionary<ColumnDefinition, int> { { _columnDefinition, 5 }, { columnDefinition2, 3} };
       _dictionaryBasedColumnOrdinalProvider = new DictionaryBasedColumnOrdinalProvider (_ordinals);
     }
 
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
         "The column 'other column' is not included in the query result and is not expected for this operation. The included and expected columns are: "
-        + "Testcolumn.")]
+        + "Testcolumn 2, Testcolumn 1.")]
     public void GetOrdinal_IndexOutOfRange_ThrowsException ()
     {
       var otherColumn = ColumnDefinitionObjectMother.CreateColumn ("other column");
