@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -133,8 +134,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
     protected void AppendWhereClause (StringBuilder statement, IComparedColumnsSpecification comparedColumns, IDbCommand command)
     {
+      AppendWhereClause (statement, comparedColumns, command, null);
+    }
+
+    protected void AppendWhereClause (
+        StringBuilder statement,
+        IComparedColumnsSpecification comparedColumns,
+        IDbCommand command,
+        IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+    {
       statement.Append (" WHERE ");
-      comparedColumns.AppendComparisons (statement, command, SqlDialect, null);
+      comparedColumns.AppendComparisons (statement, command, SqlDialect, parameterCache);
     }
 
     protected void AppendOrderByClause (StringBuilder statement, IOrderedColumnsSpecification orderedColumnsSpecification)
@@ -147,7 +157,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         statement.Append (" ORDER BY ");
         orderedColumnsSpecification.AppendOrderings (statement, SqlDialect);
       }
-      
     }
   }
 }

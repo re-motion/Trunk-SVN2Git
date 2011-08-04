@@ -94,13 +94,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var dbCommandBuilder = (SelectDbCommandBuilder) result;
       Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
-      Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ColumnDefinition, Is.SameAs(_tableDefinition.IDColumn));
-      Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ObjectValues, Is.EqualTo(new[]{_objectID.Value}));
+      Assert.That (
+          ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ColumnDefinition,
+          Is.SameAs (_tableDefinition.IDColumn));
+      Assert.That (
+          ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ObjectValues, Is.EqualTo (new[] { _objectID.Value }));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-      "Multi-ID lookups can only be performed for ObjectIDs from this storage provider.\r\nParameter name: objectIDs")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Multi-ID lookups can only be performed for ObjectIDs from this storage provider.\r\nParameter name: objectIDs")]
     public void CreateForMultiIDLookupFromTable_DifferentStorageProvider ()
     {
       _factory.CreateForMultiIDLookupFromTable (_tableDefinition, new[] { _column1, _column2 }, new[] { DomainObjectIDs.Official1 });
@@ -134,16 +137,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _tableDefinition);
 
       var result = _factory.CreateForRelationLookupFromUnionView (
-          unionViewDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, new[]{_orderColumn1, _orderColumn2});
+          unionViewDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, new[] { _orderColumn1, _orderColumn2 });
 
-      Assert.That (result, Is.TypeOf (typeof (UnionRelationLookupSelectDbCommandBuilder)));
-      var dbCommandBuilder = (UnionRelationLookupSelectDbCommandBuilder) result;
+      Assert.That (result, Is.TypeOf (typeof (UnionSelectDbCommandBuilder)));
+      var dbCommandBuilder = (UnionSelectDbCommandBuilder) result;
       Assert.That (dbCommandBuilder.UnionViewDefinition, Is.SameAs (unionViewDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
-
-      Assert.That (dbCommandBuilder.ForeignKeyValue, Is.EqualTo (_objectID));
-      Assert.That (dbCommandBuilder.ForeignKeyColumn, Is.SameAs (_foreignKeyColumnDefinition));
-      Assert.That (((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo(new[]{_orderColumn1, _orderColumn2}));
+      Assert.That (
+          ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumns).ComparedColumnValues,
+          Is.EqualTo (
+              new[] { new ColumnValue (
+                  ((SimpleStoragePropertyDefinition)
+                   _foreignKeyColumnDefinition.ValueProperty).ColumnDefinition,
+                  _objectID.Value)}));
+      Assert.That (((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
     }
 
     [Test]

@@ -174,7 +174,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var specification = new ComparedColumnsSpecification (new[] { columnValue });
 
       _storageTypeInformationMock1.Replay();
-      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock)).Return (0);
       _parametersCollectionMock.Replay ();
       _parameterCache.Add (columnValue, parameterStrictMock);
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("First")).Return ("[First]");

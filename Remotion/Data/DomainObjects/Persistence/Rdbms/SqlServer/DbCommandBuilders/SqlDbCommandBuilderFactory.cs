@@ -126,11 +126,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       var orderedColumnsSpecification = orderedColumns.Any ()
                                             ? (IOrderedColumnsSpecification) new OrderedColumnsSpecification (orderedColumns)
                                             : EmptyOrderedColumnsSpecification.Instance;
-      return new UnionRelationLookupSelectDbCommandBuilder (
+      var comparedColumnValues = foreignKeyStorageProperty.SplitValueForComparison (foreignKeyValue);
+      
+      return new UnionSelectDbCommandBuilder (
           view,
           new SelectedColumnsSpecification (selectedColumns),
-          foreignKeyStorageProperty,
-          foreignKeyValue,
+          new ComparedColumnsSpecification(comparedColumnValues),
           orderedColumnsSpecification,
           _sqlDialect,
           _valueConverter);

@@ -60,24 +60,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
         statement.Append (sqlDialect.DelimitIdentifier (comparedColumnValue.Column.Name));
         statement.Append (" = ");
 
-        IDbDataParameter parameter;
-        if (parameterCache != null && parameterCache.ContainsKey (comparedColumnValue))
-        {
-          parameter = parameterCache[comparedColumnValue];
-        }
-        else
-        {
+        var parameter = GetParameterFromCache(comparedColumnValue, parameterCache);
+        if (parameter==null) {
           parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
           parameter.ParameterName = sqlDialect.GetParameterName (comparedColumnValue.Column.Name);
           if (parameterCache != null)
             parameterCache.Add (comparedColumnValue, parameter);
+          command.Parameters.Add (parameter);
         }
-        command.Parameters.Add (parameter);
-
+        
         statement.Append (parameter.ParameterName);
 
         first = false;
       }
+    }
+
+    private IDbDataParameter GetParameterFromCache (ColumnValue comparedColumnValue, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+    {
+      if (parameterCache != null && parameterCache.ContainsKey (comparedColumnValue))
+        return parameterCache[comparedColumnValue];
+      return null;
     }
   }
 }

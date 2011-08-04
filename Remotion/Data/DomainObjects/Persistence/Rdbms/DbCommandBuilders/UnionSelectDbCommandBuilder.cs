@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
@@ -24,22 +25,20 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   /// <summary>
-  /// The <see cref="UnionRelationLookupSelectDbCommandBuilder"/> builds a command that allows retrieving a set of records where a foreign key column
+  /// The <see cref="UnionSelectDbCommandBuilder"/> builds a command that allows retrieving a set of records where a foreign key column
   /// matches a given <see cref="ObjectID"/> value from a set of unioned tables.
   /// </summary>
-  public class UnionRelationLookupSelectDbCommandBuilder : DbCommandBuilder
+  public class UnionSelectDbCommandBuilder : DbCommandBuilder
   {
     private readonly UnionViewDefinition _unionViewDefinition;
     private readonly ISelectedColumnsSpecification _selectedColumns;
-    private readonly IRdbmsStoragePropertyDefinition _foreignKeyColumn;
-    private readonly ObjectID _foreignKeyValue;
+    private readonly IComparedColumnsSpecification _comparedColumns;
     private readonly IOrderedColumnsSpecification _orderedColumns;
-
-    public UnionRelationLookupSelectDbCommandBuilder (
+    
+    public UnionSelectDbCommandBuilder (
         UnionViewDefinition unionViewDefinition,
         ISelectedColumnsSpecification selectedColumns,
-        IRdbmsStoragePropertyDefinition foreignKeyColumn,
-        ObjectID foreignKeyValue,
+        IComparedColumnsSpecification comparedColumns,
         IOrderedColumnsSpecification orderedColumns,
         ISqlDialect sqlDialect,
         IValueConverter valueConverter)
@@ -47,14 +46,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     {
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("foreignKeyColumn", foreignKeyColumn);
-      ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
+      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       _unionViewDefinition = unionViewDefinition;
       _selectedColumns = selectedColumns;
-      _foreignKeyColumn = foreignKeyColumn;
-      _foreignKeyValue = foreignKeyValue;
+      _comparedColumns = comparedColumns;
       _orderedColumns = orderedColumns;
     }
 
@@ -68,14 +65,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _selectedColumns; }
     }
 
-    public IRdbmsStoragePropertyDefinition ForeignKeyColumn
+    public IComparedColumnsSpecification ComparedColumns
     {
-      get { return _foreignKeyColumn; }
-    }
-
-    public ObjectID ForeignKeyValue
-    {
-      get { return _foreignKeyValue; }
+      get { return _comparedColumns; }
     }
 
     public IOrderedColumnsSpecification OrderedColumns
@@ -92,9 +84,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var fullProjection = _orderedColumns.UnionWithSelectedColumns (_selectedColumns);
 
       var statement = new StringBuilder();
-      var lookupColumn = _foreignKeyColumn.GetColumnForLookup();
-      var parameter = AddCommandParameter (command, lookupColumn.Name, _foreignKeyValue);
       bool first = true;
+      var parameterCache = new Dictionary<ColumnValue, IDbDataParameter>();
       foreach (var table in _unionViewDefinition.GetAllTables())
       {
         if (!first)
@@ -102,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         
         AppendSelectClause (statement, fullProjection);
         AppendFromClause (statement, table);
-        AppendComparingWhereClause (statement, lookupColumn, parameter);
+        AppendWhereClause (statement, _comparedColumns, command, parameterCache);
         
         first = false;
       }
