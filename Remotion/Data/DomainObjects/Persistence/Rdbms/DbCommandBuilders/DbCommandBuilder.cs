@@ -43,16 +43,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _sqlDialect; }
     }
 
-    protected string GetOrderClause (SortExpressionDefinition sortExpression)
-    {
-      if (sortExpression == null)
-        return string.Empty;
-
-      var generator = new SortExpressionSqlGenerator (SqlDialect);
-      var orderByClause = generator.GenerateOrderByClauseString (sortExpression);
-      return " " + orderByClause;
-    }
-
     protected void AppendSelectClause (StringBuilder statement, ISelectedColumnsSpecification selectedColumns)
     {
       statement.Append ("SELECT ");

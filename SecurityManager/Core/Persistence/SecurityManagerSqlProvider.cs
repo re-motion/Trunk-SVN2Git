@@ -17,17 +17,16 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.SecurityManager.Persistence
 {
-  public class SecurityManagerSqlProvider : SqlProvider
+  public class SecurityManagerSqlProvider : RdbmsProvider
   {
     // constants
 
@@ -46,10 +45,17 @@ namespace Remotion.SecurityManager.Persistence
         IStorageNameProvider storageNameProvider,
         IPersistenceListener persistenceListener,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider) 
-      : base (definition, storageNameProvider, persistenceListener, commandFactory, storageTypeInformationProvider)
+        IStorageTypeInformationProvider storageTypeInformationProvider)
+        : base (
+            definition,
+            storageNameProvider,
+            Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance,
+            persistenceListener,
+            commandFactory,
+            storageTypeInformationProvider,
+            () => new SqlConnection())
     {
-      _revisionExtension = new RevisionStorageProviderExtension ();
+      _revisionExtension = new RevisionStorageProviderExtension();
     }
 
     // methods and properties

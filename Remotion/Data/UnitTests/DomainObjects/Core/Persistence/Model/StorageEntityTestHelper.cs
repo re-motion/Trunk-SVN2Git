@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return classDefinition.StorageEntityDefinition.LegacyEntityName;
+      return "TODO 4201"; //use Inlinevisitor!
     }
 
     public static string GetColumnName (PropertyDefinition propertyDefinition)

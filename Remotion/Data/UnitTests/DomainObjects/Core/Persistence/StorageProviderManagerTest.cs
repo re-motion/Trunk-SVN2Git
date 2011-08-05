@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       StorageProvider provider = _storageProviderManager[c_testDomainProviderID];
 
       Assert.IsNotNull (provider);
-      Assert.AreEqual (typeof (SqlProvider), provider.GetType ());
+      Assert.AreEqual (typeof (RdbmsProvider), provider.GetType ());
       Assert.AreEqual (c_testDomainProviderID, provider.StorageProviderDefinition.Name);
     }
 

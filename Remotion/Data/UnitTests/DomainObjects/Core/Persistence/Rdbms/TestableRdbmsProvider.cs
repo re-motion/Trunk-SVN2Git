@@ -25,8 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   public class TestableRdbmsProvider : RdbmsProvider
   {
-    private readonly IConnectionCreator _connectionCreator;
-
     public interface IConnectionCreator
     {
       IDbConnection CreateConnection ();
@@ -40,14 +38,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
         IConnectionCreator connectionCreator,
         IStorageTypeInformationProvider storageTypeInformationProvider)
-        : base (definition, storageNameProvider, dialect, persistenceListener, commandFactory, storageTypeInformationProvider)
+      : base (definition, storageNameProvider, dialect, persistenceListener, commandFactory, storageTypeInformationProvider, connectionCreator.CreateConnection)
     {
-      _connectionCreator = connectionCreator;
-    }
 
-    protected override IDbConnection CreateConnection ()
-    {
-      return _connectionCreator.CreateConnection();
     }
+    
   }
 }

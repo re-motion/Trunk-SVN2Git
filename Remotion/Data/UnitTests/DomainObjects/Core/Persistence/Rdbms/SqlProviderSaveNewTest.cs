@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -357,7 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Provider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var sqlProvider = CreateSqlProvider())
       {
         DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedObject;
         Assert.IsNull (dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
@@ -383,9 +384,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Provider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreateSqlProvider())
       {
-        DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedObject;
+        DataContainer dataContainer = rdbmsProvider.LoadDataContainer (newID).LocatedObject;
         ResourceManager.IsEmptyImage (
             (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
       }
@@ -410,9 +411,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Provider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreateSqlProvider())
       {
-        DataContainer dataContainer = sqlProvider.LoadDataContainer (newID).LocatedObject;
+        DataContainer dataContainer = rdbmsProvider.LoadDataContainer (newID).LocatedObject;
         ResourceManager.IsEqualToImageLarger1MB (
             (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
       }
@@ -428,14 +429,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       classWithAllDataTypesContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"] = 10m;
     }
 
-    private SqlProvider CreateSqlProvider ()
+    private RdbmsProvider CreateSqlProvider ()
     {
-      return new SqlProvider (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
+      return new RdbmsProvider (
+          TestDomainStorageProviderDefinition,
           StorageNameProvider,
+          SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider);
+          StorageTypeInformationProvider,
+          ()=>new SqlConnection());
     }
   }
 }

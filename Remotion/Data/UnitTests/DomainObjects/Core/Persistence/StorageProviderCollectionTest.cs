@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -38,12 +39,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       base.SetUp();
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _provider = new SqlProvider (
+      _provider = new RdbmsProvider (
           new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString"),
           _storageNameProvider,
+          SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider);
+          StorageTypeInformationProvider,
+          ()=>new SqlConnection());
       _collection = new StorageProviderCollection();
     }
 
@@ -59,12 +62,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       _collection.Add (_provider);
 
-      StorageProvider copy = new SqlProvider (
+      StorageProvider copy = new RdbmsProvider (
           (RdbmsProviderDefinition) _provider.StorageProviderDefinition,
           _storageNameProvider,
+          SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider);
+          StorageTypeInformationProvider,
+          ()=>new SqlConnection());
       Assert.IsFalse (_collection.Contains (copy));
     }
   }

@@ -38,11 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       throw new NotImplementedException();
     }
 
-    public new string GetOrderClause (SortExpressionDefinition sortExpression)
-    {
-      return base.GetOrderClause (sortExpression);
-    }
-
     public new void AppendSelectClause (StringBuilder statement, ISelectedColumnsSpecification selectedColumns)
     {
       base.AppendSelectClause (statement, selectedColumns);

@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       // Note: If Provider.Connection returns a SqlConnection instead of IDbConnection, the line below does not create a compiler error.
 #pragma warning disable 168
-      SqlConnection sqlConnection = Provider.Connection;
+      var sqlConnection = Provider.Connection;
 #pragma warning restore 168
     }
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       // Note: If Provider.Transaction returns a SqlTransaction instead of IDbTransaction, the line below does not create a compiler error.
 #pragma warning disable 168
-      SqlTransaction sqlTransaction = Provider.Transaction;
+      var sqlTransaction = Provider.Transaction;
 #pragma warning restore 168
     }
     

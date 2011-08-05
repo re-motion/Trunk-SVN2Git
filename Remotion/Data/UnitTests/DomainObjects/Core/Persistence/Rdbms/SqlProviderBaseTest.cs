@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -23,13 +24,12 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   public class SqlProviderBaseTest : ClientTransactionBaseTest
   {
-    private SqlProvider _provider;
+    private RdbmsProvider _provider;
     private ReflectionBasedStorageNameProvider _storageNameProvider;
     private RdbmsProviderCommandFactory _commandFactory;
     private SqlStorageTypeInformationProvider _storageTypeInformationProvider;
@@ -54,12 +54,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _storageTypeInformationProvider,
           TestDomainStorageProviderDefinition);
 
-      _provider = new SqlProvider (
+      _provider = new RdbmsProvider (
           TestDomainStorageProviderDefinition,
           _storageNameProvider,
+          SqlDialect.Instance,
           NullPersistenceListener.Instance,
           _commandFactory,
-          _storageTypeInformationProvider);
+          _storageTypeInformationProvider,
+          ()=>new SqlConnection());
     }
 
     public override void TearDown ()
@@ -68,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.TearDown();
     }
 
-    protected SqlProvider Provider
+    protected RdbmsProvider Provider
     {
       get { return _provider; }
     }

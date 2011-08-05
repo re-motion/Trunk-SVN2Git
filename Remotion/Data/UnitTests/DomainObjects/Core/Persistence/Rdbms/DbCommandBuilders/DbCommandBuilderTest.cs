@@ -39,26 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void GetOrderClause ()
-    {
-      var sortExpressionDefinition = SortExpressionDefinitionObjectMother.CreateOrderItemSortExpressionPositionAscProductDesc ();
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Position")).Return ("<Position>");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Product")).Return ("<Product>");
-
-      var result = _commandBuilder.GetOrderClause (sortExpressionDefinition);
-
-      Assert.That (result, Is.EqualTo (" ORDER BY <Position> ASC, <Product> DESC"));
-    }
-
-    [Test]
-    public void GetOrderClause_Null ()
-    {
-      var result = _commandBuilder.GetOrderClause (null);
-
-      Assert.That (result, Is.EqualTo (string.Empty));
-    }
-
-    [Test]
     public void AppendWhereClause ()
     {
       var statement = new StringBuilder();

@@ -83,11 +83,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _classIDs; }
     }
 
-    public override string LegacyEntityName
-    {
-      get { return null; }
-    }
-
     // Always returns a table
     public TableDefinition GetBaseTable ()
     {

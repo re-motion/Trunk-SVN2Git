@@ -30,7 +30,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class SqlProviderSaveExistingTest : SqlProviderBaseTest
+  public class rdbmsProviderSaveExistingTest : SqlProviderBaseTest
   {
     public override void TestFixtureSetUp ()
     {
@@ -38,18 +38,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       SetDatabaseModifyable();
     }
 
-    private DataContainer LoadDataContainer (SqlProvider sqlProvider, ObjectID id)
+    private DataContainer LoadDataContainer (RdbmsProvider rdbmsProvider, ObjectID id)
     {
-      DataContainer dataContainer = sqlProvider.LoadDataContainer (id).LocatedObject;
+      DataContainer dataContainer = rdbmsProvider.LoadDataContainer (id).LocatedObject;
       return dataContainer;
     }
 
     [Test]
     public void Save ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.AreEqual (
             ClassWithAllDataTypes.EnumType.Value1,
@@ -60,18 +60,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (classWithAllDataTypes);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
       using (
-          SqlProvider sqlProvider = new SqlProvider (
-              (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
+          var rdbmsProvider = new RdbmsProvider (
+              TestDomainStorageProviderDefinition,
               StorageNameProvider,
+              SqlDialect.Instance,
               NullPersistenceListener.Instance,
               CommandFactory,
-              StorageTypeInformationProvider))
+              StorageTypeInformationProvider,
+              ()=>new SqlConnection()))
       {
-        DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.AreEqual (
             ClassWithAllDataTypes.EnumType.Value2,
@@ -82,9 +84,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveAllSimpleDataTypes ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.AreEqual (false, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
         Assert.AreEqual (85, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"]);
@@ -139,12 +141,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (classWithAllDataTypes);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.AreEqual (true, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
         Assert.AreEqual (42, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"]);
@@ -182,9 +184,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveAllNullableTypes ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.AreEqual (true, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
         Assert.AreEqual ((byte) 78, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
@@ -230,12 +232,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (classWithAllDataTypes);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.AreEqual (false, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
         Assert.AreEqual ((byte) 100, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
@@ -266,21 +268,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       // Note for NullableBinaryProperty: Because the value in the database is already null, the property has
       //  to be changed first to something different to ensure the null value is written back.
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        classWithAllDataTypes1 = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        classWithAllDataTypes1 = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
         classWithAllDataTypes1["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] =
             ResourceManager.GetImage1();
 
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (classWithAllDataTypes1);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer classWithAllDataTypes2 = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes2 = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.AreEqual (true, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
         Assert.AreEqual ((byte) 78, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
@@ -325,12 +327,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (classWithAllDataTypes2);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
         Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
@@ -351,13 +353,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveWithNoChanges ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (classWithAllDataTypes);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
       // expectation: no exception
@@ -367,10 +369,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveMultipleDataContainers ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
-        DataContainer orderItemContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.OrderItem1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+        DataContainer orderItemContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderItem1);
 
         Assert.AreEqual (1, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
         Assert.AreEqual ("Mainboard", orderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"]);
@@ -382,14 +384,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         collection.Add (orderContainer);
         collection.Add (orderItemContainer);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
-        DataContainer orderItemContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.OrderItem1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+        DataContainer orderItemContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderItem1);
 
         Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
         Assert.AreEqual ("Raumschiff", orderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"]);
@@ -402,21 +404,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         )]
     public void ConcurrentSave ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer1 = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
-        DataContainer orderContainer2 = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer1 = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer2 = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
 
         orderContainer1["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
         orderContainer2["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 11;
 
         DataContainerCollection collection1 = new DataContainerCollection();
         collection1.Add (orderContainer1);
-        sqlProvider.Save (collection1);
+        rdbmsProvider.Save (collection1);
 
         DataContainerCollection collection2 = new DataContainerCollection();
         collection2.Add (orderContainer2);
-        sqlProvider.Save (collection2);
+        rdbmsProvider.Save (collection2);
       }
     }
 
@@ -425,21 +427,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       DataContainerCollection collection = new DataContainerCollection();
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
         collection.Add (orderContainer);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
       }
     }
@@ -448,10 +450,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (RdbmsProviderException))]
     public void WrapSqlException ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
         DataContainerCollection collection = new DataContainerCollection();
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
 
         PropertyDefinition newDefinition =
             MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem))["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"];
@@ -460,7 +462,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"] = "Auto";
 
         collection.Add (orderContainer);
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
     }
 
@@ -468,17 +470,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void UpdateTimestamps ()
     {
       object oldTimestamp = null;
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
         DataContainerCollection collection = new DataContainerCollection();
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
 
         oldTimestamp = orderContainer.Timestamp;
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
         collection.Add (orderContainer);
 
-        sqlProvider.Save (collection);
-        sqlProvider.UpdateTimestamps (collection);
+        rdbmsProvider.Save (collection);
+        rdbmsProvider.UpdateTimestamps (collection);
 
         Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
       }
@@ -491,17 +493,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       DataContainer orderContainer = null;
       object oldTimestamp = null;
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         oldTimestamp = orderContainer.Timestamp;
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
         collection.Add (orderContainer);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        sqlProvider.UpdateTimestamps (collection);
+        rdbmsProvider.UpdateTimestamps (collection);
       }
 
       Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
@@ -516,10 +518,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       DataContainer orderContainer = null;
       DataContainer orderItemContainer = null;
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
-        orderItemContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.OrderItem1);
+        orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+        orderItemContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderItem1);
 
         oldOrderTimestamp = orderContainer.Timestamp;
         oldOrderItemTimestamp = orderItemContainer.Timestamp;
@@ -531,8 +533,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         collection.Add (orderContainer);
         collection.Add (orderItemContainer);
 
-        sqlProvider.Save (collection);
-        sqlProvider.UpdateTimestamps (collection);
+        rdbmsProvider.Save (collection);
+        rdbmsProvider.UpdateTimestamps (collection);
       }
 
       Assert.IsFalse (oldOrderTimestamp.Equals (orderContainer.Timestamp));
@@ -542,23 +544,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void TransactionalSave ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
 
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (orderContainer);
 
-        sqlProvider.BeginTransaction();
-        sqlProvider.Save (collection);
-        sqlProvider.Commit();
+        rdbmsProvider.BeginTransaction();
+        rdbmsProvider.Save (collection);
+        rdbmsProvider.Commit();
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
       }
     }
@@ -566,23 +568,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void TransactionalLoadDataContainerAndSave ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        sqlProvider.BeginTransaction();
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        rdbmsProvider.BeginTransaction();
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
 
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (orderContainer);
 
-        sqlProvider.Save (collection);
-        sqlProvider.Commit();
+        rdbmsProvider.Save (collection);
+        rdbmsProvider.Commit();
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
       }
     }
@@ -590,12 +592,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void TransactionalLoadDataContainersByRelatedIDAndSave ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        sqlProvider.BeginTransaction();
+        rdbmsProvider.BeginTransaction();
 
         var relationEndPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
-        var orderTicketContainers = sqlProvider.LoadDataContainersByRelatedID (
+        var orderTicketContainers = rdbmsProvider.LoadDataContainersByRelatedID (
             (RelationEndPointDefinition) relationEndPointDefinition,
             null,
             DomainObjectIDs.Order1);
@@ -604,13 +606,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
         orderTicketContainers[0]["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"] = "C:\newFile.jpg";
 
-        sqlProvider.Save (orderTicketContainers);
-        sqlProvider.Commit();
+        rdbmsProvider.Save (orderTicketContainers);
+        rdbmsProvider.Commit();
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderTicketContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.OrderTicket1);
+        DataContainer orderTicketContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderTicket1);
         Assert.AreEqual ("C:\newFile.jpg", orderTicketContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"]);
       }
     }
@@ -619,10 +621,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void TransactionalSaveAndSetTimestamp ()
     {
       object oldTimestamp = null;
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        sqlProvider.BeginTransaction();
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        rdbmsProvider.BeginTransaction();
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
 
         oldTimestamp = orderContainer.Timestamp;
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
@@ -630,14 +632,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (orderContainer);
 
-        sqlProvider.Save (collection);
-        sqlProvider.UpdateTimestamps (collection);
-        sqlProvider.Commit();
+        rdbmsProvider.Save (collection);
+        rdbmsProvider.UpdateTimestamps (collection);
+        rdbmsProvider.Commit();
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
         Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
       }
@@ -648,40 +650,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ExpectedMessage = "Commit cannot be called without calling BeginTransaction first.")]
     public void CommitWithoutBeginTransaction ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (orderContainer);
 
-        sqlProvider.Save (collection);
-        sqlProvider.Commit();
+        rdbmsProvider.Save (collection);
+        rdbmsProvider.Commit();
       }
     }
 
     [Test]
     public void SaveWithRollback ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        sqlProvider.BeginTransaction();
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        rdbmsProvider.BeginTransaction();
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
 
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (orderContainer);
 
-        sqlProvider.Save (collection);
-        sqlProvider.UpdateTimestamps (collection);
-        sqlProvider.Rollback();
+        rdbmsProvider.Save (collection);
+        rdbmsProvider.UpdateTimestamps (collection);
+        rdbmsProvider.Rollback();
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         Assert.AreEqual (1, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
       }
     }
@@ -691,23 +693,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ExpectedMessage = "Rollback cannot be called without calling BeginTransaction first.")]
     public void RollbackWithoutBeginTransaction ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (orderContainer);
 
-        sqlProvider.Save (collection);
-        sqlProvider.Rollback();
+        rdbmsProvider.Save (collection);
+        rdbmsProvider.Rollback();
       }
     }
 
     [Test]
     public void SaveForeignKeyInSameStorageProvider ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
         OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
         orderTicket.Order = Order.GetObject (DomainObjectIDs.Order2);
@@ -715,7 +717,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (orderTicket.InternalDataContainer);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
       // expectation: no exception
@@ -724,7 +726,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveForeignKeyInOtherStorageProvider ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
         Order order = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
         order.Official = Official.GetObject (DomainObjectIDs.Official2);
@@ -732,12 +734,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (order.InternalDataContainer);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.OrderWithoutOrderItem);
+        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderWithoutOrderItem);
         Assert.AreEqual (DomainObjectIDs.Official2, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"]);
       }
     }
@@ -745,7 +747,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveForeignKeyWithClassIDColumnAndDerivedClass ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
         Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
         ceo.Company = Partner.GetObject (DomainObjectIDs.Partner1);
@@ -753,12 +755,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (ceo.InternalDataContainer);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer ceoContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Ceo1);
+        DataContainer ceoContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Ceo1);
         Assert.AreEqual (DomainObjectIDs.Partner1, ceoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"]);
       }
     }
@@ -766,7 +768,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveForeignKeyWithClassIDColumnAndBaseClass ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
         Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
         ceo.Company = Supplier.GetObject (DomainObjectIDs.Supplier1);
@@ -774,12 +776,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (ceo.InternalDataContainer);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer ceoContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Ceo1);
+        DataContainer ceoContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Ceo1);
         Assert.AreEqual (DomainObjectIDs.Supplier1, ceoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"]);
       }
     }
@@ -787,7 +789,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveNullForeignKey ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
         Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
         computer.Employee = null;
@@ -795,13 +797,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (computer.InternalDataContainer);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
 
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        DataContainer computerContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Computer1);
+        DataContainer computerContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Computer1);
         Assert.IsNull (computerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
       }
     }
@@ -809,7 +811,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SaveNullForeignKeyWithInheritance ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
         Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
         ceo.Company = null;
@@ -817,7 +819,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainerCollection collection = new DataContainerCollection();
         collection.Add (ceo.InternalDataContainer);
 
-        sqlProvider.Save (collection);
+        rdbmsProvider.Save (collection);
       }
 
       using (SqlConnection connection = new SqlConnection (TestDomainConnectionString))
@@ -841,21 +843,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ExpectedMessage = "Cannot call BeginTransaction when a transaction is already in progress.")]
     public void CallBeginTransactionTwice ()
     {
-      using (SqlProvider sqlProvider = CreateSqlProvider())
+      using (var rdbmsProvider = CreaterdbmsProvider())
       {
-        sqlProvider.BeginTransaction();
-        sqlProvider.BeginTransaction();
+        rdbmsProvider.BeginTransaction();
+        rdbmsProvider.BeginTransaction();
       }
     }
 
-    private SqlProvider CreateSqlProvider ()
+    private RdbmsProvider CreaterdbmsProvider ()
     {
-      return new SqlProvider (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
+      return new RdbmsProvider (
+          TestDomainStorageProviderDefinition,
           StorageNameProvider,
+          SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider);
+          StorageTypeInformationProvider,
+          ()=>new SqlConnection());
     }
   }
 }

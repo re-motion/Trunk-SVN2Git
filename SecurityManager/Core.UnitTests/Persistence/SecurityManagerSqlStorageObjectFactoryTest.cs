@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
     public void CreateStorageProviderWithMixin ()
     {
       using (
-          MixinConfiguration.BuildFromActive().ForClass (typeof (SqlProvider)).Clear().AddMixins (typeof (SecurityManagerSqlProviderTestMixin)).
+          MixinConfiguration.BuildFromActive().ForClass (typeof (RdbmsProvider)).Clear().AddMixins (typeof (SecurityManagerSqlProviderTestMixin)).
               EnterScope())
       {
         var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);

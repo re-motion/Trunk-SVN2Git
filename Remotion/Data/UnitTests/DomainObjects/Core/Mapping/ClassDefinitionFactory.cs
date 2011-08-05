@@ -198,7 +198,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       else
       {
         var entityStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
-        entityStub.Stub (stub => stub.LegacyEntityName).Return (null);
         entityStub.Stub (stub => stub.StorageProviderDefinition).Return (storageProviderDefinition);
 
         classDefinition.SetStorageEntity (entityStub);

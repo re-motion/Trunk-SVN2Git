@@ -137,29 +137,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (classDefinition.StorageGroupType, Is.SameAs (typeof (DBStorageGroupAttribute)));
     }
 
+    [Ignore("TODO: 4201")]
     [Test]
     public void NullEntityNameWithDerivedClass ()
     {
       Assert.IsNull (StorageModelTestHelper.GetEntityName (_domainBaseClass));
       Assert.IsNotNull (StorageModelTestHelper.GetEntityName (_personClass));
       Assert.IsNull (StorageModelTestHelper.GetEntityName (_customerClass));
-    }
-
-    [Test]
-    public void GetEntityName ()
-    {
-      Assert.IsNull (_domainBaseClass.GetEntityName());
-      Assert.AreEqual ("TableInheritance_Person", _personClass.GetEntityName());
-      Assert.AreEqual ("TableInheritance_Person", _customerClass.GetEntityName());
-    }
-
-    [Test]
-    public void GetAllConcreteEntityNamesForConreteSingle ()
-    {
-      string[] entityNames = _customerClass.GetAllConcreteEntityNames();
-      Assert.IsNotNull (entityNames);
-      Assert.AreEqual (1, entityNames.Length);
-      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
     }
 
     [Test]
@@ -315,61 +299,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetDerivedClasses_DerivedClassHasWrongBaseClassDefined ()
     {
       _customerClass.SetDerivedClasses (new[] { _personClass });
-    }
-
-    [Test]
-    public void GetAllConcreteEntityNamesForConcrete ()
-    {
-      string[] entityNames = _personClass.GetAllConcreteEntityNames();
-      Assert.IsNotNull (entityNames);
-      Assert.AreEqual (1, entityNames.Length);
-      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
-    }
-
-    [Test]
-    public void GetAllConcreteEntityNamesForConreteSingleWithEntityName ()
-    {
-      ClassDefinition personClass = ClassDefinitionFactory.CreateClassDefinition (
-          "Person", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Person), false);
-      ClassDefinition customerClass = ClassDefinitionFactory.CreateClassDefinition (
-          "Customer", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, personClass);
-
-      string[] entityNames = customerClass.GetAllConcreteEntityNames();
-      Assert.IsNotNull (entityNames);
-      Assert.AreEqual (1, entityNames.Length);
-      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
-    }
-
-    [Test]
-    public void GetAllConcreteEntityNamesForAbstractClass ()
-    {
-      // ensure both classes derived from DomainBase are loaded
-      Dev.Null = _personClass;
-      Dev.Null = _organizationalUnitClass;
-
-      string[] entityNames = _domainBaseClass.GetAllConcreteEntityNames();
-      Assert.IsNotNull (entityNames);
-      Assert.AreEqual (2, entityNames.Length);
-      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
-      Assert.AreEqual ("TableInheritance_OrganizationalUnit", entityNames[1]);
-    }
-
-    [Test]
-    public void GetAllConcreteEntityNamesForAbstractClassWithSameEntityNameInInheritanceHierarchy ()
-    {
-      ClassDefinition domainBaseClass = ClassDefinitionFactory.CreateClassDefinition (
-          "DomainBase", null, UnitTestDomainStorageProviderDefinition, typeof (DomainBase), false);
-      ClassDefinition personClass = ClassDefinitionFactory.CreateClassDefinition (
-          "Person", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Person), false, domainBaseClass);
-      ClassDefinitionFactory.CreateClassDefinition (
-          "Customer", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, personClass);
-
-      domainBaseClass.SetDerivedClasses (new[] { personClass });
-
-      string[] entityNames = domainBaseClass.GetAllConcreteEntityNames();
-      Assert.IsNotNull (entityNames);
-      Assert.AreEqual (1, entityNames.Length);
-      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
     }
 
     [Test]

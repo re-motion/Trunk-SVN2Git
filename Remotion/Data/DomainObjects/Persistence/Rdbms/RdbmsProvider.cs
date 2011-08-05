@@ -31,28 +31,32 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public abstract class RdbmsProvider : StorageProvider, IRdbmsProviderCommandExecutionContext
+  public class RdbmsProvider : StorageProvider, IRdbmsProviderCommandExecutionContext
   {
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
 
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
     private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
+    private Func<IDbConnection> _connectionFactory;
 
-    protected RdbmsProvider (
+    public RdbmsProvider (
         RdbmsProviderDefinition definition,
         IStorageNameProvider storageNameProvider,
         ISqlDialect sqlDialect,
         IPersistenceListener persistenceListener,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+        IStorageTypeInformationProvider storageTypeInformationProvider,
+        Func<IDbConnection> connectionFactory)
         : base (definition, storageNameProvider, sqlDialect, persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
+      ArgumentUtility.CheckNotNull ("connectionFactory", connectionFactory);
 
       _storageProviderCommandFactory = storageProviderCommandFactory;
       _storageTypeInformationProvider = storageTypeInformationProvider;
+      _connectionFactory = connectionFactory;
     }
 
     public new RdbmsProviderDefinition StorageProviderDefinition
@@ -117,7 +121,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    protected abstract IDbConnection CreateConnection ();
+    protected IDbConnection CreateConnection ()
+    {
+      return _connectionFactory();
+    }
 
     public virtual void Connect ()
     {

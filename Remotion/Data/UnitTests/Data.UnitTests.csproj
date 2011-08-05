@@ -864,7 +864,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\SecondDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\SecondStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\SpecialOfficial.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SortExpressionSqlGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlDialectTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PersistenceModelLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTestMixin.cs" />

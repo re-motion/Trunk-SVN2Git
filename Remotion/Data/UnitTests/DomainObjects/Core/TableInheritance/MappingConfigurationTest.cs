@@ -29,6 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
   [TestFixture]
   public class MappingConfigurationTest : TableInheritanceMappingTest
   {
+    [Ignore("TODO 4201")]
     [Test]
     public void TableInheritanceMapping ()
     {

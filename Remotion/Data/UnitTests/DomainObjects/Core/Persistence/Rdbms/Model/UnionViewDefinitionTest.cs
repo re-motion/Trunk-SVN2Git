@@ -86,9 +86,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_unionViewDefinition.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
       Assert.That (_unionViewDefinition.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
       Assert.That (_unionViewDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column2, _column3 }));
-
-      Assert.That (_unionViewDefinition.LegacyEntityName, Is.Null);
-      Assert.That (_unionViewDefinition.LegacyViewName, Is.EqualTo ("Test"));
     }
 
     [Test]

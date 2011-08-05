@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
   public class SqlProviderBaseTest : TableInheritanceMappingTest
   {
     private StorageProviderManager _storageProviderManager;
-    private SqlProvider _provider;
+    private RdbmsProvider _provider;
     private StorageProviderDefinition _storageProviderDefinition;
     private ReflectionBasedStorageNameProvider _storageNameProvider;
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       _storageProviderManager = new StorageProviderManager (NullPersistenceListener.Instance);
       _storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _provider = (SqlProvider) _storageProviderManager.GetMandatory (TableInheritanceTestDomainProviderID);
+      _provider = (RdbmsProvider) _storageProviderManager.GetMandatory (TableInheritanceTestDomainProviderID);
       _provider.Connect ();
     }
 
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       get { return _storageNameProvider; }
     }
 
-    protected SqlProvider Provider
+    protected RdbmsProvider Provider
     {
       get { return _provider; }
     }

@@ -83,11 +83,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _unionedEntities; }
     }
 
-    public override string LegacyEntityName
-    {
-      get { return null; }
-    }
-
     public ColumnDefinition[] CreateFullColumnList (IEnumerable<ColumnDefinition> availableColumns)
     {
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);

@@ -36,16 +36,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _storageProviderDefinition = storageProviderDefinition;
     }
 
-    public string LegacyEntityName
-    {
-      get { return null; }
-    }
-
-    public string LegacyViewName
-    {
-      get { return null; }
-    }
-
     public string StorageProviderID
     {
       get { return _storageProviderDefinition.Name; }

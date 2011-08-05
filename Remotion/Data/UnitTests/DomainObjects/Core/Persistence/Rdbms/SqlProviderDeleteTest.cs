@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -30,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   [TestFixture]
   public class SqlProviderDeleteTest : SqlProviderBaseTest
   {
-    private SqlProvider _provider;
+    private RdbmsProvider _provider;
     private ReflectionBasedStorageNameProvider _storageNameProvider;
 
     public override void TestFixtureSetUp ()
@@ -44,12 +45,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _provider = new SqlProvider (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
+      _provider = new RdbmsProvider (
+          TestDomainStorageProviderDefinition,
           _storageNameProvider,
+          SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider);
+          StorageTypeInformationProvider,
+          ()=>new SqlConnection());
     }
 
     public override void TearDown ()

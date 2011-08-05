@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
@@ -38,7 +37,6 @@ using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Sql2005
@@ -65,12 +63,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var result = _sqlProviderFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlProvider)));
+      Assert.That (result, Is.TypeOf (typeof (RdbmsProvider)));
       Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
       Assert.That (result.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
-      Assert.That (((SqlProvider) result).StorageProviderCommandFactory, Is.TypeOf (typeof (RdbmsProviderCommandFactory)));
+      Assert.That (((RdbmsProvider) result).StorageProviderCommandFactory, Is.TypeOf (typeof (RdbmsProviderCommandFactory)));
 
-      var commandFactory = (RdbmsProviderCommandFactory) ((SqlProvider) result).StorageProviderCommandFactory;
+      var commandFactory = (RdbmsProviderCommandFactory) ((RdbmsProvider) result).StorageProviderCommandFactory;
       Assert.That (commandFactory.DbCommandBuilderFactory, Is.TypeOf (typeof (SqlDbCommandBuilderFactory)));
       Assert.That (commandFactory.RdbmsPersistenceModelProvider, Is.TypeOf (typeof (RdbmsPersistenceModelProvider)));
       Assert.That (commandFactory.InfrastructureStoragePropertyDefinitionProvider, Is.TypeOf (typeof (InfrastructureStoragePropertyDefinitionProvider)));
@@ -80,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateStorageProviderWithMixin ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (SqlProvider)).Clear().AddMixins (typeof (SqlProviderTestMixin)).EnterScope())
+      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (RdbmsProvider)).Clear ().AddMixins (typeof (SqlProviderTestMixin)).EnterScope ())
       {
         var result = _sqlProviderFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
 

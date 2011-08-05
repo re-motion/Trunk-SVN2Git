@@ -44,13 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void LegacyEntityName ()
-    {
-      Assert.That (_nullEntityDefinition.LegacyEntityName, Is.Null);
-      Assert.That (_nullEntityDefinition.LegacyViewName, Is.Null);
-    }
-
-    [Test]
     public void ObjectIDColumn ()
     {
       Assert.That (_nullEntityDefinition.IDColumn, Is.Null);

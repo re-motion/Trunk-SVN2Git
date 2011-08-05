@@ -115,17 +115,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       return false;
     }
 
-    public string[] GetAllConcreteEntityNames ()
-    {
-      if (GetEntityName() != null)
-        return new[] { GetEntityName() };
-
-      var allConcreteEntityNames = new List<string>();
-      FillAllConcreteEntityNames (allConcreteEntityNames);
-
-      return allConcreteEntityNames.ToArray();
-    }
-
     public ClassDefinition[] GetAllDerivedClasses ()
     {
       var allDerivedClasses = new List<ClassDefinition> ();
@@ -139,17 +128,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         return BaseClass.GetInheritanceRootClass();
 
       return this;
-    }
-
-    public string GetEntityName ()
-    {
-      if (_storageEntityDefinition != null && _storageEntityDefinition.LegacyEntityName != null)
-        return _storageEntityDefinition.LegacyEntityName;
-
-      if (BaseClass == null)
-        return null;
-
-      return BaseClass.GetEntityName();
     }
 
     public bool Contains (PropertyDefinition propertyDefinition)
@@ -478,18 +456,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     private MappingException CreateMappingException (string message, params object[] args)
     {
       return new MappingException (String.Format (message, args));
-    }
-
-    private void FillAllConcreteEntityNames (List<string> allConcreteEntityNames)
-    {
-      if (_storageEntityDefinition != null && _storageEntityDefinition.LegacyEntityName != null)
-      {
-        allConcreteEntityNames.Add (_storageEntityDefinition.LegacyEntityName);
-        return;
-      }
-
-      foreach (ClassDefinition derivedClass in DerivedClasses)
-        derivedClass.FillAllConcreteEntityNames (allConcreteEntityNames);
     }
 
     private void FillAllDerivedClasses (List<ClassDefinition> allDerivedClasses)

@@ -60,8 +60,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _synonyms = synonyms.ToList().AsReadOnly();
     }
 
-    public abstract string LegacyEntityName { get; }
-
     public abstract string StorageProviderID { get; }
 
     public abstract StorageProviderDefinition StorageProviderDefinition { get; }
@@ -114,10 +112,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return _synonyms; }
     }
-
-    public string LegacyViewName
-    {
-      get { return _viewName.EntityName; }
-    }
+    
   }
 }

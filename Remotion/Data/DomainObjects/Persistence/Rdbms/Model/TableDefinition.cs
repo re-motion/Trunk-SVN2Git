@@ -75,11 +75,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _constraints; }
     }
 
-    public override string LegacyEntityName
-    {
-      get { return _tableName.EntityName; }
-    }
-
     public override void Accept (IEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);

@@ -134,10 +134,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
-          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance, CommandFactory, StorageTypeInformationProvider);
-      providerPartialMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
-          .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
+          _definition,
+          storageNameProvider,
+          SqlDialect.Instance,
+          NullPersistenceListener.Instance,
+          CommandFactory,
+          StorageTypeInformationProvider,
+          (Func<IDbConnection>) (() => connectionStub));
       providerPartialMock.Replay();
 
       providerPartialMock.Connect();
@@ -171,10 +174,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
-          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance, CommandFactory, StorageTypeInformationProvider);
-      providerPartialMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
-          .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
+          _definition,
+          storageNameProvider,
+          SqlDialect.Instance,
+          NullPersistenceListener.Instance,
+          CommandFactory,
+          StorageTypeInformationProvider,
+          (Func<IDbConnection>) (() => connectionStub));
+      
       providerPartialMock.Replay();
 
       providerPartialMock.Connect();
@@ -538,12 +545,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedID_ClassDefinitionWithDifferentStorageProviderDefinition ()
     {
-      var providerWithDifferentStorageProvider = new SqlProvider (
+      var providerWithDifferentStorageProvider = new RdbmsProvider (
           new RdbmsProviderDefinition ("Test", new SqlStorageObjectFactory(), TestDomainConnectionString),
           StorageNameProvider,
+          SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider);
+          StorageTypeInformationProvider,
+          () => new SqlConnection());
       var objectID = DomainObjectIDs.Order1;
       var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
 

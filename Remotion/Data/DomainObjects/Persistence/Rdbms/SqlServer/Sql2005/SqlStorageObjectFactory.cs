@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data;
+using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -74,8 +76,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
       return
-          ObjectFactory.Create<SqlProvider> (
-              ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener, commandFactory, storageTypeInformationProvider));
+          ObjectFactory.Create<RdbmsProvider> (
+              ParamList.Create (
+                  rdbmsProviderDefinition,
+                  storageNameProvider,
+                  SqlDialect.Instance,
+                  persistenceListener,
+                  commandFactory,
+                  storageTypeInformationProvider,
+                  (Func<IDbConnection>) (() => new SqlConnection())));
     }
 
     public virtual TypeProvider CreateTypeProvider ()

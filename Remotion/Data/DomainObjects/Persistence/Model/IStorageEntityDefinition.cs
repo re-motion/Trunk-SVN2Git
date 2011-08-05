@@ -24,8 +24,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
   /// </summary>
   public interface IStorageEntityDefinition
   {
-    string LegacyEntityName { get; }
-    string LegacyViewName { get; }
     string StorageProviderID { get; }
     StorageProviderDefinition StorageProviderDefinition { get; }
   }
