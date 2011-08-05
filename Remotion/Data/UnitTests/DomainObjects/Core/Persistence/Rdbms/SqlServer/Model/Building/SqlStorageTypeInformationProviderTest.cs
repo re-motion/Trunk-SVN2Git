@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
+      _storageTypeInformationProvider = new SqlStorageTypeInformationProvider();
     }
 
     [Test]
@@ -211,7 +211,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.StorageTypeName, Is.EqualTo ("uniqueidentifier"));
       Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.StorageDbType, Is.EqualTo (DbType.Guid));
       Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.StorageTypeInMemory, Is.EqualTo (typeof (Guid?)));
-      Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").SameAs (typeof (Guid?)));
+      Assert.That (
+          _storageTypeInformationProvider.ObjectIDStorageType.TypeConverter,
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").SameAs (typeof (Guid?)));
 
       Assert.That (_storageTypeInformationProvider.SerializedObjectIDStorageType.StorageTypeName, Is.EqualTo ("varchar (255)"));
       Assert.That (_storageTypeInformationProvider.SerializedObjectIDStorageType.StorageDbType, Is.EqualTo (DbType.String));
@@ -224,13 +226,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (_storageTypeInformationProvider.ClassIDStorageType.StorageDbType, Is.EqualTo (DbType.String));
       Assert.That (_storageTypeInformationProvider.ClassIDStorageType.StorageTypeInMemory, Is.EqualTo (typeof (String)));
       Assert.That (
-          _storageTypeInformationProvider.ClassIDStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
+          _storageTypeInformationProvider.ClassIDStorageType.TypeConverter,
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
       Assert.That (_storageTypeInformationProvider.TimestampStorageType.StorageTypeName, Is.EqualTo ("rowversion"));
       Assert.That (_storageTypeInformationProvider.TimestampStorageType.StorageDbType, Is.EqualTo (DbType.Binary));
       Assert.That (_storageTypeInformationProvider.TimestampStorageType.StorageTypeInMemory, Is.EqualTo (typeof (Byte[])));
       Assert.That (
-          _storageTypeInformationProvider.TimestampStorageType.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
+          _storageTypeInformationProvider.TimestampStorageType.TypeConverter,
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
     }
 
     [Test]
@@ -257,6 +261,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void GetStorageType_Type_UnsupportedType ()
     {
       _storageTypeInformationProvider.GetStorageType (typeof (Char));
+    }
+
+    [Test]
+    public void GetStorageTypeInformation_ValueNotNull ()
+    {
+      var result = _storageTypeInformationProvider.GetStorageType ("test");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.StorageTypeName, Is.EqualTo ("nvarchar (max)"));
+      Assert.That (result.StorageDbType, Is.EqualTo (DbType.String));
+    }
+
+    [Test]
+    public void GetStorageTypeInformation_ValueNull ()
+    {
+      var result = _storageTypeInformationProvider.GetStorageType ((object)null);
+
+      CheckStorageTypeInformation (
+          result,
+          "sql_variant",
+          DbType.Object,
+          typeof (object),
+          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (object)));
     }
 
     private void CheckGetStorageType (

@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
@@ -34,5 +33,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     bool IsTypeSupported (Type type);
     StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition);
     StorageTypeInformation GetStorageType (Type type);
+    StorageTypeInformation GetStorageType (object value);
   }
 }

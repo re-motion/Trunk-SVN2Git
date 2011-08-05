@@ -81,6 +81,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return storageType;
     }
 
+    public StorageTypeInformation GetStorageType (object value)
+    {
+      if (value != null)
+        return GetStorageType (value.GetType());
+      
+      return new StorageTypeInformation ("sql_variant", DbType.Object, typeof (object), new DefaultConverter (typeof (object)));
+    }
+
     private StorageTypeInformation GetStorageType (Type propertyType, int? maxLength)
     {
       var underlyingTypeOfNullable = Nullable.GetUnderlyingType (propertyType);
