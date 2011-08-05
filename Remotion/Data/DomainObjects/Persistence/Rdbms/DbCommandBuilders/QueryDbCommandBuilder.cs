@@ -51,9 +51,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       foreach (var parameterWithType in _parametersWithType)
       {
         if (parameterWithType.QueryParameter.ParameterType == QueryParameterType.Text)
-          statement = statement.Replace (parameterWithType.QueryParameter.Name, parameterWithType.QueryParameter.Value.ToString());
+          statement = statement.Replace (parameterWithType.QueryParameter.Name, parameterWithType.QueryParameter.Value.ToString ());
         else
-          AddCommandParameter (command, parameterWithType.QueryParameter.Name, parameterWithType.QueryParameter.Value);
+        {
+          var parameter = parameterWithType.StorageTypeInformation.CreateDataParameter (command, parameterWithType.QueryParameter.Value);
+          parameter.ParameterName = parameterWithType.QueryParameter.Name;
+          command.Parameters.Add (parameter);
+        }
       }
 
       command.CommandText = statement;
