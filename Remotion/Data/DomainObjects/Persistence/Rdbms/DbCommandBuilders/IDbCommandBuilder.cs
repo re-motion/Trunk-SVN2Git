@@ -15,20 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Data;
-using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
   public interface IDbCommandBuilder
   {
-    ISqlDialect SqlDialect { get; }
-
     IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext);
-    IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue);
-
-    /// <remarks>
-    /// This method cannot be used for binary (BLOB) <paramref name="parameterValue"/>. Use the overload with a <see cref="PropertyValue"/> instead.
-    /// </remarks>
-    IDataParameter AddCommandParameter (IDbCommand command, string parameterName, object parameterValue);
   }
 }

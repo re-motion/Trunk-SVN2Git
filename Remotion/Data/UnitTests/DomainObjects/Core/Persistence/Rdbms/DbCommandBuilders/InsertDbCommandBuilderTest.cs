@@ -31,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class InsertDbCommandBuilderTest : SqlProviderBaseTest
   {
-    private IValueConverter _valueConverterStub;
     private IInsertedColumnsSpecification _insertedColumnsSpecificationStub;
     private ISqlDialect _sqlDialectStub;
     private IDbCommand _dbCommandStub;
@@ -42,8 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public override void SetUp ()
     {
       base.SetUp ();
-
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
 
       _insertedColumnsSpecificationStub = MockRepository.GenerateStub<IInsertedColumnsSpecification>();
 
@@ -65,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create_DefaultSchema ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
-      var builder = new InsertDbCommandBuilder (tableDefinition, _insertedColumnsSpecificationStub, _sqlDialectStub, _valueConverterStub);
+      var builder = new InsertDbCommandBuilder (tableDefinition, _insertedColumnsSpecificationStub, _sqlDialectStub);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
@@ -85,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void Create_CustomSchema ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
-      var builder = new InsertDbCommandBuilder (tableDefinition, _insertedColumnsSpecificationStub, _sqlDialectStub, _valueConverterStub);
+      var builder = new InsertDbCommandBuilder (tableDefinition, _insertedColumnsSpecificationStub, _sqlDialectStub);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[delimited Table]");

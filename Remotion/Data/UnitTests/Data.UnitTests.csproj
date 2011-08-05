@@ -1196,7 +1196,6 @@
     <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializableStub.cs" />
     <Compile Include="DomainObjects\Core\Serialization\ObjectIDTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\OppositeClassDefinitionRetrieverTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\SpecificFolder.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithEnumNotDefiningZero.cs" />
@@ -1476,16 +1475,10 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlProviderTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\ValueConverterTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\Persistence\StorageProviderCollectionTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Persistence\StorageProviderManagerTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\StubValueConverterBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Queries\QueryManagerTest.cs">

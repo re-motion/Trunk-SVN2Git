@@ -40,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private TableDefinition _table1;
     private TableDefinition _table2;
     private TableDefinition _table3;
-    private IValueConverter _valueConverterStub;
     private ISelectedColumnsSpecification _fullSelectedColumnsStub;
     private ObjectID _objectID;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
@@ -65,9 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       _guid = Guid.NewGuid();
       _objectID = new ObjectID ("Order", _guid);
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
-      _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_guid);
-
+      
       _table1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
       _table2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));
       _table3 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table3"));
@@ -83,8 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _originalSelectedColumnsStub,
           _comparedColumnsStub,
           _orderedColumnsStub,
-          _sqlDialectStub,
-          _valueConverterStub);
+          _sqlDialectStub);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[delimited Table1]");
@@ -132,8 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _originalSelectedColumnsStub,
           _comparedColumnsStub,
           _orderedColumnsStub,
-          _sqlDialectStub,
-          _valueConverterStub);
+          _sqlDialectStub);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table1")).Return ("[delimited Table1]");

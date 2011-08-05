@@ -35,9 +35,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public InsertDbCommandBuilder (
         TableDefinition tableDefinition,
         IInsertedColumnsSpecification insertedColumnsSpecification,
-        ISqlDialect sqlDialect,
-        IValueConverter valueConverter)
-        : base (sqlDialect, valueConverter)
+        ISqlDialect sqlDialect)
+        : base (sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("insertedColumnsSpecification", insertedColumnsSpecification);

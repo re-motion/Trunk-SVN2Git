@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Rhino.Mocks;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
@@ -29,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class DbCommandBuilderTest : StandardMappingTest
   {
     private ISqlDialect _sqlDialectStub;
-    private IValueConverter _valueConverterStub;
     private TestableDbCommandBuilder _commandBuilder;
 
     public override void SetUp ()
@@ -37,33 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       base.SetUp();
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter> ();
-      _commandBuilder = new TestableDbCommandBuilder (_sqlDialectStub, _valueConverterStub);
-    }
-
-    [Test]
-    public void AddCommandParameter_ForExtensibleEnum ()
-    {
-      var commandStub = MockRepository.GenerateStub<IDbCommand> ();
-      var parameterMock = MockRepository.GenerateMock<IDbDataParameter> ();
-      var parameterCollectionStub = MockRepository.GenerateStub<IDataParameterCollection> ();
-
-      commandStub.Stub (stub => stub.CreateParameter ()).Return (parameterMock);
-      commandStub.Stub (stub => stub.Parameters).Return (parameterCollectionStub);
-      commandStub.Replay ();
-
-      parameterCollectionStub.Stub (stub => stub.Add (parameterMock)).Return (0);
-      parameterCollectionStub.Replay ();
-
-      _sqlDialectStub.Stub (stub => stub.GetParameterName ("x")).Return ("x");
-      _valueConverterStub.Stub (stub => stub.GetDBValue (Color.Values.Red ())).Return ("VALUE");
-
-      parameterMock.Expect (mock => mock.Value = "VALUE"); // string!
-      parameterMock.Replay ();
-      
-      _commandBuilder.AddCommandParameter (commandStub, "x", Color.Values.Red ());
-
-      parameterMock.VerifyAllExpectations ();
+      _commandBuilder = new TestableDbCommandBuilder (_sqlDialectStub);
     }
 
     [Test]

@@ -281,9 +281,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
-      var valueConverter = CreateValueConverter (storageProviderDefinition, storageNameProvider, storageProviderDefinition.TypeConversionProvider);
-      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (valueConverter, storageProviderDefinition);
-
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (storageProviderDefinition);
       var rdbmsPersistenceModelProvider = CreateRdbmsPersistenceModelProvider();
       return new RdbmsProviderCommandFactory (
           dbCommandBuilderFactory,
@@ -295,23 +293,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageProviderDefinition);
     }
 
-    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (
-        IValueConverter valueConverter, StorageProviderDefinition storageProviderDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
-      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, valueConverter, storageProviderDefinition);
-    }
-
-    protected virtual IValueConverter CreateValueConverter (
-        StorageProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, TypeConversionProvider typeConversionProvider)
+    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
-      return new ValueConverter ((RdbmsProviderDefinition) storageProviderDefinition, storageNameProvider, typeConversionProvider);
+      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, storageProviderDefinition);
     }
 
     protected virtual SqlStorageTypeInformationProvider CreateStorageTypeInformationProvider ()

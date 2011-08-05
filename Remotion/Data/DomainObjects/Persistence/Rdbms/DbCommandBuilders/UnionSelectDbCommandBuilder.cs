@@ -40,9 +40,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ISelectedColumnsSpecification selectedColumns,
         IComparedColumnsSpecification comparedColumns,
         IOrderedColumnsSpecification orderedColumns,
-        ISqlDialect sqlDialect,
-        IValueConverter valueConverter)
-        : base (sqlDialect, valueConverter)
+        ISqlDialect sqlDialect)
+        : base (sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);

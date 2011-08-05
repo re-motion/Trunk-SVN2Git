@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
@@ -37,8 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
-    private IValueConverter _valueConverterStub;
-    private ObjectID _objectID;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
     private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
     private IOrderedColumnsSpecification _orderedColumnsSpecificationStub;
@@ -68,9 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _commandExecutionContextStub.Stub (stub => stub.CreateDbCommand()).Return (_dbCommandStub);
 
       var guid = Guid.NewGuid();
-      _objectID = new ObjectID ("Order", guid);
-
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
     }
 
     [Test]
@@ -82,8 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _selectedColumnsStub,
           _comparedColumnsSpecificationStub,
           _orderedColumnsSpecificationStub,
-          _sqlDialectStub,
-          _valueConverterStub);
+          _sqlDialectStub);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
@@ -101,9 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Name] ASC, [City] DESC"));
 
-      _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
-
-      var result = builder.Create (_commandExecutionContextStub);
+     var result = builder.Create (_commandExecutionContextStub);
 
       Assert.That (
           result.CommandText,
@@ -121,8 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           _selectedColumnsStub,
           _comparedColumnsSpecificationStub,
           _orderedColumnsSpecificationStub,
-          _sqlDialectStub,
-          _valueConverterStub);
+          _sqlDialectStub);
 
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
@@ -137,8 +127,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
 
       _orderedColumnsSpecificationStub.Stub (stub => stub.IsEmpty).Return (true);
-
-      _valueConverterStub.Stub (stub => stub.GetDBValue (_objectID)).Return (_objectID.Value);
 
       var result = builder.Create (_commandExecutionContextStub);
 

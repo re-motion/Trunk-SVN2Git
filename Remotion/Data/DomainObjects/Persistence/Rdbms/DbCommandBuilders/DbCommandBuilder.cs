@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -29,15 +28,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   public abstract class DbCommandBuilder : IDbCommandBuilder
   {
     private readonly ISqlDialect _sqlDialect;
-    private readonly IValueConverter _valueConverter;
 
-    protected DbCommandBuilder (ISqlDialect sqlDialect, IValueConverter valueConverter)
+    protected DbCommandBuilder (ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
 
       _sqlDialect = sqlDialect;
-      _valueConverter = valueConverter;
     }
 
     public abstract IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext);
@@ -45,51 +41,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public ISqlDialect SqlDialect
     {
       get { return _sqlDialect; }
-    }
-
-    public IValueConverter ValueConverter
-    {
-      get { return _valueConverter; }
-    }
-
-    public IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNullOrEmpty ("parameterName", parameterName);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-
-      var value = propertyValue.GetValueWithoutEvents (ValueAccess.Current);
-      IDataParameter commandParameter = AddCommandParameter (command, parameterName, value);
-
-      // The default DbType for null values is String, which is alright for most data types, but not for Binary. Therefore, explicitly set the
-      // DbType to binary for byte[]s.
-      if (ReflectionUtility.IsBinaryPropertyValueType (propertyValue.Definition.PropertyType))
-      {
-        Assertion.IsTrue (commandParameter.DbType == DbType.Binary || value == null);
-        commandParameter.DbType = DbType.Binary;
-      }
-
-      return commandParameter;
-    }
-
-    /// <remarks>
-    /// This method cannot be used for binary (BLOB) <paramref name="parameterValue"/>. Use the overload with a <see cref="PropertyValue"/> instead.
-    /// </remarks>
-    public IDataParameter AddCommandParameter (IDbCommand command, string parameterName, object parameterValue)
-    {
-      // Note: UpdateCommandBuilder implicitly uses this method through WhereClauseBuilder.Add for Timestamp values.
-      // Although Timestamp values are represented as byte arrays in ADO.NET with SQL Server they are no BLOB data type.
-      // Therefore this usage is still valid.
-
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNullOrEmpty ("parameterName", parameterName);
-
-      IDataParameter commandParameter = command.CreateParameter();
-      commandParameter.ParameterName = SqlDialect.GetParameterName (parameterName);
-      commandParameter.Value = ValueConverter.GetDBValue (parameterValue);
-
-      command.Parameters.Add (commandParameter);
-      return commandParameter;
     }
 
     protected string GetOrderClause (SortExpressionDefinition sortExpression)

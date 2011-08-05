@@ -31,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class DeleteDbCommandBuilderTest : SqlProviderBaseTest
   {
-    private IValueConverter _valueConverterStub;
     private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
     private ISqlDialect _sqlDialectStub;
     private IDbDataParameter _dbDataParameterStub;
@@ -43,7 +42,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp();
 
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
       _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification>();
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
@@ -66,8 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var builder = new DeleteDbCommandBuilder (
           tableDefinition,
           _comparedColumnsSpecificationStub,
-          _sqlDialectStub,
-          _valueConverterStub);
+          _sqlDialectStub);
 
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
@@ -94,8 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var builder = new DeleteDbCommandBuilder (
           tableDefinition,
           _comparedColumnsSpecificationStub,
-          _sqlDialectStub,
-          _valueConverterStub);
+          _sqlDialectStub);
 
       _sqlDialectStub.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
       _sqlDialectStub.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");

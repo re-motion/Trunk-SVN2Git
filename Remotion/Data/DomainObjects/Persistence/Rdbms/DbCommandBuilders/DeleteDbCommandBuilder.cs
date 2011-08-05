@@ -35,9 +35,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     public DeleteDbCommandBuilder (
         TableDefinition tableDefinition,
         IComparedColumnsSpecification comparedColumnsSpecification,
-        ISqlDialect sqlDialect,
-        IValueConverter valueConverter)
-        : base (sqlDialect, valueConverter)
+        ISqlDialect sqlDialect)
+        : base (sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("comparedColumnsSpecification", comparedColumnsSpecification);

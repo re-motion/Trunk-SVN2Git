@@ -266,7 +266,6 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\UpdatedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
-    <Compile Include="Persistence\Rdbms\IValueConverter.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\LookupCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IInfrastructureStoragePropertyDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\InfrastructureStoragePropertyDefinitionProvider.cs" />
@@ -604,7 +603,6 @@
     <Compile Include="Tracing\CompoundPersistenceListener.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\OppositeClassDefinitionRetriever.cs" />
     <Compile Include="Tracing\TracingDataReader.cs" />
     <Compile Include="Tracing\TracingDbCommand.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
@@ -868,9 +866,6 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SqlProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\Rdbms\ValueConverter.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Persistence\StorageProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -881,9 +876,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\StorageProviderManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Persistence\ValueConverterBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\PropertyValue.cs">

@@ -32,23 +32,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
   public class SqlDbCommandBuilderFactory : IDbCommandBuilderFactory
   {
     private readonly ISqlDialect _sqlDialect;
-    private readonly IValueConverter _valueConverter;
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlDbCommandBuilderFactory"/> class.
     /// </summary>
     /// <param name="sqlDialect">The SQL dialect.</param>
-    /// <param name="valueConverter">The value converter.</param>
     /// <param name="storageProviderDefinition">The storage provider definition of the relational database.</param>
-    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, IValueConverter valueConverter, StorageProviderDefinition storageProviderDefinition)
+    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("valueConverter", valueConverter);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       _sqlDialect = sqlDialect;
-      _valueConverter = valueConverter;
       _storageProviderDefinition = storageProviderDefinition;
     }
 
@@ -65,8 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           new SelectedColumnsSpecification (selectedColumns),
           new ComparedColumnsSpecification (new[] { columnValue }),
           EmptyOrderedColumnsSpecification.Instance,
-          _sqlDialect,
-          _valueConverter);
+          _sqlDialect);
     }
 
     public IDbCommandBuilder CreateForMultiIDLookupFromTable (
@@ -81,8 +76,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           new SelectedColumnsSpecification (selectedColumns),
           new SqlXmlSetComparedColumnSpecification (table.IDColumn, GetObjectIDValues(objectIDs)),
           EmptyOrderedColumnsSpecification.Instance,
-          _sqlDialect,
-          _valueConverter);
+          _sqlDialect);
     }
 
     public IDbCommandBuilder CreateForRelationLookupFromTable (
@@ -106,8 +100,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           new SelectedColumnsSpecification (selectedColumns),
           new ComparedColumnsSpecification (comparedColumnValues),
           orderedColumnsSpecification,
-          _sqlDialect,
-          _valueConverter);
+          _sqlDialect);
     }
 
     public IDbCommandBuilder CreateForRelationLookupFromUnionView (
@@ -131,8 +124,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           new SelectedColumnsSpecification (selectedColumns),
           new ComparedColumnsSpecification(comparedColumnValues),
           orderedColumnsSpecification,
-          _sqlDialect,
-          _valueConverter);
+          _sqlDialect);
     }
 
     public IDbCommandBuilder CreateForQuery (string statement, IEnumerable<QueryParameterWithType> parametersWithType)
@@ -140,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("parametersWithType", parametersWithType);
 
-      return new QueryDbCommandBuilder (statement, parametersWithType, _sqlDialect, _valueConverter);
+      return new QueryDbCommandBuilder (statement, parametersWithType, _sqlDialect);
     }
 
     public IDbCommandBuilder CreateForInsert (TableDefinition tableDefinition, IEnumerable<ColumnValue> insertedColumns)
@@ -148,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("insertedColumns", insertedColumns);
 
-      return new InsertDbCommandBuilder (tableDefinition, new InsertedColumnsSpecification (insertedColumns), _sqlDialect, _valueConverter);
+      return new InsertDbCommandBuilder (tableDefinition, new InsertedColumnsSpecification (insertedColumns), _sqlDialect);
     }
 
     public IDbCommandBuilder CreateForUpdate (
@@ -164,8 +156,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           tableDefinition,
           new UpdatedColumnsSpecification (updatedColumns),
           new ComparedColumnsSpecification (comparedColumns),
-          _sqlDialect,
-          _valueConverter);
+          _sqlDialect);
     }
 
     public IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IEnumerable<ColumnValue> comparedColumns)
@@ -173,7 +164,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
 
-      return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumns), _sqlDialect, _valueConverter);
+      return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumns), _sqlDialect);
     }
 
     

@@ -207,7 +207,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           query.Parameters.Cast<QueryParameter>().Select (
               p => LookupCommandFactory.GetQueryParameterWithType (p, _storageTypeInformationProvider, StorageProviderDefinition));
 
-      var commandBuilder = new QueryDbCommandBuilder (query.Statement, queryParametersWithType, SqlDialect, CreateValueConverter());
+      var commandBuilder = new QueryDbCommandBuilder (query.Statement, queryParametersWithType, SqlDialect);
       using (var command = commandBuilder.Create (this))
       {
         try
@@ -482,12 +482,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
         yield return dataContainer;
       }
-    }
-
-    /// <summary> Gets a value converter that converts database types to .NET types according to the providers type mapping rules. </summary>
-    public virtual ValueConverter CreateValueConverter ()
-    {
-      return new ValueConverter (StorageProviderDefinition, StorageNameProvider, TypeConversionProvider);
     }
 
     [Obsolete ("This method has been superseded by MultiObjectLoadCommand. Use that instead. (1.13.112)", true)]

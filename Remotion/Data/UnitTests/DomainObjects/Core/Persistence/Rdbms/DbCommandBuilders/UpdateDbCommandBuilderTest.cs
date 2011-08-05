@@ -31,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class UpdateDbCommandBuilderTest : SqlProviderBaseTest
   {
-    private IValueConverter _valueConverterStub;
     private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
     private IUpdatedColumnsSpecification _updatedColumnsSpecificationStub;
 
@@ -47,7 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp();
 
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
       _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification>();
       _updatedColumnsSpecificationStub = MockRepository.GenerateStub<IUpdatedColumnsSpecification>();
 
@@ -72,8 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           tableDefinition,
           _updatedColumnsSpecificationStub,
           _comparedColumnsSpecificationStub,
-          _sqlDialectStub,
-          _valueConverterStub);
+          _sqlDialectStub);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
@@ -105,8 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           tableDefinition,
           _updatedColumnsSpecificationStub,
           _comparedColumnsSpecificationStub,
-          _sqlDialectStub,
-          _valueConverterStub);
+          _sqlDialectStub);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[delimited Table]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");

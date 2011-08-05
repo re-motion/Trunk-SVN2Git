@@ -31,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   {
     private SqlProvider _provider;
     private ReflectionBasedStorageNameProvider _storageNameProvider;
-    private ValueConverter _valueConverter;
     private RdbmsProviderCommandFactory _commandFactory;
     private SqlStorageTypeInformationProvider _storageTypeInformationProvider;
 
@@ -41,14 +40,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _storageTypeInformationProvider = new SqlStorageTypeInformationProvider();
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _valueConverter = new ValueConverter (TestDomainStorageProviderDefinition, _storageNameProvider, TypeConversionProvider.Current);
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
           _storageTypeInformationProvider, _storageNameProvider);
       _commandFactory = new RdbmsProviderCommandFactory (
           new SqlDbCommandBuilderFactory (
               SqlDialect.Instance,
-              _valueConverter,
               TestDomainStorageProviderDefinition),
           rdbmsPersistenceModelProvider,
           infrastructureStoragePropertyDefinitionProvider,
@@ -81,17 +78,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       get { return _storageNameProvider; }
     }
 
-    public SqlStorageTypeInformationProvider StorageTypeInformationProvider
+    protected SqlStorageTypeInformationProvider StorageTypeInformationProvider
     {
       get { return _storageTypeInformationProvider; }
     }
 
-    public ValueConverter ValueConverter
-    {
-      get { return _valueConverter; }
-    }
-
-    public RdbmsProviderCommandFactory CommandFactory
+    protected RdbmsProviderCommandFactory CommandFactory
     {
       get { return _commandFactory; }
     }

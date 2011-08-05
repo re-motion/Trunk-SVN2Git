@@ -34,7 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   public class SqlDbCommandBuilderFactoryTest : StandardMappingTest
   {
     private ISqlDialect _sqlDialectStub;
-    private IValueConverter _valueConverterStub;
     private SqlDbCommandBuilderFactory _factory;
     private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
     private TableDefinition _tableDefinition;
@@ -51,8 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _valueConverterStub = MockRepository.GenerateStub<IValueConverter>();
-      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, _valueConverterStub, TestDomainStorageProviderDefinition);
+      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, TestDomainStorageProviderDefinition);
 
       _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
           SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
@@ -162,7 +160,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.TypeOf (typeof (QueryDbCommandBuilder)));
       Assert.That (((QueryDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((QueryDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
     }
 
     [Test]
@@ -172,7 +169,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.TypeOf (typeof (InsertDbCommandBuilder)));
       Assert.That (((InsertDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((InsertDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
       Assert.That (((InsertDbCommandBuilder) result).TableDefinition, Is.SameAs (_tableDefinition));
       Assert.That (
           ((InsertedColumnsSpecification) ((InsertDbCommandBuilder) result).InsertedColumnsSpecification).ColumnValues,
@@ -186,7 +182,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.TypeOf (typeof (UpdateDbCommandBuilder)));
       Assert.That (((UpdateDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((UpdateDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
       Assert.That (((UpdateDbCommandBuilder) result).TableDefinition, Is.SameAs (_tableDefinition));
       Assert.That (
           ((UpdatedColumnsSpecification) ((UpdateDbCommandBuilder) result).UpdatedColumnsSpecification).ColumnValues,
@@ -203,7 +198,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.TypeOf (typeof (DeleteDbCommandBuilder)));
       Assert.That (((DeleteDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));
-      Assert.That (((DeleteDbCommandBuilder) result).ValueConverter, Is.SameAs (_valueConverterStub));
       Assert.That (((DeleteDbCommandBuilder) result).TableDefinition, Is.SameAs (_tableDefinition));
       Assert.That (
           ((ComparedColumnsSpecification) ((DeleteDbCommandBuilder) result).ComparedColumnsSpecification).ComparedColumnValues,

@@ -28,8 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 {
   public class TestableDbCommandBuilder : DbCommandBuilder
   {
-    public TestableDbCommandBuilder (ISqlDialect sqlDialect, IValueConverter valueConverter)
-        : base (sqlDialect, valueConverter)
+    public TestableDbCommandBuilder (ISqlDialect sqlDialect)
+        : base (sqlDialect)
     {
     }
 

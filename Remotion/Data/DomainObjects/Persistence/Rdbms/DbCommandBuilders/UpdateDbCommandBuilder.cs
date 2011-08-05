@@ -37,9 +37,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         TableDefinition tableDefinition,
         IUpdatedColumnsSpecification updatedColumnsSpecification,
         IComparedColumnsSpecification comparedColumnsSpecification,
-        ISqlDialect sqlDialect,
-        IValueConverter valueConverter)
-        : base (sqlDialect, valueConverter)
+        ISqlDialect sqlDialect)
+        : base (sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("updatedColumnsSpecification", updatedColumnsSpecification);
