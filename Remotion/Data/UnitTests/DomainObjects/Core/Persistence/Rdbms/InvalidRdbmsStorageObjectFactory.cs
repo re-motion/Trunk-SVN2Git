@@ -39,11 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       throw new NotImplementedException();
     }
 
-    public TypeConversionProvider CreateTypeConversionProvider ()
-    {
-      return TypeConversionProvider.Create();
-    }
-
     public TypeProvider CreateTypeProvider ()
     {
       return new TypeProvider();

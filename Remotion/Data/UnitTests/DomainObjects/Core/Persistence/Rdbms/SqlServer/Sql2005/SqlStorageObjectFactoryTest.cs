@@ -89,14 +89,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void CreateTypeConversionProvider ()
-    {
-      var result = _sqlProviderFactory.CreateTypeConversionProvider();
-
-      Assert.That (result, Is.TypeOf (typeof (TypeConversionProvider)));
-    }
-
-    [Test]
     public void CreateTypeProvider ()
     {
       var result = _sqlProviderFactory.CreateTypeProvider();

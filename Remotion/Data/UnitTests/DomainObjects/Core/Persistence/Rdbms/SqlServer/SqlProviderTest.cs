@@ -87,12 +87,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       SqlTransaction sqlTransaction = Provider.Transaction;
 #pragma warning restore 168
     }
-
-    [Test]
-    public void GetTypeConversionServices ()
-    {
-      Assert.AreSame (TestDomainStorageProviderDefinition.TypeConversionProvider, Provider.TypeConversionProvider);
-    }
     
   }
 }

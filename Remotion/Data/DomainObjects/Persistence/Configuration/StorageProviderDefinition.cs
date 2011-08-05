@@ -28,17 +28,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
   /// </summary>
   public abstract class StorageProviderDefinition: ExtendedProviderBase
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private readonly IStorageObjectFactory _factory;
-    private readonly TypeConversionProvider _typeConversionProvider;
     private readonly TypeProvider _typeProvider;
-
-    // construction and disposing
 
     protected StorageProviderDefinition (string name, NameValueCollection config)
         : base (name, config)
@@ -49,7 +40,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       var factoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
       var factoryType = TypeUtility.GetType (factoryTypeName, true);
       _factory = (IStorageObjectFactory) SafeServiceLocator.Current.GetInstance (factoryType);
-      _typeConversionProvider = _factory.CreateTypeConversionProvider();
       _typeProvider = _factory.CreateTypeProvider();
     }
 
@@ -59,15 +49,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       ArgumentUtility.CheckNotNull ("factory", factory);
 
       _factory = factory;
-      _typeConversionProvider = _factory.CreateTypeConversionProvider ();
       _typeProvider = _factory.CreateTypeProvider ();
     }
 
-    // abstract methods and properties
-
     public abstract bool IsIdentityTypeSupported (Type identityType);
-
-    // methods and properties
 
     public void CheckIdentityType (Type identityType)
     {
@@ -78,11 +63,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public IStorageObjectFactory Factory
     {
       get { return _factory; }
-    }
-
-    public TypeConversionProvider TypeConversionProvider
-    {
-      get { return _typeConversionProvider; }
     }
 
     public TypeProvider TypeProvider

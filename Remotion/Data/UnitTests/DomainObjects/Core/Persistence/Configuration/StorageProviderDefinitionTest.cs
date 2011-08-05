@@ -45,13 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     }
 
     [Test]
-    public void GetTypeConversionProvider ()
-    {
-      var providerDefinition = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");
-      Assert.That (providerDefinition.Factory.CreateTypeConversionProvider(), Is.InstanceOf (typeof (TypeConversionProvider)));
-    }
-
-    [Test]
     public void GetTypeProvider ()
     {
       var providerDefinition = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");

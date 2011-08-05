@@ -78,11 +78,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
               ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener, commandFactory, storageTypeInformationProvider));
     }
 
-    public virtual TypeConversionProvider CreateTypeConversionProvider ()
-    {
-      return TypeConversionProvider.Create();
-    }
-
     public virtual TypeProvider CreateTypeProvider ()
     {
       return new TypeProvider();

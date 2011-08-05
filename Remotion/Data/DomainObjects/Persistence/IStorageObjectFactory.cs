@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Linq;
 using Remotion.Linq.SqlBackend.SqlPreparation;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
@@ -31,7 +30,6 @@ namespace Remotion.Data.DomainObjects.Persistence
   public interface IStorageObjectFactory
   {
     StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition);
-    TypeConversionProvider CreateTypeConversionProvider ();
     TypeProvider CreateTypeProvider ();
 
     IPersistenceModelLoader CreatePersistenceModelLoader (

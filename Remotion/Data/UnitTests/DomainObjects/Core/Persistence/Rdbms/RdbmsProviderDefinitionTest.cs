@@ -53,7 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.AreEqual ("Provider", provider.Name);
       Assert.That (provider.Factory, Is.TypeOf (typeof (SqlStorageObjectFactory)));
       Assert.AreEqual ("ConnectionString", provider.ConnectionString);
-      Assert.IsNotNull (provider.Factory.CreateTypeConversionProvider());
     }
 
     [Test]
@@ -71,8 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (provider.Factory, Is.TypeOf(typeof (SqlStorageObjectFactory)));
       Assert.AreEqual ("ConnectionString", provider.ConnectionString);
       Assert.IsEmpty (config);
-      Assert.IsNotNull (provider.Factory.CreateTypeConversionProvider());
-    }
+ }
 
     [Test]
     [ExpectedException (typeof (ConfigurationErrorsException), ExpectedMessage = 
