@@ -120,7 +120,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           (nullEntity, continuation) => CreateForNullRelationLookup());
     }
 
-    // TODO 4212: Test with an ObjectID parameter in same provider, one with different provider (Official).
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);

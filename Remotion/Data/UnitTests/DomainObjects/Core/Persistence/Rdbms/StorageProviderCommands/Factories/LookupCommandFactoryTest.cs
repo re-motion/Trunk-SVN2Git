@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -432,15 +433,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateForDataContainerQuery ()
     {
+      var collection = new QueryParameterCollection();
+      collection.Add (new QueryParameter ("first", DomainObjectIDs.Order1));
+      collection.Add (new QueryParameter ("second", DomainObjectIDs.Order2.Value));
+      collection.Add (new QueryParameter ("third", DomainObjectIDs.Official1));
+      
       var queryStub = MockRepository.GenerateStub<IQuery>();
       queryStub.Stub (stub => stub.Statement).Return ("statement");
-      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection());
+      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection(collection, true));
 
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      _dbCommandBuilderFactoryStrictMock.Stub (
-          stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.List.Equal (new QueryParameterWithType[0]))).
-          Return (
-              commandBuilderStub);
+      _dbCommandBuilderFactoryStrictMock
+        .Stub (stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.Is.Anything))
+        .WhenCalled(mi=>
+        { 
+            var parametersWithTyp = ((IEnumerable<QueryParameterWithType>) mi.Arguments[1]).ToArray();
+            Assert.That (parametersWithTyp.Length, Is.EqualTo (3));
+            Assert.That (parametersWithTyp[0].QueryParameter.Name, Is.EqualTo ("first"));
+            Assert.That (parametersWithTyp[0].QueryParameter.Value, Is.EqualTo(DomainObjectIDs.Order1.Value));
+            Assert.That (parametersWithTyp[1].QueryParameter.Name, Is.EqualTo ("second"));
+            Assert.That (parametersWithTyp[1].QueryParameter.Value, Is.EqualTo(DomainObjectIDs.Order2.Value));
+            Assert.That (parametersWithTyp[2].QueryParameter.Name, Is.EqualTo ("third"));
+            Assert.That (parametersWithTyp[2].QueryParameter.Value, Is.EqualTo (DomainObjectIDs.Official1.ToString ()));
+
+        })
+        .Return (commandBuilderStub);
 
       _objectReaderFactoryStrictMock.Expect (mock => mock.CreateDataContainerReader()).Return (_dataContainerReader1Stub);
       _objectReaderFactoryStrictMock.Replay();
