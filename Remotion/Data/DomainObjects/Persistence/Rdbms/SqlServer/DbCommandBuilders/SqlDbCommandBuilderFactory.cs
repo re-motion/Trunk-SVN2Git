@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      return new QueryDbCommandBuilder (query, _sqlDialect, _valueConverter);
+      return new QueryDbCommandBuilder (query.Statement, query.Parameters.Cast<QueryParameter>(), _sqlDialect, _valueConverter);
     }
 
     public IDbCommandBuilder CreateForInsert (TableDefinition tableDefinition, IEnumerable<ColumnValue> insertedColumns)

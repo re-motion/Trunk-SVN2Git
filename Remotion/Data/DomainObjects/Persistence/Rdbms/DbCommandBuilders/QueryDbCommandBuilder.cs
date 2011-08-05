@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 {
@@ -26,29 +28,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// </summary>
   public class QueryDbCommandBuilder : DbCommandBuilder
   {
-    private readonly IQuery _query;
-
-    public QueryDbCommandBuilder (IQuery query, ISqlDialect sqlDialect, IValueConverter valueConverter)
+    private readonly string _statement;
+    private readonly QueryParameter[] _parameters;
+    
+    public QueryDbCommandBuilder (string statement, IEnumerable<QueryParameter> parameters, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
-      ArgumentUtility.CheckNotNull ("query", query);
+      ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
 
-      _query = query;
-    }
-
-    public IQuery Query
-    {
-      get { return _query; }
+      _statement = statement;
+      _parameters = parameters.ToArray();
     }
 
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
     {
       ArgumentUtility.CheckNotNull ("commandExecutionContext", commandExecutionContext);
 
-      IDbCommand command = commandExecutionContext.CreateDbCommand ();
+      var command = commandExecutionContext.CreateDbCommand ();
 
-      string statement = _query.Statement;
-      foreach (QueryParameter parameter in _query.Parameters)
+      var statement = _statement;
+      foreach (var parameter in _parameters)
       {
         if (parameter.ParameterType == QueryParameterType.Text)
           statement = statement.Replace (parameter.Name, parameter.Value.ToString());

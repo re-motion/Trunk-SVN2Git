@@ -197,8 +197,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (query, SqlDialect, CreateValueConverter());
-      using (IDbCommand command = commandBuilder.Create (this))
+      var commandBuilder = new QueryDbCommandBuilder (query.Statement, query.Parameters.Cast<QueryParameter>(),  SqlDialect, CreateValueConverter());
+      using (var command = commandBuilder.Create (this))
       {
         try
         {
