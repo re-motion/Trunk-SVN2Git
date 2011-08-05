@@ -44,11 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       base.SetUp();
 
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider> ();
-      _storageTypeInformationProviderStub.Stub (stub => stub.ClassIDStorageType).Return (
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForClassID()).Return (
           new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()));
-      _storageTypeInformationProviderStub.Stub (stub => stub.ObjectIDStorageType).Return (
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForObjectID()).Return (
           new StorageTypeInformation ("guid", DbType.Guid, typeof (Guid), new GuidConverter()));
-      _storageTypeInformationProviderStub.Stub (stub => stub.TimestampStorageType).Return (
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForTimestamp()).Return (
           new StorageTypeInformation ("rowversion", DbType.DateTime, typeof (DateTime), new DateTimeConverter()));
 
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();

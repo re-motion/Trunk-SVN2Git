@@ -59,11 +59,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider> ();
-      _storageTypeInformationProviderStub.Stub (stub => stub.ClassIDStorageType).Return (
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForClassID()).Return (
           new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()));
-      _storageTypeInformationProviderStub.Stub (stub => stub.ObjectIDStorageType).Return (
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForObjectID()).Return (
           new StorageTypeInformation ("guid", DbType.Guid, typeof (Guid), new GuidConverter()));
-      _storageTypeInformationProviderStub.Stub (stub => stub.SerializedObjectIDStorageType).Return (
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForSerializedObjectID()).Return (
           new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new StringConverter()));
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");

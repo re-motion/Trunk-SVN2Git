@@ -34,24 +34,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
     {
     }
 
-    public virtual StorageTypeInformation ObjectIDStorageType
+    public virtual StorageTypeInformation GetStorageTypeForObjectID ()
     {
-      get { return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid?), new DefaultConverter (typeof(Guid?))); }
+      return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid?), new DefaultConverter (typeof (Guid?)));
     }
 
-    public virtual StorageTypeInformation SerializedObjectIDStorageType
+    public virtual StorageTypeInformation GetStorageTypeForSerializedObjectID ()
     {
-      get { return new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new DefaultConverter (typeof (string))); }
+      return new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new DefaultConverter (typeof (string)));
     }
 
-    public virtual StorageTypeInformation ClassIDStorageType
+    public virtual StorageTypeInformation GetStorageTypeForClassID ()
     {
-      get { return new StorageTypeInformation ("varchar (100)", DbType.String, typeof (string), new DefaultConverter (typeof (string))); }
+      return new StorageTypeInformation ("varchar (100)", DbType.String, typeof (string), new DefaultConverter (typeof (string)));
     }
 
-    public virtual StorageTypeInformation TimestampStorageType
+    public virtual StorageTypeInformation GetStorageTypeForTimestamp ()
     {
-      get { return new StorageTypeInformation ("rowversion", DbType.Binary, typeof (byte[]), new DefaultConverter(typeof(byte[]))); }
+      return new StorageTypeInformation ("rowversion", DbType.Binary, typeof (byte[]), new DefaultConverter (typeof (byte[])));
     }
 
     public virtual bool IsTypeSupported(Type type)

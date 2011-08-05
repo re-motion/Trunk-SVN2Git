@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var columnDefinition = new ColumnDefinition (
           _storageNameProvider.GetRelationColumnName (propertyDefinition),
           propertyDefinition.PropertyType,
-          _storageTypeInformationProvider.SerializedObjectIDStorageType,
+          _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID(),
           propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
           false);
       return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (columnDefinition));
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var valueColumnDefinition = new ColumnDefinition (
           _storageNameProvider.GetRelationColumnName (propertyDefinition),
           propertyDefinition.PropertyType,
-          _storageTypeInformationProvider.ObjectIDStorageType,
+          _storageTypeInformationProvider.GetStorageTypeForObjectID(),
           // Relation properties are always nullable within the same storage provider
           true,
           false);
@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         var classIDColumnDefinition = new ColumnDefinition (
             _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
             typeof (string),
-            _storageTypeInformationProvider.ClassIDStorageType,
+            _storageTypeInformationProvider.GetStorageTypeForClassID(),
             true,
             false);
         return new ObjectIDStoragePropertyDefinition (

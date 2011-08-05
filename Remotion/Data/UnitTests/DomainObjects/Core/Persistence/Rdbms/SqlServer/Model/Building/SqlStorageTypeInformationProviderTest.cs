@@ -208,32 +208,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetStorageTypeForSpecialColumns ()
     {
-      Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.StorageTypeName, Is.EqualTo ("uniqueidentifier"));
-      Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.StorageDbType, Is.EqualTo (DbType.Guid));
-      Assert.That (_storageTypeInformationProvider.ObjectIDStorageType.StorageTypeInMemory, Is.EqualTo (typeof (Guid?)));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForObjectID().StorageTypeName, Is.EqualTo ("uniqueidentifier"));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForObjectID().StorageDbType, Is.EqualTo (DbType.Guid));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForObjectID().StorageTypeInMemory, Is.EqualTo (typeof (Guid?)));
       Assert.That (
-          _storageTypeInformationProvider.ObjectIDStorageType.TypeConverter,
+          _storageTypeInformationProvider.GetStorageTypeForObjectID().TypeConverter,
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").SameAs (typeof (Guid?)));
 
-      Assert.That (_storageTypeInformationProvider.SerializedObjectIDStorageType.StorageTypeName, Is.EqualTo ("varchar (255)"));
-      Assert.That (_storageTypeInformationProvider.SerializedObjectIDStorageType.StorageDbType, Is.EqualTo (DbType.String));
-      Assert.That (_storageTypeInformationProvider.SerializedObjectIDStorageType.StorageTypeInMemory, Is.EqualTo (typeof (String)));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForSerializedObjectID().StorageTypeName, Is.EqualTo ("varchar (255)"));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForSerializedObjectID().StorageDbType, Is.EqualTo (DbType.String));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForSerializedObjectID().StorageTypeInMemory, Is.EqualTo (typeof (String)));
       Assert.That (
-          _storageTypeInformationProvider.SerializedObjectIDStorageType.TypeConverter,
+          _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID().TypeConverter,
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
-      Assert.That (_storageTypeInformationProvider.ClassIDStorageType.StorageTypeName, Is.EqualTo ("varchar (100)"));
-      Assert.That (_storageTypeInformationProvider.ClassIDStorageType.StorageDbType, Is.EqualTo (DbType.String));
-      Assert.That (_storageTypeInformationProvider.ClassIDStorageType.StorageTypeInMemory, Is.EqualTo (typeof (String)));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForClassID().StorageTypeName, Is.EqualTo ("varchar (100)"));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForClassID().StorageDbType, Is.EqualTo (DbType.String));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForClassID().StorageTypeInMemory, Is.EqualTo (typeof (String)));
       Assert.That (
-          _storageTypeInformationProvider.ClassIDStorageType.TypeConverter,
+          _storageTypeInformationProvider.GetStorageTypeForClassID().TypeConverter,
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
-      Assert.That (_storageTypeInformationProvider.TimestampStorageType.StorageTypeName, Is.EqualTo ("rowversion"));
-      Assert.That (_storageTypeInformationProvider.TimestampStorageType.StorageDbType, Is.EqualTo (DbType.Binary));
-      Assert.That (_storageTypeInformationProvider.TimestampStorageType.StorageTypeInMemory, Is.EqualTo (typeof (Byte[])));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForTimestamp().StorageTypeName, Is.EqualTo ("rowversion"));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForTimestamp().StorageDbType, Is.EqualTo (DbType.Binary));
+      Assert.That (_storageTypeInformationProvider.GetStorageTypeForTimestamp().StorageTypeInMemory, Is.EqualTo (typeof (Byte[])));
       Assert.That (
-          _storageTypeInformationProvider.TimestampStorageType.TypeConverter,
+          _storageTypeInformationProvider.GetStorageTypeForTimestamp().TypeConverter,
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
     }
 
