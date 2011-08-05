@@ -28,8 +28,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         RdbmsProviderDefinition definition,
         IStorageNameProvider storageNameProvider,
         IPersistenceListener persistenceListener,
-        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
-        : base (definition, storageNameProvider, SqlServer.SqlDialect.Instance, persistenceListener, storageProviderCommandFactory)
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
+        IStorageTypeInformationProvider storageTypeInformationProvider)
+        : base (
+            definition,
+            storageNameProvider,
+            SqlServer.SqlDialect.Instance,
+            persistenceListener,
+            storageProviderCommandFactory,
+            storageTypeInformationProvider)
     {
     }
 

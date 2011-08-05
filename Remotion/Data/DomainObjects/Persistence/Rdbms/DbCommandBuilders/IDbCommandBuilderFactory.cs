@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         ObjectID foreignKeyValue,
         IEnumerable<OrderedColumn> orderedColumns);
 
-    IDbCommandBuilder CreateForQuery (IQuery query);
+    IDbCommandBuilder CreateForQuery( string statement, IEnumerable<QueryParameterWithType> parametersWithType);
 
     IDbCommandBuilder CreateForInsert (TableDefinition tableDefinition, IEnumerable<ColumnValue> insertedColumns);
     IDbCommandBuilder CreateForUpdate (

@@ -431,7 +431,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private SqlProvider CreateSqlProvider ()
     {
       return new SqlProvider (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, StorageNameProvider, NullPersistenceListener.Instance, CommandFactory);
+          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
+          StorageNameProvider,
+          NullPersistenceListener.Instance,
+          CommandFactory,
+          StorageTypeInformationProvider);
     }
   }
 }

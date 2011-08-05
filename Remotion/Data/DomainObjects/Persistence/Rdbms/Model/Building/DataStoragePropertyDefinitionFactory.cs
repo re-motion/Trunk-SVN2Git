@@ -98,9 +98,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     private IRdbmsStoragePropertyDefinition CreateCrossProviderRelationStoragePropertyDefinition (PropertyDefinition propertyDefinition)
     {
+      Assertion.IsTrue (propertyDefinition.PropertyType == typeof (ObjectID));
       var columnDefinition = new ColumnDefinition (
           _storageNameProvider.GetRelationColumnName (propertyDefinition),
-          propertyDefinition.PropertyType,
+          typeof (ObjectID),
           _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID(),
           propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
           false);

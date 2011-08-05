@@ -38,8 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ISqlDialect dialect,
         IPersistenceListener persistenceListener,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
-        IConnectionCreator connectionCreator)
-        : base (definition, storageNameProvider, dialect, persistenceListener, commandFactory)
+        IConnectionCreator connectionCreator,
+        IStorageTypeInformationProvider storageTypeInformationProvider)
+        : base (definition, storageNameProvider, dialect, persistenceListener, commandFactory, storageTypeInformationProvider)
     {
       _connectionCreator = connectionCreator;
     }

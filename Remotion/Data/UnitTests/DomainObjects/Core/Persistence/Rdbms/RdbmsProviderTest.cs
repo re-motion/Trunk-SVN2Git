@@ -85,7 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _dialectStub,
           NullPersistenceListener.Instance,
           _commandFactoryMock,
-          sqlConnectionCreatorStub);
+          sqlConnectionCreatorStub,
+          StorageTypeInformationProvider);
 
       _connectionCreatorMock = _mockRepository.StrictMock<TestableRdbmsProvider.IConnectionCreator>();
 
@@ -95,7 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _dialectStub,
           NullPersistenceListener.Instance,
           _commandFactoryMock,
-          _connectionCreatorMock);
+          _connectionCreatorMock,
+          StorageTypeInformationProvider);
     }
 
     public override void TearDown ()
@@ -132,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
-          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance, CommandFactory);
+          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance, CommandFactory, StorageTypeInformationProvider);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
@@ -169,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
-          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance, CommandFactory);
+          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance, CommandFactory, StorageTypeInformationProvider);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
@@ -540,7 +542,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new RdbmsProviderDefinition ("Test", new SqlStorageObjectFactory(), TestDomainConnectionString),
           StorageNameProvider,
           NullPersistenceListener.Instance,
-          CommandFactory);
+          CommandFactory,
+          StorageTypeInformationProvider);
       var objectID = DomainObjectIDs.Order1;
       var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
 

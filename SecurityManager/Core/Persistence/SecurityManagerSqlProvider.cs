@@ -45,8 +45,9 @@ namespace Remotion.SecurityManager.Persistence
         RdbmsProviderDefinition definition,
         IStorageNameProvider storageNameProvider,
         IPersistenceListener persistenceListener,
-        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory) 
-      : base (definition, storageNameProvider, persistenceListener, commandFactory)
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
+        IStorageTypeInformationProvider storageTypeInformationProvider) 
+      : base (definition, storageNameProvider, persistenceListener, commandFactory, storageTypeInformationProvider)
     {
       _revisionExtension = new RevisionStorageProviderExtension ();
     }

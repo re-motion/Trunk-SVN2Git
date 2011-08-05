@@ -59,7 +59,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider),
           new ObjectReaderFactory (
               rdbmsPersistenceModelProvider, new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider)),
-          new TableDefinitionFinder (rdbmsPersistenceModelProvider));
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          StorageTypeInformationProvider,
+          TestDomainStorageProviderDefinition);
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
       _tableDefinition2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));

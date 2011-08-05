@@ -18,12 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
@@ -37,17 +37,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
+    private IStorageTypeInformationProvider _storageTypeInformationProvider;
 
     protected RdbmsProvider (
         RdbmsProviderDefinition definition,
         IStorageNameProvider storageNameProvider,
         ISqlDialect sqlDialect,
         IPersistenceListener persistenceListener,
-        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory)
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
+        IStorageTypeInformationProvider storageTypeInformationProvider)
         : base (definition, storageNameProvider, sqlDialect, persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
+
       _storageProviderCommandFactory = storageProviderCommandFactory;
+      _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
     protected override void Dispose (bool disposing)
@@ -189,6 +194,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return checkedSequence.ToArray();
     }
 
+    // TODO 4217: Move to factory, then remove _storageTypeInformationProvider field.
     public override object ExecuteScalarQuery (IQuery query)
     {
       CheckDisposed();
@@ -197,7 +203,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryDbCommandBuilder (query.Statement, query.Parameters.Cast<QueryParameter>(),  SqlDialect, CreateValueConverter());
+      var queryParametersWithType =
+          query.Parameters.Cast<QueryParameter>().Select (
+              p => LookupCommandFactory.GetQueryParameterWithType (p, _storageTypeInformationProvider, StorageProviderDefinition));
+
+      var commandBuilder = new QueryDbCommandBuilder (query.Statement, queryParametersWithType, SqlDialect, CreateValueConverter());
       using (var command = commandBuilder.Create (this))
       {
         try
@@ -240,15 +250,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         SortExpressionDefinition sortExpressionDefinition,
         ObjectID relatedID)
     {
-      CheckDisposed ();
+      CheckDisposed();
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
       CheckClassDefinition (relationEndPointDefinition.ClassDefinition, "classDefinition");
 
-      Connect ();
+      Connect();
 
       if (relationEndPointDefinition.PropertyDefinition.StorageClass == StorageClass.Transaction)
-        return new DataContainerCollection ();
+        return new DataContainerCollection();
 
       var storageProviderCommand = _storageProviderCommandFactory.CreateForRelationLookup (
           relationEndPointDefinition,
@@ -281,14 +291,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var objectIds = dataContainers.Select (dc => dc.ID);
       var multiTimestampLookupCommand = _storageProviderCommandFactory.CreateForMultiTimestampLookup (objectIds);
       var timestampDictionary = multiTimestampLookupCommand.Execute (this).ToDictionary (result => result.ObjectID, result => result.LocatedObject);
-      
+
       foreach (DataContainer dataContainer in dataContainers)
       {
         object timestamp;
-          if (!timestampDictionary.TryGetValue (dataContainer.ID, out timestamp))
-            throw new RdbmsProviderException (string.Format ("No timestamp found for object '{0}'.", dataContainer.ID));
+        if (!timestampDictionary.TryGetValue (dataContainer.ID, out timestamp))
+          throw new RdbmsProviderException (string.Format ("No timestamp found for object '{0}'.", dataContainer.ID));
 
-          dataContainer.SetTimestamp (timestamp);
+        dataContainer.SetTimestamp (timestamp);
       }
     }
 
@@ -344,7 +354,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       return "uniqueidentifier";
     }
-    
+
     public new RdbmsProviderDefinition StorageProviderDefinition
     {
       get
@@ -446,7 +456,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private IEnumerable<DataContainer> CheckForDuplicates (IEnumerable<DataContainer> dataContainers, string operation)
     {
-      var loadedIDs = new HashSet<ObjectID> ();
+      var loadedIDs = new HashSet<ObjectID>();
       foreach (var dataContainer in dataContainers)
       {
         if (dataContainer != null)
@@ -483,13 +493,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     [Obsolete ("This method has been superseded by MultiObjectLoadCommand. Use that instead. (1.13.112)", true)]
     protected internal virtual DataContainer[] LoadDataContainers (IDbCommandBuilder commandBuilder, bool allowNulls)
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
     [Obsolete ("This method has been superseded by MultiDataContainerSaveCommand. Use that instead. (1.13.113)", true)]
     protected void Save (DbCommandBuilder commandBuilder, ObjectID id)
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
   }
 }

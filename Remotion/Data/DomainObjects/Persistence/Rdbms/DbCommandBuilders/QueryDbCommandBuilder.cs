@@ -29,16 +29,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   public class QueryDbCommandBuilder : DbCommandBuilder
   {
     private readonly string _statement;
-    private readonly QueryParameter[] _parameters;
+    private readonly QueryParameterWithType[] _parametersWithType;
     
-    public QueryDbCommandBuilder (string statement, IEnumerable<QueryParameter> parameters, ISqlDialect sqlDialect, IValueConverter valueConverter)
+    public QueryDbCommandBuilder (string statement, IEnumerable<QueryParameterWithType> parameters, ISqlDialect sqlDialect, IValueConverter valueConverter)
         : base (sqlDialect, valueConverter)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
       _statement = statement;
-      _parameters = parameters.ToArray();
+      _parametersWithType = parameters.ToArray();
     }
 
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
@@ -48,12 +48,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var command = commandExecutionContext.CreateDbCommand ();
 
       var statement = _statement;
-      foreach (var parameter in _parameters)
+      foreach (var parameterWithType in _parametersWithType)
       {
-        if (parameter.ParameterType == QueryParameterType.Text)
-          statement = statement.Replace (parameter.Name, parameter.Value.ToString());
+        if (parameterWithType.QueryParameter.ParameterType == QueryParameterType.Text)
+          statement = statement.Replace (parameterWithType.QueryParameter.Name, parameterWithType.QueryParameter.Value.ToString());
         else
-          AddCommandParameter (command, parameter.Name, parameter.Value);
+          AddCommandParameter (command, parameterWithType.QueryParameter.Name, parameterWithType.QueryParameter.Value);
       }
 
       command.CommandText = statement;

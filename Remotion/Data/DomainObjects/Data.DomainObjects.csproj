@@ -513,6 +513,7 @@
     <Compile Include="Queries\ILinqParserCustomizer.cs" />
     <Compile Include="Queries\EagerFetching\IEagerFetcher.cs" />
     <Compile Include="Queries\EagerFetching\FetchedRelationDataRegistrationAgentBase.cs" />
+    <Compile Include="Queries\QueryParameterWithType.cs" />
     <Compile Include="ReadOnlyDomainObjectCollectionAdapter.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommand.cs" />

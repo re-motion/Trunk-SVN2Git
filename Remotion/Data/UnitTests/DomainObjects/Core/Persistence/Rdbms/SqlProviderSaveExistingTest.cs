@@ -65,7 +65,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (
           SqlProvider sqlProvider = new SqlProvider (
-              (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, StorageNameProvider, NullPersistenceListener.Instance, CommandFactory))
+              (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
+              StorageNameProvider,
+              NullPersistenceListener.Instance,
+              CommandFactory,
+              StorageTypeInformationProvider))
       {
         DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
@@ -847,7 +851,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private SqlProvider CreateSqlProvider ()
     {
       return new SqlProvider (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, StorageNameProvider, NullPersistenceListener.Instance, CommandFactory);
+          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
+          StorageNameProvider,
+          NullPersistenceListener.Instance,
+          CommandFactory,
+          StorageTypeInformationProvider);
     }
   }
 }

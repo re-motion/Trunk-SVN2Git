@@ -53,9 +53,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           rdbmsPersistenceModelProvider,
           infrastructureStoragePropertyDefinitionProvider,
           new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
-          new TableDefinitionFinder (rdbmsPersistenceModelProvider));
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          _storageTypeInformationProvider,
+          TestDomainStorageProviderDefinition);
 
-      _provider = new SqlProvider (TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, _commandFactory);
+      _provider = new SqlProvider (
+          TestDomainStorageProviderDefinition,
+          _storageNameProvider,
+          NullPersistenceListener.Instance,
+          _commandFactory,
+          _storageTypeInformationProvider);
     }
 
     public override void TearDown ()

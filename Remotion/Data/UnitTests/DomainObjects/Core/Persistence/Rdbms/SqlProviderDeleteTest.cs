@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
@@ -46,7 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _provider = new SqlProvider (
-          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, CommandFactory);
+          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition,
+          _storageNameProvider,
+          NullPersistenceListener.Instance,
+          CommandFactory,
+          StorageTypeInformationProvider);
     }
 
     public override void TearDown ()

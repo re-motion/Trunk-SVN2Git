@@ -158,11 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateForQuery ()
     {
-      var queryStub = MockRepository.GenerateStub<IQuery>();
-      queryStub.Stub (stub => stub.Statement).Return ("Statement");
-      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection ());
-
-      var result = _factory.CreateForQuery (queryStub);
+      var result = _factory.CreateForQuery ("statement", new QueryParameterWithType[0]);
 
       Assert.That (result, Is.TypeOf (typeof (QueryDbCommandBuilder)));
       Assert.That (((QueryDbCommandBuilder) result).SqlDialect, Is.SameAs (_sqlDialectStub));

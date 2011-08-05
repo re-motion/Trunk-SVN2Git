@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
@@ -43,7 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString"),
           _storageNameProvider,
           NullPersistenceListener.Instance,
-          CommandFactory);
+          CommandFactory,
+          StorageTypeInformationProvider);
       _collection = new StorageProviderCollection();
     }
 
@@ -60,7 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       _collection.Add (_provider);
 
       StorageProvider copy = new SqlProvider (
-          (RdbmsProviderDefinition) _provider.StorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance, CommandFactory);
+          (RdbmsProviderDefinition) _provider.StorageProviderDefinition,
+          _storageNameProvider,
+          NullPersistenceListener.Instance,
+          CommandFactory,
+          StorageTypeInformationProvider);
       Assert.IsFalse (_collection.Contains (copy));
     }
   }
