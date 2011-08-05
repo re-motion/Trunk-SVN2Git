@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
-    private IStorageTypeInformationProvider _storageTypeInformationProvider;
+    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
 
     protected RdbmsProvider (
         RdbmsProviderDefinition definition,
@@ -53,6 +53,49 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       _storageProviderCommandFactory = storageProviderCommandFactory;
       _storageTypeInformationProvider = storageTypeInformationProvider;
+    }
+
+    public new RdbmsProviderDefinition StorageProviderDefinition
+    {
+      get
+      {
+        // CheckDisposed is not necessary here, because StorageProvider.Definition already checks this.
+        return (RdbmsProviderDefinition) base.StorageProviderDefinition;
+      }
+    }
+
+    public virtual bool IsConnected
+    {
+      get
+      {
+        if (_connection == null)
+          return false;
+
+        return _connection.State != ConnectionState.Closed;
+      }
+    }
+
+    public TracingDbConnection Connection
+    {
+      get
+      {
+        CheckDisposed ();
+        return _connection;
+      }
+    }
+
+    public TracingDbTransaction Transaction
+    {
+      get
+      {
+        CheckDisposed ();
+        return _transaction;
+      }
+    }
+
+    public IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> StorageProviderCommandFactory
+    {
+      get { return _storageProviderCommandFactory; }
     }
 
     protected override void Dispose (bool disposing)
@@ -100,17 +143,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public virtual void Disconnect ()
     {
       Dispose();
-    }
-
-    public virtual bool IsConnected
-    {
-      get
-      {
-        if (_connection == null)
-          return false;
-
-        return _connection.State != ConnectionState.Closed;
-      }
     }
 
     public override void BeginTransaction ()
@@ -318,29 +350,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public TracingDbConnection Connection
-    {
-      get
-      {
-        CheckDisposed();
-        return _connection;
-      }
-    }
-
-    public TracingDbTransaction Transaction
-    {
-      get
-      {
-        CheckDisposed();
-        return _transaction;
-      }
-    }
-
-    public IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> StorageProviderCommandFactory
-    {
-      get { return _storageProviderCommandFactory; }
-    }
-
     public override ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       CheckDisposed();
@@ -353,15 +362,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public virtual string GetIDColumnTypeName ()
     {
       return "uniqueidentifier";
-    }
-
-    public new RdbmsProviderDefinition StorageProviderDefinition
-    {
-      get
-      {
-        // CheckDisposed is not necessary here, because StorageProvider.Definition already checks this.
-        return (RdbmsProviderDefinition) base.StorageProviderDefinition;
-      }
     }
 
     public virtual TracingDbCommand CreateDbCommand ()
@@ -392,24 +392,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return CreateDbCommand();
     }
 
-    protected internal RdbmsProviderException CreateRdbmsProviderException (string formatString, params object[] args)
-    {
-      return CreateRdbmsProviderException (null, formatString, args);
-    }
-
     protected internal RdbmsProviderException CreateRdbmsProviderException (Exception innerException, string formatString, params object[] args)
     {
       return new RdbmsProviderException (string.Format (formatString, args), innerException);
-    }
-
-    protected ConcurrencyViolationException CreateConcurrencyViolationException (string formatString, params object[] args)
-    {
-      return CreateConcurrencyViolationException (null, formatString, args);
-    }
-
-    protected ConcurrencyViolationException CreateConcurrencyViolationException (Exception innerException, string formatString, params object[] args)
-    {
-      return new ConcurrencyViolationException (string.Format (formatString, args), innerException);
     }
 
     private void DisposeTransaction ()
