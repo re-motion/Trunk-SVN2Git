@@ -26,7 +26,7 @@ using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.SecurityManager.Persistence
 {
-  public class SecurityManagerSqlProvider : RdbmsProvider
+  public class SecurityManagerStorageProvider : RdbmsProvider
   {
     // constants
 
@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.Persistence
 
     // construction and disposing
 
-    public SecurityManagerSqlProvider (
+    public SecurityManagerStorageProvider (
         RdbmsProviderDefinition definition,
         IStorageNameProvider storageNameProvider,
         IPersistenceListener persistenceListener,

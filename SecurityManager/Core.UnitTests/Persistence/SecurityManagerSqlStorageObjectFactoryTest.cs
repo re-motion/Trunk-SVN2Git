@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Mixins;
 using Remotion.SecurityManager.Persistence;
@@ -45,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
     {
       var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (SecurityManagerSqlProvider)));
+      Assert.That (result, Is.TypeOf (typeof (SecurityManagerStorageProvider)));
       Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
       Assert.That (result.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
     }
@@ -54,12 +53,12 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
     public void CreateStorageProviderWithMixin ()
     {
       using (
-          MixinConfiguration.BuildFromActive().ForClass (typeof (RdbmsProvider)).Clear().AddMixins (typeof (SecurityManagerSqlProviderTestMixin)).
+          MixinConfiguration.BuildFromActive().ForClass (typeof (RdbmsProvider)).Clear().AddMixins (typeof (SecurityManagerStorageProviderTestMixin)).
               EnterScope())
       {
         var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
 
-        Assert.That (Mixin.Get<SecurityManagerSqlProviderTestMixin> (result), Is.Not.Null);
+        Assert.That (Mixin.Get<SecurityManagerStorageProviderTestMixin> (result), Is.Not.Null);
       }
     }
   }

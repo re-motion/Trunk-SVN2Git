@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.Persistence
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
       return
-          ObjectFactory.Create<SecurityManagerSqlProvider> (
+          ObjectFactory.Create<SecurityManagerStorageProvider> (
               ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener, commandFactory, storageTypeInformationProvider));
     }
   }
