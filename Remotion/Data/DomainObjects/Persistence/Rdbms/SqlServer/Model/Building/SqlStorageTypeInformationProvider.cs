@@ -34,22 +34,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
     {
     }
 
-    public virtual StorageTypeInformation GetStorageTypeForObjectID ()
+    public virtual IStorageTypeInformation GetStorageTypeForObjectID ()
     {
       return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid?), new DefaultConverter (typeof (Guid?)));
     }
 
-    public virtual StorageTypeInformation GetStorageTypeForSerializedObjectID ()
+    public virtual IStorageTypeInformation GetStorageTypeForSerializedObjectID ()
     {
       return new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new DefaultConverter (typeof (string)));
     }
 
-    public virtual StorageTypeInformation GetStorageTypeForClassID ()
+    public virtual IStorageTypeInformation GetStorageTypeForClassID ()
     {
       return new StorageTypeInformation ("varchar (100)", DbType.String, typeof (string), new DefaultConverter (typeof (string)));
     }
 
-    public virtual StorageTypeInformation GetStorageTypeForTimestamp ()
+    public virtual IStorageTypeInformation GetStorageTypeForTimestamp ()
     {
       return new StorageTypeInformation ("rowversion", DbType.Binary, typeof (byte[]), new DefaultConverter (typeof (byte[])));
     }
@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return GetStorageType (type, null) != null;
     }
 
-    public virtual StorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
+    public virtual IStorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return storageType;
     }
 
-    public virtual StorageTypeInformation GetStorageType (Type type)
+    public virtual IStorageTypeInformation GetStorageType (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       return storageType;
     }
 
-    public StorageTypeInformation GetStorageType (object value)
+    public IStorageTypeInformation GetStorageType (object value)
     {
       if (value != null)
         return GetStorageType (value.GetType());
