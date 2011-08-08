@@ -253,7 +253,7 @@
     <Compile Include="Domain\SerializationTest.cs" />
     <Compile Include="Persistence\RevisionStorageProviderExtensionTest.cs" />
     <Compile Include="Persistence\SecurityManagerSqlStorageObjectFactoryTest.cs" />
-    <Compile Include="Persistence\SecurityManagerStorageProviderTestMixin.cs" />
+    <Compile Include="Persistence\SecurityManagerRdbmsProviderTestMixin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityServiceTest.cs" />
     <Compile Include="SetUpFixture.cs" />

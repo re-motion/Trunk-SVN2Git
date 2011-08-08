@@ -20,7 +20,7 @@ using Remotion.SecurityManager.Persistence;
 
 namespace Remotion.SecurityManager.UnitTests.Persistence
 {
-  public class SecurityManagerStorageProviderTestMixin : Mixin<SecurityManagerStorageProvider>
+  public class SecurityManagerRdbmsProviderTestMixin : Mixin<SecurityManagerRdbmsProvider>
   {
   }
 }
