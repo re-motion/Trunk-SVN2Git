@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
 
-      return ValueProperty.SplitValueForComparison (objectID != null ? objectID.Value : null);
+      return _valueProperty.SplitValueForComparison (objectID != null ? objectID.Value : null);
     }
   }
 }
