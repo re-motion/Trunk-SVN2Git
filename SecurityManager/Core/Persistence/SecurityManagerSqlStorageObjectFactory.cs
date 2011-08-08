@@ -16,6 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Data;
+using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -46,7 +48,13 @@ namespace Remotion.SecurityManager.Persistence
 
       return
           ObjectFactory.Create<SecurityManagerRdbmsProvider> (
-              ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener, commandFactory, storageTypeInformationProvider));
+              ParamList.Create (
+                  rdbmsProviderDefinition,
+                  storageNameProvider,
+                  persistenceListener,
+                  commandFactory,
+                  storageTypeInformationProvider,
+                  (Func<IDbConnection>) (() => new SqlConnection())));
     }
   }
 }

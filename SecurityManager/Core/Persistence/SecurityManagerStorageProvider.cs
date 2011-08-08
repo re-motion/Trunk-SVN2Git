@@ -17,7 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -45,7 +45,8 @@ namespace Remotion.SecurityManager.Persistence
         IStorageNameProvider storageNameProvider,
         IPersistenceListener persistenceListener,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+        IStorageTypeInformationProvider storageTypeInformationProvider, 
+        Func<IDbConnection> connectionFactory)
         : base (
             definition,
             storageNameProvider,
@@ -53,7 +54,7 @@ namespace Remotion.SecurityManager.Persistence
             persistenceListener,
             commandFactory,
             storageTypeInformationProvider,
-            () => new SqlConnection())
+            connectionFactory)
     {
       _revisionExtension = new RevisionStorageProviderExtension();
     }
