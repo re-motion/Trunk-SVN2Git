@@ -71,14 +71,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return _timestampColumnDefinition;
     }
 
-    public ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    public IRdbmsStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
     {
       return new ObjectIDStoragePropertyDefinition (
           new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
           new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
     }
 
-    public SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
+    public IRdbmsStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
     {
       return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
     }

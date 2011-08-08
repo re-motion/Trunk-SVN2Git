@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     ColumnDefinition GetIDColumnDefinition ();
     ColumnDefinition GetClassIDColumnDefinition ();
     ColumnDefinition GetTimestampColumnDefinition ();
-    ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition);
-    SimpleStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition);
+    IRdbmsStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition);
+    IRdbmsStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition);
   }
 }

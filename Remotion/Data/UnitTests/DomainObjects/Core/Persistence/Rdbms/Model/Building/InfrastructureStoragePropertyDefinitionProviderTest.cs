@@ -74,9 +74,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (_entityDefinitionStub);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
-      Assert.That (result.ValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (((SimpleStoragePropertyDefinition) result.ValueProperty).ColumnDefinition, Is.SameAs (_idColumn));
-      Assert.That (((SimpleStoragePropertyDefinition) result.ClassIDProperty).ColumnDefinition, Is.SameAs (_classIdColumn));
+      var objectIDStoragePropertyDefinition = (ObjectIDStoragePropertyDefinition) result;
+      Assert.That (objectIDStoragePropertyDefinition.ValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
+      Assert.That (((SimpleStoragePropertyDefinition) objectIDStoragePropertyDefinition.ValueProperty).ColumnDefinition, Is.SameAs (_idColumn));
+      Assert.That (objectIDStoragePropertyDefinition.ClassIDProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
+      Assert.That (((SimpleStoragePropertyDefinition) objectIDStoragePropertyDefinition.ClassIDProperty).ColumnDefinition, Is.SameAs (_classIdColumn));
     }
 
     [Test]
@@ -84,7 +86,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var result = _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (_entityDefinitionStub);
 
-      Assert.That (result.ColumnDefinition, Is.SameAs (_timestampColumn));
+      Assert.That (result, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
+      var simpleStoragePropertyDefinition = (SimpleStoragePropertyDefinition) result;
+      Assert.That (simpleStoragePropertyDefinition.ColumnDefinition, Is.SameAs (_timestampColumn));
     }
     
     [Test]
