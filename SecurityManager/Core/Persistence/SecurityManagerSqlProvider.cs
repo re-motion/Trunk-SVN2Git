@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Persistence
 
     public override void Save (IEnumerable<DataContainer> dataContainers)
     {
-      _revisionExtension.Saving (Connection, Transaction, dataContainers);
+      _revisionExtension.Saving (Connection.WrappedInstance, Transaction.WrappedInstance, dataContainers);
       base.Save (dataContainers);
     }
   }
