@@ -264,11 +264,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetStorageTypeInformation_ValueNotNull ()
     {
-      var result = (StorageTypeInformation) _storageTypeInformationProvider.GetStorageType ("test");
+      var result = (StorageTypeInformation) _storageTypeInformationProvider.GetStorageType (14);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.StorageTypeName, Is.EqualTo ("nvarchar (max)"));
-      Assert.That (result.StorageDbType, Is.EqualTo (DbType.String));
+      Assert.That (result.StorageTypeName, Is.EqualTo ("int"));
+      Assert.That (result.StorageDbType, Is.EqualTo (DbType.Int32));
     }
 
     [Test]
@@ -278,8 +278,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       CheckStorageTypeInformation (
           result,
-          "sql_variant",
-          DbType.Object,
+          "nvarchar(max)",
+          DbType.String,
           typeof (object),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (object)));
     }

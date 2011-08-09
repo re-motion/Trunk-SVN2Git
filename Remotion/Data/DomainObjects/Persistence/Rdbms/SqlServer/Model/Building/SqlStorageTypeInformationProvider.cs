@@ -83,10 +83,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
 
     public IStorageTypeInformation GetStorageType (object value)
     {
-      if (value != null)
-        return GetStorageType (value.GetType());
-      
-      return new StorageTypeInformation ("sql_variant", DbType.Object, typeof (object), new DefaultConverter (typeof (object)));
+      if (value == null)
+      {
+        // NULL values of storage type nvarchar(max) seem to be compatible with columns of all other supported storage types, tested by
+        // SqlProviderExecuteCollectionQueryTest.AllDataTypes
+        return new StorageTypeInformation ("nvarchar(max)", DbType.String, typeof (object), new DefaultConverter (typeof (object)));
+      }
+
+      return GetStorageType (value.GetType());
     }
 
     private StorageTypeInformation GetStorageType (Type propertyType, int? maxLength)

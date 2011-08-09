@@ -31,8 +31,41 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     IStorageTypeInformation GetStorageTypeForTimestamp ();
 
     bool IsTypeSupported (Type type);
+
+    /// <summary>
+    /// Gets an <see cref="IStorageTypeInformation"/> for the given <paramref name="propertyDefinition"/>.
+    /// </summary>
+    /// <param name="propertyDefinition">The <see cref="PropertyDefinition"/> for which an <see cref="IStorageTypeInformation"/> object should be
+    /// returned.</param>
+    /// <returns>A <see cref="IStorageTypeInformation"/> for the given <paramref name="propertyDefinition"/>.</returns>
+    /// <remarks>
+    /// For  <see langword="null"/> values, a default <see cref="IStorageTypeInformation"/> is returned that is not guaranteed to be compatible with
+    /// all possible data types, although it tries to be as compatible as possible without knowing the context in which the value is to be used.
+    /// </remarks>
     IStorageTypeInformation GetStorageType (PropertyDefinition propertyDefinition);
+
+    /// <summary>
+    /// Gets an <see cref="IStorageTypeInformation"/> for situations where a .NET <see cref="Type"/> is known that should be mapped to an
+    /// Rdbms type.
+    /// </summary>
+    /// <param name="type">The type for which an <see cref="IStorageTypeInformation"/> object should be returned.</param>
+    /// <returns>A <see cref="IStorageTypeInformation"/> for the given <paramref name="type"/>.</returns>
+    /// <remarks>
+    /// For  <see langword="null"/> values, a default <see cref="IStorageTypeInformation"/> is returned that is not guaranteed to be compatible with
+    /// all possible data types, although it tries to be as compatible as possible without knowing the context in which the value is to be used.
+    /// </remarks>
     IStorageTypeInformation GetStorageType (Type type);
+
+    /// <summary>
+    /// Gets an <see cref="IStorageTypeInformation"/> for situations where no other information is available but a <paramref name="value"/>.
+    /// This is similar to <see cref="GetStorageType(System.Type)"/>, but it also works with <see langword="null" /> values.
+    /// </summary>
+    /// <param name="value">The value for which an <see cref="IStorageTypeInformation"/> object should be returned. Can be <see langword="null" />.</param>
+    /// <returns>A best-effort <see cref="IStorageTypeInformation"/> for the given <paramref name="value"/>.</returns>
+    /// <remarks>
+    /// For  <see langword="null" /> values, a default <see cref="IStorageTypeInformation"/> is returned that is not guaranteed to be compatible with 
+    /// all possible data types, although it tries to be as compatible as possible without knowing the context in which the value is to be used.
+    /// </remarks>
     IStorageTypeInformation GetStorageType (object value);
   }
 }

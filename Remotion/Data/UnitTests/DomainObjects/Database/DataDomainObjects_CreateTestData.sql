@@ -389,7 +389,7 @@ insert into [TableWithAllDataTypes] (ID, ClassID, [Boolean], [Byte], [Date], [Da
     [StringWithNullValue], [ExtensibleEnumWithNullValue], [NaBooleanWithNullValue], [NaByteWithNullValue], [NaDateWithNullValue], [NaDateTimeWithNullValue], [NaDecimalWithNullValue], [NaDoubleWithNullValue], [NaEnumWithNullValue], [NaFlagsWithNullValue], [NaGuidWithNullValue], [NaInt16WithNullValue], [NaInt32WithNullValue], [NaInt64WithNullValue], [NaSingleWithNullValue], [NullableBinary]) 
     values 
     ('{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}', 'ClassWithAllDataTypes', 
-    0, 85, '2005/01/01', '2005/01/01 17:00', 123456.789, 987654.321, 1, 2, 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red', '{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}', 32767, 2147483647, 9223372036854775807, 6789.321, 'abcdeföäü', '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890', '',
+    0, 85, '2005/01/01', '2005/01/01 17:00', 123456.789, 987654.321, 1, 2, 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red', '{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}', 32767, 2147483647, 9223372036854775807, 6789.321, 'abcdeföäü', '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890', 0x0,
     1, 78, '2005/02/01', '2005/02/01 05:00', 765.098, 654321.789, 2, 3, '{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}', 12000, -2147483647, 3147483647, 12.456,
     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
     
@@ -398,7 +398,7 @@ insert into [TableWithAllDataTypes] (ID, ClassID, [Boolean], [Byte], [Date], [Da
     [StringWithNullValue], [ExtensibleEnumWithNullValue], [NaBooleanWithNullValue], [NaByteWithNullValue], [NaDateWithNullValue], [NaDateTimeWithNullValue], [NaDecimalWithNullValue], [NaDoubleWithNullValue], [NaEnumWithNullValue], [NaFlagsWithNullValue], [NaGuidWithNullValue], [NaInt16WithNullValue], [NaInt32WithNullValue], [NaInt64WithNullValue], [NaSingleWithNullValue], [NullableBinary]) 
     values 
     ('{583EC716-8443-4b55-92BF-09F7C8768529}', 'ClassWithAllDataTypes', 
-    1, 86, '2005/01/02', '2005/01/02 01:00', 654321.987, 456789.123, 0, 3, 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Blue', '{D2146236-FBD4-4b93-A835-26563FE3F043}', -32767, -2147483647, -9223372036854775807, -6789.321, 'üäöfedcba', '09876543210987654321098765432109876543210987654321098765432109876543210987654321098765432109876543210987654321', '',
+    1, 86, '2005/01/02', '2005/01/02 01:00', 654321.987, 456789.123, 0, 3, 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Blue', '{D2146236-FBD4-4b93-A835-26563FE3F043}', -32767, -2147483647, -9223372036854775807, -6789.321, 'üäöfedcba', '09876543210987654321098765432109876543210987654321098765432109876543210987654321098765432109876543210987654321', 0x0,
     1, 79, '2005/02/02', '2005/02/02 15:00', 123.111, -654321.789, 2, 1, '{8C21745D-1269-4cb2-BC81-E1B112A0C146}', 390, 2147483647, 2147483648, 321.321,
     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
