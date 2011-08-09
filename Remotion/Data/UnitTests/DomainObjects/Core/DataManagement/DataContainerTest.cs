@@ -234,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetBytes ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer();
+      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer();
 
       ResourceManager.IsEqualToImage1 (
           (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetBytes ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer();
+      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer();
 
       dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"] = new byte[0];
       ResourceManager.IsEmptyImage (
@@ -257,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetTimestamp ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer();
+      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer();
       dataContainer.SetTimestamp (10);
 
       Assert.That (dataContainer.Timestamp, Is.EqualTo (10));

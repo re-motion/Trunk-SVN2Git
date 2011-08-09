@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       return dataContainer;
     }
 
-    public DataContainer CreateClassWithAllDataTypesDataContainer ()
+    public DataContainer CreateClassWithAllDataTypes1DataContainer ()
     {
       ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 

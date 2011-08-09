@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void DataContainerWithNoRelation ()
     {
-      var container = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      var container = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer ();
       _relationEndPointManager.RegisterEndPointsForDataContainer (container);
 
       Assert.AreEqual (0, _relationEndPointManager.RelationEndPoints.Count);

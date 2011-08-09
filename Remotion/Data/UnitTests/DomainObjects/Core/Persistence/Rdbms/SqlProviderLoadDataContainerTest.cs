@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       DataContainer actualContainer = Provider.LoadDataContainer (id).LocatedObject;
 
-      DataContainer expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      DataContainer expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer ();
 
       DataContainerChecker checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainer);
