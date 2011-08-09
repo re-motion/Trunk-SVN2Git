@@ -98,12 +98,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     private IRdbmsStoragePropertyDefinition CreateCrossProviderRelationStoragePropertyDefinition (PropertyDefinition propertyDefinition)
     {
-      Assertion.IsTrue (propertyDefinition.PropertyType == typeof (ObjectID));
       var columnDefinition = new ColumnDefinition (
           _storageNameProvider.GetRelationColumnName (propertyDefinition),
-          typeof (ObjectID),
+          propertyDefinition.PropertyType,
           _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID(),
-          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
+          true,
           false);
       return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (columnDefinition));
     }
@@ -127,18 +126,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
             new SimpleStoragePropertyDefinition (valueColumnDefinition), 
             rightEndPointDefinition.ClassDefinition);
       }
-      else
-      {
-        var classIDColumnDefinition = new ColumnDefinition (
-            _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
-            typeof (string),
-            _storageTypeInformationProvider.GetStorageTypeForClassID(),
-            true,
-            false);
-        return new ObjectIDStoragePropertyDefinition (
-            new SimpleStoragePropertyDefinition (valueColumnDefinition), 
-            new SimpleStoragePropertyDefinition (classIDColumnDefinition));
-      }
+      
+      var classIDColumnDefinition = new ColumnDefinition (
+          _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
+          typeof (string),
+          _storageTypeInformationProvider.GetStorageTypeForClassID(),
+          true,
+          false);
+      return new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (valueColumnDefinition), 
+          new SimpleStoragePropertyDefinition (classIDColumnDefinition));
     }
   }
 }
