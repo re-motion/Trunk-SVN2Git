@@ -87,11 +87,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
                   (Func<IDbConnection>) (() => new SqlConnection())));
     }
 
-    public virtual TypeProvider CreateTypeProvider ()
-    {
-      return new TypeProvider();
-    }
-
     public virtual IPersistenceModelLoader CreatePersistenceModelLoader (
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder,
         StorageProviderDefinition storageProviderDefinition)

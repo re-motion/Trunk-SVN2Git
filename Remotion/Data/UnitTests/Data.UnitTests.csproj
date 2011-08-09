@@ -991,7 +991,6 @@
     <Compile Include="DomainObjects\Core\Queries\QueryFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\Configuration\QueryFileElementTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Configuration\TypeProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\CollectionSetterTest.cs" />

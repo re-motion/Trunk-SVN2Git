@@ -52,11 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return new StubStorageProvider (storageProviderDefinition, storageNameProvider, persistenceListener);
     }
 
-    public TypeProvider CreateTypeProvider ()
-    {
-      return new TypeProvider();
-    }
-
     public IPersistenceModelLoader CreatePersistenceModelLoader (
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition)
     {

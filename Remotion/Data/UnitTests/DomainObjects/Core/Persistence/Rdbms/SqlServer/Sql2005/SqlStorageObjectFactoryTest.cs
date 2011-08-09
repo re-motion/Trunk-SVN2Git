@@ -87,14 +87,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void CreateTypeProvider ()
-    {
-      var result = _sqlProviderFactory.CreateTypeProvider();
-
-      Assert.That (result, Is.TypeOf (typeof (TypeProvider)));
-    }
-
-    [Test]
     public void CreatePersistenceModelLoader ()
     {
       var result = _sqlProviderFactory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder, _rdbmsProviderDefinition);

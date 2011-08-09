@@ -29,7 +29,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
   public abstract class StorageProviderDefinition: ExtendedProviderBase
   {
     private readonly IStorageObjectFactory _factory;
-    private readonly TypeProvider _typeProvider;
 
     protected StorageProviderDefinition (string name, NameValueCollection config)
         : base (name, config)
@@ -40,7 +39,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       var factoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
       var factoryType = TypeUtility.GetType (factoryTypeName, true);
       _factory = (IStorageObjectFactory) SafeServiceLocator.Current.GetInstance (factoryType);
-      _typeProvider = _factory.CreateTypeProvider();
     }
 
     protected StorageProviderDefinition (string name, IStorageObjectFactory factory)
@@ -49,7 +47,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       ArgumentUtility.CheckNotNull ("factory", factory);
 
       _factory = factory;
-      _typeProvider = _factory.CreateTypeProvider ();
     }
 
     public abstract bool IsIdentityTypeSupported (Type identityType);
@@ -63,11 +60,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public IStorageObjectFactory Factory
     {
       get { return _factory; }
-    }
-
-    public TypeProvider TypeProvider
-    {
-      get { return _typeProvider; }
     }
   }
 }
