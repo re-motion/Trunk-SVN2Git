@@ -53,11 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       base.AppendTableName (statement, tableDefinition);
     }
 
-    public new void AppendComparingWhereClause (StringBuilder statement, ColumnDefinition comparedColumn, IDataParameter expectedValue)
-    {
-      base.AppendComparingWhereClause (statement, comparedColumn, expectedValue);
-    }
-
     public new void AppendWhereClause (StringBuilder statement, IComparedColumnsSpecification comparedColumns, IDbCommand command)
     {
       base.AppendWhereClause (statement, comparedColumns, command);

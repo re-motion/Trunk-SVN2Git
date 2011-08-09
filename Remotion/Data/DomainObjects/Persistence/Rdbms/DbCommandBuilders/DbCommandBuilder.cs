@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -63,14 +62,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         statement.Append (".");
       }
       statement.Append (SqlDialect.DelimitIdentifier (tableDefinition.TableName.EntityName));
-    }
-
-    protected void AppendComparingWhereClause (StringBuilder statement, ColumnDefinition comparedColumn, IDataParameter expectedValue)
-    {
-      statement.Append (" WHERE ");
-      statement.Append (SqlDialect.DelimitIdentifier (comparedColumn.Name));
-      statement.Append (" = ");
-      statement.Append (expectedValue.ParameterName);
     }
 
     protected void AppendWhereClause (StringBuilder statement, IComparedColumnsSpecification comparedColumns, IDbCommand command)
