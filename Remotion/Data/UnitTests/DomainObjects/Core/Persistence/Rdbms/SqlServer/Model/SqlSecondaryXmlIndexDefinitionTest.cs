@@ -25,13 +25,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlSecondaryXmlIndexDefinitionTest
   {
-    private SimpleStoragePropertyDefinition _xmlColumn;
+    private ColumnDefinition _xmlColumn;
     private SqlSecondaryXmlIndexDefinition _indexDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _xmlColumn = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("XmlColumn");
+      _xmlColumn = ColumnDefinitionObjectMother.CreateColumn ("XmlColumn");
       _indexDefinition = new SqlSecondaryXmlIndexDefinition (
           "IndexName", _xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Property, true, 5, true, true, true, true, true, 2);
     }

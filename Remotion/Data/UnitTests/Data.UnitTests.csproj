@@ -285,6 +285,7 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\ExtensibleEnumsTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassIDProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainModelConstraintProviderTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\FakeStorageEntityDefinition.cs" />
     <Compile Include="DomainObjects\Core\Mapping\InvalidPropertyInformationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
@@ -375,6 +376,7 @@
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedCollectionRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\LookupCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\SaveCommandFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\NonAbstractClassWithoutEntity.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorTest.cs" />
@@ -515,7 +517,6 @@
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\ExtensibleEnumProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\PropertyWithStorageClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\RelationProperty.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\StorageSpecificName.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\StringProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\ValueTypes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionTest.cs" />
@@ -820,7 +821,6 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\SortExpressionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\VirtualRelationEndPointDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Model\StorageEntityTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\RdbmsPersistenceModelLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestBase.cs" />
@@ -1517,7 +1517,7 @@
     <Compile Include="DomainObjects\Core\TableInheritance\IntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\MappingConfigurationTest.cs">
+    <Compile Include="DomainObjects\Core\TableInheritance\StorageEntitiesIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\ObjectIDTest.cs">
@@ -1880,6 +1880,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DomainObjects\Core\Mapping\Validation\Persistence\" />
+    <Folder Include="DomainObjects\Core\Persistence\Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

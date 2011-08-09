@@ -18,9 +18,11 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Linq.Utilities;
 using System.Linq;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -124,15 +126,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ArgumentUtility.CheckNotNull ("actualDefinition", actualDefinition);
   
       Assert.AreEqual (
-          expectedDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
-          actualDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
-          "StorageProviderID of class definition '{0}' does not match. ",
+          expectedDefinition.StorageEntityDefinition.StorageProviderDefinition,
+          actualDefinition.StorageEntityDefinition.StorageProviderDefinition,
+          "StorageProviderDefinition of class definition '{0}' does not match. ",
           expectedDefinition.ID);
 
+      // We can't check much since FakeMappingConfiguration always creates fake entity definitions, only the entity name is defined.
+      var expectedEntityName = GetEntityName (expectedDefinition.StorageEntityDefinition);
+      var actualEntityName = GetEntityName (actualDefinition.StorageEntityDefinition);
+
       Assert.AreEqual (
-          StorageModelTestHelper.GetEntityName (expectedDefinition),
-          StorageModelTestHelper.GetEntityName (actualDefinition),
-          "EntityName of class definition '{0}' does not match.",
+          expectedEntityName,
+          actualEntityName,  
+          "Entity name of class definition '{0}' does not match.",
           expectedDefinition.ID);
 
       foreach (PropertyDefinition expectedPropertyDefinition in expectedDefinition.MyPropertyDefinitions)
@@ -143,10 +149,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
         if (expectedPropertyDefinition.StorageClass == StorageClass.Persistent)
         {
+          // We can't check much since FakeMappingConfiguration always creates fake storage property definitions, only the first column name is defined.
+          var expectedColumnName = GetFirstColumnName (expectedPropertyDefinition.StoragePropertyDefinition);
+          var actualColumnName = GetFirstColumnName (actualPropertyDefinition.StoragePropertyDefinition);
+
           Assert.AreEqual (
-              StorageModelTestHelper.GetColumnName (expectedPropertyDefinition),
-              StorageModelTestHelper.GetColumnName (actualPropertyDefinition),
-              "StorageSpecificName of property definition '{0}' (class definition: '{1}') does not match.",
+              expectedColumnName,
+              actualColumnName,
+              "Column name of property definition '{0}' (class definition: '{1}') does not match.",
               expectedPropertyDefinition.PropertyName,
               actualDefinition.ID);
         }
@@ -254,6 +264,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "IsObjectID of property definition '{0}' (class definition: '{1}') does not match.",
           expectedDefinition.PropertyName,
           classDefinition.ID);
+    }
+
+    private string GetEntityName (IStorageEntityDefinition storageEntityDefinition)
+    {
+      if (storageEntityDefinition is FakeStorageEntityDefinition)
+        return ((FakeStorageEntityDefinition) storageEntityDefinition).Name;
+      else 
+        return InlineEntityDefinitionVisitor.Visit<string> (
+            (IEntityDefinition) storageEntityDefinition,
+            (table, continuation) => table.TableName.EntityName,
+            (filterView, continuation) => continuation (filterView.BaseEntity),
+            (unionView, continuation) => null,
+            (nullEntity, continuation) => { throw new NotSupportedException ("NullEntityDefinitions are not supported."); }
+            );
+    }
+
+    private string GetFirstColumnName (IStoragePropertyDefinition storagePropertyDefinition)
+    {
+      if (storagePropertyDefinition is FakeStoragePropertyDefinition)
+        return ((FakeStoragePropertyDefinition) storagePropertyDefinition).Name;
+      else if (storagePropertyDefinition is SimpleStoragePropertyDefinition)
+        return ((SimpleStoragePropertyDefinition) storagePropertyDefinition).ColumnDefinition.Name;
+      else if (storagePropertyDefinition is ObjectIDStoragePropertyDefinition)
+        return GetFirstColumnName (((ObjectIDStoragePropertyDefinition) storagePropertyDefinition).ValueProperty);
+      else if (storagePropertyDefinition is ObjectIDWithoutClassIDStoragePropertyDefinition)
+        return GetFirstColumnName (((ObjectIDWithoutClassIDStoragePropertyDefinition) storagePropertyDefinition).ValueProperty);
+      else if (storagePropertyDefinition is SerializedObjectIDStoragePropertyDefinition)
+        return GetFirstColumnName (((SerializedObjectIDStoragePropertyDefinition) storagePropertyDefinition).SerializedIDProperty);
+      else
+        throw new NotSupportedException (storagePropertyDefinition.GetType ().Name + " is not supported.");
     }
   }
 }

@@ -18,11 +18,9 @@ using System;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -197,10 +195,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       }
       else
       {
-        var entityStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
-        entityStub.Stub (stub => stub.StorageProviderDefinition).Return (storageProviderDefinition);
-
-        classDefinition.SetStorageEntity (entityStub);
+        var fakeEntity = new FakeStorageEntityDefinition (storageProviderDefinition, entityName);
+        classDefinition.SetStorageEntity (fakeEntity);
       }
     }
   }

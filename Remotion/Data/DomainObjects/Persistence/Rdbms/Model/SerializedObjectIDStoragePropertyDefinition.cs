@@ -41,11 +41,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _serializedIDProperty; }
     }
 
-    public string Name
-    {
-      get { return _serializedIDProperty.Name; }
-    }
-
     public ColumnDefinition GetColumnForLookup ()
     {
       return _serializedIDProperty.GetColumnForLookup();

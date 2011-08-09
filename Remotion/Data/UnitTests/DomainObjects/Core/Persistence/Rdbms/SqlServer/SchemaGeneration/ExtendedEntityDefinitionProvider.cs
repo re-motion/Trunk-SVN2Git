@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private TableDefinition CreateNewTableDefinitionWithIndexes (StorageProviderDefinition storageProviderDefinition)
     {
-      var column1 =
+      var storageProperty1 =
           new SimpleStoragePropertyDefinition (
               new ColumnDefinition (
                   "ID",
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                   new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
                   false,
                   true));
-      var column2 =
+      var storageProperty2 =
           new SimpleStoragePropertyDefinition (
               new ColumnDefinition (
                   "FirstName",
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                   new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()),
                   false,
                   false));
-      var column3 =
+      var storageProperty3 =
           new SimpleStoragePropertyDefinition (
               new ColumnDefinition (
                   "LastName",
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                   new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()),
                   false,
                   false));
-      var column4 =
+      var storageProperty4 =
           new SimpleStoragePropertyDefinition (
               new ColumnDefinition (
                   "XmlColumn1",
@@ -114,18 +114,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var viewName = new EntityNameDefinition (null, "IndexTestView");
 
       var nonClusteredUniqueIndex = new SqlIndexDefinition (
-          "IDX_NonClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column1.ColumnDefinition) }, null, false, true, true, false);
+          "IDX_NonClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (storageProperty1.ColumnDefinition) }, null, false, true, true, false);
       var nonClusteredNonUniqueIndex = new SqlIndexDefinition (
           "IDX_NonClusteredNonUniqueIndex",
-          new[] { new SqlIndexedColumnDefinition (column2.ColumnDefinition), new SqlIndexedColumnDefinition (column3.ColumnDefinition) },
-          new[] { column1.ColumnDefinition },
+          new[] { new SqlIndexedColumnDefinition (storageProperty2.ColumnDefinition), new SqlIndexedColumnDefinition (storageProperty3.ColumnDefinition) },
+          new[] { storageProperty1.ColumnDefinition },
           false,
           false,
           false,
           false);
       var indexWithOptionsSet = new SqlIndexDefinition (
           "IDX_IndexWithSeveralOptions",
-          new[] { new SqlIndexedColumnDefinition (column2.ColumnDefinition, IndexOrder.Desc) },
+          new[] { new SqlIndexedColumnDefinition (storageProperty2.ColumnDefinition, IndexOrder.Desc) },
           null,
           false,
           true,
@@ -139,10 +139,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           true,
           true,
           2);
-      var primaryXmlIndex = new SqlPrimaryXmlIndexDefinition ("IDX_PrimaryXmlIndex", column4, true, 3, true, true, false, true, true, 2);
+      var primaryXmlIndex = new SqlPrimaryXmlIndexDefinition (
+          "IDX_PrimaryXmlIndex", storageProperty4.ColumnDefinition, true, 3, true, true, false, true, true, 2);
       var secondaryXmlIndex1 = new SqlSecondaryXmlIndexDefinition (
           "IDX_SecondaryXmlIndex1",
-          column4,
+          storageProperty4.ColumnDefinition,
           "IDX_PrimaryXmlIndex",
           SqlSecondaryXmlIndexKind.Path,
           true,
@@ -153,10 +154,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false,
           false);
       var secondaryXmlIndex2 = new SqlSecondaryXmlIndexDefinition (
-          "IDX_SecondaryXmlIndex2", column4, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Value, false, 8, true);
+          "IDX_SecondaryXmlIndex2", storageProperty4.ColumnDefinition, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Value, false, 8, true);
       var secondaryXmlIndex3 = new SqlSecondaryXmlIndexDefinition (
           "IDX_SecondaryXmlIndex3",
-          column4,
+          storageProperty4.ColumnDefinition,
           "IDX_PrimaryXmlIndex",
           SqlSecondaryXmlIndexKind.Property,
           null,
@@ -185,8 +186,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           objectIDColunmn,
           classIDCOlumn,
           timestampColumn,
-          new[] { column1.ColumnDefinition, column2.ColumnDefinition, column3.ColumnDefinition, column4.ColumnDefinition },
-          new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { column1.ColumnDefinition }) },
+          new[] { storageProperty1.ColumnDefinition, storageProperty2.ColumnDefinition, storageProperty3.ColumnDefinition, storageProperty4.ColumnDefinition },
+          new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { storageProperty1.ColumnDefinition }) },
           new IIndexDefinition[]
           {
               nonClusteredUniqueIndex,

@@ -41,11 +41,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _columnDefinition; }
     }
 
-    public string Name
-    {
-      get { return _columnDefinition.Name; }
-    }
-
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       yield return _columnDefinition;

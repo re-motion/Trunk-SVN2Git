@@ -22,14 +22,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
   public class SqlPrimaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
     private readonly string _indexName;
-    private readonly IRdbmsStoragePropertyDefinition _xmlColumn;
+    private readonly ColumnDefinition _xmlColumn;
 
     /// <summary>
     /// <see cref="SqlPrimaryXmlIndexDefinition"/> represents a priamry xml-column index in a relational database.
     /// </summary>
     public SqlPrimaryXmlIndexDefinition (
         string indexName,
-        IRdbmsStoragePropertyDefinition xmlColumn,
+        ColumnDefinition xmlColumn,
         bool? padIndex = null,
         int? fillFactor = null,
         bool? sortInTempDb = null,
@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
       get { return _indexName; }
     }
 
-    public IRdbmsStoragePropertyDefinition XmlColumn
+    public ColumnDefinition XmlColumn
     {
       get { return _xmlColumn; }
     }

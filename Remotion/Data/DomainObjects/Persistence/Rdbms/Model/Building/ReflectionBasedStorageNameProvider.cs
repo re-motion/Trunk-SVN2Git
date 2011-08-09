@@ -17,7 +17,6 @@
 using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -98,15 +97,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return String.Format ("PK_{0}", tableName);
     }
 
-    public string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition)
+    public string GetForeignKeyConstraintName (ClassDefinition classDefinition, ColumnDefinition foreignKeyColumn)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("storagePropertyDefinition", storagePropertyDefinition);
+      ArgumentUtility.CheckNotNull ("foreignKeyColumn", foreignKeyColumn);
       
       var tableName = GetTableName (classDefinition);
-      var propertyName = storagePropertyDefinition.Name;
+      var columnName = foreignKeyColumn.Name;
 
-      return String.Format ("FK_{0}_{1}", tableName, propertyName);
+      return String.Format ("FK_{0}_{1}", tableName, columnName);
     }
 
     private string GetColumnNameFromAttribute (PropertyDefinition propertyDefinition)

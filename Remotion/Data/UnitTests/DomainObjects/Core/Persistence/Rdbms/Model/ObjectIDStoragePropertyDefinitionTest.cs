@@ -50,13 +50,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
 
       _objectIDColumnStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _objectIDColumnStub.Stub (stub => stub.Name).Return ("ID");
       _objectIDColumnStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition1);
       _objectIDColumnStub.Stub (stub => stub.GetColumnForForeignKey ()).Return (_columnDefinition1);
       _objectIDColumnStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition1 });
       
       _classIDColumnStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _classIDColumnStub.Stub (stub => stub.Name).Return ("Order");
       _classIDColumnStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition2 });
       
       _objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (_objectIDColumnStub, _classIDColumnStub);
@@ -75,7 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_objectIDStoragePropertyDefinition.ValueProperty, Is.SameAs (_objectIDColumnStub));
       Assert.That (_objectIDStoragePropertyDefinition.ClassIDProperty, Is.SameAs (_classIDColumnStub));
-      Assert.That (((IRdbmsStoragePropertyDefinition) _objectIDStoragePropertyDefinition).Name, Is.EqualTo ("ID"));
+      Assert.That (_objectIDStoragePropertyDefinition.ValueProperty, Is.SameAs (_objectIDColumnStub));
+      Assert.That (_objectIDStoragePropertyDefinition.ClassIDProperty, Is.SameAs (_classIDColumnStub));
     }
 
     [Test]

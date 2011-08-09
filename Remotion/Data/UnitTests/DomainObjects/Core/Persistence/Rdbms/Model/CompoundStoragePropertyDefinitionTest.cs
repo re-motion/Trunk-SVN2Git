@@ -61,16 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Name ()
-    {
-      _property1Stub.Stub (stub => stub.Name).Return ("Year");
-      _property2Stub.Stub (stub => stub.Name).Return ("Month");
-      _property3Stub.Stub (stub => stub.Name).Return ("Day");
-
-      Assert.That (_compoundStoragePropertyDefinition.Name, Is.EqualTo ("Year_Month_Day"));
-    }
-
-    [Test]
     public void GetColumns ()
     {
       _property1Stub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition1 });

@@ -36,7 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefintionProviderMock;
     private ForeignKeyConstraintDefinitionFactory _factory;
     private ObjectIDStoragePropertyDefinition _fakeIdColumnDefinition;
-    private SimpleStoragePropertyDefinition _fakeColumnDefintion;
     private ObjectIDStoragePropertyDefinition _fakeObjectIDStoragePropertyDefinition;
     private IStorageProviderDefinitionFinder _storageProviderDefinitionFinderStub;
     private ObjectIDWithoutClassIDStoragePropertyDefinition _fakeObjectIDWithoutClassIDStoragePropertyDefinition;
@@ -57,8 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition));
       _fakeSerializedObjectIDStoragePropertyDefinition =
           new SerializedObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("OrderID"));
-
-      _fakeColumnDefintion = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty();
 
       _storageNameProviderMock = MockRepository.GenerateStrictMock<IStorageNameProvider>();
       _storagePropertyDefintionResolverMock = MockRepository.GenerateStrictMock<IStoragePropertyDefinitionResolver>();
@@ -88,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storagePropertyDefintionResolverMock.Replay ();
 
       _storageNameProviderMock
-          .Expect (mock => mock.GetForeignKeyConstraintName (orderClassDefinition, _fakeObjectIDStoragePropertyDefinition))
+          .Expect (mock => mock.GetForeignKeyConstraintName (orderClassDefinition, _fakeObjectIDStoragePropertyDefinition.GetColumnForForeignKey()))
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
@@ -143,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storagePropertyDefintionResolverMock.Replay();
 
       _storageNameProviderMock
-          .Expect (mock => mock.GetForeignKeyConstraintName (orderClassDefinition, _fakeObjectIDWithoutClassIDStoragePropertyDefinition))
+          .Expect (mock => mock.GetForeignKeyConstraintName (orderClassDefinition, _fakeObjectIDWithoutClassIDStoragePropertyDefinition.GetColumnForForeignKey()))
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
@@ -243,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storagePropertyDefintionResolverMock.Replay();
 
       _storageNameProviderMock
-          .Expect (mock => mock.GetForeignKeyConstraintName (computerClassDefinition, _fakeObjectIDStoragePropertyDefinition))
+          .Expect (mock => mock.GetForeignKeyConstraintName (computerClassDefinition, _fakeObjectIDStoragePropertyDefinition.GetColumnForForeignKey()))
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (employeeClassDefinition))

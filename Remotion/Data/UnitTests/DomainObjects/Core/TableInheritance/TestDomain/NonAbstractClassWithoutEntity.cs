@@ -14,26 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Utilities;
+using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model
+namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
 {
-  public class StorageModelTestHelper
+  public class NonAbstractClassWithoutEntity : DomainObject
   {
-    public static string GetEntityName (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      return "TODO 4201"; //use Inlinevisitor!
-    }
-
-    public static string GetColumnName (PropertyDefinition propertyDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
-      return propertyDefinition.StoragePropertyDefinition.Name;
-    }
   }
 }

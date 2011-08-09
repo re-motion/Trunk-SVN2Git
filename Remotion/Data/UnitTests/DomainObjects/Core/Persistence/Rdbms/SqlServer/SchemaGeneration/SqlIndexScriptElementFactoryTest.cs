@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -51,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _factory = new SqlIndexScriptElementFactory (
           _indexDefinitionElementFactoryMock, _primaryIndexDefinitionElementFactoryMock, _secondaryIndexDefinitionElementFactoryMock);
 
-      var simpleColumn = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column");
-      var indexedColumn = new SqlIndexedColumnDefinition (simpleColumn.ColumnDefinition, IndexOrder.Desc);
+      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column");
+      var indexedColumn = new SqlIndexedColumnDefinition (simpleColumn, IndexOrder.Desc);
 
       _entityNameDefinition = new EntityNameDefinition (null, "Table");
       _indexDefinition = new SqlIndexDefinition ("Index1", new[] { indexedColumn });

@@ -20,7 +20,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -150,11 +149,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_propertyDefinition1);
 
-      PropertyDefinition copy =
-          PropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var copy =
+          new PropertyDefinition (
               _propertyDefinition1.ClassDefinition,
+              _propertyDefinition1.PropertyInfo,
               _propertyDefinition1.PropertyName,
-              StorageModelTestHelper.GetColumnName(_propertyDefinition1));
+              _propertyDefinition1.IsObjectID,
+              _propertyDefinition1.IsNullable,
+              _propertyDefinition1.MaxLength,
+              _propertyDefinition1.StorageClass);
 
       Assert.IsFalse (_collection.Contains (copy));
     }

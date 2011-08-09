@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlSecondaryXmlIndexDefinition _indexDefinitionWithCustomSchema;
     private SqlSecondaryXmlIndexDefinition _indexDefinitionWithDefaultSchema;
     private SqlSecondaryXmlIndexDefinitionScriptElementFactory _factory;
-    private SimpleStoragePropertyDefinition _xmlColumn;
+    private ColumnDefinition _xmlColumn;
     private EntityNameDefinition _customSchemaNameDefinition;
     private EntityNameDefinition _defaultSchemaNameDefinition;
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlSecondaryXmlIndexDefinitionScriptElementFactory();
 
-      _xmlColumn = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("XmlColumn");
+      _xmlColumn = ColumnDefinitionObjectMother.CreateColumn ("XmlColumn");
 
       _customSchemaNameDefinition = new EntityNameDefinition ("SchemaName", "TableName1");
       _indexDefinitionWithCustomSchema = new SqlSecondaryXmlIndexDefinition (

@@ -500,12 +500,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName.EntityName, Is.EqualTo ("Order"));
       Assert.That (classDefinition.MyPropertyDefinitions.Count, Is.EqualTo (2));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetAllColumns().Count(), Is.EqualTo (5));
-      Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
-      Assert.That (
-          ((SimpleStoragePropertyDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn1"));
-      Assert.That (classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition, Is.Not.Null);
-      Assert.That (
-          ((SimpleStoragePropertyDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn2"));
+
+      var storageProperty1 = ((SimpleStoragePropertyDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition);
+      Assert.That (storageProperty1, Is.Not.Null);
+      Assert.That (storageProperty1.ColumnDefinition.Name, Is.EqualTo ("FakeColumn1"));
+
+      var storageProperty2 = (SimpleStoragePropertyDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition;
+      Assert.That (storageProperty2, Is.Not.Null);
+      Assert.That (storageProperty2.ColumnDefinition.Name, Is.EqualTo ("FakeColumn2"));
     }
 
     [Test]

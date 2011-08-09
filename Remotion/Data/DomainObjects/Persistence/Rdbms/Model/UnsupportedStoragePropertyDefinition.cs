@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
 
@@ -25,11 +24,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   public class UnsupportedStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
-    string IStoragePropertyDefinition.Name
-    {
-      get { return "unsupported property"; }
-    }
-
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return new ColumnDefinition[0];

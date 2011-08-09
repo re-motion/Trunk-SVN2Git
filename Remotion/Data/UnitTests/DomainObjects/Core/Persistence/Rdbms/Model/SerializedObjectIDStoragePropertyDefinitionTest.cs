@@ -44,7 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinition = ColumnDefinitionObjectMother.CreateColumn();
 
       _serializedIDPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _serializedIDPropertyStub.Stub (stub => stub.Name).Return ("ID");
       _serializedIDPropertyStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition);
       _serializedIDPropertyStub.Stub (stub => stub.GetColumnForForeignKey()).Return (_columnDefinition);
       _serializedIDPropertyStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition });
@@ -81,12 +80,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumns ()
     {
       Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumns(), Is.EqualTo (_serializedIDPropertyStub.GetColumns()));
-    }
-
-    [Test]
-    public void Name ()
-    {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.Name, Is.EqualTo (_serializedIDPropertyStub.Name));
     }
 
     [Test]

@@ -26,10 +26,8 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -135,15 +133,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PersistentMixinFinder (typeof (DomainBase)));
       Assert.That (classDefinition.StorageGroupType, Is.Not.Null);
       Assert.That (classDefinition.StorageGroupType, Is.SameAs (typeof (DBStorageGroupAttribute)));
-    }
-
-    [Ignore("TODO: 4201")]
-    [Test]
-    public void NullEntityNameWithDerivedClass ()
-    {
-      Assert.IsNull (StorageModelTestHelper.GetEntityName (_domainBaseClass));
-      Assert.IsNotNull (StorageModelTestHelper.GetEntityName (_personClass));
-      Assert.IsNull (StorageModelTestHelper.GetEntityName (_customerClass));
     }
 
     [Test]

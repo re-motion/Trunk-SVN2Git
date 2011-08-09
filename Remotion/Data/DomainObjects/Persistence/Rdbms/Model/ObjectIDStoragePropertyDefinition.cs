@@ -14,11 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -51,11 +49,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IRdbmsStoragePropertyDefinition ClassIDProperty
     {
       get { return _classIDProperty; }
-    }
-
-    string IStoragePropertyDefinition.Name
-    {
-      get { return _valueProperty.Name; }
     }
 
     public ColumnDefinition GetColumnForLookup ()

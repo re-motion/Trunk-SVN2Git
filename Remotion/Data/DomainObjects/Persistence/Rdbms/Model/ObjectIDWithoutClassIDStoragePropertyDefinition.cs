@@ -42,11 +42,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _classDefinition = classDefinition;
     }
 
-    public string Name
-    {
-      get { return _valueProperty.Name; }
-    }
-
     public IRdbmsStoragePropertyDefinition ValueProperty
     {
       get { return _valueProperty; }

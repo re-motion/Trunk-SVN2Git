@@ -66,11 +66,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _valueCombinator = valueCombinator;
     }
 
-    public string Name
-    {
-      get { return SeparatedStringBuilder.Build ("_", _properties.Select (p => p.StoragePropertyDefinition.Name)); }
-    }
-
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return _properties.SelectMany (p => p.StoragePropertyDefinition.GetColumns());

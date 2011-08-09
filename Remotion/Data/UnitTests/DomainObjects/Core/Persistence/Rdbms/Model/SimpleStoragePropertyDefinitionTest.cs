@@ -53,9 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void Name ()
+    public void ColumnDefinition ()
     {
-      Assert.That (_storagePropertyDefinition.Name, Is.EqualTo (_innerColumnDefinition.Name));
+      Assert.That (_storagePropertyDefinition.ColumnDefinition, Is.SameAs (_innerColumnDefinition));
     }
 
     [Test]

@@ -16,13 +16,11 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
 {
@@ -166,12 +164,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void GetForeignKeyConstraintName ()
     {
-      var storagePropertyDefinitionStub = MockRepository.GenerateStub<IStoragePropertyDefinition>();
-      storagePropertyDefinitionStub.Stub (stub => stub.Name).Return ("FakeStorageName");
+      var columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("FakeColumn");
 
-      var result = _provider.GetForeignKeyConstraintName (_classDefinition, storagePropertyDefinitionStub);
+      var result = _provider.GetForeignKeyConstraintName (_classDefinition, columnDefinition);
 
-      Assert.That (result, Is.EqualTo ("FK_Company_FakeStorageName"));
+      Assert.That (result, Is.EqualTo ("FK_Company_FakeColumn"));
     }
   }
 }

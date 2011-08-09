@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateCustomerDefinition (ClassDefinition baseClass)
     {
       ClassDefinition customer = ClassDefinitionFactory.CreateClassDefinition (
-          "Customer", null, _storageProviderDefinition, typeof (Customer), false, baseClass);
+          "Customer", "Company", _storageProviderDefinition, typeof (Customer), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreatePartnerDefinition (ClassDefinition baseClass)
     {
       ClassDefinition partner = ClassDefinitionFactory.CreateClassDefinition (
-          "Partner", null, _storageProviderDefinition, typeof (Partner), false, baseClass);
+          "Partner", "Company", _storageProviderDefinition, typeof (Partner), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateSupplierDefinition (ClassDefinition baseClass)
     {
       ClassDefinition supplier = ClassDefinitionFactory.CreateClassDefinition (
-          "Supplier", null, _storageProviderDefinition, typeof (Supplier), false, baseClass);
+          "Supplier", "Company", _storageProviderDefinition, typeof (Supplier), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateDistributorDefinition (ClassDefinition baseClass)
     {
       ClassDefinition distributor = ClassDefinitionFactory.CreateClassDefinition (
-          "Distributor", null, _storageProviderDefinition, typeof (Distributor), false, baseClass);
+          "Distributor", "Company", _storageProviderDefinition, typeof (Distributor), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -275,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateSpecialOfficialDefinition (ClassDefinition officialDefinition)
     {
       var specialOfficial = ClassDefinitionFactory.CreateClassDefinition (
-          "SpecialOfficial", null, _storageProviderDefinition, typeof (SpecialOfficial), false, officialDefinition);
+          "SpecialOfficial", "Official", _storageProviderDefinition, typeof (SpecialOfficial), false, officialDefinition);
       specialOfficial.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return specialOfficial;
@@ -405,7 +405,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateFolderDefinition (ClassDefinition baseClass)
     {
       ClassDefinition folder = ClassDefinitionFactory.CreateClassDefinition (
-          "Folder", null, _storageProviderDefinition, typeof (Folder), false, baseClass);
+          "Folder", "FileSystemItem", _storageProviderDefinition, typeof (Folder), false, baseClass);
       folder.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return folder;
@@ -414,7 +414,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateFileDefinition (ClassDefinition baseClass)
     {
       ClassDefinition file = ClassDefinitionFactory.CreateClassDefinition (
-          "File", null, _storageProviderDefinition, typeof (File), false, baseClass);
+          "File", "FileSystemItem", _storageProviderDefinition, typeof (File), false, baseClass);
       file.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return file;
@@ -886,7 +886,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition derivedTargetClassForPersistentMixin = ClassDefinitionFactory.CreateClassDefinition (
           "DerivedTargetClassForPersistentMixin",
-          null,
+          "MixedDomains_Target",
           _storageProviderDefinition,
           typeof (DerivedTargetClassForPersistentMixin),
           false,
@@ -900,7 +900,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition derivedDerivedTargetClassForPersistentMixin = ClassDefinitionFactory.CreateClassDefinition (
           "DerivedDerivedTargetClassForPersistentMixin",
-          null,
+          "MixedDomains_Target",
           _storageProviderDefinition,
           typeof (DerivedDerivedTargetClassForPersistentMixin),
           false,

@@ -48,7 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinition = ColumnDefinitionObjectMother.CreateColumn();
 
       _valuePropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _valuePropertyStub.Stub (stub => stub.Name).Return ("ID");
       _valuePropertyStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition);
       _valuePropertyStub.Stub (stub => stub.GetColumnForForeignKey()).Return (_columnDefinition);
       _valuePropertyStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition });
@@ -87,12 +86,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumns ()
     {
       Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumns(), Is.EqualTo (new[] { _columnDefinition }));
-    }
-
-    [Test]
-    public void Name ()
-    {
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.Name, Is.EqualTo (_valuePropertyStub.Name));
     }
 
     [Test]
