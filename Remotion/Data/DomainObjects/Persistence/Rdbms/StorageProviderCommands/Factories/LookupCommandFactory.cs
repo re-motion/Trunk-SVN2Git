@@ -130,9 +130,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           .Cast<QueryParameter>()
           .Select (parameter => GetQueryParameterWithType (parameter, _storageTypeInformationProvider, _storageProviderDefinition));
 
-      return
-          new MultiObjectLoadCommand<DataContainer> (
-              new[] { Tuple.Create (_dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType), dataContainerReader) });
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType);
+      return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
     public IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext> CreateForMultiTimestampLookup (

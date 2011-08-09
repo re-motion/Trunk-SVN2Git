@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -31,7 +30,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
@@ -49,6 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private TableDefinitionFinder _tableDefinitionFinder;
 
+    private IStorageTypeInformationProvider _storageTypeInformationProviderStrictMock;
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStrictMock;
     private IObjectReaderFactory _objectReaderFactoryStrictMock;
     private IDbCommandBuilder _dbCommandBuilder1Stub;
@@ -68,6 +68,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IObjectReader<ObjectID> _objectIDReader1Stub;
     private LookupCommandFactory _factory;
 
+    private QueryParameter _queryParameter1;
+    private QueryParameter _queryParameter2;
+    private QueryParameter _queryParameter3;
+    private IQuery _queryStub;
+
     public override void SetUp ()
     {
       base.SetUp();
@@ -75,6 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       _tableDefinitionFinder = new TableDefinitionFinder (_rdbmsPersistenceModelProvider);
 
+      _storageTypeInformationProviderStrictMock = MockRepository.GenerateStrictMock<IStorageTypeInformationProvider>();
       _dbCommandBuilderFactoryStrictMock = MockRepository.GenerateStrictMock<IDbCommandBuilderFactory>();
 
       _objectReaderFactoryStrictMock = MockRepository.GenerateStrictMock<IObjectReaderFactory>();
@@ -85,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _rdbmsPersistenceModelProvider,
           _objectReaderFactoryStrictMock,
           _tableDefinitionFinder,
-          new SqlStorageTypeInformationProvider(),
+          _storageTypeInformationProviderStrictMock,
           TestDomainStorageProviderDefinition);
 
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -113,6 +119,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataContainerReader2Stub = MockRepository.GenerateStub<IObjectReader<DataContainer>>();
 
       _objectIDReader1Stub = MockRepository.GenerateStub<IObjectReader<ObjectID>>();
+
+      _queryParameter1 = new QueryParameter ("first", DomainObjectIDs.Order1);
+      _queryParameter2 = new QueryParameter ("second", DomainObjectIDs.Order2.Value);
+      _queryParameter3 = new QueryParameter ("third", DomainObjectIDs.Official1);
+      var collection = new QueryParameterCollection { _queryParameter1, _queryParameter2, _queryParameter3 };
+
+      _queryStub = MockRepository.GenerateStub<IQuery> ();
+      _queryStub.Stub (stub => stub.Statement).Return ("statement");
+      _queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection (collection, true));
     }
 
     [Test]
@@ -433,38 +448,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateForDataContainerQuery ()
     {
-      var collection = new QueryParameterCollection();
-      collection.Add (new QueryParameter ("first", DomainObjectIDs.Order1));
-      collection.Add (new QueryParameter ("second", DomainObjectIDs.Order2.Value));
-      collection.Add (new QueryParameter ("third", DomainObjectIDs.Official1));
-      
-      var queryStub = MockRepository.GenerateStub<IQuery>();
-      queryStub.Stub (stub => stub.Statement).Return ("statement");
-      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection(collection, true));
+      var type1 = MockRepository.GenerateStub<IStorageTypeInformation> ();
+      var type2 = MockRepository.GenerateStub<IStorageTypeInformation> ();
+      var type3 = MockRepository.GenerateStub<IStorageTypeInformation> ();
+      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order1.Value)).Return (type1);
+      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order2.Value)).Return (type2);
+      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Official1.ToString())).Return (type3);
+      _storageTypeInformationProviderStrictMock.Replay();
 
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
+      var expectedParametersWithType =
+          new[]
+          {
+              new QueryParameterWithType (
+                  new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType), 
+                  type1),
+              new QueryParameterWithType (_queryParameter2, type2),
+              new QueryParameterWithType (
+                  new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
+                  type3)
+          };
       _dbCommandBuilderFactoryStrictMock
-        .Stub (stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.Is.Anything))
-        .WhenCalled(mi=>
-        { 
-            var parametersWithTyp = ((IEnumerable<QueryParameterWithType>) mi.Arguments[1]).ToArray();
-            Assert.That (parametersWithTyp.Length, Is.EqualTo (3));
-            Assert.That (parametersWithTyp[0].QueryParameter.Name, Is.EqualTo ("first"));
-            Assert.That (parametersWithTyp[0].QueryParameter.Value, Is.EqualTo(DomainObjectIDs.Order1.Value));
-            Assert.That (parametersWithTyp[1].QueryParameter.Name, Is.EqualTo ("second"));
-            Assert.That (parametersWithTyp[1].QueryParameter.Value, Is.EqualTo(DomainObjectIDs.Order2.Value));
-            Assert.That (parametersWithTyp[2].QueryParameter.Name, Is.EqualTo ("third"));
-            Assert.That (parametersWithTyp[2].QueryParameter.Value, Is.EqualTo (DomainObjectIDs.Official1.ToString ()));
-
-        })
-        .Return (commandBuilderStub);
+          .Expect (stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.List.Equal (expectedParametersWithType)))
+          .Return (commandBuilderStub);
+      _dbCommandBuilderFactoryStrictMock.Replay();
 
       _objectReaderFactoryStrictMock.Expect (mock => mock.CreateDataContainerReader()).Return (_dataContainerReader1Stub);
       _objectReaderFactoryStrictMock.Replay();
 
-      var result = _factory.CreateForDataContainerQuery (queryStub);
+      var result = _factory.CreateForDataContainerQuery (_queryStub);
 
-      _objectReaderFactoryStrictMock.VerifyAllExpectations();
+      _storageTypeInformationProviderStrictMock.VerifyAllExpectations();
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
+      _objectReaderFactoryStrictMock.VerifyAllExpectations ();
+
       Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
       var command = ((MultiObjectLoadCommand<DataContainer>) result);
       Assert.That (command.DbCommandBuildersAndReaders.Length, Is.EqualTo (1));
