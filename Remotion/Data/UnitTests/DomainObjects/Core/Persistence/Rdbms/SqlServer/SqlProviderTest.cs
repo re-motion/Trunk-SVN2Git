@@ -65,12 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetIDColumnTypeName ()
-    {
-      Assert.That (Provider.GetIDColumnTypeName (), Is.EqualTo ("uniqueidentifier"));
-    }
-
-    [Test]
     public void ConnectionReturnsSqlConnection ()
     {
       // Note: If Provider.Connection returns a SqlConnection instead of IDbConnection, the line below does not create a compiler error.

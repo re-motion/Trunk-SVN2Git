@@ -34,11 +34,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class RdbmsProvider : StorageProvider, IRdbmsProviderCommandExecutionContext
   {
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
+    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
+    private readonly Func<IDbConnection> _connectionFactory;
 
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
-    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
-    private Func<IDbConnection> _connectionFactory;
 
     public RdbmsProvider (
         RdbmsProviderDefinition definition,
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       get
       {
-        // CheckDisposed is not necessary here, because StorageProvider.Definition already checks this.
+        // CheckDisposed is not necessary here, because StorageProvider.StorageProviderDefinition already checks this.
         return (RdbmsProviderDefinition) base.StorageProviderDefinition;
       }
     }
@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> StorageProviderCommandFactory
+    protected IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> StorageProviderCommandFactory
     {
       get { return _storageProviderCommandFactory; }
     }
@@ -331,7 +331,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var multiTimestampLookupCommand = _storageProviderCommandFactory.CreateForMultiTimestampLookup (objectIds);
       var timestampDictionary = multiTimestampLookupCommand.Execute (this).ToDictionary (result => result.ObjectID, result => result.LocatedObject);
 
-      foreach (DataContainer dataContainer in dataContainers)
+      foreach (var dataContainer in dataContainers)
       {
         object timestamp;
         if (!timestampDictionary.TryGetValue (dataContainer.ID, out timestamp))
@@ -366,11 +366,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new ObjectID (classDefinition.ID, Guid.NewGuid());
     }
 
-    public virtual string GetIDColumnTypeName ()
-    {
-      return "uniqueidentifier";
-    }
-
     public virtual TracingDbCommand CreateDbCommand ()
     {
       CheckDisposed();
@@ -399,7 +394,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return CreateDbCommand();
     }
 
-    protected internal RdbmsProviderException CreateRdbmsProviderException (Exception innerException, string formatString, params object[] args)
+    protected RdbmsProviderException CreateRdbmsProviderException (Exception innerException, string formatString, params object[] args)
     {
       return new RdbmsProviderException (string.Format (formatString, args), innerException);
     }

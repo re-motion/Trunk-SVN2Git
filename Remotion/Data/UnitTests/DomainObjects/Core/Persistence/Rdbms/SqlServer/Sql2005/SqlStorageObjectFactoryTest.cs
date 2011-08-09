@@ -33,6 +33,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Linq;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
@@ -66,9 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (result, Is.TypeOf (typeof (RdbmsProvider)));
       Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
       Assert.That (result.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
-      Assert.That (((RdbmsProvider) result).StorageProviderCommandFactory, Is.TypeOf (typeof (RdbmsProviderCommandFactory)));
 
-      var commandFactory = (RdbmsProviderCommandFactory) ((RdbmsProvider) result).StorageProviderCommandFactory;
+      var commandFactory = (RdbmsProviderCommandFactory) PrivateInvoke.GetNonPublicProperty (result, "StorageProviderCommandFactory");
       Assert.That (commandFactory.DbCommandBuilderFactory, Is.TypeOf (typeof (SqlDbCommandBuilderFactory)));
       Assert.That (commandFactory.RdbmsPersistenceModelProvider, Is.TypeOf (typeof (RdbmsPersistenceModelProvider)));
       Assert.That (commandFactory.InfrastructureStoragePropertyDefinitionProvider, Is.TypeOf (typeof (InfrastructureStoragePropertyDefinitionProvider)));
