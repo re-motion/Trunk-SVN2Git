@@ -42,12 +42,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 
       if (propertyDefinition.StorageClass == StorageClass.Persistent)
       {
-        if (propertyDefinition.StoragePropertyDefinition is UnsupportedStoragePropertyDefinition)
+        var unsupportedStoragePropertyDefinition = propertyDefinition.StoragePropertyDefinition as UnsupportedStoragePropertyDefinition;
+        if (unsupportedStoragePropertyDefinition != null)
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               propertyDefinition.PropertyInfo,
-              "The property type '{0}' is not supported by this storage provider.",
-              propertyDefinition.PropertyType.Name);
+              "The property type '{0}' is not supported by this storage provider. {1}",
+              propertyDefinition.PropertyType.Name,
+              unsupportedStoragePropertyDefinition.Message);
         }
       }
       return MappingValidationResult.CreateValidResult();

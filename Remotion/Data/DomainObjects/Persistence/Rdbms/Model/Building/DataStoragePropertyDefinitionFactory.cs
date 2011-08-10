@@ -60,10 +60,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     private IRdbmsStoragePropertyDefinition CreateValueStoragePropertyDefinition (PropertyDefinition propertyDefinition)
     {
-      var storageType = _storageTypeInformationProvider.GetStorageType (propertyDefinition);
-      // TODO Review 4167: Catch NotSupportedException here instead of checking for null.
-      if (storageType == null)
-        return new UnsupportedStoragePropertyDefinition();
+      IStorageTypeInformation storageType;
+      try
+      {
+        storageType = _storageTypeInformationProvider.GetStorageType (propertyDefinition);
+      }
+      catch (NotSupportedException ex)
+      {
+        return new UnsupportedStoragePropertyDefinition (ex.Message);
+      }
 
       var columnDefinition = new ColumnDefinition (
           _storageNameProvider.GetColumnName (propertyDefinition),

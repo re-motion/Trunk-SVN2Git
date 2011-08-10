@@ -98,6 +98,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
+    public void CreateStoragePropertyDefinition_NotSupportedType ()
+    {
+      var propertyDefinition = PropertyDefinitionFactory.Create (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Throw (new NotSupportedException ("Msg."));
+
+      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+
+      Assert.That (result, Is.TypeOf (typeof (UnsupportedStoragePropertyDefinition)));
+    }
+
+    [Test]
     public void CreateStoragePropertyDefinition_ValueProperty ()
     {
       var propertyDefinition = PropertyDefinitionFactory.Create (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);

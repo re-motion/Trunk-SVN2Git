@@ -31,7 +31,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = new UnsupportedStoragePropertyDefinition();
+      _columnDefinition = new UnsupportedStoragePropertyDefinition ("Message");
+    }
+
+    [Test]
+    public void Message ()
+    {
+      Assert.That (_columnDefinition.Message, Is.EqualTo ("Message"));
     }
 
     [Test]
