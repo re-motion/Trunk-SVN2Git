@@ -442,7 +442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     }
 
     [Test]
-    public void Save_DeletedDataContainersAreIgnored ()
+    public void Save_DeletedDataContainersAreIgnoredForUpdateTimestamps ()
     {
       SetDatabaseModifyable();
 
@@ -450,7 +450,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.That (dataContainer, Is.Not.Null);
       dataContainer.Delete ();
 
+      var timestampBefore = dataContainer.Timestamp;
       _persistenceManager.Save (new DataContainerCollection { dataContainer });
+      Assert.That (dataContainer.Timestamp, Is.SameAs (timestampBefore));
 
       Assert.That (() => _persistenceManager.LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1), Throws.TypeOf<ObjectNotFoundException>());
     }

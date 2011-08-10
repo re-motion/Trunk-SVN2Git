@@ -33,7 +33,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using SortOrder = Remotion.Data.DomainObjects.Mapping.SortExpressions.SortOrder;
 
