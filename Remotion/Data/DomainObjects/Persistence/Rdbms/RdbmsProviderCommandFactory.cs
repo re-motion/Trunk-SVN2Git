@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -41,6 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
     private readonly LookupCommandFactory _lookupCommandFactory;
     private readonly SaveCommandFactory _saveCommandFactory;
+    private readonly QueryCommandFactory _queryCommandFactory;
 
     public RdbmsProviderCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
@@ -69,11 +69,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _dbCommandBuilderFactory,
           _rdbmsPersistenceModelProvider,
           _objectReaderFactory,
-          _tableDefinitionFinder,
-          storageTypeInformationProvider,
-          storageProviderDefinition);
+          _tableDefinitionFinder);
       _saveCommandFactory = new SaveCommandFactory (
           _dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder, _infrastructureStoragePropertyDefinitionProvider);
+      _queryCommandFactory = new QueryCommandFactory (
+          storageProviderDefinition, storageTypeInformationProvider, objectReaderFactory, dbCommandBuilderFactory);
     }
 
     public IDbCommandBuilderFactory DbCommandBuilderFactory
@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      return _lookupCommandFactory.CreateForDataContainerQuery (query);
+      return _queryCommandFactory.CreateForDataContainerQuery (query);
     }
 
     public IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext> CreateForMultiTimestampLookup (

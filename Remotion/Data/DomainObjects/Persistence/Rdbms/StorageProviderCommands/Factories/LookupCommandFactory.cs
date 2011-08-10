@@ -21,12 +21,9 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories
@@ -41,33 +38,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private readonly IObjectReaderFactory _objectReaderFactory;
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
-    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
-    private readonly StorageProviderDefinition _storageProviderDefinition;
 
     public LookupCommandFactory (
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
         IObjectReaderFactory objectReaderFactory,
-        ITableDefinitionFinder tableDefinitionFinder,
-        IStorageTypeInformationProvider storageTypeInformationProvider,
-        RdbmsProviderDefinition storageProviderDefinition)
+        ITableDefinitionFinder tableDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("objectReaderFactory", objectReaderFactory);
       ArgumentUtility.CheckNotNull ("tableDefinitionFinder", tableDefinitionFinder);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       _storageProviderCommandFactory = storageProviderCommandFactory;
-      _storageProviderDefinition = storageProviderDefinition;
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _objectReaderFactory = objectReaderFactory;
       _tableDefinitionFinder = tableDefinitionFinder;
-      _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
     public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
@@ -118,20 +107,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           (filterView, continuation) => continuation (filterView.BaseEntity),
           (unionView, continuation) => CreateForIndirectRelationLookup (unionView, foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition),
           (nullEntity, continuation) => CreateForNullRelationLookup());
-    }
-
-    public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)
-    {
-      ArgumentUtility.CheckNotNull ("query", query);
-
-      var dataContainerReader = _objectReaderFactory.CreateDataContainerReader();
-
-      var queryParametersWithType = query.Parameters
-          .Cast<QueryParameter>()
-          .Select (parameter => GetQueryParameterWithType (parameter, _storageTypeInformationProvider, _storageProviderDefinition));
-
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType);
-      return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
     public IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext> CreateForMultiTimestampLookup (
@@ -240,19 +215,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
              select new OrderedColumn (column, sortedProperty.Order);
     }
 
-    // TODO 4217: This is only temporarily a public static method. When RdbmsProvider.ExecuteScalarQuery is moved to here, make method private instance again.
-    public static QueryParameterWithType GetQueryParameterWithType (QueryParameter parameter, IStorageTypeInformationProvider storageTypeInformationProvider, StorageProviderDefinition storageProviderDefinition)
-    {
-      if (parameter.Value is ObjectID)
-      {
-        var objectID = (ObjectID) parameter.Value;
-        if (objectID.StorageProviderDefinition != storageProviderDefinition)
-          parameter = new QueryParameter (parameter.Name, objectID.ToString (), parameter.ParameterType);
-        else
-          parameter = new QueryParameter (parameter.Name, objectID.Value, parameter.ParameterType);
-      }
-
-      return new QueryParameterWithType (parameter, storageTypeInformationProvider.GetStorageType (parameter.Value));
-    }
   }
 }

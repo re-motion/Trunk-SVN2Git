@@ -30,7 +30,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
@@ -48,7 +47,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private TableDefinitionFinder _tableDefinitionFinder;
 
-    private IStorageTypeInformationProvider _storageTypeInformationProviderStrictMock;
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStrictMock;
     private IObjectReaderFactory _objectReaderFactoryStrictMock;
     private IDbCommandBuilder _dbCommandBuilder1Stub;
@@ -80,7 +78,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       _tableDefinitionFinder = new TableDefinitionFinder (_rdbmsPersistenceModelProvider);
 
-      _storageTypeInformationProviderStrictMock = MockRepository.GenerateStrictMock<IStorageTypeInformationProvider>();
       _dbCommandBuilderFactoryStrictMock = MockRepository.GenerateStrictMock<IDbCommandBuilderFactory>();
 
       _objectReaderFactoryStrictMock = MockRepository.GenerateStrictMock<IObjectReaderFactory>();
@@ -90,9 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _dbCommandBuilderFactoryStrictMock,
           _rdbmsPersistenceModelProvider,
           _objectReaderFactoryStrictMock,
-          _tableDefinitionFinder,
-          _storageTypeInformationProviderStrictMock,
-          TestDomainStorageProviderDefinition);
+          _tableDefinitionFinder);
 
       _dbCommandBuilder1Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
       _dbCommandBuilder2Stub = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -443,50 +438,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (result, Is.TypeOf (typeof (FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>)));
       var fixedValueCommand = (FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>) result;
       Assert.That (fixedValueCommand.Value, Is.EqualTo (Enumerable.Empty<DataContainer>()));
-    }
-
-    [Test]
-    public void CreateForDataContainerQuery ()
-    {
-      var type1 = MockRepository.GenerateStub<IStorageTypeInformation> ();
-      var type2 = MockRepository.GenerateStub<IStorageTypeInformation> ();
-      var type3 = MockRepository.GenerateStub<IStorageTypeInformation> ();
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order1.Value)).Return (type1);
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order2.Value)).Return (type2);
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Official1.ToString())).Return (type3);
-      _storageTypeInformationProviderStrictMock.Replay();
-
-      var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      var expectedParametersWithType =
-          new[]
-          {
-              new QueryParameterWithType (
-                  new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType), 
-                  type1),
-              new QueryParameterWithType (_queryParameter2, type2),
-              new QueryParameterWithType (
-                  new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
-                  type3)
-          };
-      _dbCommandBuilderFactoryStrictMock
-          .Expect (stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.List.Equal (expectedParametersWithType)))
-          .Return (commandBuilderStub);
-      _dbCommandBuilderFactoryStrictMock.Replay();
-
-      _objectReaderFactoryStrictMock.Expect (mock => mock.CreateDataContainerReader()).Return (_dataContainerReader1Stub);
-      _objectReaderFactoryStrictMock.Replay();
-
-      var result = _factory.CreateForDataContainerQuery (_queryStub);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations();
-      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
-      _objectReaderFactoryStrictMock.VerifyAllExpectations ();
-
-      Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
-      var command = ((MultiObjectLoadCommand<DataContainer>) result);
-      Assert.That (command.DbCommandBuildersAndReaders.Length, Is.EqualTo (1));
-      Assert.That (command.DbCommandBuildersAndReaders[0].Item1, Is.SameAs (commandBuilderStub));
-      Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.SameAs (_dataContainerReader1Stub));
     }
 
     [Test]

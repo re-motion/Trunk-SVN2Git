@@ -244,7 +244,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var queryParametersWithType =
           query.Parameters.Cast<QueryParameter>().Select (
-              p => LookupCommandFactory.GetQueryParameterWithType (p, _storageTypeInformationProvider, StorageProviderDefinition));
+              p => QueryCommandFactory.GetQueryParameterWithType (p, _storageTypeInformationProvider, StorageProviderDefinition));
 
       var commandBuilder = new QueryDbCommandBuilder (query.Statement, queryParametersWithType, SqlDialect);
       using (var command = commandBuilder.Create (this))
