@@ -43,12 +43,34 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       get { return Array.AsReadOnly (_comparedColumnValues); }
     }
 
+    public void AddParameters (IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+    {
+      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      foreach (var comparedColumnValue in _comparedColumnValues)
+      {
+        IDbDataParameter parameter;
+        if (parameterCache == null || !parameterCache.TryGetValue (comparedColumnValue, out parameter))
+        {
+          parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
+          parameter.ParameterName = GetParameterName (comparedColumnValue, sqlDialect);
+          command.Parameters.Add (parameter);
+
+          if (parameterCache != null)
+            parameterCache.Add (comparedColumnValue, parameter);
+        }
+      }
+    }
+
     public void AppendComparisons (
         StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      AddParameters (command, sqlDialect, parameterCache);
 
       bool first = true;
 
@@ -60,26 +82,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
         statement.Append (sqlDialect.DelimitIdentifier (comparedColumnValue.Column.Name));
         statement.Append (" = ");
 
-        var parameter = GetParameterFromCache(comparedColumnValue, parameterCache);
-        if (parameter==null) {
-          parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
-          parameter.ParameterName = sqlDialect.GetParameterName (comparedColumnValue.Column.Name);
-          if (parameterCache != null)
-            parameterCache.Add (comparedColumnValue, parameter);
-          command.Parameters.Add (parameter);
-        }
-        
-        statement.Append (parameter.ParameterName);
+        statement.Append (GetParameterName (comparedColumnValue, sqlDialect));
 
         first = false;
       }
     }
 
-    private IDbDataParameter GetParameterFromCache (ColumnValue comparedColumnValue, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+    private string GetParameterName (ColumnValue comparedColumnValue, ISqlDialect sqlDialect)
     {
-      if (parameterCache != null && parameterCache.ContainsKey (comparedColumnValue))
-        return parameterCache[comparedColumnValue];
-      return null;
+      return sqlDialect.GetParameterName (comparedColumnValue.Column.Name);
     }
   }
 }

@@ -81,6 +81,73 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
+    public void AddParameters_OneValue ()
+    {
+      var specification = new ComparedColumnsSpecification (new[] { new ColumnValue (_column1, _value1) });
+
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pFirst");
+
+      var parameterStrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
+      parameterStrictMock.Expect (mock => mock.ParameterName = "pFirst");
+      parameterStrictMock.Replay ();
+
+      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock)).Return (0);
+      _parametersCollectionMock.Replay ();
+
+      _storageTypeInformationMock1
+          .Expect (mock => mock.CreateDataParameter (_commandStub, _value1))
+          .Return (parameterStrictMock);
+      _storageTypeInformationMock1.Replay ();
+
+      specification.AddParameters (_commandStub, _sqlDialectStub, null);
+
+      _parametersCollectionMock.VerifyAllExpectations ();
+      parameterStrictMock.VerifyAllExpectations ();
+      _storageTypeInformationMock1.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void AddParameters_MultipleValues ()
+    {
+      var columnValue1 = new ColumnValue (_column1, _value1);
+      var columnValue2 = new ColumnValue (_column2, _value2);
+      var specification = new ComparedColumnsSpecification (new[] { columnValue1, columnValue2 });
+
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pFirst");
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("Second")).Return ("pSecond");
+
+      var parameterStrictMock1 = MockRepository.GenerateStrictMock<IDbDataParameter> ();
+      parameterStrictMock1.Expect (mock => mock.ParameterName = "pFirst");
+      parameterStrictMock1.Replay ();
+
+      var parameterStrictMock2 = MockRepository.GenerateStrictMock<IDbDataParameter> ();
+      parameterStrictMock2.Expect (mock => mock.ParameterName = "pSecond");
+      parameterStrictMock2.Replay ();
+
+      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock1)).Return (0);
+      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock2)).Return (1);
+      _parametersCollectionMock.Replay ();
+
+      _storageTypeInformationMock1
+          .Expect (mock => mock.CreateDataParameter (_commandStub, _value1))
+          .Return (parameterStrictMock1);
+      _storageTypeInformationMock1.Replay ();
+
+      _storageTypeInformationMock2
+          .Expect (mock => mock.CreateDataParameter (_commandStub, _value2))
+          .Return (parameterStrictMock2);
+      _storageTypeInformationMock2.Replay ();
+
+      specification.AddParameters (_commandStub, _sqlDialectStub, _parameterCache);
+
+      _parametersCollectionMock.VerifyAllExpectations ();
+      parameterStrictMock1.VerifyAllExpectations ();
+      parameterStrictMock2.VerifyAllExpectations ();
+      _storageTypeInformationMock1.VerifyAllExpectations ();
+      _storageTypeInformationMock2.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void AppendComparisons_OneValue ()
     {
       var specification = new ComparedColumnsSpecification (new[] { new ColumnValue(_column1, _value1) });
@@ -91,7 +158,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       var parameterStrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
       parameterStrictMock.Expect (mock => mock.ParameterName = "pFirst");
-      parameterStrictMock.Expect (mock => mock.ParameterName).Return ("pFirst");
       parameterStrictMock.Replay();
 
       _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock)).Return (0);
@@ -127,12 +193,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       
       var parameterStrictMock1 = MockRepository.GenerateStrictMock<IDbDataParameter> ();
       parameterStrictMock1.Expect (mock => mock.ParameterName = "pFirst");
-      parameterStrictMock1.Expect (mock => mock.ParameterName).Return ("pFirst");
       parameterStrictMock1.Replay ();
 
       var parameterStrictMock2 = MockRepository.GenerateStrictMock<IDbDataParameter> ();
       parameterStrictMock2.Expect (mock => mock.ParameterName = "pSecond");
-      parameterStrictMock2.Expect (mock => mock.ParameterName).Return ("pSecond");
       parameterStrictMock2.Replay ();
 
       _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock1)).Return (0);
@@ -169,9 +233,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void AppendComparisons_GetParameterFromDictionary ()
     {
       var parameterStrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameterStrictMock.Expect (mock => mock.ParameterName).Return("pParameter");
       var columnValue = new ColumnValue (_column1, _value1);
       var specification = new ComparedColumnsSpecification (new[] { columnValue });
+
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pParameter");
 
       _storageTypeInformationMock1.Replay();
       _parametersCollectionMock.Replay ();

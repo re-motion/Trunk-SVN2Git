@@ -32,5 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
         IDbCommand command,
         ISqlDialect sqlDialect,
         IDictionary<ColumnValue, IDbDataParameter> parameterCache);
+
+    // void AddParameters (IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache);
   }
 }
