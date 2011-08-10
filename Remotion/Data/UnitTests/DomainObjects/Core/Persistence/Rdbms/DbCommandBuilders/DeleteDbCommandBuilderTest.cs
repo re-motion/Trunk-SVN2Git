@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class DeleteDbCommandBuilderTest : SqlProviderBaseTest
   {
-    private IComparedColumnsSpecification _comparedColumnsSpecificationStub;
+    private IComparedColumnsSpecification _comparedColumnsSpecificationStrictMock;
     private ISqlDialect _sqlDialectStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       base.SetUp();
 
-      _comparedColumnsSpecificationStub = MockRepository.GenerateStub<IComparedColumnsSpecification>();
+      _comparedColumnsSpecificationStrictMock = MockRepository.GenerateStrictMock<IComparedColumnsSpecification>();
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _sqlDialectStub.Stub (stub => stub.StatementDelimiter).Return (";");
@@ -63,13 +63,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
       var builder = new DeleteDbCommandBuilder (
           tableDefinition,
-          _comparedColumnsSpecificationStub,
+          _comparedColumnsSpecificationStrictMock,
           _sqlDialectStub);
 
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
-      _comparedColumnsSpecificationStub
-          .Stub (
+      _comparedColumnsSpecificationStrictMock.Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub, null));
+      _comparedColumnsSpecificationStrictMock
+          .Expect (
               stub =>
               stub.AppendComparisons (
                   Arg<StringBuilder>.Is.Anything,
@@ -77,9 +78,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
                   Arg.Is (_sqlDialectStub),
                   Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
+      _comparedColumnsSpecificationStrictMock.Replay();
 
       var result = builder.Create (_commandExecutionContextStub);
 
+      _comparedColumnsSpecificationStrictMock.VerifyAllExpectations();
       Assert.That (result.CommandText, Is.EqualTo ("DELETE FROM [delimited Table] WHERE [ID] = @ID;"));
     }
 
@@ -90,23 +93,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           TestDomainStorageProviderDefinition, new EntityNameDefinition ("customSchema", "Table"));
       var builder = new DeleteDbCommandBuilder (
           tableDefinition,
-          _comparedColumnsSpecificationStub,
+          _comparedColumnsSpecificationStrictMock,
           _sqlDialectStub);
 
       _sqlDialectStub.Expect (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
       _sqlDialectStub.Expect (mock => mock.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
 
-      _comparedColumnsSpecificationStub
-          .Stub (
+      _comparedColumnsSpecificationStrictMock.Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub, null));
+      _comparedColumnsSpecificationStrictMock
+          .Expect (
               stub => stub.AppendComparisons (
                   Arg<StringBuilder>.Is.Anything,
                   Arg.Is (_dbCommandStub),
                   Arg.Is (_sqlDialectStub),
                   Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
+      _comparedColumnsSpecificationStrictMock.Replay ();
 
       var result = builder.Create (_commandExecutionContextStub);
 
+      _comparedColumnsSpecificationStrictMock.VerifyAllExpectations ();
       Assert.That (result.CommandText, Is.EqualTo ("DELETE FROM [delimited customSchema].[delimited Table] WHERE [ID] = @ID;"));
     }
   }

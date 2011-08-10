@@ -94,10 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       _comparedColumnsStrictMock
-          .Expect (stub => stub.AddParameters (
-              Arg.Is (_dbCommandStub),
-              Arg.Is (_sqlDialectStub),
-              Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
+          .Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub, null))
           .Repeat.Once();
       _comparedColumnsStrictMock
           .Expect (stub => stub.AppendComparisons (
@@ -153,10 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       _comparedColumnsStrictMock
-          .Expect (stub => stub.AddParameters (
-              Arg.Is (_dbCommandStub),
-              Arg.Is (_sqlDialectStub),
-              Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
+          .Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub, null))
           .Repeat.Once ();
       _comparedColumnsStrictMock
           .Expect (stub => stub.AppendComparisons (
