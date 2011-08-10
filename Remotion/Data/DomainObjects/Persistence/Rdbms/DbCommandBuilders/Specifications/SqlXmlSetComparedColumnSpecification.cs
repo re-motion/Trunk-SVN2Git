@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       get { return _objectValues; }
     }
 
-    public void AddParameters (IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+    public void AddParameters (IDbCommand command, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
     }
 
     public void AppendComparisons (
-        StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+        StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("command", command);

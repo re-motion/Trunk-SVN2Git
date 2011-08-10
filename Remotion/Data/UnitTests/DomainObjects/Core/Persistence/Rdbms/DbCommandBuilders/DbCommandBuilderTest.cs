@@ -19,7 +19,6 @@ using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
@@ -45,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var command = MockRepository.GenerateStub<IDbCommand>();
       
       var specificationMock = MockRepository.GenerateStrictMock<IComparedColumnsSpecification>();
-      specificationMock.Expect (mock => mock.AddParameters (command, _sqlDialectStub, null));
+      specificationMock.Expect (mock => mock.AddParameters (command, _sqlDialectStub));
       specificationMock
-          .Expect (mock => mock.AppendComparisons (statement, command, _sqlDialectStub, null))
+          .Expect (mock => mock.AppendComparisons (statement, command, _sqlDialectStub))
           .WhenCalled (
               mi =>
               {

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
@@ -64,20 +63,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       statement.Append (SqlDialect.DelimitIdentifier (tableDefinition.TableName.EntityName));
     }
 
-    protected void AppendWhereClause (StringBuilder statement, IComparedColumnsSpecification comparedColumns, IDbCommand command)
-    {
-      AppendWhereClause (statement, comparedColumns, command, null);
-    }
-
     protected void AppendWhereClause (
         StringBuilder statement,
         IComparedColumnsSpecification comparedColumns,
-        IDbCommand command,
-        IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+        IDbCommand command)
     {
       statement.Append (" WHERE ");
-      comparedColumns.AddParameters (command, SqlDialect, parameterCache);
-      comparedColumns.AppendComparisons (statement, command, SqlDialect, parameterCache);
+      comparedColumns.AddParameters (command, SqlDialect);
+      comparedColumns.AppendComparisons (statement, command, SqlDialect);
     }
 
     protected void AppendOrderByClause (StringBuilder statement, IOrderedColumnsSpecification orderedColumnsSpecification)

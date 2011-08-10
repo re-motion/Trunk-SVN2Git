@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       var statement = new StringBuilder();
       bool first = true;
-      _comparedColumns.AddParameters (command, SqlDialect, null);
+      _comparedColumns.AddParameters (command, SqlDialect);
 
       foreach (var table in _unionViewDefinition.GetAllTables())
       {
@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         AppendFromClause (statement, table);
 
         statement.Append (" WHERE ");
-        _comparedColumns.AppendComparisons (statement, command, SqlDialect, null);
+        _comparedColumns.AppendComparisons (statement, command, SqlDialect);
 
         first = false;
       }

@@ -39,8 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IDbCommand _commandStub;
     private ISqlDialect _sqlDialectStub;
     private IDbDataParameter _parameterStub;
-
-
+    
     [SetUp]
     public void SetUp ()
     {
@@ -73,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _parametersCollectionMock.Expect (mock => mock.Add (_parameterStub)).Return (0);
       _parametersCollectionMock.Replay ();
 
-      _specification.AddParameters (_commandStub, _sqlDialectStub, null);
+      _specification.AddParameters (_commandStub, _sqlDialectStub);
 
       _parametersCollectionMock.VerifyAllExpectations();
 
@@ -88,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       _specification = new SqlXmlSetComparedColumnSpecification (_columnDefinition, new[] { _objectValue1, null, _objectValue3 });
 
-      _specification.AddParameters (_commandStub, _sqlDialectStub, null);
+      _specification.AddParameters (_commandStub, _sqlDialectStub);
     }
 
     [Test]
@@ -97,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column")).Return ("[delimited Column]");
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("Column")).Return ("pColumn");
       
-      _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, null);
+      _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub);
 
       Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar') FROM pColumn.nodes('/L/I') T(c))delimiter"));
     }

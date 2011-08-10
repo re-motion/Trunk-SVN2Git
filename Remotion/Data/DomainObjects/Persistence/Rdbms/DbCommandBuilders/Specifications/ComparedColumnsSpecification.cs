@@ -43,28 +43,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       get { return Array.AsReadOnly (_comparedColumnValues); }
     }
 
-    public void AddParameters (IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+    public void AddParameters (IDbCommand command, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       foreach (var comparedColumnValue in _comparedColumnValues)
       {
-        IDbDataParameter parameter;
-        if (parameterCache == null || !parameterCache.TryGetValue (comparedColumnValue, out parameter))
-        {
-          parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
-          parameter.ParameterName = GetParameterName (comparedColumnValue, sqlDialect);
-          command.Parameters.Add (parameter);
-
-          if (parameterCache != null)
-            parameterCache.Add (comparedColumnValue, parameter);
-        }
+        var parameter = comparedColumnValue.Column.StorageTypeInfo.CreateDataParameter (command, comparedColumnValue.Value);
+        parameter.ParameterName = GetParameterName (comparedColumnValue, sqlDialect);
+        command.Parameters.Add (parameter);
       }
     }
 
     public void AppendComparisons (
-        StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache)
+        StringBuilder statement, IDbCommand command, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("command", command);

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using NUnit.Framework;
@@ -94,14 +93,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       _comparedColumnsStrictMock
-          .Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub, null))
+          .Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub))
           .Repeat.Once();
       _comparedColumnsStrictMock
           .Expect (stub => stub.AppendComparisons (
               Arg<StringBuilder>.Is.Anything,
               Arg.Is (_dbCommandStub),
-              Arg.Is (_sqlDialectStub),
-              Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
+              Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[delimited FKID] = pFKID"))
           .Repeat.Once();
       _comparedColumnsStrictMock.Replay();
@@ -150,14 +148,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
 
       _comparedColumnsStrictMock
-          .Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub, null))
+          .Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub))
           .Repeat.Once ();
       _comparedColumnsStrictMock
           .Expect (stub => stub.AppendComparisons (
               Arg<StringBuilder>.Is.Anything,
               Arg.Is (_dbCommandStub),
-              Arg.Is (_sqlDialectStub),
-              Arg<IDictionary<ColumnValue, IDbDataParameter>>.Is.Null))
+              Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[delimited FKID] = pFKID"))
           .Repeat.Times (3);
       _comparedColumnsStrictMock.Replay ();

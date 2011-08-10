@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -41,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private IDataParameterCollection _parametersCollectionMock;
     private IDbCommand _commandStub;
     private ISqlDialect _sqlDialectStub;
-    private Dictionary<ColumnValue, IDbDataParameter> _parameterCache;
 
     [SetUp]
     public void SetUp ()
@@ -60,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _commandStub = MockRepository.GenerateStub<IDbCommand> ();
       _commandStub.Stub (stub => stub.Parameters).Return (_parametersCollectionMock);
 
-      _parameterCache = new Dictionary<ColumnValue, IDbDataParameter>();
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
     }
 
@@ -99,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Return (parameterStrictMock);
       _storageTypeInformationMock1.Replay ();
 
-      specification.AddParameters (_commandStub, _sqlDialectStub, null);
+      specification.AddParameters (_commandStub, _sqlDialectStub);
 
       _parametersCollectionMock.VerifyAllExpectations ();
       parameterStrictMock.VerifyAllExpectations ();
@@ -138,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Return (parameterStrictMock2);
       _storageTypeInformationMock2.Replay ();
 
-      specification.AddParameters (_commandStub, _sqlDialectStub, _parameterCache);
+      specification.AddParameters (_commandStub, _sqlDialectStub);
 
       _parametersCollectionMock.VerifyAllExpectations ();
       parameterStrictMock1.VerifyAllExpectations ();
@@ -157,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pFirst");
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("First")).Return ("[First]");
 
-      specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, null);
+      specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub);
 
       _parametersCollectionMock.VerifyAllExpectations();
       _storageTypeInformationMock1.VerifyAllExpectations();
@@ -180,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("First")).Return ("[First]");
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Second")).Return ("[Second]");
 
-      specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, _parameterCache);
+      specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub);
 
       Assert.That (_statement.ToString (), Is.EqualTo ("<existingtext>[First] = pFirst AND [Second] = pSecond"));
     }
