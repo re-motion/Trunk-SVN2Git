@@ -30,13 +30,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      if (classDefinition.StorageEntityDefinition == null)
+      {
+        throw new RdbmsProviderException (
+            string.Format (
+                "The Rdbms provider classes require a storage definition object of type '{0}' for class-definition '{1}', "
+                + "but that class has no storage definition object.",
+                typeof (IEntityDefinition).Name,
+                classDefinition.ID));
+      }
+
       var storageEntityDefinitionAsIEntityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
       if (storageEntityDefinitionAsIEntityDefinition == null)
       {
-        throw new RdbmsProviderException(
+        throw new RdbmsProviderException (
             string.Format (
-                "The RdbmsProvider expected a storage definition object of type '{0}' for class-definition '{1}', "
-                + "but found a storage definition object of type '{2}'.",
+                "The Rdbms provider classes require a storage definition object of type '{0}' for class-definition '{1}', "
+                + "but that class has a storage definition object of type '{2}'.",
                 typeof (IEntityDefinition).Name,
                 classDefinition.ID,
                 classDefinition.StorageEntityDefinition.GetType().Name));
@@ -49,12 +59,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
+      if (propertyDefinition.StoragePropertyDefinition == null)
+      {
+        throw new MappingException (
+            string.Format (
+                "The Rdbms provider classes require a storage definition object of type '{0}' for property '{1}' of class-definition '{2}', "
+                + "but that property has no storage definition object.",
+                typeof (IRdbmsStoragePropertyDefinition).Name,
+                propertyDefinition.PropertyName,
+                propertyDefinition.ClassDefinition.ID));
+      }
+
       var storagePropertyDefinitionAsIColumnDefinition = propertyDefinition.StoragePropertyDefinition as IRdbmsStoragePropertyDefinition;
       if (storagePropertyDefinitionAsIColumnDefinition == null)
       {
-        throw new RdbmsProviderException(
-          string.Format("The RdbmsProvider expected a storage definition object of type '{0}' for property '{1}' of class-definition '{2}', "
-                + "but found a storage definition object of type '{3}'.",
+        throw new MappingException (
+            string.Format (
+                "The Rdbms provider classes require a storage definition object of type '{0}' for property '{1}' of class-definition '{2}', "
+                + "but that property has a storage definition object of type '{3}'.",
                 typeof (IRdbmsStoragePropertyDefinition).Name,
                 propertyDefinition.PropertyName,
                 propertyDefinition.ClassDefinition.ID,
@@ -63,6 +85,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       return storagePropertyDefinitionAsIColumnDefinition;
     }
-    
   }
 }

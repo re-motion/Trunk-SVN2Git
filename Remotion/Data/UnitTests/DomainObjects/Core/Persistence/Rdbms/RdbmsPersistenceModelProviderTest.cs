@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -52,37 +51,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
-        "The RdbmsProvider expected a storage definition object of type 'IEntityDefinition' for class-definition 'Order', "
-        + "but found a storage definition object of type 'IStorageEntityDefinition*.", MatchType = MessageMatch.Regex)]
-    public void GetEntityDefinition_NoIEntityDefinition ()
+        "The Rdbms provider classes require a storage definition object of type 'IEntityDefinition' for class-definition 'Order', "
+        + "but that class has no storage definition object.")]
+    public void GetEntityDefinition_NullEntityDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      classDefinition.SetStorageEntity (MockRepository.GenerateStub<IStorageEntityDefinition>());
+      Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
       _provider.GetEntityDefinition (classDefinition);
     }
 
     [Test]
-    public void GetColumnDefinition ()
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
+        "The Rdbms provider classes require a storage definition object of type 'IEntityDefinition' for class-definition 'Order', "
+        + "but that class has a storage definition object of type 'FakeStorageEntityDefinition'.")]
+    public void GetEntityDefinition_WrongEntityDefinition ()
     {
-      var columnDefinition = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
+      classDefinition.SetStorageEntity (new FakeStorageEntityDefinition (TestDomainStorageProviderDefinition, "Test"));
 
-      var result = _provider.GetStoragePropertyDefinition (propertyDefinition);
-
-      Assert.That (result, Is.SameAs (columnDefinition));
+      _provider.GetEntityDefinition (classDefinition);
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
-        "The RdbmsProvider expected a storage definition object of type 'IRdbmsStoragePropertyDefinition' for property 'OrderNumber' of class-definition 'Order', "
-        + "but found a storage definition object of type 'IStoragePropertyDefinition*.", MatchType = MessageMatch.Regex)]
-    public void GetColumnDefinition_NoIColumnDefinition ()
+    public void GetStoragePropertyDefinition ()
     {
-      var columnDefinition = MockRepository.GenerateStub<IStoragePropertyDefinition>();
+      var storagePropertyDefinition = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       var propertyDefinition = PropertyDefinitionFactory.Create (
-          _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), columnDefinition);
+          _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), storagePropertyDefinition);
+
+      var result = _provider.GetStoragePropertyDefinition (propertyDefinition);
+
+      Assert.That (result, Is.SameAs (storagePropertyDefinition));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "The Rdbms provider classes require a storage definition object of type 'IRdbmsStoragePropertyDefinition' for property 'OrderNumber' of "
+        + "class-definition 'Order', but that property has no storage definition object.")]
+    public void GetStoragePropertyDefinition_NoDefinition ()
+    {
+      var propertyDefinition = PropertyDefinitionFactory.Create (
+          _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), null);
+      Assert.That (propertyDefinition.StoragePropertyDefinition, Is.Null);
+
+      _provider.GetStoragePropertyDefinition (propertyDefinition);
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "The Rdbms provider classes require a storage definition object of type 'IRdbmsStoragePropertyDefinition' for property 'OrderNumber' of "
+        + "class-definition 'Order', but that property has a storage definition object of type 'FakeStoragePropertyDefinition'.")]
+    public void GetStoragePropertyDefinition_NoRdbmsDefinition ()
+    {
+      var storagePropertyDefinition = new FakeStoragePropertyDefinition ("Test");
+      var propertyDefinition = PropertyDefinitionFactory.Create (
+          _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), storagePropertyDefinition);
 
       _provider.GetStoragePropertyDefinition (propertyDefinition);
     }
