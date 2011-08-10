@@ -437,7 +437,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider,
           ()=>new SqlConnection());
     }
   }

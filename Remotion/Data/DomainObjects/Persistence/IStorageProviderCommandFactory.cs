@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Persistence
@@ -38,6 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence
         RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue, SortExpressionDefinition sortExpressionDefinition);
 
     IStorageProviderCommand<IEnumerable<DataContainer>, TExecutionContext> CreateForDataContainerQuery (IQuery query);
+    IStorageProviderCommand<object, IRdbmsProviderCommandExecutionContext> CreateForScalarQuery (IQuery query);
 
     IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, TExecutionContext> CreateForMultiTimestampLookup (
         IEnumerable<ObjectID> objectIDs); 

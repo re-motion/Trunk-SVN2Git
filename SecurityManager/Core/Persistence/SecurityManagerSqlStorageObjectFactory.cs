@@ -37,14 +37,12 @@ namespace Remotion.SecurityManager.Persistence
         IPersistenceListener persistenceListener,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         IStorageNameProvider storageNameProvider,
-        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
       return
           ObjectFactory.Create<SecurityManagerRdbmsProvider> (
@@ -53,7 +51,6 @@ namespace Remotion.SecurityManager.Persistence
                   storageNameProvider,
                   persistenceListener,
                   commandFactory,
-                  storageTypeInformationProvider,
                   (Func<IDbConnection>) (() => new SqlConnection())));
     }
   }

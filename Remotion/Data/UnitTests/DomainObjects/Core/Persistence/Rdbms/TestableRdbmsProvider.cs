@@ -31,9 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ISqlDialect dialect,
         IPersistenceListener persistenceListener,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider, 
         Func<IDbConnection> connectionFactory)
-      : base (definition, storageNameProvider, dialect, persistenceListener, commandFactory, storageTypeInformationProvider, connectionFactory)
+      : base (definition, storageNameProvider, dialect, persistenceListener, commandFactory, connectionFactory)
     {
 
     }

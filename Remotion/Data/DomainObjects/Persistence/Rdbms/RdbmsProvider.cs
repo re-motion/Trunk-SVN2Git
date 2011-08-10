@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
@@ -34,7 +33,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class RdbmsProvider : StorageProvider, IRdbmsProviderCommandExecutionContext
   {
     private readonly IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactory;
-    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
     private readonly Func<IDbConnection> _connectionFactory;
 
     private TracingDbConnection _connection;
@@ -46,16 +44,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         ISqlDialect sqlDialect,
         IPersistenceListener persistenceListener,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider,
         Func<IDbConnection> connectionFactory)
         : base (definition, storageNameProvider, sqlDialect, persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("connectionFactory", connectionFactory);
 
       _storageProviderCommandFactory = storageProviderCommandFactory;
-      _storageTypeInformationProvider = storageTypeInformationProvider;
       _connectionFactory = connectionFactory;
     }
 
@@ -228,7 +223,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return checkedSequence.ToArray();
     }
 
-    // TODO 4217: Move to factory, then remove _storageTypeInformationProvider field.
     public override object ExecuteScalarQuery (IQuery query)
     {
       CheckDisposed();
@@ -237,22 +231,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var queryParametersWithType =
-          query.Parameters.Cast<QueryParameter>().Select (
-              p => QueryCommandFactory.GetQueryParameterWithType (p, _storageTypeInformationProvider, StorageProviderDefinition));
-
-      var commandBuilder = new QueryDbCommandBuilder (query.Statement, queryParametersWithType, SqlDialect);
-      using (var command = commandBuilder.Create (this))
-      {
-        try
-        {
-          return command.ExecuteScalar();
-        }
-        catch (Exception e)
-        {
-          throw CreateRdbmsProviderException (e, "Error while executing SQL command for query '{0}': {1}", query.ID, e.Message);
-        }
-      }
+      var command = _storageProviderCommandFactory.CreateForScalarQuery (query);
+      return command.Execute (this);
     }
 
     public override ObjectLookupResult<DataContainer> LoadDataContainer (ObjectID id)

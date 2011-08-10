@@ -45,7 +45,6 @@ namespace Remotion.SecurityManager.Persistence
         IStorageNameProvider storageNameProvider,
         IPersistenceListener persistenceListener,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider, 
         Func<IDbConnection> connectionFactory)
         : base (
             definition,
@@ -53,7 +52,6 @@ namespace Remotion.SecurityManager.Persistence
             Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance,
             persistenceListener,
             commandFactory,
-            storageTypeInformationProvider,
             connectionFactory)
     {
       _revisionExtension = new RevisionStorageProviderExtension();

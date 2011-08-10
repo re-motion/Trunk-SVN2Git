@@ -60,7 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           SqlDialect.Instance,
           NullPersistenceListener.Instance,
           _commandFactory,
-          _storageTypeInformationProvider,
           ()=>new SqlConnection());
     }
 

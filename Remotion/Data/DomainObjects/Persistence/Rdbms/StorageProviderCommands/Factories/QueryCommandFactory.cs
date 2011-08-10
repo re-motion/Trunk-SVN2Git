@@ -77,24 +77,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     {
       var queryParametersWithType = query.Parameters
           .Cast<QueryParameter> ()
-          .Select (parameter => GetQueryParameterWithType (parameter, _storageTypeInformationProvider, _storageProviderDefinition));
+          .Select (GetQueryParameterWithType);
 
       return _dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType);
     }
 
-    // TODO 4217: This is only temporarily a public static method. When RdbmsProvider.ExecuteScalarQuery is moved to here, make method private instance again.
-    public static QueryParameterWithType GetQueryParameterWithType (QueryParameter parameter, IStorageTypeInformationProvider storageTypeInformationProvider, StorageProviderDefinition storageProviderDefinition)
+    private QueryParameterWithType GetQueryParameterWithType (QueryParameter parameter)
     {
       if (parameter.Value is ObjectID)
       {
         var objectID = (ObjectID) parameter.Value;
-        if (objectID.StorageProviderDefinition != storageProviderDefinition)
+        if (objectID.StorageProviderDefinition != _storageProviderDefinition)
           parameter = new QueryParameter (parameter.Name, objectID.ToString (), parameter.ParameterType);
         else
           parameter = new QueryParameter (parameter.Name, objectID.Value, parameter.ParameterType);
       }
 
-      return new QueryParameterWithType (parameter, storageTypeInformationProvider.GetStorageType (parameter.Value));
+      return new QueryParameterWithType (parameter, _storageTypeInformationProvider.GetStorageType (parameter.Value));
     }
   }
 }

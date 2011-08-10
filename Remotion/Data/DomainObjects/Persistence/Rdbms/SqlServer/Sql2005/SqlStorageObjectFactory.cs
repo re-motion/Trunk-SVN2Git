@@ -59,21 +59,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageTypeInformationProvider, storageNameProvider);
       var commandFactory = CreateStorageProviderCommandFactory (
           rdbmsProviderDefinition, storageNameProvider, storagePropertyDefinitionFactory, storageTypeInformationProvider);
-      return CreateStorageProvider (persistenceListener, rdbmsProviderDefinition, storageNameProvider, commandFactory, storageTypeInformationProvider);
+      return CreateStorageProvider (persistenceListener, rdbmsProviderDefinition, storageNameProvider, commandFactory);
     }
 
     protected virtual StorageProvider CreateStorageProvider (
         IPersistenceListener persistenceListener,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         IStorageNameProvider storageNameProvider,
-        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
       return
           ObjectFactory.Create<RdbmsProvider> (
@@ -83,7 +81,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
                   SqlDialect.Instance,
                   persistenceListener,
                   commandFactory,
-                  storageTypeInformationProvider,
                   (Func<IDbConnection>) (() => new SqlConnection())));
     }
 

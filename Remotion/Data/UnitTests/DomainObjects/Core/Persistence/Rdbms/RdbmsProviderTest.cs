@@ -30,6 +30,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -88,7 +89,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _dialectStub,
           NullPersistenceListener.Instance,
           _commandFactoryMock,
-          StorageTypeInformationProvider,
           () => _connectionCreatorMock.CreateConnection());
     }
 
@@ -155,13 +155,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void ExecutesCollectionQuery ()
+    public void ExecuteCollectionQuery ()
     {
       var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
       var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
 
       var queryStub = MockRepository.GenerateStub<IQuery>();
       queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
+      queryStub.Stub (stub => stub.QueryType).Return (QueryType.Collection);
       var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>>();
 
       using (_mockRepository.Ordered())
@@ -176,20 +177,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _provider.ExecuteCollectionQuery (queryStub);
 
+      _mockRepository.VerifyAll ();
       Assert.That (result, Is.EqualTo (new[] { dataContainer1, dataContainer2 }));
     }
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "A database query returned duplicates of object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', which is not allowed.")]
-    public void ExecutesCollectionQuery_DuplicatedIDs ()
+    public void ExecuteCollectionQuery_DuplicatedIDs ()
     {
       var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
       var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order1);
 
       var queryStub = MockRepository.GenerateStub<IQuery>();
       queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
-      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>>();
+      queryStub.Stub (stub => stub.QueryType).Return (QueryType.Collection);
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
 
       using (_mockRepository.Ordered())
       {
@@ -205,11 +208,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void ExecutesCollectionQuery_DuplicatedNullValues ()
+    public void ExecuteCollectionQuery_DuplicateNullValues ()
     {
       var queryStub = MockRepository.GenerateStub<IQuery>();
       queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
-      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>>();
+      queryStub.Stub (stub => stub.QueryType).Return (QueryType.Collection);
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>> ();
 
       using (_mockRepository.Ordered())
       {
@@ -223,7 +227,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _provider.ExecuteCollectionQuery (queryStub);
 
+      _mockRepository.VerifyAll ();
       Assert.That (result, Is.EqualTo (new DataContainer[] { null, null }));
+    }
+
+    [Test]
+    public void ExecuteScalarQuery ()
+    {
+      var fakeResult = new object();
+
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
+      queryStub.Stub (stub => stub.QueryType).Return (QueryType.Scalar);
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<object, IRdbmsProviderCommandExecutionContext>> ();
+
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForScalarQuery (queryStub))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (fakeResult);
+      }
+      _mockRepository.ReplayAll ();
+
+      var result = _provider.ExecuteScalarQuery (queryStub);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
@@ -438,7 +469,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider,
           () => new SqlConnection());
       var objectID = DomainObjectIDs.Order1;
       var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");

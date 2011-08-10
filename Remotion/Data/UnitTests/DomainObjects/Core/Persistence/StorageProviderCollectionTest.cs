@@ -45,7 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider,
           ()=>new SqlConnection());
       _collection = new StorageProviderCollection();
     }
@@ -68,7 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           SqlDialect.Instance,
           NullPersistenceListener.Instance,
           CommandFactory,
-          StorageTypeInformationProvider,
           ()=>new SqlConnection());
       Assert.IsFalse (_collection.Contains (copy));
     }
