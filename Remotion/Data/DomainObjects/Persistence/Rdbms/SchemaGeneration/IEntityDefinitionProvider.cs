@@ -21,7 +21,8 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
-  /// <see cref="IEntityDefinitionProvider"/> provides a strategy to get all entity definitions for a collection of <see cref="ClassDefinition"/>s. 
+  /// <see cref="IEntityDefinitionProvider"/> provides a strategy to get all <see cref="IEntityDefinition"/> objects for a collection of 
+  /// <see cref="ClassDefinition"/> instances. Reimplement this interface to influence which entities are processed by <see cref="ScriptGenerator"/>.
   /// </summary>
   public interface IEntityDefinitionProvider
   {

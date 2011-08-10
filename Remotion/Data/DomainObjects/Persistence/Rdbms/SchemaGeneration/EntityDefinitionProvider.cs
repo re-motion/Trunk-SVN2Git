@@ -23,7 +23,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
-  /// <see cref="EntityDefinitionProvider"/> returns a <see cref="IEntityDefinition"/>s for the <see cref="ClassDefinition"/>s.
+  /// <see cref="EntityDefinitionProvider"/> returns a sequence of <see cref="IEntityDefinition"/> for the given <see cref="ClassDefinition"/> 
+  /// instances.
   /// </summary>
   public class EntityDefinitionProvider : IEntityDefinitionProvider
   {
