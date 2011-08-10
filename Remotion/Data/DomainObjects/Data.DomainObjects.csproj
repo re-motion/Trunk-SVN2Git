@@ -266,6 +266,7 @@
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\UpdatedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsProviderCommandExecutionContext.cs" />
+    <Compile Include="Persistence\Rdbms\StorageProviderCommands\ScalarValueLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\LookupCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IInfrastructureStoragePropertyDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\InfrastructureStoragePropertyDefinitionProvider.cs" />
