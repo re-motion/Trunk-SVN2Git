@@ -54,6 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private IDbConnection _connectionStub;
     private IDbTransaction _transactionStub;
+    private IDbCommand _commandMock;
 
     private IConnectionCreator _connectionCreatorMock;
     private TestableRdbmsProvider _provider;
@@ -76,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _connectionStub = MockRepository.GenerateStub<IDbConnection> ();
       _connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
-
       _transactionStub = _mockRepository.Stub<IDbTransaction> ();
+      _commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
 
       _connectionCreatorMock = _mockRepository.StrictMock<IConnectionCreator>();
 
@@ -513,17 +514,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _provider.Connect();
       _provider.BeginTransaction();
 
-      var commandMock = MockRepository.GenerateStrictMock<IDbCommand>();
-      _connectionStub.Stub (stub => stub.CreateCommand()).Return (commandMock);
+      _connectionStub.Stub (stub => stub.CreateCommand()).Return (_commandMock);
 
-      commandMock.Expect (mock => mock.Connection = _connectionStub);
-      commandMock.Expect (mock => mock.Transaction = _transactionStub);
-      commandMock.Replay();
+      _commandMock.Expect (mock => mock.Connection = _connectionStub);
+      _commandMock.Expect (mock => mock.Transaction = _transactionStub);
+      _commandMock.Replay();
 
       var result = _provider.CreateDbCommand ();
 
-      commandMock.VerifyAllExpectations();
-      Assert.That (result.WrappedInstance, Is.SameAs (commandMock));
+      _commandMock.VerifyAllExpectations();
+      Assert.That (result.WrappedInstance, Is.SameAs (_commandMock));
     }
 
     [Test]
@@ -534,17 +534,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _provider.Connect ();
 
-      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
-      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (_commandMock);
 
-      commandMock.Expect (mock => mock.Connection = _connectionStub);
-      commandMock.Expect (mock => mock.Transaction = null);
-      commandMock.Replay ();
+      _commandMock.Expect (mock => mock.Connection = _connectionStub);
+      _commandMock.Expect (mock => mock.Transaction = null);
+      _commandMock.Replay ();
 
       var result = _provider.CreateDbCommand ();
 
-      commandMock.VerifyAllExpectations ();
-      Assert.That (result.WrappedInstance, Is.SameAs (commandMock));
+      _commandMock.VerifyAllExpectations ();
+      Assert.That (result.WrappedInstance, Is.SameAs (_commandMock));
     }
 
     [Test]
@@ -563,17 +562,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _provider.Connect ();
 
-      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
-      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (_commandMock);
 
       var exception = new Exception();
-      commandMock.Expect (mock => mock.Connection = _connectionStub).Throw (exception);
-      commandMock.Expect (mock => mock.Dispose());
-      commandMock.Replay ();
+      _commandMock.Expect (mock => mock.Connection = _connectionStub).Throw (exception);
+      _commandMock.Expect (mock => mock.Dispose());
+      _commandMock.Replay ();
 
       Assert.That (() => _provider.CreateDbCommand(), Throws.Exception.SameAs (exception));
 
-      commandMock.VerifyAllExpectations ();
+      _commandMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -584,18 +582,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _provider.Connect ();
 
-      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
-      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (_commandMock);
 
       var exception = new Exception ();
-      commandMock.Expect (mock => mock.Connection = _connectionStub);
-      commandMock.Expect (mock => mock.Transaction = null).Throw (exception);
-      commandMock.Expect (mock => mock.Dispose ());
-      commandMock.Replay ();
+      _commandMock.Expect (mock => mock.Connection = _connectionStub);
+      _commandMock.Expect (mock => mock.Transaction = null).Throw (exception);
+      _commandMock.Expect (mock => mock.Dispose ());
+      _commandMock.Replay ();
 
       Assert.That (() => _provider.CreateDbCommand (), Throws.Exception.SameAs (exception));
 
-      commandMock.VerifyAllExpectations ();
+      _commandMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -604,6 +601,74 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       _provider.Dispose ();
       _provider.CreateDbCommand ();
+    }
+
+    [Test]
+    public void ExecuteReader ()
+    {
+      var dataReaderStub = MockRepository.GenerateStub<IDataReader>();
+      _commandMock.Expect (mock => mock.ExecuteReader (CommandBehavior.SequentialAccess | CommandBehavior.KeyInfo)).Return (dataReaderStub);
+      _commandMock.Replay();
+
+      var result = _provider.ExecuteReader (_commandMock, CommandBehavior.SequentialAccess | CommandBehavior.KeyInfo);
+
+      _commandMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (dataReaderStub));
+    }
+
+    [Test]
+    public void ExecuteReader_Exception ()
+    {
+      var exception = new Exception("Test");
+      _commandMock.Expect (mock => mock.ExecuteReader (CommandBehavior.SequentialAccess | CommandBehavior.KeyInfo)).Throw (exception);
+      _commandMock.Replay ();
+
+      Assert.That (() => _provider.ExecuteReader (_commandMock, CommandBehavior.SequentialAccess | CommandBehavior.KeyInfo), 
+          Throws.TypeOf<RdbmsProviderException>()
+              .With.Message.EqualTo ("Error while executing SQL command: Test")
+              .And.InnerException.SameAs (exception));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDisposedException))]
+    public void ExecuteReader_ChecksDisposed ()
+    {
+      _provider.Dispose ();
+      _provider.ExecuteReader (_commandMock, CommandBehavior.SequentialAccess | CommandBehavior.KeyInfo);
+    }
+
+    [Test]
+    public void ExecuteScalar ()
+    {
+      var fakeScalar = new object();
+      _commandMock.Expect (mock => mock.ExecuteScalar ()).Return (fakeScalar);
+      _commandMock.Replay ();
+
+      var result = _provider.ExecuteScalar (_commandMock);
+
+      _commandMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeScalar));
+    }
+
+    [Test]
+    public void ExecuteScalar_Exception ()
+    {
+      var exception = new Exception ("Test");
+      _commandMock.Expect (mock => mock.ExecuteScalar ()).Throw (exception);
+      _commandMock.Replay ();
+
+      Assert.That (() => _provider.ExecuteScalar (_commandMock),
+          Throws.TypeOf<RdbmsProviderException> ()
+              .With.Message.EqualTo ("Error while executing SQL command: Test")
+              .And.InnerException.SameAs (exception));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDisposedException))]
+    public void ExecuteScalar_ChecksDisposed ()
+    {
+      _provider.Dispose ();
+      _provider.ExecuteScalar (_commandMock);
     }
   }
 }

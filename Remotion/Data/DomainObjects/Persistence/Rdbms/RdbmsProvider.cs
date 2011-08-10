@@ -389,20 +389,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    //public virtual object ExecuteScalar (IDbCommand command)
-    //{
-    //  CheckDisposed ();
-    //  ArgumentUtility.CheckNotNull ("command", command);
+    public virtual object ExecuteScalar (IDbCommand command)
+    {
+      CheckDisposed ();
+      ArgumentUtility.CheckNotNull ("command", command);
 
-    //  try
-    //  {
-    //    return command.ExecuteScalar ();
-    //  }
-    //  catch (Exception e)
-    //  {
-    //    throw CreateRdbmsProviderException (e, "Error while executing SQL command: " + e.Message);
-    //  }
-    //}
+      try
+      {
+        return command.ExecuteScalar ();
+      }
+      catch (Exception e)
+      {
+        throw CreateRdbmsProviderException (e, "Error while executing SQL command: " + e.Message);
+      }
+    }
 
     protected IDbConnection CreateConnection ()
     {
