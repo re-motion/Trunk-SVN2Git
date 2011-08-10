@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _parametersCollectionMock.Expect (mock => mock.Add (_parameterStub)).Return (0);
       _parametersCollectionMock.Replay ();
 
-      _specification.AddParameters (_commandStub, _sqlDialectStub);
+      _specification.AddParameters (_commandStub, _sqlDialectStub, null);
 
       _parametersCollectionMock.VerifyAllExpectations();
 
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     {
       _specification = new SqlXmlSetComparedColumnSpecification (_columnDefinition, new[] { _objectValue1, null, _objectValue3 });
 
-      _specification.AddParameters (_commandStub, _sqlDialectStub);
+      _specification.AddParameters (_commandStub, _sqlDialectStub, null);
     }
 
     [Test]
@@ -97,24 +97,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column")).Return ("[delimited Column]");
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("Column")).Return ("pColumn");
       
-      _parametersCollectionMock.Expect (mock => mock.Add (_parameterStub)).Return (0);
-      _parametersCollectionMock.Replay ();
-
       _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, null);
 
       Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar') FROM pColumn.nodes('/L/I') T(c))delimiter"));
-      Assert.That (_parameterStub.Value, Is.EqualTo ("<L><I>&lt;Test1</I><I>689</I><I>True</I></L>"));
-      Assert.That (_parameterStub.DbType, Is.EqualTo (DbType.Xml));
-      Assert.That (_parameterStub.ParameterName, Is.EqualTo ("pColumn"));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "SQL Server cannot represent NULL values in an XML data type.")]
-    public void AppendComparisons_NullValue ()
-    {
-      _specification = new SqlXmlSetComparedColumnSpecification (_columnDefinition, new[] { _objectValue1, null, _objectValue3 });
-
-      _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, null);
     }
   }
 }

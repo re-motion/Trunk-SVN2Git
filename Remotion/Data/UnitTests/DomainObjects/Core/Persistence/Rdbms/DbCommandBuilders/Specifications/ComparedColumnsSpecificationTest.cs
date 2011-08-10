@@ -155,25 +155,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _statement.Append ("<existingtext>");
 
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pFirst");
-
-      var parameterStrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameterStrictMock.Expect (mock => mock.ParameterName = "pFirst");
-      parameterStrictMock.Replay();
-
-      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock)).Return (0);
-      _parametersCollectionMock.Replay();
-
-      _storageTypeInformationMock1
-          .Expect (mock => mock.CreateDataParameter (_commandStub, _value1))
-          .Return (parameterStrictMock);
-      _storageTypeInformationMock1.Replay();
-
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("First")).Return ("[First]");
 
       specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, null);
 
       _parametersCollectionMock.VerifyAllExpectations();
-      parameterStrictMock.VerifyAllExpectations ();
       _storageTypeInformationMock1.VerifyAllExpectations();
 
       Assert.That (_statement.ToString(), Is.EqualTo ("<existingtext>[First] = pFirst"));
@@ -191,65 +177,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pFirst");
       _sqlDialectStub.Stub (stub => stub.GetParameterName ("Second")).Return ("pSecond");
       
-      var parameterStrictMock1 = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameterStrictMock1.Expect (mock => mock.ParameterName = "pFirst");
-      parameterStrictMock1.Replay ();
-
-      var parameterStrictMock2 = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      parameterStrictMock2.Expect (mock => mock.ParameterName = "pSecond");
-      parameterStrictMock2.Replay ();
-
-      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock1)).Return (0);
-      _parametersCollectionMock.Expect (mock => mock.Add (parameterStrictMock2)).Return (1);
-      _parametersCollectionMock.Replay ();
-
-      _storageTypeInformationMock1
-          .Expect (mock => mock.CreateDataParameter (_commandStub, _value1))
-          .Return (parameterStrictMock1);
-      _storageTypeInformationMock1.Replay ();
-
-      _storageTypeInformationMock2
-          .Expect (mock => mock.CreateDataParameter (_commandStub, _value2))
-          .Return (parameterStrictMock2);
-      _storageTypeInformationMock2.Replay ();
-
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("First")).Return ("[First]");
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Second")).Return ("[Second]");
 
       specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, _parameterCache);
 
-      _parametersCollectionMock.VerifyAllExpectations ();
-      parameterStrictMock1.VerifyAllExpectations ();
-      parameterStrictMock2.VerifyAllExpectations ();
-      _storageTypeInformationMock1.VerifyAllExpectations ();
-      _storageTypeInformationMock2.VerifyAllExpectations ();
-      Assert.That (_parameterCache.Count, Is.EqualTo (2));
-      Assert.That (_parameterCache[columnValue1], Is.SameAs (parameterStrictMock1));
-      Assert.That (_parameterCache[columnValue2], Is.SameAs (parameterStrictMock2));
       Assert.That (_statement.ToString (), Is.EqualTo ("<existingtext>[First] = pFirst AND [Second] = pSecond"));
     }
-
-    [Test]
-    public void AppendComparisons_GetParameterFromDictionary ()
-    {
-      var parameterStrictMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
-      var columnValue = new ColumnValue (_column1, _value1);
-      var specification = new ComparedColumnsSpecification (new[] { columnValue });
-
-      _sqlDialectStub.Stub (stub => stub.GetParameterName ("First")).Return ("pParameter");
-
-      _storageTypeInformationMock1.Replay();
-      _parametersCollectionMock.Replay ();
-      _parameterCache.Add (columnValue, parameterStrictMock);
-      _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("First")).Return ("[First]");
-
-      specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub, _parameterCache);
-
-      _storageTypeInformationMock1.VerifyAllExpectations();
-      _parametersCollectionMock.VerifyAllExpectations ();
-      parameterStrictMock.VerifyAllExpectations ();
-      Assert.That (_statement.ToString (), Is.EqualTo ("[First] = pParameter"));
-    }
-
   }
 }

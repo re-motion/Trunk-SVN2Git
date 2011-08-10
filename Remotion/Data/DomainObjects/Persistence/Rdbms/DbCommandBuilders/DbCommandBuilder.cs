@@ -76,6 +76,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         IDictionary<ColumnValue, IDbDataParameter> parameterCache)
     {
       statement.Append (" WHERE ");
+      comparedColumns.AddParameters (command, SqlDialect, parameterCache);
       comparedColumns.AppendComparisons (statement, command, SqlDialect, parameterCache);
     }
 

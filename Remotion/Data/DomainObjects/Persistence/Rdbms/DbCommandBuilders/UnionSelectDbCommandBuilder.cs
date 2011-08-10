@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
@@ -84,7 +83,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
 
       var statement = new StringBuilder();
       bool first = true;
-      var parameterCache = new Dictionary<ColumnValue, IDbDataParameter>();
+      _comparedColumns.AddParameters (command, SqlDialect, null);
+
       foreach (var table in _unionViewDefinition.GetAllTables())
       {
         if (!first)
@@ -92,8 +92,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
         
         AppendSelectClause (statement, fullProjection);
         AppendFromClause (statement, table);
-        AppendWhereClause (statement, _comparedColumns, command, parameterCache);
-        
+
+        statement.Append (" WHERE ");
+        _comparedColumns.AppendComparisons (statement, command, SqlDialect, null);
+
         first = false;
       }
 

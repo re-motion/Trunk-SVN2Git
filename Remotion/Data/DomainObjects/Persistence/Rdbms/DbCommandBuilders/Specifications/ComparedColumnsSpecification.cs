@@ -70,8 +70,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      AddParameters (command, sqlDialect, parameterCache);
-
       bool first = true;
 
       foreach (var comparedColumnValue in _comparedColumnValues)

@@ -27,12 +27,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
   /// </summary>
   public interface IComparedColumnsSpecification
   {
+    void AddParameters (IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache);
     void AppendComparisons (
         StringBuilder statement,
         IDbCommand command,
         ISqlDialect sqlDialect,
         IDictionary<ColumnValue, IDbDataParameter> parameterCache);
-
-    // void AddParameters (IDbCommand command, ISqlDialect sqlDialect, IDictionary<ColumnValue, IDbDataParameter> parameterCache);
   }
 }
