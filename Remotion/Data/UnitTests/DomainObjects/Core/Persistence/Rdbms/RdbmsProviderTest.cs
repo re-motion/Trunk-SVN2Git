@@ -41,24 +41,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   [TestFixture]
   public class RdbmsProviderTest : SqlProviderBaseTest
   {
-    private RdbmsProviderDefinition _definition;
+    public interface IConnectionCreator
+    {
+      IDbConnection CreateConnection ();
+    }
 
     private MockRepository _mockRepository;
 
     private ISqlDialect _dialectStub;
     private IStorageNameProvider _storageNameProviderStub;
     private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _commandFactoryMock;
+
     private IDbConnection _connectionStub;
+    private IDbTransaction _transactionStub;
 
-    private TestableRdbmsProvider _providerWithSqlConnection;
-
-    private TestableRdbmsProvider.IConnectionCreator _connectionCreatorMock;
+    private IConnectionCreator _connectionCreatorMock;
     private TestableRdbmsProvider _provider;
 
     public override void SetUp ()
     {
       base.SetUp();
-      _definition = TestDomainStorageProviderDefinition;
 
       _mockRepository = new MockRepository();
 
@@ -72,145 +74,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _commandFactoryMock = _mockRepository.StrictMock<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
 
-      _connectionStub = _mockRepository.Stub<IDbConnection>();
+      _connectionStub = MockRepository.GenerateStub<IDbConnection> ();
+      _connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
 
-      var sqlConnectionCreatorStub = _mockRepository.Stub<TestableRdbmsProvider.IConnectionCreator>();
-      sqlConnectionCreatorStub.Stub (stub => stub.CreateConnection()).Return (new SqlConnection());
-      sqlConnectionCreatorStub.Replay();
+      _transactionStub = _mockRepository.Stub<IDbTransaction> ();
 
-      _providerWithSqlConnection = new TestableRdbmsProvider (
-          _definition,
-          _storageNameProviderStub,
-          _dialectStub,
-          NullPersistenceListener.Instance,
-          _commandFactoryMock,
-          sqlConnectionCreatorStub,
-          StorageTypeInformationProvider);
-
-      _connectionCreatorMock = _mockRepository.StrictMock<TestableRdbmsProvider.IConnectionCreator>();
+      _connectionCreatorMock = _mockRepository.StrictMock<IConnectionCreator>();
 
       _provider = new TestableRdbmsProvider (
-          _definition,
+          TestDomainStorageProviderDefinition,
           _storageNameProviderStub,
           _dialectStub,
           NullPersistenceListener.Instance,
           _commandFactoryMock,
-          _connectionCreatorMock,
-          StorageTypeInformationProvider);
-    }
-
-    public override void TearDown ()
-    {
-      _providerWithSqlConnection.Dispose();
-      base.TearDown();
-    }
-
-    [Test]
-    public void CreateDbCommand_CreatesCommand ()
-    {
-      _providerWithSqlConnection.Connect();
-      _providerWithSqlConnection.BeginTransaction();
-
-      using (var command = _providerWithSqlConnection.CreateDbCommand())
-      {
-        Assert.That (command.WrappedInstance.Connection, Is.SameAs (_providerWithSqlConnection.Connection.WrappedInstance));
-        Assert.That (command.WrappedInstance.Transaction, Is.SameAs (_providerWithSqlConnection.Transaction.WrappedInstance));
-      }
-    }
-
-    [Test]
-    public void CreateDbCommand_DisposesCommand_WhenCreateDbCommandThrows_InSetConnection ()
-    {
-      var commandMock = MockRepository.GenerateMock<IDbCommand>();
-      commandMock.Expect (mock => mock.Connection = Arg<IDbConnection>.Is.Anything).WhenCalled (mi => { throw new ApplicationException ("Test"); });
-      commandMock.Expect (mock => mock.Dispose());
-      commandMock.Replay();
-
-      var connectionStub = MockRepository.GenerateStub<IDbConnection>();
-      connectionStub.Stub (stub => stub.CreateCommand()).Return (commandMock);
-      connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
-      connectionStub.Replay();
-
-      var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
-          _definition,
-          storageNameProvider,
-          SqlDialect.Instance,
-          NullPersistenceListener.Instance,
-          CommandFactory,
           StorageTypeInformationProvider,
-          (Func<IDbConnection>) (() => connectionStub));
-      providerPartialMock.Replay();
-
-      providerPartialMock.Connect();
-      try
-      {
-        providerPartialMock.CreateDbCommand();
-        Assert.Fail ("Expected ApplicationException");
-      }
-      catch (ApplicationException)
-      {
-        // ok
-      }
-
-      providerPartialMock.VerifyAllExpectations();
-      commandMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void CreateDbCommand_DisposesCommand_WhenCreateDbCommandThrows_InSetTransaction ()
-    {
-      var commandMock = MockRepository.GenerateMock<IDbCommand>();
-      commandMock.Expect (mock => mock.Connection = Arg<IDbConnection>.Is.Anything);
-      commandMock.Expect (mock => mock.Transaction = Arg<IDbTransaction>.Is.Anything).WhenCalled (mi => { throw new ApplicationException ("Test"); });
-      commandMock.Expect (mock => mock.Dispose());
-      commandMock.Replay();
-
-      var connectionStub = MockRepository.GenerateStub<IDbConnection>();
-      connectionStub.Stub (stub => stub.CreateCommand()).Return (commandMock);
-      connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
-      connectionStub.Replay();
-
-      var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
-          _definition,
-          storageNameProvider,
-          SqlDialect.Instance,
-          NullPersistenceListener.Instance,
-          CommandFactory,
-          StorageTypeInformationProvider,
-          (Func<IDbConnection>) (() => connectionStub));
-      
-      providerPartialMock.Replay();
-
-      providerPartialMock.Connect();
-      try
-      {
-        providerPartialMock.CreateDbCommand();
-        Assert.Fail ("Expected ApplicationException");
-      }
-      catch (ApplicationException)
-      {
-        // ok
-      }
-
-      providerPartialMock.VerifyAllExpectations();
-      commandMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Connect must be called before a command can be created.")]
-    public void CreateDbCommand_NotConnected ()
-    {
-      _providerWithSqlConnection.CreateDbCommand();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDisposedException))]
-    public void CreateDbCommand_ChecksDisposed ()
-    {
-      _providerWithSqlConnection.Dispose();
-      _providerWithSqlConnection.CreateDbCommand();
+          () => _connectionCreatorMock.CreateConnection());
     }
 
     [Test]
@@ -221,27 +99,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var timestamp1 = new object();
       var timestamp2 = new object();
 
-      var storageProviderCommandStub =
-          MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>>();
-      storageProviderCommandStub
-          .Stub (stub => stub.Execute (_providerWithSqlConnection))
-          .Return (
-              new[]
-              {
-                  new ObjectLookupResult<object> (DomainObjectIDs.Order1, timestamp1),
-                  new ObjectLookupResult<object> (DomainObjectIDs.Order2, timestamp2)
-              });
+      var commandMock =
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>>();
 
-      _commandFactoryMock
-          .Expect (
-              mock =>
-              mock.CreateForMultiTimestampLookup (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })))
-          .Return (storageProviderCommandStub);
-      _commandFactoryMock.Replay();
+      using (_mockRepository.Ordered())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForMultiTimestampLookup (
+                Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })))
+            .Return (commandMock);
+        commandMock
+            .Expect (stub => stub.Execute (_provider))
+            .Return (
+                new[]
+                {
+                    new ObjectLookupResult<object> (DomainObjectIDs.Order1, timestamp1),
+                    new ObjectLookupResult<object> (DomainObjectIDs.Order2, timestamp2)
+                });
+      }
 
-      _providerWithSqlConnection.UpdateTimestamps (new DataContainerCollection (new[] { dataContainer1, dataContainer2 }, true));
+      _mockRepository.ReplayAll();
 
-      _commandFactoryMock.VerifyAllExpectations();
+      _provider.UpdateTimestamps (new DataContainerCollection (new[] { dataContainer1, dataContainer2 }, true));
+
+      _mockRepository.VerifyAll ();
       Assert.That (dataContainer1.Timestamp, Is.SameAs (timestamp1));
       Assert.That (dataContainer2.Timestamp, Is.SameAs (timestamp2));
     }
@@ -251,19 +133,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         "No timestamp found for object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
     public void UpdateTimestamps_ObjectIDCannotBeFound ()
     {
-      var timestamp = new object();
-      var storageProviderCommandStub =
-          MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>>();
-      storageProviderCommandStub
-          .Stub (stub => stub.Execute (_providerWithSqlConnection))
-          .Return (new[] { new ObjectLookupResult<object> (DomainObjectIDs.Order2, timestamp) });
+      var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var timestamp2 = new object ();
 
+      var commandMock =
+          _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext>> ();
+
+      _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
       _commandFactoryMock
-          .Expect (mock => mock.CreateForMultiTimestampLookup (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 })))
-          .Return (storageProviderCommandStub);
-      _commandFactoryMock.Replay();
+          .Expect (mock => mock.CreateForMultiTimestampLookup (
+              Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 })))
+          .Return (commandMock);
+      commandMock
+          .Expect (stub => stub.Execute (_provider))
+          .Return (new[] { new ObjectLookupResult<object> (DomainObjectIDs.Order2, timestamp2) });
 
-      _providerWithSqlConnection.UpdateTimestamps (new DataContainerCollection (new[] { DataContainer.CreateNew (DomainObjectIDs.Order1) }, true));
+      _mockRepository.ReplayAll ();
+
+      _provider.UpdateTimestamps (new DataContainerCollection (new[] { dataContainer1 }, true));
     }
 
     [Test]
@@ -613,6 +500,110 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           () => _provider.Save (new DataContainerCollection()),
           Throws.Exception.TypeOf<ObjectDisposedException>().With.Message.EqualTo (
               "A disposed StorageProvider cannot be accessed.\r\nObject name: 'StorageProvider'."));
+    }
+
+    [Test]
+    public void CreateDbCommand_WithTransaction ()
+    {
+      _connectionCreatorMock.Stub (mock => mock.CreateConnection()).Return (_connectionStub);
+      _connectionCreatorMock.Replay();
+
+      _connectionStub.Stub (stub => stub.BeginTransaction (_provider.IsolationLevel)).Return (_transactionStub);
+
+      _provider.Connect();
+      _provider.BeginTransaction();
+
+      var commandMock = MockRepository.GenerateStrictMock<IDbCommand>();
+      _connectionStub.Stub (stub => stub.CreateCommand()).Return (commandMock);
+
+      commandMock.Expect (mock => mock.Connection = _connectionStub);
+      commandMock.Expect (mock => mock.Transaction = _transactionStub);
+      commandMock.Replay();
+
+      var result = _provider.CreateDbCommand ();
+
+      commandMock.VerifyAllExpectations();
+      Assert.That (result.WrappedInstance, Is.SameAs (commandMock));
+    }
+
+    [Test]
+    public void CreateDbCommand_NoTransaction ()
+    {
+      _connectionCreatorMock.Stub (mock => mock.CreateConnection ()).Return (_connectionStub);
+      _connectionCreatorMock.Replay ();
+
+      _provider.Connect ();
+
+      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
+      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+
+      commandMock.Expect (mock => mock.Connection = _connectionStub);
+      commandMock.Expect (mock => mock.Transaction = null);
+      commandMock.Replay ();
+
+      var result = _provider.CreateDbCommand ();
+
+      commandMock.VerifyAllExpectations ();
+      Assert.That (result.WrappedInstance, Is.SameAs (commandMock));
+    }
+
+    [Test]
+    public void CreateDbCommand_NoConnection ()
+    {
+      Assert.That (
+          () => _provider.CreateDbCommand (),
+          Throws.InvalidOperationException.With.Message.EqualTo ("Connect must be called before a command can be created."));
+    }
+
+    [Test]
+    public void CreateDbCommand_DisposesCommand_WhenConnectionSetFails ()
+    {
+      _connectionCreatorMock.Stub (mock => mock.CreateConnection ()).Return (_connectionStub);
+      _connectionCreatorMock.Replay ();
+
+      _provider.Connect ();
+
+      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
+      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+
+      var exception = new Exception();
+      commandMock.Expect (mock => mock.Connection = _connectionStub).Throw (exception);
+      commandMock.Expect (mock => mock.Dispose());
+      commandMock.Replay ();
+
+      Assert.That (() => _provider.CreateDbCommand(), Throws.Exception.SameAs (exception));
+
+      commandMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void CreateDbCommand_DisposesCommand_WhenTransactionSetFails ()
+    {
+      _connectionCreatorMock.Stub (mock => mock.CreateConnection ()).Return (_connectionStub);
+      _connectionCreatorMock.Replay ();
+
+      _provider.Connect ();
+
+      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
+      _connectionStub.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+
+      var exception = new Exception ();
+      commandMock.Expect (mock => mock.Connection = _connectionStub);
+      commandMock.Expect (mock => mock.Transaction = null).Throw (exception);
+      commandMock.Expect (mock => mock.Dispose ());
+      commandMock.Replay ();
+
+      Assert.That (() => _provider.CreateDbCommand (), Throws.Exception.SameAs (exception));
+
+      commandMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDisposedException))]
+    public void CreateDbCommand_ChecksDisposed ()
+    {
+      _provider.Dispose ();
+      _provider.CreateDbCommand ();
     }
   }
 }

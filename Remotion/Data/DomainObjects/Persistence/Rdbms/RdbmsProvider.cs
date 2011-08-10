@@ -97,6 +97,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
+    public virtual IsolationLevel IsolationLevel
+    {
+      get { return IsolationLevel.Serializable; }
+    }
+
     protected IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> StorageProviderCommandFactory
     {
       get { return _storageProviderCommandFactory; }
@@ -119,11 +124,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           base.Dispose (disposing);
         }
       }
-    }
-
-    protected IDbConnection CreateConnection ()
-    {
-      return _connectionFactory();
     }
 
     public virtual void Connect ()
@@ -169,11 +169,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         throw CreateRdbmsProviderException (e, "Error while executing BeginTransaction.");
       }
-    }
-
-    public virtual IsolationLevel IsolationLevel
-    {
-      get { return IsolationLevel.Serializable; }
     }
 
     public override void Commit ()
@@ -341,22 +336,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public virtual IDataReader ExecuteReader (IDbCommand command, CommandBehavior behavior)
-    {
-      CheckDisposed();
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckValidEnumValue ("behavior", behavior);
-
-      try
-      {
-        return command.ExecuteReader (behavior);
-      }
-      catch (Exception e)
-      {
-        throw CreateRdbmsProviderException (e, "Error while executing SQL command: " + e.Message);
-      }
-    }
-
     public override ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       CheckDisposed();
@@ -373,7 +352,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (!IsConnected)
         throw new InvalidOperationException ("Connect must be called before a command can be created.");
 
-      TracingDbCommand command = _connection.CreateCommand();
+      var command = _connection.CreateCommand();
 
       try
       {
@@ -392,6 +371,42 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     IDbCommand IRdbmsProviderCommandExecutionContext.CreateDbCommand ()
     {
       return CreateDbCommand();
+    }
+
+    public virtual IDataReader ExecuteReader (IDbCommand command, CommandBehavior behavior)
+    {
+      CheckDisposed ();
+      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckValidEnumValue ("behavior", behavior);
+
+      try
+      {
+        return command.ExecuteReader (behavior);
+      }
+      catch (Exception e)
+      {
+        throw CreateRdbmsProviderException (e, "Error while executing SQL command: " + e.Message);
+      }
+    }
+
+    //public virtual object ExecuteScalar (IDbCommand command)
+    //{
+    //  CheckDisposed ();
+    //  ArgumentUtility.CheckNotNull ("command", command);
+
+    //  try
+    //  {
+    //    return command.ExecuteScalar ();
+    //  }
+    //  catch (Exception e)
+    //  {
+    //    throw CreateRdbmsProviderException (e, "Error while executing SQL command: " + e.Message);
+    //  }
+    //}
+
+    protected IDbConnection CreateConnection ()
+    {
+      return _connectionFactory ();
     }
 
     protected RdbmsProviderException CreateRdbmsProviderException (Exception innerException, string formatString, params object[] args)
