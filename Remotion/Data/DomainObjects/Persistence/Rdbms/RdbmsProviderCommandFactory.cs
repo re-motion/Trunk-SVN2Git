@@ -125,8 +125,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
-
       return _queryCommandFactory.CreateForDataContainerQuery (query);
+    }
+
+    public IStorageProviderCommand<object, IRdbmsProviderCommandExecutionContext> CreateForScalarQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      return _queryCommandFactory.CreateForScalarQuery (query);
     }
 
     public IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext> CreateForMultiTimestampLookup (

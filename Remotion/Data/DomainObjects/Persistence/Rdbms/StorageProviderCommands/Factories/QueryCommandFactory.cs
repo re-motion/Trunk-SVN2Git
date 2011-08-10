@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
@@ -60,12 +61,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader ();
 
+      var dbCommandBuilder = CreateDbCommandBuilder(query);
+      return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
+    }
+
+    public IStorageProviderCommand<object, IRdbmsProviderCommandExecutionContext> CreateForScalarQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      var dbCommandBuilder = CreateDbCommandBuilder (query);
+      return new ScalarValueLoadCommand (dbCommandBuilder);
+    }
+
+    private IDbCommandBuilder CreateDbCommandBuilder (IQuery query)
+    {
       var queryParametersWithType = query.Parameters
           .Cast<QueryParameter> ()
           .Select (parameter => GetQueryParameterWithType (parameter, _storageTypeInformationProvider, _storageProviderDefinition));
 
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType);
-      return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
+      return _dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType);
     }
 
     // TODO 4217: This is only temporarily a public static method. When RdbmsProvider.ExecuteScalarQuery is moved to here, make method private instance again.

@@ -115,6 +115,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
+    public void CreateForScalarQuery ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.Statement).Return ("Statement");
+      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection ());
+
+      var result = _factory.CreateForScalarQuery (queryStub);
+
+      Assert.That (result, Is.Not.Null);
+    }
+
+    [Test]
     public void CreateForMultiTimestampLookup ()
     {
       var result = _factory.CreateForMultiTimestampLookup (new[] { _objectID1, _objectID2, _objectID3 });

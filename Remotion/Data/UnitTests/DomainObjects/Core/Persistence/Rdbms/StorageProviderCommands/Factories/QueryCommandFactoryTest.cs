@@ -98,5 +98,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (command.DbCommandBuildersAndReaders[0].Item1, Is.SameAs (commandBuilderStub));
       Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.SameAs (_dataContainerReader1Stub));
     }
+
+    [Test]
+    public void CreateForScalarQuery ()
+    {
+      var type1 = MockRepository.GenerateStub<IStorageTypeInformation> ();
+      var type2 = MockRepository.GenerateStub<IStorageTypeInformation> ();
+      var type3 = MockRepository.GenerateStub<IStorageTypeInformation> ();
+      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order1.Value)).Return (type1);
+      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order2.Value)).Return (type2);
+      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Official1.ToString ())).Return (type3);
+      _storageTypeInformationProviderStrictMock.Replay ();
+
+      var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+      var expectedParametersWithType =
+          new[]
+          {
+              new QueryParameterWithType (
+                  new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType),
+                  type1),
+              new QueryParameterWithType (_queryParameter2, type2),
+              new QueryParameterWithType (
+                  new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
+                  type3)
+          };
+      _dbCommandBuilderFactoryStrictMock
+          .Expect (
+              stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.List.Equal (expectedParametersWithType)))
+          .Return (commandBuilderStub);
+      _dbCommandBuilderFactoryStrictMock.Replay ();
+
+      var result = _factory.CreateForScalarQuery (_queryStub);
+
+      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.TypeOf (typeof (ScalarValueLoadCommand)));
+      var command = ((ScalarValueLoadCommand) result);
+      Assert.That (command.DbCommandBuilder, Is.SameAs (commandBuilderStub));
+    }
   }
 }
