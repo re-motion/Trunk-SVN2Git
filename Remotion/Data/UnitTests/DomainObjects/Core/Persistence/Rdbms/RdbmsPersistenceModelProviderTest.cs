@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + "but that class has no storage definition object.")]
     public void GetEntityDefinition_NullEntityDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
       _provider.GetEntityDefinition (classDefinition);
