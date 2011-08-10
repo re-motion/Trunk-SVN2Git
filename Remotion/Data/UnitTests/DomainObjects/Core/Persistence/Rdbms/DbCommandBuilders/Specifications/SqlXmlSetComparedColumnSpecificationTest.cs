@@ -66,6 +66,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
+    public void AddParameters ()
+    {
+      _sqlDialectStub.Stub (stub => stub.GetParameterName ("Column")).Return ("pColumn");
+
+      _parametersCollectionMock.Expect (mock => mock.Add (_parameterStub)).Return (0);
+      _parametersCollectionMock.Replay ();
+
+      _specification.AddParameters (_commandStub, _sqlDialectStub);
+
+      _parametersCollectionMock.VerifyAllExpectations();
+
+      Assert.That (_parameterStub.Value, Is.EqualTo ("<L><I>&lt;Test1</I><I>689</I><I>True</I></L>"));
+      Assert.That (_parameterStub.DbType, Is.EqualTo (DbType.Xml));
+      Assert.That (_parameterStub.ParameterName, Is.EqualTo ("pColumn"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "SQL Server cannot represent NULL values in an XML data type.")]
+    public void AddParameters_NullValue ()
+    {
+      _specification = new SqlXmlSetComparedColumnSpecification (_columnDefinition, new[] { _objectValue1, null, _objectValue3 });
+
+      _specification.AddParameters (_commandStub, _sqlDialectStub);
+    }
+
+    [Test]
     public void AppendComparisons ()
     {
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column")).Return ("[delimited Column]");
