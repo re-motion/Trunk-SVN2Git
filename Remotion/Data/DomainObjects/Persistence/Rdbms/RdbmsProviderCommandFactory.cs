@@ -39,6 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IObjectReaderFactory _objectReaderFactory;
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
     private readonly LookupCommandFactory _lookupCommandFactory;
+    private readonly RelationLookupCommandFactory _relationLookupCommandFactory;
     private readonly SaveCommandFactory _saveCommandFactory;
     private readonly QueryCommandFactory _queryCommandFactory;
 
@@ -65,11 +66,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _objectReaderFactory = objectReaderFactory;
       _tableDefinitionFinder = tableDefinitionFinder;
       _lookupCommandFactory = new LookupCommandFactory (
-          this,
           _dbCommandBuilderFactory,
           _rdbmsPersistenceModelProvider,
           _objectReaderFactory,
           _tableDefinitionFinder);
+      _relationLookupCommandFactory = new RelationLookupCommandFactory (
+          this,
+          _dbCommandBuilderFactory,
+          _rdbmsPersistenceModelProvider,
+          _objectReaderFactory);
       _saveCommandFactory = new SaveCommandFactory (
           _dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder, _infrastructureStoragePropertyDefinitionProvider);
       _queryCommandFactory = new QueryCommandFactory (
@@ -119,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("foreignKeyEndPoint", foreignKeyEndPoint);
       ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
 
-      return _lookupCommandFactory.CreateForRelationLookup (foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition);
+      return _relationLookupCommandFactory.CreateForRelationLookup (foreignKeyEndPoint, foreignKeyValue, sortExpressionDefinition);
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)

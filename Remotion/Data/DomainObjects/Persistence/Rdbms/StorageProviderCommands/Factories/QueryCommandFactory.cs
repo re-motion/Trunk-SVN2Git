@@ -29,7 +29,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   /// <summary>
-  /// The <see cref="QueryCommandFactory"/> is responsible to create query commands for a relational database.
+  /// The <see cref="QueryCommandFactory"/> is responsible for creating query commands for a relational database.
   /// </summary>
   public class QueryCommandFactory
   {
