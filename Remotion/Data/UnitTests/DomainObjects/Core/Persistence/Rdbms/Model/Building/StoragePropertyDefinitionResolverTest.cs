@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -24,6 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
 {
@@ -43,7 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [SetUp]
     public void SetUp ()
     {
-      _resolver = new StoragePropertyDefinitionResolver();
+      var persistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
+      _resolver = new StoragePropertyDefinitionResolver (persistenceModelProviderStub);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper ();
       
       _fakeStorageProperyDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Test1");
@@ -53,14 +56,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeStorageProperyDefinition5 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test5");
       _fakeStorageProperyDefinition6 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test6");
       _fakeStorageProperyDefinition7 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test7");
-      
-      _testModel.BaseBasePropertyDefinition.SetStorageProperty (_fakeStorageProperyDefinition1);
-      _testModel.BasePropertyDefinition.SetStorageProperty (_fakeStorageProperyDefinition2);
-      _testModel.TablePropertyDefinition1.SetStorageProperty (_fakeStorageProperyDefinition3);
-      _testModel.TablePropertyDefinition2.SetStorageProperty (_fakeStorageProperyDefinition4);
-      _testModel.DerivedPropertyDefinition1.SetStorageProperty (_fakeStorageProperyDefinition5);
-      _testModel.DerivedPropertyDefinition2.SetStorageProperty (_fakeStorageProperyDefinition6);
-      _testModel.DerivedDerivedPropertyDefinition.SetStorageProperty (_fakeStorageProperyDefinition7);
+
+      persistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (_testModel.BaseBasePropertyDefinition))
+          .Return (_fakeStorageProperyDefinition1);
+      persistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (_testModel.BaseBasePropertyDefinition))
+          .Return (_fakeStorageProperyDefinition1);
+      persistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (_testModel.BasePropertyDefinition))
+          .Return (_fakeStorageProperyDefinition2);
+      persistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (_testModel.TablePropertyDefinition1))
+          .Return (_fakeStorageProperyDefinition3);
+      persistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (_testModel.TablePropertyDefinition2))
+          .Return (_fakeStorageProperyDefinition4);
+      persistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (_testModel.DerivedPropertyDefinition1))
+          .Return (_fakeStorageProperyDefinition5);
+      persistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (_testModel.DerivedPropertyDefinition2))
+          .Return (_fakeStorageProperyDefinition6);
+      persistenceModelProviderStub
+          .Stub (stub => stub.GetStoragePropertyDefinition (_testModel.DerivedDerivedPropertyDefinition))
+          .Return (_fakeStorageProperyDefinition7);
     }
 
     [Test]
@@ -144,53 +164,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var columns = _resolver.GetStoragePropertiesForHierarchy (classDefinition).ToArray ();
 
       Assert.That (columns.Length, Is.EqualTo (1)); //instead of 2
-    }
-
-    [Test]
-    public void GetStorageProperty ()
-    {
-      var result = _resolver.GetStorageProperty (_testModel.BaseBasePropertyDefinition);
-
-      Assert.That (result, Is.SameAs (_fakeStorageProperyDefinition1));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-      "Storage property definition has not been set.\r\n"
-      + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute'\r\n"
-      + "Property: 'StorageSpecificName'")]
-    public void GetStorageProperty_StoragePropertyDefinitionHasNotBeenSet ()
-    {
-      var classDefinition =
-          ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
-              typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
-      var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
-          classDefinition,
-          "Test1", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          propertyInfo,
-          null);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
-      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
-
-      _resolver.GetStorageProperty (propertyDefinition1);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.RdbmsPersistenceModelLoaderTestDomain.BaseBaseClass'\r\n"
-        + "Property: 'BaseBaseProperty'")]
-    public void GetStorageProperty_StoragePropertyDefinitionIsNoRdbmsDefinition ()
-    {
-      var fakeResult = new FakeStoragePropertyDefinition ("Invalid");
-      _testModel.BaseBasePropertyDefinition.SetStorageProperty (fakeResult);
-
-      _resolver.GetStorageProperty (_testModel.BaseBasePropertyDefinition);
     }
   }
 }

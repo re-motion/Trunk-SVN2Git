@@ -25,10 +25,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
   /// The <see cref="StoragePropertyDefinitionResolver"/> is responsible to get all <see cref="IRdbmsStoragePropertyDefinition"/> instances for a 
-  /// <see cref="ClassDefinition"/> (or for one of its <see cref="PropertyDefinition"/> objects).
+  /// <see cref="ClassDefinition"/>.
   /// </summary>
   public class StoragePropertyDefinitionResolver : IStoragePropertyDefinitionResolver
   {
+    private readonly IRdbmsPersistenceModelProvider _persistenceModelProvider;
+
+    public StoragePropertyDefinitionResolver (IRdbmsPersistenceModelProvider persistenceModelProvider)
+    {
+      ArgumentUtility.CheckNotNull ("persistenceModelProvider", persistenceModelProvider);
+      _persistenceModelProvider = persistenceModelProvider;
+    }
+
     public IEnumerable<IRdbmsStoragePropertyDefinition> GetStoragePropertiesForHierarchy (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -42,36 +50,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           (from cd in allClassesInHierarchy
            from PropertyDefinition pd in cd.MyPropertyDefinitions
            where pd.StorageClass == StorageClass.Persistent
-           select GetStorageProperty (pd))
+           select _persistenceModelProvider.GetStoragePropertyDefinition (pd))
            .Distinct ();
 
       return storageProperties;
-    }
-
-    public IRdbmsStoragePropertyDefinition GetStorageProperty (PropertyDefinition propertyDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
-      if (propertyDefinition.StoragePropertyDefinition == null)
-      {
-        throw new InvalidOperationException (
-            string.Format (
-                "Storage property definition has not been set.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
-                propertyDefinition.PropertyInfo.DeclaringType.FullName,
-                propertyDefinition.PropertyInfo.Name));
-      }
-
-      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IRdbmsStoragePropertyDefinition;
-      if (columnDefinition == null)
-      {
-        throw new MappingException (
-            string.Format (
-                "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
-                propertyDefinition.PropertyInfo.DeclaringType.FullName,
-                propertyDefinition.PropertyInfo.Name));
-      }
-
-      return columnDefinition;
     }
   }
 }

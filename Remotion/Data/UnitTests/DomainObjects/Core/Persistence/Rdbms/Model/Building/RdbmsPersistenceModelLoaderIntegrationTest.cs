@@ -69,9 +69,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new SqlStorageTypeInformationProvider (), _storageNameProvider);
       _dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
           new SqlStorageTypeInformationProvider (), _storageNameProvider, _storageProviderDefinitionFinder);
-      _storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver();
+      var persistenceModelProvider = new RdbmsPersistenceModelProvider();
+      _storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver(persistenceModelProvider);
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          _storageNameProvider, _storagePropertyDefinitionResolver, _infrastructureStoragePropertyDefinitionProvider, _storageProviderDefinitionFinder);
+          _storageNameProvider, persistenceModelProvider, _infrastructureStoragePropertyDefinitionProvider, _storageProviderDefinitionFinder);
       _entityDefinitionFactory = new EntityDefinitionFactory (
           _infrastructureStoragePropertyDefinitionProvider,
           _foreignKeyConstraintDefinitionFactory,

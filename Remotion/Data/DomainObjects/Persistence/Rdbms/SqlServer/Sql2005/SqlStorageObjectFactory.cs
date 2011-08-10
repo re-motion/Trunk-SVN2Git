@@ -96,17 +96,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
       var storageNameProvider = CreateStorageNameProvider();
-      var columnDefinitionResolver = CreateColumnDefinitionResolver();
+      var storagePropertyDefinitionResolver = CreateStoragePropertyDefinitionResolver();
       var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (
           storageTypeInformationProvider, storageNameProvider);
       var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (
           storageTypeInformationProvider, storageNameProvider, storageProviderDefinitionFinder);
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
-          storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionFactory, storageProviderDefinitionFinder);
+          storageNameProvider, infrastructureStoragePropertyDefinitionFactory, storageProviderDefinitionFinder);
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionFactory,
           foreignKeyConstraintDefintiionFactory,
-          columnDefinitionResolver,
+          storagePropertyDefinitionResolver,
           storageNameProvider,
           storageProviderDefinition);
 
@@ -189,9 +189,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageProviderDefinition);
     }
 
-    protected virtual IStoragePropertyDefinitionResolver CreateColumnDefinitionResolver ()
+    protected virtual IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver ()
     {
-      return new StoragePropertyDefinitionResolver();
+      return new StoragePropertyDefinitionResolver (CreateRdbmsPersistenceModelProvider());
     }
 
     protected virtual IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (
@@ -218,17 +218,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
     protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
         IStorageNameProvider storageNameProvider,
-        IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver,
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("storagePropertyDefinitionResolver", storagePropertyDefinitionResolver);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
+      var persistenceModelProvider = CreateRdbmsPersistenceModelProvider();
       return new ForeignKeyConstraintDefinitionFactory (
-          storageNameProvider, storagePropertyDefinitionResolver, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
+          storageNameProvider, persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
     }
 
     protected virtual TableScriptBuilder CreateTableBuilder ()

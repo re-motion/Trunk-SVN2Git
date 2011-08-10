@@ -38,10 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
   public class StubStorageFactory : IRdbmsStorageObjectFactory
   {
-    public StubStorageFactory ()
-    {
-    }
-
     public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
@@ -63,13 +59,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
           new SqlStorageTypeInformationProvider(), storageNameProvider);
       var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
           new SqlStorageTypeInformationProvider(), storageNameProvider, storageProviderDefinitionFinder);
-      var columnDefinitionResolver = new StoragePropertyDefinitionResolver();
+      var persistenceModelProvider = new RdbmsPersistenceModelProvider ();
+      var storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver (persistenceModelProvider);
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          storageNameProvider, columnDefinitionResolver, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
+          storageNameProvider, persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
       var entityDefinitionFactory = new EntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionProvider,
           foreignKeyConstraintDefinitionFactory,
-          columnDefinitionResolver,
+          storagePropertyDefinitionResolver,
           storageNameProvider,
           storageProviderDefinition);
 
@@ -78,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
           entityDefinitionFactory,
           dataStoragePropertyDefinitionFactory,
           storageNameProvider,
-          new RdbmsPersistenceModelProvider());
+          persistenceModelProvider);
     }
 
     public IQueryExecutor CreateLinqQueryExecutor (

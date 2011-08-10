@@ -21,6 +21,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
   /// <see cref="IRdbmsPersistenceModelProvider"/> provides methods to retrieve rdbms-specific persistence model definitions from mapping objects.
+  /// The provider only returns existing objects, it doesn't create any.
   /// </summary>
   public interface IRdbmsPersistenceModelProvider
   {
