@@ -311,6 +311,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StorageTypeInformationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ValueSplitting\TypedValueTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsPersistenceModelProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\AllSelectedColumnsSpecificationTest.cs" />
