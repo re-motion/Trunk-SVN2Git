@@ -154,6 +154,7 @@ namespace OBWTest
 
     protected void Session_End (Object sender, EventArgs e)
     {
+      //
     }
 
     protected void Application_End (Object sender, EventArgs e)
