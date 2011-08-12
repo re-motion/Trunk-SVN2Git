@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.ValueSplitting
@@ -25,6 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.ValueSplitting
   public interface IValueSplitter
   {
     IEnumerable<TypedValue> Split (object value);
-    object Combine (IEnumerator<object> splitValueSource);
+    IEnumerable<TypedValue> SplitForComparison (object value);
+    object Combine (IEnumerator splitValueSource);
   }
 }

@@ -15,9 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.ValueSplitting;
 using Rhino.Mocks;
@@ -29,13 +28,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
   {
     private IStorageTypeInformation _storageTypeInformationStub;
     private SimpleValueSplitter _valueSplitter;
-    private IEnumerator<object> _enumeratorStrictMock;
+    private IEnumerator _enumeratorStrictMock;
 
     [SetUp]
     public void SetUp ()
     {
       _storageTypeInformationStub = MockRepository.GenerateStrictMock<IStorageTypeInformation>();
-      _enumeratorStrictMock = MockRepository.GenerateStrictMock<IEnumerator<object>>();
+      _enumeratorStrictMock = MockRepository.GenerateStrictMock<IEnumerator>();
       _valueSplitter = new SimpleValueSplitter (_storageTypeInformationStub);
     }
 
@@ -51,6 +50,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     public void Split_Null ()
     {
       var result = _valueSplitter.Split (null);
+
+      Assert.That (result, Is.EqualTo (new[] { new TypedValue (null, _storageTypeInformationStub) }));
+    }
+
+    [Test]
+    public void SplitForComparison ()
+    {
+      var result = _valueSplitter.SplitForComparison (17);
+
+      Assert.That (result, Is.EqualTo (new[] { new TypedValue (17, _storageTypeInformationStub) }));
+    }
+
+    [Test]
+    public void SplitForComparison_Null ()
+    {
+      var result = _valueSplitter.SplitForComparison (null);
 
       Assert.That (result, Is.EqualTo (new[] { new TypedValue (null, _storageTypeInformationStub) }));
     }

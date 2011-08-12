@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
@@ -23,6 +24,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.ValueSplitting
   /// <summary>
   /// Implements <see cref="IValueSplitter"/> for a simple value which is not split at all.
   /// </summary>
+  /// <remarks>
+  /// As an optimization, <see cref="SimpleStoragePropertyDefinition"/> does not actually use this class.
+  /// </remarks>
   public class SimpleValueSplitter : IValueSplitter
   {
     private readonly IStorageTypeInformation _storageTypeInformation;
@@ -33,12 +37,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.ValueSplitting
       _storageTypeInformation = storageTypeInformation;
     }
 
+    public IStorageTypeInformation StorageTypeInformation
+    {
+      get { return _storageTypeInformation; }
+    }
+
     public IEnumerable<TypedValue> Split (object value)
     {
       return new[] { new TypedValue (value, _storageTypeInformation) };
     }
 
-    public object Combine (IEnumerator<object> splitValueSource)
+    public IEnumerable<TypedValue> SplitForComparison (object value)
+    {
+      return Split (value);
+    }
+
+    public object Combine (IEnumerator splitValueSource)
     {
       ArgumentUtility.CheckNotNull ("splitValueSource", splitValueSource);
 
