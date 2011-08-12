@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
       if (objectID == null)
-        return _valueProperty.SplitValue (null).Concat (_classIDProperty.SplitValue (null)); // TODO 4172: Test
+        return _valueProperty.SplitValue (null).Concat (_classIDProperty.SplitValue (null));
 
       return _valueProperty.SplitValue (objectID.Value).Concat (_classIDProperty.SplitValue (objectID.ClassID));
     }
