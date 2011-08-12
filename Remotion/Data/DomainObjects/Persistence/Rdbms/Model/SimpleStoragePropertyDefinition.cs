@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class SimpleStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
     private readonly ColumnDefinition _columnDefinition;
-    private readonly IValueSplitter _valueSplitter;
+    private readonly SimpleValueSplitter _valueSplitter;
 
     public SimpleStoragePropertyDefinition (ColumnDefinition columnDefinition)
     {
