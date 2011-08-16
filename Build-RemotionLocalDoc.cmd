@@ -1,17 +1,15 @@
 @echo off
-set nant="prereq\Tools\NAnt\bin.net-2.0\nant.exe"
-
+set msbuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
 if not exist remotion.snk goto nosnk
 
-echo Building re-motion and docs using %nant%...
+echo Building re-motion without docs using %msbuild%...
 echo.
 
-%nant% "-f:Remotion.build" "-D:build.temp.root=\Temp\RemotionLocal" "-t:net-3.5" "-nologo" ^
-    "-D:build.update.assembly-info=false" ^
-    clean cleantemp ^
-    doc-internal
-
+%msbuild% build\Remotion.build /t:DocumetnationTestBuild
+    
 if not %ERRORLEVEL%==0 goto build_failed
+
+if not %ERRORLEVEL%==0 goto zip_failed
 
 goto build_succeeded
 

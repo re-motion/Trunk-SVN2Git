@@ -83,4 +83,15 @@
              Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
   </Target>
 
+  <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="CleanProjects;BuildReleaseProjects;AssembleBuildOutput;"
+             Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
+    <MSBuild Projects="%(AllPackages.DocumentationDeclaration)"
+             BuildInParallel="false"
+             Targets="GeneratePublicDocumentation;CopyChmFilesToBinariesDirectory;"
+             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=0.0.0.0;"/>
+  </Target>
+
 </Project>
