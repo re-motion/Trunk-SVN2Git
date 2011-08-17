@@ -53,7 +53,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var relationEndPointDefinition =
           (RelationEndPointDefinition) propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition != null)
-        return CreateRelationStoragePropertyDefinition (propertyDefinition, relationEndPointDefinition);
+      {
+        Assertion.IsTrue (propertyDefinition.PropertyType == typeof (ObjectID));
+        var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+        var relationColumnName = _storageNameProvider.GetRelationColumnName (propertyDefinition);
+        var relationClassIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition);
+        return CreateRelationStoragePropertyDefinition (
+            propertyDefinition, 
+            rightEndPointDefinition.ClassDefinition, 
+            relationColumnName, 
+            relationClassIDColumnName);
+      }
       else
         return CreateValueStoragePropertyDefinition (propertyDefinition);
     }
@@ -81,17 +91,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     }
 
     protected virtual IRdbmsStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
-        PropertyDefinition propertyDefinition,
-        RelationEndPointDefinition relationEndPointDefinition)
+        PropertyDefinition propertyDefinition, 
+        ClassDefinition relatedClassDefinition, string relationColumnName, string relationClassIDColumnName)
     {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("relatedClassDefinition", relatedClassDefinition);
+      ArgumentUtility.CheckNotNullOrEmpty ("relationColumnName", relationColumnName);
+      ArgumentUtility.CheckNotNullOrEmpty ("relationClassIDColumnName", relationClassIDColumnName);
+
+      // TODO 4237: Inject via ctor.
       var leftProvider = _providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition.StorageGroupType, null);
-      var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
-      var rightProvider = _providerDefinitionFinder.GetStorageProviderDefinition (rightEndPointDefinition.ClassDefinition.StorageGroupType, null);
+
+      var rightProvider = _providerDefinitionFinder.GetStorageProviderDefinition (relatedClassDefinition.StorageGroupType, null);
 
       if (leftProvider != rightProvider)
-        return CreateCrossProviderRelationStoragePropertyDefinition(propertyDefinition);
+        return CreateCrossProviderRelationStoragePropertyDefinition (relationColumnName);
       else
-        return CreateSameProviderRelationStoragePropertyDefinition(propertyDefinition, rightEndPointDefinition);
+        return CreateSameProviderRelationStoragePropertyDefinition (relatedClassDefinition, relationColumnName, relationClassIDColumnName);
     }
 
     protected virtual bool MustBeNullable (PropertyDefinition propertyDefinition)
@@ -101,11 +117,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return baseClasses.Any (cd => _storageNameProvider.GetTableName (cd) != null);
     }
 
-    private IRdbmsStoragePropertyDefinition CreateCrossProviderRelationStoragePropertyDefinition (PropertyDefinition propertyDefinition)
+    private IRdbmsStoragePropertyDefinition CreateCrossProviderRelationStoragePropertyDefinition (string relationColumnName)
     {
       var columnDefinition = new ColumnDefinition (
-          _storageNameProvider.GetRelationColumnName (propertyDefinition),
-          propertyDefinition.PropertyType,
+          relationColumnName,
+          typeof (ObjectID),
           _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID(),
           true,
           false);
@@ -113,27 +129,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     }
 
     private IRdbmsStoragePropertyDefinition CreateSameProviderRelationStoragePropertyDefinition (
-        PropertyDefinition propertyDefinition, 
-        IRelationEndPointDefinition rightEndPointDefinition)
+        ClassDefinition relatedClassDefinition, 
+        string relationColumnName, 
+        string relationClassIDColumnName)
     {
       var valueColumnDefinition = new ColumnDefinition (
-          _storageNameProvider.GetRelationColumnName (propertyDefinition),
-          propertyDefinition.PropertyType,
+          relationColumnName,
+          typeof (ObjectID),
           _storageTypeInformationProvider.GetStorageTypeForObjectID(),
           // Relation properties are always nullable within the same storage provider
           true,
           false);
 
-      if (!rightEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy)
+      if (!relatedClassDefinition.IsPartOfInheritanceHierarchy)
       {
         // For ClassDefinitions without inheritance hierarchy, we don't include a ClassID relation column - the ClassID is known anyway
         return new ObjectIDWithoutClassIDStoragePropertyDefinition (
             new SimpleStoragePropertyDefinition (valueColumnDefinition), 
-            rightEndPointDefinition.ClassDefinition);
+            relatedClassDefinition);
       }
       
       var classIDColumnDefinition = new ColumnDefinition (
-          _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
+          relationClassIDColumnName,
           typeof (string),
           _storageTypeInformationProvider.GetStorageTypeForClassID(),
           true,
