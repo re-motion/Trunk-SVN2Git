@@ -20,7 +20,6 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.ValueSplitting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -57,14 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void ColumnDefinition ()
     {
       Assert.That (_storagePropertyDefinition.ColumnDefinition, Is.SameAs (_innerColumnDefinition));
-    }
-
-    [Test]
-    public void ValueSplitter ()
-    {
-      Assert.That (
-          _storagePropertyDefinition.ValueSplitter,
-          Is.TypeOf<SimpleValueSplitter>().With.Property ("StorageTypeInformation").SameAs (_innerColumnDefinition.StorageTypeInfo));
     }
 
     [Test]

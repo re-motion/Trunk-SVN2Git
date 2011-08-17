@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.ValueSplitting;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -29,24 +28,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class SimpleStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
     private readonly ColumnDefinition _columnDefinition;
-    private readonly SimpleValueSplitter _valueSplitter;
 
     public SimpleStoragePropertyDefinition (ColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
       _columnDefinition = columnDefinition;
-      _valueSplitter = new SimpleValueSplitter (columnDefinition.StorageTypeInfo);
     }
 
     public ColumnDefinition ColumnDefinition
     {
       get { return _columnDefinition; }
-    }
-
-    public IValueSplitter ValueSplitter
-    {
-      get { return _valueSplitter; }
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()
@@ -70,20 +62,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
 
       int ordinal = ordinalProvider.GetOrdinal (_columnDefinition, dataReader);
-      // Optimization: Do not use a value splitter to combine the value, it's only one value anyway.
-      var readValue = _columnDefinition.StorageTypeInfo.Read (dataReader, ordinal);
-      return readValue;
+      return _columnDefinition.StorageTypeInfo.Read (dataReader, ordinal);
     }
 
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
-      // Optimization: Do not use a value splitter to split the value, it's only one value anyway.
-      return new[] { new ColumnValue (_columnDefinition, value) };
+      yield return new ColumnValue (_columnDefinition, value);
     }
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
-      // Optimization: Do not use a value splitter to split the value, it's only one value anyway.
       return SplitValue (value);
     }
   }
