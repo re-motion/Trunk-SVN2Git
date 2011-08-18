@@ -41,7 +41,7 @@ namespace Remotion.ServiceLocation
   /// depending on the <see cref="LifetimeKind"/> associated with the type) is cached, so subsequent lookups for the same type are very fast.
   /// </para>
   /// <para>
-  /// The <see cref="DefaultServiceLocator"/> also provides a set of <see cref="O:Register"/> methods that allow to registration of custom 
+  /// The <see cref="DefaultServiceLocator"/> also provides a set of <see cref="DefaultServiceLocator.Register(ServiceConfigurationEntry)"/> methods that allow to registration of custom 
   /// implementations or factories for service types even if those types do not have the <see cref="ConcreteImplementationAttribute"/> applied. 
   /// Applications can use this to override the configuration defined by the <see cref="ConcreteImplementationAttribute"/> and to register 
   /// implementations of service types that do not have the <see cref="ConcreteImplementationAttribute"/> applied. Custom implementations or factories
@@ -53,7 +53,7 @@ namespace Remotion.ServiceLocation
   /// the <see cref="DefaultServiceLocator"/> will try to get an instance for each of the parameters using the same <see cref="IServiceLocator"/>
   /// methods. If a parameter cannot be resolved (because the parameter type has no <see cref="ConcreteImplementationAttribute"/> applied and no
   /// custom implementation or factory was manually registered), an exception is thrown. Dependency cycles are not detected and will lead to a 
-  /// <see cref="StackOverflowException"/> or infinite loop. Use the <see cref="Register(System.Type,System.Func{object})"/> method to manually 
+  /// <see cref="StackOverflowException"/> or infinite loop. Use the <see cref="Register(ServiceConfigurationEntry)"/> method to manually 
   /// register a factory for types that do not apply to these constructor rules.
   /// </para>
   /// <para>
@@ -70,7 +70,7 @@ namespace Remotion.ServiceLocation
 
     /// <summary>
     /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or
-    /// a concrete implementation or factory must have been registered using one of the <see cref="O:Register"/> methods.
+    /// a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods.
     /// </summary>
     /// <param name="serviceType">The type of object requested.</param>
     /// <returns>The requested service instance.</returns>
@@ -95,7 +95,7 @@ namespace Remotion.ServiceLocation
 
     /// <summary>
     /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or
-    /// a concrete implementation or factory must have been registered using one of the <see cref="O:Register"/> methods.
+    /// a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods.
     /// </summary>
     /// <param name="serviceType">The type of object requested.</param>
     /// <param name="key">The name the object was registered with. This parameter is ignored by this implementation of <see cref="IServiceLocator"/>.</param>
@@ -117,7 +117,7 @@ namespace Remotion.ServiceLocation
     /// <returns>
     /// A sequence of instances of the requested <paramref name="serviceType"/>. The <paramref name="serviceType"/> must either have a 
     /// <see cref="ConcreteImplementationAttribute"/>, or a concrete implementation or factory must have been registered using one of the 
-    /// <see cref="O:Register"/> methods. Otherwise, the sequence is empty.
+    /// <see cref="Register(ServiceConfigurationEntry)"/> methods. Otherwise, the sequence is empty.
     /// </returns>
     /// <exception cref="T:Microsoft.Practices.ServiceLocation.ActivationException">There was an error resolving the service instances: The concrete 
     /// implementation could not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
@@ -134,7 +134,7 @@ namespace Remotion.ServiceLocation
 
     /// <summary>
     /// Get an instance of the given <typeparamref name="TService"/> type. The type must either have a <see cref="ConcreteImplementationAttribute"/>, 
-    /// or a concrete implementation or factory must have been registered using one of the <see cref="O:Register"/> methods.
+    /// or a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods.
     /// </summary>
     ///<typeparam name="TService">The type of object requested.</typeparam>
     /// <returns>The requested service instance.</returns>
@@ -156,7 +156,7 @@ namespace Remotion.ServiceLocation
 
     /// <summary>
     /// Get an instance of the given <typeparamref name="TService"/> type. The type must either have a <see cref="ConcreteImplementationAttribute"/>,
-    /// or a concrete implementation or factory must have been registered using one of the <see cref="O:Register"/> methods.
+    /// or a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods.
     /// </summary>
     /// <typeparam name="TService">The type of object requested.</typeparam>
     /// <param name="key">The name the object was registered with. This parameter is ignored by this implementation of <see cref="IServiceLocator"/>.</param>
@@ -176,7 +176,7 @@ namespace Remotion.ServiceLocation
     /// <returns>
     /// A sequence of instances of the requested <typeparamref name="TService"/> type. The <typeparamref name="TService"/> type must either have a 
     /// <see cref="ConcreteImplementationAttribute"/>, or a concrete implementation or factory must have been registered using one of the 
-    /// <see cref="O:Register"/> methods. Otherwise, the sequence is empty.
+    /// <see cref="Register(ServiceConfigurationEntry)"/> methods. Otherwise, the sequence is empty.
     /// </returns>
     /// <exception cref="T:Microsoft.Practices.ServiceLocation.ActivationException">There was an error resolving the service instances: The concrete 
     /// implementation could not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
@@ -191,7 +191,7 @@ namespace Remotion.ServiceLocation
 
     /// <summary>
     /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or
-    /// a concrete implementation or factory must have been registered using one of the <see cref="O:Register"/> methods. Otherwise, 
+    /// a concrete implementation or factory must have been registered using one of the <see cref="Register(ServiceConfigurationEntry)"/> methods. Otherwise, 
     /// the method returns <see langword="null"/>.
     /// </summary>
     /// <param name="serviceType">The type of object requested.</param>

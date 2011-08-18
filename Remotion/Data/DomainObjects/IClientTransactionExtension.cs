@@ -239,7 +239,7 @@ namespace Remotion.Data.DomainObjects
     /// <param name="relationEndPointDefinition">The relation endpoint definition of the relation property being read.</param>
     /// <param name="valueAccess">A value indicating whether the current or the original value is being accessed.</param>
     /// <remarks>
-    ///   Use this method to cancel the operation, whereas <see cref="O:RelationRead"/> should be used to perform actions on its successful execution.
+    ///   Use this method to cancel the operation, whereas <see cref="RelationRead(ClientTransaction, DomainObject, IRelationEndPointDefinition, DomainObject, ValueAccess)"/> should be used to perform actions on its successful execution.
     /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
     void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess);

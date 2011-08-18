@@ -26,7 +26,7 @@ namespace Remotion.Logging
   /// Implementation of interface <see cref="ILog"/> for <b>log4net</b>.
   /// </summary>
   /// <remarks>
-  /// Use <see cref="LogManager"/> to instantiate <see cref="Log4NetLog"/> via <see cref="O:Remotion.Logging.LogManager.GetLogger"/>.
+  /// Use <see cref="LogManager"/> to instantiate <see cref="Log4NetLog"/> via <see cref="Remotion.Logging.LogManager.GetLogger(string)"/>.
   /// <note type="warning">
   /// <see cref="Log4NetLog"/> does not allow event ids outside the range of unsigned 16-bit integers (0 - 65535) and will throw an
   /// <see cref="ArgumentOutOfRangeException"/> if an event id outside this range is encountered. The original message will be logged using a 

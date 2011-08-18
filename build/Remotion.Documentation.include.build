@@ -33,7 +33,6 @@
     <MSBuildCommunityTasksPath>$(SolutionDirectory)prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
-    <NDocToolPath>$(SolutionDirectory)prereq\Tools\NDoc2\</NDocToolPath>
   </PropertyGroup>
 
   <Import Project="Remotion.Tasks.include.build" />
@@ -44,24 +43,19 @@
 
   <Target Name="GenerateInternalDocumentation"  DependsOnTargets="GenerateInternalDocumentationInternal;" >
   </Target>
-
-
+  
   <Target Name="GeneratePublicDocumentationInternal"
-        DependsOnTargets="CreateNDocProperties;CreateDocumentationProperties;CreateDocumentationRootPage;CreateNDocProjectFile;">
+        DependsOnTargets="CreateSandcastleProperties;CreateDocumentationProperties;CreateDocumentationRootPage;CreateSandcastleProjectFile">
 
     <Message Text="Generating public documentation for $(PackageID)" Importance="High"/>
 
-    <Error Text="The property 'DocumentationNDocProjectFile' is not set." Condition="'$(DocumentationNDocProjectFile)' == ''" />
-
-    <MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
-                                  Documenter="MSDN-CHM"
-                                  ProjectFilePath="$(DocumentationNDocProjectFile)"/>
-
+    <MSBuild Projects="$(DocumentationSandcastleProjectFile)"/>
+   
     <Message Text="Done generating public documentation" Importance="High"/>
   </Target>
 
-  <Target Name="GenerateInternalDocumentationInternal"
-        DependsOnTargets="CreateNDocProperties;CreateDocumentationProperties;CreateDocumentationRootPage;CreateNDocProjectFile;">
+  <Target Name="GenerateInternalDocumentationInternal">
+	<!-- DependsOnTargets="CreateNDocProperties;CreateDocumentationProperties;CreateDocumentationRootPage;CreateNDocProjectFile;">
 
     <Message Text="Generating internal documentation for $(PackageID)" Importance="High"/>
 
@@ -72,111 +66,93 @@
                                   ProjectFilePath="$(DocumentationNDocProjectFile)"/>
 
     <Message Text="Done generating internal documentation" Importance="High"/>
+	-->
+	<Error Text="GenerateInternalDocumentationInternal has not been ported to Sandcastle."/>
   </Target>
 
-  <Target Name="CreateNDocProperties">
+  <Target Name="CreateSandcastleProperties">
     <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
 
     <PropertyGroup>
       <DocumentationOutputDirectory>$(BinariesDirectory)net-3.5\doc\</DocumentationOutputDirectory>
       <DocumentationBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DocumentationBinariesDirectory>
       <DocumentationBaseDirectory>$(TempDirectory)doc\</DocumentationBaseDirectory>
-      <DocumentationRootPageFile>$(DocumentationBaseDirectory)GettingStarted.html</DocumentationRootPageFile>
-      <DocumentationNDocProjectFile>$(DocumentationBaseDirectory)documentation.ndoc</DocumentationNDocProjectFile>
+      <DocumentationRootPageTarget>$(DocumentationBaseDirectory)GettingStarted.aml</DocumentationRootPageTarget>
+      <DocumentationSandcastleProjectFile>$(DocumentationBaseDirectory)documentation.$([System.Guid]::NewGuid()).shfbproj</DocumentationSandcastleProjectFile>
     </PropertyGroup>
+    <Message Text="$(DocumentationSandcastleProjectFile)"/>
   </Target>
 
-  <Target Name="CreateNDocProjectFile" DependsOnTargets="CreatePackageProperties;CreateNDocProperties;CreateBinaryFiles;CreateNamespaceSummaryFiles">
+  <Target Name="CreateSandcastleProjectFile" DependsOnTargets="CreatePackageProperties;CreateSandcastleProperties;CreateBinaryFiles;CreateNamespaceSummaryFiles">
     <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
-    <Error Text="The property 'DocumentationNDocProjectFile' is not set." Condition="'$(DocumentationNDocProjectFile)' == ''" />
+    <Error Text="The property 'DocumentationSandcastleProjectFile' is not set." Condition="'$(DocumentationSandcastleProjectFile)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
-      <_standardDocumenterPropertiesFileName>$(MSBuildProjectDirectory)\doc.public.xml</_standardDocumenterPropertiesFileName>
-      <_documenterPropertiesFile>$(DocumentationBaseDirectory)documenterProperties.xml</_documenterPropertiesFile>
+      <_sandcastleProjectTemplate>$(MSBuildProjectDirectory)\SandcastleProjectTemplate.shfbproj</_sandcastleProjectTemplate>
     </PropertyGroup>
 
     <MakeDir Directories="$(DocumentationBaseDirectory)" />
-    <Copy SourceFiles="$(_standardDocumenterPropertiesFileName)" DestinationFiles="$(_documenterPropertiesFile)" />
+    <Copy SourceFiles="$(_sandcastleProjectTemplate)" DestinationFiles="$(DocumentationSandcastleProjectFile)" />
 
     <ItemGroup>
-      <_documenterProperties Remove="@(_documenterProperties)" />
-      <_documenterProperties Include="HtmlHelpName">
+      <_properties Remove="@(_properties)" />
+      <_properties Include="HtmlHelpName">
         <Value>$(ProductNameShort)</Value>
-      </_documenterProperties>
-      <_documenterProperties Include="OutputDirectory">
+      </_properties>
+      <_properties Include="OutputPath">
         <Value>$(DocumentationBaseDirectory)</Value>
-      </_documenterProperties>
-      <_documenterProperties Include="FooterHtml">
-        <Value><![CDATA[<p><a href="$(CompanyUrl)">$(Copyright)</a></p><p>Version: $(Version)</p>]]></Value>
-      </_documenterProperties>
-      <_documenterProperties Include="RootPageFileName">
-        <Value>$(DocumentationRootPageFile)</Value>
-      </_documenterProperties>
-      <_documenterProperties Include="Title">
+      </_properties>
+      <_properties Include="FooterText">
+        <Value><![CDATA[<p>Version: $(Version)</p>]]></Value>
+      </_properties>
+      <_properties Include="HelpTitle">
         <Value>$(ProductName)</Value>
-      </_documenterProperties>
-      <_documenterProperties Include="CopyrightHref">
+      </_properties>
+      <_properties Include="ProductTitle">
+        <Value>$(ProductName)</Value>
+      </_properties>
+      <_properties Include="CopyrightHref">
         <Value>$(CompanyUrl)</Value>
-      </_documenterProperties>
-      <_documenterProperties Include="CopyrightText">
+      </_properties>
+      <_properties Include="CopyrightText">
         <Value>$(Copyright)</Value>
-      </_documenterProperties>
-      <_documenterProperties Include="Version">
+      </_properties>
+      <_properties Include="HelpFileVersion">
         <Value>$(Version)</Value>
-      </_documenterProperties>
+      </_properties>
+      <_properties Include="VendorName">
+        <Value>$(CompanyName)</Value>
+      </_properties>
     </ItemGroup>
 
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
-                                       File="$(_documenterPropertiesFile)"
-                                       XPath="/documenters/documenter[@name='MSDN-CHM']"
-                                       Element="property"
-                                       Key="name"
-                                       Value="%(_documenterProperties.Identity)"/>
+                                       File="$(DocumentationSandcastleProjectFile)"
+                                       XPath="/Project/PropertyGroup"
+                                       Element="%(_properties.Identity)"
+                                       InnerText="%(_properties.Value)"/>
 
+    <Remotion.BuildTools.MSBuildTasks.SandcastleProjectBuilder File="$(DocumentationSandcastleProjectFile)"
+                                                               Assemblies="@(BinaryFiles)"
+                                                               NamespaceSummaryFiles="@(NamespaceSummaryFiles)" />
+
+    <!-- add default namespace in the end to keep the processing simple -->
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute"
-                                       File="$(_documenterPropertiesFile)"
-                                       XPath="/documenters/documenter[@name='MSDN-CHM']/property[@name='%(_documenterProperties.Identity)']"
-                                       Key="value"
-                                       Value="%(_documenterProperties.Value)"/>
-
-    <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(DocumentationNDocProjectFile)"
-                                                         DocumenterFiles="$(_documenterPropertiesFile)"
-                                                         Assemblies="@(BinaryFiles)"
-                                                         NamespaceSummaryFiles="@(NamespaceSummaryFiles)" />
+                                       File="$(DocumentationSandcastleProjectFile)"
+                                       XPath="/Project"
+                                       Key="xmlns"
+                                       Value="http://schemas.microsoft.com/developer/msbuild/2003"/>
   </Target>
-
-  <Target Name="CreateDocumentationRootPage" DependsOnTargets="CreateDocumentationProperties;CreatePackageProperties;CreateNDocProperties">
+ 
+  <Target Name="CreateDocumentationRootPage" DependsOnTargets="CreateDocumentationProperties;CreatePackageProperties;CreateSandcastleProperties">
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
-    <Error Text="The property 'DocumentationRootPageTemplateFile' is not set." Condition="'$(DocumentationRootPageTemplateFile)' == ''" />
-    <Error Text="The property 'DocumentationRootPageFile' is not set." Condition="'$(DocumentationRootPageFile)' == ''" />
+    <Error Text="The property 'DocumentationRootPageSource' is not set." Condition="'$(DocumentationRootPageSource)' == ''" />
+    <Error Text="The property 'DocumentationRootPageTarget' is not set." Condition="'$(DocumentationRootPageTarget)' == ''" />
 
-    <!-- TODO: Use CommunityTasks.TemplateFile -->
-    <ItemGroup>
-      <_fileReplacements Remove="@(_fileReplacements)" />
-      <_fileReplacements Include="companyurl">
-        <Value>$(CompanyName)</Value>
-      </_fileReplacements>
-      <_fileReplacements Include="copyright">
-        <Value>$(Copyright)</Value>
-      </_fileReplacements>
-      <_fileReplacements Include="productname">
-        <Value>$(ProductName)</Value>
-      </_fileReplacements>
-      <_fileReplacements Include="productnameshort">
-        <Value>$(ProductNameShort)</Value>
-      </_fileReplacements>
-      <_fileReplacements Include="versionnumber">
-        <Value>$(Version)</Value>
-      </_fileReplacements>
-    </ItemGroup>
+    <Copy SourceFiles="$(SolutionDirectory)$(DocumentationRootPageSource)" DestinationFiles="$(DocumentationRootPageTarget)" />
 
-    <Copy SourceFiles="$(SolutionDirectory)$(DocumentationRootPageTemplateFile)" DestinationFiles="$(DocumentationRootPageFile)" />
-
-    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace"
-                                           Files="$(DocumentationRootPageFile)"
-                                           RegexPattern="@%(_fileReplacements.Identity)@"
-                                           Replacement="%(_fileReplacements.Value)"/>
+    <!-- copy the content file that references the root page -->
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\ContentLayout.content" DestinationFiles="$(DocumentationBaseDirectory)ContentLayout.content" />
   </Target>
 
   <Target Name="CreatePackageProperties" DependsOnTargets="CreateDocumentationProperties">
@@ -196,7 +172,7 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="CopyChmFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateNDocProperties;CreateDocumentationProperties">
+  <Target Name="CopyChmFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateSandcastleProperties;CreateDocumentationProperties">
     <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
     <Error Text="The property 'DocumentationOutputDirectory' is not set." Condition="'$(DocumentationOutputDirectory)' == ''" />
 

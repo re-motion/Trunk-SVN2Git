@@ -36,7 +36,7 @@ namespace Remotion.ServiceLocation
   /// <see cref="DefaultServiceLocator"/> for more information about this.
   /// </para>
   /// <para>
-  /// Concrete implementations registered with a specific <see cref="DefaultServiceLocator"/> using its <see cref="O:DefaultServiceLocator.Register"/>
+  /// Concrete implementations registered with a specific <see cref="DefaultServiceLocator"/> using its <see cref="DefaultServiceLocator.Register(ServiceConfigurationEntry)"/>
   /// methods are not returned by this class.
   /// </para>
   /// </remarks>

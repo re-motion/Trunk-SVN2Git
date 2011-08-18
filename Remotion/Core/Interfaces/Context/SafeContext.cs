@@ -33,7 +33,7 @@ namespace Remotion.Context
   /// code if needed. Replacements for the storage provider must guarantee that all data stored by the <see cref="SafeContext"/> is thread-local.
   /// </para>
   /// <para>
-  /// The Remotion.Web assembly by default replaces the storage provider with one that stores all data in the <see cref="O:System.Web.HttpContext"/>. 
+  /// The Remotion.Web assembly by default replaces the storage provider with one that stores all data in the <see cref="T:System.Web.HttpContext"/>. 
   /// This ensures that <see cref="SafeContext"/> works as expected in ASP.NET environments when a session migrates between threads.
   /// </para>
   /// </remarks>

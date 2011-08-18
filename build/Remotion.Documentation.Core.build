@@ -22,7 +22,7 @@
   <Target Name="CreateDocumentationProperties">
     <PropertyGroup>
       <PackageID>Core</PackageID>
-      <DocumentationRootPageTemplateFile>Remotion\Core\Core\doc\include\GettingStartedTemplate.html</DocumentationRootPageTemplateFile>
+      <DocumentationRootPageSource>Remotion\Core\Core\doc\include\GettingStartedWithRemotion.aml</DocumentationRootPageSource>
     </PropertyGroup>
   </Target>
 

@@ -37,6 +37,7 @@
 
   <!-- Use tasks of the re-motion BuildTools MSBuild Tasks library -->
   <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder" />
+  <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.SandcastleProjectBuilder" />
 
   <!-- Use tasks of the Codeplex Tasks library-->
   <UsingTask AssemblyFile="$(CodeplexTasksPath)CodePlex.WebServices.Client.dll" TaskName="CreateRelease" />

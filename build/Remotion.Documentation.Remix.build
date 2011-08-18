@@ -22,7 +22,7 @@
   <Target Name="CreateDocumentationProperties">
     <PropertyGroup>
       <PackageID>Remix</PackageID>
-      <DocumentationRootPageTemplateFile>Remotion\Core\Core\doc\include\GettingStartedWithRemixTemplate.html</DocumentationRootPageTemplateFile>
+      <DocumentationRootPageSource>Remotion\Core\Core\doc\include\GettingStartedWithRemix.aml</DocumentationRootPageSource>
     </PropertyGroup>
   </Target>
 

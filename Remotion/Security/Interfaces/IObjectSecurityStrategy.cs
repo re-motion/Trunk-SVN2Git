@@ -33,7 +33,7 @@ namespace Remotion.Security
     /// <param name="requiredAccessTypes">The access rights required for the access to be granted.</param>
     /// <returns><see langword="true"/> if the <paramref name="requiredAccessTypes"/> are granted.</returns>
     /// <remarks>
-    /// Typically called via <see cref="O:Remotion.Security.SecurityClient.HasAccess"/> of 
+    /// Typically called via <see cref="M:Remotion.Security.SecurityClient.HasAccess(ISecurableObject, AccessType[])"/> of 
     /// <see cref="T:Remotion.Security.SecurityClient"/>.
     /// The strategy incorporates <see cref="ISecurityContext"/> in the permission query.
     /// The <paramref name="requiredAccessTypes"/> are determined by the <see cref="T:Remotion.Security.SecurityClient"/>, 

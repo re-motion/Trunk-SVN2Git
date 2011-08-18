@@ -24,7 +24,7 @@ namespace Remotion.Security
 {
   /// <summary>Represents an access type enum value.</summary>
   /// <remarks>
-  /// Use the static <see cref="O:Remotion.Security.AccessType.Get"/> methods to convert an enum to an access type.
+  /// Use the static <see cref="AccessType.Get(Enum)"/> methods to convert an enum to an access type.
   /// <note>For the set of basic access types see <see cref="T:Remotion.Security.GeneralAccessTypes"/>.</note>
   /// </remarks>
   /// <summary>Wraps an enum and exposes the enum information as string.</summary>
