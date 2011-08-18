@@ -89,8 +89,8 @@
              Targets="CleanProjects;BuildReleaseProjects;AssembleBuildOutput;"
              Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
     <MSBuild Projects="%(AllPackages.DocumentationDeclaration)"
-             BuildInParallel="false"
-             Targets="GeneratePublicDocumentation;CopyChmFilesToBinariesDirectory;"
+             BuildInParallel="true"
+             Targets="GeneratePublicDocumentation;"
              Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=0.0.0.0;"/>
   </Target>
 
