@@ -30,7 +30,7 @@
     <CleanIntermediates>False</CleanIntermediates>
     <SyntaxFilters>CSharp</SyntaxFilters>
     <Preliminary>False</Preliminary>
-    <PresentationStyle>vs2005</PresentationStyle>
+    <PresentationStyle>Prototype</PresentationStyle>
     <NamingMethod>HashedMemberName</NamingMethod>
     <IndentHtml>True</IndentHtml>
     <SyntaxFilters>CSharp, VisualBasic, CPlusPlus</SyntaxFilters>

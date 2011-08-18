@@ -90,7 +90,7 @@
              Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
     <MSBuild Projects="%(AllPackages.DocumentationDeclaration)"
              BuildInParallel="true"
-             Targets="GeneratePublicDocumentation;"
+             Targets="GeneratePublicDocumentation;CopyChmFilesToBinariesDirectory"
              Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=0.0.0.0;"/>
   </Target>
 

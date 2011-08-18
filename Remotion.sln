@@ -39,6 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 	ProjectSection(SolutionItems) = preProject
 		Build-RemotionLocal.cmd = Build-RemotionLocal.cmd
 		Build-RemotionLocalDoc.cmd = Build-RemotionLocalDoc.cmd
+		build\ContentLayout.content = build\ContentLayout.content
 		build\doc.internal.xml = build\doc.internal.xml
 		build\doc.public.xml = build\doc.public.xml
 		Generate-Snk.cmd = Generate-Snk.cmd
@@ -62,6 +63,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		build\Remotion.Packaging.SecurityManager.build = build\Remotion.Packaging.SecurityManager.build
 		build\Remotion.Projects.include.build = build\Remotion.Projects.include.build
 		build\Remotion.Tasks.include.build = build\Remotion.Tasks.include.build
+		build\SandcastleProjectTemplate.shfbproj = build\SandcastleProjectTemplate.shfbproj
 	EndProjectSection
 	ProjectSection(FolderStartupServices) = postProject
 		{B4F97281-0DBD-4835-9ED8-7DFB966E87FF} = {B4F97281-0DBD-4835-9ED8-7DFB966E87FF}
