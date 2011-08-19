@@ -878,6 +878,7 @@
     <Compile Include="DomainObjects\Factories\SimpleStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Factories\MappingReflectorFactory.cs" />
+    <Compile Include="DomainObjects\Factories\StorageTypeInformationObjectMother.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\BaseClassWithMixinWithInterface.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\DerivedClassWithMixinWithDuplicateInterface.cs" />

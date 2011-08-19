@@ -23,37 +23,43 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
   /// The <see cref="StorageTypeInformation"/> provides information about the storage type of a value in a relational database.
-  /// In addition, it can create an unnamed <see cref="IDbDataParameter"/> for a value convertible to <see cref="StorageTypeInMemory"/> via 
-  /// <see cref="TypeConverter"/>, or read and convert a value from an <see cref="IDataReader"/>.
+  /// In addition, it can create an unnamed <see cref="IDbDataParameter"/> for a value convertible to <see cref="StorageType"/> via 
+  /// <see cref="DotNetTypeConverter"/>, or read and convert a value from an <see cref="IDataReader"/>.
   /// </summary>
   /// <remarks>
-  /// The <see cref="TypeConverter"/> must be associated with the in-memory .NET type of the stored value. It is used to convert to the database
-  /// representation (represented by <see cref="StorageTypeInMemory"/>) when a <see cref="IDbDataParameter"/> is created, and it is used to convert
-  /// values back to the .NET format when a value is read from an <see cref="IDataReader"/>.
+  /// The <see cref="DotNetTypeConverter"/> must be associated with the in-memory .NET type of the stored value. It is used to convert to the database
+  /// representation (represented by <see cref="StorageType"/>) when a <see cref="IDbDataParameter"/> is created, and it is used to convert
+  /// values back to the <see cref="DotNetType"/> when a value is read from an <see cref="IDataReader"/>.
   /// </remarks>
   public class StorageTypeInformation : IStorageTypeInformation
   {
+    private readonly Type _storageType;
     private readonly string _storageTypeName;
     private readonly DbType _storageDbType;
-    private readonly Type _storageTypeInMemory;
-    private readonly TypeConverter _typeConverter;
+    private readonly Type _dotNetType;
+    private readonly TypeConverter _dotNetTypeConverter;
 
-    public StorageTypeInformation (string storageTypeName, DbType storageDbType, Type storageTypeInMemory, TypeConverter typeConverter)
+    public StorageTypeInformation (Type storageType, string storageTypeName, DbType storageDbType, Type dotNetType, TypeConverter dotNetTypeConverter)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("storageTypeName", storageTypeName);
-      ArgumentUtility.CheckNotNull ("storageTypeInMemory", storageTypeInMemory);
-      ArgumentUtility.CheckNotNull ("typeConverter", typeConverter);
+      ArgumentUtility.CheckNotNull ("storageType", storageType);
+      ArgumentUtility.CheckNotNull ("dotNetType", dotNetType);
+      ArgumentUtility.CheckNotNull ("dotNetTypeConverter", dotNetTypeConverter);
 
       _storageTypeName = storageTypeName;
       _storageDbType = storageDbType;
-      _storageTypeInMemory = storageTypeInMemory;
-      _typeConverter = typeConverter;
+      _dotNetType = dotNetType;
+      _storageType = storageType;
+      _dotNetTypeConverter = dotNetTypeConverter;
     }
 
-    /// <summary>
-    /// Gets the name of the storage type as understood by the underlying database.
-    /// </summary>
-    /// <value>The name of the storage type.</value>
+    /// <inheritdoc />
+    public Type StorageType
+    {
+      get { return _storageType; }
+    }
+
+    /// <inheritdoc />
     public string StorageTypeName
     {
       get { return _storageTypeName; }
@@ -68,40 +74,37 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _storageDbType; }
     }
 
-    /// <summary>
-    /// Gets the storage type as a CLR <see cref="Type"/>; this is the <see cref="Type"/> used to represent values of the storage type in memory.
-    /// </summary>
-    /// <value>The storage type as a CLR <see cref="Type"/>.</value>
-    public Type StorageTypeInMemory
+    /// <inheritdoc />
+    public Type DotNetType
     {
-      get { return _storageTypeInMemory; }
+      get { return _dotNetType; }
     }
 
     /// <summary>
-    /// Gets a <see cref="System.ComponentModel.TypeConverter"/> that can converts a value from the actual .NET type (e.g., an enum type) to the 
-    /// <see cref="StorageTypeInMemory"/> (e.g., <see cref="int"/>) and back.
+    /// Gets a <see cref="System.ComponentModel.TypeConverter"/> that can converts a value from the <see cref="DotNetType"/> (e.g., an enum type) 
+    /// to the <see cref="StorageType"/> (e.g., <see cref="int"/>) and back.
     /// </summary>
     /// <value>The type converter for the actual .NET type.</value>
     /// <remarks>
-    /// The <see cref="TypeConverter"/> is used to convert the values passed into <see cref="CreateDataParameter"/> to the underlying 
-    /// <see cref="StorageTypeInMemory"/>. That way, an enum value passed into <see cref="CreateDataParameter"/> can be converted to the underlying
-    /// <see cref="int"/> type when it is to be written into the database. Conversely, <see cref="Read"/> uses the <see cref="TypeConverter"/> to
-    /// convert values read from the database (which should usually be of the <see cref="StorageTypeInMemory"/>) back to the expected .NET type. That
-    /// way, e.g, an <see cref="int"/> value can become an enum value again.
+    /// The <see cref="DotNetTypeConverter"/> is used to convert the values passed into <see cref="CreateDataParameter"/> to the underlying 
+    /// <see cref="StorageType"/>. That way, an enum value passed into <see cref="CreateDataParameter"/> can be converted to the underlying
+    /// <see cref="int"/> type when it is to be written into the database. Conversely, <see cref="Read"/> uses the <see cref="DotNetTypeConverter"/> to
+    /// convert values read from the database (which should usually be of the <see cref="StorageType"/>) back to the expected 
+    /// <see cref="DotNetType"/>. That way, e.g, an <see cref="int"/> value can become an enum value again.
     /// </remarks>
-    public TypeConverter TypeConverter
+    public TypeConverter DotNetTypeConverter
     {
-      get { return _typeConverter; }
+      get { return _dotNetTypeConverter; }
     }
 
     public IDbDataParameter CreateDataParameter (IDbCommand command, object value)
     {
       ArgumentUtility.CheckNotNull ("command", command);
 
-      var convertedValue = TypeConverter.ConvertTo (value, StorageTypeInMemory);
+      var convertedValue = ConvertToStorageType(value);
 
       var parameter = command.CreateParameter ();
-      parameter.Value = convertedValue ?? DBNull.Value;
+      parameter.Value = convertedValue;
       parameter.DbType = StorageDbType;
       return parameter;
     }
@@ -111,10 +114,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       var value = dataReader[ordinal];
-      if (value == DBNull.Value)
-        value = null;
-
-      return TypeConverter.ConvertFrom (value);
+      return ConvertFromStorageType (value);
     }
+
+    /// <inheritdoc />
+    public object ConvertToStorageType (object dotNetValue)
+    {
+      return DotNetTypeConverter.ConvertTo (dotNetValue, StorageType) ?? DBNull.Value;
+    }
+
+    /// <inheritdoc />
+    public object ConvertFromStorageType (object storageValue)
+    {
+      if (storageValue == DBNull.Value)
+        storageValue = null;
+
+      return DotNetTypeConverter.ConvertFrom (storageValue);
+    }
+
   }
 }

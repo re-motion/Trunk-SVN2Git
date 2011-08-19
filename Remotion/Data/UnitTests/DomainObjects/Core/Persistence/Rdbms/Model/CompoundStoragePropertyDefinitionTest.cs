@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      var storageTypeInformation = new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter());
+      var storageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation();
       _columnDefinition1 = new ColumnDefinition ("Year", typeof (string), storageTypeInformation, true, false);
       _columnDefinition2 = new ColumnDefinition ("Month", typeof (string), storageTypeInformation, true, false);
       _columnDefinition3 = new ColumnDefinition ("Month", typeof (string), storageTypeInformation, true, false);

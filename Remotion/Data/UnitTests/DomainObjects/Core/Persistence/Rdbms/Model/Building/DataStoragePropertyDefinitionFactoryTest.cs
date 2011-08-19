@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Rhino.Mocks;
@@ -62,15 +63,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _propertyInfoStub = typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty");
 
-      _fakeStorageTypeInformationForClassID = new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter ());
-      _fakeStorageTypeInformationForObjectID = new StorageTypeInformation ("guid", DbType.Guid, typeof (Guid), new GuidConverter ());
-      _fakeStorageTypeInformationForSerializedObjectID = new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new StringConverter ());
-      _fakeStorageTypeInformation = new StorageTypeInformation ("storage type", DbType.String, typeof (string), new StringConverter ());
+      _fakeStorageTypeInformationForClassID = StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation();
+      _fakeStorageTypeInformationForObjectID = StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation();
+      _fakeStorageTypeInformationForSerializedObjectID = StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation();
+      _fakeStorageTypeInformation = StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation();
 
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider> ();
       _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForClassID ()).Return (_fakeStorageTypeInformationForClassID);
-      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForObjectID()).Return (_fakeStorageTypeInformationForObjectID);
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForID()).Return (_fakeStorageTypeInformationForObjectID);
       _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForSerializedObjectID()).Return (_fakeStorageTypeInformationForSerializedObjectID);
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider> ();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");

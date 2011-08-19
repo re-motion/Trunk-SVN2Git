@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new ColumnDefinition (
                   "ID",
                   typeof (Guid),
-                  new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
+                  new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
                   false,
                   true));
       var storageProperty2 =
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new ColumnDefinition (
                   "FirstName",
                   typeof (string),
-                  new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()),
+                  new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
                   false,
                   false));
       var storageProperty3 =
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new ColumnDefinition (
                   "LastName",
                   typeof (string),
-                  new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()),
+                  new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
                   false,
                   false));
       var storageProperty4 =
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new ColumnDefinition (
                   "XmlColumn1",
                   typeof (string),
-                  new StorageTypeInformation ("xml", DbType.String, typeof (string), new StringConverter()),
+                  new StorageTypeInformation (typeof (string), "xml", DbType.Xml, typeof (string), new StringConverter()),
                   false,
                   false));
 
@@ -169,13 +169,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false);
 
       var objectIDColunmn = new ColumnDefinition (
-          "ObjectID", typeof (int), new StorageTypeInformation ("integer", DbType.Int32, typeof (int), new Int32Converter()), false, true);
+          "ObjectID", typeof (int), new StorageTypeInformation (typeof (int), "integer", DbType.Int32, typeof (int), new Int32Converter()), false, true);
       var classIDCOlumn = new ColumnDefinition (
-          "ClassID", typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), false, false);
+          "ClassID", typeof (string), new StorageTypeInformation (typeof (string), "varchar", DbType.String, typeof (string), new StringConverter()), false, false);
       var timestampColumn = new ColumnDefinition (
           "Timestamp",
           typeof (DateTime),
-          new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
+          new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
           true,
           false);
 
@@ -207,17 +207,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var viewName = new EntityNameDefinition (null, "PKTestView");
 
       var column1 = new ColumnDefinition (
-          "ID", typeof (Guid), new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()), false, true);
+          "ID", typeof (Guid), new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()), false, true);
       var column2 = new ColumnDefinition (
-          "Name", typeof (string), new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()), false, false);
+          "Name", typeof (string), new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()), false, false);
       var objectIDColunmn = new ColumnDefinition (
-          "ObjectID", typeof (int), new StorageTypeInformation ("integer", DbType.Int32, typeof (Int32), new Int32Converter()), false, true);
+          "ObjectID", typeof (int), new StorageTypeInformation (typeof (Int32), "integer", DbType.Int32, typeof (int), new Int32Converter()), false, true);
       var classIDCOlumn = new ColumnDefinition (
-          "ClassID", typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), false, false);
+          "ClassID", typeof (string), new StorageTypeInformation (typeof (string), "varchar", DbType.String, typeof (string), new StringConverter()), false, false);
       var timestampColumn = new ColumnDefinition (
           "Timestamp",
           typeof (DateTime),
-          new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
+          new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
           true,
           false);
 

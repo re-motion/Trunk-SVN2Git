@@ -30,28 +30,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
   /// </summary>
   public class SqlStorageTypeInformationProvider : IStorageTypeInformationProvider
   {
-    public SqlStorageTypeInformationProvider ()
+    public virtual IStorageTypeInformation GetStorageTypeForID ()
     {
-    }
-
-    public virtual IStorageTypeInformation GetStorageTypeForObjectID ()
-    {
-      return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid?), new DefaultConverter (typeof (Guid?)));
+      return new StorageTypeInformation (typeof (Guid?), "uniqueidentifier", DbType.Guid, typeof (Guid?), new DefaultConverter (typeof (Guid?)));
     }
 
     public virtual IStorageTypeInformation GetStorageTypeForSerializedObjectID ()
     {
-      return new StorageTypeInformation ("varchar (255)", DbType.String, typeof (string), new DefaultConverter (typeof (string)));
+      return new StorageTypeInformation (typeof (string), "varchar (255)", DbType.String, typeof (string), new DefaultConverter (typeof (string)));
     }
 
     public virtual IStorageTypeInformation GetStorageTypeForClassID ()
     {
-      return new StorageTypeInformation ("varchar (100)", DbType.String, typeof (string), new DefaultConverter (typeof (string)));
+      return new StorageTypeInformation (typeof (string), "varchar (100)", DbType.String, typeof (string), new DefaultConverter (typeof (string)));
     }
 
     public virtual IStorageTypeInformation GetStorageTypeForTimestamp ()
     {
-      return new StorageTypeInformation ("rowversion", DbType.Binary, typeof (byte[]), new DefaultConverter (typeof (byte[])));
+      return new StorageTypeInformation (typeof (byte[]), "rowversion", DbType.Binary, typeof (byte[]), new DefaultConverter (typeof (byte[])));
     }
 
     public virtual bool IsTypeSupported(Type type)
@@ -87,66 +83,63 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       {
         // NULL values of storage type nvarchar(max) seem to be compatible with columns of all other supported storage types, tested by
         // SqlProviderExecuteCollectionQueryTest.AllDataTypes
-        return new StorageTypeInformation ("nvarchar(max)", DbType.String, typeof (object), new DefaultConverter (typeof (object)));
+        return new StorageTypeInformation (typeof (object), "nvarchar(max)", DbType.String, typeof (object), new DefaultConverter (typeof (object)));
       }
 
       return GetStorageType (value.GetType());
     }
 
-    private StorageTypeInformation GetStorageType (Type propertyType, int? maxLength)
+    private StorageTypeInformation GetStorageType (Type type, int? maxLength)
     {
-      var underlyingTypeOfNullable = Nullable.GetUnderlyingType (propertyType);
+      var underlyingTypeOfNullable = Nullable.GetUnderlyingType (type);
       if (underlyingTypeOfNullable != null)
-        return GetStorageTypeForNullableValueType (propertyType, underlyingTypeOfNullable, maxLength);
+        return GetStorageTypeForNullableValueType (type, underlyingTypeOfNullable, maxLength);
 
-      if (propertyType.IsEnum)
+      if (type.IsEnum)
       {
-        var underlyingStorageType = GetStorageType (Enum.GetUnderlyingType (propertyType), maxLength);
-        return new StorageTypeInformation (
-            underlyingStorageType.StorageTypeName,
-            underlyingStorageType.StorageDbType,
-            underlyingStorageType.StorageTypeInMemory,
-            new AdvancedEnumConverter (propertyType));
+        var underlyingStorageType = GetStorageType (Enum.GetUnderlyingType (type), maxLength);
+        return new StorageTypeInformation (underlyingStorageType.StorageType,
+            underlyingStorageType.StorageTypeName, underlyingStorageType.StorageDbType, type, new AdvancedEnumConverter (type));
       }
 
-      if (ExtensibleEnumUtility.IsExtensibleEnumType (propertyType))
+      if (ExtensibleEnumUtility.IsExtensibleEnumType (type))
       {
-        var storageType = GetStorageTypeStringForVarType ("varchar", GetColumnWidthForExtensibleEnum (propertyType));
-        return new StorageTypeInformation (storageType, DbType.String, typeof (string), new ExtensibleEnumConverter (propertyType));
+        var storageType = GetStorageTypeStringForVarType ("varchar", GetColumnWidthForExtensibleEnum (type));
+        return new StorageTypeInformation (typeof (string), storageType, DbType.String, type, new ExtensibleEnumConverter (type));
       }
 
-      if (ReflectionUtility.IsStringPropertyValueType (propertyType))
+      if (ReflectionUtility.IsStringPropertyValueType (type))
       {
         string storageType = GetStorageTypeStringForVarType ("nvarchar", maxLength);
-        return new StorageTypeInformation (storageType, DbType.String, typeof (string), new DefaultConverter (typeof (string)));
+        return new StorageTypeInformation (typeof (string), storageType, DbType.String, type, new DefaultConverter (type));
       }
 
-      if (ReflectionUtility.IsBinaryPropertyValueType (propertyType))
+      if (ReflectionUtility.IsBinaryPropertyValueType (type))
       {
         string storageType = GetStorageTypeStringForVarType ("varbinary", maxLength);
-        return new StorageTypeInformation (storageType, DbType.Binary, typeof (byte[]), new DefaultConverter (typeof (Byte[])));
+        return new StorageTypeInformation (typeof (byte[]), storageType, DbType.Binary, type, new DefaultConverter (type));
       }
 
-      if (propertyType == typeof (Boolean))
-        return new StorageTypeInformation ("bit", DbType.Boolean, typeof (bool), new DefaultConverter (typeof (bool)));
-      if (propertyType == typeof (Byte))
-        return new StorageTypeInformation ("tinyint", DbType.Byte, typeof (byte), new DefaultConverter (typeof (byte)));
-      if (propertyType == typeof (DateTime))
-        return new StorageTypeInformation ("datetime", DbType.DateTime, typeof (DateTime), new DefaultConverter (typeof (DateTime)));
-      if (propertyType == typeof (Decimal))
-        return new StorageTypeInformation ("decimal (38, 3)", DbType.Decimal, typeof (Decimal), new DefaultConverter (typeof (Decimal)));
-      if (propertyType == typeof (Double))
-        return new StorageTypeInformation ("float", DbType.Double, typeof (Double), new DefaultConverter (typeof (Double)));
-      if (propertyType == typeof (Guid))
-        return new StorageTypeInformation ("uniqueidentifier", DbType.Guid, typeof (Guid), new DefaultConverter (typeof (Guid)));
-      if (propertyType == typeof (Int16))
-        return new StorageTypeInformation ("smallint", DbType.Int16, typeof (Int16), new DefaultConverter (typeof (Int16)));
-      if (propertyType == typeof (Int32))
-        return new StorageTypeInformation ("int", DbType.Int32, typeof (Int32), new DefaultConverter (typeof (Int32)));
-      if (propertyType == typeof (Int64))
-        return new StorageTypeInformation ("bigint", DbType.Int64, typeof (Int64), new DefaultConverter (typeof (Int64)));
-      if (propertyType == typeof (Single))
-        return new StorageTypeInformation ("real", DbType.Single, typeof (Single), new DefaultConverter (typeof (Single)));
+      if (type == typeof (Boolean))
+        return new StorageTypeInformation (typeof (bool), "bit", DbType.Boolean, type, new DefaultConverter (type));
+      if (type == typeof (Byte))
+        return new StorageTypeInformation (typeof (byte), "tinyint", DbType.Byte, type, new DefaultConverter (type));
+      if (type == typeof (DateTime))
+        return new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, type, new DefaultConverter (type));
+      if (type == typeof (Decimal))
+        return new StorageTypeInformation (typeof (Decimal), "decimal (38, 3)", DbType.Decimal, type, new DefaultConverter (type));
+      if (type == typeof (Double))
+        return new StorageTypeInformation (typeof (Double), "float", DbType.Double, type, new DefaultConverter (type));
+      if (type == typeof (Guid))
+        return new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, type, new DefaultConverter (type));
+      if (type == typeof (Int16))
+        return new StorageTypeInformation (typeof (Int16), "smallint", DbType.Int16, type, new DefaultConverter (type));
+      if (type == typeof (Int32))
+        return new StorageTypeInformation (typeof (Int32), "int", DbType.Int32, type, new DefaultConverter (type));
+      if (type == typeof (Int64))
+        return new StorageTypeInformation (typeof (Int64), "bigint", DbType.Int64, type, new DefaultConverter (type));
+      if (type == typeof (Single))
+        return new StorageTypeInformation (typeof (Single), "real", DbType.Single, type, new DefaultConverter (type));
 
       return null;
     }
@@ -157,16 +150,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       if (underlyingType.IsEnum)
       {
         return new StorageTypeInformation (
+            typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageType),
             underlyingStorageInformation.StorageTypeName,
             underlyingStorageInformation.StorageDbType,
-            typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageTypeInMemory),
+            type,
             new AdvancedEnumConverter (type));
       }
 
       return new StorageTypeInformation (
+          typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageType),
           underlyingStorageInformation.StorageTypeName,
           underlyingStorageInformation.StorageDbType,
-          typeof (Nullable<>).MakeGenericType (underlyingStorageInformation.StorageTypeInMemory),
+          type,
           new DefaultConverter (type));
     }
 

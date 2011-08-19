@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var valueColumnDefinition = new ColumnDefinition (
           relationColumnName,
           typeof (ObjectID),
-          _storageTypeInformationProvider.GetStorageTypeForObjectID(),
+          _storageTypeInformationProvider.GetStorageTypeForID(),
           // Relation properties are always nullable within the same storage provider
           true,
           false);

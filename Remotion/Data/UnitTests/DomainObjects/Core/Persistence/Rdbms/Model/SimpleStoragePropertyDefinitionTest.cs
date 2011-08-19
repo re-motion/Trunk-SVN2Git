@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -27,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class SimpleStoragePropertyDefinitionTest
   {
-    private TypeConverter _typeConverterStub;
+    private IStorageTypeInformation _storageTypeInformationStub;
     private ColumnDefinition _innerColumnDefinition;
     private SimpleStoragePropertyDefinition _storagePropertyDefinition;
 
@@ -39,10 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _typeConverterStub = MockRepository.GenerateStub<TypeConverter> ();
-      
-      var storageTypeInformation = new StorageTypeInformation ("integer", DbType.Int32, typeof (int?), _typeConverterStub);
-      _innerColumnDefinition = new ColumnDefinition ("Test", typeof (string), storageTypeInformation, true, false);
+      _storageTypeInformationStub = MockRepository.GenerateStub<IStorageTypeInformation>();
+      _innerColumnDefinition = new ColumnDefinition ("Test", typeof (string), _storageTypeInformationStub, true, false);
       _storagePropertyDefinition = new SimpleStoragePropertyDefinition (_innerColumnDefinition);
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
@@ -80,20 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Read ()
     {
       _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (_innerColumnDefinition, _dataReaderStub)).Return (5);
-      _dataReaderStub.Stub (stub => stub[5]).Return ("test");
-      _typeConverterStub.Stub (mock => mock.ConvertFrom ("test")).Return ("converted");
-
-      var result = _storagePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
-
-      Assert.That (result, Is.EqualTo ("converted"));
-    }
-
-    [Test]
-    public void Read_DbNullValue_ReturnsEmptyString ()
-    {
-      _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (_innerColumnDefinition, _dataReaderStub)).Return (3);
-      _dataReaderStub.Stub (stub => stub[3]).Return (DBNull.Value);
-      _typeConverterStub.Stub (mock => mock.ConvertFrom (null)).Return ("converted");
+      _storageTypeInformationStub.Stub (mock => mock.Read (_dataReaderStub, 5)).Return ("converted");
 
       var result = _storagePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 

@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       
       _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub);
 
-      Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar') FROM pColumn.nodes('/L/I') T(c))delimiter"));
+      Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar(100)') FROM pColumn.nodes('/L/I') T(c))delimiter"));
     }
   }
 }

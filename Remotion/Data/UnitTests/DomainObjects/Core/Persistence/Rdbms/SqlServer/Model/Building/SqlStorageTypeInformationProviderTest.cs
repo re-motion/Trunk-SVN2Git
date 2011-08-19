@@ -73,20 +73,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       CheckGetStorageType (
           typeof (Boolean),
           null,
-          "bit",
-          DbType.Boolean,
           typeof (bool),
+          "bit", DbType.Boolean, 
+          typeof (bool), 
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (bool)));
       CheckGetStorageType (
           typeof (Byte),
           null,
+          typeof (Byte),
           "tinyint",
           DbType.Byte,
-          typeof (Byte),
+          typeof (byte),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte)));
       CheckGetStorageType (
           typeof (DateTime),
           null,
+          typeof (DateTime),
           "datetime",
           DbType.DateTime,
           typeof (DateTime),
@@ -94,20 +96,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       CheckGetStorageType (
           typeof (Decimal),
           null,
+          typeof (Decimal),
           "decimal (38, 3)",
           DbType.Decimal,
-          typeof (Decimal),
+          typeof (decimal),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Decimal)));
       CheckGetStorageType (
           typeof (Double),
           null,
+          typeof (Double),
           "float",
           DbType.Double,
-          typeof (Double),
+          typeof (double),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Double)));
       CheckGetStorageType (
           typeof (Guid),
           null,
+          typeof (Guid),
           "uniqueidentifier",
           DbType.Guid,
           typeof (Guid),
@@ -115,55 +120,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       CheckGetStorageType (
           typeof (Int16),
           null,
+          typeof (Int16),
           "smallint",
           DbType.Int16,
-          typeof (Int16),
+          typeof (short),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Int16)));
       CheckGetStorageType (
           typeof (Int32),
           null,
+          typeof (Int32),
           "int",
           DbType.Int32,
-          typeof (Int32),
+          typeof (int),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Int32)));
       CheckGetStorageType (
           typeof (Int64),
           null,
+          typeof (Int64),
           "bigint",
           DbType.Int64,
-          typeof (Int64),
+          typeof (long),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Int64)));
       CheckGetStorageType (
           typeof (Single),
           null,
+          typeof (Single),
           "real",
           DbType.Single,
-          typeof (Single),
+          typeof (float),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (Single)));
       CheckGetStorageType (
           typeof (Int32Enum),
           null,
+          typeof (Int32),
           "int",
           DbType.Int32,
-          typeof (Int32),
+          typeof (Int32Enum),
           Is.TypeOf (typeof (AdvancedEnumConverter)).With.Property ("EnumType").EqualTo (typeof (Int32Enum)));
       CheckGetStorageType (
           typeof (Int16Enum),
           null,
+          typeof (Int16),
           "smallint",
           DbType.Int16,
-          typeof (Int16),
+          typeof (Int16Enum),
           Is.TypeOf (typeof (AdvancedEnumConverter)).With.Property ("EnumType").EqualTo (typeof (Int16Enum)));
       CheckGetStorageType (
           typeof (Color),
           null,
+          typeof (string),
           "varchar (" + Color.Values.Green().ID.Length + ")",
           DbType.String,
-          typeof (string),
+          typeof (Color),
           Is.TypeOf (typeof (ExtensibleEnumConverter)).With.Property ("ExtensibleEnumType").EqualTo (typeof (Color)));
       CheckGetStorageType (
           typeof (String),
           200,
+          typeof (string),
           "nvarchar (200)",
           DbType.String,
           typeof (string),
@@ -171,6 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       CheckGetStorageType (
           typeof (String),
           null,
+          typeof (string),
           "nvarchar (max)",
           DbType.String,
           typeof (string),
@@ -178,16 +192,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       CheckGetStorageType (
           typeof (Byte[]),
           200,
+          typeof (Byte[]),
           "varbinary (200)",
           DbType.Binary,
-          typeof (Byte[]),
+          typeof (byte[]),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
       CheckGetStorageType (
           typeof (Byte[]),
           null,
+          typeof (Byte[]),
           "varbinary (max)",
           DbType.Binary,
-          typeof (Byte[]),
+          typeof (byte[]),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
     }
 
@@ -197,42 +213,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       CheckGetStorageType (
           typeof (bool?),
           null,
+          typeof (bool?),
           "bit",
           DbType.Boolean,
           typeof (bool?),
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").SameAs (typeof (bool?)));
-      CheckGetStorageType (typeof (Int32Enum?), null, "int", DbType.Int32, typeof (int?), Is.TypeOf (typeof (AdvancedEnumConverter)));
-      CheckGetStorageType (typeof (Int16Enum?), null, "smallint", DbType.Int16, typeof (Int16?), Is.TypeOf (typeof (AdvancedEnumConverter)));
+      CheckGetStorageType (
+          typeof (Int32Enum?),
+          null,
+          typeof (int?),
+          "int",
+          DbType.Int32,
+          typeof (Int32Enum?),
+          Is.TypeOf (typeof (AdvancedEnumConverter)));
+      CheckGetStorageType (
+          typeof (Int16Enum?),
+          null,
+          typeof (Int16?),
+          "smallint",
+          DbType.Int16,
+          typeof (Int16Enum?),
+          Is.TypeOf (typeof (AdvancedEnumConverter)));
     }
 
     [Test]
     public void GetStorageTypeForSpecialColumns ()
     {
-      var storageTypeForObjectID = (StorageTypeInformation) _storageTypeInformationProvider.GetStorageTypeForObjectID();
+      var storageTypeForObjectID = (StorageTypeInformation) _storageTypeInformationProvider.GetStorageTypeForID();
       Assert.That (storageTypeForObjectID.StorageTypeName, Is.EqualTo ("uniqueidentifier"));
       Assert.That (storageTypeForObjectID.StorageDbType, Is.EqualTo (DbType.Guid));
-      Assert.That (storageTypeForObjectID.StorageTypeInMemory, Is.EqualTo (typeof (Guid?)));
-      Assert.That (storageTypeForObjectID.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").SameAs (typeof (Guid?)));
+      Assert.That (storageTypeForObjectID.StorageType, Is.EqualTo (typeof (Guid?)));
+      Assert.That (storageTypeForObjectID.DotNetTypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").SameAs (typeof (Guid?)));
 
       var storageTypeForSerializedObjectID = (StorageTypeInformation) _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID();
       Assert.That (storageTypeForSerializedObjectID.StorageTypeName, Is.EqualTo ("varchar (255)"));
       Assert.That (storageTypeForSerializedObjectID.StorageDbType, Is.EqualTo (DbType.String));
-      Assert.That (storageTypeForSerializedObjectID.StorageTypeInMemory, Is.EqualTo (typeof (String)));
+      Assert.That (storageTypeForSerializedObjectID.StorageType, Is.EqualTo (typeof (String)));
       Assert.That (
-          storageTypeForSerializedObjectID.TypeConverter, 
+          storageTypeForSerializedObjectID.DotNetTypeConverter, 
           Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
       var storageTypeForClassID = (StorageTypeInformation) _storageTypeInformationProvider.GetStorageTypeForClassID();
       Assert.That (storageTypeForClassID.StorageTypeName, Is.EqualTo ("varchar (100)"));
       Assert.That (storageTypeForClassID.StorageDbType, Is.EqualTo (DbType.String));
-      Assert.That (storageTypeForClassID.StorageTypeInMemory, Is.EqualTo (typeof (String)));
-      Assert.That (storageTypeForClassID.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
+      Assert.That (storageTypeForClassID.StorageType, Is.EqualTo (typeof (String)));
+      Assert.That (storageTypeForClassID.DotNetTypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (string)));
 
       var storageTypeForTimestamp = (StorageTypeInformation) _storageTypeInformationProvider.GetStorageTypeForTimestamp();
       Assert.That (storageTypeForTimestamp.StorageTypeName, Is.EqualTo ("rowversion"));
       Assert.That (storageTypeForTimestamp.StorageDbType, Is.EqualTo (DbType.Binary));
-      Assert.That (storageTypeForTimestamp.StorageTypeInMemory, Is.EqualTo (typeof (Byte[])));
-      Assert.That (storageTypeForTimestamp.TypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
+      Assert.That (storageTypeForTimestamp.StorageType, Is.EqualTo (typeof (Byte[])));
+      Assert.That (storageTypeForTimestamp.DotNetTypeConverter, Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (byte[])));
     }
 
     [Test]
@@ -278,6 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       CheckStorageTypeInformation (
           result,
+          typeof (object),
           "nvarchar(max)",
           DbType.String,
           typeof (object),
@@ -287,14 +319,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private void CheckGetStorageType (
         Type propertyType,
         int? maxLength,
-        string expectedStorageTypeString,
-        DbType expectedDbType,
-        Type expectedParameterValueType,
-        IResolveConstraint expectedTypeConverterConstraint)
+        Type expectedStorageType,
+        string expectedStorageTypeName,
+        DbType expectedStorageDbType,
+        Type expectedDotNetType,
+        IResolveConstraint expectedDotNetTypeConverterConstraint)
     {
       var propertyDefinition = CreatePropertyDefinition (propertyType, maxLength);
       var info = (StorageTypeInformation) _storageTypeInformationProvider.GetStorageType (propertyDefinition);
-      CheckStorageTypeInformation (info, expectedStorageTypeString, expectedDbType, expectedParameterValueType, expectedTypeConverterConstraint);
+      CheckStorageTypeInformation (
+          info,
+          expectedStorageType,
+          expectedStorageTypeName,
+          expectedStorageDbType,
+          expectedDotNetType,
+          expectedDotNetTypeConverterConstraint);
     }
 
     private PropertyDefinition CreatePropertyDefinition (Type propertyType, int? maxLength = null)
@@ -312,15 +351,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private void CheckStorageTypeInformation (
         StorageTypeInformation storageTypeInformation,
-        string expectedStorageTypeString,
-        DbType expectedDbType,
-        Type expectedParameterValueType,
-        IResolveConstraint typeConverterConstraint)
+        Type expectedStorageType,
+        string expectedStorageTypeName,
+        DbType expectedStorageDbType,
+        Type expectedDotNetType,
+        IResolveConstraint dotNetTypeConverterConstraint)
     {
-      Assert.That (storageTypeInformation.StorageTypeName, Is.EqualTo (expectedStorageTypeString));
-      Assert.That (storageTypeInformation.StorageDbType, Is.EqualTo (expectedDbType));
-      Assert.That (storageTypeInformation.StorageTypeInMemory, Is.EqualTo (expectedParameterValueType));
-      Assert.That (storageTypeInformation.TypeConverter, typeConverterConstraint);
+      Assert.That (storageTypeInformation.StorageType, Is.SameAs (expectedStorageType));
+      Assert.That (storageTypeInformation.StorageTypeName, Is.EqualTo (expectedStorageTypeName));
+      Assert.That (storageTypeInformation.StorageDbType, Is.EqualTo (expectedStorageDbType));
+      Assert.That (storageTypeInformation.DotNetType, Is.SameAs (expectedDotNetType));
+      Assert.That (storageTypeInformation.DotNetTypeConverter, dotNetTypeConverterConstraint);
     }
   }
 }

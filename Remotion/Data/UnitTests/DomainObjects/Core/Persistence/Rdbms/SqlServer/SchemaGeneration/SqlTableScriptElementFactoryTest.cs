@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -43,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _factory = new SqlTableScriptElementFactory();
 
       _column1 = new ColumnDefinition (
-          "Column1", typeof (string), new StorageTypeInformation ("varchar", DbType.String, typeof (string), new StringConverter()), false, true);
+          "Column1", typeof (string), StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), false, true);
       _column2 = new ColumnDefinition (
-          "Column2", typeof (bool), new StorageTypeInformation ("bit", DbType.String, typeof (string), new StringConverter()), true, false);
+          "Column2", typeof (bool), StorageTypeInformationObjectMother.CreateBitStorageTypeInformation(), true, false);
 
       _tableDefinitionWithoutPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -89,9 +87,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "CREATE TABLE [SchemaName].[EntityName]\r\n"
           + "(\r\n"
           + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar NULL,\r\n"
+          + "  [ClassID] varchar(100) NULL,\r\n"
           + "  [Timestamp] datetime NULL,\r\n"
-          + "  [Column1] varchar NOT NULL\r\n"
+          + "  [Column1] varchar(100) NOT NULL\r\n"
           + ")";
 
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -107,9 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "CREATE TABLE [SchemaName].[EntityName]\r\n"
           + "(\r\n"
           + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar NULL,\r\n"
+          + "  [ClassID] varchar(100) NULL,\r\n"
           + "  [Timestamp] datetime NULL,\r\n"
-          + "  [Column1] varchar NOT NULL,\r\n"
+          + "  [Column1] varchar(100) NOT NULL,\r\n"
           + "  [Column2] bit NULL,\r\n"
           + "  CONSTRAINT [PKName] PRIMARY KEY CLUSTERED ([Column1])\r\n"
           + ")";
@@ -127,9 +125,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "CREATE TABLE [dbo].[EntityName]\r\n"
           + "(\r\n"
           + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar NULL,\r\n"
+          + "  [ClassID] varchar(100) NULL,\r\n"
           + "  [Timestamp] datetime NULL,\r\n"
-          + "  [Column1] varchar NOT NULL,\r\n"
+          + "  [Column1] varchar(100) NOT NULL,\r\n"
           + "  [Column2] bit NULL,\r\n"
           + "  CONSTRAINT [PKName] PRIMARY KEY NONCLUSTERED ([Column1], [Column2])\r\n"
           + ")";

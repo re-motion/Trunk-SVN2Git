@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _idColumnDefinition = new ColumnDefinition (
           storageNameProvider.IDColumnName,
           typeof (ObjectID),
-          storageTypeInformationProvider.GetStorageTypeForObjectID(),
+          storageTypeInformationProvider.GetStorageTypeForID(),
           false,
           true);
       _classIDColumnDefinition = new ColumnDefinition (

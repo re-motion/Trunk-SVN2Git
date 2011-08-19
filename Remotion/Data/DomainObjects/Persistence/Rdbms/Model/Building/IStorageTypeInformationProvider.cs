@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public interface IStorageTypeInformationProvider
   {
-    IStorageTypeInformation GetStorageTypeForObjectID ();
+    IStorageTypeInformation GetStorageTypeForID ();
     IStorageTypeInformation GetStorageTypeForSerializedObjectID ();
     IStorageTypeInformation GetStorageTypeForClassID ();
     IStorageTypeInformation GetStorageTypeForTimestamp ();

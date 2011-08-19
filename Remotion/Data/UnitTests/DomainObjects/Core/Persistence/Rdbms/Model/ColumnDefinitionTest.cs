@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -27,7 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class ColumnDefinitionTest
   {
     private Type _type;
-    private StringConverter _stringConverter;
     private StorageTypeInformation _storageTypeInformation;
 
     private ColumnDefinition _columnDefinition;
@@ -36,8 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _type = typeof (string);
-      _stringConverter = new StringConverter();
-      _storageTypeInformation = new StorageTypeInformation ("varchar", DbType.String, typeof (string), _stringConverter);
+      _storageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation();
 
       _columnDefinition = new ColumnDefinition ("Name", _type, _storageTypeInformation, true, true);
     }
@@ -55,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void To_String ()
     {
-      Assert.That (_columnDefinition.ToString(), Is.EqualTo ("Name varchar NULL"));
+      Assert.That (_columnDefinition.ToString(), Is.EqualTo ("Name"));
     }
   }
 }

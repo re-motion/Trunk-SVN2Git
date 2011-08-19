@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -30,8 +28,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   public class InfrastructureStoragePropertyDefinitionProviderTest : StandardMappingTest
   {
     private IStorageTypeInformationProvider _storageTypeInformationProviderStub;
-    private IStorageNameProvider _storageNameProviderStub;
+    private StorageTypeInformation _idStorageTypeInformation;
+    private StorageTypeInformation _classIDStorageTypeInformation;
+    private StorageTypeInformation _timestampStorageTypeInformation;
 
+    private IStorageNameProvider _storageNameProviderStub;
+    
     private InfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private IEntityDefinition _entityDefinitionStub;
     private ColumnDefinition _idColumn;
@@ -44,12 +46,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       base.SetUp();
 
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider> ();
-      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForClassID()).Return (
-          new StorageTypeInformation ("varchar(100)", DbType.String, typeof (string), new StringConverter()));
-      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForObjectID()).Return (
-          new StorageTypeInformation ("guid", DbType.Guid, typeof (Guid), new GuidConverter()));
-      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForTimestamp()).Return (
-          new StorageTypeInformation ("rowversion", DbType.DateTime, typeof (DateTime), new DateTimeConverter()));
+
+      _idStorageTypeInformation = StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation ();
+      _storageTypeInformationProviderStub
+          .Stub (stub => stub.GetStorageTypeForID ())
+          .Return (_idStorageTypeInformation);
+
+      _classIDStorageTypeInformation = StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation();
+      _storageTypeInformationProviderStub
+          .Stub (stub => stub.GetStorageTypeForClassID())
+          .Return (_classIDStorageTypeInformation);
+
+      _timestampStorageTypeInformation = StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation ();
+      _storageTypeInformationProviderStub
+          .Stub (stub => stub.GetStorageTypeForTimestamp())
+          .Return (_timestampStorageTypeInformation);
 
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
@@ -100,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.IsPartOfPrimaryKey, Is.True);
       Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (result.StorageTypeInfo.StorageTypeName, Is.EqualTo ("guid"));
+      Assert.That (result.StorageTypeInfo, Is.SameAs (_idStorageTypeInformation));
     }
 
     [Test]
@@ -119,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.Name, Is.EqualTo ("ClassID"));
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (result.StorageTypeInfo.StorageTypeName, Is.EqualTo ("varchar(100)"));
+      Assert.That (result.StorageTypeInfo, Is.SameAs (_classIDStorageTypeInformation));
       Assert.That (result.IsPartOfPrimaryKey, Is.False);
     }
 
@@ -139,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.Name, Is.EqualTo ("Timestamp"));
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.PropertyType, Is.SameAs (typeof (object)));
-      Assert.That (result.StorageTypeInfo.StorageTypeName, Is.EqualTo ("rowversion"));
+      Assert.That (result.StorageTypeInfo, Is.SameAs (_timestampStorageTypeInformation));
       Assert.That (result.IsPartOfPrimaryKey, Is.False);
     }
 

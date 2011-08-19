@@ -33,16 +33,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _typeConverterStub = MockRepository.GenerateStub<TypeConverter>();
-      _storageTypeInformation = new StorageTypeInformation ("test", DbType.Boolean, typeof(bool), _typeConverterStub);
+      _storageTypeInformation = new StorageTypeInformation (typeof(bool), "test", DbType.Boolean, typeof (int), _typeConverterStub);
     }
 
     [Test]
     public void Initialization ()
     {
+      Assert.That (_storageTypeInformation.StorageType, Is.EqualTo (typeof (bool)));
       Assert.That (_storageTypeInformation.StorageTypeName, Is.EqualTo ("test"));
       Assert.That (_storageTypeInformation.StorageDbType, Is.EqualTo (DbType.Boolean));
-      Assert.That (_storageTypeInformation.StorageTypeInMemory, Is.EqualTo(typeof(bool)));
-      Assert.That (_storageTypeInformation.TypeConverter, Is.SameAs(_typeConverterStub));
+      Assert.That (_storageTypeInformation.DotNetType, Is.EqualTo (typeof (int)));
+      Assert.That (_storageTypeInformation.DotNetTypeConverter, Is.SameAs (_typeConverterStub));
+    }
+
+    [Test]
+    public void ConvertToStorageType ()
+    {
+      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.StorageType)).Return ("converted value");
+
+      var result = _storageTypeInformation.ConvertToStorageType ("value");
+
+      Assert.That (result, Is.EqualTo ("converted value"));
+    }
+
+    [Test]
+    public void ConvertToStorageType_NullInput ()
+    {
+      _typeConverterStub.Stub (stub => stub.ConvertTo (null, _storageTypeInformation.StorageType)).Return ("converted value");
+
+      var result = _storageTypeInformation.ConvertToStorageType (null);
+
+      Assert.That (result, Is.EqualTo ("converted value"));
+    }
+
+    [Test]
+    public void ConvertFromStorageType ()
+    {
+      _typeConverterStub.Stub (stub => stub.ConvertFrom ("value")).Return ("converted value");
+
+      var result = _storageTypeInformation.ConvertFromStorageType ("value");
+
+      Assert.That (result, Is.EqualTo ("converted value"));
+    }
+
+    [Test]
+    public void ConvertFromStorageType_DBNull ()
+    {
+      _typeConverterStub.Stub (stub => stub.ConvertFrom (null)).Return ("converted null value");
+
+      var result = _storageTypeInformation.ConvertFromStorageType (DBNull.Value);
+
+      Assert.That (result, Is.EqualTo ("converted null value"));
     }
 
     [Test]
@@ -51,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
       var dataParameterMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
 
-      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.StorageTypeInMemory)).Return ("converted value");
+      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.StorageType)).Return ("converted value");
 
       commandMock.Expect (mock => mock.CreateParameter()).Return (dataParameterMock);
       commandMock.Replay();
@@ -69,12 +110,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateDataParameter_Null ()
+    public void CreateDataParameter_NullResult ()
     {
       var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
       var dataParameterMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
 
-      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.StorageTypeInMemory)).Return (null);
+      _typeConverterStub.Stub (stub => stub.ConvertTo ("value", _storageTypeInformation.StorageType)).Return (null);
 
       commandMock.Expect (mock => mock.CreateParameter ()).Return (dataParameterMock);
       commandMock.Replay ();
@@ -92,17 +133,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void CreateDataParameter_NullInput ()
+    {
+      var commandMock = MockRepository.GenerateStrictMock<IDbCommand> ();
+      var dataParameterMock = MockRepository.GenerateStrictMock<IDbDataParameter> ();
+
+      _typeConverterStub.Stub (stub => stub.ConvertTo (null, _storageTypeInformation.StorageType)).Return ("converted value");
+
+      commandMock.Expect (mock => mock.CreateParameter ()).Return (dataParameterMock);
+      commandMock.Replay ();
+
+      dataParameterMock.Expect (mock => mock.DbType = _storageTypeInformation.StorageDbType);
+      dataParameterMock.Expect (mock => mock.Value = "converted value");
+      dataParameterMock.Replay ();
+
+      var result = _storageTypeInformation.CreateDataParameter (commandMock, null);
+
+      commandMock.VerifyAllExpectations ();
+      dataParameterMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (dataParameterMock));
+    }
+
+    [Test]
     public void Read ()
     {
-      var dataReaderMock = MockRepository.GenerateStrictMock<IDataReader>();
+      var dataReaderMock = MockRepository.GenerateStrictMock<IDataReader> ();
       dataReaderMock.Expect (mock => mock[17]).Return ("value");
-      dataReaderMock.Replay();
+      dataReaderMock.Replay ();
 
       _typeConverterStub.Stub (stub => stub.ConvertFrom ("value")).Return ("converted value");
 
       var result = _storageTypeInformation.Read (dataReaderMock, 17);
 
-      dataReaderMock.VerifyAllExpectations();
+      dataReaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo ("converted value"));
     }
 
