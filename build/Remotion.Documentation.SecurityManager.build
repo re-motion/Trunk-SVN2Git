@@ -22,7 +22,7 @@
   <Target Name="CreateDocumentationProperties">
     <PropertyGroup>
       <PackageID>SecurityManager</PackageID>
-      <DocumentationRootPageSource>Remotion\Core\Core\doc\include\GettingStartedWithRestrict.aml</DocumentationRootPageSource>
+      <DocumentationRootPageSource>SecurityManager\Core\doc\include\GettingStartedWithRestrict.aml</DocumentationRootPageSource>
     </PropertyGroup>
   </Target>
 

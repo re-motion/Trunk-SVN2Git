@@ -40,9 +40,6 @@
 
   <Target Name="GeneratePublicDocumentation"  DependsOnTargets="GeneratePublicDocumentationInternal;" >
   </Target>
-
-  <Target Name="GenerateInternalDocumentation"  DependsOnTargets="GenerateInternalDocumentationInternal;" >
-  </Target>
   
   <Target Name="GeneratePublicDocumentationInternal"
         DependsOnTargets="CreateSandcastleProperties;CreateDocumentationProperties;CreateDocumentationRootPage;CreateSandcastleProjectFile">
@@ -50,24 +47,10 @@
     <Message Text="Generating public documentation for $(PackageID)" Importance="High"/>
 
     <MSBuild Projects="$(DocumentationSandcastleProjectFile)"/>
-   
+
+    <Copy SourceFiles="$(DocumentationBaseDirectory)\$(ProductNameShort).chm" DestinationFolder="$([System.IO.Directory]::GetParent ($(DocumentationBaseDirectory)))" />
+
     <Message Text="Done generating public documentation" Importance="High"/>
-  </Target>
-
-  <Target Name="GenerateInternalDocumentationInternal">
-	<!-- DependsOnTargets="CreateNDocProperties;CreateDocumentationProperties;CreateDocumentationRootPage;CreateNDocProjectFile;">
-
-    <Message Text="Generating internal documentation for $(PackageID)" Importance="High"/>
-
-    <Error Text="The property 'DocumentationNDocProjectFile' is not set." Condition="'$(DocumentationNDocProjectFile)' == ''" />
-
-    <MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
-                                  Documenter="MSDN-CHM"
-                                  ProjectFilePath="$(DocumentationNDocProjectFile)"/>
-
-    <Message Text="Done generating internal documentation" Importance="High"/>
-	-->
-	<Error Text="GenerateInternalDocumentationInternal has not been ported to Sandcastle."/>
   </Target>
 
   <Target Name="CreateSandcastleProperties">
@@ -76,9 +59,9 @@
     <PropertyGroup>
       <DocumentationOutputDirectory>$(BinariesDirectory)net-3.5\doc\</DocumentationOutputDirectory>
       <DocumentationBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DocumentationBinariesDirectory>
-      <DocumentationBaseDirectory>$(TempDirectory)doc\</DocumentationBaseDirectory>
+      <DocumentationBaseDirectory>$(TempDirectory)doc\$([System.Guid]::NewGuid())\</DocumentationBaseDirectory>
       <DocumentationRootPageTarget>$(DocumentationBaseDirectory)GettingStarted.aml</DocumentationRootPageTarget>
-      <DocumentationSandcastleProjectFile>$(DocumentationBaseDirectory)documentation.$([System.Guid]::NewGuid()).shfbproj</DocumentationSandcastleProjectFile>
+      <DocumentationSandcastleProjectFile>$(DocumentationBaseDirectory)documentation.shfbproj</DocumentationSandcastleProjectFile>
     </PropertyGroup>
     <Message Text="$(DocumentationSandcastleProjectFile)"/>
   </Target>

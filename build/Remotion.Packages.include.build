@@ -29,28 +29,6 @@
       <ProductNameShort>re-motion</ProductNameShort>
     </AllPackages>
     
-    <AllPackages Include="Relinq">
-      <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
-      <DocumentationDeclaration>Remotion.Documentation.Relinq.build</DocumentationDeclaration>
-      <AssemblyInfoFile>Relinq\AssemblyInfoShared.*</AssemblyInfoFile>
-      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
-      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
-      <ProductName>re-linq project (relinq.codeplex.com)</ProductName>
-      <ProductNameShort>re-linq</ProductNameShort>
-    </AllPackages>
-    
-    <AllPackages Include="Remix">
-      <PackageDeclaration>Remotion.Packaging.Remix.build</PackageDeclaration>
-      <DocumentationDeclaration>Remotion.Documentation.Remix.build</DocumentationDeclaration>
-      <AssemblyInfoFile>Remotion\AssemblyInfoShared.*</AssemblyInfoFile>
-      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
-      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
-      <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
-      <ProductNameShort>re-mix</ProductNameShort>
-    </AllPackages>
-    
     <AllPackages Include="Dms">
       <PackageDeclaration>Remotion.Packaging.Dms.build</PackageDeclaration>
       <DocumentationDeclaration>Remotion.Documentation.Dms.build</DocumentationDeclaration>
@@ -71,6 +49,28 @@
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
       <ProductName>re-strict (www.re-motion.org)</ProductName>
       <ProductNameShort>re-strict</ProductNameShort>
+    </AllPackages>
+
+    <AllPackages Include="Relinq">
+      <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
+      <DocumentationDeclaration>Remotion.Documentation.Relinq.build</DocumentationDeclaration>
+      <AssemblyInfoFile>Relinq\AssemblyInfoShared.*</AssemblyInfoFile>
+      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
+      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
+      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
+      <ProductName>re-linq project (relinq.codeplex.com)</ProductName>
+      <ProductNameShort>re-linq</ProductNameShort>
+    </AllPackages>
+
+    <AllPackages Include="Remix">
+      <PackageDeclaration>Remotion.Packaging.Remix.build</PackageDeclaration>
+      <DocumentationDeclaration>Remotion.Documentation.Remix.build</DocumentationDeclaration>
+      <AssemblyInfoFile>Remotion\AssemblyInfoShared.*</AssemblyInfoFile>
+      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
+      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
+      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
+      <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
+      <ProductNameShort>re-mix</ProductNameShort>
     </AllPackages>
   </ItemGroup>
 

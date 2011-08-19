@@ -302,6 +302,11 @@ public class BocListUserControl : BaseUserControl
     {
 //      BocListSortingOrderEntry[] sortingOrder = ChildrenList.GetSortingOrder();
     }
+
+    if (!IsPostBack)
+    {
+      ChildrenList.SetSelectedBusinessObjects (new[] { ChildrenList.Value[1] });
+    }
   }
 
   protected override void OnPreRender (EventArgs e)

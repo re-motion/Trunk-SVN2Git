@@ -727,15 +727,17 @@
       <Link>remotion.snk</Link>
     </None>
     <EmbeddedResource Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.xsd" />
+    <None Include="doc\include\GettingStartedWithRemix.aml" />
+    <None Include="doc\include\GettingStartedWithRemotion.aml" />
     <None Include="Mixins\Context\Context.cd" />
     <None Include="Mixins\Validation\Validation.cd" />
-    <Content Include="doc\include\GettingStartedTemplate.html" />
-    <Content Include="doc\include\GettingStartedWithRemixTemplate.html" />
     <Content Include="doc\include\Globalization\MultiLingualResourcesAttribute.xml" />
     <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />
     <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
     <Content Include="doc\include\MSDN.css" />
-    <Content Include="doc\include\NamespaceDoc.xml" />
+    <Content Include="doc\include\NamespaceDoc.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />

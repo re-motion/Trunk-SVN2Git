@@ -421,6 +421,7 @@
   <ItemGroup>
     <None Include="Database\SecurityManagerSetupDBSpecialTables.sql">
     </None>
+    <None Include="Doc\include\GettingStartedWithRestrict.aml" />
     <None Include="Domain\SecurityManagerQueries.xml">
     </None>
     <None Include="GenerateSetupDBScript.cmd" />
