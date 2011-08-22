@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Web.UI.Controls;
@@ -60,14 +61,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (HasBusinessObjectChanged)
             return true;
 
-          foreach (IBusinessObjectBoundControl control in BoundControls)
-          {
-            IBusinessObjectBoundEditableWebControl editableControl =
-                control as IBusinessObjectBoundEditableWebControl;
-            if (editableControl != null && editableControl.IsDirty)
-              return true;
-          }
-          return false;
+          return BoundControls.OfType<IBusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty);
         }
       }
     }
@@ -319,29 +313,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public override void PrepareValidation ()
     {
       base.PrepareValidation ();
-      for (int i = 0; i < BoundControls.Length; i++)
-      {
-        IBusinessObjectBoundControl control = _internalDataSource.BoundControls[i];
-        IValidatableControl validateableControl = control as IValidatableControl;
-        if (validateableControl != null)
-          validateableControl.PrepareValidation ();
-      }
+      foreach (var control in BoundControls.OfType<IValidatableControl>())
+        control.PrepareValidation();
     }
 
     /// <summary> Validates all bound controls implementing <see cref="IValidatableControl"/>. </summary>
     /// <returns> <see langword="true"/> if no validation errors where found. </returns>
     public override bool Validate ()
     {
-      bool isValid = base.Validate ();
+      bool isValid = base.Validate();
       if (IsRequired || _internalDataSource.HasValue())
       {
-        for (int i = 0; i < _internalDataSource.BoundControls.Length; i++)
-        {
-          IBusinessObjectBoundControl control = _internalDataSource.BoundControls[i];
-          IValidatableControl validateableControl = control as IValidatableControl;
-          if (validateableControl != null)
-            isValid &= validateableControl.Validate();
-        }
+        foreach (var control in BoundControls.OfType<IValidatableControl>())
+          isValid &= control.Validate();
       }
       return isValid;
     }

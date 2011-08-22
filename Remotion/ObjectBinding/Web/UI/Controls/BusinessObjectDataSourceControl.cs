@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Web.Infrastructure;
@@ -216,13 +217,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Prepares all bound controls implementing <see cref="IValidatableControl"/> for validation. </summary>
     public void PrepareValidation()
     {
-      for (int i = 0; i < BoundControls.Length; i++)
-      {
-        IBusinessObjectBoundControl control = BoundControls[i];
-        IValidatableControl validateableControl = control as IValidatableControl;
-        if (validateableControl != null)
-          validateableControl.PrepareValidation();
-      }
+      foreach (var control in BoundControls.OfType<IValidatableControl>())
+        control.PrepareValidation();
     }
 
     /// <summary> Validates all bound controls implementing <see cref="IValidatableControl"/>. </summary>
@@ -230,13 +226,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public bool Validate()
     {
       bool isValid = true;
-      for (int i = 0; i < BoundControls.Length; i++)
-      {
-        IBusinessObjectBoundControl control = BoundControls[i];
-        IValidatableControl validateableControl = control as IValidatableControl;
-        if (validateableControl != null)
-          isValid &= validateableControl.Validate();
-      }
+      foreach (var control in BoundControls.OfType<IValidatableControl>())
+        isValid &= control.Validate();
       return isValid;
     }
 
