@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Linq;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
@@ -145,7 +144,10 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
 
       if (constantExpression.Value is DomainObject)
-        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, ((DomainObject) constantExpression.Value).ID);
+      {
+        var primaryKeyExpression = Expression.Constant (((DomainObject) constantExpression.Value).ID);
+        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, primaryKeyExpression);
+      }
       else
         return constantExpression;
     }

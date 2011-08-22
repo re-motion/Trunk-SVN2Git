@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Linq;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
@@ -212,8 +211,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var expression = _resolver.ResolveConstantExpression (constantExpression);
 
-      Assert.That (expression, Is.TypeOf (typeof (SqlEntityConstantExpression)));
-      Assert.That (((SqlEntityConstantExpression) expression).Value, Is.EqualTo (order));
+      var expected = new SqlEntityConstantExpression (constantExpression.Type, order, Expression.Constant (order.ID));
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, expression);
     }
 
     [Test]

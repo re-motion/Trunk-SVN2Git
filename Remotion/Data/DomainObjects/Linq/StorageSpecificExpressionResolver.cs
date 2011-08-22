@@ -19,6 +19,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
 
@@ -61,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (columns.Count > 1) 
         throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
 
-      return originatingEntity.GetColumn (propertyDefinition.PropertyType, columns[0].Name, columns[0].IsPartOfPrimaryKey);
+      return GetColumnFromEntity (columns[0], originatingEntity);
     }
 
     public SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition)
@@ -71,7 +72,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
 
-      return originatingEntity.GetColumn (typeof (ObjectID), entityDefinition.IDColumn.Name, true);
+      Assertion.IsTrue (entityDefinition.IDColumn.IsPartOfPrimaryKey);
+      return GetColumnFromEntity(entityDefinition.IDColumn, originatingEntity);
     }
 
     public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)
@@ -121,8 +123,13 @@ namespace Remotion.Data.DomainObjects.Linq
         var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
         var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
         var column = storagePropertyDefinition.GetColumnForLookup();
-        return entityDefinition.GetColumn (propertyDefinition.PropertyType, column.Name, false);
+        return GetColumnFromEntity (column, entityDefinition);
       }
+    }
+
+    private SqlColumnExpression GetColumnFromEntity (ColumnDefinition columnDefinition, SqlEntityExpression originatingEntity)
+    {
+      return originatingEntity.GetColumn (columnDefinition.PropertyType, columnDefinition.Name, columnDefinition.IsPartOfPrimaryKey);
     }
   }
 }
