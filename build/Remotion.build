@@ -40,7 +40,6 @@
   
   <PropertyGroup>
     <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit 2.5\bin\net-2.0</NUnitToolPath>
-    <NDocToolPath>$(SolutionDirectory)prereq\Tools\NDoc2\</NDocToolPath>
     <MSBuildCommunityTasksPath>$(SolutionDirectory)prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
@@ -60,8 +59,8 @@
     </ItemGroup>
 
     <MSBuild Projects="@(_allDocumentationDeclarations)"
-             BuildInParallel="true"
-             Targets="GeneratePublicDocumentation;CopyChmFilesToBinariesDirectory;"
+             BuildInParallel="false"
+             Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;"
              Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
   </Target>
 
@@ -89,6 +88,7 @@
   </Target>
 
   <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
+
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
              Targets="BuildReleaseProjects;AssembleBuildOutput;"
@@ -100,8 +100,8 @@
     </ItemGroup>
     
     <MSBuild Projects="@(_allDocumentationDeclarations)"
-             BuildInParallel="true"
-             Targets="GeneratePublicDocumentation;CopyChmFilesToBinariesDirectory;"
+             BuildInParallel="false"
+             Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;"
              Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=0.0.0.0;"/>
   </Target>
 

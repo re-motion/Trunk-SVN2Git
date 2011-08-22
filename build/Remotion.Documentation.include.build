@@ -38,19 +38,25 @@
   <Import Project="Remotion.Tasks.include.build" />
   <Import Project="Remotion.Packages.include.build" />
 
-  <Target Name="GeneratePublicDocumentation"  DependsOnTargets="GeneratePublicDocumentationInternal;" >
+  <Target Name="GenerateDocumentation"  DependsOnTargets="GenerateDocumentationInternal;" >
   </Target>
   
-  <Target Name="GeneratePublicDocumentationInternal"
+  <Target Name="GenerateDocumentationInternal"
         DependsOnTargets="CreateSandcastleProperties;CreateDocumentationProperties;CreateDocumentationRootPage;CreateSandcastleProjectFile">
 
     <Message Text="Generating public documentation for $(PackageID)" Importance="High"/>
 
+    <PropertyGroup>
+      <_startTime>$([System.DateTime]::Now)</_startTime>
+    </PropertyGroup>
+    
     <MSBuild Projects="$(DocumentationSandcastleProjectFile)"/>
 
-    <Copy SourceFiles="$(DocumentationBaseDirectory)\$(ProductNameShort).chm" DestinationFolder="$([System.IO.Directory]::GetParent ($(DocumentationBaseDirectory)))" />
+    <PropertyGroup>
+      <_timeTaken>$( [System.DateTime]::Now.Subtract ( $([System.DateTime]::Parse($(_startTime))) ).TotalSeconds.ToString("N0") )</_timeTaken>
+    </PropertyGroup>
 
-    <Message Text="Done generating public documentation" Importance="High"/>
+    <Message Text="Done generating documentation for $(PackageID). (Took $(_timeTaken) seconds)" Importance="High"/>
   </Target>
 
   <Target Name="CreateSandcastleProperties">
@@ -155,9 +161,10 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="CopyChmFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateSandcastleProperties;CreateDocumentationProperties">
+  <Target Name="CopyChmFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;">
     <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
     <Error Text="The property 'DocumentationOutputDirectory' is not set." Condition="'$(DocumentationOutputDirectory)' == ''" />
+    <Error Text="The property 'ProductNameShort' is not set." Condition="'$(ProductNameShort)' == ''" />
 
     <Copy SourceFiles="$(DocumentationBaseDirectory)$(ProductNameShort).chm" DestinationFolder="$(DocumentationOutputDirectory)" />
   </Target>
