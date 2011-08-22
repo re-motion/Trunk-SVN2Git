@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
       var tableColumns = entityDefinition.GetAllColumns().Select (
-          cd => new SqlColumnDefinitionExpression (cd.StorageTypeInfo.DotNetType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey)).ToArray();
+          cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey)).ToArray();
 
       return new SqlEntityDefinitionExpression (
           classDefinition.ClassType, tableAlias, null, tableColumns.Where (c => c.IsPrimaryKey).First(), tableColumns);
