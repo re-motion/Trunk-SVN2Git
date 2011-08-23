@@ -48,16 +48,6 @@ public class BocReferenceValueMock: BocReferenceValue
     return base.IsCommandEnabled (isReadOnly);
   }
 
-  public override bool IsReadOnly
-  {
-    get{return ReadOnly.HasValue ? ReadOnly.Value : false;}
-  }
-
-  public void SetReadOnly (bool value)
-  {
-    ReadOnly = value;
-  }
-
   protected override bool IsDesignMode
   {
     get { return _isDesignMode; }
