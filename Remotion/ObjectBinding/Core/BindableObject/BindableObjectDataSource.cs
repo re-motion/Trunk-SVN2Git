@@ -28,6 +28,7 @@ namespace Remotion.ObjectBinding.BindableObject
     private IBusinessObject _businessObject;
     private string _typeName;
     private Type _type;
+    private DataSourceMode _mode = DataSourceMode.Edit;
 
     public BindableObjectDataSource ()
     {
@@ -37,6 +38,12 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       get { return _businessObject; }
       set { _businessObject = value; }
+    }
+
+    public override DataSourceMode Mode
+    {
+      get { return _mode; }
+      set { _mode = value; }
     }
 
     public override IBusinessObjectClass BusinessObjectClass

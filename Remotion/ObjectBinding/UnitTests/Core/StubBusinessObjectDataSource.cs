@@ -22,6 +22,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
   {
     private readonly IBusinessObjectClass _businessObjectClass;
     private IBusinessObject _BusinessObject;
+    private DataSourceMode _mode = DataSourceMode.Edit;
 
     public StubBusinessObjectDataSource (IBusinessObjectClass businessObjectClass)
     {
@@ -37,6 +38,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     {
       get { return _BusinessObject; }
       set { _BusinessObject = value; }
+    }
+
+    public override DataSourceMode Mode
+    {
+      get { return _mode; }
+      set { _mode = value; }
     }
   }
 }

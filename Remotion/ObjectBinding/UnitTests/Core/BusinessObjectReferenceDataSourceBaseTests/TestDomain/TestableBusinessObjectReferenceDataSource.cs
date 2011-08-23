@@ -22,6 +22,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
 
     private readonly IBusinessObjectDataSource _referencedDataSource;
 
+    private DataSourceMode _mode = DataSourceMode.Edit;
+
     public TestableBusinessObjectReferenceDataSource (IBusinessObjectDataSource referencedDataSource, IBusinessObjectReferenceProperty referenceProperty)
     {
       _referencedDataSource = referencedDataSource;
@@ -36,6 +38,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     public override IBusinessObjectDataSource ReferencedDataSource
     {
       get { return _referencedDataSource; }
+    }
+
+    public override DataSourceMode Mode
+    {
+      get { return _mode; }
+      set { _mode = value; }
     }
   }
 }

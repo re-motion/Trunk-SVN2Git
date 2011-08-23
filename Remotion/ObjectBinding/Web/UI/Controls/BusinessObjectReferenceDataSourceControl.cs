@@ -37,32 +37,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     private class InternalBusinessObjectReferenceDataSource : BusinessObjectReferenceDataSourceBase
     {
-      private readonly BusinessObjectReferenceDataSourceControl _parent;
+      private readonly BusinessObjectReferenceDataSourceControl _owner;
 
-      public InternalBusinessObjectReferenceDataSource (BusinessObjectReferenceDataSourceControl parent)
+      public InternalBusinessObjectReferenceDataSource (BusinessObjectReferenceDataSourceControl owner)
       {
-        _parent = parent;
+        _owner = owner;
       }
 
       public override IBusinessObjectReferenceProperty ReferenceProperty
       {
-        get { return (IBusinessObjectReferenceProperty) _parent.Property; }
+        get { return (IBusinessObjectReferenceProperty) _owner.Property; }
       }
 
       public override IBusinessObjectDataSource ReferencedDataSource
       {
-        get { return _parent.DataSource; }
+        get { return _owner.DataSource; }
       }
 
-      public bool IsDirty
+      public override DataSourceMode Mode
       {
-        get
-        {
-          if (HasBusinessObjectChanged)
-            return true;
-
-          return BoundControls.OfType<IBusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty);
-        }
+        get { return _owner.Mode; }
+        set { _owner.Mode = value; }
       }
     }
 
@@ -74,7 +69,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     protected override Type[] SupportedPropertyInterfaces
     {
-      get { return new Type[] { typeof (IBusinessObjectReferenceProperty) }; }
+      get { return new [] { typeof (IBusinessObjectReferenceProperty) }; }
     }
 
     // Default summary will be created.
@@ -106,7 +101,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        return base.IsDirty || _internalDataSource.IsDirty;
+        if (base.IsDirty)
+          return true;
+
+        if (_internalDataSource.HasBusinessObjectChanged)
+          return true;
+
+        return BoundControls.OfType<IBusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty);
       }
       set
       {

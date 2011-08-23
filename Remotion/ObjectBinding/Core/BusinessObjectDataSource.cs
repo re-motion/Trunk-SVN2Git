@@ -35,7 +35,6 @@ namespace Remotion.ObjectBinding
   public abstract class BusinessObjectDataSource : Component, IBusinessObjectDataSource
   {
     private readonly List<IBusinessObjectBoundControl> _boundControls = new List<IBusinessObjectBoundControl>();
-    private DataSourceMode _mode = DataSourceMode.Edit;
 
     /// <summary>
     ///   Gets or sets the <see cref="IBusinessObject"/> connected to this <see cref="IBusinessObjectDataSource"/>
@@ -63,11 +62,7 @@ namespace Remotion.ObjectBinding
     /// <value> A value of the <see cref="DataSourceMode"/> enumeration. </value>
     [Category ("Data")]
     [DefaultValue (DataSourceMode.Edit)]
-    public DataSourceMode Mode
-    {
-      get { return _mode; }
-      set { _mode = value; }
-    }
+    public abstract DataSourceMode Mode { get; set; }
 
     /// <summary> Loads the values of the <see cref="BusinessObject"/> into all bound controls. </summary>
     /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>

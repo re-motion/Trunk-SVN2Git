@@ -40,6 +40,7 @@ namespace Remotion.ObjectBinding
     private string _propertyIdentifier;
     private IBusinessObjectReferenceProperty _property;
     private bool _propertyDirty = true;
+    private DataSourceMode _mode = DataSourceMode.Edit;
 
     /// <summary>
     ///   Gets the <see cref="IBusinessObjectDataSource"/> providing the <see cref="IBusinessObject"/> 
@@ -78,6 +79,12 @@ namespace Remotion.ObjectBinding
     public override IBusinessObjectDataSource ReferencedDataSource
     {
       get { return _dataSource; }
+    }
+
+    public override DataSourceMode Mode
+    {
+      get { return _mode; }
+      set { _mode = value; }
     }
 
     /// <summary>
