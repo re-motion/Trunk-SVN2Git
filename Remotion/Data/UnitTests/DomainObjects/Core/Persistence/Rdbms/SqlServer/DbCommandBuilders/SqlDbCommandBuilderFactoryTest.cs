@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, TestDomainStorageProviderDefinition);
+      _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub);
 
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
 

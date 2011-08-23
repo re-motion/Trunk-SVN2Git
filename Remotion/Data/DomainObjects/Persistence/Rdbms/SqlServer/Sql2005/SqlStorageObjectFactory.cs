@@ -276,7 +276,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
-      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (storageProviderDefinition);
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory ();
       var rdbmsPersistenceModelProvider = CreateRdbmsPersistenceModelProvider();
       return new RdbmsProviderCommandFactory (
           dbCommandBuilderFactory,
@@ -288,11 +288,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageProviderDefinition);
     }
 
-    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory (StorageProviderDefinition storageProviderDefinition)
+    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory ()
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
-      return new SqlDbCommandBuilderFactory (SqlDialect.Instance, storageProviderDefinition);
+      return new SqlDbCommandBuilderFactory (SqlDialect.Instance);
     }
 
     protected virtual SqlStorageTypeInformationProvider CreateStorageTypeInformationProvider ()

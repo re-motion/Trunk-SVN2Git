@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -32,20 +31,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
   public class SqlDbCommandBuilderFactory : IDbCommandBuilderFactory
   {
     private readonly ISqlDialect _sqlDialect;
-    private readonly StorageProviderDefinition _storageProviderDefinition;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlDbCommandBuilderFactory"/> class.
     /// </summary>
     /// <param name="sqlDialect">The SQL dialect.</param>
-    /// <param name="storageProviderDefinition">The storage provider definition of the relational database.</param>
-    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect, StorageProviderDefinition storageProviderDefinition)
+    public SqlDbCommandBuilderFactory (ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
       _sqlDialect = sqlDialect;
-      _storageProviderDefinition = storageProviderDefinition;
     }
 
     public IDbCommandBuilder CreateForSelect (

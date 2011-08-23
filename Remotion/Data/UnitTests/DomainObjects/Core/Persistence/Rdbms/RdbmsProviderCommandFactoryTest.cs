@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       _factory = new RdbmsProviderCommandFactory (
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance, TestDomainStorageProviderDefinition),
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
           rdbmsPersistenceModelProvider,
           new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider),
           new ObjectReaderFactory (
