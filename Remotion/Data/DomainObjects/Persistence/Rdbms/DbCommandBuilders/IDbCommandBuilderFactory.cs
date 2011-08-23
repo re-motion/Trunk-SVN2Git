@@ -27,19 +27,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// </summary>
   public interface IDbCommandBuilderFactory
   {
-    IDbCommandBuilder CreateForSingleIDLookupFromTable (
-        TableDefinition table, 
-        IEnumerable<ColumnDefinition> selectedColumns, 
-        IEnumerable<ColumnValue> comparedColumns);
-    IDbCommandBuilder CreateForMultiIDLookupFromTable (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID[] objectIDs);
+    IDbCommandBuilder CreateForSelect (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID[] objectIDs);
 
-    IDbCommandBuilder CreateForRelationLookupFromTable (
+    IDbCommandBuilder CreateForSelect (
         TableDefinition table,
         IEnumerable<ColumnDefinition> selectedColumns,
         IEnumerable<ColumnValue> comparedColumns,
         IEnumerable<OrderedColumn> orderedColumns);
 
-    IDbCommandBuilder CreateForRelationLookupFromUnionView (
+    IDbCommandBuilder CreateForSelect (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
         IEnumerable<ColumnValue> comparedColumns,

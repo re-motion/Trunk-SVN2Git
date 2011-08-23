@@ -65,9 +65,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void CreateForSingleIDLookupFromTable ()
+    public void CreateForSelect_Table ()
     {
-      var result = _factory.CreateForSingleIDLookupFromTable (_tableDefinition, new[] { _column1, _column2 }, new[] { _columnValue1, _columnValue2 });
+      var result = _factory.CreateForSelect (
+          _tableDefinition,
+          new[] { _column1, _column2 },
+          new[] { _columnValue1, _columnValue2 },
+          new[] { _orderColumn1, _orderColumn2 });
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
       var dbCommandBuilder = (SelectDbCommandBuilder) result;
@@ -76,13 +80,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (
           ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumns).ComparedColumnValues,
           Is.EqualTo (new[] { _columnValue1, _columnValue2 }));
-      Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
+      Assert.That (
+          ((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
     }
 
     [Test]
-    public void CreateForMultiIDLookupFromTable ()
+    public void CreateForSelect_Table_MultiValueLookup ()
     {
-      var result = _factory.CreateForMultiIDLookupFromTable (_tableDefinition, new[] { _column1, _column2 }, new[] { _objectID });
+      var result = _factory.CreateForSelect (_tableDefinition, new[] { _column1, _column2 }, new[] { _objectID });
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
       var dbCommandBuilder = (SelectDbCommandBuilder) result;
@@ -99,40 +104,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Multi-ID lookups can only be performed for ObjectIDs from this storage provider.\r\nParameter name: objectIDs")]
-    public void CreateForMultiIDLookupFromTable_DifferentStorageProvider ()
+    public void CreateForSelect_Table_MultiValueLookup_DifferentStorageProvider ()
     {
-      _factory.CreateForMultiIDLookupFromTable (_tableDefinition, new[] { _column1, _column2 }, new[] { DomainObjectIDs.Official1 });
+      _factory.CreateForSelect (_tableDefinition, new[] { _column1, _column2 }, new[] { DomainObjectIDs.Official1 });
     }
 
     [Test]
-    public void CreateForRelationLookupFromTable ()
-    {
-      var result = _factory.CreateForRelationLookupFromTable (
-          _tableDefinition,
-          new[] { _column1, _column2 },
-          new[] { _columnValue1, _columnValue2 },
-          new[] { _orderColumn1, _orderColumn2 });
-
-      Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
-      var dbCommandBuilder = (SelectDbCommandBuilder) result;
-      Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
-      Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
-      Assert.That (
-                ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumns).ComparedColumnValues,
-                Is.EqualTo (new[] { _columnValue1, _columnValue2 }));
-      Assert.That (
-          ((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
-    }
-
-    [Test]
-    public void CreateForRelationLookupFromUnionView ()
+    public void CreateForSelect_UnionView ()
     {
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionEntity"),
           _tableDefinition);
 
-      var result = _factory.CreateForRelationLookupFromUnionView (
+      var result = _factory.CreateForSelect (
           unionViewDefinition,
           new[] { _column1, _column2 },
           new[] { _columnValue1, _columnValue2 },

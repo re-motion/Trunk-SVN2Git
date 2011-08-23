@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var selectedColumns = tableDefinition.GetAllColumns().ToArray();
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
       var comparedColumns = GetComparedColumnsForObjectID (objectID, tableDefinition);
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, selectedColumns, comparedColumns);
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
 
       var singleDataContainerLoadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
       return DelegateBasedStorageProviderCommand.Create (
@@ -120,11 +120,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         ObjectID[] objectIDs)
     {
       if (objectIDs.Length > 1)
-        return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (tableDefinition, selectedColumns, objectIDs);
+        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, objectIDs);
       else
       {
         var comparedColumns = GetComparedColumnsForObjectID (objectIDs[0], tableDefinition);
-        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, selectedColumns, comparedColumns);
+        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
       }
     }
 

@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var selectedColumns = tableDefinition.GetAllColumns();
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
 
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromTable (
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSelect (
           tableDefinition,
           selectedColumns,
           GetComparedColumns (foreignKeyEndPoint, foreignKeyValue),
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         SortExpressionDefinition sortExpression)
     {
       var selectedColumns = new[] { unionViewDefinition.IDColumn, unionViewDefinition.ClassIDColumn };
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForRelationLookupFromUnionView (
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSelect (
           unionViewDefinition,
           selectedColumns,
           GetComparedColumns (foreignKeyEndPoint, foreignKeyValue),

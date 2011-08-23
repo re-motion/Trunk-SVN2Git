@@ -33,6 +33,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using Is = NUnit.Framework.Is;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
 {
@@ -97,10 +98,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _dbCommandBuilderFactoryStrictMock
           .Stub (
-              stub => stub.CreateForSingleIDLookupFromTable (
+              stub => stub.CreateForSelect (
                   Arg.Is (_tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
-                  Arg<IEnumerable<ColumnValue>>.List.Equal (expectedComparedColumns)))
+                  Arg<IEnumerable<ColumnValue>>.List.Equal (expectedComparedColumns),
+                  Arg<IEnumerable<OrderedColumn>>.List.Equal (new OrderedColumn[0])))
           .Return (_dbCommandBuilder1Stub);
 
       _objectReaderFactoryStrictMock
@@ -128,10 +130,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var expectedComparedColumns = new[] { new ColumnValue (_tableDefinition1.IDColumn, _objectID1.Value) };
       _dbCommandBuilderFactoryStrictMock
           .Stub (
-              stub => stub.CreateForSingleIDLookupFromTable (
+              stub => stub.CreateForSelect (
                   Arg.Is (_tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
-                  Arg<IEnumerable<ColumnValue>>.List.Equal (expectedComparedColumns)))
+                  Arg<IEnumerable<ColumnValue>>.List.Equal (expectedComparedColumns),
+                  Arg<IEnumerable<OrderedColumn>>.List.Equal (new OrderedColumn[0])))
           .Return (_dbCommandBuilder1Stub);
 
       _objectReaderFactoryStrictMock
@@ -161,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var expectedSelectedColumns1 = _tableDefinition1.GetAllColumns();
       _dbCommandBuilderFactoryStrictMock
           .Stub (
-              stub => stub.CreateForMultiIDLookupFromTable (
+              stub => stub.CreateForSelect (
                   Arg.Is (_tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns1),
                   Arg.Is (new[] { _objectID1, _objectID2 })))
@@ -171,10 +174,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var expectedComparedColumns2 = new[] { new ColumnValue (_tableDefinition2.IDColumn, _objectID3.Value) };
       _dbCommandBuilderFactoryStrictMock
           .Stub (
-              stub => stub.CreateForSingleIDLookupFromTable (
+              stub => stub.CreateForSelect (
                   Arg.Is (_tableDefinition2),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (_tableDefinition2.GetAllColumns()),
-                  Arg<IEnumerable<ColumnValue>>.List.Equal (expectedComparedColumns2)))
+                  Arg<IEnumerable<ColumnValue>>.List.Equal (expectedComparedColumns2),
+                  Arg<IEnumerable<OrderedColumn>>.List.Equal (new OrderedColumn[0])))
           .Return (_dbCommandBuilder2Stub);
 
       _objectReaderFactoryStrictMock
@@ -216,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var expectedSelectedColumns1 = new[] { _tableDefinition1.IDColumn, _tableDefinition1.ClassIDColumn, _tableDefinition1.TimestampColumn };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
-              mock => mock.CreateForMultiIDLookupFromTable (
+              mock => mock.CreateForSelect (
                   Arg.Is (_tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns1),
                   Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 })))
@@ -226,10 +230,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var expectedComparedColumns2 = new[] { new ColumnValue (_tableDefinition2.IDColumn, _objectID3.Value) };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
-              mock => mock.CreateForSingleIDLookupFromTable (
+              mock => mock.CreateForSelect (
                   Arg.Is (_tableDefinition2),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns2),
-                  Arg<IEnumerable<ColumnValue>>.List.Equal (expectedComparedColumns2)))
+                  Arg<IEnumerable<ColumnValue>>.List.Equal (expectedComparedColumns2),
+                  Arg<IEnumerable<OrderedColumn>>.List.Equal (new OrderedColumn[0])))
           .Return (_dbCommandBuilder2Stub);
       _dbCommandBuilderFactoryStrictMock.Replay();
 

@@ -48,37 +48,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       _storageProviderDefinition = storageProviderDefinition;
     }
 
-    public IDbCommandBuilder CreateForSingleIDLookupFromTable (
-        TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, IEnumerable<ColumnValue> comparedColumns)
-    {
-      ArgumentUtility.CheckNotNull ("table", table);
-      ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
-
-      return new SelectDbCommandBuilder (
-          table,
-          new SelectedColumnsSpecification (selectedColumns),
-          new ComparedColumnsSpecification (comparedColumns),
-          EmptyOrderedColumnsSpecification.Instance,
-          _sqlDialect);
-    }
-
-    public IDbCommandBuilder CreateForMultiIDLookupFromTable (
-        TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID[] objectIDs)
-    {
-      ArgumentUtility.CheckNotNull ("table", table);
-      ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-
-      return new SelectDbCommandBuilder (
-          table,
-          new SelectedColumnsSpecification (selectedColumns),
-          new SqlXmlSetComparedColumnSpecification (table.IDColumn, GetObjectIDValues(objectIDs)),
-          EmptyOrderedColumnsSpecification.Instance,
-          _sqlDialect);
-    }
-
-    public IDbCommandBuilder CreateForRelationLookupFromTable (
+    public IDbCommandBuilder CreateForSelect (
         TableDefinition table,
         IEnumerable<ColumnDefinition> selectedColumns,
         IEnumerable<ColumnValue> comparedColumns,
@@ -96,8 +66,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           CreateOrderedColumnsSpecification (orderedColumns),
           _sqlDialect);
     }
+    
+    public IDbCommandBuilder CreateForSelect (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID[] objectIDs)
+    {
+      ArgumentUtility.CheckNotNull ("table", table);
+      ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-    public IDbCommandBuilder CreateForRelationLookupFromUnionView (
+      return new SelectDbCommandBuilder (
+          table,
+          new SelectedColumnsSpecification (selectedColumns),
+          new SqlXmlSetComparedColumnSpecification (table.IDColumn, GetObjectIDValues (objectIDs)),
+          EmptyOrderedColumnsSpecification.Instance,
+          _sqlDialect);
+    }
+
+    public IDbCommandBuilder CreateForSelect (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
         IEnumerable<ColumnValue> comparedColumns,
@@ -108,13 +92,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
-      var orderedColumnsSpecification = CreateOrderedColumnsSpecification (orderedColumns);
-      
       return new UnionSelectDbCommandBuilder (
           view,
           new SelectedColumnsSpecification (selectedColumns),
           new ComparedColumnsSpecification (comparedColumns),
-          orderedColumnsSpecification,
+          CreateOrderedColumnsSpecification (orderedColumns),
           _sqlDialect);
     }
 
@@ -157,7 +139,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
 
       return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumns), _sqlDialect);
     }
-
     
     private IEnumerable<object > GetObjectIDValues (IEnumerable<ObjectID> objectIDs)
     {

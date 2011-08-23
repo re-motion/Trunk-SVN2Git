@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var expectedSelectedColumns = _tableDefinition.GetAllColumns ();
       _dbCommandBuilderFactoryStrictMock
           .Expect (
-              stub => stub.CreateForRelationLookupFromTable (
+              stub => stub.CreateForSelect (
                   Arg.Is ((TableDefinition) classDefinition.StorageEntityDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
                   Arg.Is (_fakeComparedColumns),
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                                    };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
-              stub => stub.CreateForRelationLookupFromTable (
+              stub => stub.CreateForSelect (
                   Arg.Is ((TableDefinition) classDefinition.StorageEntityDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
                   Arg.Is (_fakeComparedColumns),
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var expectedSelectedColumns = new[] { _unionViewDefinition.IDColumn, _unionViewDefinition.ClassIDColumn };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
-              stub => stub.CreateForRelationLookupFromUnionView (
+              stub => stub.CreateForSelect (
                   Arg.Is (_unionViewDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
                   Arg.Is (_fakeComparedColumns),
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                                    };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
-              stub => stub.CreateForRelationLookupFromUnionView (
+              stub => stub.CreateForSelect (
                   Arg.Is (_unionViewDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
                   Arg.Is (_fakeComparedColumns),
