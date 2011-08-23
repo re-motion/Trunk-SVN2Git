@@ -500,13 +500,28 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
     {
       _businessObject.BooleanValue = true;
       _dataSource.BusinessObject = null;
       _bocBooleanValue.DataSource = _dataSource;
       _bocBooleanValue.Property = _propertyBooleanValue;
       _bocBooleanValue.Value = false;
+      _bocBooleanValue.IsDirty = true;
+
+      _bocBooleanValue.SaveValue (false);
+      Assert.AreEqual (true, _businessObject.BooleanValue);
+      Assert.IsTrue (_bocBooleanValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
+    {
+      _businessObject.BooleanValue = true;
+      _dataSource.BusinessObject = null;
+      _bocBooleanValue.DataSource = _dataSource;
+      _bocBooleanValue.Property = _propertyBooleanValue;
+      _bocBooleanValue.Value = null;
       _bocBooleanValue.IsDirty = true;
 
       _bocBooleanValue.SaveValue (false);

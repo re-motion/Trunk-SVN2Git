@@ -331,5 +331,37 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       values[2] = _isRenderedInCurrentLifecycle;
       return values;
     }
+ 
+    /// <summary>
+    /// Saves the value into the bound <see cref="BusinessObjectBoundWebControl.Property"/>.
+    /// </summary>
+    /// <returns><see langword="true"/> if the value was saved into the bound <see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
+    protected bool SaveValueToDomainModel ()
+    {
+      if (Property == null)
+        return false;
+
+      if (DataSource == null)
+        return false;
+
+      if (DataSource.BusinessObject == null)
+      {
+        if (!HasValue)
+          return true;
+
+        return false;
+      }
+
+      //if (IsReadOnlyInDomainModel()) // also check when setting IsDirty
+      //  throw new InvalidOperationException();
+      if (IsReadOnly)
+        return true;
+
+      var requiresWriteBack = !Property.IsList || Property.ListInfo.RequiresWriteBack;
+      if (requiresWriteBack)
+        DataSource.BusinessObject.SetProperty (Property, Value);
+
+      return true;
+    }
   }
 }

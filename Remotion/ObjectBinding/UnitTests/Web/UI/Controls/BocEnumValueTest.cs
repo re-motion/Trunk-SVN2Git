@@ -344,13 +344,28 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
     {
       _businessObject.EnumValue = TestEnum.Second;
       _dataSource.BusinessObject = null;
       _bocEnumValue.DataSource = _dataSource;
       _bocEnumValue.Property = _propertyEnumValue;
       _bocEnumValue.Value = TestEnum.First;
+      _bocEnumValue.IsDirty = true;
+
+      _bocEnumValue.SaveValue (false);
+      Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);
+      Assert.IsTrue (_bocEnumValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
+    {
+      _businessObject.EnumValue = TestEnum.Second;
+      _dataSource.BusinessObject = null;
+      _bocEnumValue.DataSource = _dataSource;
+      _bocEnumValue.Property = _propertyEnumValue;
+      _bocEnumValue.Value = null;
       _bocEnumValue.IsDirty = true;
 
       _bocEnumValue.SaveValue (false);

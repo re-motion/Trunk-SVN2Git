@@ -171,19 +171,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (interim)
         return;
 
-      if (Property == null)
-        return;
-
-      if (DataSource == null)
-        return;
-
-      if (IsDirty)
-      {
-        if (DataSource.BusinessObject != null && !IsReadOnly)
-          DataSource.BusinessObject.SetProperty (Property, Value);
-
+      if (IsDirty && SaveValueToDomainModel())
         IsDirty = false;
-      }
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>

@@ -43,13 +43,13 @@ namespace Remotion.ObjectBinding.Sample
 
 
       private IList _value;
-      private ObjectBoundRepeater _parent;
+      private readonly ObjectBoundRepeater _owner;
 
 
-      public ObjectBoundRepeaterInternal (ObjectBoundRepeater parent)
+      public ObjectBoundRepeaterInternal (ObjectBoundRepeater owner)
       {
-        ArgumentUtility.CheckNotNull ("parent", parent);
-        _parent = parent;
+        ArgumentUtility.CheckNotNull ("owner", owner);
+        _owner = owner;
       }
 
       public override void LoadValue (bool interim)
@@ -60,26 +60,35 @@ namespace Remotion.ObjectBinding.Sample
         if (! interim)
           IsDirty = false;
 
-        _parent.LoadValueInternal (interim);
+        _owner.LoadValueInternal (interim);
       }
 
       public override void SaveValue (bool interim)
       {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
-          DataSource.BusinessObject.SetProperty (Property, Value);
+        if (Property == null)
+          return;
 
-        _parent.SaveValueInternal (interim);
+        if (DataSource == null)
+          return;
+
+        if (IsDirty && SaveValueToDomainModel())
+        {
+          if (!interim)
+            IsDirty = false;
+        }
+
+        _owner.SaveValueInternal (interim);
       }
 
       public override bool IsDirty
       {
-        get { return _parent.IsDirtyInternal; }
-        set { _parent.IsDirtyInternal = value; }
+        get { return _owner.IsDirtyInternal; }
+        set { _owner.IsDirtyInternal = value; }
       }
 
       public override string[] GetTrackedClientIDs ()
       {
-        return _parent.GetTrackedClientIDsInternal();
+        return _owner.GetTrackedClientIDsInternal();
       }
 
       /// <summary> Gets or sets the current value. </summary>
@@ -91,7 +100,7 @@ namespace Remotion.ObjectBinding.Sample
         set
         {
           _value = value;
-          ((Repeater) _parent).DataSource = value;
+          ((Repeater) _owner).DataSource = value;
         }
       }
 
@@ -131,7 +140,7 @@ namespace Remotion.ObjectBinding.Sample
 
       public override Control NamingContainer
       {
-        get { return _parent.NamingContainer; }
+        get { return _owner.NamingContainer; }
       }
 
       public override bool Validate ()
@@ -139,7 +148,7 @@ namespace Remotion.ObjectBinding.Sample
         bool isValid = base.Validate();
         if (! isValid)
           return false;
-        return _parent.ValidateInternal();
+        return _owner.ValidateInternal();
       }
 
       protected override void LoadViewState (object savedState)

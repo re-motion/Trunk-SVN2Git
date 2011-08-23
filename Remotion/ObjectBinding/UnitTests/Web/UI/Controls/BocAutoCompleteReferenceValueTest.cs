@@ -564,7 +564,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
+    {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _dataSource.BusinessObject = null;
+      _control.DataSource = _dataSource;
+      _control.Property = _propertyReferenceValue;
+      _control.Value =  (IBusinessObjectWithIdentity) TypeWithReference.Create();
+      _control.IsDirty = true;
+
+      _control.SaveValue (false);
+      Assert.AreEqual (value, _businessObject.ReferenceValue);
+      Assert.IsTrue (_control.IsDirty);
+    }
+    
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
     {
       var value = TypeWithReference.Create ();
       _businessObject.ReferenceValue = value;

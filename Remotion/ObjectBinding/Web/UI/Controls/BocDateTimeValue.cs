@@ -352,22 +352,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (interim)
         return;
 
-      if (Property == null)
-        return;
-
-      if (DataSource == null)
-        return;
-
-      if (IsDirty)
+      if (IsDirty && SaveValueToDomainModel())
       {
-        if (DataSource.BusinessObject != null && !IsReadOnly)
-        {
-          DataSource.BusinessObject.SetProperty (Property, Value);
-          //  get_Value parses the internal representation of the date/time value
-          //  set_Value updates the internal representation of the date/time value
-          Value = Value;
-        }
-
+        //  get_Value parses the internal representation of the date/time value
+        //  set_Value updates the internal representation of the date/time value
+        Value = Value;
         IsDirty = false;
       }
     }

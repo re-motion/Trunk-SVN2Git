@@ -331,7 +331,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _dataSource.BusinessObject = null;
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = "value";
+      _bocTextValue.IsDirty = true;
+
+      _bocTextValue.SaveValue (false);
+      Assert.AreEqual ("Foo Bar", _businessObject.StringValue);
+      Assert.IsTrue (_bocTextValue.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
     {
       _businessObject.StringValue = "Foo Bar";
       _dataSource.BusinessObject = null;

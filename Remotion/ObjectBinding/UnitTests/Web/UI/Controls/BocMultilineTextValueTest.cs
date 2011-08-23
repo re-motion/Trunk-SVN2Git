@@ -325,7 +325,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
+    {
+      _businessObject.StringArray = new[] { "Foo", "Bar" };
+      _dataSource.BusinessObject = null;
+      _bocMultilineTextValue.DataSource = _dataSource;
+      _bocMultilineTextValue.Property = _propertyStringArray;
+      _bocMultilineTextValue.Value = new[] { "value" };
+      _bocMultilineTextValue.IsDirty = true;
+
+      _bocMultilineTextValue.SaveValue (false);
+      Assert.AreEqual (new[] { "Foo", "Bar" }, _businessObject.StringArray);
+      Assert.IsTrue (_bocMultilineTextValue.IsDirty);
+    }
+    
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
     {
       _businessObject.StringArray = new[] { "Foo", "Bar" };
       _dataSource.BusinessObject = null;

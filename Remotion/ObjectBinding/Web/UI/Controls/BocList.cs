@@ -1509,11 +1509,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           EndListEditMode (true);
       }
 
-      if (IsDirty)
+      if (IsDirty && SaveValueToDomainModel())
       {
-        if (Property.ListInfo.RequiresWriteBack && DataSource.BusinessObject != null && !IsReadOnly)
-          DataSource.BusinessObject.SetProperty (Property, Value);
-
         if (!interim)
           IsDirty = false;
       }

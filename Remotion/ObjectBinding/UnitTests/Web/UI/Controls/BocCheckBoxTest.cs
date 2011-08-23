@@ -478,7 +478,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNull ()
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
     {
       _businessObject.BooleanValue = true;
       _dataSource.BusinessObject = null;
@@ -489,7 +489,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _bocCheckBox.SaveValue (false);
       Assert.AreEqual (true, _businessObject.BooleanValue);
-      Assert.IsFalse (_bocCheckBox.IsDirty);
+      Assert.IsTrue (_bocCheckBox.IsDirty);
+    }
+
+    [Test]
+    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
+    {
+      _businessObject.BooleanValue = true;
+      _dataSource.BusinessObject = null;
+      _bocCheckBox.DataSource = _dataSource;
+      _bocCheckBox.Property = _propertyBooleanValue;
+      _bocCheckBox.Value = null;
+      _bocCheckBox.IsDirty = true;
+
+      _bocCheckBox.SaveValue (false);
+      Assert.AreEqual (true, _businessObject.BooleanValue);
+      Assert.IsTrue (_bocCheckBox.IsDirty);
+      Assert.IsTrue (_bocCheckBox.HasValue);
     }
 
     [Test]
