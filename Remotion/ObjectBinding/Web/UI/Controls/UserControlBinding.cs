@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -125,17 +126,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override bool IsDirty
     {
-      get
-      {
-        for (int i = 0; i < _userControl.DataSource.BoundControls.Length; i++)
-        {
-          IBusinessObjectBoundControl control = _userControl.DataSource.BoundControls[i];
-          BusinessObjectBoundEditableWebControl editableControl = control as BusinessObjectBoundEditableWebControl;
-          if (editableControl != null && editableControl.IsDirty)
-            return true;
-        }
-        return false;
-      }
+      get { return _userControl.DataSource.BoundControls.OfType<BusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty); }
       set { throw new NotSupportedException(); }
     }
 
