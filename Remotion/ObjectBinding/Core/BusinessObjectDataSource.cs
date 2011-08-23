@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
@@ -72,11 +73,8 @@ namespace Remotion.ObjectBinding
     /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     public void LoadValues (bool interim)
     {
-      foreach (IBusinessObjectBoundControl control in _boundControls)
-      {
-        if (control.HasValidBinding)
-          control.LoadValue (interim);
-      }
+      foreach (var control in _boundControls.Where (c => c.HasValidBinding))
+        control.LoadValue (interim);
     }
 
     /// <summary> 
@@ -85,12 +83,8 @@ namespace Remotion.ObjectBinding
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
     public void SaveValues (bool interim)
     {
-      foreach (IBusinessObjectBoundControl control in _boundControls)
-      {
-        IBusinessObjectBoundEditableControl writeableControl = control as IBusinessObjectBoundEditableControl;
-        if (writeableControl != null && writeableControl.HasValidBinding)
-          writeableControl.SaveValue (interim);
-      }
+      foreach (var control in _boundControls.OfType<IBusinessObjectBoundEditableControl>().Where (c => c.HasValidBinding))
+        control.SaveValue (interim);
     }
 
     /// <summary>
@@ -111,7 +105,7 @@ namespace Remotion.ObjectBinding
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public IBusinessObjectBoundControl[] BoundControls
     {
-      get { return _boundControls.FindAll (delegate (IBusinessObjectBoundControl control) { return control.HasValidBinding; }).ToArray(); }
+      get { return _boundControls.Where (c => c.HasValidBinding).ToArray(); }
     }
 
     /// <summary>
