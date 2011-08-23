@@ -27,18 +27,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// </summary>
   public interface IDbCommandBuilderFactory
   {
-    IDbCommandBuilder CreateForSelect (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID[] objectIDs);
-
     IDbCommandBuilder CreateForSelect (
         TableDefinition table,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IEnumerable<ColumnValue> comparedColumns,
+        IEnumerable<ColumnValue> comparedColumnValues,
         IEnumerable<OrderedColumn> orderedColumns);
-
+    IDbCommandBuilder CreateForSelect (
+        TableDefinition table, 
+        IEnumerable<ColumnDefinition> selectedColumns, 
+        ColumnDefinition comparedColumn, 
+        IEnumerable<object> comparedValues);
     IDbCommandBuilder CreateForSelect (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IEnumerable<ColumnValue> comparedColumns,
+        IEnumerable<ColumnValue> comparedColumnValues,
         IEnumerable<OrderedColumn> orderedColumns);
 
     IDbCommandBuilder CreateForQuery (string statement, IEnumerable<QueryParameterWithType> parametersWithType);
@@ -47,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     IDbCommandBuilder CreateForUpdate (
         TableDefinition tableDefinition,
         IEnumerable<ColumnValue> updatedColumns,
-        IEnumerable<ColumnValue> comparedColumns);
-    IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IEnumerable<ColumnValue> comparedColumns);
+        IEnumerable<ColumnValue> comparedColumnValues);
+    IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IEnumerable<ColumnValue> comparedColumnValues);
   }
 }

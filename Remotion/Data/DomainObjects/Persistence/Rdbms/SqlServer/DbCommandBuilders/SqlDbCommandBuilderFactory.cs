@@ -51,32 +51,37 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForSelect (
         TableDefinition table,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IEnumerable<ColumnValue> comparedColumns,
+        IEnumerable<ColumnValue> comparedColumnValues,
         IEnumerable<OrderedColumn> orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
+      ArgumentUtility.CheckNotNull ("comparedColumnValues", comparedColumnValues);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
-          new ComparedColumnsSpecification (comparedColumns),
+          new ComparedColumnsSpecification (comparedColumnValues),
           CreateOrderedColumnsSpecification (orderedColumns),
           _sqlDialect);
     }
     
-    public IDbCommandBuilder CreateForSelect (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID[] objectIDs)
+    public IDbCommandBuilder CreateForSelect (
+        TableDefinition table, 
+        IEnumerable<ColumnDefinition> selectedColumns, 
+        ColumnDefinition comparedColumn, 
+        IEnumerable<object> comparedValues)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+      ArgumentUtility.CheckNotNull ("comparedColumn", comparedColumn);
+      ArgumentUtility.CheckNotNull ("comparedValues", comparedValues);
 
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
-          new SqlXmlSetComparedColumnSpecification (table.IDColumn, GetObjectIDValues (objectIDs)),
+          new SqlXmlSetComparedColumnSpecification (comparedColumn, comparedValues),
           EmptyOrderedColumnsSpecification.Instance,
           _sqlDialect);
     }
@@ -84,18 +89,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForSelect (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IEnumerable<ColumnValue> comparedColumns,
+        IEnumerable<ColumnValue> comparedColumnValues,
         IEnumerable<OrderedColumn> orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("view", view);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
+      ArgumentUtility.CheckNotNull ("comparedColumnValues", comparedColumnValues);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       return new UnionSelectDbCommandBuilder (
           view,
           new SelectedColumnsSpecification (selectedColumns),
-          new ComparedColumnsSpecification (comparedColumns),
+          new ComparedColumnsSpecification (comparedColumnValues),
           CreateOrderedColumnsSpecification (orderedColumns),
           _sqlDialect);
     }
@@ -119,37 +124,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForUpdate (
         TableDefinition tableDefinition,
         IEnumerable<ColumnValue> updatedColumns,
-        IEnumerable<ColumnValue> comparedColumns)
+        IEnumerable<ColumnValue> comparedColumnValues)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("updatedColumns", updatedColumns);
-      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
+      ArgumentUtility.CheckNotNull ("comparedColumnValues", comparedColumnValues);
 
       return new UpdateDbCommandBuilder (
           tableDefinition,
           new UpdatedColumnsSpecification (updatedColumns),
-          new ComparedColumnsSpecification (comparedColumns),
+          new ComparedColumnsSpecification (comparedColumnValues),
           _sqlDialect);
     }
 
-    public IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IEnumerable<ColumnValue> comparedColumns)
+    public IDbCommandBuilder CreateForDelete (TableDefinition tableDefinition, IEnumerable<ColumnValue> comparedColumnValues)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
-      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
+      ArgumentUtility.CheckNotNull ("comparedColumnValues", comparedColumnValues);
 
-      return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumns), _sqlDialect);
+      return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumnValues), _sqlDialect);
     }
     
-    private IEnumerable<object > GetObjectIDValues (IEnumerable<ObjectID> objectIDs)
-    {
-      foreach (var t in objectIDs)
-      {
-        if (t.StorageProviderDefinition!=_storageProviderDefinition)
-          throw new ArgumentException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.", "objectIDs");
-        yield return t.Value;
-      }
-    }
-
     private IOrderedColumnsSpecification CreateOrderedColumnsSpecification (IEnumerable<OrderedColumn> orderedColumns)
     {
       return orderedColumns.Any ()

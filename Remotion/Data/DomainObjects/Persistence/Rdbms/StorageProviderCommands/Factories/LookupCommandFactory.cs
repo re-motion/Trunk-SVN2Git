@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -31,21 +32,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   /// </summary>
   public class LookupCommandFactory
   {
+    private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IObjectReaderFactory _objectReaderFactory;
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
 
     public LookupCommandFactory (
+        StorageProviderDefinition storageProviderDefinition,
         IDbCommandBuilderFactory dbCommandBuilderFactory,
-        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
         IObjectReaderFactory objectReaderFactory,
         ITableDefinitionFinder tableDefinitionFinder)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
-      ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("objectReaderFactory", objectReaderFactory);
       ArgumentUtility.CheckNotNull ("tableDefinitionFinder", tableDefinitionFinder);
 
+      _storageProviderDefinition = storageProviderDefinition;
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _objectReaderFactory = objectReaderFactory;
       _tableDefinitionFinder = tableDefinitionFinder;
@@ -58,7 +61,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var tableDefinition = _tableDefinitionFinder.GetTableDefinition (objectID);
       var selectedColumns = tableDefinition.GetAllColumns().ToArray();
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
-      var comparedColumns = GetComparedColumnsForObjectID (objectID, tableDefinition);
+      // TODO 4231: Use TableDefinition.IDProperty.SplitValueForComparison (objectID)
+      var comparedColumns = new[] { new ColumnValue (tableDefinition.IDColumn, objectID.Value) };
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
 
       var singleDataContainerLoadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
@@ -79,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           into idsByTable
           let selectedColumns = idsByTable.Key.GetAllColumns().ToArray()
           let dataContainerReader = _objectReaderFactory.CreateDataContainerReader (idsByTable.Key, selectedColumns)
-          let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
+          let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable)
           select Tuple.Create (dbCommandBuilder, dataContainerReader);
 
       var loadCommand = new MultiObjectLoadCommand<DataContainer> (dbCommandBuildersAndReaders);
@@ -98,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           into idsByTable
           let selectedColumns = new[] { idsByTable.Key.IDColumn, idsByTable.Key.ClassIDColumn, idsByTable.Key.TimestampColumn }
           let timestampReader = _objectReaderFactory.CreateTimestampReader (idsByTable.Key, selectedColumns)
-          let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable.ToArray())
+          let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable)
           select Tuple.Create (dbCommandBuilder, timestampReader);
 
       var loadCommand = new MultiObjectLoadCommand<Tuple<ObjectID, object>> (dbCommandBuildersAndReaders);
@@ -117,21 +121,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private IDbCommandBuilder CreateIDLookupDbCommandBuilder (
         TableDefinition tableDefinition,
         IEnumerable<ColumnDefinition> selectedColumns,
-        ObjectID[] objectIDs)
+        IEnumerable<ObjectID> objectIDs)
     {
-      if (objectIDs.Length > 1)
-        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, objectIDs);
+      var checkedIDValues = GetAndCheckObjectIDValues(objectIDs).ToArray();
+      if (checkedIDValues.Length > 1)
+      {
+        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, tableDefinition.IDColumn, checkedIDValues);
+      }
       else
       {
-        var comparedColumns = GetComparedColumnsForObjectID (objectIDs[0], tableDefinition);
+        // TODO 4231: Use TableDefinition.IDProperty.SplitValueForComparison (objectID)
+        var comparedColumns = new[] { new ColumnValue (tableDefinition.IDColumn, checkedIDValues[0]) };
         return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
       }
     }
 
-    private IEnumerable<ColumnValue> GetComparedColumnsForObjectID (ObjectID objectID, IEntityDefinition tableDefinition)
+    private IEnumerable<object> GetAndCheckObjectIDValues (IEnumerable<ObjectID> objectIDs)
     {
       // TODO 4231: Use TableDefinition.IDProperty.SplitValueForComparison (objectID)
-      return new[] { new ColumnValue (tableDefinition.IDColumn, objectID.Value) };
+      foreach (var t in objectIDs)
+      {
+        if (t.StorageProviderDefinition != _storageProviderDefinition)
+          throw new NotSupportedException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.");
+        yield return t.Value;
+      }
     }
+
   }
 }

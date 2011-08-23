@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
@@ -36,7 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private ISqlDialect _sqlDialectStub;
     private SqlDbCommandBuilderFactory _factory;
     private TableDefinition _tableDefinition;
-    private ObjectID _objectID;
     private ColumnDefinition _column1;
     private ColumnDefinition _column2;
     private ColumnValue _columnValue1;
@@ -60,8 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _orderColumn1 = new OrderedColumn (_column1, SortOrder.Ascending);
       _orderColumn2 = new OrderedColumn (_column2, SortOrder.Descending);
-
-      _objectID = new ObjectID ("Order", Guid.NewGuid());
     }
 
     [Test]
@@ -87,26 +83,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateForSelect_Table_MultiValueLookup ()
     {
-      var result = _factory.CreateForSelect (_tableDefinition, new[] { _column1, _column2 }, new[] { _objectID });
+      var result = _factory.CreateForSelect (_tableDefinition, new[] { _column1, _column2 }, _column1, new object[] { 12 });
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
       var dbCommandBuilder = (SelectDbCommandBuilder) result;
       Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
-      Assert.That (
-          ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ColumnDefinition,
-          Is.SameAs (_tableDefinition.IDColumn));
-      Assert.That (
-          ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ObjectValues, Is.EqualTo (new[] { _objectID.Value }));
+      Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ColumnDefinition, Is.SameAs (_column1));
+      Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ObjectValues, Is.EqualTo (new[] { 12 }));
       Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Multi-ID lookups can only be performed for ObjectIDs from this storage provider.\r\nParameter name: objectIDs")]
-    public void CreateForSelect_Table_MultiValueLookup_DifferentStorageProvider ()
-    {
-      _factory.CreateForSelect (_tableDefinition, new[] { _column1, _column2 }, new[] { DomainObjectIDs.Official1 });
     }
 
     [Test]

@@ -66,8 +66,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _objectReaderFactory = objectReaderFactory;
       _tableDefinitionFinder = tableDefinitionFinder;
       _lookupCommandFactory = new LookupCommandFactory (
+          storageProviderDefinition,
           _dbCommandBuilderFactory,
-          _rdbmsPersistenceModelProvider,
           _objectReaderFactory,
           _tableDefinitionFinder);
       _relationLookupCommandFactory = new RelationLookupCommandFactory (

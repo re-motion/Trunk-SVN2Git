@@ -40,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   [TestFixture]
   public class LookupCommandFactoryTest : StandardMappingTest
   {
-    private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private TableDefinitionFinder _tableDefinitionFinder;
 
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStrictMock;
@@ -64,8 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       base.SetUp();
 
-      _rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
-      _tableDefinitionFinder = new TableDefinitionFinder (_rdbmsPersistenceModelProvider);
+      _tableDefinitionFinder = new TableDefinitionFinder (new RdbmsPersistenceModelProvider());
 
       _dbCommandBuilderFactoryStrictMock = MockRepository.GenerateStrictMock<IDbCommandBuilderFactory>();
       _objectReaderFactoryStrictMock = MockRepository.GenerateStrictMock<IObjectReaderFactory>();
@@ -77,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataContainerReader2Stub = MockRepository.GenerateStub<IObjectReader<DataContainer>> ();
 
       _factory = new LookupCommandFactory (
+          TestDomainStorageProviderDefinition,
           _dbCommandBuilderFactoryStrictMock,
-          _rdbmsPersistenceModelProvider,
           _objectReaderFactoryStrictMock,
           _tableDefinitionFinder);
 
@@ -167,7 +165,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
               stub => stub.CreateForSelect (
                   Arg.Is (_tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns1),
-                  Arg.Is (new[] { _objectID1, _objectID2 })))
+                  Arg.Is (_tableDefinition1.IDColumn),
+                  Arg.Is (new[] { _objectID1.Value, _objectID2.Value })))
           .Return (_dbCommandBuilder1Stub);
 
       var expectedSelectedColumns2 = _tableDefinition2.GetAllColumns();
@@ -215,6 +214,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "Multi-ID lookups can only be performed for ObjectIDs from this storage provider.")]
+    public void CreateForSortedMultiIDLookup_DifferentStorageProvider ()
+    {
+      _objectReaderFactoryStrictMock
+          .Stub (mock => mock.CreateDataContainerReader (Arg<IEntityDefinition>.Is.Anything, Arg<IEnumerable<ColumnDefinition>>.Is.Anything))
+          .Return (_dataContainerReader1Stub);
+
+      _factory.CreateForSortedMultiIDLookup (new[] { DomainObjectIDs.Official1 });
+    }
+
+    [Test]
     public void CreateForMultiTimestampLookup ()
     {
       var expectedSelectedColumns1 = new[] { _tableDefinition1.IDColumn, _tableDefinition1.ClassIDColumn, _tableDefinition1.TimestampColumn };
@@ -223,7 +234,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
               mock => mock.CreateForSelect (
                   Arg.Is (_tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns1),
-                  Arg<ObjectID[]>.List.Equal (new[] { _objectID1, _objectID2 })))
+                  Arg.Is (_tableDefinition1.IDColumn),
+                  Arg<ObjectID[]>.List.Equal (new[] { _objectID1.Value, _objectID2.Value })))
           .Return (_dbCommandBuilder1Stub);
 
       var expectedSelectedColumns2 = new[] { _tableDefinition2.IDColumn, _tableDefinition2.ClassIDColumn, _tableDefinition2.TimestampColumn };
@@ -267,6 +279,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (commandBuildersAndReaders[0].Item2, Is.SameAs (_timestampReader1Stub));
       Assert.That (commandBuildersAndReaders[1].Item1, Is.SameAs (_dbCommandBuilder2Stub));
       Assert.That (commandBuildersAndReaders[1].Item2, Is.SameAs (_timestampReader2Stub));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+            "Multi-ID lookups can only be performed for ObjectIDs from this storage provider.")]
+    public void CreateForMultiTimestampLookup_DifferentStorageProvider ()
+    {
+      _objectReaderFactoryStrictMock
+          .Stub (mock => mock.CreateTimestampReader (Arg<IEntityDefinition>.Is.Anything, Arg<IEnumerable<ColumnDefinition>>.Is.Anything))
+          .Return (_timestampReader1Stub);
+      
+      _factory.CreateForMultiTimestampLookup (new[] { DomainObjectIDs.Official1 });
     }
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
