@@ -45,8 +45,10 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
       var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
-      var tableColumns = entityDefinition.GetAllColumns().Select (
-          cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey)).ToArray();
+      var tableColumns = entityDefinition
+          .GetAllColumns()
+          .Select (cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey))
+          .ToArray();
 
       return new SqlEntityDefinitionExpression (
           classDefinition.ClassType, tableAlias, null, tableColumns.Where (c => c.IsPrimaryKey).First(), tableColumns);
