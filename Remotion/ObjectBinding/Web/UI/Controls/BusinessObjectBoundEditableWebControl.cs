@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 
@@ -182,8 +183,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           return true;
         if (_readOnly == false) // Bound Control && ReadOnly==false
           return false;
-        return Property.IsReadOnly (DataSource.BusinessObject); // ReadOnly==undefined: ObjectModel pulls
+        return IsReadOnlyInDomainModel; // ReadOnly==undefined: DomainModel pulls
       }
+    }
+
+    protected bool IsReadOnlyInDomainModel
+    {
+      get { return Property.IsReadOnly (DataSource.BusinessObject); }
     }
 
     /// <summary>
