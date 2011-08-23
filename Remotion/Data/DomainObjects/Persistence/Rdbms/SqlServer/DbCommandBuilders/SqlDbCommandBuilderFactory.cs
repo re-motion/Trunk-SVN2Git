@@ -49,17 +49,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     }
 
     public IDbCommandBuilder CreateForSingleIDLookupFromTable (
-        TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID objectID)
+        TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, IEnumerable<ColumnValue> comparedColumns)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
 
-      var columnValue = new ColumnValue (table.IDColumn, objectID.Value);
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
-          new ComparedColumnsSpecification (new[] { columnValue }),
+          new ComparedColumnsSpecification (comparedColumns),
           EmptyOrderedColumnsSpecification.Instance,
           _sqlDialect);
     }
@@ -82,47 +81,39 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
-        ObjectID foreignKeyValue,
+        IEnumerable<ColumnValue> comparedColumns,
         IEnumerable<OrderedColumn> orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("foreignKeyStorageProperty", foreignKeyStorageProperty);
-      ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
+      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
-
-      var orderedColumnsSpecification = CreateOrderedColumnsSpecification(orderedColumns);
-      var comparedColumnValues = foreignKeyStorageProperty.SplitValueForComparison (foreignKeyValue);
 
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
-          new ComparedColumnsSpecification (comparedColumnValues),
-          orderedColumnsSpecification,
+          new ComparedColumnsSpecification (comparedColumns),
+          CreateOrderedColumnsSpecification (orderedColumns),
           _sqlDialect);
     }
 
     public IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
-        ObjectID foreignKeyValue,
+        IEnumerable<ColumnValue> comparedColumns,
         IEnumerable<OrderedColumn> orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("view", view);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("foreignKeyStorageProperty", foreignKeyStorageProperty);
-      ArgumentUtility.CheckNotNull ("foreignKeyValue", foreignKeyValue);
+      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
       ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       var orderedColumnsSpecification = CreateOrderedColumnsSpecification (orderedColumns);
-      var comparedColumnValues = foreignKeyStorageProperty.SplitValueForComparison (foreignKeyValue);
       
       return new UnionSelectDbCommandBuilder (
           view,
           new SelectedColumnsSpecification (selectedColumns),
-          new ComparedColumnsSpecification(comparedColumnValues),
+          new ComparedColumnsSpecification (comparedColumns),
           orderedColumnsSpecification,
           _sqlDialect);
     }

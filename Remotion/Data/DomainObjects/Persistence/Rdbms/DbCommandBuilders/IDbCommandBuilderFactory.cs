@@ -27,24 +27,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   /// </summary>
   public interface IDbCommandBuilderFactory
   {
-    IDbCommandBuilder CreateForSingleIDLookupFromTable (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID objectID);
+    IDbCommandBuilder CreateForSingleIDLookupFromTable (
+        TableDefinition table, 
+        IEnumerable<ColumnDefinition> selectedColumns, 
+        IEnumerable<ColumnValue> comparedColumns);
     IDbCommandBuilder CreateForMultiIDLookupFromTable (TableDefinition table, IEnumerable<ColumnDefinition> selectedColumns, ObjectID[] objectIDs);
 
     IDbCommandBuilder CreateForRelationLookupFromTable (
         TableDefinition table,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
-        ObjectID foreignKeyValue,
+        IEnumerable<ColumnValue> comparedColumns,
         IEnumerable<OrderedColumn> orderedColumns);
 
     IDbCommandBuilder CreateForRelationLookupFromUnionView (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IRdbmsStoragePropertyDefinition foreignKeyStorageProperty,
-        ObjectID foreignKeyValue,
+        IEnumerable<ColumnValue> comparedColumns,
         IEnumerable<OrderedColumn> orderedColumns);
 
-    IDbCommandBuilder CreateForQuery( string statement, IEnumerable<QueryParameterWithType> parametersWithType);
+    IDbCommandBuilder CreateForQuery (string statement, IEnumerable<QueryParameterWithType> parametersWithType);
 
     IDbCommandBuilder CreateForInsert (TableDefinition tableDefinition, IEnumerable<ColumnValue> insertedColumns);
     IDbCommandBuilder CreateForUpdate (

@@ -31,13 +31,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   public class SelectDbCommandBuilderTest : StandardMappingTest
   {
     private ISelectedColumnsSpecification _selectedColumnsStub;
+    private IComparedColumnsSpecification _comparedColumnsStrictMock;
+    private IOrderedColumnsSpecification _orderedColumnsStub;
+    
     private ISqlDialect _sqlDialectStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private IDataParameterCollection _dataParameterCollectionMock;
     private IRdbmsProviderCommandExecutionContext _commandExecutionContextStub;
-    private IComparedColumnsSpecification _comparedColumnsSpecificationStrictMock;
-    private IOrderedColumnsSpecification _orderedColumnsSpecificationStub;
 
     public override void SetUp ()
     {
@@ -47,14 +48,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _selectedColumnsStub
           .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg<ISqlDialect>.Is.Anything))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
+      _comparedColumnsStrictMock = MockRepository.GenerateStrictMock<IComparedColumnsSpecification> ();
+      _orderedColumnsStub = MockRepository.GenerateStub<IOrderedColumnsSpecification> ();
 
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _sqlDialectStub.Stub (stub => stub.StatementDelimiter).Return (";");
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
       _dataParameterCollectionMock = MockRepository.GenerateStrictMock<IDataParameterCollection>();
-
-      _comparedColumnsSpecificationStrictMock = MockRepository.GenerateStrictMock<IComparedColumnsSpecification>();
-      _orderedColumnsSpecificationStub = MockRepository.GenerateStub<IOrderedColumnsSpecification>();
 
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub);
@@ -71,30 +71,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
-          _comparedColumnsSpecificationStrictMock,
-          _orderedColumnsSpecificationStub,
+          _comparedColumnsStrictMock,
+          _orderedColumnsStub,
           _sqlDialectStub);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
-      _comparedColumnsSpecificationStrictMock.Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub));
-      _comparedColumnsSpecificationStrictMock
+      _comparedColumnsStrictMock.Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub));
+      _comparedColumnsStrictMock
           .Expect (
               stub => stub.AppendComparisons (
                   Arg<StringBuilder>.Is.Anything,
                   Arg.Is (_dbCommandStub),
                   Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
-      _comparedColumnsSpecificationStrictMock.Replay ();
+      _comparedColumnsStrictMock.Replay ();
 
-      _orderedColumnsSpecificationStub.Stub (stub => stub.IsEmpty).Return (false);
-      _orderedColumnsSpecificationStub
+      _orderedColumnsStub.Stub (stub => stub.IsEmpty).Return (false);
+      _orderedColumnsStub
           .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Name] ASC, [City] DESC"));
 
      var result = builder.Create (_commandExecutionContextStub);
 
-     _comparedColumnsSpecificationStrictMock.VerifyAllExpectations ();
+     _comparedColumnsStrictMock.VerifyAllExpectations ();
      Assert.That (
           result.CommandText,
           Is.EqualTo (
@@ -109,28 +109,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var builder = new SelectDbCommandBuilder (
           tableDefinition,
           _selectedColumnsStub,
-          _comparedColumnsSpecificationStrictMock,
-          _orderedColumnsSpecificationStub,
+          _comparedColumnsStrictMock,
+          _orderedColumnsStub,
           _sqlDialectStub);
 
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("customSchema")).Return ("[delimited customSchema]");
       _sqlDialectStub.Stub (mock => mock.DelimitIdentifier ("Table")).Return ("[delimited Table]");
 
-      _comparedColumnsSpecificationStrictMock.Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub));
-      _comparedColumnsSpecificationStrictMock
+      _comparedColumnsStrictMock.Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub));
+      _comparedColumnsStrictMock
           .Expect (
               stub => stub.AppendComparisons (
                   Arg<StringBuilder>.Is.Anything,
                   Arg.Is (_dbCommandStub),
                   Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[ID] = @ID"));
-      _comparedColumnsSpecificationStrictMock.Replay ();
+      _comparedColumnsStrictMock.Replay ();
 
-      _orderedColumnsSpecificationStub.Stub (stub => stub.IsEmpty).Return (true);
+      _orderedColumnsStub.Stub (stub => stub.IsEmpty).Return (true);
 
       var result = builder.Create (_commandExecutionContextStub);
 
-      _comparedColumnsSpecificationStrictMock.VerifyAllExpectations ();
+      _comparedColumnsStrictMock.VerifyAllExpectations ();
       Assert.That (
           result.CommandText, Is.EqualTo ("SELECT [Column1], [Column2], [Column3] FROM [delimited customSchema].[delimited Table] WHERE [ID] = @ID;"));
     }

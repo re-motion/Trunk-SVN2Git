@@ -35,7 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   {
     private ISqlDialect _sqlDialectStub;
     private SqlDbCommandBuilderFactory _factory;
-    private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
     private TableDefinition _tableDefinition;
     private ObjectID _objectID;
     private ColumnDefinition _column1;
@@ -52,8 +51,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _factory = new SqlDbCommandBuilderFactory (_sqlDialectStub, TestDomainStorageProviderDefinition);
 
-      _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
       _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
 
       _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
@@ -70,18 +67,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateForSingleIDLookupFromTable ()
     {
-      var result = _factory.CreateForSingleIDLookupFromTable (_tableDefinition, new[] { _column1, _column2 }, _objectID);
+      var result = _factory.CreateForSingleIDLookupFromTable (_tableDefinition, new[] { _column1, _column2 }, new[] { _columnValue1, _columnValue2 });
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
       var dbCommandBuilder = (SelectDbCommandBuilder) result;
       Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
       Assert.That (
-          ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumnsSpecification).ComparedColumnValues[0].Column,
-          Is.SameAs (_tableDefinition.IDColumn));
-      Assert.That (
-          ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumnsSpecification).ComparedColumnValues[0].Value, Is.SameAs (_objectID.Value));
-      Assert.That (dbCommandBuilder.OrderedColumnsSpecification, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
+          ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumns).ComparedColumnValues,
+          Is.EqualTo (new[] { _columnValue1, _columnValue2 }));
+      Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
     }
 
     [Test]
@@ -94,11 +89,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
       Assert.That (
-          ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ColumnDefinition,
+          ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ColumnDefinition,
           Is.SameAs (_tableDefinition.IDColumn));
       Assert.That (
-          ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumnsSpecification).ObjectValues, Is.EqualTo (new[] { _objectID.Value }));
-      Assert.That (dbCommandBuilder.OrderedColumnsSpecification, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
+          ((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ObjectValues, Is.EqualTo (new[] { _objectID.Value }));
+      Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
     }
 
     [Test]
@@ -113,19 +108,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void CreateForRelationLookupFromTable ()
     {
       var result = _factory.CreateForRelationLookupFromTable (
-          _tableDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, new[] { _orderColumn1, _orderColumn2 });
+          _tableDefinition,
+          new[] { _column1, _column2 },
+          new[] { _columnValue1, _columnValue2 },
+          new[] { _orderColumn1, _orderColumn2 });
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
       var dbCommandBuilder = (SelectDbCommandBuilder) result;
       Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
       Assert.That (
-          ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumnsSpecification).ComparedColumnValues,
-          Is.EqualTo (
-              new[]
-              { new ColumnValue (((SimpleStoragePropertyDefinition) _foreignKeyColumnDefinition.ValueProperty).ColumnDefinition, _objectID.Value) }));
+                ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumns).ComparedColumnValues,
+                Is.EqualTo (new[] { _columnValue1, _columnValue2 }));
       Assert.That (
-          ((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumnsSpecification).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
+          ((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
     }
 
     [Test]
@@ -137,7 +133,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _tableDefinition);
 
       var result = _factory.CreateForRelationLookupFromUnionView (
-          unionViewDefinition, new[] { _column1, _column2 }, _foreignKeyColumnDefinition, _objectID, new[] { _orderColumn1, _orderColumn2 });
+          unionViewDefinition,
+          new[] { _column1, _column2 },
+          new[] { _columnValue1, _columnValue2 },
+          new[] { _orderColumn1, _orderColumn2 });
 
       Assert.That (result, Is.TypeOf (typeof (UnionSelectDbCommandBuilder)));
       var dbCommandBuilder = (UnionSelectDbCommandBuilder) result;
@@ -145,11 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
       Assert.That (
           ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumns).ComparedColumnValues,
-          Is.EqualTo (
-              new[] { new ColumnValue (
-                  ((SimpleStoragePropertyDefinition)
-                   _foreignKeyColumnDefinition.ValueProperty).ColumnDefinition,
-                  _objectID.Value)}));
+          Is.EqualTo (new[] { _columnValue1, _columnValue2 }));
       Assert.That (((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
     }
 

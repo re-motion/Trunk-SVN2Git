@@ -31,26 +31,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
   {
     private readonly TableDefinition _table;
     private readonly ISelectedColumnsSpecification _selectedColumns;
-    private readonly IComparedColumnsSpecification _comparedColumnsSpecification;
-    private readonly IOrderedColumnsSpecification _orderedColumnsSpecification;
+    private readonly IComparedColumnsSpecification _comparedColumns;
+    private readonly IOrderedColumnsSpecification _orderedColumns;
 
     public SelectDbCommandBuilder (
         TableDefinition table,
         ISelectedColumnsSpecification selectedColumns,
-        IComparedColumnsSpecification comparedColumnsSpecification,
-        IOrderedColumnsSpecification  orderedColumnsSpecification,
+        IComparedColumnsSpecification comparedColumns,
+        IOrderedColumnsSpecification  orderedColumns,
         ISqlDialect sqlDialect)
         : base (sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("comparedColumnsSpecification", comparedColumnsSpecification);
-      ArgumentUtility.CheckNotNull ("orderedColumnsSpecification", orderedColumnsSpecification);
+      ArgumentUtility.CheckNotNull ("comparedColumns", comparedColumns);
+      ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
 
       _table = table;
       _selectedColumns = selectedColumns;
-      _comparedColumnsSpecification = comparedColumnsSpecification;
-      _orderedColumnsSpecification = orderedColumnsSpecification;
+      _comparedColumns = comparedColumns;
+      _orderedColumns = orderedColumns;
     }
 
     public TableDefinition Table
@@ -63,14 +63,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       get { return _selectedColumns; }
     }
 
-    public IComparedColumnsSpecification ComparedColumnsSpecification
+    public IComparedColumnsSpecification ComparedColumns
     {
-      get { return _comparedColumnsSpecification; }
+      get { return _comparedColumns; }
     }
 
-    public IOrderedColumnsSpecification OrderedColumnsSpecification
+    public IOrderedColumnsSpecification OrderedColumns
     {
-      get { return _orderedColumnsSpecification; }
+      get { return _orderedColumns; }
     }
 
     public override IDbCommand Create (IRdbmsProviderCommandExecutionContext commandExecutionContext)
@@ -82,8 +82,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       var statement = new StringBuilder();
       AppendSelectClause (statement, _selectedColumns);
       AppendFromClause (statement, _table);
-      AppendWhereClause (statement, _comparedColumnsSpecification, command);
-      AppendOrderByClause (statement, _orderedColumnsSpecification);
+      AppendWhereClause (statement, _comparedColumns, command);
+      AppendOrderByClause (statement, _orderedColumns);
       statement.Append (SqlDialect.StatementDelimiter);
 
       command.CommandText = statement.ToString();

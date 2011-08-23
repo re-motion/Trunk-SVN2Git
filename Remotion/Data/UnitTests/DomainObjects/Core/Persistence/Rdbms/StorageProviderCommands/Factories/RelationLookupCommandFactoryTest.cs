@@ -56,7 +56,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
     private ObjectID _foreignKeyValue;
-    private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
+    private IRdbmsStoragePropertyDefinition _foreignKeyStoragePropertyDefinitionStrictMock;
+
+    private ColumnValue[] _fakeComparedColumns;
 
     public override void SetUp ()
     {
@@ -84,8 +86,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _tableDefinition);
 
       _foreignKeyValue = CreateObjectID (_tableDefinition);
-      _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
+      _foreignKeyStoragePropertyDefinitionStrictMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition>();
+
+      _fakeComparedColumns = new[] { new ColumnValue (ColumnDefinitionObjectMother.IDColumn, _foreignKeyValue.Value) };
     }
 
     [Test]
@@ -95,16 +98,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
       var oppositeTable = (TableDefinition) relationEndPointDefinition.ClassDefinition.StorageEntityDefinition;
 
-      var expectedSelectedColumns = _tableDefinition.GetAllColumns();
+      _foreignKeyStoragePropertyDefinitionStrictMock.Expect (mock => mock.SplitValueForComparison (_foreignKeyValue)).Return (_fakeComparedColumns);
+      _foreignKeyStoragePropertyDefinitionStrictMock.Replay ();
+
+      var expectedSelectedColumns = _tableDefinition.GetAllColumns ();
       _dbCommandBuilderFactoryStrictMock
-          .Stub (
+          .Expect (
               stub => stub.CreateForRelationLookupFromTable (
                   Arg.Is ((TableDefinition) classDefinition.StorageEntityDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
-                  Arg.Is (_foreignKeyColumnDefinition),
-                  Arg.Is (_foreignKeyValue),
+                  Arg.Is (_fakeComparedColumns),
                   Arg<IEnumerable<OrderedColumn>>.List.Equal (new OrderedColumn[0])))
           .Return (_dbCommandBuilderStub);
+      _dbCommandBuilderFactoryStrictMock.Replay();
 
       _objectReaderFactoryStrictMock
           .Expect (
@@ -117,6 +123,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
+      _foreignKeyStoragePropertyDefinitionStrictMock.VerifyAllExpectations ();
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
+
       Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
       var dbCommandBuilderTuples = ((MultiObjectLoadCommand<DataContainer>) result).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
@@ -137,6 +146,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           ColumnDefinitionObjectMother.ClassIDColumn);
       var spec2 = CreateSortedPropertySpecification (classDefinition, SortOrder.Ascending, ColumnDefinitionObjectMother.TimestampColumn);
 
+      _foreignKeyStoragePropertyDefinitionStrictMock.Expect (mock => mock.SplitValueForComparison (_foreignKeyValue)).Return (_fakeComparedColumns);
+      _foreignKeyStoragePropertyDefinitionStrictMock.Replay ();
 
       var expectedSelectedColumns = _tableDefinition.GetAllColumns();
       var expectedOrderedColumns = new[]
@@ -150,8 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
               stub => stub.CreateForRelationLookupFromTable (
                   Arg.Is ((TableDefinition) classDefinition.StorageEntityDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
-                  Arg.Is (_foreignKeyColumnDefinition),
-                  Arg.Is (_foreignKeyValue),
+                  Arg.Is (_fakeComparedColumns),
                   Arg<IEnumerable<OrderedColumn>>.List.Equal (expectedOrderedColumns)))
           .Return (_dbCommandBuilderStub);
       _dbCommandBuilderFactoryStrictMock.Replay();
@@ -169,8 +179,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _foreignKeyValue,
           new SortExpressionDefinition (new[] { spec1, spec2 }));
 
-      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
+      _foreignKeyStoragePropertyDefinitionStrictMock.VerifyAllExpectations();
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -179,16 +190,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var classDefinition = CreateClassDefinition (_unionViewDefinition);
       var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
 
+      _foreignKeyStoragePropertyDefinitionStrictMock.Expect (mock => mock.SplitValueForComparison (_foreignKeyValue)).Return (_fakeComparedColumns);
+      _foreignKeyStoragePropertyDefinitionStrictMock.Replay ();
+
       var expectedSelectedColumns = new[] { _unionViewDefinition.IDColumn, _unionViewDefinition.ClassIDColumn };
       _dbCommandBuilderFactoryStrictMock
-          .Stub (
+          .Expect (
               stub => stub.CreateForRelationLookupFromUnionView (
                   Arg.Is (_unionViewDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
-                  Arg.Is (_foreignKeyColumnDefinition),
-                  Arg.Is (_foreignKeyValue),
+                  Arg.Is (_fakeComparedColumns),
                   Arg<IEnumerable<OrderedColumn>>.List.Equal (new OrderedColumn[0])))
           .Return (_dbCommandBuilderStub);
+      _dbCommandBuilderFactoryStrictMock.Replay();
 
       _objectReaderFactoryStrictMock
           .Expect (
@@ -200,7 +214,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
-      _objectReaderFactoryStrictMock.VerifyAllExpectations();
+      _objectReaderFactoryStrictMock.VerifyAllExpectations ();
+      _foreignKeyStoragePropertyDefinitionStrictMock.VerifyAllExpectations ();
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
+
       var innerCommand =
           CheckDelegateBasedCommandAndReturnInnerCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IEnumerable<DataContainer>> (result);
       Assert.That (innerCommand, Is.TypeOf (typeof (IndirectDataContainerLoadCommand)));
@@ -224,6 +241,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           ColumnDefinitionObjectMother.ClassIDColumn);
       var spec2 = CreateSortedPropertySpecification (classDefinition, SortOrder.Ascending, ColumnDefinitionObjectMother.TimestampColumn);
 
+      _foreignKeyStoragePropertyDefinitionStrictMock.Expect (mock => mock.SplitValueForComparison (_foreignKeyValue)).Return (_fakeComparedColumns);
+      _foreignKeyStoragePropertyDefinitionStrictMock.Replay ();
+
       var expectedSelectedColumns = new[] { _unionViewDefinition.IDColumn, _unionViewDefinition.ClassIDColumn };
       var expectedOrderedColumns = new[]
                                    {
@@ -236,8 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
               stub => stub.CreateForRelationLookupFromUnionView (
                   Arg.Is (_unionViewDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns),
-                  Arg.Is (_foreignKeyColumnDefinition),
-                  Arg.Is (_foreignKeyValue),
+                  Arg.Is (_fakeComparedColumns),
                   Arg<IEnumerable<OrderedColumn>>.List.Equal (expectedOrderedColumns)))
           .Return (_dbCommandBuilderStub);
       _dbCommandBuilderFactoryStrictMock.Replay();
@@ -256,7 +275,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           new SortExpressionDefinition (new[] { spec1, spec2 }));
 
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
-      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
+      _foreignKeyStoragePropertyDefinitionStrictMock.VerifyAllExpectations ();
+      _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -268,16 +288,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
-          _foreignKeyColumnDefinition);
+          _foreignKeyStoragePropertyDefinitionStrictMock);
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
-
-      var objectID = CreateObjectID (nullEntityDefintion);
-
-      _dbCommandBuilderFactoryStrictMock
-          .Stub (
-              stub =>
-              stub.CreateForSingleIDLookupFromTable (Arg.Is (_tableDefinition), Arg<IEnumerable<ColumnDefinition>>.Is.Anything, Arg.Is (objectID)))
-          .Return (_dbCommandBuilderStub);
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
@@ -341,7 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
-          _foreignKeyColumnDefinition);
+          _foreignKeyStoragePropertyDefinitionStrictMock);
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (

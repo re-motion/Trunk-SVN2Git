@@ -51,15 +51,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _tableDefinitionFinder = tableDefinitionFinder;
     }
 
-    public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
-        ObjectID objectID)
+    public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       var tableDefinition = _tableDefinitionFinder.GetTableDefinition (objectID);
       var selectedColumns = tableDefinition.GetAllColumns().ToArray();
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
-      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, selectedColumns, objectID);
+      var comparedColumns = GetComparedColumnsForObjectID (objectID, tableDefinition);
+      var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, selectedColumns, comparedColumns);
 
       var singleDataContainerLoadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
       return DelegateBasedStorageProviderCommand.Create (
@@ -122,7 +122,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       if (objectIDs.Length > 1)
         return _dbCommandBuilderFactory.CreateForMultiIDLookupFromTable (tableDefinition, selectedColumns, objectIDs);
       else
-        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, selectedColumns, objectIDs[0]);
+      {
+        var comparedColumns = GetComparedColumnsForObjectID (objectIDs[0], tableDefinition);
+        return _dbCommandBuilderFactory.CreateForSingleIDLookupFromTable (tableDefinition, selectedColumns, comparedColumns);
+      }
+    }
+
+    private IEnumerable<ColumnValue> GetComparedColumnsForObjectID (ObjectID objectID, IEntityDefinition tableDefinition)
+    {
+      // TODO 4231: Use TableDefinition.IDProperty.SplitValueForComparison (objectID)
+      return new[] { new ColumnValue (tableDefinition.IDColumn, objectID.Value) };
     }
   }
 }
