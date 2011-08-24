@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
@@ -107,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (_internalDataSource.HasBusinessObjectChanged)
           return true;
 
-        return BoundControls.OfType<IBusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty);
+        return _internalDataSource.GetBoundControlsWithValidBinding().OfType<IBusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty);
       }
       set
       {
@@ -300,11 +301,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _internalDataSource.BoundControls; }
     }
 
+    /// <summary>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
+    /// </summary>
+    /// <returns> 
+    ///   A sequence of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
+    ///   evaluates <see langword="true"/>. 
+    /// </returns>
+    [Browsable (false), DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public IEnumerable<IBusinessObjectBoundControl> GetBoundControlsWithValidBinding ()
+    {
+      return _internalDataSource.GetBoundControlsWithValidBinding();
+    }
+
     /// <summary> Prepares all bound controls implementing <see cref="IValidatableControl"/> for validation. </summary>
     public override void PrepareValidation ()
     {
       base.PrepareValidation ();
-      foreach (var control in BoundControls.OfType<IValidatableControl>())
+      foreach (var control in _internalDataSource.GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
         control.PrepareValidation();
     }
 
@@ -315,7 +330,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       bool isValid = base.Validate();
       if (IsRequired || _internalDataSource.HasValue())
       {
-        foreach (var control in BoundControls.OfType<IValidatableControl>())
+        foreach (var control in _internalDataSource.GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
           isValid &= control.Validate();
       }
       return isValid;

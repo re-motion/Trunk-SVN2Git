@@ -255,10 +255,10 @@ namespace Remotion.ObjectBinding
     {
       if (HasValidBinding && BusinessObject != null && ReferenceProperty.SupportsDefaultValue)
       {
-        if (BoundControls.Any (c => c.HasValue))
+        if (GetBoundControlsWithValidBinding().Any (c => c.HasValue))
           return false;
 
-        var properties = BoundControls.Select (c => c.Property).Distinct ().ToArray ();
+        var properties = GetBoundControlsWithValidBinding().Select (c => c.Property).Distinct ().ToArray ();
         return ReferenceProperty.IsDefaultValue (ReferencedDataSource.BusinessObject, BusinessObject, properties);
       }
       else

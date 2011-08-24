@@ -126,7 +126,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override bool IsDirty
     {
-      get { return _userControl.DataSource.BoundControls.OfType<BusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty); }
+      get { return _userControl.DataSource.GetBoundControlsWithValidBinding().OfType<BusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty); }
       set { throw new NotSupportedException(); }
     }
 

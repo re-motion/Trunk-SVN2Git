@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
@@ -214,10 +215,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return GetDataSource().BoundControls; }
     }
 
+    /// <summary>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
+    /// </summary>
+    /// <returns>
+    ///   A sequence of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
+    ///   evaluates <see langword="true"/>. 
+    /// </returns>
+    [Browsable (false), DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public IEnumerable<IBusinessObjectBoundControl> GetBoundControlsWithValidBinding ()
+    {
+      return GetDataSource().GetBoundControlsWithValidBinding();
+    }
+
     /// <summary> Prepares all bound controls implementing <see cref="IValidatableControl"/> for validation. </summary>
     public void PrepareValidation()
     {
-      foreach (var control in BoundControls.OfType<IValidatableControl>())
+      foreach (var control in GetDataSource().GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
         control.PrepareValidation();
     }
 
@@ -226,7 +241,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public bool Validate()
     {
       bool isValid = true;
-      foreach (var control in BoundControls.OfType<IValidatableControl>())
+      foreach (var control in GetDataSource().GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
         isValid &= control.Validate();
       return isValid;
     }

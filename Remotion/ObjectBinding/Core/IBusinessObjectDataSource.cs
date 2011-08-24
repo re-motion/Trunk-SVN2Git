@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+
 namespace Remotion.ObjectBinding
 {
   /// <summary>
@@ -136,5 +138,15 @@ namespace Remotion.ObjectBinding
     /// </summary>
     /// <value> An array of <see cref="IBusinessObjectBoundControl"/> objects. </value>
     IBusinessObjectBoundControl[] BoundControls { get; }
+
+    /// <summary>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
+    /// </summary>
+    /// <returns> 
+    ///   A sequence of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
+    ///   evaluates <see langword="true"/>. 
+    /// </returns>
+    IEnumerable<IBusinessObjectBoundControl> GetBoundControlsWithValidBinding ();
   }
 }

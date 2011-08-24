@@ -68,7 +68,7 @@ namespace Remotion.ObjectBinding
     /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     public void LoadValues (bool interim)
     {
-      foreach (var control in _boundControls.Where (c => c.HasValidBinding))
+      foreach (var control in GetBoundControlsWithValidBinding())
         control.LoadValue (interim);
     }
 
@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
     public void SaveValues (bool interim)
     {
-      foreach (var control in _boundControls.OfType<IBusinessObjectBoundEditableControl>().Where (c => c.HasValidBinding))
+      foreach (var control in GetBoundControlsWithValidBinding().OfType<IBusinessObjectBoundEditableControl>())
         control.SaveValue (interim);
     }
 
@@ -101,6 +101,20 @@ namespace Remotion.ObjectBinding
     public IBusinessObjectBoundControl[] BoundControls
     {
       get { return _boundControls.Where (c => c.HasValidBinding).ToArray(); }
+    }
+
+    /// <summary>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
+    /// </summary>
+    /// <returns> 
+    ///   A sequence of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
+    ///   evaluates <see langword="true"/>. 
+    /// </returns>
+    [Browsable (false), DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public IEnumerable<IBusinessObjectBoundControl> GetBoundControlsWithValidBinding ()
+    {
+      return _boundControls.Where (c => c.HasValidBinding);
     }
 
     /// <summary>
