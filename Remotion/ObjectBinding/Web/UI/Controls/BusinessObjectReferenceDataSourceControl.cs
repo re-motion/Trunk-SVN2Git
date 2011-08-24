@@ -149,17 +149,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see cref="ReferenceProperty"/>.
     /// </summary>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
-    /// <remarks> 
-    ///   Actual saving only occurs if <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/> evaluates 
-    ///   <see langword="false"/>. 
-    /// </remarks>
     public override void SaveValue (bool interim) // inherited from control interface
     {
       // Do not include check for IsDirty.
       // The wrapped reference data source has its own mechanism to prevent unnecessary write-backs.
       // The bound controls also have their own IsDirty-checks and do not concern the DataSourceControl's write-back semantics.
-      if (!IsReadOnly || (DataSource != null && DataSource.BusinessObject == null)) // null-check is special work around since busines object != null is part of regular IsReadOnly condition
-        _internalDataSource.SaveValue (interim);
+      _internalDataSource.SaveValue (interim);
     }
 
     /// <summary> 
@@ -167,14 +162,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see cref="IBusinessObjectBoundEditableControl"/>.
     /// </summary>
     /// <param name="interim"> Spefifies whether this is the final saving, or an interim saving. </param>
-    /// <remarks>
-    ///   Actual saving only occurs if <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/> evaluates 
-    ///  <see langword="false"/>. 
-    /// </remarks>
     public virtual void SaveValues (bool interim) // inherited data source interface
     {
-      if (!IsReadOnly || (DataSource != null && DataSource.BusinessObject == null)) // null-check is special work around since busines object != null is part of regular IsReadOnly condition
-        _internalDataSource.SaveValues (interim);
+      _internalDataSource.SaveValues (interim);
     }
 
     /// <summary>

@@ -187,11 +187,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected bool IsReadOnlyInDomainModel
-    {
-      get { return Property.IsReadOnly (DataSource.BusinessObject); }
-    }
-
     /// <summary>
     ///   Gets a flag that determines whether the control is to be treated as a required value.
     /// </summary>
@@ -363,5 +358,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       return true;
     }
-  }
+ 
+    private bool IsReadOnlyInDomainModel
+    {
+      get
+      {
+        Assertion.IsNotNull (Property);
+        Assertion.IsNotNull (DataSource);
+        return Property.IsReadOnly (DataSource.BusinessObject);
+      }
+    } }
 }

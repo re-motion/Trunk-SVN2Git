@@ -40,9 +40,9 @@ namespace OBWTest
       var hasLevelThreeInstance = hasLevelTwoInstance && CurrentFunction.RootObject.ReferenceValue.ReferenceValue != null;
 
       Stack.Text = "";
-      Stack.Text += string.Format ("LevelOne: hasInstance = {0}<br/>", hasLevelOneInstance);
-      Stack.Text += string.Format ("LevelTwo (LevelOne.ReferenceValue): hasInstance = {0}<br/>", hasLevelTwoInstance);
-      Stack.Text += string.Format ("LevelThree (LevelOne.ReferenceValue.ReferenceValue): hasInstance = {0}<br/>", hasLevelThreeInstance);
+      Stack.Text += string.Format ("LevelOne: HasInstance = {0}, IsDirty = {1}<br/>", hasLevelOneInstance, null);
+      Stack.Text += string.Format ("LevelTwo (LevelOne.ReferenceValue): HasInstance = {0}, IsDirty = {1}<br/>", hasLevelTwoInstance, LevelTwoDataSource.IsDirty);
+      Stack.Text += string.Format ("LevelThree (LevelOne.ReferenceValue.ReferenceValue): HasInstance = {0}, IsDirty = {1}<br/>", hasLevelThreeInstance, LevelThreeDataSource.IsDirty);
     }
 
     protected override void OnUnload (EventArgs e)

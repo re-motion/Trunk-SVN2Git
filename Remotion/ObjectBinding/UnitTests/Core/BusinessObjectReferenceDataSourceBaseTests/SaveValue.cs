@@ -25,6 +25,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
   public class SaveValue
   {
     private IBusinessObjectReferenceProperty _referencePropertyStub;
+    private IBusinessObjectReferenceProperty _readOnlyReferencePropertyStub;
     private IBusinessObjectDataSource _referencedDataSourceStub;
 
     [SetUp]
@@ -33,8 +34,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       _referencedDataSourceStub = MockRepository.GenerateStub<IBusinessObjectDataSource>();
       _referencedDataSourceStub.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
       _referencedDataSourceStub.Mode = DataSourceMode.Edit;
-      _referencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty> ();
-      _referencePropertyStub.Stub (stub => stub.ReferenceClass).Return (MockRepository.GenerateStub<IBusinessObjectClass> ());
+      _referencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty>();
+      _referencePropertyStub.Stub (stub => stub.ReferenceClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
+      _readOnlyReferencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty>();
+      _readOnlyReferencePropertyStub.Stub (stub => stub.ReferenceClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
+      _readOnlyReferencePropertyStub.Stub (stub => stub.IsReadOnly (Arg<IBusinessObject>.Is.Anything)).Return (true);
     }
 
     [Test]
@@ -507,6 +511,104 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       _referencePropertyStub.AssertWasNotCalled (stub => stub.IsDefaultValue (null, null, null), options => options.IgnoreArguments ());
       _referencePropertyStub.AssertWasNotCalled (stub => stub.Delete (null, null), options => options.IgnoreArguments ());
       _referencedDataSourceStub.BusinessObject.AssertWasCalled (stub => stub.SetProperty (_referencePropertyStub, expectedValue));
+    }
+
+    [Test]
+    public void PropertyIsReadWrite_SavesValueIntoBoundObject ()
+    {
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_referencePropertyStub)).Return (expectedValue);
+      _referencePropertyStub.ReferenceClass.Stub (stub => stub.RequiresWriteBack).Return (true);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.LoadValue (false);
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
+
+      referenceDataSource.SaveValue (false);
+
+      _referencedDataSourceStub.BusinessObject.AssertWasCalled (stub => stub.SetProperty (_referencePropertyStub, expectedValue));
+    }
+
+    [Test]
+    public void PropertyIsReadOnly_DoesNotSaveValueIntoBoundObject ()
+    {
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_readOnlyReferencePropertyStub)).Return (expectedValue);
+      _readOnlyReferencePropertyStub.ReferenceClass.Stub (stub => stub.RequiresWriteBack).Return (true);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _readOnlyReferencePropertyStub);
+      referenceDataSource.LoadValue (false);
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
+
+      referenceDataSource.SaveValue (false);
+
+      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (stub => stub.SetProperty (null, null), options=>options.IgnoreArguments());
+    }
+
+    [Test]
+    public void PropertyIsReadWrite_IsDefaultValue_ClearsBusinessObject ()
+    {
+      var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
+
+      _referencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      _referencePropertyStub.Stub (stub => stub.IsDefaultValue (null, null, null)).IgnoreArguments ().Return (true);
+      _referencePropertyStub.Stub (stub => stub.SupportsDelete).Return (true);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+      referenceDataSource.BusinessObject = referencedObject;
+
+      referenceDataSource.SaveValue (false);
+
+      Assert.That (referenceDataSource.BusinessObject, Is.Null);
+    }
+
+    [Test]
+    public void PropertyIsReadOnly_IsDefaultValue_ClearsBusinessObject ()
+    {
+      var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
+
+      _readOnlyReferencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
+      _readOnlyReferencePropertyStub.Stub (stub => stub.IsDefaultValue (null, null, null)).IgnoreArguments ().Return (true);
+      _readOnlyReferencePropertyStub.Stub (stub => stub.SupportsDelete).Return (true);
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _readOnlyReferencePropertyStub);
+      referenceDataSource.BusinessObject = referencedObject;
+
+      referenceDataSource.SaveValue (false);
+
+      Assert.That (referenceDataSource.BusinessObject, Is.Null);
+    }
+
+    [Test]
+    public void PropertyIsReadWrite_SavesValuesForBoundControls ()
+    {
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _referencePropertyStub);
+
+      var controlMock = MockRepository.GenerateMock<IBusinessObjectBoundEditableControl>();
+      controlMock.Stub (stub => stub.HasValidBinding).Return (true);
+      referenceDataSource.Register (controlMock);
+
+      controlMock.Expect (mock => mock.SaveValue (false));
+
+      referenceDataSource.SaveValue (false);
+
+      controlMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void PropertyIsReadOnly_SavesValuesForBoundControls ()
+    {
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _readOnlyReferencePropertyStub);
+
+      var controlMock = MockRepository.GenerateMock<IBusinessObjectBoundEditableControl>();
+      controlMock.Stub (stub => stub.HasValidBinding).Return (true);
+      referenceDataSource.Register (controlMock);
+
+      controlMock.Expect (mock => mock.SaveValue (false));
+
+      referenceDataSource.SaveValue (false);
+
+      controlMock.VerifyAllExpectations();
     }
   }
 }

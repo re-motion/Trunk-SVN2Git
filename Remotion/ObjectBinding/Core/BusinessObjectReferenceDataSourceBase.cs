@@ -130,7 +130,7 @@ namespace Remotion.ObjectBinding
       SaveValues (interim);
 
       // if required, save value into "parent" data source
-      if (HasValidBinding && RequiresWriteBack)
+      if (HasValidBinding && RequiresWriteBack && !IsReadOnlyInDomainModel)
       {
         if (ReferencedDataSource.BusinessObject != null)
           ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
@@ -223,6 +223,16 @@ namespace Remotion.ObjectBinding
       {
         IBusinessObjectReferenceProperty property = ReferenceProperty;
         return (property == null) ? null : property.ReferenceClass;
+      }
+    }
+
+    private bool IsReadOnlyInDomainModel
+    {
+      get
+      {
+        Assertion.IsNotNull (ReferenceProperty);
+        Assertion.IsNotNull (ReferencedDataSource);
+        return ReferenceProperty.IsReadOnly (ReferencedDataSource.BusinessObject);
       }
     }
 
