@@ -23,7 +23,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 {
   /// <summary>
-  /// Validates that a specified entity name within concrete table inheritance hierarchy classes in different inheritance brachnes is unique.
+  /// Validates that all tables within a concrete table inheritance hierarchy have unique names.
   /// </summary>
   public class TableNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule : IPersistenceMappingValidationRule
   {
