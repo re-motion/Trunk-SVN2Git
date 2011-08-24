@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -39,11 +40,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _tableDefinitionWithCustomSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "Table1"),
-          new EntityNameDefinition ("SchemaName", "View1"));
+          new EntityNameDefinition ("SchemaName", "View1"),
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.CreateColumn ("Column1"));
       _tableDefinitionWithDefaultSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
-          new EntityNameDefinition (null, "View2"));
+          new EntityNameDefinition (null, "View2"),
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          ColumnDefinitionObjectMother.CreateColumn ("Column1"));
     }
 
     [Test]
@@ -80,9 +89,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
       var expectedResult =
-          "CREATE VIEW [dbo].[View2] ([ID], [ClassID], [Timestamp], [Column1], [Column2])\r\n"
+          "CREATE VIEW [dbo].[View2] ([ID], [ClassID], [Timestamp], [Column1])\r\n"
           + "  AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [Column1], [Column2]\r\n"
+          + "  SELECT [ID], [ClassID], [Timestamp], [Column1]\r\n"
           + "    FROM [dbo].[Table2]\r\n"
           + "  WITH CHECK OPTION";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));

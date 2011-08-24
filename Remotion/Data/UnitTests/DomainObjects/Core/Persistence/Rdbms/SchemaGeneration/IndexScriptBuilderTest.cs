@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -55,70 +55,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _indexDefinition2 = MockRepository.GenerateStub<IIndexDefinition>();
       _indexDefinition3 = MockRepository.GenerateStub<IIndexDefinition>();
 
-      _tableDefinition1 = new TableDefinition (
+      _tableDefinition1 = TableDefinitionObjectMother.CreateWithIndexes (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table1"),
-          new EntityNameDefinition (null, "TableView1"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new[] { _indexDefinition1 },
-          new EntityNameDefinition[0]);
-      _tableDefinition2 = new TableDefinition (
+          new[] { _indexDefinition1 });
+      _tableDefinition2 = TableDefinitionObjectMother.CreateWithIndexes (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table2"),
-          new EntityNameDefinition (null, "TableView2"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new[] { _indexDefinition2, _indexDefinition3 },
-          new EntityNameDefinition[0]);
-      _unionViewDefinition1 = new UnionViewDefinition (
+          new[] { _indexDefinition2, _indexDefinition3 });
+      _unionViewDefinition1 = UnionViewDefinitionObjectMother.CreateWithIndexes (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "UnionView1"),
-          new[] { _tableDefinition1 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new[] { _indexDefinition1 },
-          new EntityNameDefinition[0]);
-      _unionViewDefinition2 = new UnionViewDefinition (
+          new[] { _indexDefinition1 });
+      _unionViewDefinition2 = UnionViewDefinitionObjectMother.CreateWithIndexes (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "UnionView2"),
-          new[] { _tableDefinition2 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new[] { _indexDefinition2, _indexDefinition3 },
-          new EntityNameDefinition[0]);
-      _filterViewDefinition1 = new FilterViewDefinition (
+          new[] { _indexDefinition2, _indexDefinition3 });
+      _filterViewDefinition1 = FilterViewDefinitionObjectMother.CreateWithIndexes (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "FilterView1"),
-          _tableDefinition1,
-          new[] { "ClassID" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new[] { _indexDefinition1 },
-          new EntityNameDefinition[0]);
-      _filterViewDefinition2 = new FilterViewDefinition (
+          new[] { _indexDefinition1 });
+      _filterViewDefinition2 = FilterViewDefinitionObjectMother.CreateWithIndexes (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "FilterView2"),
-          _tableDefinition2,
-          new[] { "ClassID" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new[] { _indexDefinition2, _indexDefinition3 },
-          new EntityNameDefinition[0]);
+          new[] { _indexDefinition2, _indexDefinition3 });
 
       _fakeElement1 = MockRepository.GenerateStub<IScriptElement>();
       _fakeElement2 = MockRepository.GenerateStub<IScriptElement>();

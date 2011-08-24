@@ -15,17 +15,32 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
-  public class UnionViewDefinitionObjectMother
+  public static class UnionViewDefinitionObjectMother
   {
+    public static UnionViewDefinition Create (StorageProviderDefinition storageProviderDefinition)
+    {
+      return Create (storageProviderDefinition, new EntityNameDefinition ("TestSchema", "TestUnion"));
+    }
+
+    public static UnionViewDefinition Create (
+    StorageProviderDefinition storageProviderDefinition, EntityNameDefinition viewName)
+    {
+      return Create (storageProviderDefinition, viewName, TableDefinitionObjectMother.Create (storageProviderDefinition));
+    }
+
     public static UnionViewDefinition Create (
         StorageProviderDefinition storageProviderDefinition, EntityNameDefinition viewName, params IEntityDefinition[] unionedEntities)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
+
       return new UnionViewDefinition (
           storageProviderDefinition,
           viewName,
@@ -38,9 +53,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition[0]);
     }
 
-    public static UnionViewDefinition Create (StorageProviderDefinition storageProviderDefinition)
+    public static UnionViewDefinition CreateWithIndexes (StorageProviderDefinition storageProviderDefinition, IEnumerable<IIndexDefinition> indexDefinitions)
     {
-      return Create (storageProviderDefinition, new EntityNameDefinition ("TestSchema", "TestUnion"), TableDefinitionObjectMother.Create (storageProviderDefinition));
+      return new UnionViewDefinition (
+          storageProviderDefinition,
+          new EntityNameDefinition ("TestSchema", "TestUnionView"),
+          new[] { TableDefinitionObjectMother.Create (storageProviderDefinition) },
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new ColumnDefinition[0],
+          indexDefinitions,
+          new EntityNameDefinition[0]);
+    }
+
+    public static UnionViewDefinition CreateWithSynonyms (StorageProviderDefinition storageProviderDefinition, IEnumerable<EntityNameDefinition> synonyms)
+    {
+      return new UnionViewDefinition (
+          storageProviderDefinition,
+          new EntityNameDefinition ("TestSchema", "TestUnionView"),
+          new[] { TableDefinitionObjectMother.Create (storageProviderDefinition) },
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new ColumnDefinition[0],
+          new IIndexDefinition[0],
+          synonyms);
     }
   }
 }

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
@@ -70,6 +69,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           dataColumns,
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
+    }
+
+    public static FilterViewDefinition CreateWithIndexes (StorageProviderDefinition storageProviderDefinition, IEnumerable<IIndexDefinition> indexDefinitions)
+    {
+      return new FilterViewDefinition (
+          storageProviderDefinition,
+          new EntityNameDefinition ("TestSchema", "TestFilterView"),
+          TableDefinitionObjectMother.Create (storageProviderDefinition),
+          new[] { "Class1" },
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new ColumnDefinition[0],
+          indexDefinitions,
+          new EntityNameDefinition[0]);
+    }
+
+    public static FilterViewDefinition CreateWithSynonyms (StorageProviderDefinition storageProviderDefinition, IEnumerable<EntityNameDefinition> synonyms)
+    {
+      return new FilterViewDefinition (
+          storageProviderDefinition,
+          new EntityNameDefinition ("TestSchema", "TestFilterView"),
+          TableDefinitionObjectMother.Create (storageProviderDefinition),
+          new[] { "Class1" },
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new ColumnDefinition[0],
+          new IIndexDefinition[0],
+          synonyms);
     }
   }
 }

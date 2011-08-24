@@ -350,18 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass")]
     public void PersistenceModelIsValidated ()
     {
-      var unionViewDefinition = new UnionViewDefinition (
-          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
-          new IEntityDefinition[]
-          {
-              TableDefinitionObjectMother.Create (UnitTestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Test"))
-          },
-          _fakeStorageEntityDefinition.IDColumn,
-          _fakeStorageEntityDefinition.ClassIDColumn,
-          _fakeStorageEntityDefinition.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,

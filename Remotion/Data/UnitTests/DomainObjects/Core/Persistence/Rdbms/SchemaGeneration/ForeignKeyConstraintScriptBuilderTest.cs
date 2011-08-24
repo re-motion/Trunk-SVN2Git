@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -54,28 +53,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _constraint2 = new ForeignKeyConstraintDefinition ("FK2", _tableName, new ColumnDefinition[0], new ColumnDefinition[0]);
       _constraint3 = new ForeignKeyConstraintDefinition ("FK3", _tableName, new ColumnDefinition[0], new ColumnDefinition[0]);
 
-      _tableDefinition1 = new TableDefinition (
+      _tableDefinition1 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           _tableName,
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new[] { _constraint1 },
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _tableDefinition2 = new TableDefinition (
+          new[] { _constraint1 });
+      _tableDefinition2 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           _tableName,
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new[] { _constraint2, _constraint3 },
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new[] { _constraint2, _constraint3 });
 
       _fakeElement1 = MockRepository.GenerateStub<IScriptElement>();
       _fakeElement2 = MockRepository.GenerateStub<IScriptElement>();

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
@@ -50,6 +51,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     public static TableDefinition Create (
+    StorageProviderDefinition storageProviderDefinition, EntityNameDefinition tableName, EntityNameDefinition viewName, IEnumerable<ITableConstraintDefinition> constraints)
+    {
+      return Create (
+          storageProviderDefinition,
+          tableName,
+          viewName,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new ColumnDefinition[0],
+          constraints);
+    }
+
+    public static TableDefinition Create (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition tableName,
         EntityNameDefinition viewName,
@@ -77,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         ColumnDefinition classIdColumnDefinition,
         ColumnDefinition timestampColumnDefinition,
         IEnumerable<ColumnDefinition> dataColumns,
-        ITableConstraintDefinition[] tableConstraintDefinitions)
+        IEnumerable<ITableConstraintDefinition> tableConstraintDefinitions)
     {
       return new TableDefinition (
                 storageProviderDefinition,
@@ -90,6 +105,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
                 tableConstraintDefinitions,
                 new IIndexDefinition[0],
                 new EntityNameDefinition[0]);
+    }
+
+    public static TableDefinition CreateWithIndexes (StorageProviderDefinition storageProviderDefinition, IEnumerable<IIndexDefinition> indexDefinitions)
+    {
+      return new TableDefinition (
+          storageProviderDefinition,
+          new EntityNameDefinition ("TestSchema", "TestTable"),
+          null,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new ColumnDefinition[0],
+          new ITableConstraintDefinition[0],
+          indexDefinitions,
+          new EntityNameDefinition[0]);
+    }
+
+    public static TableDefinition CreateWithSynonyms (StorageProviderDefinition storageProviderDefinition, IEnumerable<EntityNameDefinition> synonyms)
+    {
+      return new TableDefinition (
+          storageProviderDefinition,
+          new EntityNameDefinition ("TestSchema", "TestTable"),
+          null,
+          ColumnDefinitionObjectMother.IDColumn,
+          ColumnDefinitionObjectMother.ClassIDColumn,
+          ColumnDefinitionObjectMother.TimestampColumn,
+          new ColumnDefinition[0],
+          new ITableConstraintDefinition[0],
+          new IIndexDefinition[0],
+          synonyms);
     }
   }
 }

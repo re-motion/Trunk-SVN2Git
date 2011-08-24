@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "CREATE VIEW [SchemaName].[FilterView1] ([ID], [ClassID], [Timestamp], [Column1])\r\n"
          +"  WITH SCHEMABINDING AS\r\n"
          + "  SELECT [ID], [ClassID], [Timestamp], [Column1]\r\n"
-         +"    FROM [dbo].[TableName1]\r\n"
+         +"    FROM [SchemaName].[TableName1]\r\n"
          +"    WHERE [ClassID] IN ('ClassID1')\r\n"
          +"  WITH CHECK OPTION";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo(expectedResult));

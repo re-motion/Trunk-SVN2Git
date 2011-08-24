@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -181,17 +182,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       if (entityName != null)
       {
-        classDefinition.SetStorageEntity (
-            new TableDefinition (
-                storageProviderDefinition,
-                new EntityNameDefinition (null, entityName),
-                new EntityNameDefinition(null, classDefinition.ID + "View"),
-                ColumnDefinitionObjectMother.IDColumn,
-                ColumnDefinitionObjectMother.ClassIDColumn,
-                ColumnDefinitionObjectMother.TimestampColumn,
-                new ColumnDefinition[0],
-                new ITableConstraintDefinition[0],
-                new IIndexDefinition[0], new EntityNameDefinition[0]));
+        var tableDefinition = TableDefinitionObjectMother.Create (
+            storageProviderDefinition, 
+            new EntityNameDefinition (null, entityName),
+            new EntityNameDefinition(null, classDefinition.ID + "View"));
+        classDefinition.SetStorageEntity (tableDefinition);
       }
       else
       {
