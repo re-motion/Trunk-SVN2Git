@@ -71,6 +71,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return new ColumnDefinition[0]; }
     }
 
+    public ObjectIDStoragePropertyDefinition ObjectIDProperty
+    {
+      get { return null; }
+    }
+
+    public IRdbmsStoragePropertyDefinition TimestampProperty
+    {
+      get { return null; }
+    }
+
+    public IEnumerable<IRdbmsStoragePropertyDefinition> DataProperties
+    {
+      get { return new IRdbmsStoragePropertyDefinition[0]; }
+    }
+
     public IEnumerable<ColumnDefinition> GetAllColumns ()
     {
       return new ColumnDefinition[0];
@@ -93,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       visitor.VisitNullEntityDefinition (this);
     }
 
-    public bool IsNull
+    bool INullObject.IsNull
     {
       get { return true; }
     }

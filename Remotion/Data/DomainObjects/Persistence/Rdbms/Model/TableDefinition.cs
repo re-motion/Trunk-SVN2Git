@@ -28,7 +28,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class TableDefinition : EntityDefinitionBase
   {
-    private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly EntityNameDefinition _tableName;
     private readonly ReadOnlyCollection<ITableConstraintDefinition> _constraints;
 
@@ -40,29 +39,59 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         ColumnDefinition classIDColumnDefinition,
         ColumnDefinition timstampColumnDefinition,
         IEnumerable<ColumnDefinition> dataColumns,
+        ObjectIDStoragePropertyDefinition objectIDProperty,
+        IRdbmsStoragePropertyDefinition timestampProperty,
+        IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
         IEnumerable<ITableConstraintDefinition> constraints,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-      : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, indexes, synonyms)
+        : base (
+            storageProviderDefinition,
+            viewName,
+            objectIDColumnDefinition,
+            classIDColumnDefinition,
+            timstampColumnDefinition,
+            dataColumns,
+            objectIDProperty,
+            timestampProperty,
+            dataProperties,
+            indexes,
+            synonyms)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("tableName", tableName);
-      ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
       ArgumentUtility.CheckNotNull ("constraints", constraints);
 
-      _storageProviderDefinition = storageProviderDefinition;
       _tableName = tableName;
       _constraints = constraints.ToList().AsReadOnly();
     }
 
-    public override string StorageProviderID
+    // TODO 4231: Remove
+    public TableDefinition (
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition tableName,
+        EntityNameDefinition viewName,
+        ColumnDefinition objectIDColumnDefinition,
+        ColumnDefinition classIDColumnDefinition,
+        ColumnDefinition timstampColumnDefinition,
+        IEnumerable<ColumnDefinition> dataColumns,
+        IEnumerable<ITableConstraintDefinition> constraints,
+        IEnumerable<IIndexDefinition> indexes,
+        IEnumerable<EntityNameDefinition> synonyms)
+      : this (
+          storageProviderDefinition,
+          tableName,
+          viewName,
+          objectIDColumnDefinition,
+          classIDColumnDefinition,
+          timstampColumnDefinition,
+          dataColumns,
+          null,
+          null,
+          null,
+          constraints,
+          indexes,
+          synonyms)
     {
-      get { return StorageProviderDefinition.Name; }
-    }
-
-    public override StorageProviderDefinition StorageProviderDefinition
-    {
-      get { return _storageProviderDefinition; }
     }
 
     public EntityNameDefinition TableName
@@ -80,11 +109,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       visitor.VisitTableDefinition (this);
-    }
-
-    public override bool IsNull
-    {
-      get { return false; }
     }
   }
 }

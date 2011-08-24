@@ -23,51 +23,52 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class TableDefinitionTest
+  public class EntityDefinitionBaseTest
   {
-    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
+    private TestableEntityDefinitionBase _entityDefinition;
 
-    private ColumnDefinition _column;
+    private ColumnDefinition _column1;
+    private ColumnDefinition _column2;
+    private ColumnDefinition _column3;
+
     private SimpleStoragePropertyDefinition _timestampProperty;
     private ObjectIDStoragePropertyDefinition _objectIDProperty;
     private SimpleStoragePropertyDefinition _property1;
     private SimpleStoragePropertyDefinition _property2;
     private SimpleStoragePropertyDefinition _property3;
 
-    private PrimaryKeyConstraintDefinition[] _constraints;
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private IIndexDefinition[] _indexes;
     private EntityNameDefinition[] _synonyms;
-
-    private TableDefinition _tableDefintion;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _column = ColumnDefinitionObjectMother.CreateColumn ("COL1");
+      
+      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
+      _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
+
       _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
       _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
       _property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
       _property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
       _property3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column3");
-     
-      _constraints = new[]
-                     { new PrimaryKeyConstraintDefinition ("PK_Table", true, new[] { ColumnDefinitionObjectMother.IDColumn }) };
+      
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
-      _tableDefintion = new TableDefinition (
+      _entityDefinition = new TestableEntityDefinitionBase (
           _storageProviderDefinition,
-          new EntityNameDefinition ("TableSchema", "TableTest"),
           new EntityNameDefinition ("Schema", "Test"),
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column },
+          new[] { _column1, _column2, _column3 },
           _objectIDProperty,
           _timestampProperty,
           new[] { _property1, _property2, _property3 },
-          _constraints,
           _indexes,
           _synonyms);
     }
@@ -75,53 +76,69 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization ()
     {
-      Assert.That (_tableDefintion.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
-      Assert.That (_tableDefintion.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
-      Assert.That (_tableDefintion.TableName, Is.EqualTo (new EntityNameDefinition ("TableSchema", "TableTest")));
+      Assert.That (_entityDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
+      Assert.That (_entityDefinition.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
 
-      Assert.That (_tableDefintion.IDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
-      Assert.That (_tableDefintion.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
-      Assert.That (_tableDefintion.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
-      Assert.That (_tableDefintion.DataColumns, Is.EqualTo (new[] { _column }));
+      Assert.That (_entityDefinition.IDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
+      Assert.That (_entityDefinition.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
+      Assert.That (_entityDefinition.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
+      Assert.That (_entityDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column2, _column3 }));
 
-      Assert.That (_tableDefintion.ObjectIDProperty, Is.SameAs (_objectIDProperty));
-      Assert.That (_tableDefintion.TimestampProperty, Is.SameAs (_timestampProperty));
-      Assert.That (_tableDefintion.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
+      Assert.That (_entityDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
+      Assert.That (_entityDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
+      Assert.That (_entityDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
 
-      Assert.That (_tableDefintion.Constraints, Is.EqualTo (_constraints));
+      Assert.That (_entityDefinition.Indexes, Is.EqualTo (_indexes));
+      Assert.That (_entityDefinition.Synonyms, Is.EqualTo (_synonyms));
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var tableDefinition = new TableDefinition (
+      var entityDefinition = new TestableEntityDefinitionBase (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
           null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column },
+          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
-          new SimpleStoragePropertyDefinition[0],
-          _constraints,
+          new[] { _property1, _property2, _property3 },
           new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      Assert.That (tableDefinition.ViewName, Is.Null);
+          new EntityNameDefinition[0]
+          );
+      Assert.That (entityDefinition.ViewName, Is.Null);
     }
 
     [Test]
-    public void Accept ()
+    public void StorageProviderID ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor>();
+      Assert.That (_entityDefinition.StorageProviderID, Is.EqualTo ("SPID"));
+    }
 
-      visitorMock.Expect (mock => mock.VisitTableDefinition (_tableDefintion));
-      visitorMock.Replay();
+    [Test]
+    public void GetAllColumns ()
+    {
+      var result = _entityDefinition.GetAllColumns();
 
-      _tableDefintion.Accept (visitorMock);
+      Assert.That (
+          result,
+          Is.EqualTo (
+              new[]
+              {
+                  ColumnDefinitionObjectMother.IDColumn, 
+                  ColumnDefinitionObjectMother.ClassIDColumn,
+                  ColumnDefinitionObjectMother.TimestampColumn,
+                  _column1, _column2, _column3
+              }));
+    }
 
-      visitorMock.VerifyAllExpectations();
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (((INullObject) _entityDefinition).IsNull, Is.False);
     }
   }
 }

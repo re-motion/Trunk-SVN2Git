@@ -304,12 +304,15 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\UpdatedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\InfrastructureStoragePropertyDefinitionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\CompoundStoragePropertyDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityDefinitionBaseTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityNameDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ObjectIDWithoutClassIDStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SerializedObjectIDStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StorageTypeInformationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TestableEntityDefinitionBase.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsPersistenceModelProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderCommandFactoryTest.cs" />
@@ -875,6 +878,7 @@
     <Compile Include="DomainObjects\Core\UnitTestStorageObjectFactoryStub.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationConfiguration.cs" />
     <Compile Include="DomainObjects\Factories\ColumnDefinitionObjectMother.cs" />
+    <Compile Include="DomainObjects\Factories\ObjectIDStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\SimpleStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Factories\MappingReflectorFactory.cs" />

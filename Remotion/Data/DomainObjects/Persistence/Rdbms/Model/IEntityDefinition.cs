@@ -33,6 +33,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     ColumnDefinition ClassIDColumn { get; }
     ColumnDefinition TimestampColumn { get; }
     IEnumerable<ColumnDefinition> DataColumns { get; }
+    ObjectIDStoragePropertyDefinition ObjectIDProperty { get; }
+    IRdbmsStoragePropertyDefinition TimestampProperty { get; }
+    IEnumerable<IRdbmsStoragePropertyDefinition> DataProperties { get; }
 
     IEnumerable<ColumnDefinition> GetAllColumns ();
     void Accept (IEntityDefinitionVisitor visitor);

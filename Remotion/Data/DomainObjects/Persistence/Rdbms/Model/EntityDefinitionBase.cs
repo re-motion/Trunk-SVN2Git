@@ -28,45 +28,65 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public abstract class EntityDefinitionBase : IEntityDefinition
   {
+    private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
     private readonly ColumnDefinition _idColumn;
     private readonly ColumnDefinition _classIDColumn;
     private readonly ColumnDefinition _timestampColumn;
+    private readonly ObjectIDStoragePropertyDefinition _objectIDProperty;
+    private readonly IRdbmsStoragePropertyDefinition _timestampProperty;
+    private readonly ReadOnlyCollection<IRdbmsStoragePropertyDefinition> _dataProperties;
     private readonly ReadOnlyCollection<ColumnDefinition> _dataColumns;
     private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
     protected EntityDefinitionBase (
+        StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
         ColumnDefinition idColumn,
         ColumnDefinition classIDColumn,
         ColumnDefinition timstampColumn,
         IEnumerable<ColumnDefinition> dataColumns,
+        ObjectIDStoragePropertyDefinition objectIDProperty,
+        IRdbmsStoragePropertyDefinition timestampProperty,
+        IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("idColumn", idColumn);
       ArgumentUtility.CheckNotNull ("classIDColumn", classIDColumn);
       ArgumentUtility.CheckNotNull ("timstampColumn", timstampColumn);
       ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
+      //ArgumentUtility.CheckNotNull ("objectIDProperty", objectIDProperty); // TODO 4231: Uncomment
+      //ArgumentUtility.CheckNotNull ("timestampProperty", timestampProperty);
+      //ArgumentUtility.CheckNotNull ("dataProperties", dataProperties);
       ArgumentUtility.CheckNotNull ("synonyms", synonyms);
 
+      _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
       _idColumn = idColumn;
       _classIDColumn = classIDColumn;
       _timestampColumn = timstampColumn;
+      _objectIDProperty = objectIDProperty;
+      _timestampProperty = timestampProperty;
+      _dataProperties = dataProperties == null ? null : dataProperties.ToList().AsReadOnly(); // TODO 4231: Remove null check
       _dataColumns = dataColumns.ToList().AsReadOnly();
       _indexes = indexes.ToList().AsReadOnly();
       _synonyms = synonyms.ToList().AsReadOnly();
     }
 
-    public abstract string StorageProviderID { get; }
-
-    public abstract StorageProviderDefinition StorageProviderDefinition { get; }
-
-    public abstract bool IsNull { get; }
-
     public abstract void Accept (IEntityDefinitionVisitor visitor);
+
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
+    }
+
+    public string StorageProviderID
+    {
+      get { return _storageProviderDefinition.Name; }
+    }
 
     public EntityNameDefinition ViewName
     {
@@ -93,6 +113,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _dataColumns; }
     }
 
+    public ObjectIDStoragePropertyDefinition ObjectIDProperty
+    {
+      get { return _objectIDProperty; }
+    }
+
+    public IRdbmsStoragePropertyDefinition TimestampProperty
+    {
+      get { return _timestampProperty; }
+    }
+
+    public IEnumerable<IRdbmsStoragePropertyDefinition> DataProperties
+    {
+      get { return _dataProperties; }
+    }
+
     public IEnumerable<ColumnDefinition> GetAllColumns ()
     {
       yield return _idColumn;
@@ -112,6 +147,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return _synonyms; }
     }
-    
+
+    bool INullObject.IsNull { get { return false; } }
   }
 }

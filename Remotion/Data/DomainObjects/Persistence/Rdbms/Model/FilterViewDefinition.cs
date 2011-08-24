@@ -30,7 +30,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly IEntityDefinition _baseEntity;
     private readonly ReadOnlyCollection<string> _classIDs;
-    private readonly StorageProviderDefinition _storageProviderDefinition;
 
     public FilterViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
@@ -41,11 +40,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         ColumnDefinition classIDColumnDefinition,
         ColumnDefinition timstampColumnDefinition,
         IEnumerable<ColumnDefinition> dataColumns,
+        ObjectIDStoragePropertyDefinition objectIDProperty,
+        IRdbmsStoragePropertyDefinition timestampProperty,
+        IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, indexes, synonyms)
+        : base (
+            storageProviderDefinition,
+            viewName,
+            objectIDColumnDefinition,
+            classIDColumnDefinition,
+            timstampColumnDefinition,
+            dataColumns,
+            objectIDProperty,
+            timestampProperty,
+            dataProperties,
+            indexes,
+            synonyms)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
       ArgumentUtility.CheckNotNullOrEmpty ("classIDs", classIDs);
 
@@ -58,19 +70,37 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
             baseEntity.GetType());
       }
 
-      _storageProviderDefinition = storageProviderDefinition;
       _baseEntity = baseEntity;
       _classIDs = classIDs.ToList().AsReadOnly();
     }
 
-    public override string StorageProviderID
+    // TODO 4231: Remove
+    public FilterViewDefinition (
+       StorageProviderDefinition storageProviderDefinition,
+       EntityNameDefinition viewName,
+       IEntityDefinition baseEntity,
+       IEnumerable<string> classIDs,
+       ColumnDefinition objectIDColumnDefinition,
+       ColumnDefinition classIDColumnDefinition,
+       ColumnDefinition timstampColumnDefinition,
+       IEnumerable<ColumnDefinition> dataColumns,
+       IEnumerable<IIndexDefinition> indexes,
+       IEnumerable<EntityNameDefinition> synonyms)
+        : this (
+            storageProviderDefinition,
+            viewName,
+            baseEntity,
+            classIDs,
+            objectIDColumnDefinition,
+            classIDColumnDefinition,
+            timstampColumnDefinition,
+            dataColumns,
+            null,
+            null,
+            null,
+            indexes,
+            synonyms)
     {
-      get { return _storageProviderDefinition.Name; }
-    }
-
-    public override StorageProviderDefinition StorageProviderDefinition
-    {
-      get { return _storageProviderDefinition; }
     }
 
     public IEntityDefinition BaseEntity
@@ -97,11 +127,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.VisitFilterViewDefinition (this);
-    }
-
-    public override bool IsNull
-    {
-      get { return false; }
     }
   }
 }

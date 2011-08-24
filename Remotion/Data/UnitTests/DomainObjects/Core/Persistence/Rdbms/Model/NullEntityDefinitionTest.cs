@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -68,6 +67,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void IDProperty ()
+    {
+      Assert.That (_nullEntityDefinition.ObjectIDProperty, Is.Null);
+    }
+
+    [Test]
+    public void TimestampProperty ()
+    {
+      Assert.That (_nullEntityDefinition.TimestampProperty, Is.Null);
+    }
+
+    [Test]
+    public void DataProperties ()
+    {
+      Assert.That (_nullEntityDefinition.DataProperties, Is.Empty);
+    }
+
+    [Test]
     public void GetAllColumns ()
     {
       var result = _nullEntityDefinition.GetAllColumns();
@@ -107,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void IsNull ()
     {
-      Assert.That (_nullEntityDefinition.IsNull, Is.True);
+      Assert.That (((INullObject) _nullEntityDefinition).IsNull, Is.True);
     }
   }
 }

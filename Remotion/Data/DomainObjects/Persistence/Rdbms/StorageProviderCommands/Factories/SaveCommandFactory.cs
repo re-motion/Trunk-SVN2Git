@@ -113,6 +113,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     private IEnumerable<ColumnValue> GetComparedColumnValuesForUpdate (DataContainer dataContainer, TableDefinition tableDefinition)
     {
+      // TODO 4231: Use SplitValueForComparison
       yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
       if (dataContainer.State != StateType.New)
         yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
@@ -120,6 +121,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
+      // TODO 4231: use SplitValueForComparison
       yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
       var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue>().Any (propertyValue => propertyValue.Definition.IsObjectID);
       if (mustAddTimestamp)

@@ -30,7 +30,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class UnionViewDefinition : EntityDefinitionBase
   {
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
-    private readonly StorageProviderDefinition _storageProviderDefinition;
 
     public UnionViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
@@ -40,11 +39,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         ColumnDefinition classIDColumnDefinition,
         ColumnDefinition timstampColumnDefinition,
         IEnumerable<ColumnDefinition> dataColumns,
+        ObjectIDStoragePropertyDefinition objectIDProperty,
+        IRdbmsStoragePropertyDefinition timestampProperty,
+        IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, objectIDColumnDefinition, classIDColumnDefinition, timstampColumnDefinition, dataColumns, indexes, synonyms)
+        : base (
+            storageProviderDefinition,
+            viewName,
+            objectIDColumnDefinition,
+            classIDColumnDefinition,
+            timstampColumnDefinition,
+            dataColumns,
+            objectIDProperty,
+            timestampProperty,
+            dataProperties,
+            indexes,
+            synonyms)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
  
@@ -63,20 +75,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         }
       }
 
-      _storageProviderDefinition = storageProviderDefinition;
       _unionedEntities = unionedEntitiesList;
       indexes.ToList().AsReadOnly();
     }
 
-    public override string StorageProviderID
-    {
-      get { return _storageProviderDefinition.Name; }
-    }
-
-    public override StorageProviderDefinition StorageProviderDefinition
-    {
-      get { return _storageProviderDefinition; }
-    }
+    // TODO 4231: Remove
+     public UnionViewDefinition (
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition viewName,
+        IEnumerable<IEntityDefinition> unionedEntities,
+        ColumnDefinition objectIDColumnDefinition,
+        ColumnDefinition classIDColumnDefinition,
+        ColumnDefinition timstampColumnDefinition,
+        IEnumerable<ColumnDefinition> dataColumns,
+        IEnumerable<IIndexDefinition> indexes,
+        IEnumerable<EntityNameDefinition> synonyms)
+        : this (
+            storageProviderDefinition,
+            viewName,
+            unionedEntities,
+            objectIDColumnDefinition,
+            classIDColumnDefinition,
+            timstampColumnDefinition,
+            dataColumns,
+            null,
+            null,
+            null,
+            indexes,
+            synonyms)
+     {
+     }
 
     public ReadOnlyCollection<IEntityDefinition> UnionedEntities
     {
@@ -112,11 +140,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       visitor.VisitUnionViewDefinition (this);
-    }
-
-    public override bool IsNull
-    {
-      get { return false; }
     }
   }
 }

@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var tableDefinition = _tableDefinitionFinder.GetTableDefinition (objectID);
       var selectedColumns = tableDefinition.GetAllColumns().ToArray();
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
-      // TODO 4231: Use TableDefinition.IDProperty.SplitValueForComparison (objectID)
+      // TODO 4231: Use TableDefinition.ObjectIDProperty.SplitValueForComparison (objectID)
       var comparedColumns = new[] { new ColumnValue (tableDefinition.IDColumn, objectID.Value) };
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
 
@@ -126,11 +126,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var checkedIDValues = GetAndCheckObjectIDValues(objectIDs).ToArray();
       if (checkedIDValues.Length > 1)
       {
+        // TODO 4231: Should we rewrite the multi-select so that it can work with multiple columns?
         return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, tableDefinition.IDColumn, checkedIDValues);
       }
       else
       {
-        // TODO 4231: Use TableDefinition.IDProperty.SplitValueForComparison (objectID)
+        // TODO 4231: Use TableDefinition.ObjectIDProperty.SplitValueForComparison (objectID)
         var comparedColumns = new[] { new ColumnValue (tableDefinition.IDColumn, checkedIDValues[0]) };
         return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
       }
@@ -138,7 +139,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     private IEnumerable<object> GetAndCheckObjectIDValues (IEnumerable<ObjectID> objectIDs)
     {
-      // TODO 4231: Use TableDefinition.IDProperty.SplitValueForComparison (objectID)
+      // TODO 4231: Use TableDefinition.ObjectIDProperty.SplitValueForComparison (objectID)
       foreach (var t in objectIDs)
       {
         if (t.StorageProviderDefinition != _storageProviderDefinition)

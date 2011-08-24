@@ -26,11 +26,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class FilterViewDefinitionTest
   {
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
+
     private ColumnDefinition _column1;
     private ColumnDefinition _column2;
-    private TableDefinition _entityDefinition;
+    private SimpleStoragePropertyDefinition _timestampProperty;
+    private ObjectIDStoragePropertyDefinition _objectIDProperty;
+    private SimpleStoragePropertyDefinition _property1;
+    private SimpleStoragePropertyDefinition _property2;
+    private SimpleStoragePropertyDefinition _property3;
+    
+    private TableDefinition _baseEntityDefinition;
     private FilterViewDefinition _filterViewDefinition;
-    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private IIndexDefinition[] _indexes;
     private EntityNameDefinition[] _synonyms;
 
@@ -38,27 +45,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
+
       _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
+      _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
+      _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
+      _property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
+      _property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
+      _property3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column3");
+
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
-      _entityDefinition = TableDefinitionObjectMother.Create (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Table"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+      _baseEntityDefinition = TableDefinitionObjectMother.Create (_storageProviderDefinition);
 
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _filterViewDefinition = new FilterViewDefinition (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
-          _entityDefinition,
+          new EntityNameDefinition ("Schema", "Test"),
+          _baseEntityDefinition,
           new[] { "ClassId1", "ClassId2" },
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new[] { _column1, _column2 },
+          _objectIDProperty,
+          _timestampProperty,
+          new[] { _property1, _property2, _property3 },
           _indexes,
           _synonyms);
     }
@@ -66,18 +78,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization ()
     {
-      Assert.That (_filterViewDefinition.ClassIDs.Count, Is.EqualTo (2));
-      Assert.That (_filterViewDefinition.ClassIDs[0], Is.EqualTo ("ClassId1"));
-      Assert.That (_filterViewDefinition.ClassIDs[1], Is.EqualTo ("ClassId2"));
-      Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_entityDefinition));
-      Assert.That (_filterViewDefinition.ViewName.EntityName, Is.EqualTo ("Test"));
-      Assert.That (_filterViewDefinition.StorageProviderID, Is.EqualTo ("SPID"));
       Assert.That (_filterViewDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
+      Assert.That (_filterViewDefinition.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
+      Assert.That (_filterViewDefinition.ClassIDs, Is.EqualTo (new[] { "ClassId1", "ClassId2" }));
+      Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_baseEntityDefinition));
 
       Assert.That (_filterViewDefinition.IDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
       Assert.That (_filterViewDefinition.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
       Assert.That (_filterViewDefinition.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
       Assert.That (_filterViewDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column2 }));
+
+      Assert.That (_filterViewDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
+      Assert.That (_filterViewDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
+      Assert.That (_filterViewDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
     }
 
     [Test]
@@ -92,6 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
+          _objectIDProperty,
+          _timestampProperty,
+          new SimpleStoragePropertyDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -101,24 +117,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         "The base entity must either be a TableDefinition or a FilterViewDefinition.\r\nParameter name: baseEntity")]
     public void Initialization_WithInvalidBaseEntity ()
     {
-      var unionViewDefinition = new UnionViewDefinition (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "TestUnion"),
-          new IEntityDefinition[]
-          {
-              TableDefinitionObjectMother.Create (
-                  _storageProviderDefinition,
-                  new EntityNameDefinition (null, "Test"), null,
-                  ColumnDefinitionObjectMother.IDColumn,
-                  ColumnDefinitionObjectMother.ClassIDColumn,
-                  ColumnDefinitionObjectMother.TimestampColumn)
-          },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (_storageProviderDefinition);
+
       new FilterViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
@@ -128,6 +128,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
+          _objectIDProperty,
+          _timestampProperty,
+          new SimpleStoragePropertyDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -138,47 +141,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var filterViewDefinition = new FilterViewDefinition (
           _storageProviderDefinition,
           null,
-          _entityDefinition,
+          _baseEntityDefinition,
           new[] { "ClassId" },
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
+          _objectIDProperty,
+          _timestampProperty,
+          new SimpleStoragePropertyDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       Assert.That (filterViewDefinition.ViewName, Is.Null);
-    }
-
-    [Test]
-    public void GetAllColumns ()
-    {
-      var result = _filterViewDefinition.GetAllColumns();
-
-      Assert.That (
-          result,
-          Is.EqualTo (
-              new[]
-              {
-                  ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn,
-                  ColumnDefinitionObjectMother.TimestampColumn,
-                  _column1, _column2
-              }));
-    }
-
-    [Test]
-    public void Indexes ()
-    {
-      var result = _filterViewDefinition.Indexes;
-
-      Assert.That (result, Is.EqualTo (_indexes));
-    }
-
-    [Test]
-    public void Synonyms ()
-    {
-      var result = _filterViewDefinition.Synonyms;
-
-      Assert.That (result, Is.EqualTo (_synonyms));
     }
 
     [Test]
@@ -186,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var table = _filterViewDefinition.GetBaseTable();
 
-      Assert.That (table, Is.SameAs (_entityDefinition));
+      Assert.That (table, Is.SameAs (_baseEntityDefinition));
     }
 
     [Test]
@@ -201,18 +175,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
+          _objectIDProperty,
+          _timestampProperty,
+          new SimpleStoragePropertyDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 
       var table = derivedFilterViewDefinition.GetBaseTable();
 
-      Assert.That (table, Is.SameAs (_entityDefinition));
+      Assert.That (table, Is.SameAs (_baseEntityDefinition));
     }
 
     [Test]
     public void IsNull ()
     {
-      Assert.That (_filterViewDefinition.IsNull, Is.False);
+      Assert.That (((INullObject) _filterViewDefinition).IsNull, Is.False);
     }
 
     [Test]

@@ -45,5 +45,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return _entityName; }
     }
+
+    public override bool Equals (object obj)
+    {
+      if (ReferenceEquals (obj, null))
+        return false;
+
+      if (obj.GetType () != GetType ())
+        return false;
+
+      var other = (EntityNameDefinition) obj;
+      return other.SchemaName == SchemaName && other.EntityName == EntityName;
+    }
+
+    public override int GetHashCode ()
+    {
+      return EqualityUtility.GetRotatedHashCode (SchemaName, EntityName);
+    }
   }
 }
