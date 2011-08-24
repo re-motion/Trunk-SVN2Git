@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 {
   /// <summary>
-  /// Validates that each non-abstract class in the mapping can resolve it's entity-name.
+  /// Validates that all concrete (non-abstract) class in the mapping have an associated table (either directly or indirectly).
   /// </summary>
   public class ClassAboveTableIsAbstractValidationRule : IPersistenceMappingValidationRule
   {
