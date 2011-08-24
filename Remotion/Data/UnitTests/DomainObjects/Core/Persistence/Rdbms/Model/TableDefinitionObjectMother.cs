@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -23,15 +24,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   public static class TableDefinitionObjectMother
   {
+    public static TableDefinition Create (StorageProviderDefinition storageProviderDefinition)
+    {
+      return Create (storageProviderDefinition, new EntityNameDefinition ("TestSchema", "TestTable"));
+    }
+
     public static TableDefinition Create (StorageProviderDefinition storageProviderDefinition, EntityNameDefinition tableName)
     {
       return Create (
           storageProviderDefinition,
           tableName,
-          null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+          null);
     }
 
     public static TableDefinition Create (
@@ -55,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         ColumnDefinition timestampColumnDefinition,
         params ColumnDefinition[] dataColumns)
     {
-      return new TableDefinition (
+      return Create (
           storageProviderDefinition,
           tableName,
           viewName,
@@ -63,9 +66,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           classIdColumnDefinition,
           timestampColumnDefinition,
           dataColumns,
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new ITableConstraintDefinition[0]);
+    }
+
+    public static TableDefinition Create (
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition tableName,
+        EntityNameDefinition viewName,
+        ColumnDefinition objectIdColumnDefinition,
+        ColumnDefinition classIdColumnDefinition,
+        ColumnDefinition timestampColumnDefinition,
+        IEnumerable<ColumnDefinition> dataColumns,
+        ITableConstraintDefinition[] tableConstraintDefinitions)
+    {
+      return new TableDefinition (
+                storageProviderDefinition,
+                tableName,
+                viewName,
+                objectIdColumnDefinition,
+                classIdColumnDefinition,
+                timestampColumnDefinition,
+                dataColumns,
+                tableConstraintDefinitions,
+                new IIndexDefinition[0],
+                new EntityNameDefinition[0]);
     }
   }
 }

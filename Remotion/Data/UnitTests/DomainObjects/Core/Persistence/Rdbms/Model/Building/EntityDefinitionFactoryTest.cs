@@ -137,12 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateFilterViewDefinition_DerivedClassWithoutDerivations ()
     {
-      var fakeBaseEntityDefiniton = TableDefinitionObjectMother.Create (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+      var fakeBaseEntityDefiniton = TableDefinitionObjectMother.Create (_storageProviderDefinition);
 
       _storagePropertyDefinitionResolverMock
           .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.DerivedClassDefinition1))
@@ -170,8 +165,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new[] { "Derived1Class" },
           new[]
           {
-              _fakeObjectIDStorageProperty.ColumnDefinition, _fakeStorageProperty1.ColumnDefinition, _fakeTimestampStorageProperty.ColumnDefinition
-              , _fakeStorageProperty1.ColumnDefinition
+              _fakeObjectIDStorageProperty.ColumnDefinition,
+              _fakeStorageProperty1.ColumnDefinition, 
+              _fakeTimestampStorageProperty.ColumnDefinition,
+              _fakeStorageProperty1.ColumnDefinition
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -180,12 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateFilterViewDefinition_DerivedClassWithDerivations ()
     {
-      var fakeBaseEntityDefiniton = TableDefinitionObjectMother.Create (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+      var fakeBaseEntityDefiniton = TableDefinitionObjectMother.Create (_storageProviderDefinition);
 
       _storagePropertyDefinitionResolverMock
           .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.DerivedClassDefinition2))
@@ -223,18 +215,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateUnionViewDefinition ()
     {
-      var fakeUnionEntity1 = TableDefinitionObjectMother.Create (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test1"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      var fakeUnionEntity2 = TableDefinitionObjectMother.Create (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test2"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+      var fakeUnionEntity1 = TableDefinitionObjectMother.Create (_storageProviderDefinition);
+      var fakeUnionEntity2 = TableDefinitionObjectMother.Create (_storageProviderDefinition);
 
       _storagePropertyDefinitionResolverMock
           .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.BaseBaseClassDefinition))
@@ -263,8 +245,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new[] { fakeUnionEntity1, fakeUnionEntity2 },
           new[]
           {
-              _fakeObjectIDStorageProperty.ColumnDefinition, _fakeStorageProperty1.ColumnDefinition, _fakeTimestampStorageProperty.ColumnDefinition
-              , _fakeStorageProperty1.ColumnDefinition
+              _fakeObjectIDStorageProperty.ColumnDefinition, 
+              _fakeStorageProperty1.ColumnDefinition, 
+              _fakeTimestampStorageProperty.ColumnDefinition, 
+              _fakeStorageProperty1.ColumnDefinition
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);

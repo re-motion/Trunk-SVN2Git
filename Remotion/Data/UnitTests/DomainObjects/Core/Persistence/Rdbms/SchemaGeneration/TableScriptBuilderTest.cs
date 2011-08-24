@@ -45,24 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _tableScriptfactoryStub = MockRepository.GenerateStub<ITableScriptElementFactory>();
       _builder = new TableScriptBuilder (_tableScriptfactoryStub, new SqlCommentScriptElementFactory());
 
-      _tableDefinition1 = TableDefinitionObjectMother.Create(
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table1"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      _tableDefinition2 = TableDefinitionObjectMother.Create (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table2"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      _tableDefinition3 = TableDefinitionObjectMother.Create (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table3"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+      _tableDefinition1 = TableDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
+      _tableDefinition2 = TableDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
+      _tableDefinition3 = TableDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
 
       _fakeElement1 = MockRepository.GenerateStub<IScriptElement>();
       _fakeElement2 = MockRepository.GenerateStub<IScriptElement>();
@@ -134,17 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_FilterViewDefinitionAdded ()
     {
-      var entityDefinition = new FilterViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "FilterView"),
-          _tableDefinition1,
-          new[] { "ClassID" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+      var entityDefinition = FilterViewDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
       var createScriptResult = _builder.GetCreateScript ();
@@ -159,16 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_UnionViewDefinitionAdded ()
     {
-      var entityDefinition = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "UnionView"),
-          new[] { _tableDefinition1 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+      var entityDefinition = UnionViewDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
       var createScriptResult = _builder.GetCreateScript ();

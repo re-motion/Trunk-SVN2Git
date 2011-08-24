@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -36,31 +36,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlTableViewScriptElementFactory();
 
-      var column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
-      var column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
-
-      _tableDefinitionWithCustomSchema = new TableDefinition (
+      _tableDefinitionWithCustomSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "Table1"),
-          new EntityNameDefinition ("SchemaName", "View1"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] {column1},
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _tableDefinitionWithDefaultSchema = new TableDefinition (
+          new EntityNameDefinition ("SchemaName", "View1"));
+      _tableDefinitionWithDefaultSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
-          new EntityNameDefinition (null, "View2"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] {column1, column2},
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new EntityNameDefinition (null, "View2"));
     }
 
     [Test]

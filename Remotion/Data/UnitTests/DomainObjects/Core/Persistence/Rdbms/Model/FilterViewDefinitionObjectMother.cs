@@ -15,18 +15,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
-  public class FilterViewDefinitionObjectMother
+  public static class FilterViewDefinitionObjectMother
   {
+    public static FilterViewDefinition Create (StorageProviderDefinition storageProviderDefinition)
+    {
+      return Create (storageProviderDefinition, new EntityNameDefinition ("TestSchema", "Test"));
+    }
+
+    public static FilterViewDefinition Create (StorageProviderDefinition storageProviderDefinition, EntityNameDefinition viewName)
+    {
+      return Create (storageProviderDefinition, viewName, TableDefinitionObjectMother.Create (storageProviderDefinition));
+    }
+
     public static FilterViewDefinition Create (
         StorageProviderDefinition storageProviderDefinition, EntityNameDefinition viewName, IEntityDefinition baseEntity)
     {
-      return new FilterViewDefinition (
+      return Create (
           storageProviderDefinition,
           viewName,
           baseEntity,
@@ -34,7 +46,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
+          new ColumnDefinition[0]);
+    }
+
+    public static FilterViewDefinition Create (
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition viewName,
+        IEntityDefinition baseEntity,
+        IEnumerable<string> classIDs,
+        ColumnDefinition objectIDColumnDefinition,
+        ColumnDefinition classIDColumnDefinition,
+        ColumnDefinition timstampColumnDefinition,
+        IEnumerable<ColumnDefinition> dataColumns)
+    {
+      return new FilterViewDefinition (
+          storageProviderDefinition,
+          viewName,
+          baseEntity,
+          classIDs,
+          objectIDColumnDefinition,
+          classIDColumnDefinition,
+          timstampColumnDefinition,
+          dataColumns,
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }

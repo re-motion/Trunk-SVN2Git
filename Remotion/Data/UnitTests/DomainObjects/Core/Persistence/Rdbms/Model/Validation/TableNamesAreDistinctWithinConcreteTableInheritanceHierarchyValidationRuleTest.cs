@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -68,35 +67,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _derivedClass.SetDerivedClasses (new ClassDefinition[0]);
 
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
-      _tableDefinition1 = TableDefinitionObjectMother.Create (
-          storageProviderDefinition,
-          new EntityNameDefinition (null, "TableName1"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      _tableDefinition2 = TableDefinitionObjectMother.Create (
-          storageProviderDefinition,
-          new EntityNameDefinition (null, "TableName2"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      _unionViewDefinition = new UnionViewDefinition (
-          storageProviderDefinition,
-          null,
-          new IEntityDefinition[]
-          {
-              TableDefinitionObjectMother.Create (
-              storageProviderDefinition,
-              new EntityNameDefinition (null, "Test"), null,
-              ColumnDefinitionObjectMother.IDColumn,
-              ColumnDefinitionObjectMother.ClassIDColumn,
-              ColumnDefinitionObjectMother.TimestampColumn)
-          },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+      _tableDefinition1 = TableDefinitionObjectMother.Create (storageProviderDefinition, new EntityNameDefinition (null, "TableName1"));
+      _tableDefinition2 = TableDefinitionObjectMother.Create (storageProviderDefinition, new EntityNameDefinition (null, "TableName2"));
+      _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
     }
 
     [Test]

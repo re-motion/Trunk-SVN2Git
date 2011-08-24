@@ -31,13 +31,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
 
+      var tableDefinition = filterViewDefinition.GetBaseTable ();
       return string.Format (
             "  SELECT {0}\r\n"
           + "    FROM [{1}].[{2}]\r\n"
           + "    WHERE [{3}] IN ({4})",
             GetColumnList (filterViewDefinition.GetAllColumns()),
-            filterViewDefinition.GetBaseTable ().TableName.SchemaName ?? DefaultSchema,
-            filterViewDefinition.GetBaseTable ().TableName.EntityName,
+            tableDefinition.TableName.SchemaName ?? DefaultSchema,
+            tableDefinition.TableName.EntityName,
             filterViewDefinition.ClassIDColumn.Name,
             GetClassIDList (filterViewDefinition.ClassIDs));
     }

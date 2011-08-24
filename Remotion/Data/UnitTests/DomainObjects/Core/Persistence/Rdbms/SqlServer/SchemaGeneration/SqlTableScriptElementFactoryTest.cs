@@ -47,13 +47,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _tableDefinitionWithoutPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition ("SchemaName", "EntityName"), null,
+          new EntityNameDefinition ("SchemaName", "EntityName"),
+          null,
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           _column1);
 
-      _tableDefinitionWithClusteredPrimaryKeyConstraint = new TableDefinition (
+      _tableDefinitionWithClusteredPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "EntityName"),
           null,
@@ -61,11 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new[] { _column1, _column2 },
-          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", true, new[] { _column1 }) },
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", true, new[] { _column1 }) });
 
-      _tableDefinitionWithNonClusteredPrimaryKeyConstraint = new TableDefinition (
+      _tableDefinitionWithNonClusteredPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "EntityName"),
           null,
@@ -73,9 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new[] { _column1, _column2 },
-          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", false, new[] { _column1, _column2 }) },
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", false, new[] { _column1, _column2 }) });
     }
 
     [Test]

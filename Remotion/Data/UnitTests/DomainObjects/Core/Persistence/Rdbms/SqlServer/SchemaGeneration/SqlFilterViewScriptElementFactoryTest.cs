@@ -39,21 +39,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var tableDefinitionWithCustomSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "TableName1"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+          new EntityNameDefinition ("SchemaName", "TableName1"));
       var tableDefinitionWithDefaultSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "TableName2"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+          new EntityNameDefinition (null, "TableName2"));
 
       var column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       var column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
 
-      _filterViewDefinitionWithCustomSchema = new FilterViewDefinition (
+      _filterViewDefinitionWithCustomSchema = FilterViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "FilterView1"),
           tableDefinitionWithCustomSchema,
@@ -61,11 +55,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { column1 },
-          
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _filterViewDefinitionWithDefaultSchema = new FilterViewDefinition (
+          new[] { column1 });
+      _filterViewDefinitionWithDefaultSchema = FilterViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "FilterView2"),
           tableDefinitionWithDefaultSchema,
@@ -73,9 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { column1, column2 },
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new[] { column1, column2 });
     }
 
     [Test]

@@ -37,5 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
+
+    public static UnionViewDefinition Create (StorageProviderDefinition storageProviderDefinition)
+    {
+      return Create (storageProviderDefinition, new EntityNameDefinition ("TestSchema", "TestUnion"), TableDefinitionObjectMother.Create (storageProviderDefinition));
+    }
   }
 }

@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -34,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     private ClassDefinition _abstractClassDefinition;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private ClassDefinition _noAbstractClassDefinition;
+    private ClassDefinition _concreteClassDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -46,36 +45,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           true);
-      _noAbstractClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      _concreteClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           "EntityName",
           StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false);
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
-      _tableDefinition = TableDefinitionObjectMother.Create (
-          storageProviderDefinition,
-          new EntityNameDefinition (null, "TableName"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      _unionViewDefinition = new UnionViewDefinition (
-          storageProviderDefinition,
-          null,
-          new IEntityDefinition[]
-          {
-              TableDefinitionObjectMother.Create (
-              storageProviderDefinition,
-              new EntityNameDefinition (null, "Test"), null,
-              ColumnDefinitionObjectMother.IDColumn,
-              ColumnDefinitionObjectMother.ClassIDColumn,
-              ColumnDefinitionObjectMother.TimestampColumn)
-          },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+      _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition, new EntityNameDefinition (null, "TableName"));
+      _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
     }
 
     [Test]
@@ -117,9 +95,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void ClassTypeResolved_UnionViewDefinition_NotAbstract ()
     {
-      _noAbstractClassDefinition.SetStorageEntity (_unionViewDefinition);
+      _concreteClassDefinition.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (_noAbstractClassDefinition);
+      var validationResult = _validationRule.Validate (_concreteClassDefinition);
 
       var expectedMessage = "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. "
                             + "Make class 'DerivedValidationDomainObjectClass' abstract or define a table for it or one of its base classes.\r\n\r\n"

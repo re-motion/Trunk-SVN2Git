@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -45,60 +44,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition ("SchemaName", "TableName1"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+          new EntityNameDefinition ("SchemaName", "TableName1"));
       _tableDefinition2 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "TableName2"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+          new EntityNameDefinition (null, "TableName2"));
 
-      _unionViewDefinition1 = new UnionViewDefinition (
+      _unionViewDefinition1 = UnionViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition ("SchemaName", "UnionView1"),
-          new[] { _tableDefinition1 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn, 
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _unionViewDefinition2 = new UnionViewDefinition (
+          new EntityNameDefinition ("SchemaName", "UnionView1"));
+      _unionViewDefinition2 = UnionViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "UnionView2"),
-          new[] { _tableDefinition1, _tableDefinition2 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new EntityNameDefinition (null, "UnionView2"));
 
-      _filterViewDefinition1 = new FilterViewDefinition (
+      _filterViewDefinition1 = FilterViewDefinitionObjectMother.Create (
          SchemaGenerationFirstStorageProviderDefinition,
-         new EntityNameDefinition ("SchemaName", "FilterView1"),
-         _tableDefinition1,
-         new[] { "ClassID1" },
-         ColumnDefinitionObjectMother.IDColumn,
-         ColumnDefinitionObjectMother.ClassIDColumn,
-         ColumnDefinitionObjectMother.TimestampColumn,
-         new ColumnDefinition[0],
-         new IIndexDefinition[0],
-         new EntityNameDefinition[0]);
-      _filterViewDefinition2 = new FilterViewDefinition (
+         new EntityNameDefinition ("SchemaName", "FilterView1"));
+      _filterViewDefinition2 = FilterViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "FilterView2"),
-          _tableDefinition2,
-          new[] { "ClassID1", "ClassID2" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new EntityNameDefinition (null, "FilterView2"));
 
       _synonymWithCustomSchema = new EntityNameDefinition ("SynonymSchemaName", "Synonym1");
       _synonymWithDefaultSchema = new EntityNameDefinition (null, "Synonym2");

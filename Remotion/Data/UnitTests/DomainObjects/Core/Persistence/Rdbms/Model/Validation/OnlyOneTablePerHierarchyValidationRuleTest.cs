@@ -41,29 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       _validationRule = new OnlyOneTablePerHierarchyValidationRule();
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
-      _tableDefinition = TableDefinitionObjectMother.Create (
-          storageProviderDefinition,
-          new EntityNameDefinition (null, "TableName"), null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
-      _unionViewDefinition = new UnionViewDefinition (
-          storageProviderDefinition,
-          null,
-          new IEntityDefinition[]
-          {
-              TableDefinitionObjectMother.Create (
-              storageProviderDefinition,
-              new EntityNameDefinition (null, "Test"), null,
-              ColumnDefinitionObjectMother.IDColumn,
-              ColumnDefinitionObjectMother.ClassIDColumn,
-              ColumnDefinitionObjectMother.TimestampColumn)
-          },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+      _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition);
+      _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
 
       _baseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
