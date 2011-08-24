@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 {
   /// <summary>
-  /// Validates that the entity-name of a class is the same as the inherited entity-name.
+  /// Validates that in a hierarchy of classes, only one can be mapped to a table.
   /// </summary>
   public class OnlyOneTablePerHierarchyValidationRule : IPersistenceMappingValidationRule
   {
