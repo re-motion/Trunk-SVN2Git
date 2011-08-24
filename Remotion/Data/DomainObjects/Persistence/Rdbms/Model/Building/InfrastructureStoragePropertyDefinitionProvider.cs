@@ -29,6 +29,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     private readonly ColumnDefinition _classIDColumnDefinition;
     private readonly ColumnDefinition _timestampColumnDefinition;
 
+    private readonly ObjectIDStoragePropertyDefinition _objectIDStoragePropertyDefinition;
+    private readonly IRdbmsStoragePropertyDefinition _timestampStoragePropertyDefinition;
+
     public InfrastructureStoragePropertyDefinitionProvider (
         IStorageTypeInformationProvider storageTypeInformationProvider,
         IStorageNameProvider storageNameProvider)
@@ -54,6 +57,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           storageTypeInformationProvider.GetStorageTypeForTimestamp(),
           false,
           false);
+
+      _objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (_idColumnDefinition), 
+          new SimpleStoragePropertyDefinition (_classIDColumnDefinition));
+      _timestampStoragePropertyDefinition = new SimpleStoragePropertyDefinition (_timestampColumnDefinition);
     }
 
     public ColumnDefinition GetIDColumnDefinition ()
@@ -69,6 +77,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     public virtual ColumnDefinition GetTimestampColumnDefinition ()
     {
       return _timestampColumnDefinition;
+    }
+
+    public ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition ()
+    {
+      return _objectIDStoragePropertyDefinition;
+    }
+
+    public IRdbmsStoragePropertyDefinition GetTimestampStoragePropertyDefinition ()
+    {
+      return _timestampStoragePropertyDefinition;
     }
 
     public IRdbmsStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)

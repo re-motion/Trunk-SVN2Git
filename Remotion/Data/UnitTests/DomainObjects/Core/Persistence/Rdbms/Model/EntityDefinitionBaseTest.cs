@@ -118,6 +118,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void GetAllProperties ()
+    {
+      var result = _entityDefinition.GetAllProperties ();
+
+      Assert.That (
+          result,
+          Is.EqualTo (
+              new IRdbmsStoragePropertyDefinition[]
+              {
+                  _objectIDProperty, 
+                  _timestampProperty,
+                  _property1, 
+                  _property2, 
+                  _property3
+              }));
+    }
+
+    [Test]
     public void GetAllColumns ()
     {
       var result = _entityDefinition.GetAllColumns();

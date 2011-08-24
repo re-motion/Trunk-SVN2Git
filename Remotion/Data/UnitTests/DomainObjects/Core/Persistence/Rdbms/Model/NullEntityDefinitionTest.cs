@@ -85,6 +85,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void GetAllProperties ()
+    {
+      var result = _nullEntityDefinition.GetAllProperties ();
+
+      Assert.That (result, Is.Empty);
+    }
+
+    [Test]
     public void GetAllColumns ()
     {
       var result = _nullEntityDefinition.GetAllColumns();

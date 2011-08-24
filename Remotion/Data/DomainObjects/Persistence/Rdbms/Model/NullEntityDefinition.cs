@@ -86,6 +86,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return new IRdbmsStoragePropertyDefinition[0]; }
     }
 
+    public IEnumerable<IRdbmsStoragePropertyDefinition> GetAllProperties ()
+    {
+      return new IRdbmsStoragePropertyDefinition[0];
+    }
+
     public IEnumerable<ColumnDefinition> GetAllColumns ()
     {
       return new ColumnDefinition[0];

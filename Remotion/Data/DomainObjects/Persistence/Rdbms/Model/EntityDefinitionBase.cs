@@ -128,6 +128,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _dataProperties; }
     }
 
+    public IEnumerable<IRdbmsStoragePropertyDefinition> GetAllProperties ()
+    {
+      yield return _objectIDProperty;
+      yield return _timestampProperty;
+
+      foreach (var storagePropertyDefinition in _dataProperties)
+        yield return storagePropertyDefinition;
+    }
+
     public IEnumerable<ColumnDefinition> GetAllColumns ()
     {
       yield return _idColumn;
