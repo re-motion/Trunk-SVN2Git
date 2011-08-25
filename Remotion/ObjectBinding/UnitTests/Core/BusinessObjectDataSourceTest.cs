@@ -62,13 +62,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core
       var stubControl1 = _mockRepository.Stub<IBusinessObjectBoundControl>();
       var stubControl2 = _mockRepository.Stub<IBusinessObjectBoundControl>();
 
-      SetupResult.For (stubControl1.HasValidBinding).Return (true);
-      SetupResult.For (stubControl2.HasValidBinding).Return (true);
       _mockRepository.ReplayAll();
 
       _dataSource.Register (stubControl1);
       _dataSource.Register (stubControl2);
-      Assert.That (_dataSource.BoundControls, Is.EqualTo (new[] { stubControl1, stubControl2 }));
+      Assert.That (_dataSource.GetAllBoundControls(), Is.EqualTo (new[] { stubControl1, stubControl2 }));
 
       _mockRepository.VerifyAll();
     }
@@ -79,19 +77,17 @@ namespace Remotion.ObjectBinding.UnitTests.Core
       var stubControl1 = _mockRepository.Stub<IBusinessObjectBoundControl>();
       var stubControl2 = _mockRepository.Stub<IBusinessObjectBoundControl>();
 
-      SetupResult.For (stubControl1.HasValidBinding).Return (true);
-      SetupResult.For (stubControl2.HasValidBinding).Return (true);
       _mockRepository.ReplayAll();
 
       _dataSource.Register (stubControl1);
       _dataSource.Register (stubControl2);
-      Assert.That (_dataSource.BoundControls, Is.EqualTo (new[] { stubControl1, stubControl2 }));
+      Assert.That (_dataSource.GetAllBoundControls(), Is.EqualTo (new[] { stubControl1, stubControl2 }));
 
       _dataSource.Unregister (stubControl1);
-      Assert.That (_dataSource.BoundControls, Is.EqualTo (new[] { stubControl2 }));
+      Assert.That (_dataSource.GetAllBoundControls(), Is.EqualTo (new[] { stubControl2 }));
 
       _dataSource.Unregister (stubControl2);
-      Assert.That (_dataSource.BoundControls, Is.EqualTo (new IBusinessObjectBoundControl[0]));
+      Assert.That (_dataSource.GetAllBoundControls(), Is.EqualTo (new IBusinessObjectBoundControl[0]));
 
       _mockRepository.VerifyAll();
     }
@@ -109,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
       _dataSource.Register (stubControl1);
       _dataSource.Register (stubControl2);
       _dataSource.Register (stubControl1);
-      Assert.That (_dataSource.BoundControls, Is.EqualTo (new[] { stubControl1, stubControl2 }));
+      Assert.That (_dataSource.GetAllBoundControls(), Is.EqualTo (new[] { stubControl1, stubControl2 }));
 
       _mockRepository.VerifyAll();
     }
@@ -126,11 +122,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core
 
       _dataSource.Register (stubControl1);
       _dataSource.Register (stubControl2);
-      Assert.That (_dataSource.BoundControls, Is.EqualTo (new[] { stubControl1, stubControl2 }));
+      Assert.That (_dataSource.GetAllBoundControls(), Is.EqualTo (new[] { stubControl1, stubControl2 }));
 
       _dataSource.Unregister (stubControl1);
       _dataSource.Unregister (stubControl1);
-      Assert.That (_dataSource.BoundControls, Is.EqualTo (new[] { stubControl2 }));
+      Assert.That (_dataSource.GetAllBoundControls(), Is.EqualTo (new[] { stubControl2 }));
 
       _mockRepository.VerifyAll();
     }

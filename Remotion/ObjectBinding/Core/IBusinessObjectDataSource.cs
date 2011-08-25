@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Remotion.ObjectBinding
 {
@@ -45,6 +47,21 @@ namespace Remotion.ObjectBinding
   /// <seealso cref="IBusinessObjectBoundEditableControl"/>
   public interface IBusinessObjectDataSource
   {
+    #region Obsoletes
+
+    /// <summary>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
+    /// </summary>
+    /// <returns> 
+    ///   An array of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
+    ///   evaluates <see langword="true"/>. 
+    /// </returns>
+    [Obsolete ("The BoundControls property is now obsolete. Use GetBoundControlsWithValidBinding() instead. (Version 1.13.119)")]
+    IBusinessObjectBoundControl[] BoundControls { get; }
+
+    #endregion
+
     /// <summary> Gets or sets the current <see cref="DataSourceMode"/>. </summary>
     /// <remarks> The behavior of the bound controls depends on the current <see cref="DataSourceMode"/>. </remarks>
     /// <value> A value of the <see cref="DataSourceMode"/> enumeration. </value>
@@ -59,7 +76,7 @@ namespace Remotion.ObjectBinding
     ///   <see cref="IBusinessObjectBoundControl.DataSource"/> is set.
     /// </remarks>
     /// <param name="control"> 
-    ///   The <see cref="IBusinessObjectBoundControl"/> to be added to <see cref="BoundControls"/>. 
+    ///   The <see cref="IBusinessObjectBoundControl"/> to be added to <see cref="GetAllBoundControls"/>. 
     /// </param>
     void Register (IBusinessObjectBoundControl control);
 
@@ -73,7 +90,7 @@ namespace Remotion.ObjectBinding
     ///   or <see langword="null"/>.
     /// </remarks>
     /// <param name="control">
-    ///   The <see cref="IBusinessObjectBoundControl"/> to be removed from <see cref="BoundControls"/>. 
+    ///   The <see cref="IBusinessObjectBoundControl"/> to be removed from <see cref="GetAllBoundControls"/>. 
     /// </param>
     void Unregister (IBusinessObjectBoundControl control);
 
@@ -132,12 +149,9 @@ namespace Remotion.ObjectBinding
     /// </value>
     IBusinessObject BusinessObject { get; set; }
 
-    /// <summary>
-    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this 
-    ///   <see cref="IBusinessObjectDataSource"/>.
-    /// </summary>
-    /// <value> An array of <see cref="IBusinessObjectBoundControl"/> objects. </value>
-    IBusinessObjectBoundControl[] BoundControls { get; }
+    /// <summary>Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>.</summary>
+    /// <returns> A read-only collection of <see cref="IBusinessObjectBoundControl"/> objects. </returns>
+    ReadOnlyCollection<IBusinessObjectBoundControl> GetAllBoundControls ();
 
     /// <summary>
     ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Remotion.Utilities;
@@ -34,6 +35,24 @@ namespace Remotion.ObjectBinding
   /// <seealso cref="IBusinessObjectDataSource"/>
   public abstract class BusinessObjectDataSource : Component, IBusinessObjectDataSource
   {
+    #region Obsoletes
+
+    /// <summary>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
+    /// </summary>
+    /// <returns> 
+    ///   An array of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
+    ///   evaluates <see langword="true"/>. 
+    /// </returns>
+    [Obsolete ("The BoundControls property is now obsolete. Use GetBoundControlsWithValidBinding() instead. (Version 1.13.119)")]
+    public IBusinessObjectBoundControl[] BoundControls
+    {
+      get { return GetBoundControlsWithValidBinding().ToArray(); }
+    }
+
+    #endregion
+
     private readonly List<IBusinessObjectBoundControl> _boundControls = new List<IBusinessObjectBoundControl>();
 
     /// <summary>
@@ -95,12 +114,12 @@ namespace Remotion.ObjectBinding
     }
 
     /// <summary>Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="BusinessObjectDataSource"/>.</summary>
-    /// <value> An array of <see cref="IBusinessObjectBoundControl"/> objects. </value>
+    /// <returns> A read-only collection of <see cref="IBusinessObjectBoundControl"/> objects. </returns>
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public IBusinessObjectBoundControl[] BoundControls
+    public ReadOnlyCollection<IBusinessObjectBoundControl> GetAllBoundControls ()
     {
-      get { return _boundControls.Where (c => c.HasValidBinding).ToArray(); }
+      return _boundControls.AsReadOnly();
     }
 
     /// <summary>
@@ -111,7 +130,8 @@ namespace Remotion.ObjectBinding
     ///   A sequence of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
     ///   evaluates <see langword="true"/>. 
     /// </returns>
-    [Browsable (false), DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public IEnumerable<IBusinessObjectBoundControl> GetBoundControlsWithValidBinding ()
     {
       return _boundControls.Where (c => c.HasValidBinding);
@@ -120,7 +140,9 @@ namespace Remotion.ObjectBinding
     /// <summary>
     ///   Adds the passed <see cref="IBusinessObjectBoundControl"/> to the list of controls bound to this <see cref="BusinessObjectDataSource"/>.
     /// </summary>
-    /// <param name="control">The <see cref="IBusinessObjectBoundControl"/> to be added to <see cref="BoundControls"/>.</param>
+    /// <param name="control">
+    ///   The <see cref="IBusinessObjectBoundControl"/> to be registered with this <see cref="BusinessObjectDataSource"/>.
+    /// </param>
     public void Register (IBusinessObjectBoundControl control)
     {
       ArgumentUtility.CheckNotNull ("control", control);
@@ -131,7 +153,9 @@ namespace Remotion.ObjectBinding
     /// <summary>
     ///   Removes the passed <see cref="IBusinessObjectBoundControl"/> from the list of controls bound to this <see cref="BusinessObjectDataSource"/>.
     /// </summary>
-    /// <param name="control">The <see cref="IBusinessObjectBoundControl"/> to be removed from <see cref="BoundControls"/>.</param>
+    /// <param name="control">
+    ///   The <see cref="IBusinessObjectBoundControl"/> to be unregistered from this <see cref="BusinessObjectDataSource"/>.
+    /// </param>
     public void Unregister (IBusinessObjectBoundControl control)
     {
       ArgumentUtility.CheckNotNull ("control", control);

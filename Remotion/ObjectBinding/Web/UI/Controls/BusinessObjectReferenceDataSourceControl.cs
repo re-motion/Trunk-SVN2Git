@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
@@ -61,6 +62,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         set { _owner.Mode = value; }
       }
     }
+
+    #region Obsoletes
+
+    /// <summary>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="BusinessObjectReferenceDataSourceControl"/>
+    ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
+    /// </summary>
+    /// <returns> 
+    ///   An array of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
+    ///   evaluates <see langword="true"/>. 
+    /// </returns>
+    [Obsolete ("The BoundControls property is now obsolete. Use GetBoundControlsWithValidBinding() instead. (Version 1.13.119)")]
+    public IBusinessObjectBoundControl[] BoundControls
+    {
+      get { return GetBoundControlsWithValidBinding().ToArray(); }
+    }
+
+    #endregion
 
     private readonly InternalBusinessObjectReferenceDataSource _internalDataSource;
 
@@ -173,8 +192,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see cref="IBusinessObject"/> to which this <see cref="BusinessObjectReferenceDataSourceControl"/> connects.
     /// </summary>
     /// <value> 
-    ///   An <see cref="IBusinessObjectReferenceProperty"/> that is part of the 
-    ///   <see cref="IBusinessObjectDataSource.BusinessObjectClass"/>.
+    ///   An <see cref="IBusinessObjectReferenceProperty"/> that is part of the <see cref="IBusinessObjectDataSource.BusinessObjectClass"/>.
     /// </value>
     /// <remarks> Identical to <see cref="BusinessObjectBoundWebControl.Property"/>. </remarks>
     [Browsable (false)]
@@ -227,8 +245,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Gets the <see cref="IBusinessObjectProvider"/> of this 
-    ///   <see cref="BusinessObjectReferenceDataSourceControl"/>.
+    ///   Gets the <see cref="IBusinessObjectProvider"/> of this <see cref="BusinessObjectReferenceDataSourceControl"/>.
     /// </summary>
     /// <value> The <see cref="IBusinessObjectProvider"/> for the current <see cref="BusinessObjectClass"/>. </value>
     [Browsable (false)]
@@ -239,12 +256,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Adds the passed <see cref="IBusinessObjectBoundControl"/> to the list of controls bound to this
-    ///   <see cref="BusinessObjectReferenceDataSourceControl"/>.
+    ///   Adds the passed <see cref="IBusinessObjectBoundControl"/> to the list of controls bound to this <see cref="BusinessObjectReferenceDataSourceControl"/>.
     /// </summary>
     /// <param name="control"> 
-    ///   The <see cref="IBusinessObjectBoundControl"/> to be registered with this
-    ///   <see cref="BusinessObjectReferenceDataSourceControl"/>.
+    ///   The <see cref="IBusinessObjectBoundControl"/> to be registered with this <see cref="BusinessObjectReferenceDataSourceControl"/>.
     /// </param>
     public void Register (IBusinessObjectBoundControl control)
     {
@@ -252,12 +267,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Removes the passed <see cref="IBusinessObjectBoundControl"/> from the list of controls bound to this
-    ///   <see cref="BusinessObjectReferenceDataSourceControl"/>.
+    ///   Removes the passed <see cref="IBusinessObjectBoundControl"/> from the list of controls bound to this <see cref="BusinessObjectReferenceDataSourceControl"/>.
     /// </summary>
     /// <param name="control"> 
-    ///   The <see cref="IBusinessObjectBoundControl"/> to be unregistered from this 
-    ///   <see cref="BusinessObjectReferenceDataSourceControl"/>.
+    ///   The <see cref="IBusinessObjectBoundControl"/> to be unregistered from this <see cref="BusinessObjectReferenceDataSourceControl"/>.
     /// </param>
     public void Unregister (IBusinessObjectBoundControl control)
     {
@@ -289,20 +302,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary>
-    ///   Gets an array of <see cref="IBusinessObjectBoundControl"/> objects bound to this 
-    ///   <see cref="IBusinessObjectDataSource"/>.
-    /// </summary>
-    /// <value> An array of <see cref="IBusinessObjectBoundControl"/> objects. </value>
-    [Browsable (false)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public IBusinessObjectBoundControl[] BoundControls
+    /// <summary>Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="BusinessObjectReferenceDataSourceControl"/>.</summary>
+    /// <returns> A read-only collection of <see cref="IBusinessObjectBoundControl"/> objects. </returns>
+    [Browsable (false), DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public ReadOnlyCollection<IBusinessObjectBoundControl> GetAllBoundControls ()
     {
-      get { return _internalDataSource.BoundControls; }
+      return _internalDataSource.GetAllBoundControls();
     }
 
     /// <summary>
-    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="BusinessObjectReferenceDataSourceControl"/>
     ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
     /// </summary>
     /// <returns> 

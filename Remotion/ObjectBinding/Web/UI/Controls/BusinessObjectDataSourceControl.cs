@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
@@ -48,23 +50,39 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </remarks>
   [NonVisualControl]
   [Designer (typeof (BocDataSourceDesigner))]
-  public abstract class BusinessObjectDataSourceControl: Control, IBusinessObjectDataSourceControl
+  public abstract class BusinessObjectDataSourceControl : Control, IBusinessObjectDataSourceControl
   {
+    #region Obsoletes
+
     /// <summary>
-    ///   Returns the <see cref="IBusinessObjectDataSource"/> encapsulated in this 
-    ///   <see cref="BusinessObjectDataSourceControl"/>.
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
+    /// </summary>
+    /// <returns> 
+    ///   An array of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
+    ///   evaluates <see langword="true"/>. 
+    /// </returns>
+    [Obsolete ("The BoundControls property is now obsolete. Use GetBoundControlsWithValidBinding() instead. (Version 1.13.119)")]
+    public IBusinessObjectBoundControl[] BoundControls
+    {
+      get { return GetBoundControlsWithValidBinding().ToArray(); }
+    }
+
+    #endregion
+
+    /// <summary>
+    ///   Returns the <see cref="IBusinessObjectDataSource"/> encapsulated in this <see cref="BusinessObjectDataSourceControl"/>.
     /// </summary>
     /// <returns> An <see cref="IBusinessObjectDataSource"/>. </returns>
     /// <remarks>
     ///   For details on overriding this method, see <see cref="BusinessObjectDataSourceControl"/>'s remarks section.
     /// </remarks>
-    protected abstract IBusinessObjectDataSource GetDataSource();
+    protected abstract IBusinessObjectDataSource GetDataSource ();
 
     /// <summary> Loads the values of the <see cref="BusinessObject"/> into all bound controls. </summary>
     /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     /// <remarks> 
-    ///   Executes the <see cref="IBusinessObjectDataSource.LoadValues"/> method of the encapsulated 
-    ///   <see cref="IBusinessObjectDataSource"/>.
+    ///   Executes the <see cref="IBusinessObjectDataSource.LoadValues"/> method of the encapsulated <see cref="IBusinessObjectDataSource"/>.
     ///   <note>
     ///     Please refer to the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.IBusinessObjectDataSourceControl" />'s
     ///     remarks section for an example of the <b>LoadValues Pattern</b>.
@@ -76,13 +94,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> 
-    ///   Saves the values of the <see cref="BusinessObject"/> from all bound controls implementing
-    ///   <see cref="IBusinessObjectBoundEditableControl"/>.
+    ///   Saves the values of the <see cref="BusinessObject"/> from all bound controls implementing <see cref="IBusinessObjectBoundEditableControl"/>.
     /// </summary>
     /// <param name="interim"> Spefifies whether this is the final saving, or an interim saving. </param>
     /// <remarks> 
-    ///   Executes the <see cref="IBusinessObjectDataSource.SaveValues"/> method of the encapsulated 
-    ///   <see cref="IBusinessObjectDataSource"/>.
+    ///   Executes the <see cref="IBusinessObjectDataSource.SaveValues"/> method of the encapsulated  <see cref="IBusinessObjectDataSource"/>.
     ///   <note>
     ///     Please refer to the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.IBusinessObjectDataSourceControl" />'s
     ///     remarks section for an example of the <b>SaveValues Pattern</b>.
@@ -94,16 +110,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Adds the passed <see cref="IBusinessObjectBoundControl"/> to the list of controls bound to this
-    ///   <see cref="BusinessObjectDataSourceControl"/>.
+    ///   Adds the passed <see cref="IBusinessObjectBoundControl"/> to the list of controls bound to this <see cref="BusinessObjectDataSourceControl"/>.
     /// </summary>
     /// <param name="control"> 
-    ///   The <see cref="IBusinessObjectBoundControl"/> to be registered with this
-    ///   <see cref="BusinessObjectDataSourceControl"/>.
+    ///   The <see cref="IBusinessObjectBoundControl"/> to be registered with this <see cref="BusinessObjectDataSourceControl"/>.
     /// </param>
     /// <remarks> 
-    ///   Executes the <see cref="IBusinessObjectDataSource.Register"/> method of the encapsulated 
-    ///   <see cref="IBusinessObjectDataSource"/>.
+    ///   Executes the <see cref="IBusinessObjectDataSource.Register"/> method of the encapsulated <see cref="IBusinessObjectDataSource"/>.
     /// </remarks>
     public virtual void Register (IBusinessObjectBoundControl control)
     {
@@ -111,16 +124,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Removes the passed <see cref="IBusinessObjectBoundControl"/> from the list of controls bound to this
-    ///   <see cref="BusinessObjectDataSourceControl"/>.
+    ///   Removes the passed <see cref="IBusinessObjectBoundControl"/> from the list of controls bound to this <see cref="BusinessObjectDataSourceControl"/>.
     /// </summary>
     /// <param name="control"> 
-    ///   The <see cref="IBusinessObjectBoundControl"/> to be unregistered from this 
-    ///   <see cref="BusinessObjectDataSourceControl"/>.
+    ///   The <see cref="IBusinessObjectBoundControl"/> to be unregistered from this <see cref="BusinessObjectDataSourceControl"/>.
     /// </param>
     /// <remarks> 
-    ///   Executes the <see cref="IBusinessObjectDataSource.Unregister"/> method of the encapsulated 
-    ///   <see cref="IBusinessObjectDataSource"/>.
+    ///   Executes the <see cref="IBusinessObjectDataSource.Unregister"/> method of the encapsulated <see cref="IBusinessObjectDataSource"/>.
     /// </remarks>
     public virtual void Unregister (IBusinessObjectBoundControl control)
     {
@@ -132,12 +142,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     /// <value> A value of the <see cref="DataSourceMode"/> enumeration. </value>
     /// <remarks> 
-    ///   Gets or sets the <see cref="IBusinessObjectDataSource.Mode"/> property of the encapsulated 
-    ///   <see cref="IBusinessObjectDataSource"/>.
+    ///   Gets or sets the <see cref="IBusinessObjectDataSource.Mode"/> property of the encapsulated <see cref="IBusinessObjectDataSource"/>.
     /// </remarks>
     [PersistenceMode (PersistenceMode.Attribute)]
     [Category ("Data")]
-    [DefaultValue(DataSourceMode.Edit)]
+    [DefaultValue (DataSourceMode.Edit)]
     public virtual DataSourceMode Mode
     {
       get { return GetDataSource().Mode; }
@@ -148,12 +157,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Gets or sets the <see cref="IBusinessObject"/> connected to this <see cref="BusinessObjectDataSourceControl"/>.
     /// </summary>
     /// <value>
-    ///   An <see cref="IBusinessObject"/> or <see langword="null"/>. Must be compatible with
-    ///   <see cref="BusinessObjectClass"/>.
+    ///   An <see cref="IBusinessObject"/> or <see langword="null"/>. Must be compatible with <see cref="BusinessObjectClass"/>.
     /// </value>
     /// <remarks> 
-    ///   Gets or sets the <see cref="IBusinessObjectDataSource.BusinessObject"/> property of the encapsulated 
-    ///   <see cref="IBusinessObjectDataSource"/>.
+    ///   Gets or sets the <see cref="IBusinessObjectDataSource.BusinessObject"/> property of the encapsulated <see cref="IBusinessObjectDataSource"/>.
     /// </remarks>
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     [Browsable (false)]
@@ -173,8 +180,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///     Usually set before the <see cref="IBusinessObject"/> is connected to the 
     ///     <see cref="IBusinessObjectDataSource"/> by utilizing Visual Studio .NET Designer. 
     ///   </para><para>
-    ///     Gets the <see cref="IBusinessObjectDataSource.BusinessObjectClass"/> property of the encapsulated 
-    ///     <see cref="IBusinessObjectDataSource"/>.
+    ///     Gets the <see cref="IBusinessObjectDataSource.BusinessObjectClass"/> property of the encapsulated <see cref="IBusinessObjectDataSource"/>.
     ///   </para>
     /// </remarks>
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
@@ -189,8 +195,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     /// <value> The <see cref="IBusinessObjectProvider"/> for the current <see cref="BusinessObjectClass"/>. </value>
     /// <remarks> 
-    ///   Gets the <see cref="IBusinessObjectDataSource.BusinessObjectProvider"/> property of the encapsulated
-    ///   <see cref="IBusinessObjectDataSource"/>.
+    ///   Gets the <see cref="IBusinessObjectDataSource.BusinessObjectProvider"/> property of the encapsulated <see cref="IBusinessObjectDataSource"/>.
     /// </remarks>
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     [Browsable (false)]
@@ -199,38 +204,38 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return GetDataSource().BusinessObjectProvider; }
     }
 
-    /// <summary>
-    ///   Gets an array of <see cref="IBusinessObjectBoundControl"/> objects bound to this 
-    ///   <see cref="IBusinessObjectDataSource"/>.
-    /// </summary>
-    /// <value> An array of <see cref="IBusinessObjectBoundControl"/> objects. </value>
+    /// <summary>Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="BusinessObjectDataSourceControl"/>.</summary>
+    /// <returns> A read-only collection of <see cref="IBusinessObjectBoundControl"/> objects. </returns>
     /// <remarks> 
-    ///   Gets the <see cref="IBusinessObjectDataSource.BoundControls"/> property of the encapsulated 
-    ///   <see cref="IBusinessObjectDataSource"/>.
+    ///   Gets the <see cref="IBusinessObjectDataSource.GetAllBoundControls"/> method of the encapsulated <see cref="IBusinessObjectDataSource"/>.
     /// </remarks>
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public IBusinessObjectBoundControl[] BoundControls
+    public ReadOnlyCollection<IBusinessObjectBoundControl> GetAllBoundControls ()
     {
-      get { return GetDataSource().BoundControls; }
+      return GetDataSource().GetAllBoundControls();
     }
 
     /// <summary>
-    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="IBusinessObjectDataSource"/>
+    ///   Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="BusinessObjectDataSourceControl"/>
     ///   that have a valid binding according to the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property.
     /// </summary>
     /// <returns>
     ///   A sequence of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
     ///   evaluates <see langword="true"/>. 
     /// </returns>
-    [Browsable (false), DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    /// <remarks> 
+    ///   Gets the <see cref="IBusinessObjectDataSource.GetBoundControlsWithValidBinding"/> method of the encapsulated <see cref="IBusinessObjectDataSource"/>.
+    /// </remarks>
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public IEnumerable<IBusinessObjectBoundControl> GetBoundControlsWithValidBinding ()
     {
       return GetDataSource().GetBoundControlsWithValidBinding();
     }
 
     /// <summary> Prepares all bound controls implementing <see cref="IValidatableControl"/> for validation. </summary>
-    public void PrepareValidation()
+    public void PrepareValidation ()
     {
       foreach (var control in GetDataSource().GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
         control.PrepareValidation();
@@ -238,7 +243,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Validates all bound controls implementing <see cref="IValidatableControl"/>. </summary>
     /// <returns> <see langword="true"/> if no validation errors where found. </returns>
-    public bool Validate()
+    public bool Validate ()
     {
       bool isValid = true;
       foreach (var control in GetDataSource().GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
