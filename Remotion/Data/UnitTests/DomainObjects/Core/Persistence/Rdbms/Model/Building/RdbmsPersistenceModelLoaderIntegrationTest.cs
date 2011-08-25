@@ -44,17 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
 
     private RdbmsPersistenceModelLoaderTestHelper _testModel;
-    private SimpleStoragePropertyDefinition _fakeBaseBaseColumnDefinition;
-    private SimpleStoragePropertyDefinition _fakeBaseColumnDefinition;
-    private SimpleStoragePropertyDefinition _fakeTableColumnDefinition1;
-    private SimpleStoragePropertyDefinition _fakeTableColumnDefinition2;
-    private SimpleStoragePropertyDefinition _fakeDerivedColumnDefinition1;
-    private SimpleStoragePropertyDefinition _fakeDerivedColumnDefinition2;
-    private SimpleStoragePropertyDefinition _fakeDerivedDerivedColumnDefinition;
-    private ObjectIDStoragePropertyDefinition _fakeIDColumnDefinition;
-    private SimpleStoragePropertyDefinition _fakeObjectIDColumn;
-    private SimpleStoragePropertyDefinition _fakeClassIDColumn;
-    private ColumnDefinition _fakeTimestampColumnDefinition;
+    private SimpleStoragePropertyDefinition _fakeBaseBaseStoragePropertyDefinition;
+    private SimpleStoragePropertyDefinition _fakeBaseStoragePropertyDefinition;
+    private SimpleStoragePropertyDefinition _fakeTableStoragePropertyDefinition1;
+    private SimpleStoragePropertyDefinition _fakeTableStoragePropertyDefinition2;
+    private SimpleStoragePropertyDefinition _fakeDerivedStoragePropertyDefinition1;
+    private SimpleStoragePropertyDefinition _fakeDerivedStoragePropertyDefinition2;
+    private SimpleStoragePropertyDefinition _fakeDerivedDerivedStoragePropertyDefinition;
+    private ObjectIDStoragePropertyDefinition _infrastructureObjectIDStoragePropertyDefinition;
+    private SimpleStoragePropertyDefinition _infrastructureIDStoragePropertyDefinition;
+    private SimpleStoragePropertyDefinition _infrastructureClassIDStoragePropertyDefinition;
+    private SimpleStoragePropertyDefinition _infrastructureTimestampStoragePropertyDefinition;
 
 
     [SetUp]
@@ -66,11 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
-          new SqlStorageTypeInformationProvider (), _storageNameProvider);
+          new SqlStorageTypeInformationProvider(), _storageNameProvider);
       _dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
-          new SqlStorageTypeInformationProvider (), _storageNameProvider, _storageProviderDefinitionFinder);
+          new SqlStorageTypeInformationProvider(), _storageNameProvider, _storageProviderDefinitionFinder);
       var persistenceModelProvider = new RdbmsPersistenceModelProvider();
-      _storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver(persistenceModelProvider);
+      _storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver (persistenceModelProvider);
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           _storageNameProvider, persistenceModelProvider, _infrastructureStoragePropertyDefinitionProvider, _storageProviderDefinitionFinder);
       _entityDefinitionFactory = new EntityDefinitionFactory (
@@ -84,28 +84,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _entityDefinitionFactory,
           _dataStoragePropertyDefinitionFactory,
           _storageNameProvider,
-          new RdbmsPersistenceModelProvider ());
+          new RdbmsPersistenceModelProvider());
 
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
-      _fakeBaseBaseColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseBaseProperty");
-      _fakeBaseColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseProperty");
-      _fakeTableColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("TableProperty1");
-      _fakeTableColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("TableProperty2");
-      _fakeDerivedColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty1");
-      _fakeDerivedColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty2");
-      _fakeDerivedDerivedColumnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedDerivedProperty");
-      _fakeObjectIDColumn = new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ());
-      _fakeClassIDColumn = new SimpleStoragePropertyDefinition (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ());
-      _fakeIDColumnDefinition = new ObjectIDStoragePropertyDefinition (_fakeObjectIDColumn, _fakeClassIDColumn);
-      _fakeTimestampColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();
 
-      _testModel.BaseBasePropertyDefinition.SetStorageProperty (_fakeBaseBaseColumnDefinition);
-      _testModel.BasePropertyDefinition.SetStorageProperty (_fakeBaseColumnDefinition);
-      _testModel.TablePropertyDefinition1.SetStorageProperty (_fakeTableColumnDefinition1);
-      _testModel.TablePropertyDefinition2.SetStorageProperty (_fakeTableColumnDefinition2);
-      _testModel.DerivedPropertyDefinition1.SetStorageProperty (_fakeDerivedColumnDefinition1);
-      _testModel.DerivedPropertyDefinition2.SetStorageProperty (_fakeDerivedColumnDefinition2);
-      _testModel.DerivedDerivedPropertyDefinition.SetStorageProperty (_fakeDerivedDerivedColumnDefinition);
+      _infrastructureObjectIDStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition ();
+      _infrastructureIDStoragePropertyDefinition = (SimpleStoragePropertyDefinition) _infrastructureObjectIDStoragePropertyDefinition.ValueProperty;
+      _infrastructureClassIDStoragePropertyDefinition = (SimpleStoragePropertyDefinition) _infrastructureObjectIDStoragePropertyDefinition.ClassIDProperty;
+      _infrastructureTimestampStoragePropertyDefinition =
+          (SimpleStoragePropertyDefinition) _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition ();
+
+      _fakeBaseBaseStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseBaseProperty");
+      _fakeBaseStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseProperty");
+      _fakeTableStoragePropertyDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("TableProperty1");
+      _fakeTableStoragePropertyDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("TableProperty2");
+      _fakeDerivedStoragePropertyDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty1");
+      _fakeDerivedStoragePropertyDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedProperty2");
+      _fakeDerivedDerivedStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("DerivedDerivedProperty");
+
+      _testModel.BaseBasePropertyDefinition.SetStorageProperty (_fakeBaseBaseStoragePropertyDefinition);
+      _testModel.BasePropertyDefinition.SetStorageProperty (_fakeBaseStoragePropertyDefinition);
+      _testModel.TablePropertyDefinition1.SetStorageProperty (_fakeTableStoragePropertyDefinition1);
+      _testModel.TablePropertyDefinition2.SetStorageProperty (_fakeTableStoragePropertyDefinition2);
+      _testModel.DerivedPropertyDefinition1.SetStorageProperty (_fakeDerivedStoragePropertyDefinition1);
+      _testModel.DerivedPropertyDefinition2.SetStorageProperty (_fakeDerivedStoragePropertyDefinition2);
+      _testModel.DerivedDerivedPropertyDefinition.SetStorageProperty (_fakeDerivedDerivedStoragePropertyDefinition);
     }
 
     [Test]
@@ -120,12 +123,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new[] { _testModel.BaseClassDefinition.StorageEntityDefinition },
           new[]
           {
-              _fakeObjectIDColumn.ColumnDefinition, _fakeClassIDColumn.ColumnDefinition, _fakeTimestampColumnDefinition,
-              _fakeBaseBaseColumnDefinition.ColumnDefinition,
-              _fakeBaseColumnDefinition.ColumnDefinition,
-              _fakeTableColumnDefinition1.ColumnDefinition, _fakeTableColumnDefinition2.ColumnDefinition,
-              _fakeDerivedColumnDefinition1.ColumnDefinition, _fakeDerivedColumnDefinition2.ColumnDefinition,
-              _fakeDerivedDerivedColumnDefinition.ColumnDefinition
+              _infrastructureIDStoragePropertyDefinition.ColumnDefinition, 
+              _infrastructureClassIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureTimestampStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeTableStoragePropertyDefinition1.ColumnDefinition, 
+              _fakeTableStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedStoragePropertyDefinition1.ColumnDefinition,
+              _fakeDerivedStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedDerivedStoragePropertyDefinition.ColumnDefinition
           });
     }
 
@@ -141,12 +148,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new[] { _testModel.TableClassDefinition1.StorageEntityDefinition, _testModel.TableClassDefinition2.StorageEntityDefinition },
           new[]
           {
-              _fakeObjectIDColumn.ColumnDefinition, _fakeClassIDColumn.ColumnDefinition, _fakeTimestampColumnDefinition,
-              _fakeBaseBaseColumnDefinition.ColumnDefinition,
-              _fakeBaseColumnDefinition.ColumnDefinition,
-              _fakeTableColumnDefinition1.ColumnDefinition,
-              _fakeTableColumnDefinition2.ColumnDefinition, _fakeDerivedColumnDefinition1.ColumnDefinition,
-              _fakeDerivedColumnDefinition2.ColumnDefinition, _fakeDerivedDerivedColumnDefinition.ColumnDefinition
+              _infrastructureIDStoragePropertyDefinition.ColumnDefinition, 
+              _infrastructureClassIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureTimestampStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeTableStoragePropertyDefinition1.ColumnDefinition,
+              _fakeTableStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedStoragePropertyDefinition1.ColumnDefinition,
+              _fakeDerivedStoragePropertyDefinition2.ColumnDefinition, 
+              _fakeDerivedDerivedStoragePropertyDefinition.ColumnDefinition
           });
     }
 
@@ -162,12 +173,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           "Table1ClassView",
           new[]
           {
-              _fakeObjectIDColumn.ColumnDefinition, _fakeClassIDColumn.ColumnDefinition, _fakeTimestampColumnDefinition,
-              _fakeBaseBaseColumnDefinition.ColumnDefinition,
-              _fakeBaseColumnDefinition.ColumnDefinition,
-              _fakeTableColumnDefinition1.ColumnDefinition
+              _infrastructureIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureClassIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureTimestampStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeTableStoragePropertyDefinition1.ColumnDefinition
           },
-          new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { _fakeIDColumnDefinition.GetColumnForForeignKey() })
+          new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { _infrastructureObjectIDStoragePropertyDefinition.GetColumnForForeignKey() })
           );
     }
 
@@ -183,14 +196,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           "Table2ClassView",
           new[]
           {
-              _fakeObjectIDColumn.ColumnDefinition, _fakeClassIDColumn.ColumnDefinition, _fakeTimestampColumnDefinition,
-              _fakeBaseBaseColumnDefinition.ColumnDefinition,
-              _fakeBaseColumnDefinition.ColumnDefinition,
-              _fakeTableColumnDefinition2.ColumnDefinition,
-              _fakeDerivedColumnDefinition1.ColumnDefinition, _fakeDerivedColumnDefinition2.ColumnDefinition,
-              _fakeDerivedDerivedColumnDefinition.ColumnDefinition
+              _infrastructureIDStoragePropertyDefinition.ColumnDefinition, 
+              _infrastructureClassIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureTimestampStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeTableStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedStoragePropertyDefinition1.ColumnDefinition, 
+              _fakeDerivedStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedDerivedStoragePropertyDefinition.ColumnDefinition
           },
-          new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, new[] { _fakeIDColumnDefinition.GetColumnForForeignKey () })
+          new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, new[] { _infrastructureObjectIDStoragePropertyDefinition.GetColumnForForeignKey() })
           );
     }
 
@@ -207,10 +223,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new[] { "Derived1Class" },
           new[]
           {
-              _fakeObjectIDColumn.ColumnDefinition, _fakeClassIDColumn.ColumnDefinition, _fakeTimestampColumnDefinition,
-              _fakeBaseBaseColumnDefinition.ColumnDefinition,
-              _fakeBaseColumnDefinition.ColumnDefinition,
-              _fakeTableColumnDefinition2.ColumnDefinition, _fakeDerivedColumnDefinition1.ColumnDefinition
+              _infrastructureIDStoragePropertyDefinition.ColumnDefinition, 
+              _infrastructureClassIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureTimestampStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeTableStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedStoragePropertyDefinition1.ColumnDefinition
           });
     }
 
@@ -227,11 +246,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new[] { "Derived2Class", "DerivedDerivedClass", "DerivedDerivedDerivedClass" },
           new[]
           {
-              _fakeObjectIDColumn.ColumnDefinition, _fakeClassIDColumn.ColumnDefinition, _fakeTimestampColumnDefinition,
-              _fakeBaseBaseColumnDefinition.ColumnDefinition,
-              _fakeBaseColumnDefinition.ColumnDefinition,
-              _fakeTableColumnDefinition2.ColumnDefinition, _fakeDerivedColumnDefinition2.ColumnDefinition,
-              _fakeDerivedDerivedColumnDefinition.ColumnDefinition
+              _infrastructureIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureClassIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureTimestampStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeTableStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedDerivedStoragePropertyDefinition.ColumnDefinition
           });
     }
 
@@ -248,11 +270,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new[] { "DerivedDerivedClass", "DerivedDerivedDerivedClass" },
           new[]
           {
-              _fakeObjectIDColumn.ColumnDefinition, _fakeClassIDColumn.ColumnDefinition, _fakeTimestampColumnDefinition,
-              _fakeBaseBaseColumnDefinition.ColumnDefinition,
-              _fakeBaseColumnDefinition.ColumnDefinition,
-              _fakeTableColumnDefinition2.ColumnDefinition, _fakeDerivedColumnDefinition2.ColumnDefinition,
-              _fakeDerivedDerivedColumnDefinition.ColumnDefinition
+              _infrastructureIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureClassIDStoragePropertyDefinition.ColumnDefinition,
+              _infrastructureTimestampStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeBaseStoragePropertyDefinition.ColumnDefinition,
+              _fakeTableStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedStoragePropertyDefinition2.ColumnDefinition,
+              _fakeDerivedDerivedStoragePropertyDefinition.ColumnDefinition
           });
     }
 
