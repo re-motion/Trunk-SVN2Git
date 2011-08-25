@@ -47,10 +47,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         : base (
             storageProviderDefinition,
             viewName,
-            objectIDColumnDefinition,
-            classIDColumnDefinition,
-            timstampColumnDefinition,
-            dataColumns,
             objectIDProperty,
             timestampProperty,
             dataProperties,

@@ -30,23 +30,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly EntityNameDefinition _viewName;
-    private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
-    private readonly ColumnDefinition _idColumn;
-    private readonly ColumnDefinition _classIDColumn;
-    private readonly ColumnDefinition _timestampColumn;
+
     private readonly ObjectIDStoragePropertyDefinition _objectIDProperty;
     private readonly IRdbmsStoragePropertyDefinition _timestampProperty;
     private readonly ReadOnlyCollection<IRdbmsStoragePropertyDefinition> _dataProperties;
-    private readonly ReadOnlyCollection<ColumnDefinition> _dataColumns;
+
     private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
+    private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
 
     protected EntityDefinitionBase (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
-        ColumnDefinition idColumn,
-        ColumnDefinition classIDColumn,
-        ColumnDefinition timstampColumn,
-        IEnumerable<ColumnDefinition> dataColumns,
         ObjectIDStoragePropertyDefinition objectIDProperty,
         IRdbmsStoragePropertyDefinition timestampProperty,
         IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
@@ -54,24 +48,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEnumerable<EntityNameDefinition> synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("idColumn", idColumn);
-      ArgumentUtility.CheckNotNull ("classIDColumn", classIDColumn);
-      ArgumentUtility.CheckNotNull ("timstampColumn", timstampColumn);
-      ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
-      //ArgumentUtility.CheckNotNull ("objectIDProperty", objectIDProperty); // TODO 4231: Uncomment
-      //ArgumentUtility.CheckNotNull ("timestampProperty", timestampProperty);
-      //ArgumentUtility.CheckNotNull ("dataProperties", dataProperties);
+      ArgumentUtility.CheckNotNull ("objectIDProperty", objectIDProperty);
+      ArgumentUtility.CheckNotNull ("timestampProperty", timestampProperty);
+      ArgumentUtility.CheckNotNull ("dataProperties", dataProperties);
       ArgumentUtility.CheckNotNull ("synonyms", synonyms);
 
       _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
-      _idColumn = idColumn;
-      _classIDColumn = classIDColumn;
-      _timestampColumn = timstampColumn;
+
       _objectIDProperty = objectIDProperty;
       _timestampProperty = timestampProperty;
-      _dataProperties = dataProperties == null ? null : dataProperties.ToList().AsReadOnly(); // TODO 4231: Remove null check
-      _dataColumns = dataColumns.ToList().AsReadOnly();
+      _dataProperties = dataProperties.ToList().AsReadOnly();
       _indexes = indexes.ToList().AsReadOnly();
       _synonyms = synonyms.ToList().AsReadOnly();
     }
@@ -119,12 +106,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnDefinition> GetAllColumns ()
     {
-      yield return _idColumn;
-      yield return _classIDColumn;
-      yield return _timestampColumn;
-
-      foreach (var column in _dataColumns)
-        yield return column;
+      return GetAllProperties().SelectMany (p => p.GetColumns());
     }
 
     public ReadOnlyCollection<IIndexDefinition> Indexes

@@ -26,10 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public TestableEntityDefinitionBase (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
-        ColumnDefinition idColumn,
-        ColumnDefinition classIDColumn,
-        ColumnDefinition timstampColumn,
-        IEnumerable<ColumnDefinition> dataColumns,
         ObjectIDStoragePropertyDefinition idProperty,
         IRdbmsStoragePropertyDefinition timestampProperty,
         IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
@@ -38,10 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         : base (
             storageProviderDefinition,
             viewName,
-            idColumn,
-            classIDColumn,
-            timstampColumn,
-            dataColumns,
             idProperty,
             timestampProperty,
             dataProperties,

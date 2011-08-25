@@ -27,12 +27,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private TestableEntityDefinitionBase _entityDefinition;
 
-    private ColumnDefinition _column1;
-    private ColumnDefinition _column2;
-    private ColumnDefinition _column3;
-
-    private SimpleStoragePropertyDefinition _timestampProperty;
     private ObjectIDStoragePropertyDefinition _objectIDProperty;
+    private SimpleStoragePropertyDefinition _timestampProperty;
     private SimpleStoragePropertyDefinition _property1;
     private SimpleStoragePropertyDefinition _property2;
     private SimpleStoragePropertyDefinition _property3;
@@ -45,27 +41,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      
-      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
-      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
-      _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
 
-      _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
       _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
+      _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
       _property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
       _property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
       _property3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column3");
-      
+
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
       _entityDefinition = new TestableEntityDefinitionBase (
           _storageProviderDefinition,
           new EntityNameDefinition ("Schema", "Test"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column1, _column2, _column3 },
           _objectIDProperty,
           _timestampProperty,
           new[] { _property1, _property2, _property3 },
@@ -93,10 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var entityDefinition = new TestableEntityDefinitionBase (
           _storageProviderDefinition,
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new[] { _property1, _property2, _property3 },
@@ -115,17 +99,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetAllProperties ()
     {
-      var result = _entityDefinition.GetAllProperties ();
+      var result = _entityDefinition.GetAllProperties();
 
       Assert.That (
           result,
           Is.EqualTo (
               new IRdbmsStoragePropertyDefinition[]
               {
-                  _objectIDProperty, 
+                  _objectIDProperty,
                   _timestampProperty,
-                  _property1, 
-                  _property2, 
+                  _property1,
+                  _property2,
                   _property3
               }));
     }
@@ -140,10 +124,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           Is.EqualTo (
               new[]
               {
-                  ColumnDefinitionObjectMother.IDColumn, 
-                  ColumnDefinitionObjectMother.ClassIDColumn,
-                  ColumnDefinitionObjectMother.TimestampColumn,
-                  _column1, _column2, _column3
+                  StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_objectIDProperty),
+                  StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (_objectIDProperty),
+                  _timestampProperty.ColumnDefinition,
+                  _property1.ColumnDefinition,
+                  _property2.ColumnDefinition,
+                  _property3.ColumnDefinition
               }));
     }
 
