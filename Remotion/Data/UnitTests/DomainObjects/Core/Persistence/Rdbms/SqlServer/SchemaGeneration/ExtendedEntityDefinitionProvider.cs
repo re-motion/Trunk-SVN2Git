@@ -74,6 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           tableDefinition.ClassIDColumn,
           tableDefinition.TimestampColumn,
           tableDefinition.DataColumns,
+          tableDefinition.ObjectIDProperty,
+          tableDefinition.TimestampProperty,
+          tableDefinition.DataProperties,
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (tableDefinition.ViewName.SchemaName, "AddedViewSynonym") });
     }

@@ -74,35 +74,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _classIDs = classIDs.ToList().AsReadOnly();
     }
 
-    // TODO 4231: Remove
-    public FilterViewDefinition (
-       StorageProviderDefinition storageProviderDefinition,
-       EntityNameDefinition viewName,
-       IEntityDefinition baseEntity,
-       IEnumerable<string> classIDs,
-       ColumnDefinition objectIDColumnDefinition,
-       ColumnDefinition classIDColumnDefinition,
-       ColumnDefinition timstampColumnDefinition,
-       IEnumerable<ColumnDefinition> dataColumns,
-       IEnumerable<IIndexDefinition> indexes,
-       IEnumerable<EntityNameDefinition> synonyms)
-        : this (
-            storageProviderDefinition,
-            viewName,
-            baseEntity,
-            classIDs,
-            objectIDColumnDefinition,
-            classIDColumnDefinition,
-            timstampColumnDefinition,
-            dataColumns,
-            null,
-            null,
-            null,
-            indexes,
-            synonyms)
-    {
-    }
-
     public IEntityDefinition BaseEntity
     {
       get { return _baseEntity; }

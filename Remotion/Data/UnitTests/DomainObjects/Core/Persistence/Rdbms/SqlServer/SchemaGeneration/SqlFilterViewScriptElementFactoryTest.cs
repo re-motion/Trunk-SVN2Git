@@ -44,27 +44,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"));
 
-      var column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
-      var column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
+      var property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
+      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
 
       _filterViewDefinitionWithCustomSchema = FilterViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "FilterView1"),
           tableDefinitionWithCustomSchema,
           new[] { "ClassID1" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { column1 });
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new[] { property1 });
       _filterViewDefinitionWithDefaultSchema = FilterViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "FilterView2"),
           tableDefinitionWithDefaultSchema,
           new[] { "ClassID1", "ClassID2" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { column1, column2 });
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new[] { property1, property2 });
     }
 
     [Test]
