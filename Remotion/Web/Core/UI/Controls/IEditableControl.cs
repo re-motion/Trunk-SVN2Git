@@ -29,7 +29,7 @@ public interface IEditableControl: IControl
   ///   and saving values. Resetting <c>IsDirty</c> during saving is not implemented by all controls.
   /// </remarks>
   // TODO: redesign IsDirty semantics!
-  bool IsDirty { get; set; }
+  bool IsDirty { get; }
   string[] GetTrackedClientIDs();
 }
 
