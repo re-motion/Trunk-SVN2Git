@@ -457,68 +457,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndDataSourceNull ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _bocReferenceValue.DataSource = null;
-      _bocReferenceValue.Property = _propertyReferenceValue;
-      _bocReferenceValue.Value = null;
-      _bocReferenceValue.IsDirty = true;
-
-      _bocReferenceValue.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsTrue (_bocReferenceValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndPropertyNull ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _bocReferenceValue.DataSource = _dataSource;
-      _bocReferenceValue.Property = null;
-      _bocReferenceValue.Value = null;
-      _bocReferenceValue.IsDirty = true;
-
-      _bocReferenceValue.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsTrue (_bocReferenceValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _dataSource.BusinessObject = null;
-      _bocReferenceValue.DataSource = _dataSource;
-      _bocReferenceValue.Property = _propertyReferenceValue;
-      _bocReferenceValue.Value =  (IBusinessObjectWithIdentity) TypeWithReference.Create ();
-      _bocReferenceValue.IsDirty = true;
-
-      _bocReferenceValue.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsTrue (_bocReferenceValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _dataSource.BusinessObject = null;
-      _bocReferenceValue.DataSource = _dataSource;
-      _bocReferenceValue.Property = _propertyReferenceValue;
-      _bocReferenceValue.Value = null;
-      _bocReferenceValue.IsDirty = true;
-
-      _bocReferenceValue.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsFalse (_bocReferenceValue.IsDirty);
-    }
-
-    [Test]
     public void SaveValueAndIsDirtyFalse ()
     {
       var value = TypeWithReference.Create ();
@@ -527,22 +465,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocReferenceValue.Property = _propertyReferenceValue;
       _bocReferenceValue.Value = null;
       _bocReferenceValue.IsDirty = false;
-
-      _bocReferenceValue.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsFalse (_bocReferenceValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndReadOnlyTrue ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _bocReferenceValue.DataSource = _dataSource;
-      _bocReferenceValue.Property = _propertyReferenceValue;
-      _bocReferenceValue.Value = null;
-      _bocReferenceValue.IsDirty = true;
-      _bocReferenceValue.ReadOnly = true;
 
       _bocReferenceValue.SaveValue (false);
       Assert.AreEqual (value, _businessObject.ReferenceValue);

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.ObjectBinding
 {
   /// <summary>
@@ -33,14 +35,15 @@ namespace Remotion.ObjectBinding
     /// <remarks>
     ///   <para>
     ///     When <see cref="SaveValue"/> is executed, the object held by <see cref="IBusinessObjectBoundControl.Value"/>
-    ///     is written back into the <see cref="IBusinessObject"/> provided by the 
-    ///     <see cref="IBusinessObjectBoundControl.DataSource"/>.
+    ///     is written back into the <see cref="IBusinessObject"/> provided by the <see cref="IBusinessObjectBoundControl.DataSource"/>.
     ///   </para><para>
-    ///     This method is usually called by 
-    ///     <see cref="IBusinessObjectDataSource.SaveValues">IBusinessObjectDataSource.SaveValues</see>.
+    ///     This method is usually called by <see cref="IBusinessObjectDataSource.SaveValues">IBusinessObjectDataSource.SaveValues</see>.
     ///   </para>
     /// </remarks>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
+    /// <exception cref="InvalidOperationException">
+    ///   Thrown if the bound <see cref="IBusinessObjectBoundControl.Property"/> is read-only but the <see cref="IBusinessObjectBoundControl.Value"/> is dirty.
+    /// </exception>
     void SaveValue (bool interim);
   
     /// <summary>

@@ -464,6 +464,8 @@
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRendererTestBase.cs" />
+    <Compile Include="Web\UI\Controls\BusinessObjectBoundEditableWebControlTests\SaveValueToDomainModel.cs" />
+    <Compile Include="Web\UI\Controls\BusinessObjectBoundEditableWebControlTests\TestDomain\TestableBusinessObjectBoundEditableWebControl.cs" />
     <Compile Include="Web\UI\Controls\BusinessObjectReferenceDataSourceControlTests\Validate.cs" />
     <Compile Include="Web\UI\Controls\HtmlHelper.cs" />
     <Compile Include="Web\UI\Controls\ReflectionBusinessObjectWebUIService.cs" />

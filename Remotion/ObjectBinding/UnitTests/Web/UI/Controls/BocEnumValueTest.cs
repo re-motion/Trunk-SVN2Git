@@ -316,64 +316,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndDataSourceNull ()
-    {
-      _businessObject.EnumValue = TestEnum.Second;
-      _bocEnumValue.DataSource = null;
-      _bocEnumValue.Property = _propertyEnumValue;
-      _bocEnumValue.Value = TestEnum.First;
-      _bocEnumValue.IsDirty = true;
-
-      _bocEnumValue.SaveValue (false);
-      Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndPropertyNull ()
-    {
-      _businessObject.EnumValue = TestEnum.Second;
-      _bocEnumValue.DataSource = _dataSource;
-      _bocEnumValue.Property = null;
-      _bocEnumValue.Value = TestEnum.First;
-      _bocEnumValue.IsDirty = true;
-
-      _bocEnumValue.SaveValue (false);
-      Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
-    {
-      _businessObject.EnumValue = TestEnum.Second;
-      _dataSource.BusinessObject = null;
-      _bocEnumValue.DataSource = _dataSource;
-      _bocEnumValue.Property = _propertyEnumValue;
-      _bocEnumValue.Value = TestEnum.First;
-      _bocEnumValue.IsDirty = true;
-
-      _bocEnumValue.SaveValue (false);
-      Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);
-      Assert.IsTrue (_bocEnumValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
-    {
-      _businessObject.EnumValue = TestEnum.Second;
-      _dataSource.BusinessObject = null;
-      _bocEnumValue.DataSource = _dataSource;
-      _bocEnumValue.Property = _propertyEnumValue;
-      _bocEnumValue.Value = null;
-      _bocEnumValue.IsDirty = true;
-
-      _bocEnumValue.SaveValue (false);
-      Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);
-      Assert.IsFalse (_bocEnumValue.IsDirty);
-    }
-
-    [Test]
     public void SaveValueAndIsDirtyFalse ()
     {
       _businessObject.EnumValue = TestEnum.Second;
@@ -381,21 +323,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocEnumValue.Property = _propertyEnumValue;
       _bocEnumValue.Value = TestEnum.First;
       _bocEnumValue.IsDirty = false;
-
-      _bocEnumValue.SaveValue (false);
-      Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);
-      Assert.IsFalse (_bocEnumValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndReadOnlyTrue ()
-    {
-      _businessObject.EnumValue = TestEnum.Second;
-      _bocEnumValue.DataSource = _dataSource;
-      _bocEnumValue.Property = _propertyEnumValue;
-      _bocEnumValue.Value = TestEnum.First;
-      _bocEnumValue.IsDirty = true;
-      _bocEnumValue.ReadOnly = true;
 
       _bocEnumValue.SaveValue (false);
       Assert.AreEqual (TestEnum.Second, _businessObject.EnumValue);

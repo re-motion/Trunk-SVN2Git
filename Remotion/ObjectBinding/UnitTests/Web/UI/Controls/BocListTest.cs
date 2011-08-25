@@ -364,69 +364,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndDataSourceNull ()
-    {
-      var oldValue = new[] { TypeWithReference.Create() };
-      _businessObject.ReferenceList = oldValue;
-      _bocList.DataSource = null;
-      _bocList.Property = _propertyReferenceList;
-      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
-      _bocList.IsDirty = true;
-
-      _bocList.SaveValue (false);
-      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
-      Assert.IsTrue (_bocList.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndPropertyNull ()
-    {
-      var oldValue = new[] { TypeWithReference.Create() };
-      _businessObject.ReferenceList = oldValue;
-      _bocList.DataSource = _dataSource;
-      _bocList.Property = null;
-      ;
-      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
-      _bocList.IsDirty = true;
-
-      _bocList.SaveValue (false);
-      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
-      Assert.IsTrue (_bocList.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
-    {
-      var oldValue = new[] { TypeWithReference.Create() };
-      _businessObject.ReferenceList = oldValue;
-      _dataSource.BusinessObject = null;
-      _bocList.DataSource = _dataSource;
-      _bocList.Property = _propertyReferenceList;
-      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
-      _bocList.IsDirty = true;
-
-      _bocList.SaveValue (false);
-      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
-      Assert.IsTrue (_bocList.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
-    {
-      var oldValue = new[] { TypeWithReference.Create() };
-      _businessObject.ReferenceList = oldValue;
-      _dataSource.BusinessObject = null;
-      _bocList.DataSource = _dataSource;
-      _bocList.Property = _propertyReferenceList;
-      _bocList.Value = null;
-      _bocList.IsDirty = true;
-
-      _bocList.SaveValue (false);
-      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
-      Assert.IsFalse (_bocList.IsDirty);
-    }
-
-    [Test]
     public void SaveValueAndIsDirtyFalse ()
     {
       var oldValue = new[] { TypeWithReference.Create() };
@@ -435,22 +372,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.Property = _propertyReferenceList;
       _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
       _bocList.IsDirty = false;
-
-      _bocList.SaveValue (false);
-      Assert.AreEqual (oldValue, _businessObject.ReferenceList);
-      Assert.IsFalse (_bocList.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndReadOnlyTrue ()
-    {
-      var oldValue = new[] { TypeWithReference.Create() };
-      _businessObject.ReferenceList = oldValue;
-      _bocList.DataSource = _dataSource;
-      _bocList.Property = _propertyReferenceList;
-      _bocList.Value = new[] { TypeWithReference.Create(), TypeWithReference.Create() };
-      _bocList.IsDirty = true;
-      _bocList.ReadOnly = true;
 
       _bocList.SaveValue (false);
       Assert.AreEqual (oldValue, _businessObject.ReferenceList);

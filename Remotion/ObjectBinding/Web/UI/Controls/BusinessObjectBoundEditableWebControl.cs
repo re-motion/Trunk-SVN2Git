@@ -331,6 +331,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// Saves the value into the bound <see cref="BusinessObjectBoundWebControl.Property"/>.
     /// </summary>
     /// <returns><see langword="true"/> if the value was saved into the bound <see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///   Thrown if the bound <see cref="BusinessObjectBoundWebControl.Property"/> is read-only but the <see cref="BusinessObjectBoundWebControl.Value"/> is dirty.
+    /// </exception>
     protected bool SaveValueToDomainModel ()
     {
       if (Property == null)
@@ -347,10 +350,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return false;
       }
 
-      //if (IsReadOnlyInDomainModel()) // also check when setting IsDirty
-      //  throw new InvalidOperationException();
-      if (IsReadOnly)
-        return true;
+      if (IsReadOnlyInDomainModel) // also check when setting IsDirty
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "The value of the {0} ('{1}') could not be saved into the domain model because the property '{2}' is read only.",
+                GetType().Name,
+                ID,
+                Property.Identifier));
+      }
 
       var requiresWriteBack = !Property.IsList || Property.ListInfo.RequiresWriteBack;
       if (requiresWriteBack)

@@ -452,64 +452,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndDataSourceNull ()
-    {
-      _businessObject.DateTimeValue = new DateTime (2000, 1, 1);
-      _bocDateTimeValue.DataSource = null;
-      _bocDateTimeValue.Property = _propertyDateTimeValue;
-      _bocDateTimeValue.Value = DateTime.Now;
-      _bocDateTimeValue.IsDirty = true;
-
-      _bocDateTimeValue.SaveValue (false);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _businessObject.DateTimeValue);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndPropertyNull ()
-    {
-      _businessObject.DateTimeValue = new DateTime (2000, 1, 1);
-      _bocDateTimeValue.DataSource = _dataSource;
-      _bocDateTimeValue.Property = null;
-      _bocDateTimeValue.Value = DateTime.Now;
-      _bocDateTimeValue.IsDirty = true;
-
-      _bocDateTimeValue.SaveValue (false);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _businessObject.DateTimeValue);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
-    {
-      _businessObject.DateTimeValue = new DateTime (2000, 1, 1);
-      _dataSource.BusinessObject = null;
-      _bocDateTimeValue.DataSource = _dataSource;
-      _bocDateTimeValue.Property = _propertyDateTimeValue;
-      _bocDateTimeValue.Value = DateTime.Now;
-      _bocDateTimeValue.IsDirty = true;
-
-      _bocDateTimeValue.SaveValue (false);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _businessObject.DateTimeValue);
-      Assert.IsTrue (_bocDateTimeValue.IsDirty);
-    }
-    
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
-    {
-      _businessObject.DateTimeValue = new DateTime (2000, 1, 1);
-      _dataSource.BusinessObject = null;
-      _bocDateTimeValue.DataSource = _dataSource;
-      _bocDateTimeValue.Property = _propertyDateTimeValue;
-      _bocDateTimeValue.Value = null;
-      _bocDateTimeValue.IsDirty = true;
-
-      _bocDateTimeValue.SaveValue (false);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _businessObject.DateTimeValue);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
-    }
-
-    [Test]
     public void SaveValueAndIsDirtyFalse ()
     {
       _businessObject.DateTimeValue = new DateTime (2000, 1, 1);
@@ -517,21 +459,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocDateTimeValue.Property = _propertyDateTimeValue;
       _bocDateTimeValue.Value = DateTime.Now;
       _bocDateTimeValue.IsDirty = false;
-
-      _bocDateTimeValue.SaveValue (false);
-      Assert.AreEqual (new DateTime (2000, 1, 1), _businessObject.DateTimeValue);
-      Assert.IsFalse (_bocDateTimeValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndReadOnlyTrue ()
-    {
-      _businessObject.DateTimeValue = new DateTime (2000, 1, 1);
-      _bocDateTimeValue.DataSource = _dataSource;
-      _bocDateTimeValue.Property = _propertyDateTimeValue;
-      _bocDateTimeValue.Value = DateTime.Now;
-      _bocDateTimeValue.IsDirty = true;
-      _bocDateTimeValue.ReadOnly = true;
 
       _bocDateTimeValue.SaveValue (false);
       Assert.AreEqual (new DateTime (2000, 1, 1), _businessObject.DateTimeValue);

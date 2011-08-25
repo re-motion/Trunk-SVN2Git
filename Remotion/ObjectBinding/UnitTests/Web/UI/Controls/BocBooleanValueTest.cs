@@ -472,64 +472,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndDataSourceNull ()
-    {
-      _businessObject.BooleanValue = true;
-      _bocBooleanValue.DataSource = null;
-      _bocBooleanValue.Property = _propertyBooleanValue;
-      _bocBooleanValue.Value = false;
-      _bocBooleanValue.IsDirty = true;
-
-      _bocBooleanValue.SaveValue (false);
-      Assert.AreEqual (true, _businessObject.BooleanValue);
-      Assert.IsTrue (_bocBooleanValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndPropertyNull ()
-    {
-      _businessObject.BooleanValue = true;
-      _bocBooleanValue.DataSource = _dataSource;
-      _bocBooleanValue.Property = null;
-      _bocBooleanValue.Value = false;
-      _bocBooleanValue.IsDirty = true;
-
-      _bocBooleanValue.SaveValue (false);
-      Assert.AreEqual (true, _businessObject.BooleanValue);
-      Assert.IsTrue (_bocBooleanValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
-    {
-      _businessObject.BooleanValue = true;
-      _dataSource.BusinessObject = null;
-      _bocBooleanValue.DataSource = _dataSource;
-      _bocBooleanValue.Property = _propertyBooleanValue;
-      _bocBooleanValue.Value = false;
-      _bocBooleanValue.IsDirty = true;
-
-      _bocBooleanValue.SaveValue (false);
-      Assert.AreEqual (true, _businessObject.BooleanValue);
-      Assert.IsTrue (_bocBooleanValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
-    {
-      _businessObject.BooleanValue = true;
-      _dataSource.BusinessObject = null;
-      _bocBooleanValue.DataSource = _dataSource;
-      _bocBooleanValue.Property = _propertyBooleanValue;
-      _bocBooleanValue.Value = null;
-      _bocBooleanValue.IsDirty = true;
-
-      _bocBooleanValue.SaveValue (false);
-      Assert.AreEqual (true, _businessObject.BooleanValue);
-      Assert.IsFalse (_bocBooleanValue.IsDirty);
-    }
-
-    [Test]
     public void SaveValueAndIsDirtyFalse ()
     {
       _businessObject.BooleanValue = true;
@@ -537,21 +479,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocBooleanValue.Property = _propertyBooleanValue;
       _bocBooleanValue.Value = false;
       _bocBooleanValue.IsDirty = false;
-
-      _bocBooleanValue.SaveValue (false);
-      Assert.AreEqual (true, _businessObject.BooleanValue);
-      Assert.IsFalse (_bocBooleanValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndReadOnlyTrue ()
-    {
-      _businessObject.BooleanValue = true;
-      _bocBooleanValue.DataSource = _dataSource;
-      _bocBooleanValue.Property = _propertyBooleanValue;
-      _bocBooleanValue.Value = false;
-      _bocBooleanValue.IsDirty = true;
-      _bocBooleanValue.ReadOnly = true;
 
       _bocBooleanValue.SaveValue (false);
       Assert.AreEqual (true, _businessObject.BooleanValue);

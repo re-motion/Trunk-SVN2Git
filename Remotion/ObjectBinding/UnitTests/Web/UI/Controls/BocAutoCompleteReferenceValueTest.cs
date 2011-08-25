@@ -534,68 +534,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndDataSourceNull ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _control.DataSource = null;
-      _control.Property = _propertyReferenceValue;
-      _control.Value = null;
-      _control.IsDirty = true;
-
-      _control.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsTrue (_control.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndPropertyNull ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _control.DataSource = _dataSource;
-      _control.Property = null;
-      _control.Value = null;
-      _control.IsDirty = true;
-
-      _control.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsTrue (_control.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _dataSource.BusinessObject = null;
-      _control.DataSource = _dataSource;
-      _control.Property = _propertyReferenceValue;
-      _control.Value =  (IBusinessObjectWithIdentity) TypeWithReference.Create();
-      _control.IsDirty = true;
-
-      _control.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsTrue (_control.IsDirty);
-    }
-    
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _dataSource.BusinessObject = null;
-      _control.DataSource = _dataSource;
-      _control.Property = _propertyReferenceValue;
-      _control.Value = null;
-      _control.IsDirty = true;
-
-      _control.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsFalse (_control.IsDirty);
-    }
-
-    [Test]
     public void SaveValueAndIsDirtyFalse ()
     {
       var value = TypeWithReference.Create ();
@@ -604,22 +542,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Property = _propertyReferenceValue;
       _control.Value = null;
       _control.IsDirty = false;
-
-      _control.SaveValue (false);
-      Assert.AreEqual (value, _businessObject.ReferenceValue);
-      Assert.IsFalse (_control.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndReadOnlyTrue ()
-    {
-      var value = TypeWithReference.Create ();
-      _businessObject.ReferenceValue = value;
-      _control.DataSource = _dataSource;
-      _control.Property = _propertyReferenceValue;
-      _control.Value = null;
-      _control.IsDirty = true;
-      _control.ReadOnly = true;
 
       _control.SaveValue (false);
       Assert.AreEqual (value, _businessObject.ReferenceValue);

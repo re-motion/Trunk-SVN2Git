@@ -297,64 +297,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SaveValueAndInterimFalseAndDataSourceNull ()
-    {
-      _businessObject.StringArray = new[] { "Foo", "Bar" };
-      _bocMultilineTextValue.DataSource = null;
-      _bocMultilineTextValue.Property = _propertyStringArray;
-      _bocMultilineTextValue.Value = null;
-      _bocMultilineTextValue.IsDirty = true;
-
-      _bocMultilineTextValue.SaveValue (false);
-      Assert.AreEqual (new[] { "Foo", "Bar" }, _businessObject.StringArray);
-      Assert.IsTrue (_bocMultilineTextValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndPropertyNull ()
-    {
-      _businessObject.StringArray = new[] { "Foo", "Bar" };
-      _bocMultilineTextValue.DataSource = _dataSource;
-      _bocMultilineTextValue.Property = null;
-      _bocMultilineTextValue.Value = null;
-      _bocMultilineTextValue.IsDirty = true;
-
-      _bocMultilineTextValue.SaveValue (false);
-      Assert.AreEqual (new[] { "Foo", "Bar" }, _businessObject.StringArray);
-      Assert.IsTrue (_bocMultilineTextValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNotNull ()
-    {
-      _businessObject.StringArray = new[] { "Foo", "Bar" };
-      _dataSource.BusinessObject = null;
-      _bocMultilineTextValue.DataSource = _dataSource;
-      _bocMultilineTextValue.Property = _propertyStringArray;
-      _bocMultilineTextValue.Value = new[] { "value" };
-      _bocMultilineTextValue.IsDirty = true;
-
-      _bocMultilineTextValue.SaveValue (false);
-      Assert.AreEqual (new[] { "Foo", "Bar" }, _businessObject.StringArray);
-      Assert.IsTrue (_bocMultilineTextValue.IsDirty);
-    }
-    
-    [Test]
-    public void SaveValueAndInterimFalseAndBusinessObjectNullAndValueNull ()
-    {
-      _businessObject.StringArray = new[] { "Foo", "Bar" };
-      _dataSource.BusinessObject = null;
-      _bocMultilineTextValue.DataSource = _dataSource;
-      _bocMultilineTextValue.Property = _propertyStringArray;
-      _bocMultilineTextValue.Value = null;
-      _bocMultilineTextValue.IsDirty = true;
-
-      _bocMultilineTextValue.SaveValue (false);
-      Assert.AreEqual (new[] { "Foo", "Bar" }, _businessObject.StringArray);
-      Assert.IsFalse (_bocMultilineTextValue.IsDirty);
-    }
-
-    [Test]
     public void SaveValueAndIsDirtyFalse ()
     {
       _businessObject.StringArray = new[] { "Foo", "Bar" };
@@ -362,21 +304,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocMultilineTextValue.Property = _propertyStringArray;
       _bocMultilineTextValue.Value = null;
       _bocMultilineTextValue.IsDirty = false;
-
-      _bocMultilineTextValue.SaveValue (false);
-      Assert.AreEqual (new[] { "Foo", "Bar" }, _businessObject.StringArray);
-      Assert.IsFalse (_bocMultilineTextValue.IsDirty);
-    }
-
-    [Test]
-    public void SaveValueAndReadOnlyTrue ()
-    {
-      _businessObject.StringArray = new[] { "Foo", "Bar" };
-      _bocMultilineTextValue.DataSource = _dataSource;
-      _bocMultilineTextValue.Property = _propertyStringArray;
-      _bocMultilineTextValue.Value = null;
-      _bocMultilineTextValue.IsDirty = true;
-      _bocMultilineTextValue.ReadOnly = true;
 
       _bocMultilineTextValue.SaveValue (false);
       Assert.AreEqual (new[] { "Foo", "Bar" }, _businessObject.StringArray);
