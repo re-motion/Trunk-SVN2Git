@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -41,26 +42,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
 
-      return Create(storageProviderDefinition, viewName, unionedEntities, ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn, ColumnDefinitionObjectMother.TimestampColumn, new ColumnDefinition[0]);
+      return Create (
+          storageProviderDefinition, 
+          viewName, 
+          unionedEntities, 
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty, 
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty, 
+          new IRdbmsStoragePropertyDefinition[0]);
     }
 
     public static UnionViewDefinition Create (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
-        IEntityDefinition[] unionedEntities,
-        ColumnDefinition idColumn,
-        ColumnDefinition classIDColumn,
-        ColumnDefinition timestampColumn,
-        params ColumnDefinition[] columnDefinitions)
+        IEnumerable<IEntityDefinition> unionedEntities,
+        ObjectIDStoragePropertyDefinition objectIDProperty,
+        SimpleStoragePropertyDefinition timestampProperty,
+        params IRdbmsStoragePropertyDefinition[] dataProperties)
     {
       return new UnionViewDefinition (
           storageProviderDefinition,
           viewName,
           unionedEntities,
-          idColumn,
-          classIDColumn,
-          timestampColumn,
-          columnDefinitions,
+          ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (objectIDProperty),
+          ObjectIDStoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (objectIDProperty),
+          timestampProperty.ColumnDefinition,
+          dataProperties.SelectMany (p => p.GetColumns()),
+          objectIDProperty,
+          timestampProperty,
+          dataProperties,
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -75,6 +84,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new IRdbmsStoragePropertyDefinition[0],
           indexDefinitions,
           new EntityNameDefinition[0]);
     }
@@ -89,6 +101,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new IRdbmsStoragePropertyDefinition[0],
           new IIndexDefinition[0],
           synonyms);
     }

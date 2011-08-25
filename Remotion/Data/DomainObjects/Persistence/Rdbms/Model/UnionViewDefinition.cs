@@ -79,33 +79,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       indexes.ToList().AsReadOnly();
     }
 
-    // TODO 4231: Remove
-     public UnionViewDefinition (
-        StorageProviderDefinition storageProviderDefinition,
-        EntityNameDefinition viewName,
-        IEnumerable<IEntityDefinition> unionedEntities,
-        ColumnDefinition objectIDColumnDefinition,
-        ColumnDefinition classIDColumnDefinition,
-        ColumnDefinition timstampColumnDefinition,
-        IEnumerable<ColumnDefinition> dataColumns,
-        IEnumerable<IIndexDefinition> indexes,
-        IEnumerable<EntityNameDefinition> synonyms)
-        : this (
-            storageProviderDefinition,
-            viewName,
-            unionedEntities,
-            objectIDColumnDefinition,
-            classIDColumnDefinition,
-            timstampColumnDefinition,
-            dataColumns,
-            null,
-            null,
-            null,
-            indexes,
-            synonyms)
-     {
-     }
-
     public ReadOnlyCollection<IEntityDefinition> UnionedEntities
     {
       get { return _unionedEntities; }

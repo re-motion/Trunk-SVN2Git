@@ -39,8 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
       var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
-      var column1 = property1.ColumnDefinition;
-      var column2 = property2.ColumnDefinition;
 
       var tableDefinition1 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -61,18 +59,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "UnionView1"),
           new[] { tableDefinition1 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[]{column1});
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new[] { property1 });
       _unionViewDefinitionWithDefaultSchema = UnionViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView2"),
           new[] { tableDefinition1, tableDefinition2 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[]{column1, column2});
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new[] { property1, property2 });
     }
 
     [Test]
