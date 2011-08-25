@@ -64,21 +64,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _timestampStoragePropertyDefinition = new SimpleStoragePropertyDefinition (_timestampColumnDefinition);
     }
 
-    public ColumnDefinition GetIDColumnDefinition ()
-    {
-      return _idColumnDefinition;
-    }
-
-    public ColumnDefinition GetClassIDColumnDefinition ()
-    {
-      return _classIDColumnDefinition;
-    }
-
-    public virtual ColumnDefinition GetTimestampColumnDefinition ()
-    {
-      return _timestampColumnDefinition;
-    }
-
     public ObjectIDStoragePropertyDefinition GetObjectIDStoragePropertyDefinition ()
     {
       return _objectIDStoragePropertyDefinition;
@@ -87,18 +72,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     public IRdbmsStoragePropertyDefinition GetTimestampStoragePropertyDefinition ()
     {
       return _timestampStoragePropertyDefinition;
-    }
-
-    // TODO 4231: Inline
-    public IRdbmsStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
-    {
-      return entityDefinition.ObjectIDProperty;
-    }
-
-    // TODO 4231: Inline
-    public IRdbmsStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
-    {
-      return entityDefinition.TimestampProperty;
     }
   }
 }

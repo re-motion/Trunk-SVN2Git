@@ -82,9 +82,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           continue;
 
         // We can't access the opposite entity definition from here, but we can get the ID column from the provider
-        var oppositeObjectIDColumnDefinition = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
+        var oppositeStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition();
         var endPointStorageProperty = _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
-        var referencingColumn = oppositeObjectIDColumnDefinition;
+        var referencingColumn = oppositeStoragePropertyDefinition.GetColumnForForeignKey();
         var referencedColumn = endPointStorageProperty.GetColumnForForeignKey ();
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
