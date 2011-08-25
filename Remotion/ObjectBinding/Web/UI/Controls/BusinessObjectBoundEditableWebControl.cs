@@ -96,11 +96,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///     (E.g. a row is added to the list of values by invoking a method on the <see cref="BocList"/>.)
     ///   </para>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    ///   Thrown if the <see cref="IsDirty"/> flag is set to <see langword="true"/> and the control is bound to a read-only
+    ///   <see cref="BusinessObjectBoundWebControl.Property"/>.
+    /// </exception>
     [Browsable (false)]
     public virtual bool IsDirty
     {
       get { return _isDirty; }
-      set { _isDirty = value; }
+      set
+      {
+        if (value && DataSource != null && Property != null && IsReadOnlyInDomainModel)
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "The {0} '{1}' could not be marked as dirty because the bound property '{2}' is read only.",
+                  GetType().Name,
+                  ID,
+                  Property.Identifier));
+        }
+        _isDirty = value;
+      }
     }
 
     /// <summary> 
@@ -354,7 +370,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         throw new InvalidOperationException (
             string.Format (
-                "The value of the {0} ('{1}') could not be saved into the domain model because the property '{2}' is read only.",
+                "The value of the {0} '{1}' could not be saved into the domain model because the property '{2}' is read only.",
                 GetType().Name,
                 ID,
                 Property.Identifier));

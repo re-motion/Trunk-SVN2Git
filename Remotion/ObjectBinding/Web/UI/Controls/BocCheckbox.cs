@@ -269,7 +269,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsReadOnly ? null : GetCheckboxClientID(); }
     }
 
-    /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
+    /// <summary> Gets the string representation of this control's <see cref="BocBooleanValueBase.Value"/>. </summary>
     /// <remarks> 
     ///   <para>
     ///     Values can be <c>True</c>, <c>False</c>, and <c>null</c>. 
@@ -323,22 +323,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return false; }
     }
 
-    /// <summary> Gets or sets the current value. </summary>
-    /// <value> 
-    ///   The boolean value currently displayed. If <see langword="null"/> is assigned, <see cref="GetDefaultValue"/>
-    ///   is evaluated to get the value. The <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> flag is set 
-    ///   in this case.
-    /// </value>
-    /// <remarks> The dirty state is reset when the value is set. </remarks>
-    [Browsable (false)]
-    public override bool? Value
+    protected override bool? GetValue ()
     {
-      get { return _value; }
-      set
-      {
-        IsDirty = true;
-        _value = value ?? GetDefaultValue();
-      }
+      return _value;
+    }
+
+    protected override void SetValue (bool? value)
+    {
+      _value = value ?? GetDefaultValue();
     }
 
     /// <summary>Gets a flag indicating whether the <see cref="BocCheckBox"/> contains a value. </summary>

@@ -272,7 +272,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <value> An object or boxed value. </value>
     /// <remarks>
     ///   <para>
-    ///     Override <see cref="ValueImplementation"/> to define the behaviour of <c>Value</c>. 
+    ///     Override <see cref="ValueImplementation"/> to define the behaviour of <see cref="Value"/>. 
     ///   </para><para>
     ///     Redefine <see cref="Value"/> using the keyword <see langword="new"/> to provide a typesafe implementation in derived classes.
     ///   </para>
@@ -286,6 +286,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
     /// <value> An object or boxed value. </value>
+    /// <remarks>The implementation should be <see langword="sealed"/> since it is only possible to do one meaningful re-definition of <see cref="Value"/>.</remarks>
     [Browsable (false)]
     protected abstract object ValueImplementation { get; set; }
 

@@ -1486,7 +1486,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
       else
       {
-        Value = value;
+        SetValue (value);
         IsDirty = false;
       }
     }
@@ -2609,22 +2609,41 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public new IList Value
     {
-      get { return _value; }
+      get { return GetValue(); }
       set
       {
         IsDirty = true;
-        _value = value;
-        _selectorControlCheckedState.Clear();
-        ResetRows();
+        SetValue (value);
       }
+    }
+
+    /// <summary>
+    /// Gets the value from the backing field.
+    /// </summary>
+    protected IList GetValue()
+    {
+      return _value;
+    }
+
+    /// <summary>
+    /// Sets the value from the backing field.
+    /// </summary>
+    /// <remarks>
+    /// <para>Setting the value via this method does not affect the control's dirty state.</para>
+    /// </remarks>
+    protected void SetValue (IList value)
+    {
+      _value = value;
+      _selectorControlCheckedState.Clear();
+      ResetRows();
     }
 
     /// <summary> Gets or sets the current value when <see cref="Value"/> through polymorphism. </summary>
     /// <value> The value must be of type <see cref="IList"/>. </value>
-    protected override object ValueImplementation
+    protected override sealed object ValueImplementation
     {
       get { return Value; }
-      set { Value = (IList) value; }
+      set { Value = ArgumentUtility.CheckType<IList> ("value", value); }
     }
 
     /// <summary>Gets a flag indicating whether the <see cref="BocTreeView"/> contains a value. </summary>

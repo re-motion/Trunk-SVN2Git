@@ -244,9 +244,7 @@ namespace Remotion.Utilities
 
     public static bool IsNullOrEmpty (string str)
     {
-      if (str == null || str.Length == 0)
-        return true;
-      return false;
+      return string.IsNullOrEmpty (str);
     }
 
     public static string[] ListToStringArray (IList list)

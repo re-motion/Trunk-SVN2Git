@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (interim)
         return;
 
-      Value = value;
+      SetValue (value);
       IsDirty = false;
     }
 
@@ -113,8 +113,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         IsDirty = false;
     }
 
+
     /// <summary> Gets or sets the current value. </summary>
-    public new abstract bool? Value { get; set; }
+    /// <value> The boolean value currently displayed or <see langword="null"/>. </value>
+    /// <remarks> The dirty state is set when the value is set. </remarks>
+    [Browsable (false)]
+    public new bool? Value
+    {
+      get { return GetValue(); }
+      set
+      {
+        IsDirty = true;
+        SetValue (value);
+      }
+    }
+    
+    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    /// <value>The control's current value, which is a nullable boolean.</value>
+    protected override sealed object ValueImplementation
+    {
+      get { return Value; }
+      set { Value = ArgumentUtility.CheckType<bool?> ("value", value); }
+    }
+
+    /// <summary>
+    /// Gets the value from the backing field.
+    /// </summary>
+    /// <remarks> Override this member to modify the storage of the value. </remarks>
+    protected abstract bool? GetValue ();
+
+    /// <summary>
+    /// Sets the value from the backing field.
+    /// </summary>
+    /// <remarks>
+    /// <para>Setting the value via this method does not affect the control's dirty state.</para>
+    /// <para>Override this member to modify the storage of the value.</para>
+    /// </remarks>
+    protected abstract void SetValue (bool? value);
 
     /// <summary> Gets or sets the <see cref="IBusinessObjectBooleanProperty"/> object this control is bound to. </summary>
     /// <value> An instance of type <see cref="IBusinessObjectBooleanProperty"/>. </value>
@@ -210,14 +245,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _nullDescription; }
       set { _nullDescription = value; }
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    /// <value>The control's current value, which is a nullable boolean.</value>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = ArgumentUtility.CheckType<bool?> ("value", value); }
     }
 
     /// <summary> Gets the evaluated value for the <see cref="AutoPostBack"/> property. </summary>

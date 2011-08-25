@@ -66,6 +66,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     /// <value>An array of types, containing interfaces derived from <see cref="IBusinessObjectProperty"/>.</value>
     protected abstract override Type[] SupportedPropertyInterfaces { get; }
 
+    protected abstract string NormalizeText (string text);
+
     /// <summary>
     ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
     ///   <see cref="TargetControl"/>.
@@ -218,7 +220,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
       string newValue = PageUtility.GetPostBackCollectionItem (Page, GetTextBoxUniqueID());
-      bool isDataChanged = newValue != null && StringUtility.NullToEmpty (Text) != newValue;
+      bool isDataChanged = newValue != null && Text != NormalizeText (newValue);
       if (isDataChanged)
       {
         Text = newValue;

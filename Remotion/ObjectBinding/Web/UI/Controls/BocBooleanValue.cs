@@ -195,18 +195,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return ClientID + ClientIDSeparator + "Boc_HyperLink";
     }
 
-    /// <summary> Gets or sets the current value. </summary>
-    /// <value> The boolean value currently displayed or <see langword="null"/>. </value>
-    /// <remarks> The dirty state is reset when the value is set. </remarks>
-    [Browsable (false)]
-    public override bool? Value
+    protected override bool? GetValue ()
     {
-      get { return _value; }
-      set
-      {
-        IsDirty = true;
-        _value = value;
-      }
+      return _value;
+    }
+
+    protected override void SetValue (bool? value)
+    {
+      _value = value;
     }
 
     /// <summary>Gets a flag indicating whether the <see cref="BocBooleanValue"/> contains a value. </summary>
@@ -269,7 +265,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsReadOnly ? null : GetHyperLinkClientID (); }
     }
 
-    /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
+    /// <summary> Gets the string representation of this control's <see cref="BocBooleanValueBase.Value"/>. </summary>
     /// <remarks> 
     ///   <para>
     ///     Values can be <c>True</c>, <c>False</c>, and <c>null</c>. 
@@ -435,13 +431,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
       if (! StringUtility.IsNullOrEmpty (key))
         ErrorMessage = resourceManager.GetString (key);
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = ArgumentUtility.CheckType<bool?> ("value", value); }
     }
 
     /// <summary> <see cref="BocBooleanValue"/> supports only scalar properties. </summary>

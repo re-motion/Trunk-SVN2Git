@@ -241,7 +241,7 @@
       </para><para>
         If  <see cref="Property"/> is <see langword="null"/>, no type checking can be performed.
       </para><para>
-        The dirty state is reset when the value is set.      
+        The dirty state is set when the value is set.      
       </para>
     </remarks>
   </Value>

@@ -67,7 +67,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       protected override string GetDataSourceIdentifier ()
       {
-        return string.Format ("{0} ('{1}')", _owner.GetType(), _owner.ID);
+        return string.Format ("{0} '{1}'", _owner.GetType(), _owner.ID);
       }
     }
 
@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
     /// <value> The value must be of type <see cref="IBusinessObject"/>. </value>
-    protected override object ValueImplementation
+    protected override sealed object ValueImplementation
     {
       get { return _internalDataSource.BusinessObject; }
       set { _internalDataSource.BusinessObject = (IBusinessObject) value; }

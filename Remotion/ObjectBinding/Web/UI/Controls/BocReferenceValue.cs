@@ -365,7 +365,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
 
-    /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
+    /// <summary> Loads the <see cref="BocReferenceValueBase.Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
@@ -386,7 +386,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       LoadValueInternal (value, false);
     }
 
-    /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
+    /// <summary> Populates the <see cref="BocReferenceValueBase.Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> 
     ///   The object implementing <see cref="IBusinessObjectWithIdentity"/> to load, or <see langword="null"/>. 
     /// </param>
@@ -399,14 +399,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (IBusinessObjectWithIdentity value, bool interim)
     {
-      if (! interim)
-      {
-        Value = value;
-        IsDirty = false;
-      }
+      if (interim)
+        return;
+
+      SetValue (value);
+      IsDirty = false;
     }
 
-    /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
+    /// <summary> Saves the <see cref="BocReferenceValueBase.Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/SaveValue/*' />
     public override void SaveValue (bool interim)
     {
@@ -556,39 +556,35 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return emptyItem;
     }
 
-    /// <summary> Gets or sets the current value. </summary>
-    /// <include file='doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/Value/*' />
-    [Browsable (false)]
-    public override IBusinessObjectWithIdentity Value
+    protected override IBusinessObjectWithIdentity GetValue ()
     {
-      get
-      {
-        if (InternalValue == null)
-          _value = null;
-        else if (Property != null && (_value == null || _value.UniqueIdentifier != InternalValue))
-        {
+      if (InternalValue == null)
+        _value = null;
           //  Only reload if value is outdated
-          _value = ((IBusinessObjectClassWithIdentity) Property.ReferenceClass).GetObject (InternalValue);
-        }
-
-        return _value;
-      }
-      set
+      else if (_value == null || _value.UniqueIdentifier != InternalValue)
       {
-        IsDirty = true;
+        if (Property != null)
+          _value = ((IBusinessObjectClassWithIdentity) Property.ReferenceClass).GetObject (InternalValue);
+        else if (DataSource != null)
+          _value = ((IBusinessObjectClassWithIdentity) DataSource.BusinessObjectClass).GetObject (InternalValue);
+      }
 
-        _value = value;
+      return _value;
+    }
 
-        if (value != null)
-        {
-          InternalValue = value.UniqueIdentifier;
-          _displayName = GetDisplayName (value);
-        }
-        else
-        {
-          InternalValue = null;
-          _displayName = null;
-        }
+    protected override void SetValue (IBusinessObjectWithIdentity value)
+    {
+      _value = value;
+
+      if (value != null)
+      {
+        InternalValue = value.UniqueIdentifier;
+        _displayName = GetDisplayName (value);
+      }
+      else
+      {
+        InternalValue = null;
+        _displayName = null;
       }
     }
 

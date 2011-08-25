@@ -338,11 +338,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (DateTime? value, bool interim)
     {
-      if (! interim)
-      {
-        Value = value;
-        IsDirty = false;
-      }
+      if (interim)
+        return;
+
+      SetValue (value);
+      IsDirty = false;
     }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
@@ -354,9 +354,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (IsDirty && SaveValueToDomainModel())
       {
-        //  get_Value parses the internal representation of the date/time value
-        //  set_Value updates the internal representation of the date/time value
-        Value = Value;
+        //  GetValue parses the internal representation of the date/time value
+        //  SetValue updates the internal representation of the date/time value
+        SetValue (GetValue());
         IsDirty = false;
       }
     }
@@ -468,27 +468,63 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        if (InternalDateValue == null && InternalTimeValue == null)
-          return null;
+        return GetValue();
+      }
+      set
+      {
+        IsDirty = true;
+        SetValue (value);
+      }
+    }
 
-        DateTime dateTimeValue = DateTime.MinValue;
+        /// <summary>
+    /// Gets the value from the backing field.
+    /// </summary>
+    protected DateTime? GetValue ()
+    {
+      if (InternalDateValue == null && InternalTimeValue == null)
+        return null;
 
-        //  Parse Date
+      DateTime dateTimeValue = DateTime.MinValue;
 
-        if ((InternalDateValue == null) && ActualValueType != BocDateTimeValueType.Undefined)
-        {
-          //throw new FormatException ("The date component of the DateTime value is null.");
-          return null;
-        }
+      //  Parse Date
 
+      if ((InternalDateValue == null) && ActualValueType != BocDateTimeValueType.Undefined)
+      {
+        //throw new FormatException ("The date component of the DateTime value is null.");
+        return null;
+      }
+
+      try
+      {
+        if (!IsDesignMode || !string.IsNullOrEmpty (InternalDateValue))
+          dateTimeValue = DateTime.Parse (InternalDateValue).Date;
+      }
+      catch (FormatException)
+      {
+        //throw new FormatException ("Error while parsing the date component (value: '" + InternalDateValue+ "') of the DateTime value. " + ex.Message);
+        return null;
+      }
+      catch (IndexOutOfRangeException)
+      {
+        return null;
+      }
+
+
+      //  Parse Time
+
+      if ((ActualValueType == BocDateTimeValueType.DateTime || ActualValueType == BocDateTimeValueType.Undefined)
+          && InternalTimeValue != null)
+      {
         try
         {
-          if (!IsDesignMode || !string.IsNullOrEmpty (InternalDateValue))
-            dateTimeValue = DateTime.Parse (InternalDateValue).Date;
+          if (! IsDesignMode
+              || ! string.IsNullOrEmpty (InternalTimeValue))
+            dateTimeValue = dateTimeValue.Add (DateTime.Parse (InternalTimeValue).TimeOfDay);
         }
         catch (FormatException)
         {
-          //throw new FormatException ("Error while parsing the date component (value: '" + InternalDateValue+ "') of the DateTime value. " + ex.Message);
+          //throw new FormatException ("Error while parsing the time component (value: '" + InternalTimeValue+ "')of the DateTime value. " + ex.Message);
           return null;
         }
         catch (IndexOutOfRangeException)
@@ -496,79 +532,69 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           return null;
         }
 
-
-        //  Parse Time
-
-        if ((ActualValueType == BocDateTimeValueType.DateTime || ActualValueType == BocDateTimeValueType.Undefined)
-            && InternalTimeValue != null)
-        {
-          try
-          {
-            if (! IsDesignMode
-                || ! string.IsNullOrEmpty (InternalTimeValue))
-              dateTimeValue = dateTimeValue.Add (DateTime.Parse (InternalTimeValue).TimeOfDay);
-          }
-          catch (FormatException)
-          {
-            //throw new FormatException ("Error while parsing the time component (value: '" + InternalTimeValue+ "')of the DateTime value. " + ex.Message);
-            return null;
-          }
-          catch (IndexOutOfRangeException)
-          {
-            return null;
-          }
-
-          //  Restore the seconds if the control does not display them.
-          if (! ShowSeconds
-              && _savedDateTimeValue.HasValue)
-            dateTimeValue = dateTimeValue.AddSeconds (_savedDateTimeValue.Value.Second);
-        }
-        else if (ActualValueType == BocDateTimeValueType.Date
-                 && _savedDateTimeValue.HasValue)
-        {
-          //  Restore the time if the control is displayed in date mode.
-          dateTimeValue = dateTimeValue.Add (_savedDateTimeValue.Value.TimeOfDay);
-        }
-
-        return dateTimeValue;
+        //  Restore the seconds if the control does not display them.
+        if (! ShowSeconds
+            && _savedDateTimeValue.HasValue)
+          dateTimeValue = dateTimeValue.AddSeconds (_savedDateTimeValue.Value.Second);
       }
-      set
+      else if (ActualValueType == BocDateTimeValueType.Date
+                && _savedDateTimeValue.HasValue)
       {
-        IsDirty = true;
-        _savedDateTimeValue = value;
+        //  Restore the time if the control is displayed in date mode.
+        dateTimeValue = dateTimeValue.Add (_savedDateTimeValue.Value.TimeOfDay);
+      }
 
-        if (!_savedDateTimeValue.HasValue)
-        {
-          InternalDateValue = null;
-          InternalTimeValue = null;
-          return;
-        }
+      return dateTimeValue;
+    }
 
+    /// <summary>
+    /// Sets the value from the backing field.
+    /// </summary>
+    /// <remarks>
+    /// <para>Setting the value via this method does not affect the control's dirty state.</para>
+    /// </remarks>
+    protected void SetValue (DateTime? value)
+    {
+      _savedDateTimeValue = value;
+
+      if (!_savedDateTimeValue.HasValue)
+      {
+        InternalDateValue = null;
+        InternalTimeValue = null;
+        return;
+      }
+
+      try
+      {
+        InternalDateValue = _formatter.FormatDateValue (_savedDateTimeValue.Value);
+      }
+      catch (InvalidCastException e)
+      {
+        throw new ArgumentException ("Expected type '" + _actualValueType + "', but was '" + value.GetType().FullName + "'.", "value", e);
+      }
+
+      if (ActualValueType == BocDateTimeValueType.DateTime
+          || ActualValueType == BocDateTimeValueType.Undefined)
+      {
         try
         {
-          InternalDateValue = _formatter.FormatDateValue (_savedDateTimeValue.Value);
+          InternalTimeValue = _formatter.FormatTimeValue (_savedDateTimeValue.Value, ShowSeconds);
         }
         catch (InvalidCastException e)
         {
-          throw new ArgumentException ("Expected type '" + _actualValueType + "', but was '" + value.GetType().FullName + "'.", "value", e);
+          throw new ArgumentException (
+              "Expected type '" + _actualValueType + "', but was '" + value.GetType().FullName + "'.", "value", e);
         }
-
-        if (ActualValueType == BocDateTimeValueType.DateTime
-            || ActualValueType == BocDateTimeValueType.Undefined)
-        {
-          try
-          {
-            InternalTimeValue = _formatter.FormatTimeValue (_savedDateTimeValue.Value, ShowSeconds);
-          }
-          catch (InvalidCastException e)
-          {
-            throw new ArgumentException (
-                "Expected type '" + _actualValueType + "', but was '" + value.GetType().FullName + "'.", "value", e);
-          }
-        }
-        else
-          InternalTimeValue = null;
       }
+      else
+        InternalTimeValue = null;
+    }
+
+    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    protected override sealed object ValueImplementation
+    {
+      get { return Value; }
+      set { Value = ArgumentUtility.CheckType<DateTime?> ("value", value); }
     }
 
     /// <summary>Gets a flag indicating whether the <see cref="BocDateTimeValue"/> contains a value. </summary>
@@ -590,13 +616,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = ArgumentUtility.CheckType<DateTime?> ("value", value); }
     }
 
     /// <summary> Gets or sets the displayed date string. </summary>

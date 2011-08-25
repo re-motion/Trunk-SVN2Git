@@ -148,7 +148,42 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// <summary> Gets or sets the current value. </summary>
     /// <include file='doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValueBase/Value/*' />
     [Browsable (false)]
-    public new abstract IBusinessObjectWithIdentity Value { get; set; }
+    public new IBusinessObjectWithIdentity Value
+    {
+      get
+      {
+        return GetValue ();
+      }
+      set
+      {
+        IsDirty = true;
+
+        SetValue (value);
+      }
+    }
+
+    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    /// <value> The value must be of type <see cref="IBusinessObjectWithIdentity"/>. </value>
+    protected override sealed object ValueImplementation
+    {
+      get { return Value; }
+      set { Value = ArgumentUtility.CheckType<IBusinessObjectWithIdentity> ("value", value); }
+    }
+    
+    /// <summary>
+    /// Gets the value from the backing field.
+    /// </summary>
+    /// <remarks>Override this member to modify the storage of the value. </remarks>
+    protected abstract IBusinessObjectWithIdentity GetValue ();
+
+    /// <summary>
+    /// Sets the value from the backing field.
+    /// </summary>
+    /// <remarks>
+    /// <para>Setting the value via this method does not affect the control's dirty state.</para>
+    /// <para>Override this member to modify the storage of the value.</para>
+    /// </remarks>
+    protected abstract void SetValue (IBusinessObjectWithIdentity value);
 
     /// <summary> Gets or sets the encapsulated <see cref="BocCommand"/> for this control's <see cref="Value"/>. </summary>
     /// <value> 
@@ -316,14 +351,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     public override Control TargetControl
     {
       get { return this; }
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    /// <value> The value must be of type <see cref="IBusinessObjectWithIdentity"/>. </value>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = (IBusinessObjectWithIdentity) value; }
     }
 
     private bool ShowIcon
@@ -641,10 +668,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (businessObjects.Length > 0 && businessObjects[0] is IBusinessObjectWithIdentity)
       {
         if (((IBusinessObjectWithIdentity) businessObjects[0]).UniqueIdentifier == Value.UniqueIdentifier)
-        {
           Value = null;
-          IsDirty = true;
-        }
       }
     }
 
@@ -653,10 +677,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected virtual void InsertBusinessObjects (IBusinessObject[] businessObjects)
     {
       if (businessObjects.Length > 0)
-      {
         Value = (IBusinessObjectWithIdentity) businessObjects[0];
-        IsDirty = true;
-      }
     }
 
     /// <summary> This event is fired when the selection is changed between postbacks. </summary>

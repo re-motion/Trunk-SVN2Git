@@ -136,11 +136,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (object value, bool interim)
     {
-      if (!interim)
-      {
-        Value = value;
-        IsDirty = false;
-      }
+      if (interim)
+        return;
+
+      SetValue (value);
+      IsDirty = false;
     }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
@@ -182,75 +182,125 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        string text = _text;
-        if (text != null)
-          text = text.Trim();
-
-        if (StringUtility.IsNullOrEmpty (text))
-          return null;
-
-        var valueType = ActualValueType;
-        switch (valueType)
-        {
-          case BocTextValueType.String:
-            return text;
-
-          case BocTextValueType.Byte:
-            return byte.Parse (text, GetNumberStyle (valueType));
-
-          case BocTextValueType.Int16:
-            return short.Parse (text, GetNumberStyle (valueType));
-
-          case BocTextValueType.Int32:
-            return int.Parse (text, GetNumberStyle (valueType));
-
-          case BocTextValueType.Int64:
-            return long.Parse (text, GetNumberStyle (valueType));
-
-          case BocTextValueType.Date:
-            return DateTime.Parse (text).Date;
-
-          case BocTextValueType.DateTime:
-            return DateTime.Parse (text);
-
-          case BocTextValueType.Decimal:
-            return decimal.Parse (text, GetNumberStyle (valueType));
-
-          case BocTextValueType.Double:
-            return double.Parse (text, GetNumberStyle (valueType));
-
-          case BocTextValueType.Single:
-            return float.Parse (text, GetNumberStyle (valueType));
-        }
-        return text;
+        return GetValue();
       }
-
       set
       {
         IsDirty = true;
 
-        if (value == null)
-        {
-          _text = null;
-          return;
-        }
-
-        IFormattable formattable = value as IFormattable;
-        if (formattable != null)
-        {
-          string format = Format;
-          if (format == null)
-          {
-            if (ActualValueType == BocTextValueType.Date)
-              format = "d";
-            else if (ActualValueType == BocTextValueType.DateTime)
-              format = "g";
-          }
-          _text = formattable.ToString (format, null);
-        }
-        else
-          _text = value.ToString();
+        SetValue (value);
       }
+    }
+    
+    /// <summary> Gets or sets the string representation of the current value. </summary>
+    /// <value> 
+    ///   An empty <see cref="String"/> if the control's value is <see langword="null"/> or empty. 
+    ///   The default value is an empty <see cref="String"/>. 
+    /// </value>
+    [Description ("Gets or sets the string representation of the current value.")]
+    [Category ("Data")]
+    [DefaultValue ("")]
+    public override sealed string Text
+    {
+      get { return NormalizeText (_text); }
+      set
+      {
+        IsDirty = true;
+        _text = value;
+      }
+    }
+    
+    /// <summary>
+    /// Gets the value from the backing field.
+    /// </summary>
+    /// <remarks>Override this member to modify the storage of the value. </remarks>
+    protected virtual object GetValue ()
+    {
+      string text = _text;
+      if (text != null)
+        text = text.Trim();
+
+      if (StringUtility.IsNullOrEmpty (text))
+        return null;
+
+      var valueType = ActualValueType;
+      switch (valueType)
+      {
+        case BocTextValueType.String:
+          return text;
+
+        case BocTextValueType.Byte:
+          return byte.Parse (text, GetNumberStyle (valueType));
+
+        case BocTextValueType.Int16:
+          return short.Parse (text, GetNumberStyle (valueType));
+
+        case BocTextValueType.Int32:
+          return int.Parse (text, GetNumberStyle (valueType));
+
+        case BocTextValueType.Int64:
+          return long.Parse (text, GetNumberStyle (valueType));
+
+        case BocTextValueType.Date:
+          return DateTime.Parse (text).Date;
+
+        case BocTextValueType.DateTime:
+          return DateTime.Parse (text);
+
+        case BocTextValueType.Decimal:
+          return decimal.Parse (text, GetNumberStyle (valueType));
+
+        case BocTextValueType.Double:
+          return double.Parse (text, GetNumberStyle (valueType));
+
+        case BocTextValueType.Single:
+          return float.Parse (text, GetNumberStyle (valueType));
+      }
+      return text;
+    }
+
+    /// <summary>
+    /// Sets the value from the backing field.
+    /// </summary>
+    /// <remarks>
+    /// <para>Setting the value via this method does not affect the control's dirty state.</para>
+    /// <para>Override this member to modify the storage of the value.</para>
+    /// </remarks>
+    protected virtual void SetValue (object value)
+    {
+      if (value == null)
+      {
+        _text = null;
+        return;
+      }
+
+      IFormattable formattable = value as IFormattable;
+      if (formattable != null)
+      {
+        string format = Format;
+        if (format == null)
+        {
+          if (ActualValueType == BocTextValueType.Date)
+            format = "d";
+          else if (ActualValueType == BocTextValueType.DateTime)
+            format = "g";
+        }
+        _text = formattable.ToString (format, null);
+      }
+      else
+        _text = value.ToString();
+    }
+    
+    protected override sealed string NormalizeText (string text)
+    {
+      return StringUtility.NullToEmpty (text);
+    }
+
+    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    protected override sealed object ValueImplementation
+    {
+      get { return Value; }
+      set { Value = value; }
     }
 
     /// <summary>Gets a flag indicating whether the <see cref="BocTextValue"/> contains a value. </summary>
@@ -272,7 +322,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         try
         {
           //  Force the evaluation of Value
-          if (Value != null)
+          if (GetValue() != null)
             return true;
         }
         catch (FormatException)
@@ -285,24 +335,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
 
         return true;
-      }
-    }
-
-    /// <summary> Gets or sets the string representation of the current value. </summary>
-    /// <value> 
-    ///   An empty <see cref="String"/> if the control's value is <see langword="null"/> or empty. 
-    ///   The default value is an empty <see cref="String"/>. 
-    /// </value>
-    [Description ("Gets or sets the string representation of the current value.")]
-    [Category ("Data")]
-    [DefaultValue ("")]
-    public override string Text
-    {
-      get { return StringUtility.NullToEmpty (_text); }
-      set
-      {
-        IsDirty = true;
-        _text = value;
       }
     }
 
@@ -533,13 +565,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
       }
       return validators;
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = value; }
     }
 
     /// <summary> The <see cref="BocTextValue"/> supports only scalar properties. </summary>

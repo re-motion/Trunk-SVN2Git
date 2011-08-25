@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _referenceDataSource.SaveValue (interim);
     }
 
-    protected override object ValueImplementation
+    protected override sealed object ValueImplementation
     {
       get
       {

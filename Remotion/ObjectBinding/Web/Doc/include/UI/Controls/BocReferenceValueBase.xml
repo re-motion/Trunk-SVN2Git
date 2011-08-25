@@ -51,7 +51,7 @@
         you can use <see cref="BocReferenceValueBase.BusinessObjectUniqueIdentifier"/> to get the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object.
       </para>
       <para>
-        The dirty state is reset when the value is set.
+        The dirty state is set when the value is set.
       </para>
     </remarks>
   </Value>

@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BusinessObjectBoundEd
       get { return _value != null; }
     }
 
-    protected override object ValueImplementation
+    protected override sealed object ValueImplementation
     {
       get { return Value; }
       set { Value = value; }

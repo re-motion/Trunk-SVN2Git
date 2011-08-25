@@ -283,30 +283,104 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        EnsureValue();
-        return _value;
+        return GetValue();
       }
       set
       {
         IsDirty = true;
-        _value = value;
-
-        if (Property != null && _value != null)
-          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject());
-        else
-          _enumerationValueInfo = null;
-
-        if (_enumerationValueInfo != null)
-          InternalValue = _enumerationValueInfo.Identifier;
-        else
-          InternalValue = null;
+        SetValue (value);
       }
+    }
+        
+    /// <summary>
+    /// Gets the value from the backing field.
+    /// </summary>
+    protected object GetValue ()
+    {
+      EnsureValue();
+      return _value;
+    }
+
+    /// <summary>
+    /// Sets the value from the backing field.
+    /// </summary>
+    /// <remarks>
+    /// <para>Setting the value via this method does not affect the control's dirty state.</para>
+    /// </remarks>
+    protected void SetValue (object value)
+    {
+      _value = value;
+
+      if (Property != null && _value != null)
+        _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject());
+      else
+        _enumerationValueInfo = null;
+
+      if (_enumerationValueInfo != null)
+        InternalValue = _enumerationValueInfo.Identifier;
+      else
+        InternalValue = null;
+    }
+
+    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    protected override sealed object ValueImplementation
+    {
+      get { return Value; }
+      set { Value = value; }
     }
 
     /// <summary>Gets a flag indicating whether the <see cref="BocEnumValue"/> contains a value. </summary>
     public override bool HasValue
     {
       get { return InternalValue != null; }
+    }
+    
+    /// <summary> Gets or sets the current value. </summary>
+    /// <value> 
+    ///   The <see cref="IEnumerationValueInfo.Identifier"/> object
+    ///   or <see langword="null"/> if no item / the null item is selected.
+    /// </value>
+    /// <remarks> Used to identify the currently selected item. </remarks>
+    protected virtual string InternalValue
+    {
+      get
+      {
+        if (_internalValue == null && EnumerationValueInfo != null)
+          _internalValue = EnumerationValueInfo.Identifier;
+
+        return _internalValue;
+      }
+      set
+      {
+        if (_internalValue == value)
+          return;
+
+        _internalValue = value;
+
+        EnsureValue();
+      }
+    }
+
+    /// <summary> Ensures that the <see cref="Value"/> is set to the enum-value of the <see cref="InternalValue"/>. </summary>
+    protected void EnsureValue ()
+    {
+      if (_enumerationValueInfo != null
+          && _enumerationValueInfo.Identifier == _internalValue)
+      {
+        //  Still chached in _enumerationValueInfo
+        _value = _enumerationValueInfo.Value;
+      }
+      else if (_internalValue != null && Property != null)
+      {
+        //  Can get a new EnumerationValueInfo
+        _enumerationValueInfo = Property.GetValueInfoByIdentifier (_internalValue, GetBusinessObject());
+        _value = _enumerationValueInfo.Value;
+      }
+      else if (_internalValue == null)
+      {
+        _value = null;
+        _enumerationValueInfo = null;
+      }
     }
 
     /// <summary>
@@ -541,7 +615,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (interim)
         return;
 
-      Value = value;
+      SetValue (value);
       IsDirty = false;
     }
 
@@ -566,13 +640,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         ErrorMessage = resourceManager.GetString (key);
     }
 
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = value; }
-    }
-
     /// <summary> Gets the current value. </summary>
     /// <value> 
     ///   The <see cref="EnumerationValueInfo"/> object
@@ -588,54 +655,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject());
 
         return _enumerationValueInfo;
-      }
-    }
-
-    /// <summary> Gets or sets the current value. </summary>
-    /// <value> 
-    ///   The <see cref="IEnumerationValueInfo.Identifier"/> object
-    ///   or <see langword="null"/> if no item / the null item is selected.
-    /// </value>
-    /// <remarks> Used to identify the currently selected item. </remarks>
-    protected virtual string InternalValue
-    {
-      get
-      {
-        if (_internalValue == null && EnumerationValueInfo != null)
-          _internalValue = EnumerationValueInfo.Identifier;
-
-        return _internalValue;
-      }
-      set
-      {
-        if (_internalValue == value)
-          return;
-
-        _internalValue = value;
-
-        EnsureValue();
-      }
-    }
-
-    /// <summary> Ensures that the <see cref="Value"/> is set to the enum-value of the <see cref="InternalValue"/>. </summary>
-    protected void EnsureValue ()
-    {
-      if (_enumerationValueInfo != null
-          && _enumerationValueInfo.Identifier == _internalValue)
-      {
-        //  Still chached in _enumerationValueInfo
-        _value = _enumerationValueInfo.Value;
-      }
-      else if (_internalValue != null && Property != null)
-      {
-        //  Can get a new EnumerationValueInfo
-        _enumerationValueInfo = Property.GetValueInfoByIdentifier (_internalValue, GetBusinessObject());
-        _value = _enumerationValueInfo.Value;
-      }
-      else if (_internalValue == null)
-      {
-        _value = null;
-        _enumerationValueInfo = null;
       }
     }
 

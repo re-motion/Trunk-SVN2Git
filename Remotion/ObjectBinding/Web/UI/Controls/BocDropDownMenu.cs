@@ -225,7 +225,7 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
 
   /// <summary> Gets or sets the current value when <see cref="Value"/> through polymorphism. </summary>
   /// <value> The value must be of type <see cref="IList"/> or <see cref="IBusinessObject"/>. </value>
-  protected override object ValueImplementation
+  protected override sealed object ValueImplementation
   {
     get { return Value; }
     set { Value = (IBusinessObject) value; }

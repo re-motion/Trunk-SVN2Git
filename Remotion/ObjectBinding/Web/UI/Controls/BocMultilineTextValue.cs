@@ -109,11 +109,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (string[] value, bool interim)
     {
-      if (!interim)
-      {
-        Value = value;
-        IsDirty = false;
-      }
+      if (interim)
+        return;
+
+      SetValue (value);
+      IsDirty = false;
     }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
@@ -175,45 +175,85 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        string text = _text;
-        if (text != null)
-          text = text.Trim();
-
-        if (StringUtility.IsNullOrEmpty (text))
-          return null;
-        else
-        {
-          //  Allows for an optional \r
-          string temp = _text.Replace ("\r", "");
-          return temp.Split ('\n');
-        }
+        return GetValue();
       }
       set
       {
         IsDirty = true;
 
-        if (value == null)
-          _text = null;
-        else
-          _text = StringUtility.ConcatWithSeparator (value, "\r\n");
+        SetValue (value);
       }
+    }
+    
+    /// <summary> Gets or sets the string representation of the current value. </summary>
+    /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
+    [Description ("The string representation of the current value.")]
+    [Category ("Data")]
+    [DefaultValue ("")]
+    public override sealed string Text
+    {
+      get { return NormalizeText (_text); }
+      set
+      {
+        IsDirty = true;
+        _text = value;
+      }
+    }
+        
+    /// <summary>
+    /// Gets the value from the backing field.
+    /// </summary>
+    /// <remarks>Override this member to modify the storage of the value. </remarks>
+    protected virtual string[] GetValue ()
+    {
+      string text = _text;
+      if (text != null)
+        text = text.Trim();
+      
+      if (string.IsNullOrEmpty (text))
+        return null;
+      else
+      {
+        //  Allows for an optional \r
+        string temp = text.Replace ("\r", "");
+        return temp.Split ('\n');
+      }
+    }
+
+    /// <summary>
+    /// Sets the value from the backing field.
+    /// </summary>
+    /// <remarks>
+    /// <para>Setting the value via this method does not affect the control's dirty state.</para>
+    /// <para>Override this member to modify the storage of the value.</para>
+    /// </remarks>
+    protected virtual void SetValue (string[] value)
+    {
+      if (value == null)
+        _text = null;
+      else
+        _text = StringUtility.ConcatWithSeparator (value, "\r\n");
+    }
+
+    protected override sealed string NormalizeText (string text)
+    {
+      string temp = StringUtility.NullToEmpty (text);
+      temp = temp.Replace ("\r", "");
+      return StringUtility.ConcatWithSeparator (temp.Split ('\n'), "\r\n");
+    }
+
+    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    /// <value> The value must be of type <b>string[]</b>. </value>
+    protected override sealed object ValueImplementation
+    {
+      get { return Value; }
+      set { Value = ArgumentUtility.CheckType<string[]> ("value", value); }
     }
 
     /// <summary>Gets a flag indicating whether the <see cref="BocTextValue"/> contains a value. </summary>
     public override bool HasValue
     {
       get { return _text != null && _text.Trim ().Length > 0; }
-    }
-
-    /// <summary> Gets or sets the string representation of the current value. </summary>
-    /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
-    [Description ("The string representation of the current value.")]
-    [Category ("Data")]
-    [DefaultValue ("")]
-    public override string Text
-    {
-      get { return StringUtility.NullToEmpty (_text); }
-      set { _text = value; }
     }
 
     /// <summary>
@@ -287,14 +327,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         validators.Add (lengthValidator);
       }
       return validators;
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    /// <value> The value must be of type <b>string[]</b>. </value>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = (string[]) value; }
     }
 
     /// <summary>

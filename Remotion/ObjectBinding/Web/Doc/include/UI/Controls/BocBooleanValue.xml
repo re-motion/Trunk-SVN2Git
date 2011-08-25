@@ -21,7 +21,7 @@
       
       <h4 class="dtH4">Supported Data Types</h4>
       <para>
-        The control's <see cref="Value"/> can be assigned <see cref="Boolean"/> values and <see langword="null"/>. 
+        The control's <see cref="BocBooleanValueBase.Value"/> can be assigned <see cref="Boolean"/> values and <see langword="null"/>. 
       </para><para>
         The control's <see cref="BusinessObjectBoundWebControl.Property"/> supports the <see cref="IBusinessObjectBooleanProperty"/>.
       </para>
@@ -38,7 +38,7 @@
       </para><para>
         If <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
         <see cref="BusinessObjectBoundWebControl.PropertyIdentifier"/> properties are not set, the 
-        control is unbound. The <see cref="Value"/> property must be accessed programmatically to display the 
+        control is unbound. The <see cref="BocBooleanValueBase.Value"/> property must be accessed programmatically to display the 
         current value.
       </para><para>
         The control provides a default <b>CSS Class</b>, applied to the top level element: <c>BocBooleanValue</c>.
@@ -111,7 +111,7 @@
             Read-Only
           </term>
           <description>
-            Renders the image and the optional description according to the <see cref="Value"/>'s 
+            Renders the image and the optional description according to the <see cref="BocBooleanValueBase.Value"/>'s 
             <see langword="true"/>, <see langword="false"/>, or <see langword="null" /> value.
           </description>
         </item>
@@ -120,7 +120,7 @@
             Edit Mode
           </term>
           <description>
-            Renders the image and the optional description according to the <see cref="Value"/>'s current
+            Renders the image and the optional description according to the <see cref="BocBooleanValueBase.Value"/>'s current
             <see langword="true"/>, <see langword="false"/>, or <see langword="null" /> value. Also activates the
             client-side script for switching between the values on the client side.
           </description>
@@ -154,11 +154,11 @@
     <param name="interim"> Specifies whether this is the initial loading or an interim loading. </param>
     <remarks>
       <para>
-        Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
+        Loads the <see cref="BocBooleanValueBase.Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
         if <paramref name="interim"/> is <see langword="false"/>. 
       </para><para>
         Requires a <see cref="Property"/>, and a <see cref="BusinessObjectBoundWebControl.DataSource"/>. 
-        If the <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see> is not set, the <see cref="Value"/> will 
+        If the <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see> is not set, the <see cref="BocBooleanValueBase.Value"/> will 
         still be loaded but set to <see langword="null"/>.
       </para><para>
         <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> is <see langword="false"/> after invoking
@@ -172,7 +172,7 @@
     <param name="interim"> Specifies whether this is the initial loading or an interim loading. </param>
     <remarks>
       <para>
-        Populates the <see cref="Value"/> with the provided <paramref name="value"/> if <paramref name="interim"/> 
+        Populates the <see cref="BocBooleanValueBase.Value"/> with the provided <paramref name="value"/> if <paramref name="interim"/> 
         is <see langword="false"/>. 
       </para><para>
         <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> is <see langword="false"/> after invoking
@@ -184,12 +184,12 @@
     <param name="interim"> Specifies whether this is the final saving or an interim saving. </param>
     <remarks>
       <para>
-        Saves the <see cref="Value"/> into the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
+        Saves the <see cref="BocBooleanValueBase.Value"/> into the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
         if <paramref name="interim"/> is <see langword="false"/> and the control's 
         <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/> property evaluates <see langword="false"/>. 
       </para><para>
         Requires a <see cref="Property"/> and a <see cref="BusinessObjectBoundWebControl.DataSource"/>.
-        If the <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see> is not set, the <see cref="Value"/> will
+        If the <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see> is not set, the <see cref="BocBooleanValueBase.Value"/> will
         not be saved.
       </para><para>
         <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> will be <see langword="false"/> after invoking
