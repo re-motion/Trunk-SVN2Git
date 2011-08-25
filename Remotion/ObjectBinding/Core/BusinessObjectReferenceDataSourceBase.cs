@@ -140,7 +140,11 @@ namespace Remotion.ObjectBinding
       {
         if (IsReadOnlyInDomainModel)
         {
-          throw new InvalidOperationException (string.Format ("The business object of the {0} could not be saved into the domain model because the property '{1}' is read only.", GetDataSourceIdentifier(), ReferenceProperty.Identifier));
+          throw new InvalidOperationException (
+              string.Format (
+                  "The business object of the {0} could not be saved into the domain model because the property '{1}' is read only.",
+                  GetDataSourceIdentifier(),
+                  ReferenceProperty.Identifier));
         }
         if (ReferencedDataSource.BusinessObject != null)
           ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
