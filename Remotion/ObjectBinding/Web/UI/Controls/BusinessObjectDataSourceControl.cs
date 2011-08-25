@@ -28,7 +28,7 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary>
-  ///   <b>BusinessObjectDataSourceControl</b> is the default implementation of
+  ///   <see cref="BusinessObjectDataSourceControl"/> is the default implementation of
   ///   the <see cref="IBusinessObjectDataSourceControl"/> interface. Derive from this class
   ///   if you want to create an invisible control only providing an object of type
   ///   <see cref="IBusinessObjectDataSource"/>.
@@ -36,8 +36,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <remarks>
   ///   <para>
   ///     When creating a specialized implementation of this class, override the <see langword="abstract"/> 
-  ///     <see cref="GetDataSource"/> method. It is recommended to create the instance to be returned by 
-  ///     <see cref="GetDataSource"/> during the construction phase of the <b>BusinessObjectDataSourceControl</b>.
+  ///     <see cref="InnerDataSource"/> property. It is recommended to create the instance to be returned by 
+  ///     <see cref="InnerDataSource"/> during the construction phase of the <see cref="BusinessObjectDataSourceControl"/>.
   ///   </para><para>
   ///     In addition, an identifier for the <see cref="BusinessObjectClass"/> must be provided in form of a 
   ///     property. See the remarks section of the <see cref="IBusinessObjectDataSource"/> for details on implementing 
@@ -68,16 +68,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return GetBoundControlsWithValidBinding().ToArray(); }
     }
 
+    [Obsolete ("The GetDataSource() method is now obsolete. Use the InnerDataSource property instead. (Version 1.13.119)", true)]
+    protected IBusinessObjectDataSource GetDataSource ()
+    {
+      throw new NotSupportedException ("The GetDataSource() method is now obsolete. Use the InnerDataSource property instead. (Version 1.13.119)");
+    }
+
     #endregion
 
     /// <summary>
     ///   Returns the <see cref="IBusinessObjectDataSource"/> encapsulated in this <see cref="BusinessObjectDataSourceControl"/>.
     /// </summary>
-    /// <returns> An <see cref="IBusinessObjectDataSource"/>. </returns>
+    /// <value> An <see cref="IBusinessObjectDataSource"/>. </value>
     /// <remarks>
     ///   For details on overriding this method, see <see cref="BusinessObjectDataSourceControl"/>'s remarks section.
     /// </remarks>
-    protected abstract IBusinessObjectDataSource GetDataSource ();
+    protected abstract IBusinessObjectDataSource InnerDataSource { get; }
 
     /// <summary> Loads the values of the <see cref="BusinessObject"/> into all bound controls. </summary>
     /// <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
@@ -90,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     public virtual void LoadValues (bool interim)
     {
-      GetDataSource().LoadValues (interim);
+      InnerDataSource.LoadValues (interim);
     }
 
     /// <summary> 
@@ -106,7 +112,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     public virtual void SaveValues (bool interim)
     {
-      GetDataSource().SaveValues (interim);
+      InnerDataSource.SaveValues (interim);
     }
 
     /// <summary>
@@ -120,7 +126,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     public virtual void Register (IBusinessObjectBoundControl control)
     {
-      GetDataSource().Register (control);
+      InnerDataSource.Register (control);
     }
 
     /// <summary>
@@ -134,7 +140,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     public virtual void Unregister (IBusinessObjectBoundControl control)
     {
-      GetDataSource().Unregister (control);
+      InnerDataSource.Unregister (control);
     }
 
     /// <summary>
@@ -149,8 +155,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DefaultValue (DataSourceMode.Edit)]
     public virtual DataSourceMode Mode
     {
-      get { return GetDataSource().Mode; }
-      set { GetDataSource().Mode = value; }
+      get { return InnerDataSource.Mode; }
+      set { InnerDataSource.Mode = value; }
     }
 
     /// <summary>
@@ -166,8 +172,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public virtual IBusinessObject BusinessObject
     {
-      get { return GetDataSource().BusinessObject; }
-      set { GetDataSource().BusinessObject = value; }
+      get { return InnerDataSource.BusinessObject; }
+      set { InnerDataSource.BusinessObject = value; }
     }
 
     /// <summary>
@@ -187,7 +193,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public virtual IBusinessObjectClass BusinessObjectClass
     {
-      get { return GetDataSource().BusinessObjectClass; }
+      get { return InnerDataSource.BusinessObjectClass; }
     }
 
     /// <summary>
@@ -201,7 +207,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public virtual IBusinessObjectProvider BusinessObjectProvider
     {
-      get { return GetDataSource().BusinessObjectProvider; }
+      get { return InnerDataSource.BusinessObjectProvider; }
     }
 
     /// <summary>Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="BusinessObjectDataSourceControl"/>.</summary>
@@ -213,7 +219,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public ReadOnlyCollection<IBusinessObjectBoundControl> GetAllBoundControls ()
     {
-      return GetDataSource().GetAllBoundControls();
+      return InnerDataSource.GetAllBoundControls();
     }
 
     /// <summary>
@@ -231,13 +237,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public IEnumerable<IBusinessObjectBoundControl> GetBoundControlsWithValidBinding ()
     {
-      return GetDataSource().GetBoundControlsWithValidBinding();
+      return InnerDataSource.GetBoundControlsWithValidBinding();
     }
 
     /// <summary> Prepares all bound controls implementing <see cref="IValidatableControl"/> for validation. </summary>
     public void PrepareValidation ()
     {
-      foreach (var control in GetDataSource().GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
+      foreach (var control in InnerDataSource.GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
         control.PrepareValidation();
     }
 
@@ -246,7 +252,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public bool Validate ()
     {
       bool isValid = true;
-      foreach (var control in GetDataSource().GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
+      foreach (var control in InnerDataSource.GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
         isValid &= control.Validate();
       return isValid;
     }

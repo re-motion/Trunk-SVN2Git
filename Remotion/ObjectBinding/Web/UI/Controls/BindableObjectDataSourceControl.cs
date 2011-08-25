@@ -45,9 +45,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _dataSource.Type = value; }
     }
 
-    protected override IBusinessObjectDataSource GetDataSource ()
+    protected override IBusinessObjectDataSource InnerDataSource
     {
-      return _dataSource;
+      get { return _dataSource; }
     }
 
     protected override void OnInit (EventArgs e)
