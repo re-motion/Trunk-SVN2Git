@@ -83,28 +83,30 @@ namespace Remotion.ObjectBinding
       // load value from "parent" data source
       if (HasValidBinding)
       {
-        if (interim && _hasBusinessObjectCreated)
+        if (interim && HasBusinessObjectCreated)
         {
           // NOP
         }
         else
         {
-          if (_hasBusinessObjectCreated)
+          if (HasBusinessObjectCreated)
+          {
             DeleteBusinessObject();
+            HasBusinessObjectCreated = false;
+          }
 
-          BusinessObject = null;
-          Assertion.IsFalse (_hasBusinessObjectCreated);
+          _businessObject = null;
 
           if (ReferencedDataSource.BusinessObject != null)
           {
-            BusinessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
-            if (BusinessObject == null && SupportsDefaultValueSemantics)
+            _businessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
+            if (_businessObject == null && SupportsDefaultValueSemantics)
             {
-              BusinessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
-              _hasBusinessObjectCreated = true;
+              _businessObject = ReferenceProperty.CreateDefaultValue (ReferencedDataSource.BusinessObject);
+              HasBusinessObjectCreated = true;
             }
           }
-          _hasBusinessObjectChanged = false;
+          HasBusinessObjectChanged = false;
         }
       }
 
@@ -128,8 +130,9 @@ namespace Remotion.ObjectBinding
       if (!interim && IsBusinessObjectSetToDefaultValue())
       {
         DeleteBusinessObject();
-        BusinessObject = null;
-        Assertion.IsTrue (_hasBusinessObjectChanged);
+        _businessObject = null;
+        HasBusinessObjectChanged = true;
+        HasBusinessObjectCreated = false;
       }
 
       // save values from "child" controls
@@ -149,8 +152,8 @@ namespace Remotion.ObjectBinding
         if (ReferencedDataSource.BusinessObject != null)
           ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
 
-        _hasBusinessObjectChanged = false;
-        _hasBusinessObjectCreated = false;
+        HasBusinessObjectChanged = false;
+        HasBusinessObjectCreated = false;
       }
     }
 
@@ -176,6 +179,19 @@ namespace Remotion.ObjectBinding
     public bool HasBusinessObjectChanged
     {
       get { return _hasBusinessObjectChanged; }
+      private set 
+      {
+        if (value && HasValidBinding && IsReadOnlyInDomainModel)
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "The {0} '{1}' could not be marked as changed because the bound property '{2}' is read only.",
+                  GetType().Name,
+                  GetDataSourceIdentifier(),
+                  ReferenceProperty.Identifier));
+        }
+        _hasBusinessObjectChanged = value;
+      }
     }
 
     /// <summary>
@@ -186,6 +202,7 @@ namespace Remotion.ObjectBinding
     public bool HasBusinessObjectCreated
     {
       get { return _hasBusinessObjectCreated; }
+      private set { _hasBusinessObjectCreated = value; }
     }
 
     /// <summary>
@@ -215,13 +232,13 @@ namespace Remotion.ObjectBinding
       get { return _businessObject; }
       set
       {
-         if (_hasBusinessObjectCreated)
+         if (HasBusinessObjectCreated)
            DeleteBusinessObject();
 
         _businessObject = value;
 
-        _hasBusinessObjectChanged = true;
-        _hasBusinessObjectCreated = false;
+        HasBusinessObjectChanged = true;
+        HasBusinessObjectCreated = false;
       }
     }
 
@@ -257,7 +274,7 @@ namespace Remotion.ObjectBinding
 
     private bool RequiresWriteBack
     {
-      get { return (_hasBusinessObjectChanged || _hasBusinessObjectCreated || ReferenceProperty.ReferenceClass.RequiresWriteBack); }
+      get { return (HasBusinessObjectChanged || HasBusinessObjectCreated || ReferenceProperty.ReferenceClass.RequiresWriteBack); }
     }
 
     private bool SupportsDefaultValueSemantics

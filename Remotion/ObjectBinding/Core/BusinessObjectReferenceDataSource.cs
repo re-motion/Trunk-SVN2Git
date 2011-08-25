@@ -18,6 +18,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 using Remotion.ObjectBinding.Design;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
 {
@@ -152,11 +153,11 @@ namespace Remotion.ObjectBinding
     }
 
     /// <summary> Gets or sets the value provided by the <see cref="BusinessObjectReferenceDataSource"/>. </summary>
-    /// <value> The <see cref="IBusinessObject"/> accessed using <see cref="P:IBusinessObjectBoundControl.Property"/>. </value>
+    /// <value> The <see cref="IBusinessObject"/> accessed using <see cref="IBusinessObjectBoundControl.Property"/>. </value>
     object IBusinessObjectBoundControl.Value
     {
       get { return BusinessObject; }
-      set { BusinessObject = (IBusinessObject) value; }
+      set { BusinessObject = ArgumentUtility.CheckType<IBusinessObject> ("value", value); }
     }
 
     bool IBusinessObjectBoundControl.HasValue

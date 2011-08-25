@@ -585,18 +585,25 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
-    public void PropertyIsReadOnly_IsDefaultValue_ClearsBusinessObject ()
+    public void PropertyIsReadOnly_IsDefaultValue_ThrowsInvalidOperationException ()
     {
       var referencedObject = MockRepository.GenerateStub<IBusinessObject> ();
 
       _readOnlyReferencePropertyStub.Stub (stub => stub.SupportsDefaultValue).Return (true);
       _readOnlyReferencePropertyStub.Stub (stub => stub.IsDefaultValue (null, null, null)).IgnoreArguments ().Return (true);
       _readOnlyReferencePropertyStub.Stub (stub => stub.SupportsDelete).Return (true);
+      _readOnlyReferencePropertyStub.Stub (stub => stub.Identifier).Return ("TestProperty");
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_readOnlyReferencePropertyStub)).Return (referencedObject);
 
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _readOnlyReferencePropertyStub);
-      referenceDataSource.BusinessObject = referencedObject;
+      referenceDataSource.ID = "TestDataSource";
+      referenceDataSource.LoadValue (false);
 
-      Assert.That (() => referenceDataSource.SaveValue (false), Throws.Exception);
+      Assert.That (
+          () => referenceDataSource.SaveValue (false),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The TestableBusinessObjectReferenceDataSource 'TestDataSource' could not be marked as changed "
+              + "because the bound property 'TestProperty' is read only."));
 
       Assert.That (referenceDataSource.BusinessObject, Is.Null);
     }
