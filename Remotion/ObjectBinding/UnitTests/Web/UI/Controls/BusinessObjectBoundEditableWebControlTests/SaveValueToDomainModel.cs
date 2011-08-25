@@ -123,10 +123,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BusinessObjectBoundEd
 
       Assert.That (
           () => _control.SaveValueToDomainModel(),
-          Throws.TypeOf<InvalidOperationException>()
-              .With.Message.EqualTo (
-                  "The value of the TestableBusinessObjectBoundEditableWebControl ('TestID') could not be saved into the domain model "
-                  + "because the property 'TestProperty' is read only."));
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The value of the TestableBusinessObjectBoundEditableWebControl ('TestID') could not be saved into the domain model "
+              + "because the property 'TestProperty' is read only."));
       _dataSourceStub.BusinessObject.AssertWasNotCalled (stub => stub.SetProperty (null, null), options => options.IgnoreArguments());
     }
   }

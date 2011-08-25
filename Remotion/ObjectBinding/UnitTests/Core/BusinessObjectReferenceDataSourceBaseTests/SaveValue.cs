@@ -530,6 +530,28 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     }
 
     [Test]
+    public void PropertyIsReadOnly_ThrowsInvalidOperationException ()
+    {
+      var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
+      _referencedDataSourceStub.BusinessObject.Stub (stub => stub.GetProperty (_readOnlyReferencePropertyStub)).Return (expectedValue);
+      _readOnlyReferencePropertyStub.ReferenceClass.Stub (stub => stub.RequiresWriteBack).Return (true);
+      _readOnlyReferencePropertyStub.Stub (stub => stub.Identifier).Return ("TestProperty");
+
+      var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _readOnlyReferencePropertyStub);
+      referenceDataSource.ID = "TestDataSource";
+      referenceDataSource.LoadValue (false);
+      Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
+
+      Assert.That (
+          () => referenceDataSource.SaveValue (false),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The business object of the TestDataSource could not be saved into the domain model "
+              + "because the property 'TestProperty' is read only."));
+
+      _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (stub => stub.SetProperty (null, null), options=>options.IgnoreArguments());
+    }
+
+    [Test]
     public void PropertyIsReadOnly_DoesNotSaveValueIntoBoundObject ()
     {
       var expectedValue = MockRepository.GenerateStub<IBusinessObject>();
@@ -540,7 +562,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       referenceDataSource.LoadValue (false);
       Assert.That (referenceDataSource.HasBusinessObjectChanged, Is.False);
 
-      referenceDataSource.SaveValue (false);
+      Assert.That (() => referenceDataSource.SaveValue (false), Throws.Exception);
 
       _referencedDataSourceStub.BusinessObject.AssertWasNotCalled (stub => stub.SetProperty (null, null), options=>options.IgnoreArguments());
     }
@@ -574,7 +596,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       var referenceDataSource = new TestableBusinessObjectReferenceDataSource (_referencedDataSourceStub, _readOnlyReferencePropertyStub);
       referenceDataSource.BusinessObject = referencedObject;
 
-      referenceDataSource.SaveValue (false);
+      Assert.That (() => referenceDataSource.SaveValue (false), Throws.Exception);
 
       Assert.That (referenceDataSource.BusinessObject, Is.Null);
     }

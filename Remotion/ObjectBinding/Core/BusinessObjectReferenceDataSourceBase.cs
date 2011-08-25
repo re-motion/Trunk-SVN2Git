@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq;
 using Remotion.Utilities;
 
@@ -60,6 +61,11 @@ namespace Remotion.ObjectBinding
     ///   for information on how to implement this <see langword="abstract"/> property.
     /// </summary>
     public abstract IBusinessObjectDataSource ReferencedDataSource { get; }
+
+    /// <summary>
+    /// Returns a meaningful identifier for the data source to be used in exception messages, etc.
+    /// </summary>
+    protected abstract string GetDataSourceIdentifier ();
 
     /// <summary> 
     ///   Loads the <see cref="BusinessObject"/> from the <see cref="ReferencedDataSource"/> using 
@@ -130,8 +136,12 @@ namespace Remotion.ObjectBinding
       SaveValues (interim);
 
       // if required, save value into "parent" data source
-      if (HasValidBinding && RequiresWriteBack && !IsReadOnlyInDomainModel)
+      if (HasValidBinding && RequiresWriteBack)
       {
+        if (IsReadOnlyInDomainModel)
+        {
+          throw new InvalidOperationException (string.Format ("The business object of the {0} could not be saved into the domain model because the property '{1}' is read only.", GetDataSourceIdentifier(), ReferenceProperty.Identifier));
+        }
         if (ReferencedDataSource.BusinessObject != null)
           ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
 

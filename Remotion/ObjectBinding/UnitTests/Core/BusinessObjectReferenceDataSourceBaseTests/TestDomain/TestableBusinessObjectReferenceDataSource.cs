@@ -30,6 +30,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       _referenceProperty = referenceProperty;
     }
 
+    public string ID { get; set; }
+
     public override IBusinessObjectReferenceProperty ReferenceProperty
     {
       get { return _referenceProperty; }
@@ -44,6 +46,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
     {
       get { return _mode; }
       set { _mode = value; }
+    }
+
+    protected override string GetDataSourceIdentifier ()
+    {
+      return ID;
     }
   }
 }

@@ -145,6 +145,11 @@ namespace Remotion.ObjectBinding
         return _property;
       }
     }
+    
+    protected override string GetDataSourceIdentifier ()
+    {
+      return string.Format ("{0}", GetType().Name);
+    }
 
     /// <summary> Gets or sets the value provided by the <see cref="BusinessObjectReferenceDataSource"/>. </summary>
     /// <value> The <see cref="IBusinessObject"/> accessed using <see cref="P:IBusinessObjectBoundControl.Property"/>. </value>

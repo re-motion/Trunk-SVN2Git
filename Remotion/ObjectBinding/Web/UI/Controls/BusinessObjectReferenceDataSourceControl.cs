@@ -35,7 +35,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [NonVisualControl]
   [Designer (typeof (BocDataSourceDesigner))]
   public class BusinessObjectReferenceDataSourceControl :
-      BusinessObjectBoundEditableWebControl, IBusinessObjectDataSourceControl, IBusinessObjectReferenceDataSource
+      BusinessObjectBoundEditableWebControl,
+      IBusinessObjectDataSourceControl,
+      IBusinessObjectReferenceDataSource
   {
     private class InternalBusinessObjectReferenceDataSource : BusinessObjectReferenceDataSourceBase
     {
@@ -60,6 +62,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         get { return _owner.Mode; }
         set { _owner.Mode = value; }
+      }
+
+
+      protected override string GetDataSourceIdentifier ()
+      {
+        return string.Format ("{0} ('{1}')", _owner.GetType(), _owner.ID);
       }
     }
 
@@ -89,7 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     protected override Type[] SupportedPropertyInterfaces
     {
-      get { return new [] { typeof (IBusinessObjectReferenceProperty) }; }
+      get { return new[] { typeof (IBusinessObjectReferenceProperty) }; }
     }
 
     // Default summary will be created.
@@ -127,12 +135,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (_internalDataSource.HasBusinessObjectChanged)
           return true;
 
-        return _internalDataSource.GetBoundControlsWithValidBinding().OfType<IBusinessObjectBoundEditableWebControl>().Any (control => control.IsDirty);
+        return _internalDataSource.GetBoundControlsWithValidBinding().OfType<IBusinessObjectBoundEditableWebControl>().Any (
+            control => control.IsDirty);
       }
-      set
-      {
-        base.IsDirty = value;
-      }
+      set { base.IsDirty = value; }
     }
 
     /// <summary> 
@@ -304,7 +310,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary>Gets the <see cref="IBusinessObjectBoundControl"/> objects bound to this <see cref="BusinessObjectReferenceDataSourceControl"/>.</summary>
     /// <returns> A read-only collection of <see cref="IBusinessObjectBoundControl"/> objects. </returns>
-    [Browsable (false), DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public ReadOnlyCollection<IBusinessObjectBoundControl> GetAllBoundControls ()
     {
       return _internalDataSource.GetAllBoundControls();
@@ -318,7 +325,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   A sequence of <see cref="IBusinessObjectBoundControl"/> objects where the <see cref="IBusinessObjectBoundControl.HasValidBinding"/> property 
     ///   evaluates <see langword="true"/>. 
     /// </returns>
-    [Browsable (false), DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public IEnumerable<IBusinessObjectBoundControl> GetBoundControlsWithValidBinding ()
     {
       return _internalDataSource.GetBoundControlsWithValidBinding();
@@ -327,7 +335,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Prepares all bound controls implementing <see cref="IValidatableControl"/> for validation. </summary>
     public override void PrepareValidation ()
     {
-      base.PrepareValidation ();
+      base.PrepareValidation();
       foreach (var control in _internalDataSource.GetBoundControlsWithValidBinding().OfType<IValidatableControl>())
         control.PrepareValidation();
     }
@@ -352,7 +360,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="writer">
     ///   The <see cref="System.Web.UI.HtmlTextWriter"/> object that receives the server control content. 
     /// </param>
-    protected override void Render (System.Web.UI.HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       //  No output, control is invisible
     }
