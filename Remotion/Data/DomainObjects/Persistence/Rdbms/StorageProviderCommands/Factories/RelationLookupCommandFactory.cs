@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         ObjectID foreignKeyValue,
         SortExpressionDefinition sortExpression)
     {
-      var selectedColumns = new[] { unionViewDefinition.IDColumn, unionViewDefinition.ClassIDColumn };
+      var selectedColumns = unionViewDefinition.ObjectIDProperty.GetColumns();
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSelect (
           unionViewDefinition,
           selectedColumns,

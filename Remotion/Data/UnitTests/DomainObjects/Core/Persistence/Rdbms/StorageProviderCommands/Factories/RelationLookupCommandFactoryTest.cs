@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _foreignKeyStoragePropertyDefinitionStrictMock.Expect (mock => mock.SplitValueForComparison (_foreignKeyValue)).Return (_fakeComparedColumns);
       _foreignKeyStoragePropertyDefinitionStrictMock.Replay ();
 
-      var expectedSelectedColumns = new[] { _unionViewDefinition.IDColumn, _unionViewDefinition.ClassIDColumn };
+      var expectedSelectedColumns = _unionViewDefinition.ObjectIDProperty.GetColumns().ToArray();
       _dbCommandBuilderFactoryStrictMock
           .Expect (
               stub => stub.CreateForSelect (
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _foreignKeyStoragePropertyDefinitionStrictMock.Expect (mock => mock.SplitValueForComparison (_foreignKeyValue)).Return (_fakeComparedColumns);
       _foreignKeyStoragePropertyDefinitionStrictMock.Replay ();
 
-      var expectedSelectedColumns = new[] { _unionViewDefinition.IDColumn, _unionViewDefinition.ClassIDColumn };
+      var expectedSelectedColumns = _unionViewDefinition.ObjectIDProperty.GetColumns ().ToArray ();
       var expectedOrderedColumns = new[]
                                    {
                                        new OrderedColumn (ColumnDefinitionObjectMother.IDColumn, SortOrder.Descending),

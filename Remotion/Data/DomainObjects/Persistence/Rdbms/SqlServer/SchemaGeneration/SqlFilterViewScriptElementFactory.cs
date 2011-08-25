@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
 
       var tableDefinition = filterViewDefinition.GetBaseTable ();
+      var classIDColumn = filterViewDefinition.ObjectIDProperty.ClassIDProperty.GetColumnForLookup();
       return string.Format (
             "  SELECT {0}\r\n"
           + "    FROM [{1}].[{2}]\r\n"
@@ -39,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             GetColumnList (filterViewDefinition.GetAllColumns()),
             tableDefinition.TableName.SchemaName ?? DefaultSchema,
             tableDefinition.TableName.EntityName,
-            filterViewDefinition.ClassIDColumn.Name,
+            classIDColumn.Name,
             GetClassIDList (filterViewDefinition.ClassIDs));
     }
 

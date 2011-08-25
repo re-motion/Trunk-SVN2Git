@@ -73,9 +73,10 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
+      var idColumn = entityDefinition.ObjectIDProperty.GetColumnForLookup();
 
-      Assertion.IsTrue (entityDefinition.IDColumn.IsPartOfPrimaryKey);
-      return GetColumnFromEntity(entityDefinition.IDColumn, originatingEntity);
+      Assertion.IsTrue (idColumn.IsPartOfPrimaryKey);
+      return GetColumnFromEntity (idColumn, originatingEntity);
     }
 
     public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)

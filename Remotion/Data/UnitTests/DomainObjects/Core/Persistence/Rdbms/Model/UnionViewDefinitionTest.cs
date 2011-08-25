@@ -100,11 +100,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_unionViewDefinition.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
       Assert.That (_unionViewDefinition.UnionedEntities, Is.EqualTo (new[] { _tableDefinition1, _tableDefinition2 }));
 
-      Assert.That (_unionViewDefinition.IDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
-      Assert.That (_unionViewDefinition.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
-      Assert.That (_unionViewDefinition.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
-      Assert.That (_unionViewDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column2, _column3 }));
-
       Assert.That (_unionViewDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
       Assert.That (_unionViewDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
       Assert.That (_unionViewDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));

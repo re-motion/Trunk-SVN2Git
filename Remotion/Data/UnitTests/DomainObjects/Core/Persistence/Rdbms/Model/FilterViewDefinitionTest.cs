@@ -83,11 +83,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_filterViewDefinition.ClassIDs, Is.EqualTo (new[] { "ClassId1", "ClassId2" }));
       Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_baseEntityDefinition));
 
-      Assert.That (_filterViewDefinition.IDColumn, Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
-      Assert.That (_filterViewDefinition.ClassIDColumn, Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
-      Assert.That (_filterViewDefinition.TimestampColumn, Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
-      Assert.That (_filterViewDefinition.DataColumns, Is.EqualTo (new[] { _column1, _column2 }));
-
       Assert.That (_filterViewDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
       Assert.That (_filterViewDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
       Assert.That (_filterViewDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));

@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.ColumnName, Is.EqualTo ("ID"));
       Assert.That (result.IsPrimaryKey, Is.True);
       Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
-      Assert.That (result.Type, Is.SameAs (entityDefinition.IDColumn.PropertyType));
+      Assert.That (result.Type, Is.SameAs (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (entityDefinition.ObjectIDProperty).PropertyType));
     }
 
     [Test]
@@ -289,7 +289,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.LeftKey.Type, Is.EqualTo (columnDefinition.PropertyType));
       Assert.That (((SqlColumnExpression) result.LeftKey).IsPrimaryKey, Is.False);
       Assert.That (((SqlColumnExpression) result.RightKey).ColumnName, Is.EqualTo ("ID"));
-      Assert.That (result.RightKey.Type, Is.EqualTo (entityDefinition.IDColumn.PropertyType));
+      Assert.That (result.RightKey.Type, Is.EqualTo (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (entityDefinition.ObjectIDProperty).PropertyType));
       Assert.That (((SqlColumnExpression) result.RightKey).OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (((SqlColumnExpression) result.RightKey).IsPrimaryKey, Is.True);
     }

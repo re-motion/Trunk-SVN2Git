@@ -61,8 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var tableDefinition = _tableDefinitionFinder.GetTableDefinition (objectID);
       var selectedColumns = tableDefinition.GetAllColumns().ToArray();
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader (tableDefinition, selectedColumns);
-      // TODO 4231: Use TableDefinition.ObjectIDProperty.SplitValueForComparison (objectID)
-      var comparedColumns = new[] { new ColumnValue (tableDefinition.IDColumn, objectID.Value) };
+      var comparedColumns = tableDefinition.ObjectIDProperty.SplitValueForComparison (objectID);
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
 
       var singleDataContainerLoadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
@@ -100,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           let tableDefinition = _tableDefinitionFinder.GetTableDefinition (id)
           group id by tableDefinition
           into idsByTable
-          let selectedColumns = new[] { idsByTable.Key.IDColumn, idsByTable.Key.ClassIDColumn, idsByTable.Key.TimestampColumn }
+          let selectedColumns = idsByTable.Key.ObjectIDProperty.GetColumns().Concat (idsByTable.Key.TimestampProperty.GetColumns()).ToArray()
           let timestampReader = _objectReaderFactory.CreateTimestampReader (idsByTable.Key, selectedColumns)
           let dbCommandBuilder = CreateIDLookupDbCommandBuilder (idsByTable.Key, selectedColumns, idsByTable)
           select Tuple.Create (dbCommandBuilder, timestampReader);
@@ -123,30 +122,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         IEnumerable<ColumnDefinition> selectedColumns,
         IEnumerable<ObjectID> objectIDs)
     {
-      var checkedIDValues = GetAndCheckObjectIDValues(objectIDs).ToArray();
-      if (checkedIDValues.Length > 1)
+      var columnValuesForObjectIDs = objectIDs.Select (id =>
       {
-        // TODO 4231: Should we rewrite the multi-select so that it can work with multiple columns?
-        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, tableDefinition.IDColumn, checkedIDValues);
-      }
-      else
-      {
-        // TODO 4231: Use TableDefinition.ObjectIDProperty.SplitValueForComparison (objectID)
-        var comparedColumns = new[] { new ColumnValue (tableDefinition.IDColumn, checkedIDValues[0]) };
-        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
-      }
-    }
-
-    private IEnumerable<object> GetAndCheckObjectIDValues (IEnumerable<ObjectID> objectIDs)
-    {
-      // TODO 4231: Use TableDefinition.ObjectIDProperty.SplitValueForComparison (objectID)
-      foreach (var t in objectIDs)
-      {
-        if (t.StorageProviderDefinition != _storageProviderDefinition)
+        if (id.StorageProviderDefinition != _storageProviderDefinition)
           throw new NotSupportedException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.");
-        yield return t.Value;
-      }
-    }
+        return tableDefinition.ObjectIDProperty.SplitValueForComparison (id).Single();
+      }).ToList();
 
+      if (columnValuesForObjectIDs.Count == 1)
+        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, columnValuesForObjectIDs, new OrderedColumn[0]);
+
+      var comparedColumn = tableDefinition.ObjectIDProperty.GetColumnForLookup();
+      var comparedValues = columnValuesForObjectIDs.Select (cv =>
+      {
+        Assertion.IsTrue (cv.Column == comparedColumn, "We only support implementations with a single lookup column for now.");
+        return cv.Value;
+      }).ToList();
+      return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumn, comparedValues);
+    }
   }
 }

@@ -113,22 +113,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     private IEnumerable<ColumnValue> GetComparedColumnValuesForUpdate (DataContainer dataContainer, TableDefinition tableDefinition)
     {
-      // TODO 4231: Use SplitValueForComparison
-      yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
+      var objectIDColumnValues = tableDefinition.ObjectIDProperty.SplitValueForComparison (dataContainer.ID);
       if (dataContainer.State != StateType.New)
-        yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
+        return objectIDColumnValues.Concat (tableDefinition.TimestampProperty.SplitValueForComparison (dataContainer.Timestamp));
+      else
+        return objectIDColumnValues;
     }
 
     private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
-      // TODO 4231: use SplitValueForComparison
-      yield return new ColumnValue (tableDefinition.IDColumn, dataContainer.ID.Value);
+      var objectIDColumnValues = tableDefinition.ObjectIDProperty.SplitValueForComparison (dataContainer.ID);
       var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue>().Any (propertyValue => propertyValue.Definition.IsObjectID);
       if (mustAddTimestamp)
-        yield return new ColumnValue (tableDefinition.TimestampColumn, dataContainer.Timestamp);
+        return objectIDColumnValues.Concat (tableDefinition.TimestampProperty.SplitValueForComparison (dataContainer.Timestamp));
+      else
+        return objectIDColumnValues;
     }
 
-    private ColumnValue[] GetUpdatedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
+    private IEnumerable<ColumnValue> GetUpdatedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var propertyFilter = GetUpdatedPropertyFilter (dataContainer);
 
@@ -139,8 +141,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
       if (!dataStorageColumnValues.Any() && dataContainer.HasBeenMarkedChanged)
       {
-        //dummy column value for the case that the data container should only change its timestamp
-        return new[] { new ColumnValue (tableDefinition.ClassIDColumn, dataContainer.ID.ClassID) };
+        // If the data container has no changed properties, but must still be saved (to update its timestamp), update the ClassID
+        return tableDefinition.ObjectIDProperty.ClassIDProperty.SplitValue (dataContainer.ID.ClassID);
       }
 
       return dataStorageColumnValues;

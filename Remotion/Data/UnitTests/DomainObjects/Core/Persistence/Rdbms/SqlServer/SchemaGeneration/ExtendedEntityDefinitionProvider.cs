@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -41,10 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
             firstTableDefinition.StorageProviderDefinition,
             firstTableDefinition.TableName,
             new EntityNameDefinition (firstTableDefinition.ViewName.SchemaName, "NewViewName"),
-            firstTableDefinition.IDColumn,
-            firstTableDefinition.ClassIDColumn,
-            firstTableDefinition.TimestampColumn,
-            firstTableDefinition.DataColumns,
+            StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (firstTableDefinition.ObjectIDProperty),
+            StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (firstTableDefinition.ObjectIDProperty),
+            StoragePropertyDefinitionTestHelper.GetSingleColumn (firstTableDefinition.TimestampProperty),
+            StoragePropertyDefinitionTestHelper.GetColumns (firstTableDefinition.DataProperties),
             firstTableDefinition.ObjectIDProperty,
             firstTableDefinition.TimestampProperty,
             firstTableDefinition.DataProperties,
@@ -61,8 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       return entityDefinitions;
     }
-
-
+    
     private FilterViewDefinition CreateNewFilterViewDefinition (TableDefinition tableDefinition)
     {
       return new FilterViewDefinition (
@@ -70,10 +70,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (tableDefinition.TableName.SchemaName, "AddedView"),
           tableDefinition,
           new[] { "ClassID" },
-          tableDefinition.IDColumn,
-          tableDefinition.ClassIDColumn,
-          tableDefinition.TimestampColumn,
-          tableDefinition.DataColumns,
+          StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (tableDefinition.ObjectIDProperty),
+          StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (tableDefinition.ObjectIDProperty),
+          StoragePropertyDefinitionTestHelper.GetSingleColumn (tableDefinition.TimestampProperty),
+          StoragePropertyDefinitionTestHelper.GetColumns (tableDefinition.DataProperties),
           tableDefinition.ObjectIDProperty,
           tableDefinition.TimestampProperty,
           tableDefinition.DataProperties,

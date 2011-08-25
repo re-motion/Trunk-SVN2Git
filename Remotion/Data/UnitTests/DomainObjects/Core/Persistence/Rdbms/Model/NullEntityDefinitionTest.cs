@@ -43,30 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void ObjectIDColumn ()
-    {
-      Assert.That (_nullEntityDefinition.IDColumn, Is.Null);
-    }
-
-    [Test]
-    public void ClassIDColumn ()
-    {
-      Assert.That (_nullEntityDefinition.ClassIDColumn, Is.Null);
-    }
-
-    [Test]
-    public void TimestampColumn ()
-    {
-      Assert.That (_nullEntityDefinition.TimestampColumn, Is.Null);
-    }
-
-    [Test]
-    public void DataColumns ()
-    {
-      Assert.That (_nullEntityDefinition.DataColumns, Is.Empty);
-    }
-
-    [Test]
     public void IDProperty ()
     {
       Assert.That (_nullEntityDefinition.ObjectIDProperty, Is.Null);

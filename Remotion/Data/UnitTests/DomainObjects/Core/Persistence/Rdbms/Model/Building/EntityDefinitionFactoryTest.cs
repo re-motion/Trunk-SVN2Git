@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeForeignKeyConstraint = new ForeignKeyConstraintDefinition (
           "FakeForeignKeyConstraint",
           new EntityNameDefinition (null, "Test"),
-          new[] { ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty) },
+          new[] { StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty) },
           new[] { _fakeStorageProperty1.ColumnDefinition });
     }
 
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
               new PrimaryKeyConstraintDefinition (
               "FakePrimaryKeyName",
               true,
-              new[] { ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty) }),
+              new[] { StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty) }),
               _fakeForeignKeyConstraint
           },
           new IIndexDefinition[0],
@@ -360,10 +360,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       _infrastructureStoragePropertyDefinitionProviderMock
           .Expect (mock => mock.GetIDColumnDefinition())
-          .Return (ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty));
+          .Return (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty));
       _infrastructureStoragePropertyDefinitionProviderMock
           .Expect (mock => mock.GetClassIDColumnDefinition())
-          .Return (ObjectIDStoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (_fakeObjectIDStorageProperty));
+          .Return (StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (_fakeObjectIDStorageProperty));
       _infrastructureStoragePropertyDefinitionProviderMock
           .Expect (mock => mock.GetTimestampColumnDefinition())
           .Return (_fakeTimestampStorageProperty.ColumnDefinition);

@@ -89,16 +89,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return _timestampStoragePropertyDefinition;
     }
 
+    // TODO 4231: Inline
     public IRdbmsStoragePropertyDefinition GetObjectIDStoragePropertyDefinition (IEntityDefinition entityDefinition)
     {
-      return new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (entityDefinition.IDColumn),
-          new SimpleStoragePropertyDefinition (entityDefinition.ClassIDColumn));
+      return entityDefinition.ObjectIDProperty;
     }
 
+    // TODO 4231: Inline
     public IRdbmsStoragePropertyDefinition GetTimestampStoragePropertyDefinition (IEntityDefinition entityDefinition)
     {
-      return new SimpleStoragePropertyDefinition (entityDefinition.TimestampColumn);
+      return entityDefinition.TimestampProperty;
     }
   }
 }

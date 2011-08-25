@@ -18,7 +18,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
-  public class ObjectIDStoragePropertyDefinitionObjectMother
+  public static class ObjectIDStoragePropertyDefinitionObjectMother
   {
     public static readonly ObjectIDStoragePropertyDefinition ObjectIDProperty =
         new ObjectIDStoragePropertyDefinition (

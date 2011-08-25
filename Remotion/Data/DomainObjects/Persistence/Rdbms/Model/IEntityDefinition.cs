@@ -29,11 +29,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     EntityNameDefinition ViewName { get; }
     ReadOnlyCollection<IIndexDefinition> Indexes { get; }
     ReadOnlyCollection<EntityNameDefinition> Synonyms { get; }
-    
-    ColumnDefinition IDColumn { get; }
-    ColumnDefinition ClassIDColumn { get; }
-    ColumnDefinition TimestampColumn { get; }
-    IEnumerable<ColumnDefinition> DataColumns { get; }
 
     ObjectIDStoragePropertyDefinition ObjectIDProperty { get; }
     IRdbmsStoragePropertyDefinition TimestampProperty { get; }

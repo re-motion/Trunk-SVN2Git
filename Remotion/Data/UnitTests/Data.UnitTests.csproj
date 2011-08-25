@@ -307,7 +307,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityDefinitionBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityNameDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionObjectMother.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ObjectIDStoragePropertyDefinitionTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StoragePropertyDefinitionTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ObjectIDWithoutClassIDStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SerializedObjectIDStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleStoragePropertyDefinitionTest.cs" />

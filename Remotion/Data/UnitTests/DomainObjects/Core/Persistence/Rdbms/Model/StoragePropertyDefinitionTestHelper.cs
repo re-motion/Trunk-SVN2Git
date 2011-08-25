@@ -14,11 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
-  public static class ObjectIDStoragePropertyDefinitionTestHelper
+  public static class StoragePropertyDefinitionTestHelper
   {
     public static ColumnDefinition GetIDColumnDefinition (ObjectIDStoragePropertyDefinition objectIDStoragePropertyDefinition)
     {
@@ -28,6 +32,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public static ColumnDefinition GetClassIDColumnDefinition (ObjectIDStoragePropertyDefinition objectIDStoragePropertyDefinition)
     {
       return ((SimpleStoragePropertyDefinition) objectIDStoragePropertyDefinition.ClassIDProperty).ColumnDefinition;
+    }
+
+    public static ColumnDefinition GetSingleColumn (IRdbmsStoragePropertyDefinition rdbmsStoragePropertyDefinition)
+    {
+      var columns = rdbmsStoragePropertyDefinition.GetColumns().ToArray();
+      Assert.That (columns, Has.Length.EqualTo (1));
+      return columns.Single();
+    }
+
+    public static IEnumerable<ColumnDefinition> GetColumns (IEnumerable<IRdbmsStoragePropertyDefinition> rdbmsStoragePropertyDefinitions)
+    {
+      return rdbmsStoragePropertyDefinitions.SelectMany (p => p.GetColumns());
     }
   }
 }

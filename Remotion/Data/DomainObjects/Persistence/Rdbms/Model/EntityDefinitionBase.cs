@@ -93,26 +93,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _viewName; }
     }
 
-    public ColumnDefinition IDColumn
-    {
-      get { return _idColumn; }
-    }
-
-    public ColumnDefinition ClassIDColumn
-    {
-      get { return _classIDColumn; }
-    }
-
-    public ColumnDefinition TimestampColumn
-    {
-      get { return _timestampColumn; }
-    }
-
-    public IEnumerable<ColumnDefinition> DataColumns
-    {
-      get { return _dataColumns; }
-    }
-
     public ObjectIDStoragePropertyDefinition ObjectIDProperty
     {
       get { return _objectIDProperty; }
