@@ -300,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (propertyDefinition.ClassDefinition.GetMandatoryRelationEndPointDefinition (propertyDefinition.PropertyName).IsMandatory, Is.True);
-      Assert.That (((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) result).ValueProperty).ColumnDefinition.IsNullable, Is.True);
+      Assert.That (ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (((ObjectIDStoragePropertyDefinition) result)).IsNullable, Is.True);
     }
 
     [Test]

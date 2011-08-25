@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -36,52 +37,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlUnionViewScriptElementFactory();
 
-      var column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
-      var column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
+      var property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
+      var property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
+      var column1 = property1.ColumnDefinition;
+      var column2 = property2.ColumnDefinition;
 
-      var tableDefinition1 = new TableDefinition (
+      var tableDefinition1 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "TableName1"),
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[]{column1},
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      var tableDefinition2 = new TableDefinition (
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new[] { property1 });
+      var tableDefinition2 = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "TableName2"),
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[]{column1, column2},
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new[] { property1, property2 });
 
-      _unionViewDefinitionWithCustomSchema = new UnionViewDefinition (
+      _unionViewDefinitionWithCustomSchema = UnionViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "UnionView1"),
           new[] { tableDefinition1 },
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new[]{column1},
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _unionViewDefinitionWithDefaultSchema = new UnionViewDefinition (
+          new[]{column1});
+      _unionViewDefinitionWithDefaultSchema = UnionViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView2"),
           new[] { tableDefinition1, tableDefinition2 },
           ColumnDefinitionObjectMother.IDColumn,
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
-          new[]{column1, column2},
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new[]{column1, column2});
     }
 
     [Test]

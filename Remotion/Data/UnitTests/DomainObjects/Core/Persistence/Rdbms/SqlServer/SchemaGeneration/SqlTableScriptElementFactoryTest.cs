@@ -31,8 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private TableDefinition _tableDefinitionWithoutPrimaryKeyConstraint;
     private TableDefinition _tableDefinitionWithClusteredPrimaryKeyConstraint;
     private TableDefinition _tableDefinitionWithNonClusteredPrimaryKeyConstraint;
-    private ColumnDefinition _column1;
-    private ColumnDefinition _column2;
 
     public override void SetUp ()
     {
@@ -40,39 +38,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlTableScriptElementFactory();
 
-      _column1 = new ColumnDefinition (
-          "Column1", typeof (string), StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), false, true);
-      _column2 = new ColumnDefinition (
+      var column1 = new ColumnDefinition (
+          "Column1", typeof (string), StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), false, false);
+      var column2 = new ColumnDefinition (
           "Column2", typeof (bool), StorageTypeInformationObjectMother.CreateBitStorageTypeInformation(), true, false);
+      var property1 = new SimpleStoragePropertyDefinition (column1);
+      var property2 = new SimpleStoragePropertyDefinition (column2);
+
+      var idColumn = new ColumnDefinition (
+          "ID", typeof (Guid), StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation(), false, true);
+      var classIDColumn = new ColumnDefinition (
+          "ClassID", typeof (string), StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), true, false);
+      var objectIDProperty = new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (idColumn), 
+          new SimpleStoragePropertyDefinition (classIDColumn));
+      var timestampColumn = new ColumnDefinition (
+          "Timestamp", typeof (DateTime), StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation(), true, false);
+      var timestampProperty = new SimpleStoragePropertyDefinition (timestampColumn);
 
       _tableDefinitionWithoutPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "EntityName"),
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          _column1);
+          objectIDProperty,
+          timestampProperty,
+          property1);
 
       _tableDefinitionWithClusteredPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "EntityName"),
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column1, _column2 },
-          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", true, new[] { _column1 }) });
+          objectIDProperty,
+          timestampProperty,
+          new[] { property1, property2 },
+          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", true, new[] { column1 }) });
 
       _tableDefinitionWithNonClusteredPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "EntityName"),
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column1, _column2 },
-          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", false, new[] { _column1, _column2 }) });
+          objectIDProperty,
+          timestampProperty,
+          new[] { property1, property2 },
+          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PKName", false, new[] { column1, column2 }) });
     }
 
     [Test]

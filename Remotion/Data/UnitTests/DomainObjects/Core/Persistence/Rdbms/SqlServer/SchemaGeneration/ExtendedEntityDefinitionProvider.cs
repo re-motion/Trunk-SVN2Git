@@ -45,6 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
             firstTableDefinition.ClassIDColumn,
             firstTableDefinition.TimestampColumn,
             firstTableDefinition.DataColumns,
+            firstTableDefinition.ObjectIDProperty,
+            firstTableDefinition.TimestampProperty,
+            firstTableDefinition.DataProperties,
             firstTableDefinition.Constraints,
             new IIndexDefinition[0],
             new EntityNameDefinition[0]);
@@ -117,7 +120,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "IDX_NonClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (storageProperty1.ColumnDefinition) }, null, false, true, true, false);
       var nonClusteredNonUniqueIndex = new SqlIndexDefinition (
           "IDX_NonClusteredNonUniqueIndex",
-          new[] { new SqlIndexedColumnDefinition (storageProperty2.ColumnDefinition), new SqlIndexedColumnDefinition (storageProperty3.ColumnDefinition) },
+          new[]
+          { new SqlIndexedColumnDefinition (storageProperty2.ColumnDefinition), new SqlIndexedColumnDefinition (storageProperty3.ColumnDefinition) },
           new[] { storageProperty1.ColumnDefinition },
           false,
           false,
@@ -168,25 +172,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           true,
           false);
 
-      var objectIDColunmn = new ColumnDefinition (
-          "ObjectID", typeof (int), new StorageTypeInformation (typeof (int), "integer", DbType.Int32, typeof (int), new Int32Converter()), false, true);
-      var classIDCOlumn = new ColumnDefinition (
-          "ClassID", typeof (string), new StorageTypeInformation (typeof (string), "varchar", DbType.String, typeof (string), new StringConverter()), false, false);
-      var timestampColumn = new ColumnDefinition (
-          "Timestamp",
-          typeof (DateTime),
-          new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
-          true,
-          false);
-
-      return new TableDefinition (
+      return CreateCustomTable (
           storageProviderDefinition,
           tableName,
           viewName,
-          objectIDColunmn,
-          classIDCOlumn,
-          timestampColumn,
-          new[] { storageProperty1.ColumnDefinition, storageProperty2.ColumnDefinition, storageProperty3.ColumnDefinition, storageProperty4.ColumnDefinition },
+          new[]
+          {
+              storageProperty1.ColumnDefinition, storageProperty2.ColumnDefinition, storageProperty3.ColumnDefinition,
+              storageProperty4.ColumnDefinition
+          },
+          new[] { storageProperty1, storageProperty2, storageProperty3, storageProperty4 },
           new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { storageProperty1.ColumnDefinition }) },
           new IIndexDefinition[]
           {
@@ -197,8 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               secondaryXmlIndex1,
               secondaryXmlIndex2,
               secondaryXmlIndex3
-          },
-          new EntityNameDefinition[0]);
+          });
     }
 
     private TableDefinition CreateNewTableDefinitionWithNonClusteredPrimaryKey (StorageProviderDefinition storageProviderDefinition)
@@ -207,13 +201,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var viewName = new EntityNameDefinition (null, "PKTestView");
 
       var column1 = new ColumnDefinition (
-          "ID", typeof (Guid), new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()), false, true);
+          "ID",
+          typeof (Guid),
+          new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
+          false,
+          true);
       var column2 = new ColumnDefinition (
-          "Name", typeof (string), new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()), false, false);
-      var objectIDColunmn = new ColumnDefinition (
-          "ObjectID", typeof (int), new StorageTypeInformation (typeof (Int32), "integer", DbType.Int32, typeof (int), new Int32Converter()), false, true);
-      var classIDCOlumn = new ColumnDefinition (
-          "ClassID", typeof (string), new StorageTypeInformation (typeof (string), "varchar", DbType.String, typeof (string), new StringConverter()), false, false);
+          "Name",
+          typeof (string),
+          new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
+          false,
+          false);
+
+      var property1 = new SimpleStoragePropertyDefinition (column1);
+      var property2 = new SimpleStoragePropertyDefinition (column2);
+
+      var nonClusteredUniqueIndex = new SqlIndexDefinition (
+          "IDX_ClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column2) }, null, true, true, true, false);
+
+
+      return CreateCustomTable (
+          storageProviderDefinition,
+          tableName,
+          viewName,
+          new[] { column1, column2 },
+          new[] { property1, property2 },
+          new[] { new PrimaryKeyConstraintDefinition ("PK_PKTestTable_ID", false, new[] { column1 }) },
+          new IIndexDefinition[] { nonClusteredUniqueIndex });
+    }
+
+    private TableDefinition CreateCustomTable (
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition tableName,
+        EntityNameDefinition viewName,
+        IEnumerable<ColumnDefinition> dataColumns,
+        SimpleStoragePropertyDefinition[] dataProperties,
+        PrimaryKeyConstraintDefinition[] constraints,
+        IEnumerable<IIndexDefinition> indexes)
+    {
+      var idColumn = new ColumnDefinition (
+          "ObjectID",
+          typeof (int),
+          new StorageTypeInformation (typeof (Int32), "integer", DbType.Int32, typeof (int), new Int32Converter()),
+          false,
+          true);
+      var classIDColumn = new ColumnDefinition (
+          "ClassID",
+          typeof (string),
+          new StorageTypeInformation (typeof (string), "varchar", DbType.String, typeof (string), new StringConverter()),
+          false,
+          false);
       var timestampColumn = new ColumnDefinition (
           "Timestamp",
           typeof (DateTime),
@@ -221,19 +258,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           true,
           false);
 
-      var nonClusteredUniqueIndex = new SqlIndexDefinition (
-          "IDX_ClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column2) }, null, true, true, true, false);
+      var objectIDProperty = new ObjectIDStoragePropertyDefinition (
+          new SimpleStoragePropertyDefinition (idColumn),
+          new SimpleStoragePropertyDefinition (classIDColumn));
+      var timestampProperty = new SimpleStoragePropertyDefinition (timestampColumn);
 
       return new TableDefinition (
           storageProviderDefinition,
           tableName,
           viewName,
-          objectIDColunmn,
-          classIDCOlumn,
+          idColumn,
+          classIDColumn,
           timestampColumn,
-          new[] { column1, column2 },
-          new[] { new PrimaryKeyConstraintDefinition ("PK_PKTestTable_ID", false, new[] { column1 }) },
-          new IIndexDefinition[] { nonClusteredUniqueIndex },
+          dataColumns,
+          objectIDProperty,
+          timestampProperty,
+          dataProperties,
+          constraints,
+          indexes,
           new EntityNameDefinition[0]);
     }
   }

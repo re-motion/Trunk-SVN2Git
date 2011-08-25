@@ -56,21 +56,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveEntity ()
     {
-      var primaryKeyColumn = ColumnDefinitionObjectMother.IDColumn;
-      var classIDColumn = ColumnDefinitionObjectMother.ClassIDColumn;
-      var timestampColumn = ColumnDefinitionObjectMother.TimestampColumn;
+      var objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
+      var timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
 
-      var foreignKeyColumn = ColumnDefinitionObjectMother.CreateColumn ("ForeignKey");
-      var simpleColumn = ColumnDefinitionObjectMother.CreateColumn ("Column1");
+      var foreignKeyProperty = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("ForeignKey");
+      var simpleProperty = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           null,
-          primaryKeyColumn,
-          classIDColumn,
-          timestampColumn,
-          foreignKeyColumn,
-          simpleColumn);
+          objectIDProperty,
+          timestampProperty,
+          foreignKeyProperty,
+          simpleProperty);
       _classDefinition.SetStorageEntity (tableDefinition);
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (

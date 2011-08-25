@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
@@ -73,10 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
           ((SimpleStoragePropertyDefinition) dataContainerReader.TimestampProperty).ColumnDefinition,
           Is.SameAs (_infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition()));
       Assert.That (
-          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ValueProperty).ColumnDefinition,
+          ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty)),
            Is.SameAs (_infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition ()));
       Assert.That (
-          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty).ClassIDProperty).ColumnDefinition,
+          ObjectIDStoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (((ObjectIDStoragePropertyDefinition) dataContainerReader.IDProperty)),
            Is.SameAs (_infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ()));
     }
 
@@ -129,10 +130,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       Assert.That (
           ((ObjectIDStoragePropertyDefinition) storagePropertyDefinition).ValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
       Assert.That (
-          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) storagePropertyDefinition).ValueProperty).ColumnDefinition,
+          ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (((ObjectIDStoragePropertyDefinition) storagePropertyDefinition)),
           Is.SameAs (_idColumn));
       Assert.That (
-          ((SimpleStoragePropertyDefinition) ((ObjectIDStoragePropertyDefinition) storagePropertyDefinition).ClassIDProperty).ColumnDefinition,
+          ObjectIDStoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (((ObjectIDStoragePropertyDefinition) storagePropertyDefinition)),
           Is.SameAs (_classIdColumn));
     }
   }

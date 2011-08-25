@@ -65,35 +65,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _constraints = constraints.ToList().AsReadOnly();
     }
 
-    // TODO 4231: Remove
-    public TableDefinition (
-        StorageProviderDefinition storageProviderDefinition,
-        EntityNameDefinition tableName,
-        EntityNameDefinition viewName,
-        ColumnDefinition objectIDColumnDefinition,
-        ColumnDefinition classIDColumnDefinition,
-        ColumnDefinition timstampColumnDefinition,
-        IEnumerable<ColumnDefinition> dataColumns,
-        IEnumerable<ITableConstraintDefinition> constraints,
-        IEnumerable<IIndexDefinition> indexes,
-        IEnumerable<EntityNameDefinition> synonyms)
-      : this (
-          storageProviderDefinition,
-          tableName,
-          viewName,
-          objectIDColumnDefinition,
-          classIDColumnDefinition,
-          timstampColumnDefinition,
-          dataColumns,
-          null,
-          null,
-          null,
-          constraints,
-          indexes,
-          synonyms)
-    {
-    }
-
     public EntityNameDefinition TableName
     {
       get { return _tableName; }

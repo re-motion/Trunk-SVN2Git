@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -53,70 +53,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder = new ViewScriptBuilder (
           _tableViewElementFactoryStub, _unionViewElementFactoryStub, _filterViewElementFactoryStub, new SqlCommentScriptElementFactory());
 
-      _tableDefinition1 = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table1"),
-          new EntityNameDefinition (null, "TableView1"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _tableDefinition2 = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "Table2"),
-          new EntityNameDefinition (null, "TableView2"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _unionViewDefinition1 = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "UnionView1"),
-          new[] { _tableDefinition1 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _unionViewDefinition2 = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "UnionView2"),
-          new[] { _tableDefinition2 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _filterViewDefinition1 = new FilterViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "FilterView1"),
-          _tableDefinition1,
-          new[] { "ClassID" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-      _filterViewDefinition2 = new FilterViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "FilterView2"),
-          _tableDefinition2,
-          new[] { "ClassID" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+      _tableDefinition1 = TableDefinitionObjectMother.Create(SchemaGenerationFirstStorageProviderDefinition);
+      _tableDefinition2 = TableDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
+      _unionViewDefinition1 = UnionViewDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
+      _unionViewDefinition2 = UnionViewDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
+      _filterViewDefinition1 = FilterViewDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
+      _filterViewDefinition2 = FilterViewDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
 
       _fakeElement1 = MockRepository.GenerateStub<IScriptElement>();
       _fakeElement2 = MockRepository.GenerateStub<IScriptElement>();

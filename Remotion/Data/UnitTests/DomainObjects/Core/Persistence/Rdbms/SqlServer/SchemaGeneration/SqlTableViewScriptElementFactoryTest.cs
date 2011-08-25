@@ -41,18 +41,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "Table1"),
           new EntityNameDefinition ("SchemaName", "View1"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          ColumnDefinitionObjectMother.CreateColumn ("Column1"));
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1"));
       _tableDefinitionWithDefaultSchema = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
           new EntityNameDefinition (null, "View2"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          ColumnDefinitionObjectMother.CreateColumn ("Column1"));
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1"));
     }
 
     [Test]

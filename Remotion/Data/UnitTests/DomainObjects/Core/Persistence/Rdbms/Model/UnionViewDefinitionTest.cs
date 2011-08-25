@@ -50,15 +50,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
       
-      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
-      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
-      _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
-
       _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
       _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
       _property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
       _property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
       _property3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column3");
+
+      _column1 = _property1.ColumnDefinition;
+      _column2 = _property2.ColumnDefinition;
+      _column3 = _property3.ColumnDefinition;
 
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition ("Schema", "Test") };
@@ -67,19 +67,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table1"),
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          _column1);
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          _property1);
       _tableDefinition2 = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          _column2,
-          _column3);
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          _property2,
+          _property3);
       _unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition ("Schema", "Test"),

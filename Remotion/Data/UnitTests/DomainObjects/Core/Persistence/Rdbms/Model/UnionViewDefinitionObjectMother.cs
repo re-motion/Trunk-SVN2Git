@@ -41,14 +41,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
 
+      return Create(storageProviderDefinition, viewName, unionedEntities, ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn, ColumnDefinitionObjectMother.TimestampColumn, new ColumnDefinition[0]);
+    }
+
+    public static UnionViewDefinition Create (
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition viewName,
+        IEntityDefinition[] unionedEntities,
+        ColumnDefinition idColumn,
+        ColumnDefinition classIDColumn,
+        ColumnDefinition timestampColumn,
+        params ColumnDefinition[] columnDefinitions)
+    {
       return new UnionViewDefinition (
           storageProviderDefinition,
           viewName,
           unionedEntities,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
+          idColumn,
+          classIDColumn,
+          timestampColumn,
+          columnDefinitions,
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }

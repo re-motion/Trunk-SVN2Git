@@ -87,9 +87,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
       var objectIDStoragePropertyDefinition = (ObjectIDStoragePropertyDefinition) result;
       Assert.That (objectIDStoragePropertyDefinition.ValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (((SimpleStoragePropertyDefinition) objectIDStoragePropertyDefinition.ValueProperty).ColumnDefinition, Is.SameAs (_idColumn));
+      Assert.That (ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (objectIDStoragePropertyDefinition), Is.SameAs (_idColumn));
       Assert.That (objectIDStoragePropertyDefinition.ClassIDProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (((SimpleStoragePropertyDefinition) objectIDStoragePropertyDefinition.ClassIDProperty).ColumnDefinition, Is.SameAs (_classIdColumn));
+      Assert.That (ObjectIDStoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (objectIDStoragePropertyDefinition), Is.SameAs (_classIdColumn));
     }
 
     [Test]
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition ();
 
       Assert.That (result.ValueProperty, Is.TypeOf<SimpleStoragePropertyDefinition> ());
-      var idColumn = ((SimpleStoragePropertyDefinition) result.ValueProperty).ColumnDefinition;
+      var idColumn = ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (result);
       Assert.That (idColumn.Name, Is.EqualTo ("ID"));
       Assert.That (idColumn.IsNullable, Is.False);
       Assert.That (idColumn.IsPartOfPrimaryKey, Is.True);
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (idColumn.StorageTypeInfo, Is.SameAs (_idStorageTypeInformation));
 
       Assert.That (result.ClassIDProperty, Is.TypeOf<SimpleStoragePropertyDefinition> ());
-      var classIDColumn = ((SimpleStoragePropertyDefinition) result.ClassIDProperty).ColumnDefinition;
+      var classIDColumn = ObjectIDStoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (result);
       Assert.That (classIDColumn.Name, Is.EqualTo ("ClassID"));
       Assert.That (classIDColumn.IsNullable, Is.False);
       Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));

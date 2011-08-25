@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -45,22 +45,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           storageProviderDefinition,
           tableName,
           viewName,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn);
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty);
     }
 
     public static TableDefinition Create (
-    StorageProviderDefinition storageProviderDefinition, EntityNameDefinition tableName, EntityNameDefinition viewName, IEnumerable<ITableConstraintDefinition> constraints)
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition tableName,
+        EntityNameDefinition viewName,
+        IEnumerable<ITableConstraintDefinition> constraints)
     {
       return Create (
           storageProviderDefinition,
           tableName,
           viewName,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new IRdbmsStoragePropertyDefinition[0],
           constraints);
     }
 
@@ -68,19 +69,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition tableName,
         EntityNameDefinition viewName,
-        ColumnDefinition objectIdColumnDefinition,
-        ColumnDefinition classIdColumnDefinition,
-        ColumnDefinition timestampColumnDefinition,
-        params ColumnDefinition[] dataColumns)
+        ObjectIDStoragePropertyDefinition objectIDPropertyDefinition,
+        SimpleStoragePropertyDefinition timestampPropertyDefinition,
+        params IRdbmsStoragePropertyDefinition[] dataPropertyDefinitions)
     {
       return Create (
           storageProviderDefinition,
           tableName,
           viewName,
-          objectIdColumnDefinition,
-          classIdColumnDefinition,
-          timestampColumnDefinition,
-          dataColumns,
+          objectIDPropertyDefinition,
+          timestampPropertyDefinition,
+          dataPropertyDefinitions,
           new ITableConstraintDefinition[0]);
     }
 
@@ -88,20 +87,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition tableName,
         EntityNameDefinition viewName,
-        ColumnDefinition objectIdColumnDefinition,
-        ColumnDefinition classIdColumnDefinition,
-        ColumnDefinition timestampColumnDefinition,
-        IEnumerable<ColumnDefinition> dataColumns,
+        ObjectIDStoragePropertyDefinition objectIDPropertyDefinition,
+        SimpleStoragePropertyDefinition timestampPropertyDefinition,
+        IEnumerable<IRdbmsStoragePropertyDefinition> dataPropertyDefinitions,
         IEnumerable<ITableConstraintDefinition> tableConstraintDefinitions)
     {
       return new TableDefinition (
                 storageProviderDefinition,
                 tableName,
                 viewName,
-                objectIdColumnDefinition,
-                classIdColumnDefinition,
-                timestampColumnDefinition,
-                dataColumns,
+                ObjectIDStoragePropertyDefinitionTestHelper.GetIDColumnDefinition (objectIDPropertyDefinition),
+                ObjectIDStoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (objectIDPropertyDefinition),
+                timestampPropertyDefinition.ColumnDefinition,
+                dataPropertyDefinitions.SelectMany (dp => dp.GetColumns()),
+                objectIDPropertyDefinition,
+                timestampPropertyDefinition,
+                dataPropertyDefinitions,
                 tableConstraintDefinitions,
                 new IIndexDefinition[0],
                 new EntityNameDefinition[0]);
@@ -117,6 +118,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new IRdbmsStoragePropertyDefinition[0],
           new ITableConstraintDefinition[0],
           indexDefinitions,
           new EntityNameDefinition[0]);
@@ -132,6 +136,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ColumnDefinitionObjectMother.ClassIDColumn,
           ColumnDefinitionObjectMother.TimestampColumn,
           new ColumnDefinition[0],
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new IRdbmsStoragePropertyDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
           synonyms);
