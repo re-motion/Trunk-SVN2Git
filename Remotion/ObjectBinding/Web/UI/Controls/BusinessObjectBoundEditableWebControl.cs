@@ -326,7 +326,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       values[2] = _isRenderedInCurrentLifecycle;
       return values;
     }
- 
+
     /// <summary>
     /// Saves the value into the bound <see cref="BusinessObjectBoundWebControl.Property"/>.
     /// </summary>
@@ -358,7 +358,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       return true;
     }
- 
+
     private bool IsReadOnlyInDomainModel
     {
       get
@@ -367,5 +367,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         Assertion.IsNotNull (DataSource);
         return Property.IsReadOnly (DataSource.BusinessObject);
       }
-    } }
+    }
+  }
 }
