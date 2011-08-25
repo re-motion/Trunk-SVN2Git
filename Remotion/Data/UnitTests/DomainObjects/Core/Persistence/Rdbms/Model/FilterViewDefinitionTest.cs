@@ -28,8 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
-    private ColumnDefinition _column1;
-    private ColumnDefinition _column2;
     private SimpleStoragePropertyDefinition _timestampProperty;
     private ObjectIDStoragePropertyDefinition _objectIDProperty;
     private SimpleStoragePropertyDefinition _property1;
@@ -46,8 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
 
-      _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
-      _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
       _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
       _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
       _property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
@@ -64,10 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition ("Schema", "Test"),
           _baseEntityDefinition,
           new[] { "ClassId1", "ClassId2" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column1, _column2 },
           _objectIDProperty,
           _timestampProperty,
           new[] { _property1, _property2, _property3 },
@@ -96,10 +88,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           _filterViewDefinition,
           new[] { "x" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
@@ -119,10 +107,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           unionViewDefinition,
           new[] { "x" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
@@ -138,10 +122,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           null,
           _baseEntityDefinition,
           new[] { "ClassId" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
@@ -166,10 +146,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           _filterViewDefinition,
           new[] { "x" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],

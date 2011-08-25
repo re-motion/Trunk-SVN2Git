@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakePrimaryKeyName");
       _storageNameProviderMock.Replay();
 
-      MockSpecialColumns();
+      MockStandardProperties();
       _infrastructureStoragePropertyDefinitionProviderMock.Replay();
 
       var result = _factory.CreateTableDefinition (_testModel.TableClassDefinition1);
@@ -116,13 +116,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new ITableConstraintDefinition[]
           {
               new PrimaryKeyConstraintDefinition (
-              "FakePrimaryKeyName",
-              true,
-              new[] { StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty) }),
+                  "FakePrimaryKeyName",
+                  true,
+                  new[] { StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty) }),
               _fakeForeignKeyConstraint
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
+    }
+
+    [Test]
+    public void CreateTableDefinition_WithoutPrimaryKey ()
+    {
+      _storagePropertyDefinitionResolverMock
+          .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.TableClassDefinition1))
+          .Return (new IRdbmsStoragePropertyDefinition[0]);
+      _storagePropertyDefinitionResolverMock.Replay ();
+
+      _foreignKeyConstraintDefinitionFactoryMock
+          .Expect (mock => mock.CreateForeignKeyConstraints (_testModel.TableClassDefinition1))
+          .Return (new ForeignKeyConstraintDefinition[0]);
+      _foreignKeyConstraintDefinitionFactoryMock.Replay ();
+
+      _storageNameProviderMock
+          .Expect (mock => mock.GetTableName (_testModel.TableClassDefinition1))
+          .Return ("FakeTableName");
+      _storageNameProviderMock
+          .Expect (mock => mock.GetViewName (_testModel.TableClassDefinition1))
+          .Return ("FakeViewName");
+      _storageNameProviderMock.Replay ();
+
+      // no primary key columns!
+      _infrastructureStoragePropertyDefinitionProviderMock
+          .Expect (mock => mock.GetObjectIDStoragePropertyDefinition ())
+          .Return (new ObjectIDStoragePropertyDefinition (
+              SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty (),
+              SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ()));
+      _infrastructureStoragePropertyDefinitionProviderMock
+          .Expect (mock => mock.GetTimestampStoragePropertyDefinition ())
+          .Return (_fakeTimestampStorageProperty);
+
+      _infrastructureStoragePropertyDefinitionProviderMock.Replay ();
+
+      var result = _factory.CreateTableDefinition (_testModel.TableClassDefinition1);
+
+      Assert.That (result, Is.TypeOf<TableDefinition>().With.Property ("Constraints").Empty);
     }
 
     [Test]
@@ -152,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeViewName");
       _storageNameProviderMock.Replay();
 
-      MockSpecialColumns();
+      MockStandardProperties();
       _infrastructureStoragePropertyDefinitionProviderMock.Replay();
 
       var result = _factory.CreateFilterViewDefinition (_testModel.DerivedClassDefinition1, fakeBaseEntityDefiniton);
@@ -191,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeViewName");
       _storageNameProviderMock.Replay();
 
-      MockSpecialColumns();
+      MockStandardProperties();
       _infrastructureStoragePropertyDefinitionProviderMock.Replay();
 
       var result = _factory.CreateFilterViewDefinition (_testModel.DerivedClassDefinition2, fakeBaseEntityDefiniton);
@@ -231,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeViewName");
       _storageNameProviderMock.Replay();
 
-      MockSpecialColumns();
+      MockStandardProperties();
 
       _infrastructureStoragePropertyDefinitionProviderMock.Replay();
 
@@ -356,18 +394,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (expectedEntityDefinition.Synonyms, Is.EqualTo (expectedSynonyms));
     }
 
-    private void MockSpecialColumns ()
+    private void MockStandardProperties ()
     {
-      _infrastructureStoragePropertyDefinitionProviderMock
-          .Expect (mock => mock.GetIDColumnDefinition())
-          .Return (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_fakeObjectIDStorageProperty));
-      _infrastructureStoragePropertyDefinitionProviderMock
-          .Expect (mock => mock.GetClassIDColumnDefinition())
-          .Return (StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (_fakeObjectIDStorageProperty));
-      _infrastructureStoragePropertyDefinitionProviderMock
-          .Expect (mock => mock.GetTimestampColumnDefinition())
-          .Return (_fakeTimestampStorageProperty.ColumnDefinition);
-
       _infrastructureStoragePropertyDefinitionProviderMock
           .Expect (mock => mock.GetObjectIDStoragePropertyDefinition())
           .Return (_fakeObjectIDStorageProperty);

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -62,10 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           viewName,
           baseEntity,
           classIDs,
-          StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (objectIDProperty),
-          StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (objectIDProperty),
-          timestampProperty.ColumnDefinition,
-          StoragePropertyDefinitionTestHelper.GetColumns (dataProperties),
           objectIDProperty,
           timestampProperty,
           dataProperties,
@@ -80,10 +75,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition ("TestSchema", "TestFilterView"),
           TableDefinitionObjectMother.Create (storageProviderDefinition),
           new[] { "Class1" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
           SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
           new IRdbmsStoragePropertyDefinition[0],
@@ -98,10 +89,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition ("TestSchema", "TestFilterView"),
           TableDefinitionObjectMother.Create (storageProviderDefinition),
           new[] { "Class1" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
           SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
           new IRdbmsStoragePropertyDefinition[0],

@@ -30,10 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
     private UnionViewDefinition _unionViewDefinition;
-    
-    private ColumnDefinition _column1;
-    private ColumnDefinition _column2;
-    private ColumnDefinition _column3;
 
     private SimpleStoragePropertyDefinition _timestampProperty;
     private ObjectIDStoragePropertyDefinition _objectIDProperty;
@@ -55,10 +51,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
       _property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
       _property3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column3");
-
-      _column1 = _property1.ColumnDefinition;
-      _column2 = _property2.ColumnDefinition;
-      _column3 = _property3.ColumnDefinition;
 
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition ("Schema", "Test") };
@@ -82,10 +74,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition ("Schema", "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column1, _column2, _column3 },
           _objectIDProperty,
           _timestampProperty,
           new[] { _property1, _property2, _property3 },
@@ -112,10 +100,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           null,
           new[] { _tableDefinition1, _tableDefinition2 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
@@ -131,10 +115,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           null,
           new[] { _unionViewDefinition },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
@@ -152,10 +132,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "ViewName"),
           _tableDefinition1,
           new[] { "x" },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
@@ -165,10 +141,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           null,
           new[] { filterViewDefinition },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
@@ -179,11 +151,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFullColumnList ()
     {
-      var column4 = ColumnDefinitionObjectMother.CreateColumn ("Test");
       var availableColumns = new[]
                              {
-                                 ColumnDefinitionObjectMother.IDColumn, ColumnDefinitionObjectMother.ClassIDColumn,
-                                 ColumnDefinitionObjectMother.TimestampColumn, _column3, column4, _column1
+                                 ColumnDefinitionObjectMother.IDColumn, 
+                                 ColumnDefinitionObjectMother.ClassIDColumn,
+                                 ColumnDefinitionObjectMother.TimestampColumn, 
+                                 _property3.ColumnDefinition, 
+                                 ColumnDefinitionObjectMother.CreateColumn ("Test"), 
+                                 _property1.ColumnDefinition
                              };
 
       var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
@@ -192,9 +167,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (result[0], Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
       Assert.That (result[1], Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
       Assert.That (result[2], Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
-      Assert.That (result[3], Is.SameAs (_column1));
+      Assert.That (result[3], Is.SameAs (_property1.ColumnDefinition));
       Assert.That (result[4], Is.Null);
-      Assert.That (result[5], Is.SameAs (_column3));
+      Assert.That (result[5], Is.SameAs (_property3.ColumnDefinition));
     }
 
     [Test]
@@ -204,10 +179,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column1, _column2 },
           _objectIDProperty,
           _timestampProperty,
           new[] { _property1, _property2 },
@@ -219,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
                                  ColumnDefinitionObjectMother.IDColumn,
                                  ColumnDefinitionObjectMother.ClassIDColumn,
                                  ColumnDefinitionObjectMother.TimestampColumn, 
-                                 _column1
+                                 _property1.ColumnDefinition
                              };
 
       var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
@@ -228,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (result[0], Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
       Assert.That (result[1], Is.SameAs (ColumnDefinitionObjectMother.ClassIDColumn));
       Assert.That (result[2], Is.SameAs (ColumnDefinitionObjectMother.TimestampColumn));
-      Assert.That (result[3], Is.SameAs (_column1));
+      Assert.That (result[3], Is.SameAs (_property1.ColumnDefinition));
       Assert.That (result[4], Is.Null);
     }
 
@@ -248,10 +219,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),
           new IEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new ColumnDefinition[0],
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],

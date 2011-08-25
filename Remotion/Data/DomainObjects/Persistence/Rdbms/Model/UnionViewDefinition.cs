@@ -35,10 +35,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
         IEnumerable<IEntityDefinition> unionedEntities,
-        ColumnDefinition objectIDColumnDefinition,
-        ColumnDefinition classIDColumnDefinition,
-        ColumnDefinition timstampColumnDefinition,
-        IEnumerable<ColumnDefinition> dataColumns,
         ObjectIDStoragePropertyDefinition objectIDProperty,
         IRdbmsStoragePropertyDefinition timestampProperty,
         IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
@@ -54,7 +50,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
             synonyms)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
-      ArgumentUtility.CheckNotNull ("dataColumns", dataColumns);
  
       var unionedEntitiesList = unionedEntities.ToList().AsReadOnly();
       for (int i = 0; i < unionedEntitiesList.Count; ++i)

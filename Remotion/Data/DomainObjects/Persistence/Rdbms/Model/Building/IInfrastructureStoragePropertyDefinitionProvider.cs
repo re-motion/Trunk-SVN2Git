@@ -22,6 +22,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public interface IInfrastructureStoragePropertyDefinitionProvider
   {
+    // TODO 4231: Remove
     ColumnDefinition GetIDColumnDefinition ();
     ColumnDefinition GetClassIDColumnDefinition ();
     ColumnDefinition GetTimestampColumnDefinition ();

@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -42,10 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
             firstTableDefinition.StorageProviderDefinition,
             firstTableDefinition.TableName,
             new EntityNameDefinition (firstTableDefinition.ViewName.SchemaName, "NewViewName"),
-            StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (firstTableDefinition.ObjectIDProperty),
-            StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (firstTableDefinition.ObjectIDProperty),
-            StoragePropertyDefinitionTestHelper.GetSingleColumn (firstTableDefinition.TimestampProperty),
-            StoragePropertyDefinitionTestHelper.GetColumns (firstTableDefinition.DataProperties),
             firstTableDefinition.ObjectIDProperty,
             firstTableDefinition.TimestampProperty,
             firstTableDefinition.DataProperties,
@@ -70,10 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (tableDefinition.TableName.SchemaName, "AddedView"),
           tableDefinition,
           new[] { "ClassID" },
-          StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (tableDefinition.ObjectIDProperty),
-          StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (tableDefinition.ObjectIDProperty),
-          StoragePropertyDefinitionTestHelper.GetSingleColumn (tableDefinition.TimestampProperty),
-          StoragePropertyDefinitionTestHelper.GetColumns (tableDefinition.DataProperties),
           tableDefinition.ObjectIDProperty,
           tableDefinition.TimestampProperty,
           tableDefinition.DataProperties,
@@ -179,11 +170,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           storageProviderDefinition,
           tableName,
           viewName,
-          new[]
-          {
-              storageProperty1.ColumnDefinition, storageProperty2.ColumnDefinition, storageProperty3.ColumnDefinition,
-              storageProperty4.ColumnDefinition
-          },
           new[] { storageProperty1, storageProperty2, storageProperty3, storageProperty4 },
           new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { storageProperty1.ColumnDefinition }) },
           new IIndexDefinition[]
@@ -221,13 +207,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var nonClusteredUniqueIndex = new SqlIndexDefinition (
           "IDX_ClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column2) }, null, true, true, true, false);
-
-
+      
       return CreateCustomTable (
           storageProviderDefinition,
           tableName,
           viewName,
-          new[] { column1, column2 },
           new[] { property1, property2 },
           new[] { new PrimaryKeyConstraintDefinition ("PK_PKTestTable_ID", false, new[] { column1 }) },
           new IIndexDefinition[] { nonClusteredUniqueIndex });
@@ -237,7 +221,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition tableName,
         EntityNameDefinition viewName,
-        IEnumerable<ColumnDefinition> dataColumns,
         SimpleStoragePropertyDefinition[] dataProperties,
         PrimaryKeyConstraintDefinition[] constraints,
         IEnumerable<IIndexDefinition> indexes)
@@ -270,10 +253,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           storageProviderDefinition,
           tableName,
           viewName,
-          idColumn,
-          classIDColumn,
-          timestampColumn,
-          dataColumns,
           objectIDProperty,
           timestampProperty,
           dataProperties,

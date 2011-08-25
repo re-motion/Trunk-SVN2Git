@@ -61,21 +61,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (string.IsNullOrEmpty (tableName))
         throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
-      var objectIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition();
-      var classIDColumn = _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition ();
-      var timestampColumn = _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition ();
-
       var objectIDProperty = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition ();
       var timestampProperty = _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition ();
-
-      var dataProperties = GetStoragePropertiesForHierarchy (classDefinition);
-      var dataColumns = GetColumns (dataProperties);
-      var allColumns = new[] { objectIDColumn, classIDColumn, timestampColumn }.Concat (dataColumns).ToList();
-
-      var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
-          _storageNameProvider.GetPrimaryKeyConstraintName (classDefinition),
-          true,
-          allColumns.Where (c => c.IsPartOfPrimaryKey).ToArray());
+      var dataProperties = _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition).ToList();
+      
+      var allProperties = new[] { objectIDProperty, timestampProperty }.Concat (dataProperties);
+      var primaryKeyConstraints = CreatePrimaryKeyConstraints (classDefinition, allProperties);
 
       var foreignKeyConstraints =
           _foreignKeyConstraintDefinitionFactory.CreateForeignKeyConstraints (classDefinition).Cast<ITableConstraintDefinition>();
@@ -84,14 +75,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _storageProviderDefinition,
           new EntityNameDefinition (null, tableName),
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
-          objectIDColumn,
-          classIDColumn,
-          timestampColumn,
-          dataColumns,
           objectIDProperty,
           timestampProperty,
           dataProperties,
-          new ITableConstraintDefinition[] { clusteredPrimaryKeyConstraint }.Concat (foreignKeyConstraints),
+          primaryKeyConstraints.Concat (foreignKeyConstraints),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -101,19 +88,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
 
-      var dataProperties = GetStoragePropertiesForHierarchy(classDefinition);
       return new FilterViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition (),
-          _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition (),
-          _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition (),
-          GetColumns (dataProperties),
           _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition(),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition(),
-          dataProperties,
+          _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition),
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
@@ -123,15 +105,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
 
-      var dataProperties = GetStoragePropertiesForHierarchy(classDefinition);
+      var dataProperties = _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition);
       return new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           unionedEntities,
-          _infrastructureStoragePropertyDefinitionProvider.GetIDColumnDefinition (),
-          _infrastructureStoragePropertyDefinitionProvider.GetClassIDColumnDefinition (),
-          _infrastructureStoragePropertyDefinitionProvider.GetTimestampColumnDefinition (),
-          GetColumns(dataProperties),
           _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (),
           dataProperties, 
@@ -144,14 +122,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses()).Select (cd => cd.ID);
     }
 
-    private IEnumerable<IRdbmsStoragePropertyDefinition> GetStoragePropertiesForHierarchy (ClassDefinition classDefinition)
+    private IEnumerable<ITableConstraintDefinition> CreatePrimaryKeyConstraints (
+       ClassDefinition classDefinition,
+       IEnumerable<IRdbmsStoragePropertyDefinition> allProperties)
     {
-      return _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition);
-    }
-
-    private IEnumerable<ColumnDefinition> GetColumns (IEnumerable<IRdbmsStoragePropertyDefinition> storagePropertyDefinitions)
-    {
-      return storagePropertyDefinitions.SelectMany (c => c.GetColumns ());
+      var primaryKeyColumns = (from p in allProperties
+                               from c in p.GetColumns ()
+                               where c.IsPartOfPrimaryKey
+                               select c).ToList ();
+      ITableConstraintDefinition[] primaryKeyConstraints;
+      if (!primaryKeyColumns.Any ())
+      {
+        primaryKeyConstraints = new ITableConstraintDefinition[0];
+      }
+      else
+      {
+        var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
+            _storageNameProvider.GetPrimaryKeyConstraintName (classDefinition),
+            true,
+            primaryKeyColumns);
+        primaryKeyConstraints = new ITableConstraintDefinition[] { clusteredPrimaryKeyConstraint };
+      }
+      return primaryKeyConstraints;
     }
   }
 }

@@ -27,9 +27,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
-    private ColumnDefinition _column;
-    private SimpleStoragePropertyDefinition _timestampProperty;
     private ObjectIDStoragePropertyDefinition _objectIDProperty;
+    private SimpleStoragePropertyDefinition _timestampProperty;
     private SimpleStoragePropertyDefinition _property1;
     private SimpleStoragePropertyDefinition _property2;
     private SimpleStoragePropertyDefinition _property3;
@@ -44,9 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _column = ColumnDefinitionObjectMother.CreateColumn ("COL1");
-      _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
+
       _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
+      _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
       _property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
       _property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
       _property3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column3");
@@ -60,10 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition ("TableSchema", "TableTest"),
           new EntityNameDefinition ("Schema", "Test"),
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column },
           _objectIDProperty,
           _timestampProperty,
           new[] { _property1, _property2, _property3 },
@@ -93,10 +88,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           null,
-          ColumnDefinitionObjectMother.IDColumn,
-          ColumnDefinitionObjectMother.ClassIDColumn,
-          ColumnDefinitionObjectMother.TimestampColumn,
-          new[] { _column },
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
