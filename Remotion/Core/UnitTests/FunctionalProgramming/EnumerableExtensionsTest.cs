@@ -238,6 +238,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       Assert.That (first.SetEquals (second), Is.False);
     }
 
+#if NET_3_5
     [Test]
     public void Zip_Empty ()
     {
@@ -319,6 +320,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
 
       Assert.That (result, Is.EqualTo (new[] { new { i = 17, s = "a"} }));
     }
+#endif
 
     [Test]
     public void Zip_Tuples ()

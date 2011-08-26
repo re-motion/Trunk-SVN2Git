@@ -214,6 +214,7 @@ namespace Remotion.FunctionalProgramming
       return new HashSet<T> (sequence1).SetEquals (sequence2);
     }
 
+#if NET_3_5
     /// <summary>
     /// Combines two sequences into a single sequence. The resulting sequence's item type is calculated using the given 
     /// <paramref name="resultSelector"/>.
@@ -245,6 +246,7 @@ namespace Remotion.FunctionalProgramming
           yield return resultSelector (enumerator1.Current, enumerator2.Current);
       }
     }
+#endif
 
     /// <summary>
     /// Combines two sequences into a single sequence of <see cref="Tuple{T1,T2}"/> values.
