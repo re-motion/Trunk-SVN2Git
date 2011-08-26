@@ -50,9 +50,9 @@
 
     <ItemGroup>
       <NamespaceSummaryFiles Remove="@(NamespaceSummaryFiles)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)Relinq\**\doc\include\NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)Remotion\**\doc\include\NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)SecurityManager\**\doc\include\NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
+      <NamespaceSummaryFiles Include="$(SolutionDirectory)Relinq\**\doc\include\*NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
+      <NamespaceSummaryFiles Include="$(SolutionDirectory)Remotion\**\doc\include\*NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
+      <NamespaceSummaryFiles Include="$(SolutionDirectory)SecurityManager\**\doc\include\*NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
     </ItemGroup>
   </Target>
 

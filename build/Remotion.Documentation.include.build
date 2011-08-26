@@ -21,7 +21,7 @@
     <Error Text="The target 'CreateDocumentationProperties' is not implemented." />
   </Target>
   
-    <Target Name="CreateBinaryFiles">
+  <Target Name="CreateBinaryFiles">
     <Error Text="The target 'CreateBinaryFiles' is not implemented." />
   </Target>
 
@@ -63,9 +63,11 @@
     <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
 
     <PropertyGroup>
-      <DocumentationOutputDirectory>$(BinariesDirectory)net-3.5\doc\</DocumentationOutputDirectory>
+      <DocumentationChmOutputDirectory>$(BinariesDirectory)net-3.5\doc\</DocumentationChmOutputDirectory>
+      <DocumentationWebsiteOutputDirectory>$(TempDirectory)web\</DocumentationWebsiteOutputDirectory>
       <DocumentationBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DocumentationBinariesDirectory>
       <DocumentationBaseDirectory>$(TempDirectory)doc\$([System.Guid]::NewGuid())\</DocumentationBaseDirectory>
+      <DocumentationCompilationOutputDirectory>$(DocumentationBaseDirectory)Output\</DocumentationCompilationOutputDirectory>
       <DocumentationRootPageTarget>$(DocumentationBaseDirectory)GettingStarted.aml</DocumentationRootPageTarget>
       <DocumentationSandcastleProjectFile>$(DocumentationBaseDirectory)documentation.shfbproj</DocumentationSandcastleProjectFile>
     </PropertyGroup>
@@ -90,7 +92,7 @@
         <Value>$(ProductNameShort)</Value>
       </_properties>
       <_properties Include="OutputPath">
-        <Value>$(DocumentationBaseDirectory)</Value>
+        <Value>$(DocumentationCompilationOutputDirectory)</Value>
       </_properties>
       <_properties Include="FooterText">
         <Value><![CDATA[<p>Version: $(Version)</p>]]></Value>
@@ -120,6 +122,26 @@
                                        XPath="/Project/PropertyGroup"
                                        Element="%(_properties.Identity)"
                                        InnerText="%(_properties.Value)"/>
+
+    <!-- use a different cache location for each project to enable parallelization -->
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
+                                       File="$(DocumentationSandcastleProjectFile)"
+                                       XPath="/Project/PropertyGroup/ComponentConfigurations/ComponentConfig[@id='Cached MSDN URL References']/component/helpOutput/cache"
+                                       Key="filename"
+                                       Value="{@LocalDataFolder}Cache\$(ProductNameShort)\MsdnUrl.cache"/>
+
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
+                                       File="$(DocumentationSandcastleProjectFile)"
+                                       XPath="/Project/PropertyGroup/ComponentConfigurations/ComponentConfig[@id='Cached Reflection Index Data']/component/index/cache"
+                                       Key="cacheFile"
+                                       Value="{@LocalDataFolder}Cache\$(ProductNameShort)\Reflection.cache"/>
+
+    <!-- There's no way to specify the cache location for the Cached Framework Comments component (it is determined by SHFB at runtime), so we have to disable it. -->
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
+                                       File="$(DocumentationSandcastleProjectFile)"
+                                       XPath="/Project/PropertyGroup/ComponentConfigurations/ComponentConfig[@id='Cached Framework Comments Index Data']"
+                                       Key="enabled"
+                                       Value="false"/>
 
     <Remotion.BuildTools.MSBuildTasks.SandcastleProjectBuilder File="$(DocumentationSandcastleProjectFile)"
                                                                Assemblies="@(BinaryFiles)"
@@ -163,10 +185,22 @@
 
   <Target Name="CopyChmFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;">
     <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
-    <Error Text="The property 'DocumentationOutputDirectory' is not set." Condition="'$(DocumentationOutputDirectory)' == ''" />
+    <Error Text="The property 'DocumentationChmOutputDirectory' is not set." Condition="'$(DocumentationChmOutputDirectory)' == ''" />
     <Error Text="The property 'ProductNameShort' is not set." Condition="'$(ProductNameShort)' == ''" />
 
-    <Copy SourceFiles="$(DocumentationBaseDirectory)$(ProductNameShort).chm" DestinationFolder="$(DocumentationOutputDirectory)" />
+    <Copy SourceFiles="$(DocumentationCompilationOutputDirectory)$(ProductNameShort).chm" DestinationFolder="$(DocumentationChmOutputDirectory)" />
+  </Target>
+
+  <Target Name="CopyWebsiteFilesToWebsiteDirectory" DependsOnTargets="CreateStandardExcludes;">
+    <Error Text="The property 'DocumentationCompilationOutputDirectory' is not set." Condition="'$(DocumentationCompilationOutputDirectory)' == ''" />
+    <Error Text="The property 'DocumentationWebsiteOutputDirectory' is not set." Condition="'$(DocumentationWebsiteOutputDirectory)' == ''" />
+    <Error Text="The property 'ProductNameShort' is not set." Condition="'$(ProductNameShort)' == ''" />
+
+    <ItemGroup>
+      <WebsiteFiles Include="$(DocumentationCompilationOutputDirectory)**\*.*" Exclude="$(DocumentationCompilationOutputDirectory)$(ProductNameShort).chm"/>
+    </ItemGroup>
+
+    <Copy SourceFiles="@(WebsiteFiles)" DestinationFolder="$(DocumentationWebsiteOutputDirectory)$(ProductNameShort)\%(RecursiveDir)" />
   </Target>
 
   <Target Name="CreateStandardExcludes">

@@ -735,10 +735,8 @@
     <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />
     <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
     <Content Include="doc\include\MSDN.css" />
-    <Content Include="doc\include\NamespaceDoc.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
+    <Content Include="doc\include\Remotion.NamespaceDoc.xml" />
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
     <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Utilities\EqualityUtility.xml" />

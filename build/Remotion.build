@@ -59,7 +59,8 @@
     </ItemGroup>
 
     <MSBuild Projects="@(_allDocumentationDeclarations)"
-             BuildInParallel="false"
+             BuildInParallel="true"
+             StopOnFirstFailure="true"
              Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;"
              Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
   </Target>
@@ -93,15 +94,16 @@
              BuildInParallel="false"
              Targets="BuildReleaseProjects;AssembleBuildOutput;"
              Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
-    
+
     <ItemGroup>
       <_allDocumentationDeclarations Remove="@(_allDocumentationDeclarations)" />
       <_allDocumentationDeclarations Include="%(AllPackages.DocumentationDeclaration)" />
     </ItemGroup>
-    
-    <MSBuild Projects="@(_allDocumentationDeclarations)"
-             BuildInParallel="false"
-             Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;"
+	
+	  <MSBuild Projects="@(_allDocumentationDeclarations)"
+             BuildInParallel="true"
+             StopOnFirstFailure="true"
+             Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;CopyWebsiteFilesToWebsiteDirectory"
              Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=0.0.0.0;"/>
   </Target>
 

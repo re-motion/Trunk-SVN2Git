@@ -16,21 +16,21 @@
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
 <Project DefaultTargets="Build" ToolsVersion="4.0">
-  <PropertyGroup>
     <!-- The configuration and platform will be used to determine which
          assemblies to include from solution and project documentation
          sources -->
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SHFBSchemaVersion>1.9.3.0</SHFBSchemaVersion>
     
     <!-- SHFB properties -->
-    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
     <Language>en-US</Language>
     <CleanIntermediates>False</CleanIntermediates>
     <SyntaxFilters>CSharp</SyntaxFilters>
     <Preliminary>False</Preliminary>
-    <PresentationStyle>Prototype</PresentationStyle>
+    <PresentationStyle>vs2005</PresentationStyle>
     <NamingMethod>HashedMemberName</NamingMethod>
     <IndentHtml>True</IndentHtml>
     <SyntaxFilters>CSharp, VisualBasic, CPlusPlus</SyntaxFilters>

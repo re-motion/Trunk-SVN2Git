@@ -755,7 +755,7 @@
     <Content Include="Doc\include\ExecutionEngine\WxePage.xml" />
     <Content Include="Doc\include\ExecutionEngine\WxePageStep.xml" />
     <Content Include="Doc\include\ExecutionEngine\WxeStep.xml" />
-    <Content Include="Doc\include\NamespaceDoc.xml" />
+    <Content Include="Doc\include\Remotion.Web.NamespaceDoc.xml" />
     <Content Include="Doc\include\ResourceDispatcher.xml" />
     <Content Include="Doc\include\UI\Controls\DropDownMenu.xml" />
     <Content Include="Doc\include\UI\Controls\FormGridManager.xml" />

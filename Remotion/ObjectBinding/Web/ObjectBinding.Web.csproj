@@ -442,7 +442,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <Content Include="Doc\include\NamespaceDoc.xml" />
+    <Content Include="Doc\include\Remotion.ObjectBinding.Web.NamespaceDoc.xml" />
     <Content Include="Doc\include\UI\Controls\BocBooleanValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocCheckBox.xml" />
     <Content Include="Doc\include\UI\Controls\BocDateTimeValue.xml" />
