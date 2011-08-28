@@ -89,7 +89,6 @@
   </Target>
 
   <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
-
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
              Targets="BuildReleaseProjects;AssembleBuildOutput;"
@@ -99,12 +98,12 @@
       <_allDocumentationDeclarations Remove="@(_allDocumentationDeclarations)" />
       <_allDocumentationDeclarations Include="%(AllPackages.DocumentationDeclaration)" />
     </ItemGroup>
-	
-	  <MSBuild Projects="@(_allDocumentationDeclarations)"
+
+    <MSBuild Projects="@(_allDocumentationDeclarations)"
              BuildInParallel="true"
              StopOnFirstFailure="true"
              Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;CopyWebsiteFilesToWebsiteDirectory"
-             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=0.0.0.0;"/>
+             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=0.0.0;"/>
   </Target>
 
 </Project>

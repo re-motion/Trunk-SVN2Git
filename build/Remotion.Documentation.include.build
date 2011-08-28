@@ -74,10 +74,9 @@
     <Message Text="$(DocumentationSandcastleProjectFile)"/>
   </Target>
 
-  <Target Name="CreateSandcastleProjectFile" DependsOnTargets="CreatePackageProperties;CreateSandcastleProperties;CreateBinaryFiles;CreateNamespaceSummaryFiles">
+  <Target Name="CreateSandcastleProjectFile" DependsOnTargets="CheckVersion;CreatePackageProperties;CreateSandcastleProperties;CreateBinaryFiles;CreateNamespaceSummaryFiles;">
     <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
     <Error Text="The property 'DocumentationSandcastleProjectFile' is not set." Condition="'$(DocumentationSandcastleProjectFile)' == ''" />
-    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
       <_sandcastleProjectTemplate>$(MSBuildProjectDirectory)\SandcastleProjectTemplate.shfbproj</_sandcastleProjectTemplate>
@@ -110,7 +109,7 @@
         <Value>$(Copyright)</Value>
       </_properties>
       <_properties Include="HelpFileVersion">
-        <Value>$(Version)</Value>
+        <Value>$([System.Version]::Parse ($(Version))).0</Value>
       </_properties>
       <_properties Include="VendorName">
         <Value>$(CompanyName)</Value>
@@ -211,4 +210,15 @@
       <StandardExcludes Include="$(SolutionDirectory)**\_svn\**"/>
     </ItemGroup>
   </Target>
+
+  <Target Name="CheckVersion">
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
+    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Major) == -1" />
+    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Minor) == -1" />
+    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Build) == -1" />
+    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Revision) != -1" />
+
+  </Target>
+
 </Project>
