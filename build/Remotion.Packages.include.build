@@ -19,7 +19,7 @@
 
   <ItemGroup>
   
-	<AllPackages Include="Relinq">
+  <AllPackages Include="Relinq">
       <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
       <DocumentationDeclaration>Remotion.Documentation.Relinq.build</DocumentationDeclaration>
       <AssemblyInfoFile>Relinq\AssemblyInfoShared.*</AssemblyInfoFile>
