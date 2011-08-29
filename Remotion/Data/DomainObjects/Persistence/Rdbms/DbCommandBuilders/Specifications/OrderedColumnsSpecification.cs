@@ -31,6 +31,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
   /// </summary>
   public class OrderedColumnsSpecification : IOrderedColumnsSpecification
   {
+    public static OrderedColumnsSpecification CreateEmpty ()
+    {
+      return new OrderedColumnsSpecification (new OrderedColumn[0]);
+    }
+
     private readonly OrderedColumn[] _columns;
 
     public OrderedColumnsSpecification (IEnumerable<OrderedColumn> columns)
@@ -47,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
 
     public bool IsEmpty
     {
-      get { return false; }
+      get { return !_columns.Any(); }
     }
 
     public void AppendOrderings (StringBuilder stringBuilder, ISqlDialect sqlDialect)
@@ -67,6 +72,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
     {
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
 
+      if (!_columns.Any ())
+        return selectedColumns;
+      
       return selectedColumns.Union (_columns.Select (orderedColumn => orderedColumn.ColumnDefinition));
     }
   }

@@ -35,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private ColumnDefinition _column3;
     private OrderedColumnsSpecification _specification;
     private ISqlDialect _sqlDialectStub;
+    private OrderedColumnsSpecification _specificationWithEmptyColumns;
 
     [SetUp]
     public void SetUp ()
@@ -53,6 +54,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column1")).Return ("[delimited Column1]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column2")).Return ("[delimited Column2]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("Column3")).Return ("[delimited Column3]");
+
+      _specificationWithEmptyColumns = new OrderedColumnsSpecification (new OrderedColumn[0]);
+    }
+
+    [Test]
+    public void CreateEmpty ()
+    {
+      var result = OrderedColumnsSpecification.CreateEmpty();
+
+      Assert.That (result.Columns, Is.Empty);
     }
 
     [Test]
@@ -66,7 +77,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void IsEmpty ()
+    public void IsEmpty_True ()
+    {
+      var result = _specificationWithEmptyColumns.IsEmpty;
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void IsEmpty_False ()
     {
       var result = _specification.IsEmpty;
 
@@ -94,6 +113,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
+    public void AppendOrderings_NoColumns ()
+    {
+      var sb = new StringBuilder();
+
+      _specificationWithEmptyColumns.AppendOrderings (sb, _sqlDialectStub);
+
+      Assert.That (sb.ToString(), Is.Empty);
+    }
+
+    [Test]
     public void UnionWithSelectedColumns ()
     {
       var selectedColumns = MockRepository.GenerateStrictMock<ISelectedColumnsSpecification>();
@@ -107,6 +136,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
 
       Assert.That (result, Is.SameAs (selectedColumns));
       selectedColumns.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void UnionWithSelectedColumns_NoColumns ()
+    {
+      var selectedColumns = MockRepository.GenerateStrictMock<ISelectedColumnsSpecification> ();
+
+      selectedColumns.Replay ();
+
+      var result = _specificationWithEmptyColumns.UnionWithSelectedColumns (selectedColumns);
+
+      Assert.That (result, Is.SameAs (selectedColumns));
+      selectedColumns.VerifyAllExpectations ();
     }
   }
 }
