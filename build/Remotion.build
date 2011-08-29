@@ -62,7 +62,7 @@
              BuildInParallel="true"
              StopOnFirstFailure="true"
              Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;"
-             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
+             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);LogDirectory=$(LogDirectory);Version=$(Version);"/>
   </Target>
 
   <Target Name="PackageAll">
@@ -103,7 +103,7 @@
              BuildInParallel="true"
              StopOnFirstFailure="true"
              Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;CopyWebsiteFilesToWebsiteDirectory"
-             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);Version=0.0.0;"/>
+             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);LogDirectory=$(LogDirectory);Version=0.0.0;"/>
   </Target>
 
 </Project>

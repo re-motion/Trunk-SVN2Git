@@ -61,6 +61,8 @@
       <BinaryFiles Remove="@(BinaryFiles)"/>
       <BinaryFiles Include="$(BinariesDirectory)**"
                    Exclude="@(StandardExcludes);@(_excludedBinaryFiles)"/>
+      <BinaryFiles Include="$(BinariesDirectory)**\re-motion.chm"
+                   Exclude="@(StandardExcludes);"/>
       <BinaryFiles Include="$(BinariesDirectory)**\re-strict.chm"
                    Exclude="@(StandardExcludes);"/>
     </ItemGroup>

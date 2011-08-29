@@ -50,7 +50,7 @@
       <_startTime>$([System.DateTime]::Now)</_startTime>
     </PropertyGroup>
     
-    <MSBuild Projects="$(DocumentationSandcastleProjectFile)"/>
+    <!--<MSBuild Projects="$(DocumentationSandcastleProjectFile)"/>-->
 
     <PropertyGroup>
       <_timeTaken>$( [System.DateTime]::Now.Subtract ( $([System.DateTime]::Parse($(_startTime))) ).TotalSeconds.ToString("N0") )</_timeTaken>
@@ -114,6 +114,9 @@
       <_properties Include="VendorName">
         <Value>$(CompanyName)</Value>
       </_properties>
+      <_properties Include="BuildLogFile">
+        <Value>$(LogDirectory)Sandcastle.$(PackageID).log</Value>
+      </_properties>
     </ItemGroup>
 
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
@@ -145,13 +148,6 @@
     <Remotion.BuildTools.MSBuildTasks.SandcastleProjectBuilder File="$(DocumentationSandcastleProjectFile)"
                                                                Assemblies="@(BinaryFiles)"
                                                                NamespaceSummaryFiles="@(NamespaceSummaryFiles)" />
-
-    <!-- add default namespace in the end to keep the processing simple -->
-    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute"
-                                       File="$(DocumentationSandcastleProjectFile)"
-                                       XPath="/Project"
-                                       Key="xmlns"
-                                       Value="http://schemas.microsoft.com/developer/msbuild/2003"/>
   </Target>
  
   <Target Name="CreateDocumentationRootPage" DependsOnTargets="CreateDocumentationProperties;CreatePackageProperties;CreateSandcastleProperties">

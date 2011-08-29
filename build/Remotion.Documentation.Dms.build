@@ -30,17 +30,10 @@
     <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(DocumentationBinariesDirectory)' == ''" />
 
     <ItemGroup>
-      <_excludedBinaryFiles Remove="@(_excludedBinaryFiles)"/>
-      <_excludedBinaryFiles Include="$(DocumentationBinariesDirectory)Remotion.SecurityManager.*" />
-      <_excludedBinaryFiles Include="$(DocumentationBinariesDirectory)AclExpander.*" />
-    </ItemGroup>
-
-    <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
-      <BinaryFiles Include="$(DocumentationBinariesDirectory)Remotion*.dll"
-                   Exclude="@(StandardExcludes);@(_excludedBinaryFiles)" />
-      <BinaryFiles Include="$(DocumentationBinariesDirectory)*.exe"
-                   Exclude="@(StandardExcludes);@(_excludedBinaryFiles)" />
+      <BinaryFiles Include="$(DocumentationBinariesDirectory)Remotion.Dms*.dll" />
+      <BinaryFiles Include="$(DocumentationBinariesDirectory)DmsTray.exe" />
+      <BinaryFiles Include="$(DocumentationBinariesDirectory)DocumentEventMonitor.exe" />
     </ItemGroup>
   </Target>
 
@@ -49,8 +42,6 @@
 
     <ItemGroup>
       <NamespaceSummaryFiles Remove="@(NamespaceSummaryFiles)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)Relinq\**\doc\include\*NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)Remotion\**\doc\include\*NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
       <NamespaceSummaryFiles Include="$(SolutionDirectory)Dms\**\doc\include\*NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
     </ItemGroup>
   </Target>
