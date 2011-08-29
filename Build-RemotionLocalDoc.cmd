@@ -5,7 +5,9 @@ if not exist remotion.snk goto nosnk
 echo Building re-motion without docs using %msbuild%...
 echo.
 
-%msbuild% build\Remotion.build /t:DocumentationTestBuild /maxcpucount
+mkdir build\BuildOutput\log
+
+%msbuild% build\Remotion.build /t:DocumentationTestBuild /maxcpucount /verbosity:minimal /flp:verbosity=normal;logfile=build\BuildOutput\log\build.log
     
 if not %ERRORLEVEL%==0 goto build_failed
 
@@ -16,6 +18,7 @@ goto build_succeeded
 :build_failed
 echo.
 echo Building re-motion has failed.
+notepad.exe build\BuildOutput\log\build.log
 pause
 
 exit /b 1
