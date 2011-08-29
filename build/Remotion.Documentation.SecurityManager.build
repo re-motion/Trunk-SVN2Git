@@ -48,7 +48,7 @@
 
     <ItemGroup>
       <NamespaceSummaryFiles Remove="@(NamespaceSummaryFiles)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)SecurityManager\**\doc\include\*NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
+      <NamespaceSummaryFiles Include="$(SolutionDirectory)SecurityManager\**\doc\include\*.NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
     </ItemGroup>
   </Target>
 

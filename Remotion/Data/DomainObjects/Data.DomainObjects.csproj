@@ -966,8 +966,7 @@
       </SubType>
     </EmbeddedResource>
     <Content Include="Doc\How to add a new property type.txt" />
-    <Content Include="Doc\include\NamespaceDoc.xml" />
-    <Content Include="Doc\WhatsNew_Remotion.Data.DomainObjects.txt" />
+    <Content Include="Doc\include\Remotion.Data.DomainObjects.NamespaceDoc.xml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
@@ -997,4 +996,4 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-</Project> 
+</Project>
