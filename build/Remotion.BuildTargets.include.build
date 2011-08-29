@@ -60,10 +60,10 @@
     <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
     <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(BinariesDirectory)' == ''" />
 
-    <Exec Command="rmdir /Q /S $(OutputDirectory)" />
-    <Exec Command="rmdir /Q /S $(LogDirectory)" />
-    <Exec Command="rmdir /Q /S $(TempDirectory)" />
-    <Exec Command="rmdir /Q /S $(BinariesDirectory)" />
+    <Exec Command="rmdir /Q /S $(LogDirectory)" Condition="Exists ($(LogDirectory))" />
+    <Exec Command="rmdir /Q /S $(TempDirectory)" Condition="Exists ($(TempDirectory))" />
+    <Exec Command="rmdir /Q /S $(BinariesDirectory)" Condition="Exists ($(BinariesDirectory))" />
+    <Exec Command="rmdir /Q /S $(OutputDirectory)" Condition="Exists ($(OutputDirectory))" />
   </Target>
 
   <Target Name="CreateLogDirectory">
