@@ -37,5 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBBidirectionalRelation ("FileSystemItems")]
     public abstract Folder ParentFolder { get; set; }
 
+    [DBColumn ("ParentFolderRelation")]
+    public abstract Folder ParentFolder2 { get; set; }
   }
 }

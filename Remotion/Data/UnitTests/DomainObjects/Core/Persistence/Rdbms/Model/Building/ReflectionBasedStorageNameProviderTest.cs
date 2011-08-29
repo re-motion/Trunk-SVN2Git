@@ -123,8 +123,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "ParentFolder");
+      var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
-      var result = _provider.GetRelationColumnName (propertyDefinition);
+      var result = _provider.GetRelationColumnName (relationDefinition);
 
       Assert.That (result, Is.EqualTo ("ParentFolderID"));
     }
@@ -132,14 +133,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void GetRelationColumnName_PropertyWithIStorageSpecificIdentifierAttribute_ReturnsNameFromAttribute ()
     {
-      var classWithAllDataTypesDefinition =
-          ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (ClassWithAllDataTypes), null);
-      var propertyDefinition = PropertyDefinitionFactory.Create (
-          classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+      var classDefinition =
+          ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
+      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "ParentFolder2");
+      var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
-      var result = _provider.GetRelationColumnName (propertyDefinition);
+      var result = _provider.GetRelationColumnName (relationDefinition);
 
-      Assert.That (result, Is.EqualTo ("Boolean"));
+      Assert.That (result, Is.EqualTo ("ParentFolderRelation"));
     }
 
     [Test]
@@ -147,8 +148,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "ParentFolder");
+      var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
-      var result = _provider.GetRelationClassIDColumnName (propertyDefinition);
+      var result = _provider.GetRelationClassIDColumnName (relationDefinition);
 
       Assert.That (result, Is.EqualTo ("ParentFolderIDClassID"));
     }

@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using System.Data;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -69,11 +67,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeStorageTypeInformation = StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation();
 
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider> ();
-      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForClassID ()).Return (_fakeStorageTypeInformationForClassID);
+      _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider>();
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForClassID()).Return (_fakeStorageTypeInformationForClassID);
       _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForID()).Return (_fakeStorageTypeInformationForObjectID);
-      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForSerializedObjectID()).Return (_fakeStorageTypeInformationForSerializedObjectID);
-      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider> ();
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForSerializedObjectID()).Return (
+          _fakeStorageTypeInformationForSerializedObjectID);
+      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
       _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
       _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
@@ -129,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
-
+      
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
 
@@ -151,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
-
+      
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
 
@@ -171,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
-
+      
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
       _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (_classWithDbTableAttribute.ID);
@@ -198,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           StorageClass.Persistent,
           _propertyInfoStub,
           true);
-
+      
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
       _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (_classWithDbTableAttribute.ID);
@@ -215,10 +214,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_RelationProperty_ToAClassDefinitionWithoutHierarchy ()
     {
-      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
-      StubStorageCalculators (propertyDefinition);
+      var relationEndPointDefinition =
+          (RelationEndPointDefinition) GetEndPointDefinition (typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
+      StubStorageCalculators (relationEndPointDefinition);
 
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDWithoutClassIDStoragePropertyDefinition)));
 
@@ -238,24 +238,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_RelationProperty_ToAClassDefinitionWithoutHierarchy_AlwaysNullable ()
     {
-      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithManySideRelationProperties), "NotNullable");
-      StubStorageCalculators (propertyDefinition);
+      var relationEndPointDefinition =
+          (RelationEndPointDefinition) GetEndPointDefinition (typeof (ClassWithManySideRelationProperties), "NotNullable");
+      StubStorageCalculators (relationEndPointDefinition);
 
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
 
       var columnDefinition =
           ((SimpleStoragePropertyDefinition) ((ObjectIDWithoutClassIDStoragePropertyDefinition) result).ValueProperty).ColumnDefinition;
-      Assert.That (propertyDefinition.ClassDefinition.GetMandatoryRelationEndPointDefinition (propertyDefinition.PropertyName).IsMandatory, Is.True);
+      Assert.That (
+          relationEndPointDefinition.PropertyDefinition.ClassDefinition.GetMandatoryRelationEndPointDefinition (
+              relationEndPointDefinition.PropertyDefinition.PropertyName).IsMandatory,
+          Is.True);
       Assert.That (columnDefinition.IsNullable, Is.True);
     }
 
     [Test]
     public void CreateStoragePropertyDefinition_RelationProperty_ToAClassWithInheritanceHierarchy_WithBaseClassAndNoDerivedClasses ()
     {
-      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithoutRelatedClassIDColumn), "Distributor");
-      StubStorageCalculators (propertyDefinition);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Ceo), "Company");
+      StubStorageCalculators (relationEndPointDefinition);
 
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
       var valueProperty = ((ObjectIDStoragePropertyDefinition) result).ValueProperty;
@@ -283,10 +287,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_RelationProperty_ToAClassWithInheritanceHierarchy_NoBaseClassAndWithDerivedClasses ()
     {
-      var propertyDefinition = GetPropertyDefinition (typeof (Ceo), "Company");
-      StubStorageCalculators (propertyDefinition);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Ceo), "Company");
+      StubStorageCalculators (relationEndPointDefinition);
 
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
     }
@@ -294,26 +298,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_RelationProperty_ToAClassWithInheritanceHierarchy_AlwaysNullable ()
     {
-      var propertyDefinition = GetPropertyDefinition (typeof (Ceo), "Company");
-      StubStorageCalculators (propertyDefinition);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Ceo), "Company");
+      StubStorageCalculators (relationEndPointDefinition);
 
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
 
-      Assert.That (propertyDefinition.ClassDefinition.GetMandatoryRelationEndPointDefinition (propertyDefinition.PropertyName).IsMandatory, Is.True);
+      Assert.That (
+          relationEndPointDefinition.PropertyDefinition.ClassDefinition.GetMandatoryRelationEndPointDefinition (
+              relationEndPointDefinition.PropertyDefinition.PropertyName).IsMandatory,
+          Is.True);
       Assert.That (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (((ObjectIDStoragePropertyDefinition) result)).IsNullable, Is.True);
     }
 
     [Test]
     public void CreateStoragePropertyDefinition_RelationProperty_ToAClassDefinitionWithDifferentStorageProvider ()
     {
-      var propertyDefinition = GetPropertyDefinition (typeof (Order), "Official");
-      StubStorageCalculators (propertyDefinition);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
+      StubStorageCalculators (relationEndPointDefinition);
 
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (SerializedObjectIDStoragePropertyDefinition)));
       Assert.That (((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty, Is.TypeOf<SimpleStoragePropertyDefinition>());
-      var columnDefinition = ((SimpleStoragePropertyDefinition) ((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty).ColumnDefinition;
+      var columnDefinition =
+          ((SimpleStoragePropertyDefinition) ((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty).ColumnDefinition;
       Assert.That (columnDefinition.Name, Is.EqualTo ("FakeRelationColumnName"));
       Assert.That (columnDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (columnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformationForSerializedObjectID));
@@ -323,23 +331,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_RelationProperty_ToAClassDefinitionWithDifferentStorageProvider_RespectsNullability ()
     {
-      var propertyDefinition = GetPropertyDefinition (typeof (Order), "Official");
-      StubStorageCalculators (propertyDefinition);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
+      StubStorageCalculators (relationEndPointDefinition);
 
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
 
-      var columnDefinition = ((SimpleStoragePropertyDefinition) ((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty).ColumnDefinition;
-      Assert.That (propertyDefinition.ClassDefinition.GetMandatoryRelationEndPointDefinition (propertyDefinition.PropertyName).IsMandatory, Is.True);
+      var columnDefinition =
+          ((SimpleStoragePropertyDefinition) ((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty).ColumnDefinition;
+      Assert.That (
+          relationEndPointDefinition.PropertyDefinition.ClassDefinition.GetMandatoryRelationEndPointDefinition (
+              relationEndPointDefinition.PropertyDefinition.PropertyName).IsMandatory,
+          Is.True);
       Assert.That (columnDefinition.IsNullable, Is.True);
+    }
+
+    private void StubStorageCalculators (RelationEndPointDefinition relationEndPointDefinition)
+    {
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageType (relationEndPointDefinition.PropertyDefinition)).Return (
+          _fakeStorageTypeInformation);
+
+      _storageNameProviderStub.Stub (stub => stub.GetColumnName (relationEndPointDefinition.PropertyDefinition)).Return ("FakeColumnName");
+      _storageNameProviderStub.Stub (stub => stub.GetRelationColumnName (relationEndPointDefinition)).Return ("FakeRelationColumnName");
+      _storageNameProviderStub.Stub (stub => stub.GetRelationClassIDColumnName (relationEndPointDefinition)).Return ("FakeRelationClassID");
     }
 
     private void StubStorageCalculators (PropertyDefinition propertyDefinition)
     {
       _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (_fakeStorageTypeInformation);
-
       _storageNameProviderStub.Stub (stub => stub.GetColumnName (propertyDefinition)).Return ("FakeColumnName");
-      _storageNameProviderStub.Stub (stub => stub.GetRelationColumnName (propertyDefinition)).Return ("FakeRelationColumnName");
-      _storageNameProviderStub.Stub (stub => stub.GetRelationClassIDColumnName (propertyDefinition)).Return ("FakeRelationClassID");
     }
   }
 }

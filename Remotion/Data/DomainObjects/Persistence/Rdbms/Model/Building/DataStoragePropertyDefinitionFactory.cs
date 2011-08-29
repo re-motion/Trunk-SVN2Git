@@ -56,8 +56,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       {
         Assertion.IsTrue (propertyDefinition.PropertyType == typeof (ObjectID));
         var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
-        var relationColumnName = _storageNameProvider.GetRelationColumnName (propertyDefinition);
-        var relationClassIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition);
+        var relationColumnName = _storageNameProvider.GetRelationColumnName (relationEndPointDefinition);
+        var relationClassIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (relationEndPointDefinition);
         return CreateRelationStoragePropertyDefinition (
             propertyDefinition, 
             rightEndPointDefinition.ClassDefinition, 

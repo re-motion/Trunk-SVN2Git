@@ -72,20 +72,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return propertyDefinition.PropertyInfo.Name;
     }
 
-    public string GetRelationColumnName (PropertyDefinition propertyDefinition)
+    public string GetRelationColumnName (RelationEndPointDefinition relationEndPointDefinition)
     {
-      var name = GetColumnNameFromAttribute (propertyDefinition);
+      var name = GetColumnNameFromAttribute (relationEndPointDefinition.PropertyDefinition);
       if (name != null)
         return name;
 
-      return propertyDefinition.PropertyInfo.Name + "ID";
+      return relationEndPointDefinition.PropertyInfo.Name + "ID";
     }
 
-    public string GetRelationClassIDColumnName (PropertyDefinition propertyDefinition)
+    public string GetRelationClassIDColumnName (RelationEndPointDefinition relationEndPointDefinition)
     {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      return GetRelationColumnName (propertyDefinition) + "ClassID";
+      return GetRelationColumnName (relationEndPointDefinition) + "ClassID";
     }
 
     public string GetPrimaryKeyConstraintName (ClassDefinition classDefinition)
