@@ -318,7 +318,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsPersistenceModelProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\AllSelectedColumnsSpecificationTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\EmptyOrderedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\OrderedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\SelectedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SelectDbCommandBuilderTest.cs" />

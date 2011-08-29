@@ -282,7 +282,6 @@
     <Compile Include="Persistence\Rdbms\RdbmsPersistenceModelProvider.cs" />
     <Compile Include="Persistence\Rdbms\RdbmsProviderCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\AllSelectedColumnsSpecification.cs" />
-    <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\EmptyOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\IDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\IOrderedColumnsSpecification.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\Specifications\ISelectedColumnsSpecification.cs" />
