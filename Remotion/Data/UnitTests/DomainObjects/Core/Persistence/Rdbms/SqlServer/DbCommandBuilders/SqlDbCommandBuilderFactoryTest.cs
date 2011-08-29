@@ -91,7 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
       Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ColumnDefinition, Is.SameAs (_column1));
       Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ObjectValues, Is.EqualTo (new[] { 12 }));
-      Assert.That (dbCommandBuilder.OrderedColumns, Is.SameAs (EmptyOrderedColumnsSpecification.Instance));
+      Assert.That (dbCommandBuilder.OrderedColumns, Is.TypeOf(typeof(OrderedColumnsSpecification)));
+      Assert.That (((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.Empty);
     }
 
     [Test]

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Text;
-using System.Threading;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications

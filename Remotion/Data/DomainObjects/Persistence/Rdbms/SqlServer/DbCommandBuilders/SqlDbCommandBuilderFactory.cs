@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           table,
           new SelectedColumnsSpecification (selectedColumns),
           new ComparedColumnsSpecification (comparedColumnValues),
-          CreateOrderedColumnsSpecification (orderedColumns),
+          new OrderedColumnsSpecification (orderedColumns),
           _sqlDialect);
     }
     
@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           table,
           new SelectedColumnsSpecification (selectedColumns),
           new SqlXmlSetComparedColumnSpecification (comparedColumn, comparedValues),
-          EmptyOrderedColumnsSpecification.Instance,
+          OrderedColumnsSpecification.CreateEmpty(),
           _sqlDialect);
     }
 
@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
           view,
           new SelectedColumnsSpecification (selectedColumns),
           new ComparedColumnsSpecification (comparedColumnValues),
-          CreateOrderedColumnsSpecification (orderedColumns),
+          new OrderedColumnsSpecification (orderedColumns),
           _sqlDialect);
     }
 
@@ -137,13 +137,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("comparedColumnValues", comparedColumnValues);
 
       return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumnValues), _sqlDialect);
-    }
-    
-    private IOrderedColumnsSpecification CreateOrderedColumnsSpecification (IEnumerable<OrderedColumn> orderedColumns)
-    {
-      return orderedColumns.Any ()
-                 ? (IOrderedColumnsSpecification) new OrderedColumnsSpecification (orderedColumns)
-                 : EmptyOrderedColumnsSpecification.Instance;
     }
   }
 }
