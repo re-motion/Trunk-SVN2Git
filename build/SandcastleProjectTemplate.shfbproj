@@ -27,7 +27,7 @@
     <!-- SHFB properties -->
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
     <Language>en-US</Language>
-    <CleanIntermediates>True</CleanIntermediates>
+    <CleanIntermediates>False</CleanIntermediates>
     <SyntaxFilters>CSharp</SyntaxFilters>
     <Preliminary>False</Preliminary>
     <PresentationStyle>vs2005</PresentationStyle>

@@ -117,6 +117,9 @@
       <_properties Include="BuildLogFile">
         <Value>$(LogDirectory)Sandcastle.$(PackageID).log</Value>
       </_properties>
+      <_properties Include="WorkingPath">
+        <Value>$(DocumentationBaseDirectory)Working\</Value>
+      </_properties>
     </ItemGroup>
 
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
