@@ -18,7 +18,7 @@ goto build_succeeded
 :build_failed
 echo.
 echo Building re-motion has failed.
-notepad.exe build\BuildOutput\log\build.log
+start build\BuildOutput\log\build.log
 pause
 
 exit /b 1
