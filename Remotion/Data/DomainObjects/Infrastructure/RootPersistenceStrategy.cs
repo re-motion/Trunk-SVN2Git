@@ -107,7 +107,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       using (var storageProviderManager = CreateStorageProviderManager())
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderDefinition.Name);
-        return provider.ExecuteCollectionQuery (query);
+        return provider.ExecuteCollectionQuery (query).ToArray();
       }
     }
 

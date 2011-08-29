@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       throw new NotImplementedException ();
     }
 
-    public override DataContainer[] ExecuteCollectionQuery (IQuery query)
+    public override IEnumerable<DataContainer> ExecuteCollectionQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
     }
 
-    public override DataContainerCollection LoadDataContainersByRelatedID (RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID)
+    public override IEnumerable<DataContainer> LoadDataContainersByRelatedID (RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID)
     {
       throw new NotImplementedException ();
     }

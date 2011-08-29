@@ -18,10 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Order = Remotion.Data.UnitTests.DomainObjects.TestDomain.Order;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -35,12 +34,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var collection = Provider.LoadDataContainersByRelatedID (
           (RelationEndPointDefinition) relationEndPointDefinition,
           null,
-          DomainObjectIDs.Customer1);
+          DomainObjectIDs.Customer1).ToList();
 
       Assert.IsNotNull (collection);
       Assert.AreEqual (2, collection.Count, "DataContainerCollection.Count");
-      Assert.IsNotNull (collection[DomainObjectIDs.Order1], "ID of Order with OrdnerNo 1");
-      Assert.IsNotNull (collection[DomainObjectIDs.OrderWithoutOrderItem], "ID of Order with OrdnerNo 2");
+      Assert.IsNotNull (collection.SingleOrDefault(o=>o.ID==DomainObjectIDs.Order1), "ID of Order with OrdnerNo 1");
+      Assert.IsNotNull (collection.SingleOrDefault(o=>o.ID==DomainObjectIDs.OrderWithoutOrderItem), "ID of Order with OrdnerNo 2");
     }
 
     [Test]
@@ -51,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var collection = Provider.LoadDataContainersByRelatedID (
           (RelationEndPointDefinition) relationEndPointDefinition,
           null,
-          DomainObjectIDs.Person6);
+          DomainObjectIDs.Person6).ToList();
 
       Assert.AreEqual (1, collection.Count);
       Assert.AreEqual (DomainObjectIDs.Distributor2, collection[0].ID);
@@ -67,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var orderContainers = Provider.LoadDataContainersByRelatedID (
           (RelationEndPointDefinition) relationEndPointDefinition,
           sortExpression,
-          DomainObjectIDs.Customer1);
+          DomainObjectIDs.Customer1).ToList();
 
       Assert.AreEqual (2, orderContainers.Count);
       Assert.AreEqual (DomainObjectIDs.Order1, orderContainers[0].ID);
@@ -84,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           null,
           DomainObjectIDs.Official1);
       Assert.IsNotNull (orderContainers);
-      Assert.AreEqual (5, orderContainers.Count);
+      Assert.AreEqual (5, orderContainers.Count());
     }
 
     [Test]
@@ -97,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           null,
           DomainObjectIDs.Employee1);
       Assert.IsNotNull (result);
-      Assert.AreEqual (0, result.Count);
+      Assert.AreEqual (0, result.Count());
     }
   }
 }

@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public override DataContainer[] ExecuteCollectionQuery (IQuery query)
+    public override IEnumerable<DataContainer> ExecuteCollectionQuery (IQuery query)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("query", query);
@@ -259,10 +259,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return command.Execute (this);
     }
 
-    public override DataContainerCollection LoadDataContainersByRelatedID (
-        RelationEndPointDefinition relationEndPointDefinition,
-        SortExpressionDefinition sortExpressionDefinition,
-        ObjectID relatedID)
+    public override IEnumerable<DataContainer> LoadDataContainersByRelatedID (RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);

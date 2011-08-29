@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     public abstract IEnumerable<ObjectLookupResult<DataContainer>> LoadDataContainers (IEnumerable<ObjectID> ids);
 
-    public abstract DataContainerCollection LoadDataContainersByRelatedID (
+    public abstract IEnumerable<DataContainer> LoadDataContainersByRelatedID (
         RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID);
 
     public abstract void Save (IEnumerable<DataContainer> dataContainers);
@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     public abstract void Commit ();
     public abstract void Rollback ();
     public abstract ObjectID CreateNewObjectID (ClassDefinition classDefinition);
-    public abstract DataContainer[] ExecuteCollectionQuery (IQuery query);
+    public abstract IEnumerable<DataContainer> ExecuteCollectionQuery (IQuery query);
     public abstract object ExecuteScalarQuery (IQuery query);
 
     public StorageProviderDefinition StorageProviderDefinition

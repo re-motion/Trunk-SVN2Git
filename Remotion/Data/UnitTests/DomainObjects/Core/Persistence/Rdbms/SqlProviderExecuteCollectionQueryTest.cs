@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -114,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       query.Parameters.Add ("@stringWithNullValue", null);
       query.Parameters.Add ("@nullableBinaryWithNullValue", null);
 
-      var actualContainers = Provider.ExecuteCollectionQuery (query);
+      var actualContainers = Provider.ExecuteCollectionQuery (query).ToArray();
 
       Assert.IsNotNull (actualContainers);
       Assert.AreEqual (1, actualContainers.Length);

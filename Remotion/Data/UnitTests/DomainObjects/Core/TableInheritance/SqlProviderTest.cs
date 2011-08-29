@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
@@ -51,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var loadedDataContainers = Provider.LoadDataContainersByRelatedID (
           (RelationEndPointDefinition) relationEndPointDefinition,
           sortExpression,
-          DomainObjectIDs.Client);
+          DomainObjectIDs.Client).ToList();
 
       Assert.IsNotNull (loadedDataContainers);
       Assert.AreEqual (4, loadedDataContainers.Count);
@@ -71,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           null,
           DomainObjectIDs.Customer);
       Assert.IsNotNull (result);
-      Assert.AreEqual (0, result.Count);
+      Assert.AreEqual (0, result.Count());
     }
   }
 }

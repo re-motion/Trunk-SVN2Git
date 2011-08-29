@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       using (var manager = new StorageProviderManager (NullPersistenceListener.Instance))
       {
-        return manager.GetMandatory ("PerformanceTestDomain").ExecuteCollectionQuery (restoreQuery).Length > 100;
+        return manager.GetMandatory ("PerformanceTestDomain").ExecuteCollectionQuery (restoreQuery).ToArray().Length > 100;
       }
     }
 

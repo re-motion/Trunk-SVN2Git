@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -599,7 +600,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         var orderTicketContainers = rdbmsProvider.LoadDataContainersByRelatedID (
             (RelationEndPointDefinition) relationEndPointDefinition,
             null,
-            DomainObjectIDs.Order1);
+            DomainObjectIDs.Order1).ToList();
 
         ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, orderTicketContainers[0]);
 

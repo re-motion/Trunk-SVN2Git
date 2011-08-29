@@ -295,9 +295,13 @@ namespace Remotion.Data.DomainObjects.Persistence
           virtualEndPointDefinition.GetSortExpression(),
           relationEndPointID.ObjectID);
 
-      foreach (DataContainer oppositeDataContainer in oppositeDataContainers)
+      var oppositeDataContainerCollection = new DataContainerCollection();
+      foreach (var oppositeDataContainer in oppositeDataContainers)
+      {
         CheckClassIDForVirtualEndPoint (relationEndPointID, oppositeDataContainer);
-      return oppositeDataContainers;
+        oppositeDataContainerCollection.Add (oppositeDataContainer);
+      }
+      return oppositeDataContainerCollection;
     }
 
     private void CheckClassIDForVirtualEndPoint (
