@@ -28,19 +28,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class ReflectionBasedStorageNameProvider : IStorageNameProvider
   {
-    public string IDColumnName
+    public string GetIDColumnName ()
     {
-      get { return "ID"; }
+      return "ID";
     }
 
-    public string ClassIDColumnName
+    public string GetClassIDColumnName ()
     {
-      get { return "ClassID"; }
+      return "ClassID";
     }
 
-    public string TimestampColumnName
+    public string GetTimestampColumnName ()
     {
-      get { return "Timestamp"; }
+      return "Timestamp";
     }
 
     public string GetTableName (ClassDefinition classDefinition)

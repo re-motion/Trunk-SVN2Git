@@ -40,19 +40,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void IDColumnName ()
     {
-      Assert.That (_provider.IDColumnName, Is.EqualTo ("ID"));
+      Assert.That (_provider.GetIDColumnName(), Is.EqualTo ("ID"));
     }
 
     [Test]
     public void ClassIDColumnName ()
     {
-      Assert.That (_provider.ClassIDColumnName, Is.EqualTo ("ClassID"));
+      Assert.That (_provider.GetClassIDColumnName(), Is.EqualTo ("ClassID"));
     }
 
     [Test]
     public void TimestampColumnName ()
     {
-      Assert.That (_provider.TimestampColumnName, Is.EqualTo ("Timestamp"));
+      Assert.That (_provider.GetTimestampColumnName(), Is.EqualTo ("Timestamp"));
     }
 
     [Test]

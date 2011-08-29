@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       base.SetUp();
       _storageNameProvider = MockRepository.GenerateStub<IStorageNameProvider>();
-      _storageNameProvider.Stub (stub => stub.IDColumnName).Return ("ID");
+      _storageNameProvider.Stub (stub => stub.GetIDColumnName()).Return ("ID");
       _rdbmsPersistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
       _rdbmsStoragePropertyDefinitionStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
 

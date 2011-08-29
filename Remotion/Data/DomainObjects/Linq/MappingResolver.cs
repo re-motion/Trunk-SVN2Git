@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
       if (memberInfo == s_classIDPropertyInfo)
-        return sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, _storageNameProvider.ClassIDColumnName, false);
+        return sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, _storageNameProvider.GetClassIDColumnName(), false);
 
       throw new UnmappedItemException (
           string.Format ("The member '{0}.{1}' does not identify a mapped property.", memberInfo.ReflectedType.Name, memberInfo.Name));

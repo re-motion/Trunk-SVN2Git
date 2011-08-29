@@ -40,19 +40,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       _idColumnDefinition = new ColumnDefinition (
-          storageNameProvider.IDColumnName,
+          storageNameProvider.GetIDColumnName(),
           typeof (ObjectID),
           storageTypeInformationProvider.GetStorageTypeForID(),
           false,
           true);
       _classIDColumnDefinition = new ColumnDefinition (
-          storageNameProvider.ClassIDColumnName,
+          storageNameProvider.GetClassIDColumnName(),
           typeof (string),
           storageTypeInformationProvider.GetStorageTypeForClassID(),
           false,
           false);
       _timestampColumnDefinition = new ColumnDefinition (
-          storageNameProvider.TimestampColumnName,
+          storageNameProvider.GetTimestampColumnName(),
           typeof (object),
           storageTypeInformationProvider.GetStorageTypeForTimestamp(),
           false,

@@ -51,9 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       base.SetUp();
       _storageSpecificExpressionResolverStub = MockRepository.GenerateStub<IStorageSpecificExpressionResolver>();
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
-      _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
-      _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
-      _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
+      _storageNameProviderStub.Stub (stub => stub.GetIDColumnName()).Return ("ID");
+      _storageNameProviderStub.Stub (stub => stub.GetClassIDColumnName()).Return ("ClassID");
+      _storageNameProviderStub.Stub (stub => stub.GetTimestampColumnName()).Return ("Timestamp");
       _resolver = new MappingResolver (_storageSpecificExpressionResolverStub, _storageNameProviderStub);
       _generator = new UniqueIdentifierGenerator();
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"), JoinSemantics.Inner);

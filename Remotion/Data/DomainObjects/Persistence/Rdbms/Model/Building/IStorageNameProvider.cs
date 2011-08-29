@@ -26,9 +26,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public interface IStorageNameProvider
   {
-    string IDColumnName { get; }
-    string ClassIDColumnName { get; }
-    string TimestampColumnName { get; }
+    string GetIDColumnName ();
+    string GetClassIDColumnName ();
+    string GetTimestampColumnName ();
 
     string GetTableName (ClassDefinition classDefinition);
     string GetViewName (ClassDefinition classDefinition);

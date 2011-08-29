@@ -69,9 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _dialectStub = _mockRepository.Stub<ISqlDialect>();
 
       _storageNameProviderStub = _mockRepository.Stub<IStorageNameProvider>();
-      _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
-      _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
-      _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
+      _storageNameProviderStub.Stub (stub => stub.GetIDColumnName()).Return ("ID");
+      _storageNameProviderStub.Stub (stub => stub.GetClassIDColumnName()).Return ("ClassID");
+      _storageNameProviderStub.Stub (stub => stub.GetTimestampColumnName()).Return ("Timestamp");
       _storageNameProviderStub.Replay();
 
       _commandFactoryMock = _mockRepository.StrictMock<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
