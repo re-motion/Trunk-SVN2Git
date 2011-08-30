@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           createSelectStringBuilder.AppendFormat ("\r\n  UNION ALL\r\n");
 
         var availableTableColumns = tableDefinition.GetAllColumns();
-        var unionedColumns = unionViewDefinition.CreateFullColumnList (availableTableColumns);
+        var unionedColumns = unionViewDefinition.CalculateFullColumnList (availableTableColumns);
         createSelectStringBuilder.AppendFormat (
             "  SELECT {0}\r\n"
             + "    FROM [{1}].[{2}]",

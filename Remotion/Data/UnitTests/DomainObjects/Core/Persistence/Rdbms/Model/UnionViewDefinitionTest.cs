@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateFullColumnList ()
+    public void CalculateFullColumnList ()
     {
       var availableColumns = new[]
                              {
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
                                  _property1.ColumnDefinition
                              };
 
-      var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
+      var result = _unionViewDefinition.CalculateFullColumnList (availableColumns).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (6));
       Assert.That (result[0], Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateFullColumnList_OneColumnNotFound ()
+    public void CalculateFullColumnList_OneColumnNotFound ()
     {
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
                                  _property1.ColumnDefinition
                              };
 
-      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
+      var result = unionViewDefinition.CalculateFullColumnList (availableColumns).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (5));
       Assert.That (result[0], Is.SameAs (ColumnDefinitionObjectMother.IDColumn));
