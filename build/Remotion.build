@@ -84,14 +84,14 @@
   <Target Name="TestBuild" DependsOnTargets="CleanFolders" >
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;;"
+             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"
              Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
   </Target>
 
-  <Target Name="DocumentationTestBuild" DependsOnTargets="" >
+  <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Targets="BuildReleaseProjects;;"
+             Targets="BuildReleaseProjects;AssembleBuildOutput;"
              Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
 
     <ItemGroup>
@@ -102,7 +102,7 @@
     <MSBuild Projects="@(_allDocumentationDeclarations)"
              BuildInParallel="true"
              StopOnFirstFailure="true"
-             Targets="GenerateDocumentation;"
+             Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;CopyWebsiteFilesToWebsiteDirectory"
              Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);LogDirectory=$(LogDirectory);Version=0.0.0;"/>
   </Target>
 
