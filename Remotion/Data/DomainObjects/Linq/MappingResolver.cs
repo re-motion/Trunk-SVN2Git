@@ -36,17 +36,14 @@ namespace Remotion.Data.DomainObjects.Linq
   public class MappingResolver : IMappingResolver
   {
     private readonly IStorageSpecificExpressionResolver _storageSpecificExpressionResolver;
-    private readonly IStorageNameProvider _storageNameProvider;
     private static readonly PropertyInfo s_classIDPropertyInfo = typeof (ObjectID).GetProperty ("ClassID");
     private static readonly PropertyInfo s_idPropertyInfo = typeof (DomainObject).GetProperty ("ID");
 
-    public MappingResolver (IStorageSpecificExpressionResolver storageSpecificExpressionResolver, IStorageNameProvider storageNameProvider)
+    public MappingResolver (IStorageSpecificExpressionResolver storageSpecificExpressionResolver)
     {
       ArgumentUtility.CheckNotNull ("storageSpecificExpressionResolver", storageSpecificExpressionResolver);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       _storageSpecificExpressionResolver = storageSpecificExpressionResolver;
-      _storageNameProvider = storageNameProvider;
     }
 
     public IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
@@ -133,7 +130,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
       if (memberInfo == s_classIDPropertyInfo)
-        return sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, _storageNameProvider.GetClassIDColumnName(), false);
+        return _storageSpecificExpressionResolver.ResolveClassIDColumn(sqlColumnExpression);
 
       throw new UnmappedItemException (
           string.Format ("The member '{0}.{1}' does not identify a mapped property.", memberInfo.ReflectedType.Name, memberInfo.Name));

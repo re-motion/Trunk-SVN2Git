@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _storageNameProviderStub.Stub (stub => stub.GetIDColumnName()).Return ("ID");
       _storageNameProviderStub.Stub (stub => stub.GetClassIDColumnName()).Return ("ClassID");
       _storageNameProviderStub.Stub (stub => stub.GetTimestampColumnName()).Return ("Timestamp");
-      _resolver = new MappingResolver (_storageSpecificExpressionResolverStub, _storageNameProviderStub);
+      _resolver = new MappingResolver (_storageSpecificExpressionResolverStub);
       _generator = new UniqueIdentifierGenerator();
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"), JoinSemantics.Inner);
       _fakeSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "OrderTable", "o");
@@ -353,31 +353,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var property = typeof (ObjectID).GetProperty ("ClassID");
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Name", false);
+      var fakeColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Name", false);
+      
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveClassIDColumn (columnExpression)).Return (fakeColumnExpression);
 
       var result = _resolver.ResolveMemberExpression (columnExpression, property);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
-      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (columnExpression.OwningTableAlias));
-      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("ClassID"));
-      Assert.That (((SqlColumnDefinitionExpression) result).IsPrimaryKey, Is.False);
-    }
-
-    [Test]
-    public void ResolveMemberExpression_OnColumnReference_WithClassIDProperty ()
-    {
-      var property = typeof (ObjectID).GetProperty ("ClassID");
-      var referencedEntity = new SqlEntityDefinitionExpression (
-          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (int), "o", "ID", true));
-
-      var sqlColumnReferenceExpression = new SqlColumnReferenceExpression (typeof (string), "c", "Name", false, referencedEntity);
-
-      var result = (SqlColumnExpression) _resolver.ResolveMemberExpression (sqlColumnReferenceExpression, property);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (SqlColumnReferenceExpression)));
-      Assert.That (result.ColumnName, Is.EqualTo ("ClassID"));
-      Assert.That (result.OwningTableAlias, Is.EqualTo (sqlColumnReferenceExpression.OwningTableAlias));
-      Assert.That (result.IsPrimaryKey, Is.False);
+      Assert.That (result, Is.SameAs(fakeColumnExpression));
     }
 
     [Test]

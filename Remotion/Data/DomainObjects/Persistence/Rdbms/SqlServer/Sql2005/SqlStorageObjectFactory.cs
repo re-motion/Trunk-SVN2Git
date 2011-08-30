@@ -126,8 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var generator = new UniqueIdentifierGenerator();
       var storageNameProvider = CreateStorageNameProvider();
-      var resolver = new MappingResolver (
-          new StorageSpecificExpressionResolver (CreateRdbmsPersistenceModelProvider()), storageNameProvider);
+      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (CreateRdbmsPersistenceModelProvider(), storageNameProvider));
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));

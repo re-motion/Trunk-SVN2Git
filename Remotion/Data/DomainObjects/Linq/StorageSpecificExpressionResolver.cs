@@ -20,6 +20,7 @@ using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
 
@@ -31,12 +32,15 @@ namespace Remotion.Data.DomainObjects.Linq
   public class StorageSpecificExpressionResolver : IStorageSpecificExpressionResolver
   {
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
+    private readonly IStorageNameProvider _storageNameProvider;
 
-    public StorageSpecificExpressionResolver (IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
+    public StorageSpecificExpressionResolver (IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider, IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
+      _storageNameProvider = storageNameProvider;
     }
 
     public SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias)
@@ -77,6 +81,13 @@ namespace Remotion.Data.DomainObjects.Linq
 
       Assertion.IsTrue (idColumn.IsPartOfPrimaryKey);
       return GetColumnFromEntity (idColumn, originatingEntity);
+    }
+
+    public SqlColumnExpression ResolveClassIDColumn (SqlColumnExpression idColumn)
+    {
+      ArgumentUtility.CheckNotNull ("idColumn", idColumn);
+
+      return idColumn.Update (typeof (string), idColumn.OwningTableAlias, _storageNameProvider.GetClassIDColumnName (), false);
     }
 
     public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)

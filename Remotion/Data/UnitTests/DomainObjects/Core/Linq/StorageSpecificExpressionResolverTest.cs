@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -36,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     private StorageSpecificExpressionResolver _storageSpecificExpressionResolver;
     private ClassDefinition _classDefinition;
-    private IStorageNameProvider _storageNameProvider;
+    private IStorageNameProvider _storageNameProviderStub;
     private IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProviderStub;
     private IRdbmsStoragePropertyDefinition _rdbmsStoragePropertyDefinitionStub;
 
@@ -44,12 +45,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public override void SetUp ()
     {
       base.SetUp();
-      _storageNameProvider = MockRepository.GenerateStub<IStorageNameProvider>();
-      _storageNameProvider.Stub (stub => stub.GetIDColumnName()).Return ("ID");
+      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
+      _storageNameProviderStub.Stub (stub => stub.GetIDColumnName()).Return ("ID");
+      _storageNameProviderStub.Stub (stub => stub.GetClassIDColumnName()).Return ("ClassID");
+
       _rdbmsPersistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
       _rdbmsStoragePropertyDefinitionStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
 
-      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_rdbmsPersistenceModelProviderStub);
+      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_rdbmsPersistenceModelProviderStub, _storageNameProviderStub);
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
     }
 
@@ -175,6 +178,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.IsPrimaryKey, Is.True);
       Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (result.Type, Is.SameAs (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (entityDefinition.ObjectIDProperty).PropertyType));
+    }
+
+    [Test]
+    public void ResolveClassIDColumn ()
+    {
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "columnName", false);
+
+      var result = _storageSpecificExpressionResolver.ResolveClassIDColumn (columnExpression);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
+      Assert.That (result.ColumnName, Is.EqualTo("ClassID"));
+      Assert.That (result.IsPrimaryKey, Is.False);
+    }
+
+    [Test]
+    public void ResolveClassIDColumn_OnColumnReference_WithClassIDProperty ()
+    {
+      var referencedEntity = new SqlEntityDefinitionExpression (
+          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (int), "o", "ID", true));
+
+      var sqlColumnReferenceExpression = new SqlColumnReferenceExpression (typeof (string), "c", "Name", false, referencedEntity);
+
+      var result = _storageSpecificExpressionResolver.ResolveClassIDColumn (sqlColumnReferenceExpression);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnReferenceExpression)));
+      Assert.That (result.ColumnName, Is.EqualTo ("ClassID"));
+      Assert.That (result.OwningTableAlias, Is.EqualTo (sqlColumnReferenceExpression.OwningTableAlias));
+      Assert.That (result.IsPrimaryKey, Is.False);
     }
 
     [Test]

@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var mappingResolutionStage =
           new DefaultMappingResolutionStage (
               new MappingResolver (
-                  new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider()), storageNameProvider),
+                  new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider(), storageNameProvider)),
               generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       var mappingResolutionContext = new MappingResolutionContext();
