@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public interface IRdbmsPersistenceModelProvider
   {
-    IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition);
+    IRdbmsStorageEntityDefinition GetEntityDefinition (ClassDefinition classDefinition);
     IRdbmsStoragePropertyDefinition GetStoragePropertyDefinition (PropertyDefinition propertyDefinition);
   }
 }

@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetEntityDefinition ()
     {
-      var entityDefinition = MockRepository.GenerateStub<IEntityDefinition>();
+      var entityDefinition = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
       _classDefinition.SetStorageEntity (entityDefinition);
 
       var result = _provider.GetEntityDefinition (_classDefinition);
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
-        "The Rdbms provider classes require a storage definition object of type 'IEntityDefinition' for class-definition 'Order', "
+        "The Rdbms provider classes require a storage definition object of type 'IRdbmsStorageEntityDefinition' for class-definition 'Order', "
         + "but that class has no storage definition object.")]
     public void GetEntityDefinition_NullEntityDefinition ()
     {
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
-        "The Rdbms provider classes require a storage definition object of type 'IEntityDefinition' for class-definition 'Order', "
+        "The Rdbms provider classes require a storage definition object of type 'IRdbmsStorageEntityDefinition' for class-definition 'Order', "
         + "but that class has a storage definition object of type 'FakeStorageEntityDefinition'.")]
     public void GetEntityDefinition_WrongEntityDefinition ()
     {

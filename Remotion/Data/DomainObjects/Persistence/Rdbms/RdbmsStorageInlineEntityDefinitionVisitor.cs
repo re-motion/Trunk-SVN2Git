@@ -21,16 +21,16 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
-  /// Visits the given <see cref="IEntityDefinition"/> and executes a handler based on the entity's type.
+  /// Visits the given <see cref="IRdbmsStorageEntityDefinition"/> and executes a handler based on the entity's type.
   /// </summary>
-  public class InlineEntityDefinitionVisitor
+  public class RdbmsStorageInlineEntityDefinitionVisitor
   {
     public static T Visit<T> (
-        IEntityDefinition entityDefinition,
-        Func<TableDefinition, Func<IEntityDefinition, T>, T> tableDefinitionHandler,
-        Func<FilterViewDefinition, Func<IEntityDefinition, T>, T> filterViewDefinitionHandler,
-        Func<UnionViewDefinition, Func<IEntityDefinition, T>, T> unionViewDefinitionHandler,
-        Func<NullEntityDefinition, Func<IEntityDefinition, T>, T> nullEntityDefinitionHandler)
+        IRdbmsStorageEntityDefinition entityDefinition,
+        Func<TableDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> tableDefinitionHandler,
+        Func<FilterViewDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> filterViewDefinitionHandler,
+        Func<UnionViewDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> unionViewDefinitionHandler,
+        Func<NullEntityDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> nullEntityDefinitionHandler)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
       ArgumentUtility.CheckNotNull ("tableDefinitionHandler", tableDefinitionHandler);
@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("unionViewDefinitionHandler", unionViewDefinitionHandler);
       ArgumentUtility.CheckNotNull ("nullEntityDefinitionHandler", nullEntityDefinitionHandler);
 
-      var visitor = new EntityDefinitionVisitor<T> (
+      var visitor = new RdbmsStorageEntityDefinitionVisitor<T> (
           tableDefinitionHandler,
           filterViewDefinitionHandler,
           unionViewDefinitionHandler,
@@ -48,11 +48,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     public static void Visit (
-        IEntityDefinition entityDefinition,
-        Action<TableDefinition, Action<IEntityDefinition>> tableDefinitionHandler,
-        Action<FilterViewDefinition, Action<IEntityDefinition>> filterViewDefinitionHandler,
-        Action<UnionViewDefinition, Action<IEntityDefinition>> unionViewDefinitionHandler,
-        Action<NullEntityDefinition, Action<IEntityDefinition>> nullEntityDefinitionHandler)
+        IRdbmsStorageEntityDefinition entityDefinition,
+        Action<TableDefinition, Action<IRdbmsStorageEntityDefinition>> tableDefinitionHandler,
+        Action<FilterViewDefinition, Action<IRdbmsStorageEntityDefinition>> filterViewDefinitionHandler,
+        Action<UnionViewDefinition, Action<IRdbmsStorageEntityDefinition>> unionViewDefinitionHandler,
+        Action<NullEntityDefinition, Action<IRdbmsStorageEntityDefinition>> nullEntityDefinitionHandler)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
       ArgumentUtility.CheckNotNull ("tableDefinitionHandler", tableDefinitionHandler);
@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("unionViewDefinitionHandler", unionViewDefinitionHandler);
       ArgumentUtility.CheckNotNull ("nullEntityDefinitionHandler", nullEntityDefinitionHandler);
 
-      var visitor = new EntityDefinitionVisitor (
+      var visitor = new RdbmsStorageEntityDefinitionVisitor (
           tableDefinitionHandler,
           filterViewDefinitionHandler,
           unionViewDefinitionHandler,
@@ -69,20 +69,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       entityDefinition.Accept (visitor);
     }
 
-    private class EntityDefinitionVisitor<T> : IEntityDefinitionVisitor
+    private class RdbmsStorageEntityDefinitionVisitor<T> : IRdbmsStorageEntityDefinitionVisitor
     {
-      private readonly Func<TableDefinition, Func<IEntityDefinition, T>, T> _tableDefinitionHandler;
-      private readonly Func<FilterViewDefinition, Func<IEntityDefinition, T>, T> _filterViewDefinitionHandler;
-      private readonly Func<UnionViewDefinition, Func<IEntityDefinition, T>, T> _unionViewDefinitionHandler;
-      private readonly Func<NullEntityDefinition, Func<IEntityDefinition, T>, T> _nullEntityDefinitionHandler;
+      private readonly Func<TableDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> _tableDefinitionHandler;
+      private readonly Func<FilterViewDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> _filterViewDefinitionHandler;
+      private readonly Func<UnionViewDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> _unionViewDefinitionHandler;
+      private readonly Func<NullEntityDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> _nullEntityDefinitionHandler;
 
       private T _returnValue;
 
-      public EntityDefinitionVisitor (
-          Func<TableDefinition, Func<IEntityDefinition, T>, T> tableDefinitionHandler,
-          Func<FilterViewDefinition, Func<IEntityDefinition, T>, T> filterViewDefinitionHandler,
-          Func<UnionViewDefinition, Func<IEntityDefinition, T>, T> unionViewDefinitionHandler,
-          Func<NullEntityDefinition, Func<IEntityDefinition, T>, T> nullEntityDefinitionHandler)
+      public RdbmsStorageEntityDefinitionVisitor (
+          Func<TableDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> tableDefinitionHandler,
+          Func<FilterViewDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> filterViewDefinitionHandler,
+          Func<UnionViewDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> unionViewDefinitionHandler,
+          Func<NullEntityDefinition, Func<IRdbmsStorageEntityDefinition, T>, T> nullEntityDefinitionHandler)
       {
         ArgumentUtility.CheckNotNull ("tableDefinitionHandler", tableDefinitionHandler);
         ArgumentUtility.CheckNotNull ("filterViewDefinitionHandler", filterViewDefinitionHandler);
@@ -128,25 +128,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         _returnValue = _nullEntityDefinitionHandler (nullEntityDefinition, ContinueWithNextEntity);
       }
 
-      private T ContinueWithNextEntity (IEntityDefinition entityDefinition)
+      private T ContinueWithNextEntity (IRdbmsStorageEntityDefinition entityDefinition)
       {
         entityDefinition.Accept (this);
         return _returnValue;
       }
     }
 
-    private class EntityDefinitionVisitor : IEntityDefinitionVisitor
+    private class RdbmsStorageEntityDefinitionVisitor : IRdbmsStorageEntityDefinitionVisitor
     {
-      private readonly Action<TableDefinition, Action<IEntityDefinition>> _tableDefinitionHandler;
-      private readonly Action<FilterViewDefinition, Action<IEntityDefinition>> _filterViewDefinitionHandler;
-      private readonly Action<UnionViewDefinition, Action<IEntityDefinition>> _unionViewDefinitionHandler;
-      private readonly Action<NullEntityDefinition, Action<IEntityDefinition>> _nullEntityDefinitionHandler;
+      private readonly Action<TableDefinition, Action<IRdbmsStorageEntityDefinition>> _tableDefinitionHandler;
+      private readonly Action<FilterViewDefinition, Action<IRdbmsStorageEntityDefinition>> _filterViewDefinitionHandler;
+      private readonly Action<UnionViewDefinition, Action<IRdbmsStorageEntityDefinition>> _unionViewDefinitionHandler;
+      private readonly Action<NullEntityDefinition, Action<IRdbmsStorageEntityDefinition>> _nullEntityDefinitionHandler;
 
-      public EntityDefinitionVisitor (
-          Action<TableDefinition, Action<IEntityDefinition>> tableDefinitionHandler,
-          Action<FilterViewDefinition, Action<IEntityDefinition>> filterViewDefinitionHandler,
-          Action<UnionViewDefinition, Action<IEntityDefinition>> unionViewDefinitionHandler,
-          Action<NullEntityDefinition, Action<IEntityDefinition>> nullEntityDefinitionHandler)
+      public RdbmsStorageEntityDefinitionVisitor (
+          Action<TableDefinition, Action<IRdbmsStorageEntityDefinition>> tableDefinitionHandler,
+          Action<FilterViewDefinition, Action<IRdbmsStorageEntityDefinition>> filterViewDefinitionHandler,
+          Action<UnionViewDefinition, Action<IRdbmsStorageEntityDefinition>> unionViewDefinitionHandler,
+          Action<NullEntityDefinition, Action<IRdbmsStorageEntityDefinition>> nullEntityDefinitionHandler)
       {
         ArgumentUtility.CheckNotNull ("tableDefinitionHandler", tableDefinitionHandler);
         ArgumentUtility.CheckNotNull ("filterViewDefinitionHandler", filterViewDefinitionHandler);
@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         _nullEntityDefinitionHandler (nullEntityDefinition, ContinueWithNextEntity);
       }
 
-      private void ContinueWithNextEntity (IEntityDefinition entityDefinition)
+      private void ContinueWithNextEntity (IRdbmsStorageEntityDefinition entityDefinition)
       {
         entityDefinition.Accept (this);
       }

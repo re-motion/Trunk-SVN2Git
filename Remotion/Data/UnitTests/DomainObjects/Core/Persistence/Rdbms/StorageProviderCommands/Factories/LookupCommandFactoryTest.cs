@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectReaderFactoryStrictMock
           .Expect (
               mock => mock.CreateDataContainerReader (
-                  Arg.Is ((IEntityDefinition) _tableDefinition1),
+                  Arg.Is ((IRdbmsStorageEntityDefinition) _tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns)))
           .Return (_dataContainerReader1Stub);
       _objectReaderFactoryStrictMock.Replay();
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectReaderFactoryStrictMock
           .Expect (
               mock => mock.CreateDataContainerReader (
-                  Arg.Is ((IEntityDefinition) _tableDefinition1),
+                  Arg.Is ((IRdbmsStorageEntityDefinition) _tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns)))
           .Return (_dataContainerReader1Stub);
       _objectReaderFactoryStrictMock.Replay();
@@ -188,13 +188,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectReaderFactoryStrictMock
           .Expect (
               mock => mock.CreateDataContainerReader (
-                  Arg.Is ((IEntityDefinition) _tableDefinition1),
+                  Arg.Is ((IRdbmsStorageEntityDefinition) _tableDefinition1),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns1)))
           .Return (_dataContainerReader1Stub);
       _objectReaderFactoryStrictMock
           .Expect (
               mock => mock.CreateDataContainerReader (
-                  Arg.Is ((IEntityDefinition) _tableDefinition2),
+                  Arg.Is ((IRdbmsStorageEntityDefinition) _tableDefinition2),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns2)))
           .Return (_dataContainerReader2Stub);
       _objectReaderFactoryStrictMock.Replay();
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void CreateForSortedMultiIDLookup_DifferentStorageProvider ()
     {
       _objectReaderFactoryStrictMock
-          .Stub (mock => mock.CreateDataContainerReader (Arg<IEntityDefinition>.Is.Anything, Arg<IEnumerable<ColumnDefinition>>.Is.Anything))
+          .Stub (mock => mock.CreateDataContainerReader (Arg<IRdbmsStorageEntityDefinition>.Is.Anything, Arg<IEnumerable<ColumnDefinition>>.Is.Anything))
           .Return (_dataContainerReader1Stub);
 
       _factory.CreateForSortedMultiIDLookup (new[] { DomainObjectIDs.Official1 });
@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void CreateForMultiTimestampLookup_DifferentStorageProvider ()
     {
       _objectReaderFactoryStrictMock
-          .Stub (mock => mock.CreateTimestampReader (Arg<IEntityDefinition>.Is.Anything, Arg<IEnumerable<ColumnDefinition>>.Is.Anything))
+          .Stub (mock => mock.CreateTimestampReader (Arg<IRdbmsStorageEntityDefinition>.Is.Anything, Arg<IEnumerable<ColumnDefinition>>.Is.Anything))
           .Return (_timestampReader1Stub);
       
       _factory.CreateForMultiTimestampLookup (new[] { DomainObjectIDs.Official1 });

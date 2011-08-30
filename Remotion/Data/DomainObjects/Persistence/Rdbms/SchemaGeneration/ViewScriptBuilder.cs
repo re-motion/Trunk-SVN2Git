@@ -32,11 +32,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
-    private class EntityDefinitionVisitor : IEntityDefinitionVisitor
+    private class RdbmsStorageEntityDefinitionVisitor : IRdbmsStorageEntityDefinitionVisitor
     {
       private readonly ViewScriptBuilder _builder;
 
-      public EntityDefinitionVisitor (ViewScriptBuilder builder)
+      public RdbmsStorageEntityDefinitionVisitor (ViewScriptBuilder builder)
       {
         _builder = builder;
       }
@@ -82,11 +82,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all views"));
     }
 
-    public void AddEntityDefinition (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      var visitor = new EntityDefinitionVisitor (this);
+      var visitor = new RdbmsStorageEntityDefinitionVisitor (this);
       entityDefinition.Accept (visitor);
     }
 

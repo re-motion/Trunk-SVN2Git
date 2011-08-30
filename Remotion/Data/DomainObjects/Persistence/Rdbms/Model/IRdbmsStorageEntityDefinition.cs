@@ -22,9 +22,9 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IEntityDefinition"/> defines the API for an entity definition for a relational database.
+  /// <see cref="IRdbmsStorageEntityDefinition"/> defines the API for an entity definition for a relational database.
   /// </summary>
-  public interface IEntityDefinition : IStorageEntityDefinition, INullObject
+  public interface IRdbmsStorageEntityDefinition : IStorageEntityDefinition, INullObject
   {
     EntityNameDefinition ViewName { get; }
     ReadOnlyCollection<IIndexDefinition> Indexes { get; }
@@ -36,6 +36,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     IEnumerable<IRdbmsStoragePropertyDefinition> GetAllProperties ();
     IEnumerable<ColumnDefinition> GetAllColumns ();
-    void Accept (IEntityDefinitionVisitor visitor);
+    void Accept (IRdbmsStorageEntityDefinitionVisitor visitor);
   }
 }

@@ -26,10 +26,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
 {
   [TestFixture]
-  public class EntityDefinitionFactoryTest
+  public class RdbmsStorageEntityDefinitionFactoryTest
   {
     private string _storageProviderID;
-    private EntityDefinitionFactory _factory;
+    private RdbmsStorageEntityDefinitionFactory _factory;
     private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProviderMock;
     private IStoragePropertyDefinitionResolver _storagePropertyDefinitionResolverMock;
     private IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactoryMock;
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storagePropertyDefinitionResolverMock = MockRepository.GenerateStrictMock<IStoragePropertyDefinitionResolver>();
       _storageNameProviderMock = MockRepository.GenerateStrictMock<IStorageNameProvider>();
       _foreignKeyConstraintDefinitionFactoryMock = MockRepository.GenerateStrictMock<IForeignKeyConstraintDefinitionFactory>();
-      _factory = new EntityDefinitionFactory (
+      _factory = new RdbmsStorageEntityDefinitionFactory (
           _infrastructureStoragePropertyDefinitionProviderMock,
           _foreignKeyConstraintDefinitionFactoryMock,
           _storagePropertyDefinitionResolverMock,
@@ -274,7 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _infrastructureStoragePropertyDefinitionProviderMock.Replay();
 
       var result = _factory.CreateUnionViewDefinition (
-          _testModel.BaseBaseClassDefinition, new IEntityDefinition[] { fakeUnionEntity1, fakeUnionEntity2 });
+          _testModel.BaseBaseClassDefinition, new IRdbmsStorageEntityDefinition[] { fakeUnionEntity1, fakeUnionEntity2 });
 
       _storagePropertyDefinitionResolverMock.VerifyAllExpectations();
       _infrastructureStoragePropertyDefinitionProviderMock.VerifyAllExpectations();
@@ -295,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     private void CheckTableDefinition (
-        IEntityDefinition actualEntityDefinition,
+        IRdbmsStorageEntityDefinition actualEntityDefinition,
         string expectedStorageProviderID,
         string expectedTableName,
         string expectedViewName,
@@ -336,7 +336,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     private void CheckFilterViewDefinition (
-        IEntityDefinition actualEntityDefinition,
+        IRdbmsStorageEntityDefinition actualEntityDefinition,
         string expectedStorageProviderID,
         string expectedViewName,
         IStorageEntityDefinition expectedBaseEntity,
@@ -359,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     private void CheckUnionViewDefinition (
-        IEntityDefinition actualEntityDefinition,
+        IRdbmsStorageEntityDefinition actualEntityDefinition,
         string expectedStorageProviderID,
         string expectedViewName,
         IStorageEntityDefinition[] expectedStorageEntityDefinitions,
@@ -380,7 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     private void CheckEntityDefinition (
-        IEntityDefinition expectedEntityDefinition,
+        IRdbmsStorageEntityDefinition expectedEntityDefinition,
         string expectedStorageProviderID,
         string expectedViewName,
         IRdbmsStoragePropertyDefinition[] expectedStoragePropertyDefinitions,

@@ -52,11 +52,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all synonyms"));
     }
 
-    private class EntityDefinitionVisitor : IEntityDefinitionVisitor
+    private class RdbmsStorageEntityDefinitionVisitor : IRdbmsStorageEntityDefinitionVisitor
     {
       private readonly SynonymScriptBuilder _builder;
 
-      public EntityDefinitionVisitor (SynonymScriptBuilder builder)
+      public RdbmsStorageEntityDefinitionVisitor (SynonymScriptBuilder builder)
       {
         _builder = builder;
       }
@@ -82,11 +82,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       }
     }
 
-    public void AddEntityDefinition (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      var visitor = new EntityDefinitionVisitor (this);
+      var visitor = new RdbmsStorageEntityDefinitionVisitor (this);
       entityDefinition.Accept (visitor);
     }
 

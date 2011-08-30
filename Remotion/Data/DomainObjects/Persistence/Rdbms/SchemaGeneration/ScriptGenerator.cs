@@ -30,12 +30,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   public class ScriptGenerator
   {
     private readonly Func<RdbmsProviderDefinition, IScriptBuilder> _scriptBuilderFactory;
-    private readonly IEntityDefinitionProvider _entityDefinitionProvider;
+    private readonly IRdbmsStorageEntityDefinitionProvider _entityDefinitionProvider;
     private readonly IScriptToStringConverter _scriptToStringConverter;
 
     public ScriptGenerator (
         Func<RdbmsProviderDefinition, IScriptBuilder> scriptBuilderFactory,
-        IEntityDefinitionProvider entityDefinitionProvider,
+        IRdbmsStorageEntityDefinitionProvider entityDefinitionProvider,
         IScriptToStringConverter scriptToStringConverter)
     {
       ArgumentUtility.CheckNotNull ("scriptBuilderFactory", scriptBuilderFactory);

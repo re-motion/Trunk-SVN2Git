@@ -271,8 +271,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       if (storageEntityDefinition is FakeStorageEntityDefinition)
         return ((FakeStorageEntityDefinition) storageEntityDefinition).Name;
       else 
-        return InlineEntityDefinitionVisitor.Visit<string> (
-            (IEntityDefinition) storageEntityDefinition,
+        return RdbmsStorageInlineEntityDefinitionVisitor.Visit<string> (
+            (IRdbmsStorageEntityDefinition) storageEntityDefinition,
             (table, continuation) => table.TableName.EntityName,
             (filterView, continuation) => continuation (filterView.BaseEntity),
             (unionView, continuation) => null,

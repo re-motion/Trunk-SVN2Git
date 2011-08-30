@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Accept ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<IRdbmsStorageEntityDefinitionVisitor>();
 
       visitorMock.Expect (mock => mock.VisitFilterViewDefinition (_filterViewDefinition));
       visitorMock.Replay();

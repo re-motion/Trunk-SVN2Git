@@ -18,7 +18,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -27,10 +26,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
-  public class EntityDefinitionProviderTest
+  public class RdbmsStorageEntityDefinitionProviderTest
   {
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
-    private EntityDefinitionProvider _entityDefinitionProvider;
+    private RdbmsStorageEntityDefinitionProvider _entityDefinitionProvider;
     private ClassDefinition _classDefinition1;
     private ClassDefinition _classDefinition2;
     private ClassDefinition _classDefinition3;
@@ -39,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _entityDefinitionProvider = new EntityDefinitionProvider();
+      _entityDefinitionProvider = new RdbmsStorageEntityDefinitionProvider();
       _classDefinition1 = ClassDefinitionFactory.CreateClassDefinition ("Order", "Order", _storageProviderDefinition, typeof (Order), false);
       _classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (
           "OrderItem", "OrderItem", _storageProviderDefinition, typeof (OrderItem), false);

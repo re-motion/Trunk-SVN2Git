@@ -27,14 +27,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="UnionViewDefinition"/> defines a union view in a relational database.
   /// </summary>
-  public class UnionViewDefinition : EntityDefinitionBase
+  public class UnionViewDefinition : RdbmsStorageEntityDefinitionBase
   {
-    private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
+    private readonly ReadOnlyCollection<IRdbmsStorageEntityDefinition> _unionedEntities;
 
     public UnionViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
-        IEnumerable<IEntityDefinition> unionedEntities,
+        IEnumerable<IRdbmsStorageEntityDefinition> unionedEntities,
         ObjectIDStoragePropertyDefinition objectIDProperty,
         IRdbmsStoragePropertyDefinition timestampProperty,
         IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       indexes.ToList().AsReadOnly();
     }
 
-    public ReadOnlyCollection<IEntityDefinition> UnionedEntities
+    public ReadOnlyCollection<IRdbmsStorageEntityDefinition> UnionedEntities
     {
       get { return _unionedEntities; }
     }
@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
     }
 
-    public override void Accept (IEntityDefinitionVisitor visitor)
+    public override void Accept (IRdbmsStorageEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 

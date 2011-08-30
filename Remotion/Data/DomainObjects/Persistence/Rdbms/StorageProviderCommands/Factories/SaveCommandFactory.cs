@@ -150,7 +150,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
     {
-      var objectIDStoragePropertyDefinition = (IRdbmsStoragePropertyDefinition) ((IEntityDefinition) tableDefinition).ObjectIDProperty;
+      var objectIDStoragePropertyDefinition = (IRdbmsStoragePropertyDefinition) ((IRdbmsStorageEntityDefinition) tableDefinition).ObjectIDProperty;
       var columnValuesForID = objectIDStoragePropertyDefinition.SplitValue (dataContainer.ID);
 
       var columnValuesForDataProperties = dataContainer.PropertyValues.Cast<PropertyValue>()

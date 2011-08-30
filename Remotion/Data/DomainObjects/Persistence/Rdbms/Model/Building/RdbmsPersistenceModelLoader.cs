@@ -34,14 +34,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   public class RdbmsPersistenceModelLoader : IPersistenceModelLoader
   {
     private readonly StorageProviderDefinition _storageProviderDefinition;
-    private readonly IEntityDefinitionFactory _entityDefinitionFactory;
+    private readonly IRdbmsStorageEntityDefinitionFactory _entityDefinitionFactory;
     private readonly IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public RdbmsPersistenceModelLoader (
         StorageProviderDefinition storageProviderDefinition,
-        IEntityDefinitionFactory entityDefinitionFactory,
+        IRdbmsStorageEntityDefinitionFactory entityDefinitionFactory,
         IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory,
         IStorageNameProvider storageNameProvider,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       get { return _storageProviderDefinition.Name; }
     }
 
-    public IEntityDefinitionFactory EntityDefinitionFactory
+    public IRdbmsStorageEntityDefinitionFactory EntityDefinitionFactory
     {
       get { return _entityDefinitionFactory; }
     }
@@ -121,13 +121,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         var storageEntity = CreateStorageEntityDefinition (classDefinition);
         classDefinition.SetStorageEntity (storageEntity);
       }
-      else if (!(classDefinition.StorageEntityDefinition is IEntityDefinition))
+      else if (!(classDefinition.StorageEntityDefinition is IRdbmsStorageEntityDefinition))
       {
         throw new InvalidOperationException (
             string.Format (
                 "The storage entity definition of class '{0}' does not implement interface '{1}'.",
                 classDefinition.ID,
-                typeof (IEntityDefinition).Name));
+                typeof (IRdbmsStorageEntityDefinition).Name));
       }
 
       Assertion.IsNotNull (classDefinition.StorageEntityDefinition);
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return _entityDefinitionFactory.CreateUnionViewDefinition (classDefinition, derivedStorageEntityDefinitions);
     }
 
-    private IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition)
+    private IRdbmsStorageEntityDefinition GetEntityDefinition (ClassDefinition classDefinition)
     {
       EnsureStorageEntitiesCreated (classDefinition);
 

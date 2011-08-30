@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="NullEntityDefinition"/> represents a non-existing entity.
   /// </summary>
-  public class NullEntityDefinition : IEntityDefinition
+  public class NullEntityDefinition : IRdbmsStorageEntityDefinition
   {
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return Array.AsReadOnly(new EntityNameDefinition[0]); }
     }
 
-    public void Accept (IEntityDefinitionVisitor visitor)
+    public void Accept (IRdbmsStorageEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 

@@ -14,18 +14,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using System.Collections.Generic;
+using System.Linq;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
-  /// <see cref="IEntityDefinitionVisitor"/> defines the API for the entity definition visitor implementations.
+  /// <see cref="RdbmsStorageEntityDefinitionProvider"/> returns a sequence of <see cref="IRdbmsStorageEntityDefinition"/> for the given <see cref="ClassDefinition"/> 
+  /// instances.
   /// </summary>
-  public interface IEntityDefinitionVisitor
+  public class RdbmsStorageEntityDefinitionProvider : IRdbmsStorageEntityDefinitionProvider
   {
-    void VisitTableDefinition (TableDefinition tableDefinition);
-    void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition);
-    void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition);
-    void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition);
+    public IEnumerable<IRdbmsStorageEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+
+      return classDefinitions
+          .Select (cd => cd.StorageEntityDefinition)
+          .OfType<IRdbmsStorageEntityDefinition> ();
+    }
   }
 }

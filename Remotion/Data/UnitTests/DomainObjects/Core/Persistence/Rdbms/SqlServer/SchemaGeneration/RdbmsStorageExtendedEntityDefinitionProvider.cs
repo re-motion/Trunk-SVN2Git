@@ -27,11 +27,11 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class ExtendedEntityDefinitionProvider : IEntityDefinitionProvider
+  public class RdbmsStorageExtendedEntityDefinitionProvider : IRdbmsStorageEntityDefinitionProvider
   {
-    public IEnumerable<IEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions)
+    public IEnumerable<IRdbmsStorageEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions)
     {
-      var entityDefinitions = new EntityDefinitionProvider().GetEntityDefinitions (classDefinitions).ToList();
+      var entityDefinitions = new RdbmsStorageEntityDefinitionProvider().GetEntityDefinitions (classDefinitions).ToList();
 
       var tableDefinitions = entityDefinitions.OfType<TableDefinition>().ToList();
       if (tableDefinitions.Count() > 0)

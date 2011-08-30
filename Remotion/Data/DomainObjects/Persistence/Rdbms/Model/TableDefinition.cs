@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="TableDefinition"/> defines a table in a relational database.
   /// </summary>
-  public class TableDefinition : EntityDefinitionBase
+  public class TableDefinition : RdbmsStorageEntityDefinitionBase
   {
     private readonly EntityNameDefinition _tableName;
     private readonly ReadOnlyCollection<ITableConstraintDefinition> _constraints;
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _constraints; }
     }
 
-    public override void Accept (IEntityDefinitionVisitor visitor)
+    public override void Accept (IRdbmsStorageEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 

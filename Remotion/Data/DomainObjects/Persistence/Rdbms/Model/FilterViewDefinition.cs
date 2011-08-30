@@ -26,15 +26,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="FilterViewDefinition"/> defines a filtered view in a relational database.
   /// </summary>
-  public class FilterViewDefinition : EntityDefinitionBase
+  public class FilterViewDefinition : RdbmsStorageEntityDefinitionBase
   {
-    private readonly IEntityDefinition _baseEntity;
+    private readonly IRdbmsStorageEntityDefinition _baseEntity;
     private readonly ReadOnlyCollection<string> _classIDs;
 
     public FilterViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
-        IEntityDefinition baseEntity,
+        IRdbmsStorageEntityDefinition baseEntity,
         IEnumerable<string> classIDs,
         ObjectIDStoragePropertyDefinition objectIDProperty,
         IRdbmsStoragePropertyDefinition timestampProperty,
@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _classIDs = classIDs.ToList().AsReadOnly();
     }
 
-    public IEntityDefinition BaseEntity
+    public IRdbmsStorageEntityDefinition BaseEntity
     {
       get { return _baseEntity; }
     }
@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return (TableDefinition) current;
     }
 
-    public override void Accept (IEntityDefinitionVisitor visitor)
+    public override void Accept (IRdbmsStorageEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.VisitFilterViewDefinition (this);

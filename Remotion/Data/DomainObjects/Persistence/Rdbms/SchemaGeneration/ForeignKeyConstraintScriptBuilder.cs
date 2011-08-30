@@ -33,11 +33,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly ScriptElementCollection _dropScriptElements;
     private readonly ICommentScriptElementFactory _commentFactory;
 
-    private class EntityDefinitionVisitor : IEntityDefinitionVisitor
+    private class RdbmsStorageEntityDefinitionVisitor : IRdbmsStorageEntityDefinitionVisitor
     {
       private readonly ForeignKeyConstraintScriptBuilder _builder;
       
-      public EntityDefinitionVisitor (ForeignKeyConstraintScriptBuilder builder)
+      public RdbmsStorageEntityDefinitionVisitor (ForeignKeyConstraintScriptBuilder builder)
       {
         ArgumentUtility.CheckNotNull ("builder", builder);
 
@@ -79,11 +79,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (_commentFactory.GetCommentElement("Drop foreign keys of all tables"));
     }
 
-    public void AddEntityDefinition (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      var visitor = new EntityDefinitionVisitor (this);
+      var visitor = new RdbmsStorageEntityDefinitionVisitor (this);
       entityDefinition.Accept (visitor);
     }
 

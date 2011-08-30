@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using System;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IEntityDefinitionProvider"/> provides a strategy to get all <see cref="IEntityDefinition"/> objects for a collection of 
-  /// <see cref="ClassDefinition"/> instances. Reimplement this interface to influence which entities are processed by <see cref="ScriptGenerator"/>.
+  /// <see cref="IRdbmsStorageEntityDefinitionVisitor"/> defines the API for the entity definition visitor implementations.
   /// </summary>
-  public interface IEntityDefinitionProvider
+  public interface IRdbmsStorageEntityDefinitionVisitor
   {
-    IEnumerable<IEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions);
+    void VisitTableDefinition (TableDefinition tableDefinition);
+    void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition);
+    void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition);
+    void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition);
   }
 }

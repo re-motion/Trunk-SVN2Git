@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       var storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver (persistenceModelProvider);
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           storageNameProvider, persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
-      var entityDefinitionFactory = new EntityDefinitionFactory (
+      var entityDefinitionFactory = new RdbmsStorageEntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionProvider,
           foreignKeyConstraintDefinitionFactory,
           storagePropertyDefinitionResolver,

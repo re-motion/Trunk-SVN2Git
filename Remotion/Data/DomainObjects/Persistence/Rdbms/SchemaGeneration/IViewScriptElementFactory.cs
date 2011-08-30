@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <see cref="IViewScriptElementFactory{T}"/> defines the API for all factory classes that are responsible to create view script elements for a 
   /// relational database.
   /// </summary>
-  public interface IViewScriptElementFactory<in T> where T:IEntityDefinition
+  public interface IViewScriptElementFactory<in T> where T:IRdbmsStorageEntityDefinition
   {
     IScriptElement GetCreateElement (T entityDefinition);
     IScriptElement GetDropElement (T entityDefinition);

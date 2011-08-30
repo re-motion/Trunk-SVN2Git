@@ -164,7 +164,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new ReflectionBasedStorageNameProvider();
     }
 
-    protected virtual IEntityDefinitionFactory CreateEntityDefinitionFactory (
+    protected virtual IRdbmsStorageEntityDefinitionFactory CreateEntityDefinitionFactory (
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
         IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver,
@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new EntityDefinitionFactory (
+      return new RdbmsStorageEntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionProvider,
           foreignKeyConstraintDefinitionFactory,
           storagePropertyDefinitionResolver,

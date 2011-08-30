@@ -20,12 +20,12 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// <see cref="IEntityDefinitionFactory"/> defines the API for all entity definition factory implementations.
+  /// <see cref="IRdbmsStorageEntityDefinitionFactory"/> defines the API for all entity definition factory implementations.
   /// </summary>
-  public interface IEntityDefinitionFactory
+  public interface IRdbmsStorageEntityDefinitionFactory
   {
-    IEntityDefinition CreateTableDefinition (ClassDefinition classDefinition);
-    IEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IEntityDefinition baseEntity);
-    IEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition, IEnumerable<IEntityDefinition> unionedEntities);
+    IRdbmsStorageEntityDefinition CreateTableDefinition (ClassDefinition classDefinition);
+    IRdbmsStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IRdbmsStorageEntityDefinition baseEntity);
+    IRdbmsStorageEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition, IEnumerable<IRdbmsStorageEntityDefinition> unionedEntities);
   }
 }

@@ -305,7 +305,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\UpdatedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\InfrastructureStoragePropertyDefinitionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\CompoundStoragePropertyDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityDefinitionBaseTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsStorageEntityDefinitionBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityNameDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StoragePropertyDefinitionTestHelper.cs" />
@@ -314,7 +314,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\StorageTypeInformationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionObjectMother.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TestableEntityDefinitionBase.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TestableRdbmsStorageEntityDefinitionBase.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsPersistenceModelProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderCommandFactoryTest.cs" />
@@ -323,7 +323,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\SelectedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\SelectDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\UnionSelectDbCommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\EntityDefinitionProviderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\RdbmsStorageEntityDefinitionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\FileGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ForeignKeyConstraintScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\IndexScriptBuilderTest.cs" />
@@ -354,7 +354,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableViewScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlUnionViewScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlIndexedColumnDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedEntityDefinitionProvider.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\RdbmsStorageExtendedEntityDefinitionProvider.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlIndexDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlPrimaryXmlIndexDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\AboveInheritanceRoot.cs" />
@@ -457,7 +457,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InvalidRdbmsStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\DataStoragePropertyDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\StoragePropertyDefinitionResolverTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\EntityDefinitionFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\RdbmsStorageEntityDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ForeignKeyConstraintDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\NullEntityDefinitionTest.cs" />

@@ -23,9 +23,9 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// The <see cref="EntityDefinitionFactory"/> provides factory methods to create <see cref="IEntityDefinition"/>s.
+  /// The <see cref="RdbmsStorageEntityDefinitionFactory"/> provides factory methods to create <see cref="IRdbmsStorageEntityDefinition"/>s.
   /// </summary>
-  public class EntityDefinitionFactory : IEntityDefinitionFactory
+  public class RdbmsStorageEntityDefinitionFactory : IRdbmsStorageEntityDefinitionFactory
   {
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
     private readonly StorageProviderDefinition _storageProviderDefinition;
@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     private readonly IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
     private readonly IStorageNameProvider _storageNameProvider;
 
-    public EntityDefinitionFactory (
+    public RdbmsStorageEntityDefinitionFactory (
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
         IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver,
@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _storageProviderDefinition = storageProviderDefinition;
     }
 
-    public virtual IEntityDefinition CreateTableDefinition (ClassDefinition classDefinition)
+    public virtual IRdbmsStorageEntityDefinition CreateTableDefinition (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           new EntityNameDefinition[0]);
     }
 
-    public virtual IEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IEntityDefinition baseEntity)
+    public virtual IRdbmsStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IRdbmsStorageEntityDefinition baseEntity)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           new EntityNameDefinition[0]);
     }
 
-    public virtual IEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition, IEnumerable<IEntityDefinition> unionedEntities)
+    public virtual IRdbmsStorageEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition, IEnumerable<IRdbmsStorageEntityDefinition> unionedEntities)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);

@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddEntityDefinition ()
     {
-      var entityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
+      var entityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
 
       _innerScriptBuilderMock.Expect (mock => mock.AddEntityDefinition (entityDefinitionStub));
       _innerScriptBuilderMock.Replay();

@@ -30,19 +30,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [TestFixture]
   public class ScriptGeneratorTest : SchemaGenerationTestBase
   {
-    private IEntityDefinition _firstProviderStorageEntityDefinitionStub;
-    private IEntityDefinition _secondProviderStorageEntityDefinitionStub;
-    private IEntityDefinition _thirdProviderStorageEntityDefinitionStub;
+    private IRdbmsStorageEntityDefinition _firstProviderStorageEntityDefinitionStub;
+    private IRdbmsStorageEntityDefinition _secondProviderStorageEntityDefinitionStub;
+    private IRdbmsStorageEntityDefinition _thirdProviderStorageEntityDefinitionStub;
     private ClassDefinition _classDefinitionForFirstStorageProvider1;
     private ClassDefinition _classDefinitionForFirstStorageProvider2;
     private ClassDefinition _classDefinitionForSecondStorageProvider;
     private ClassDefinition _classDefinitionForThirdStorageProvider;
-    private IEntityDefinitionProvider _entityDefininitionProviderMock;
+    private IRdbmsStorageEntityDefinitionProvider _entityDefininitionProviderMock;
     private IScriptToStringConverter _scriptToStringConverterStub;
     private ScriptGenerator _scriptGenerator;
-    private IEntityDefinition _fakeEntityDefinition1;
-    private IEntityDefinition _fakeEntityDefinition2;
-    private IEntityDefinition _fakeEntityDefinition3;
+    private IRdbmsStorageEntityDefinition _fakeEntityDefinition1;
+    private IRdbmsStorageEntityDefinition _fakeEntityDefinition2;
+    private IRdbmsStorageEntityDefinition _fakeEntityDefinition3;
     private ScriptPair _fakeScriptResult1;
     private ScriptPair _fakeScriptResult2;
     private ScriptPair _fakeScriptResult3;
@@ -59,14 +59,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _classDefinitionForSecondStorageProvider = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
       _classDefinitionForThirdStorageProvider = ClassDefinitionFactory.CreateClassDefinition (typeof (Customer));
 
-      _firstProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
+      _firstProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
       _firstProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
 
-      _secondProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
+      _secondProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
       _secondProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (
           SchemaGenerationSecondStorageProviderDefinition);
 
-      _thirdProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
+      _thirdProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
       _thirdProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (
           new UnitTestStorageProviderStubDefinition ("Test"));
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _fakeScriptResult1 = new ScriptPair ("CreateScript1", "DropScript1");
       _fakeScriptResult2 = new ScriptPair ("CreateScript2", "DropScript2");
       _fakeScriptResult3 = new ScriptPair ("CreateScript3", "DropScript3");
-      _entityDefininitionProviderMock = MockRepository.GenerateStrictMock<IEntityDefinitionProvider>();
+      _entityDefininitionProviderMock = MockRepository.GenerateStrictMock<IRdbmsStorageEntityDefinitionProvider>();
       _scriptBuilderForFirstStorageProviderMock = MockRepository.GenerateStrictMock<IScriptBuilder>();
       _scriptBuilderForSecondStorageProviderMock = MockRepository.GenerateStrictMock<IScriptBuilder>();
       _scriptBuilderForThirdStorageProviderMock = MockRepository.GenerateStrictMock<IScriptBuilder>();
@@ -106,9 +106,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           _entityDefininitionProviderMock,
           _scriptToStringConverterStub);
 
-      _fakeEntityDefinition1 = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinition2 = MockRepository.GenerateStub<IEntityDefinition>();
-      _fakeEntityDefinition3 = MockRepository.GenerateStub<IEntityDefinition>();
+      _fakeEntityDefinition1 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinition2 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinition3 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
     }
 
     [Test]

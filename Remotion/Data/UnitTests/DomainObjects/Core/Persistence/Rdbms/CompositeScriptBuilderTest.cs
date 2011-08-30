@@ -66,8 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetCreateScript ()
     {
-      var entityDefinition1 = MockRepository.GenerateStub<IEntityDefinition> ();
-      var entityDefinition2 = MockRepository.GenerateStub<IEntityDefinition> ();
+      var entityDefinition1 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
+      var entityDefinition2 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
 
       _builder1Mock.Expect (mock => mock.AddEntityDefinition (entityDefinition1));
       _builder1Mock.Expect (mock => mock.AddEntityDefinition (entityDefinition2));
@@ -95,8 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetDropScript ()
     {
-      var entityDefinition1 = MockRepository.GenerateStub<IEntityDefinition> ();
-      var entityDefinition2 = MockRepository.GenerateStub<IEntityDefinition> ();
+      var entityDefinition1 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
+      var entityDefinition2 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
 
       _builder1Mock.Expect (mock => mock.AddEntityDefinition (entityDefinition1));
       _builder1Mock.Expect (mock => mock.AddEntityDefinition (entityDefinition2));

@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _scriptBuilders; }
     }
 
-    public virtual void AddEntityDefinition (IEntityDefinition entityDefinition)
+    public virtual void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 

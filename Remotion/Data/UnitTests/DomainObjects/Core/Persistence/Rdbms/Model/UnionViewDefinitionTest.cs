@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var baseUnionDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),
-          new IEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
+          new IRdbmsStorageEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
           _objectIDProperty,
           _timestampProperty,
           new SimpleStoragePropertyDefinition[0],
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Accept ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<IRdbmsStorageEntityDefinitionVisitor>();
 
       visitorMock.Expect (mock => mock.VisitUnionViewDefinition (_unionViewDefinition));
       visitorMock.Replay();

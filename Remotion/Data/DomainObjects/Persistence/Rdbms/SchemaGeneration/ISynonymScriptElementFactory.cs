@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <see cref="IViewScriptElementFactory{T}"/> defines the API for all factory classes that are responsible to create synonym script elements for a 
   /// relational database.
   /// </summary>
-  public interface ISynonymScriptElementFactory<in T> where T:IEntityDefinition
+  public interface ISynonymScriptElementFactory<in T> where T:IRdbmsStorageEntityDefinition
   {
     IScriptElement GetCreateElement (T entityDefinition, EntityNameDefinition synonymName);
     IScriptElement GetDropElement (T entityDefinition, EntityNameDefinition synonymName);

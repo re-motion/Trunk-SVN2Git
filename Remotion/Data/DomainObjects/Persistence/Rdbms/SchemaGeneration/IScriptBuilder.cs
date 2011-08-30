@@ -21,11 +21,11 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptEleme
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
-  /// Defines an interface for classes generating script files for several <see cref="IEntityDefinition"/>s.
+  /// Defines an interface for classes generating script files for several <see cref="IRdbmsStorageEntityDefinition"/>s.
   /// </summary>
   public interface IScriptBuilder
   {
-    void AddEntityDefinition (IEntityDefinition entityDefinition);
+    void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition);
     IScriptElement GetCreateScript ();
     IScriptElement GetDropScript ();
   }

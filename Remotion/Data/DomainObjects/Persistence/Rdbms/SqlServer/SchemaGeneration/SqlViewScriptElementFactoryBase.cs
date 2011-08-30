@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <see cref="SqlViewScriptElementFactoryBase{T}"/> represents the base-class for all factory classes that are responsible to create new script 
   /// elements for creating views in a relational database.
   /// </summary>
-  public abstract class SqlViewScriptElementFactoryBase<T> : SqlElementFactoryBase, IViewScriptElementFactory<T> where T : IEntityDefinition
+  public abstract class SqlViewScriptElementFactoryBase<T> : SqlElementFactoryBase, IViewScriptElementFactory<T> where T : IRdbmsStorageEntityDefinition
   {
     public IScriptElement GetCreateElement (T entityDefinition)
     {

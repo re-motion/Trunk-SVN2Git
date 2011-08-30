@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _classDefinition.SetStorageEntity (tableDefinition);
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetEntityDefinition (_classDefinition))
-          .Return (_classDefinition.StorageEntityDefinition as IEntityDefinition);
+          .Return (_classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetEntityDefinition (_classDefinition))
-          .Return (_classDefinition.StorageEntityDefinition as IEntityDefinition);
+          .Return (_classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -254,11 +254,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "FilterView"),
-          (IEntityDefinition) _classDefinition.StorageEntityDefinition);
+          (IRdbmsStorageEntityDefinition) _classDefinition.StorageEntityDefinition);
       _classDefinition.SetStorageEntity (filterViewDefinition);
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -274,11 +274,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition ("schemaName", "FilterView"),
-          (IEntityDefinition) _classDefinition.StorageEntityDefinition);
+          (IRdbmsStorageEntityDefinition) _classDefinition.StorageEntityDefinition);
       _classDefinition.SetStorageEntity (filterViewDefinition);
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -294,11 +294,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),
-          new[] { (IEntityDefinition) _classDefinition.StorageEntityDefinition });
+          new[] { (IRdbmsStorageEntityDefinition) _classDefinition.StorageEntityDefinition });
       _classDefinition.SetStorageEntity (unionViewDefinition);
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -314,11 +314,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition ("schemaName", "UnionView"),
-          new[] { (IEntityDefinition) _classDefinition.StorageEntityDefinition });
+          new[] { (IRdbmsStorageEntityDefinition) _classDefinition.StorageEntityDefinition });
       _classDefinition.SetStorageEntity (unionViewDefinition);
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -336,7 +336,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _classDefinition.SetStorageEntity (new NullEntityDefinition (TestDomainStorageProviderDefinition));
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
     }
@@ -400,7 +400,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetEntityDefinition (rightEndPointDefinition.ClassDefinition))
-          .Return (rightEndPointDefinition.ClassDefinition.StorageEntityDefinition as IEntityDefinition);
+          .Return (rightEndPointDefinition.ClassDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetStoragePropertyDefinition (rightEndPointDefinition.PropertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);

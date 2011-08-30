@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectReaderFactoryStrictMock
           .Expect (
               mock => mock.CreateDataContainerReader (
-                  Arg.Is ((IEntityDefinition) oppositeTable),
+                  Arg.Is ((IRdbmsStorageEntityDefinition) oppositeTable),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns)))
           .Return (_dataContainerReaderStub);
       _objectReaderFactoryStrictMock.Replay();
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectReaderFactoryStrictMock
           .Expect (
               mock => mock.CreateDataContainerReader (
-                  Arg.Is ((IEntityDefinition) _tableDefinition),
+                  Arg.Is ((IRdbmsStorageEntityDefinition) _tableDefinition),
                   Arg<IEnumerable<ColumnDefinition>>.List.Equal (expectedSelectedColumns)))
           .Return (_dataContainerReaderStub);
       _objectReaderFactoryStrictMock.Replay();

@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     public static FilterViewDefinition Create (
-        StorageProviderDefinition storageProviderDefinition, EntityNameDefinition viewName, IEntityDefinition baseEntity)
+        StorageProviderDefinition storageProviderDefinition, EntityNameDefinition viewName, IRdbmsStorageEntityDefinition baseEntity)
     {
       return Create (
           storageProviderDefinition,
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public static FilterViewDefinition Create (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
-        IEntityDefinition baseEntity,
+        IRdbmsStorageEntityDefinition baseEntity,
         IEnumerable<string> classIDs,
         ObjectIDStoragePropertyDefinition objectIDProperty,
         SimpleStoragePropertyDefinition timestampProperty,

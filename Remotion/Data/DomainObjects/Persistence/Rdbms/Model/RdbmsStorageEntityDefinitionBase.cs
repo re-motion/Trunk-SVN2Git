@@ -24,9 +24,9 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="EntityDefinitionBase"/> is the base-class for all entity definitions.
+  /// <see cref="RdbmsStorageEntityDefinitionBase"/> is the base-class for all entity definitions.
   /// </summary>
-  public abstract class EntityDefinitionBase : IEntityDefinition
+  public abstract class RdbmsStorageEntityDefinitionBase : IRdbmsStorageEntityDefinition
   {
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly EntityNameDefinition _viewName;
@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
     private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
 
-    protected EntityDefinitionBase (
+    protected RdbmsStorageEntityDefinitionBase (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
         ObjectIDStoragePropertyDefinition objectIDProperty,
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _synonyms = synonyms.ToList().AsReadOnly();
     }
 
-    public abstract void Accept (IEntityDefinitionVisitor visitor);
+    public abstract void Accept (IRdbmsStorageEntityDefinitionVisitor visitor);
 
     public StorageProviderDefinition StorageProviderDefinition
     {

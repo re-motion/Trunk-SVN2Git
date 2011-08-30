@@ -292,8 +292,8 @@
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\SaveCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\DbCommandBuilders\SqlDbCommandBuilderFactory.cs" />
     <Compile Include="Persistence\Rdbms\DbCommandBuilders\UnionSelectDbCommandBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\EntityDefinitionProvider.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\IEntityDefinitionProvider.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\RdbmsStorageEntityDefinitionProvider.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\IRdbmsStorageEntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\IndexOrder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\CompositeScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\FileGenerator.cs" />
@@ -338,7 +338,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\ISqlIndexDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\StoragePropertyDefinitionResolver.cs" />
-    <Compile Include="Persistence\Rdbms\Model\EntityDefinitionBase.cs" />
+    <Compile Include="Persistence\Rdbms\Model\RdbmsStorageEntityDefinitionBase.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityNameDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\ForeignKeyConstraintDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IStoragePropertyDefinitionResolver.cs" />
@@ -371,10 +371,10 @@
     <Compile Include="Mapping\Validation\Logical\SortExpressionIsValidValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\StorageGroupTypesAreSameWithinInheritanceTreeRule.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsStorageObjectFactory.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\EntityDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\RdbmsStorageEntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ForeignKeyConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IRdbmsStoragePropertyDefinition.cs" />
-    <Compile Include="Persistence\Rdbms\Model\Building\IEntityDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\Building\IRdbmsStorageEntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\NullEntityDefinition.cs" />
@@ -452,7 +452,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlSecondaryXmlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlSecondaryXmlIndexKind.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlIndexDefinitionBase.cs" />
-    <Compile Include="Persistence\Rdbms\InlineEntityDefinitionVisitor.cs" />
+    <Compile Include="Persistence\Rdbms\RdbmsStorageInlineEntityDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\ITableDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\Factories\TableDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommand.cs" />
@@ -468,7 +468,7 @@
     <Compile Include="Persistence\Rdbms\Model\Building\IDataStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\DataStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\FilterViewDefinition.cs" />
-    <Compile Include="Persistence\Rdbms\Model\IEntityDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IRdbmsStorageEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinition.cs" />
     <Compile Include="Mapping\Validation\IClassDefinitionValidationRule.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidatorRule.cs" />
@@ -495,7 +495,7 @@
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
     <Compile Include="Persistence\Model\IStorageEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
-    <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionVisitor.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IRdbmsStorageEntityDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IStorageTypeInformationProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\RdbmsPersistenceModelLoader.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Model\Building\SqlStorageTypeInformationProvider.cs" />

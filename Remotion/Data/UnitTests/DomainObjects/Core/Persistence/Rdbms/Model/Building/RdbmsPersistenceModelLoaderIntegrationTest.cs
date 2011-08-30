@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
     private StoragePropertyDefinitionResolver _storagePropertyDefinitionResolver;
     private ForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
-    private EntityDefinitionFactory _entityDefinitionFactory;
+    private RdbmsStorageEntityDefinitionFactory _entityDefinitionFactory;
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
 
     private RdbmsPersistenceModelLoaderTestHelper _testModel;
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver (persistenceModelProvider);
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           _storageNameProvider, persistenceModelProvider, _infrastructureStoragePropertyDefinitionProvider, _storageProviderDefinitionFinder);
-      _entityDefinitionFactory = new EntityDefinitionFactory (
+      _entityDefinitionFactory = new RdbmsStorageEntityDefinitionFactory (
           _infrastructureStoragePropertyDefinitionProvider,
           _foreignKeyConstraintDefinitionFactory,
           _storagePropertyDefinitionResolver,

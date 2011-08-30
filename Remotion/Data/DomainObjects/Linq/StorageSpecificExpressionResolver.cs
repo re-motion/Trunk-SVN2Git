@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
-      var viewName = InlineEntityDefinitionVisitor.Visit<string> (
+      var viewName = RdbmsStorageInlineEntityDefinitionVisitor.Visit<string> (
           _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition),
           (table, continuation) => GetFullyQualifiedEntityName(table.ViewName),
           (filterView, continuation) => GetFullyQualifiedEntityName(filterView.ViewName),

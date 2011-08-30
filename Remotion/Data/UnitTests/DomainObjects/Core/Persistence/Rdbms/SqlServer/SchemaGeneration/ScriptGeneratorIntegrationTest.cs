@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _standardScriptGenerator = new ScriptGenerator (
           pd => pd.Factory.CreateSchemaScriptBuilder (pd),
-          new EntityDefinitionProvider(),
+          new RdbmsStorageEntityDefinitionProvider(),
           new ScriptToStringConverter());
 
       _extendedScriptGenerator = new ScriptGenerator (
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                         CreateIndexBuilder(),
                         CreateSynonymBuilder()),
                     SchemaGenerationThirdStorageProviderDefinition.ConnectionString),
-          new ExtendedEntityDefinitionProvider(),
+          new RdbmsStorageExtendedEntityDefinitionProvider(),
           new ScriptToStringConverter());
 
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");

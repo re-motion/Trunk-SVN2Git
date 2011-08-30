@@ -23,9 +23,9 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class EntityDefinitionBaseTest
+  public class RdbmsStorageEntityDefinitionBaseTest
   {
-    private TestableEntityDefinitionBase _entityDefinition;
+    private TestableRdbmsStorageEntityDefinitionBase _rdbmsStorageEntityDefinition;
 
     private ObjectIDStoragePropertyDefinition _objectIDProperty;
     private SimpleStoragePropertyDefinition _timestampProperty;
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
-      _entityDefinition = new TestableEntityDefinitionBase (
+      _rdbmsStorageEntityDefinition = new TestableRdbmsStorageEntityDefinitionBase (
           _storageProviderDefinition,
           new EntityNameDefinition ("Schema", "Test"),
           _objectIDProperty,
@@ -64,21 +64,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization ()
     {
-      Assert.That (_entityDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
-      Assert.That (_entityDefinition.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
+      Assert.That (_rdbmsStorageEntityDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
+      Assert.That (_rdbmsStorageEntityDefinition.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
 
-      Assert.That (_entityDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
-      Assert.That (_entityDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
-      Assert.That (_entityDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
+      Assert.That (_rdbmsStorageEntityDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
+      Assert.That (_rdbmsStorageEntityDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
+      Assert.That (_rdbmsStorageEntityDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
 
-      Assert.That (_entityDefinition.Indexes, Is.EqualTo (_indexes));
-      Assert.That (_entityDefinition.Synonyms, Is.EqualTo (_synonyms));
+      Assert.That (_rdbmsStorageEntityDefinition.Indexes, Is.EqualTo (_indexes));
+      Assert.That (_rdbmsStorageEntityDefinition.Synonyms, Is.EqualTo (_synonyms));
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var entityDefinition = new TestableEntityDefinitionBase (
+      var entityDefinition = new TestableRdbmsStorageEntityDefinitionBase (
           _storageProviderDefinition,
           null,
           _objectIDProperty,
@@ -93,13 +93,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void StorageProviderID ()
     {
-      Assert.That (_entityDefinition.StorageProviderID, Is.EqualTo ("SPID"));
+      Assert.That (_rdbmsStorageEntityDefinition.StorageProviderID, Is.EqualTo ("SPID"));
     }
 
     [Test]
     public void GetAllProperties ()
     {
-      var result = _entityDefinition.GetAllProperties();
+      var result = _rdbmsStorageEntityDefinition.GetAllProperties();
 
       Assert.That (
           result,
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetAllColumns ()
     {
-      var result = _entityDefinition.GetAllColumns();
+      var result = _rdbmsStorageEntityDefinition.GetAllColumns();
 
       Assert.That (
           result,
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void IsNull ()
     {
-      Assert.That (((INullObject) _entityDefinition).IsNull, Is.False);
+      Assert.That (((INullObject) _rdbmsStorageEntityDefinition).IsNull, Is.False);
     }
   }
 }

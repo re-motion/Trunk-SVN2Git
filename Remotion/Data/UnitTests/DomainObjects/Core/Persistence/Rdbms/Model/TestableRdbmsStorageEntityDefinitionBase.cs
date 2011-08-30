@@ -21,9 +21,9 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
-  public class TestableEntityDefinitionBase : EntityDefinitionBase
+  public class TestableRdbmsStorageEntityDefinitionBase : RdbmsStorageEntityDefinitionBase
   {
-    public TestableEntityDefinitionBase (
+    public TestableRdbmsStorageEntityDefinitionBase (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
         ObjectIDStoragePropertyDefinition idProperty,
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
     }
 
-    public override void Accept (IEntityDefinitionVisitor visitor)
+    public override void Accept (IRdbmsStorageEntityDefinitionVisitor visitor)
     {
       throw new NotImplementedException();
     }

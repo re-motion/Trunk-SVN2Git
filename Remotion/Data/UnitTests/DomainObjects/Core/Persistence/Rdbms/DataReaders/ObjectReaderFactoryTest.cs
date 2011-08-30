@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
   {
     private IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProviderStub;
     private ObjectReaderFactory _factory;
-    private IEntityDefinition _entityDefinitionStub;
+    private IRdbmsStorageEntityDefinition _entityDefinitionStub;
     private ColumnDefinition _column1;
     private ColumnDefinition _column2;
     private ObjectIDStoragePropertyDefinition _objectIDProperty;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       base.SetUp();
 
       _rdbmsPersistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
-      _entityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
+      _entityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
       _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
       _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
       _entityDefinitionStub.Stub (stub => stub.ObjectIDProperty).Return (_objectIDProperty);

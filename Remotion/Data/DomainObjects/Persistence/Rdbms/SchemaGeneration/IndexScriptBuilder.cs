@@ -31,31 +31,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
-    private class EntityDefinitionVisitor : IEntityDefinitionVisitor
+    private class RdbmsStorageEntityDefinitionVisitor : IRdbmsStorageEntityDefinitionVisitor
     {
       private readonly IndexScriptBuilder _builder;
 
-      public EntityDefinitionVisitor (IndexScriptBuilder builder)
+      public RdbmsStorageEntityDefinitionVisitor (IndexScriptBuilder builder)
       {
         _builder = builder;
       }
 
-      void IEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
+      void IRdbmsStorageEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
       {
         _builder.AddTableDefinition (tableDefinition);
       }
 
-      void IEntityDefinitionVisitor.VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
+      void IRdbmsStorageEntityDefinitionVisitor.VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
       {
         _builder.AddUnionViewDefinition (unionViewDefinition);
       }
 
-      void IEntityDefinitionVisitor.VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
+      void IRdbmsStorageEntityDefinitionVisitor.VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
       {
         _builder.AddFilterViewDefinition (filterViewDefinition);
       }
 
-      void IEntityDefinitionVisitor.VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
+      void IRdbmsStorageEntityDefinitionVisitor.VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
       {
         //Nothing to do
       }
@@ -73,11 +73,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all indexes"));
     }
 
-    public void AddEntityDefinition (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      var visitor = new EntityDefinitionVisitor (this);
+      var visitor = new RdbmsStorageEntityDefinitionVisitor (this);
       entityDefinition.Accept (visitor);
     }
 
