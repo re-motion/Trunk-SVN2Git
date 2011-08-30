@@ -50,7 +50,7 @@
       <_startTime>$([System.DateTime]::Now)</_startTime>
     </PropertyGroup>
     
-    <MSBuild Projects="$(DocumentationSandcastleProjectFile)"/>
+    <!--<MSBuild Projects="$(DocumentationSandcastleProjectFile)"/>-->
 
     <PropertyGroup>
       <_timeTaken>$( [System.DateTime]::Now.Subtract ( $([System.DateTime]::Parse($(_startTime))) ).TotalSeconds.ToString("N0") )</_timeTaken>
