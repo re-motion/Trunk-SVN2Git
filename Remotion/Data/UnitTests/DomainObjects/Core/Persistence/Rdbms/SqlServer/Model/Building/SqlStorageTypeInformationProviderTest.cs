@@ -313,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "nvarchar(max)",
           DbType.String,
           typeof (object),
-          Is.TypeOf (typeof (DefaultConverter)).With.Property ("Type").EqualTo (typeof (object)));
+          Is.TypeOf (typeof (NullValueConverter)));
     }
 
     private void CheckGetStorageType (

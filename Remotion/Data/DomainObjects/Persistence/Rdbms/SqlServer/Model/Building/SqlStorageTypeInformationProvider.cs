@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building
       {
         // NULL values of storage type nvarchar(max) seem to be compatible with columns of all other supported storage types, tested by
         // SqlProviderExecuteCollectionQueryTest.AllDataTypes
-        return new StorageTypeInformation (typeof (object), "nvarchar(max)", DbType.String, typeof (object), new DefaultConverter (typeof (object)));
+        return new StorageTypeInformation (typeof (object), "nvarchar(max)", DbType.String, typeof (object), NullValueConverter.Instance);
       }
 
       return GetStorageType (value.GetType());
