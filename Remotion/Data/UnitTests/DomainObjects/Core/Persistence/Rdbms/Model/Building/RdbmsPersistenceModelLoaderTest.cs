@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   {
     private string _storageProviderID;
     private StorageProviderDefinition _storageProviderDefinition;
-    
+
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
     private IRdbmsStorageEntityDefinitionFactory _entityDefinitionFactoryMock;
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private SimpleStoragePropertyDefinition _fakeColumnDefinition5;
     private SimpleStoragePropertyDefinition _fakeColumnDefinition6;
     private SimpleStoragePropertyDefinition _fakeColumnDefinition7;
-    
+
     [SetUp]
     public void SetUp ()
     {
@@ -74,8 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _entityDefinitionFactoryMock = MockRepository.GenerateStrictMock<IRdbmsStorageEntityDefinitionFactory>();
       _dataStoragePropertyDefinitionFactoryMock = MockRepository.GenerateStrictMock<IDataStoragePropertyDefinitionFactory>();
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition1)).Return (_testModel.TableClassDefinition1.ID);
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition2)).Return (_testModel.TableClassDefinition2.ID);
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition1)).Return (
+          new EntityNameDefinition (null, _testModel.TableClassDefinition1.ID));
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (_testModel.TableClassDefinition2)).Return (
+          new EntityNameDefinition (null, _testModel.TableClassDefinition2.ID));
 
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
           _storageProviderDefinition,
@@ -84,14 +86,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _storageNameProviderStub,
           new RdbmsPersistenceModelProvider());
 
-      _fakeEntityDefinitionBaseBase = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
-      _fakeEntityDefinitionBase = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
-      _fakeEntityDefinitionTable1 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
-      _fakeEntityDefinitionTable2 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
-      _fakeEntityDefinitionDerived1 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
-      _fakeEntityDefinitionDerived2 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
-      _fakeEntityDefinitionDerivedDerived = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
-      _fakeEntityDefinitionDerivedDerivedDerived = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition> ();
+      _fakeEntityDefinitionBaseBase = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinitionBase = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinitionTable1 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinitionTable2 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinitionDerived1 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinitionDerived2 = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinitionDerivedDerived = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _fakeEntityDefinitionDerivedDerivedDerived = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
 
       _fakeColumnDefinition1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test1");
       _fakeColumnDefinition2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Test2");
@@ -248,7 +250,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The property definition 'DerivedDerivedProperty' of class 'DerivedDerivedClass' does not implement interface 'IRdbmsStoragePropertyDefinition'.")]
+        "The property definition 'DerivedDerivedProperty' of class 'DerivedDerivedClass' does not implement interface 'IRdbmsStoragePropertyDefinition'."
+        )]
     public void ApplyPersistenceModelToHierarchy_Throws_WhenExistingPropertyDefinitionDoesNotImplementIColumnDefinition ()
     {
       _testModel.DerivedClassDefinition2.SetStorageEntity (_fakeEntityDefinitionDerived2);
@@ -258,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void ApplyPersistenceModelToHierarchy_ReusesStoragePropertiesWithinHierarchy_WhenTwoPropertiesHaveTheSamePropertyInfo()
+    public void ApplyPersistenceModelToHierarchy_ReusesStoragePropertiesWithinHierarchy_WhenTwoPropertiesHaveTheSamePropertyInfo ()
     {
       var baseClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (BaseClass), null);
       var derivedClass1 = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Table1Class), baseClass);
@@ -268,8 +271,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       derivedClass2.SetDerivedClasses (new ClassDefinition[0]);
 
       _storageNameProviderStub.Stub (stub => stub.GetTableName (baseClass)).Return (null);
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass1)).Return ("Table1");
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass2)).Return ("Table2");
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass1)).Return (new EntityNameDefinition(null, "Table1"));
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass2)).Return (new EntityNameDefinition(null, "Table2"));
 
       // In reality, this would be the PropertyInfo of some mixin that's applied to both subclasses
       var propertyInfo = typeof (BaseClass).GetProperty ("BaseProperty");
@@ -280,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _dataStoragePropertyDefinitionFactoryMock
           .Expect (mock => mock.CreateStoragePropertyDefinition (propertyInClass1))
           .Return (_fakeColumnDefinition1);
-      _dataStoragePropertyDefinitionFactoryMock.Replay ();
+      _dataStoragePropertyDefinitionFactoryMock.Replay();
 
       _entityDefinitionFactoryMock
           .Expect (mock => mock.CreateUnionViewDefinition (Arg.Is (baseClass), Arg<IEnumerable<IRdbmsStorageEntityDefinition>>.Is.Anything))
@@ -291,12 +294,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _entityDefinitionFactoryMock
           .Expect (mock => mock.CreateTableDefinition (derivedClass2))
           .Return (_fakeEntityDefinitionTable2);
-      _entityDefinitionFactoryMock.Replay ();
+      _entityDefinitionFactoryMock.Replay();
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (baseClass);
 
-      _dataStoragePropertyDefinitionFactoryMock.VerifyAllExpectations ();
-      _entityDefinitionFactoryMock.VerifyAllExpectations ();
+      _dataStoragePropertyDefinitionFactoryMock.VerifyAllExpectations();
+      _entityDefinitionFactoryMock.VerifyAllExpectations();
 
       Assert.That (propertyInClass1.StoragePropertyDefinition, Is.SameAs (propertyInClass2.StoragePropertyDefinition));
     }

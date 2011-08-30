@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return "Timestamp";
     }
 
-    public string GetTableName (ClassDefinition classDefinition)
+    public EntityNameDefinition GetTableName (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -51,14 +51,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (tableAttribute == null)
         return null;
 
-      return String.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
+      return new EntityNameDefinition(null, String.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name);
     }
 
-    public string GetViewName (ClassDefinition classDefinition)
+    public EntityNameDefinition GetViewName (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return classDefinition.ID + "View";
+      return new EntityNameDefinition(null, classDefinition.ID + "View");
     }
 
     public string GetColumnName (PropertyDefinition propertyDefinition)
@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var tableName = GetTableName (classDefinition);
+      var tableName = GetTableName (classDefinition).EntityName;
 
       return String.Format ("PK_{0}", tableName);
     }
@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("foreignKeyColumn", foreignKeyColumn);
       
-      var tableName = GetTableName (classDefinition);
+      var tableName = GetTableName (classDefinition).EntityName;
       var columnName = foreignKeyColumn.Name;
 
       return String.Format ("FK_{0}_{1}", tableName, columnName);

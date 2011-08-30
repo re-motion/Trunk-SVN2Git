@@ -105,10 +105,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     private string FindTableName (ClassDefinition classDefinition)
     {
-      return classDefinition
+      var tableName = classDefinition
           .CreateSequence (cd => cd.BaseClass)
           .Select (cd => _storageNameProvider.GetTableName (cd))
           .FirstOrDefault (name => name != null);
+      return tableName != null ? tableName.EntityName : null;
     }
   }
 }

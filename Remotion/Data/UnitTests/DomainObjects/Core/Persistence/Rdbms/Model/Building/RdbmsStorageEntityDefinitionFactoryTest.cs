@@ -84,10 +84,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (_testModel.TableClassDefinition1))
-          .Return ("FakeTableName");
+          .Return (new EntityNameDefinition(null, "FakeTableName"));
       _storageNameProviderMock
           .Expect (mock => mock.GetViewName (_testModel.TableClassDefinition1))
-          .Return ("FakeViewName");
+          .Return (new EntityNameDefinition(null, "FakeViewName"));
       _storageNameProviderMock
           .Expect (mock => mock.GetPrimaryKeyConstraintName (_testModel.TableClassDefinition1))
           .Return ("FakePrimaryKeyName");
@@ -140,10 +140,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (_testModel.TableClassDefinition1))
-          .Return ("FakeTableName");
+          .Return (new EntityNameDefinition(null, "FakeTableName"));
       _storageNameProviderMock
           .Expect (mock => mock.GetViewName (_testModel.TableClassDefinition1))
-          .Return ("FakeViewName");
+          .Return (new EntityNameDefinition(null, "FakeViewName"));
       _storageNameProviderMock.Replay ();
 
       // no primary key columns!
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProviderMock
           .Expect (mock => mock.GetViewName (_testModel.DerivedClassDefinition1))
-          .Return ("FakeViewName");
+          .Return (new EntityNameDefinition(null, "FakeViewName"));
       _storageNameProviderMock.Replay();
 
       MockStandardProperties();
@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProviderMock
           .Expect (mock => mock.GetViewName (_testModel.DerivedClassDefinition2))
-          .Return ("FakeViewName");
+          .Return (new EntityNameDefinition(null, "FakeViewName"));
       _storageNameProviderMock.Replay();
 
       MockStandardProperties();
@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProviderMock
           .Expect (mock => mock.GetViewName (_testModel.BaseBaseClassDefinition))
-          .Return ("FakeViewName");
+          .Return (new EntityNameDefinition(null, "FakeViewName"));
       _storageNameProviderMock.Replay();
 
       MockStandardProperties();

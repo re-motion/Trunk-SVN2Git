@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var tableName = _storageNameProvider.GetTableName (classDefinition);
-      if (string.IsNullOrEmpty (tableName))
+      if (tableName==null)
         throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
       var objectIDProperty = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition ();
@@ -73,8 +73,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
       return new TableDefinition (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, tableName),
-          new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
+          tableName,
+          _storageNameProvider.GetViewName (classDefinition),
           objectIDProperty,
           timestampProperty,
           dataProperties,
@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
       return new FilterViewDefinition (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
+          _storageNameProvider.GetViewName (classDefinition),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
           _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition(),
@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var dataProperties = _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition);
       return new UnionViewDefinition (
           _storageProviderDefinition,
-          new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
+          _storageNameProvider.GetViewName (classDefinition),
           unionedEntities,
           _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition (),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition (),

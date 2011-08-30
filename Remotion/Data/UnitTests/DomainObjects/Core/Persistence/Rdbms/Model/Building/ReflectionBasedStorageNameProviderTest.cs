@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void GetTableName_ClassHasDBTableAttributeWithoutName_ReturnsClassIDName ()
     {
-      var result = _provider.GetTableName (_classDefinition);
+      var result = _provider.GetTableName (_classDefinition).EntityName;
 
       Assert.That (result, Is.EqualTo ("Company"));
     }
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
 
-      var result = _provider.GetTableName (classDefinition);
+      var result = _provider.GetTableName (classDefinition).EntityName;
 
       Assert.That (result, Is.EqualTo ("ClassHavingStorageSpecificIdentifierAttributeTable"));
     }
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void GetViewName ()
     {
-      var result = _provider.GetViewName (_classDefinition);
+      var result = _provider.GetViewName (_classDefinition).EntityName;
 
       Assert.That (result, Is.EqualTo ("CompanyView"));
     }

@@ -30,8 +30,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     string GetClassIDColumnName ();
     string GetTimestampColumnName ();
 
-    string GetTableName (ClassDefinition classDefinition);
-    string GetViewName (ClassDefinition classDefinition);
+    EntityNameDefinition GetTableName (ClassDefinition classDefinition);
+    EntityNameDefinition GetViewName (ClassDefinition classDefinition);
     string GetColumnName (PropertyDefinition propertyDefinition);
     string GetRelationColumnName (RelationEndPointDefinition relationEndPointDefinition);
     string GetRelationClassIDColumnName (RelationEndPointDefinition relationEndPointDefinition);

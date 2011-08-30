@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
-      
+
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
 
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
-      
+
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
 
@@ -170,10 +170,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
       var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
-      
+
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (_classWithDbTableAttribute.ID);
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (
+          new EntityNameDefinition (null, _classWithDbTableAttribute.ID));
 
       var resultNotNullable =
           (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNotNullable);
@@ -197,10 +198,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           StorageClass.Persistent,
           _propertyInfoStub,
           true);
-      
+
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
-      _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (_classWithDbTableAttribute.ID);
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (
+          new EntityNameDefinition (null, _classWithDbTableAttribute.ID));
 
       var resultNotNullable =
           (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNotNullable);

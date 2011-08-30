@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
-          .Return ("FakeTableName")
+          .Return (new EntityNameDefinition(null, "FakeTableName"))
           .Repeat.Twice();
       _storageNameProviderMock.Replay();
 
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
-          .Return ("FakeTableName")
+          .Return (new EntityNameDefinition(null, "FakeTableName"))
           .Repeat.Twice();
       _storageNameProviderMock.Replay();
 
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
-          .Return ("FakeTableName")
+          .Return (new EntityNameDefinition(null, "FakeTableName"))
           .Repeat.Once();
       _storageNameProviderMock.Replay();
 
@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (employeeClassDefinition))
-          .Return ("FakeTableName")
+          .Return (new EntityNameDefinition(null, "FakeTableName"))
           .Repeat.Times (2);
       _storageNameProviderMock.Replay();
 
