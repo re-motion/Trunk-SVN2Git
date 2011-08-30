@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
       var columns = storagePropertyDefinition.GetColumns().ToList();
-      if (columns.Count > 1) 
+      if (columns.Count > 1)
         throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
 
       return GetColumnFromEntity (columns[0], originatingEntity);
@@ -86,9 +86,9 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var viewName = InlineEntityDefinitionVisitor.Visit<string> (
           _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition),
-          (table, continuation) => table.ViewName.EntityName,
-          (filterView, continuation) => filterView.ViewName.EntityName,
-          (unionView, continuation) => unionView.ViewName.EntityName,
+          (table, continuation) => GetFullyQualifiedEntityName(table.ViewName),
+          (filterView, continuation) => GetFullyQualifiedEntityName(filterView.ViewName),
+          (unionView, continuation) => GetFullyQualifiedEntityName(unionView.ViewName),
           (nullEntity, continuation) =>
           {
             var message = string.Format (
@@ -115,6 +115,13 @@ namespace Remotion.Data.DomainObjects.Linq
       Expression rightKey = GetJoinColumn (rightEndPoint, rightEntity);
 
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
+    }
+
+    private string GetFullyQualifiedEntityName (EntityNameDefinition entityNameDefinition)
+    {
+      return entityNameDefinition.SchemaName != null
+                 ? entityNameDefinition.SchemaName + "." + entityNameDefinition.EntityName
+                 : entityNameDefinition.EntityName;
     }
 
     private Expression GetJoinColumn (IRelationEndPointDefinition endPoint, SqlEntityExpression entityDefinition)

@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveTable_TableDefinition ()
+    public void ResolveTable_TableDefinitionWithNoSchemaName ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"), new EntityNameDefinition (null, "TableView"));
@@ -197,7 +197,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveTable_FilterViewDefinition ()
+    public void ResolveTable_TableDefinitionWithSchemaName ()
+    {
+      var tableDefinition = TableDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"), new EntityNameDefinition ("schemaName", "TableView"));
+      _classDefinition.SetStorageEntity (tableDefinition);
+
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (_classDefinition.StorageEntityDefinition as IEntityDefinition);
+
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("schemaName.TableView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    public void ResolveTable_FilterViewDefinitionWithNoSchemaName ()
     {
       var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
@@ -217,7 +236,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveTable_UnionViewDefinition ()
+    public void ResolveTable_FilterViewDefinitionWithSchemaName ()
+    {
+      var filterViewDefinition = FilterViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition ("schemaName", "FilterView"),
+          (IEntityDefinition) _classDefinition.StorageEntityDefinition);
+      _classDefinition.SetStorageEntity (filterViewDefinition);
+
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
+          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("schemaName.FilterView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    public void ResolveTable_UnionViewDefinitionWithNoSchemaName ()
     {
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition,
@@ -232,6 +271,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.TableName, Is.EqualTo ("UnionView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    public void ResolveTable_UnionViewDefinitionWithSchemaName ()
+    {
+      var unionViewDefinition = UnionViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition ("schemaName", "UnionView"),
+          new[] { (IEntityDefinition) _classDefinition.StorageEntityDefinition });
+      _classDefinition.SetStorageEntity (unionViewDefinition);
+
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
+          _classDefinition.StorageEntityDefinition as IEntityDefinition);
+
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("schemaName.UnionView"));
       Assert.That (result.TableAlias, Is.EqualTo ("o"));
       Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
     }
