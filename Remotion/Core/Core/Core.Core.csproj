@@ -652,6 +652,7 @@
     <Compile Include="Utilities\IUtcNowProvider.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparer.cs" />
     <Compile Include="Utilities\NullableTypeUtility.cs" />
+    <Compile Include="Utilities\NullValueConverter.cs" />
     <Compile Include="Utilities\ReferenceEqualityComparer.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\AssertionConditionAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\AssertionConditionType.cs" />

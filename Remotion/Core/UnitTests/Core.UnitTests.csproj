@@ -1107,6 +1107,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\NullableTypeUtilityTest.cs" />
+    <Compile Include="Utilities\NullValueConverterTest.cs" />
     <Compile Include="Utilities\ReferenceEqualityComparerTest.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
