@@ -24,7 +24,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class InlineEntityDefinitionVisitorTest : StandardMappingTest
+  public class RdbmsStorageInlineEntityDefinitionVisitorTest : StandardMappingTest
   {
     public interface IVisitorCallReceiver
     {

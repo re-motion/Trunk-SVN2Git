@@ -32,36 +32,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
-    private class RdbmsStorageEntityDefinitionVisitor : IRdbmsStorageEntityDefinitionVisitor
-    {
-      private readonly ViewScriptBuilder _builder;
-
-      public RdbmsStorageEntityDefinitionVisitor (ViewScriptBuilder builder)
-      {
-        _builder = builder;
-      }
-
-      public void VisitTableDefinition (TableDefinition tableDefinition)
-      {
-        _builder.AddTableDefinition (tableDefinition);
-      }
-
-      public void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
-      {
-        _builder.AddUnionViewDefinition (unionViewDefinition);
-      }
-
-      public void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
-      {
-        _builder.AddFilterViewDefinition (filterViewDefinition);
-      }
-
-      public void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
-      {
-        //Nothing to do
-      }
-    }
-
     public ViewScriptBuilder (
         IViewScriptElementFactory<TableDefinition> tableViewElementFactory,
         IViewScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
@@ -86,8 +56,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      var visitor = new RdbmsStorageEntityDefinitionVisitor (this);
-      entityDefinition.Accept (visitor);
+      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+          entityDefinition,
+          (table, continuation) => AddTableDefinition (table),
+          (filterView, continuation) => AddFilterViewDefinition(filterView),
+          (unionView, contination) => AddUnionViewDefinition(unionView),
+          (nullEntity, continuation) => { });
     }
 
     public IScriptElement GetCreateScript ()

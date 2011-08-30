@@ -52,42 +52,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all synonyms"));
     }
 
-    private class RdbmsStorageEntityDefinitionVisitor : IRdbmsStorageEntityDefinitionVisitor
-    {
-      private readonly SynonymScriptBuilder _builder;
-
-      public RdbmsStorageEntityDefinitionVisitor (SynonymScriptBuilder builder)
-      {
-        _builder = builder;
-      }
-
-      public void VisitTableDefinition (TableDefinition tableDefinition)
-      {
-        _builder.AddTableDefinition (tableDefinition);
-      }
-
-      public void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
-      {
-        _builder.AddUnionViewDefinition (unionViewDefinition);
-      }
-
-      public void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
-      {
-        _builder.AddFilterViewDefinition (filterViewDefinition);
-      }
-
-      public void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
-      {
-        //Nothing to do
-      }
-    }
-
     public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      var visitor = new RdbmsStorageEntityDefinitionVisitor (this);
-      entityDefinition.Accept (visitor);
+      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+          entityDefinition,
+          (table, continuation) => AddTableDefinition (table),
+          (filterView, continuation) => AddFilterViewDefinition(filterView),
+          (unionView, contination) => AddUnionViewDefinition(unionView),
+          (nullEntity, continuation) => { });
     }
 
     public IScriptElement GetCreateScript ()

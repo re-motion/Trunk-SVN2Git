@@ -31,36 +31,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
-    private class RdbmsStorageEntityDefinitionVisitor : IRdbmsStorageEntityDefinitionVisitor
-    {
-      private readonly IndexScriptBuilder _builder;
-
-      public RdbmsStorageEntityDefinitionVisitor (IndexScriptBuilder builder)
-      {
-        _builder = builder;
-      }
-
-      void IRdbmsStorageEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
-      {
-        _builder.AddTableDefinition (tableDefinition);
-      }
-
-      void IRdbmsStorageEntityDefinitionVisitor.VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
-      {
-        _builder.AddUnionViewDefinition (unionViewDefinition);
-      }
-
-      void IRdbmsStorageEntityDefinitionVisitor.VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
-      {
-        _builder.AddFilterViewDefinition (filterViewDefinition);
-      }
-
-      void IRdbmsStorageEntityDefinitionVisitor.VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
-      {
-        //Nothing to do
-      }
-    }
-
     public IndexScriptBuilder (IIndexScriptElementFactory indexScriptElementFactory, ICommentScriptElementFactory commentFactory)
     {
       ArgumentUtility.CheckNotNull ("indexScriptElementFactory", indexScriptElementFactory);
@@ -77,8 +47,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      var visitor = new RdbmsStorageEntityDefinitionVisitor (this);
-      entityDefinition.Accept (visitor);
+      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+          entityDefinition,
+          (table, continuation) => AddTableDefinition (table),
+          (filterView, continuation) => AddFilterViewDefinition(filterView),
+          (unionView, contination) => AddUnionViewDefinition(unionView),
+          (nullEntity, continuation) => { });
     }
 
     public IScriptElement GetCreateScript ()
