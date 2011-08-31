@@ -23,13 +23,13 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="NullEntityDefinition"/> represents a non-existing entity.
+  /// The <see cref="NullRdbmsStorageEntityDefinition"/> represents a non-existing entity.
   /// </summary>
-  public class NullEntityDefinition : IRdbmsStorageEntityDefinition
+  public class NullRdbmsStorageEntityDefinition : IRdbmsStorageEntityDefinition
   {
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
-    public NullEntityDefinition (StorageProviderDefinition storageProviderDefinition)
+    public NullRdbmsStorageEntityDefinition (StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 

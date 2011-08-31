@@ -333,7 +333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         "Class 'Order' does not have an associated database table and can therefore not be queried.")]
     public void ResolveTable_NullEntityDefinition ()
     {
-      _classDefinition.SetStorageEntity (new NullEntityDefinition (TestDomainStorageProviderDefinition));
+      _classDefinition.SetStorageEntity (new NullRdbmsStorageEntityDefinition (TestDomainStorageProviderDefinition));
 
       _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
           _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);

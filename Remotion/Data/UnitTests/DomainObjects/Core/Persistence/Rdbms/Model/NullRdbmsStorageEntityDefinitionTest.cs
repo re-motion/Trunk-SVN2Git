@@ -22,16 +22,16 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class NullEntityDefinitionTest
+  public class NullRdbmsStorageEntityDefinitionTest
   {
-    private NullEntityDefinition _nullEntityDefinition;
+    private NullRdbmsStorageEntityDefinition _nullEntityDefinition;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _nullEntityDefinition = new NullEntityDefinition(_storageProviderDefinition);
+      _nullEntityDefinition = new NullRdbmsStorageEntityDefinition(_storageProviderDefinition);
     }
 
     [Test]

@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void ClassWithoutEntity_AndWithoutHierarchy ()
     {
       var classDefinition = Configuration.GetTypeDefinition (typeof (AbstractClassWithoutHierarchy));
-      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf<NullEntityDefinition>());
+      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf<NullRdbmsStorageEntityDefinition>());
     }
   }
 }

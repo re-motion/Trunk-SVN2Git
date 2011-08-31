@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       void HandleTableDefinition (TableDefinition table, Action<IRdbmsStorageEntityDefinition> continuation);
       void HandleFilterViewDefinition (FilterViewDefinition filterView, Action<IRdbmsStorageEntityDefinition> continuation);
       void HandleUnionViewDefinition (UnionViewDefinition unionView, Action<IRdbmsStorageEntityDefinition> continuation);
-      void HandleNullEntityDefinition (NullEntityDefinition nullEntity, Action<IRdbmsStorageEntityDefinition> continuation);
+      void HandleNullEntityDefinition (NullRdbmsStorageEntityDefinition nullEntity, Action<IRdbmsStorageEntityDefinition> continuation);
     }
 
     public interface IVisitorCallReceiver<T>
@@ -39,13 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       T HandleTableDefinition (TableDefinition table, Func<IRdbmsStorageEntityDefinition, T> continuation);
       T HandleFilterViewDefinition (FilterViewDefinition filterView, Func<IRdbmsStorageEntityDefinition, T> continuation);
       T HandleUnionViewDefinition (UnionViewDefinition unionView, Func<IRdbmsStorageEntityDefinition, T> continuation);
-      T HandleNullEntityDefinition (NullEntityDefinition nullEntity, Func<IRdbmsStorageEntityDefinition, T> continuation);
+      T HandleNullEntityDefinition (NullRdbmsStorageEntityDefinition nullEntity, Func<IRdbmsStorageEntityDefinition, T> continuation);
     }
 
     private TableDefinition _tableDefinition;
     private FilterViewDefinition _filterViewDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private NullEntityDefinition _nullEntityDefinition;
+    private NullRdbmsStorageEntityDefinition _nullEntityDefinition;
 
     private object _fakeResult;
 
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "FilterView"), _tableDefinition);
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "UnionView"), new[] { _tableDefinition });
-      _nullEntityDefinition = new NullEntityDefinition (TestDomainStorageProviderDefinition);
+      _nullEntityDefinition = new NullRdbmsStorageEntityDefinition (TestDomainStorageProviderDefinition);
 
       _fakeResult = new object();
 

@@ -377,7 +377,7 @@
     <Compile Include="Persistence\Rdbms\Model\Building\IRdbmsStorageEntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinitionVisitor.cs" />
-    <Compile Include="Persistence\Rdbms\Model\NullEntityDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\NullRdbmsStorageEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ObjectIDStoragePropertyDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\PrimaryKeyConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\ReflectionBasedStorageNameProvider.cs" />

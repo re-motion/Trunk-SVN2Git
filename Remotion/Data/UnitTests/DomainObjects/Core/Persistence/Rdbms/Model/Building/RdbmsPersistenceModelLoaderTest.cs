@@ -222,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           null);
       var derivedClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Distributor), classDefinition);
 
-      derivedClass.SetStorageEntity (new NullEntityDefinition (_storageProviderDefinition));
+      derivedClass.SetStorageEntity (new NullRdbmsStorageEntityDefinition (_storageProviderDefinition));
       classDefinition.SetDerivedClasses (new[] { derivedClass });
       derivedClass.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
 
       _entityDefinitionFactoryMock.VerifyAllExpectations();
-      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (NullEntityDefinition)));
+      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (NullRdbmsStorageEntityDefinition)));
     }
 
     [Test]

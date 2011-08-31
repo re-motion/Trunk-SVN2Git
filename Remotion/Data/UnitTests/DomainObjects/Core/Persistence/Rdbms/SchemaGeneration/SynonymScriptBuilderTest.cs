@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_NullEntityDefinitionAdded ()
     {
-      var entityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
+      var entityDefinition = new NullRdbmsStorageEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
       var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();

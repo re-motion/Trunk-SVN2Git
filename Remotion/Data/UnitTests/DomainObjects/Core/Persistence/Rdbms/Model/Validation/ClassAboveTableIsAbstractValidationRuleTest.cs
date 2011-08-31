@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     private ClassDefinition _abstractClassDefinition;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private NullEntityDefinition _nullEntityDefinition;
+    private NullRdbmsStorageEntityDefinition _nullEntityDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition, new EntityNameDefinition (null, "TableName"));
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
-      _nullEntityDefinition = new NullEntityDefinition(storageProviderDefinition);
+      _nullEntityDefinition = new NullRdbmsStorageEntityDefinition(storageProviderDefinition);
     }
 
     [Test]

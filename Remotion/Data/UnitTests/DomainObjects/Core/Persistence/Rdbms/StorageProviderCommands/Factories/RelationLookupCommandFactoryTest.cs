@@ -282,7 +282,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void CreateForRelationLookup_NullEntityDefinition ()
     {
-      var nullEntityDefintion = new NullEntityDefinition (TestDomainStorageProviderDefinition);
+      var nullEntityDefintion = new NullRdbmsStorageEntityDefinition (TestDomainStorageProviderDefinition);
       var classDefinition = CreateClassDefinition (nullEntityDefintion);
       var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
