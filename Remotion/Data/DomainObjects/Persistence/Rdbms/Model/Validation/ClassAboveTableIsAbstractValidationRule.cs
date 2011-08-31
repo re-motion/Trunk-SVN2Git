@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (classDefinition.IsClassTypeResolved && classDefinition.StorageEntityDefinition is UnionViewDefinition && !classDefinition.IsAbstract)
+      if (classDefinition.IsClassTypeResolved && !IsAssociatedWithTable(classDefinition) && !classDefinition.IsAbstract)
       {
         yield return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,
@@ -47,6 +47,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
       {
         yield return MappingValidationResult.CreateValidResult ();
       }
+    }
+
+    private bool IsAssociatedWithTable (ClassDefinition classDefinition)
+    {
+      return classDefinition.StorageEntityDefinition is TableDefinition || classDefinition.StorageEntityDefinition is FilterViewDefinition;
     }
   }
 }

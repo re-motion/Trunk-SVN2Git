@@ -30,10 +30,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
   public class ClassAboveTableIsAbstractValidationRuleTest : ValidationRuleTestBase
   {
     private ClassAboveTableIsAbstractValidationRule _validationRule;
+    private ClassDefinition _concreteClassDefinition;
+
     private ClassDefinition _abstractClassDefinition;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private ClassDefinition _concreteClassDefinition;
+    private NullEntityDefinition _nullEntityDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -54,6 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition, new EntityNameDefinition (null, "TableName"));
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
+      _nullEntityDefinition = new NullEntityDefinition(storageProviderDefinition);
     }
 
     [Test]
@@ -93,9 +96,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     }
 
     [Test]
+    public void ClassTypeResolved_NullEntityDefinition_Abstract ()
+    {
+      _abstractClassDefinition.SetStorageEntity (_nullEntityDefinition);
+
+      var validationResult = _validationRule.Validate (_abstractClassDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
     public void ClassTypeResolved_UnionViewDefinition_NotAbstract ()
     {
       _concreteClassDefinition.SetStorageEntity (_unionViewDefinition);
+
+      var validationResult = _validationRule.Validate (_concreteClassDefinition);
+
+      var expectedMessage = "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. "
+                            + "Make class 'DerivedValidationDomainObjectClass' abstract or define a table for it or one of its base classes.\r\n\r\n"
+                            +
+                            "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
+    }
+
+    [Test]
+    public void ClassTypeResolved_NullEntityDefinition_NotAbstract ()
+    {
+      _concreteClassDefinition.SetStorageEntity (_nullEntityDefinition);
 
       var validationResult = _validationRule.Validate (_concreteClassDefinition);
 

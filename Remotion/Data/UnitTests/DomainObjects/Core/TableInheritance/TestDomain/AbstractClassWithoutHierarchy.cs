@@ -18,7 +18,7 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
 {
-  public class NonAbstractClassWithoutEntity : DomainObject
+  public abstract class AbstractClassWithoutHierarchy : DomainObject
   {
   }
 }

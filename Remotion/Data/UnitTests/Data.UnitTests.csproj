@@ -383,7 +383,7 @@
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedCollectionRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\LookupCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\SaveCommandFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\NonAbstractClassWithoutEntity.cs" />
+    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithoutHierarchy.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorTest.cs" />
