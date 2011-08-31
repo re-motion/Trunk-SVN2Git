@@ -29,7 +29,6 @@ namespace Remotion.Utilities
 
     protected NullValueConverter ()
     {
-      
     }
 
     public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
@@ -57,7 +56,7 @@ namespace Remotion.Utilities
     {
 // ReSharper disable HeuristicUnreachableCode
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
-      if(value==null)
+      if(value == null)
         return null;
 // ReSharper restore HeuristicUnreachableCode
 // ReSharper restore ConditionIsAlwaysTrueOrFalse
@@ -67,13 +66,13 @@ namespace Remotion.Utilities
 
     public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
-      if (!CanConvertTo (context, destinationType))
-        throw new NotSupportedException (string.Format ("Value of type '{0}' cannot be converted to null.", destinationType));
-
       if (value != null)
-        throw new NotSupportedException (string.Format ("Value '{0}' cannot be converted to null.", value));
+        throw new NotSupportedException (string.Format ("Value '{0}' is not supported by this converter.", value));
 
 // ReSharper disable HeuristicUnreachableCode
+      if (!CanConvertTo (context, destinationType))
+        throw new NotSupportedException (string.Format ("Null value cannot be converted to type '{0}'.", destinationType));
+
       return null;
 // ReSharper restore HeuristicUnreachableCode
     }

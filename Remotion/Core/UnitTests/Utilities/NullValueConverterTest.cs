@@ -54,6 +54,14 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void CanConvertTo_NullableValueType ()
+    {
+      var result = _nullValueConverter.CanConvertTo (_typeDescriptorContextStub, typeof (int?));
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
     public void CanConvertFrom_NonNullableType ()
     {
       var result = _nullValueConverter.CanConvertFrom (_typeDescriptorContextStub, typeof (int));
@@ -65,6 +73,14 @@ namespace Remotion.UnitTests.Utilities
     public void CanConvertFrom_NullableType ()
     {
       var result = _nullValueConverter.CanConvertFrom (_typeDescriptorContextStub, typeof (string));
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void CanConvertFrom_NullableValueType ()
+    {
+      var result = _nullValueConverter.CanConvertFrom (_typeDescriptorContextStub, typeof (int?));
 
       Assert.That (result, Is.True);
     }
@@ -101,21 +117,21 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Value of type 'System.Int32' cannot be converted to null.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Null value cannot be converted to type 'System.Int32'.")]
     public void ConvertTo_DestinationTypeNotNullable ()
     {
       _nullValueConverter.ConvertTo (_typeDescriptorContextStub, CultureInfo.CurrentCulture, null, typeof (int));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Value 'test' cannot be converted to null.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Value 'test' is not supported by this converter.")]
     public void ConvertTo_NullableDestinationTypeValueNotNull ()
     {
-      _nullValueConverter.ConvertTo (_typeDescriptorContextStub, CultureInfo.CurrentCulture, "test", typeof (string));
+      _nullValueConverter.ConvertTo (_typeDescriptorContextStub, CultureInfo.CurrentCulture, "test", typeof (int));
     }
 
     [Test]
-    public void ConvertToNullableDestinationTypeWithNullValue ()
+    public void ConvertTo_NullableDestinationTypeWithNullValue ()
     {
       var result = _nullValueConverter.ConvertTo (_typeDescriptorContextStub, CultureInfo.CurrentCulture, null, typeof (string));
 
