@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
@@ -172,6 +173,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SplitValueForComparison_InvalidClassDefinition ()
     {
       _objectIDWithoutClassIDStorageDefinition.SplitValueForComparison (DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    public void SplitValuesForComparison ()
+    {
+      var row1 = new ColumnValueTable.Row (new[] { "1" });
+      var row2 = new ColumnValueTable.Row (new[] { "2" });
+      var columnValueTable = new ColumnValueTable (new[] { _columnDefinition }, new[] { row1, row2 });
+
+      _valuePropertyStub
+          .Stub (stub => stub.SplitValuesForComparison (Arg<IEnumerable<object>>.List.Equal (
+              new[] { DomainObjectIDs.Order1.Value, DomainObjectIDs.Order2.Value })))
+          .Return (columnValueTable);
+
+      var result = _objectIDWithoutClassIDStorageDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+
+      ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
+    }
+
+    [Test]
+    public void SplitValuesForComparison_NullValue ()
+    {
+      var row1 = new ColumnValueTable.Row (new[] { "1" });
+      var row2 = new ColumnValueTable.Row (new[] { "2" });
+      var columnValueTable = new ColumnValueTable (new[] { _columnDefinition }, new[] { row1, row2 });
+
+      // Bug in Rhino Mocks: List.Equal constraint cannot handle nulls within the sequence
+      _valuePropertyStub
+          .Stub (stub => stub.SplitValuesForComparison (
+              Arg<IEnumerable<object>>.Matches (seq => seq.SequenceEqual (new[] { null, DomainObjectIDs.Order2.Value }))))
+          .Return (columnValueTable);
+
+      var result = _objectIDWithoutClassIDStorageDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order2 });
+
+      ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The specified ObjectID has an invalid ClassDefinition.\r\nParameter name: values")]
+    public void SplitValuesForComparison_InvalidClassDefinition ()
+    {
+      // Exception is only triggered when somebody actually accesses the arguments
+      _valuePropertyStub
+          .Stub (stub => stub.SplitValuesForComparison (Arg<IEnumerable<object>>.Is.Anything))
+          .WhenCalled (mi => ((IEnumerable<object>) mi.Arguments[0]).ToArray())
+          .Return (new ColumnValueTable());
+
+      _objectIDWithoutClassIDStorageDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 })
+          .Columns.ToArray();
     }
   }
 }

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
@@ -119,10 +120,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Compound properties cannot be used to look up values for comparison.")]
     public void SplitValueForComparison ()
     {
-      _compoundStoragePropertyDefinition.SplitValueForComparison (null);
+      var dateTime = new DateTime (2011, 7, 18);
+      var columnValue1 = new ColumnValue (_columnDefinition1, dateTime);
+      var columnValue2 = new ColumnValue (_columnDefinition2, dateTime);
+      var columnValue3 = new ColumnValue (_columnDefinition3, dateTime);
+
+      _property1Stub.Stub (stub => stub.SplitValueForComparison (2011)).Return (new[] { columnValue1 });
+      _property2Stub.Stub (stub => stub.SplitValueForComparison (7)).Return (new[] { columnValue2 });
+      _property3Stub.Stub (stub => stub.SplitValueForComparison (18)).Return (new[] { columnValue3 });
+
+      var result = _compoundStoragePropertyDefinition.SplitValueForComparison (dateTime).ToArray ();
+
+      Assert.That (result, Is.EqualTo (new[] { columnValue1, columnValue2, columnValue3 }));
+    }
+
+    [Test]
+    public void SplitValuesForComparison ()
+    {
+      var dateTime1 = new DateTime (2011, 7, 18);
+      var dateTime2 = new DateTime (2012, 8, 19);
+
+      var row1 = new ColumnValueTable.Row (new object[] { "2011" });
+      var row2 = new ColumnValueTable.Row (new object[] { "2012" });
+      var row3 = new ColumnValueTable.Row (new object[] { "7" });
+      var row4 = new ColumnValueTable.Row (new object[] { "8" });
+      var row5 = new ColumnValueTable.Row (new object[] { "18" });
+      var row6 = new ColumnValueTable.Row (new object[] { "19" });
+
+      _property1Stub
+          .Stub (stub => stub.SplitValuesForComparison (Arg<IEnumerable<object>>.List.Equal (new object[] { 2011, 2012 })))
+          .Return (new ColumnValueTable(new[] { _columnDefinition1}, new[] { row1, row2 }));
+      _property2Stub
+          .Stub (stub => stub.SplitValuesForComparison (Arg<IEnumerable<object>>.List.Equal (new object[] { 7, 8 })))
+          .Return (new ColumnValueTable(new[] { _columnDefinition2}, new[] { row3, row4 }));
+      _property3Stub
+          .Stub (stub => stub.SplitValuesForComparison (Arg<IEnumerable<object>>.List.Equal (new object[] { 18, 19 })))
+          .Return (new ColumnValueTable (new[] { _columnDefinition3 }, new[] { row5, row6 }));
+
+      var result = _compoundStoragePropertyDefinition.SplitValuesForComparison (new object[] { dateTime1, dateTime2 });
+
+      var expectedTable = new ColumnValueTable (
+          new[] { _columnDefinition1, _columnDefinition2, _columnDefinition3 }, 
+          new[]
+          {
+              new ColumnValueTable.Row (new object[] { "2011", "7", "18" }), 
+              new ColumnValueTable.Row (new object[] { "2012", "8", "19" })
+          });
+
+      ColumnValueTableTestHelper.CheckTable (expectedTable, result);
     }
   }
 }

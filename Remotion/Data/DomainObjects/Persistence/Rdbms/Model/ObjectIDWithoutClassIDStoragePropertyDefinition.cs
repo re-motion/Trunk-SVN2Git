@@ -20,6 +20,7 @@ using System.Data;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -81,26 +82,46 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
-      if (objectID == null)
-        return _valueProperty.SplitValue (null);
+      CheckClassDefinition (objectID, "value");
 
-      if (objectID.ClassDefinition != _classDefinition)
-        throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", "value");
-
-      return _valueProperty.SplitValue (objectID.Value);
+      var innerValue = GetValueOrNull (objectID);
+      return _valueProperty.SplitValue (innerValue);
     }
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
+      CheckClassDefinition (objectID, "value");
 
-      if (objectID == null)
-        return _valueProperty.SplitValueForComparison (null);
-
-      if (objectID.ClassDefinition != _classDefinition)
-        throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", "value");
-
-      return _valueProperty.SplitValueForComparison (objectID.Value);
+      var innerValue = GetValueOrNull (objectID);
+      return _valueProperty.SplitValueForComparison (innerValue);
     }
+
+    public ColumnValueTable SplitValuesForComparison (IEnumerable<object> values)
+    {
+      ArgumentUtility.CheckNotNull ("values", values);
+
+      var innerValues = values.Select (
+          v =>
+          {
+            var objectID = (ObjectID) v;
+            CheckClassDefinition (objectID, "values");
+            return GetValueOrNull (objectID);
+          });
+
+      return _valueProperty.SplitValuesForComparison (innerValues);
+    }
+
+    private void CheckClassDefinition (ObjectID objectID, string paramName)
+    {
+      if (objectID != null && objectID.ClassDefinition != _classDefinition)
+        throw new ArgumentException ("The specified ObjectID has an invalid ClassDefinition.", paramName);
+    }
+
+    private object GetValueOrNull (ObjectID objectID)
+    {
+      return objectID == null ? null : objectID.Value;
+    }
+
   }
 }

@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Data;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 
@@ -34,5 +34,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
     IEnumerable<ColumnValue> SplitValue (object value);
     IEnumerable<ColumnValue> SplitValueForComparison (object value);
+    ColumnValueTable SplitValuesForComparison (IEnumerable<object> values);
   }
 }

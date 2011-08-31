@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -73,6 +74,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
       return SplitValue (value);
+    }
+
+    public ColumnValueTable SplitValuesForComparison (IEnumerable<object> values)
+    {
+      ArgumentUtility.CheckNotNull ("values", values);
+
+      return new ColumnValueTable(
+          EnumerableUtility.Singleton (_columnDefinition), 
+          values.Select (v => new ColumnValueTable.Row (EnumerableUtility.Singleton (v))));
     }
   }
 }

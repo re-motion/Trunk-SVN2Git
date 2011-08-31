@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -30,17 +31,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class ObjectIDStoragePropertyDefinitionTest : StandardMappingTest
   {
-    private IRdbmsStoragePropertyDefinition _objectIDColumnStub;
-    private IRdbmsStoragePropertyDefinition _classIDColumnStub;
-    private ObjectIDStoragePropertyDefinition _objectIDStoragePropertyDefinition;
-    private IDataReader _dataReaderStub;
-    private IColumnOrdinalProvider _columnOrdinalProviderStub;
-    private IDbCommand _dbCommandStub;
-    private IDbDataParameter _dbDataParameter1Stub;
-    private IDbDataParameter _dbDataParameter2Stub;
     private ColumnDefinition _columnDefinition1;
     private ColumnDefinition _columnDefinition2;
 
+    private IRdbmsStoragePropertyDefinition _valuePropertyStub;
+    private IRdbmsStoragePropertyDefinition _classIDPropertyStub;
+
+    private ObjectIDStoragePropertyDefinition _objectIDStoragePropertyDefinition;
+
+    private IDataReader _dataReaderStub;
+    private IColumnOrdinalProvider _columnOrdinalProviderStub;
+    private IDbDataParameter _dbDataParameter1Stub;
+    private IDbDataParameter _dbDataParameter2Stub;
+    private IDbCommand _dbCommandStub;
 
     public override void SetUp ()
     {
@@ -49,15 +52,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinition1 = ColumnDefinitionObjectMother.CreateColumn("Column1");
       _columnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
 
-      _objectIDColumnStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _objectIDColumnStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition1);
-      _objectIDColumnStub.Stub (stub => stub.GetColumnForForeignKey ()).Return (_columnDefinition1);
-      _objectIDColumnStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition1 });
+      _valuePropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      _valuePropertyStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition1);
+      _valuePropertyStub.Stub (stub => stub.GetColumnForForeignKey ()).Return (_columnDefinition1);
+      _valuePropertyStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition1 });
       
-      _classIDColumnStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _classIDColumnStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition2 });
+      _classIDPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      _classIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition2 });
       
-      _objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (_objectIDColumnStub, _classIDColumnStub);
+      _objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (_valuePropertyStub, _classIDPropertyStub);
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
@@ -71,10 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization ()
     {
-      Assert.That (_objectIDStoragePropertyDefinition.ValueProperty, Is.SameAs (_objectIDColumnStub));
-      Assert.That (_objectIDStoragePropertyDefinition.ClassIDProperty, Is.SameAs (_classIDColumnStub));
-      Assert.That (_objectIDStoragePropertyDefinition.ValueProperty, Is.SameAs (_objectIDColumnStub));
-      Assert.That (_objectIDStoragePropertyDefinition.ClassIDProperty, Is.SameAs (_classIDColumnStub));
+      Assert.That (_objectIDStoragePropertyDefinition.ValueProperty, Is.SameAs (_valuePropertyStub));
+      Assert.That (_objectIDStoragePropertyDefinition.ClassIDProperty, Is.SameAs (_classIDPropertyStub));
+      Assert.That (_objectIDStoragePropertyDefinition.ValueProperty, Is.SameAs (_valuePropertyStub));
+      Assert.That (_objectIDStoragePropertyDefinition.ClassIDProperty, Is.SameAs (_classIDPropertyStub));
     }
 
     [Test]
@@ -98,8 +101,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Read ()
     {
-      _objectIDColumnStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
-      _classIDColumnStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return ("Order");
+      _valuePropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
+      _classIDPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return ("Order");
       
       var result = _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
 
@@ -121,8 +124,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       "Incorrect database value encountered. The value read from 'Column2' must contain null.")]
     public void Read_ValueIsNullAndClassIDIsNotNull_ThrowsException ()
     {
-      _classIDColumnStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition1 });
-      _classIDColumnStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return ("Order");
+      _classIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition1 });
+      _classIDPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return ("Order");
 
       _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
     }
@@ -132,8 +135,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       "Incorrect database value encountered. The value read from 'Column2' must not contain null.")]
     public void Read_ValueIsNotNullAndClassIDIsNull_ThrowsException ()
     {
-      _classIDColumnStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition1 });
-      _objectIDColumnStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
+      _classIDPropertyStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition1 });
+      _valuePropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
 
       _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
     }
@@ -144,8 +147,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var columnValue1 = new ColumnValue (_columnDefinition1, DomainObjectIDs.Order1);
       var columnValue2 = new ColumnValue (_columnDefinition1, DomainObjectIDs.Order2);
 
-      _objectIDColumnStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
-      _classIDColumnStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.ClassID)).Return (new[] { columnValue2 });
+      _valuePropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
+      _classIDPropertyStub.Stub (stub => stub.SplitValue (DomainObjectIDs.Order1.ClassID)).Return (new[] { columnValue2 });
       
       var result = _objectIDStoragePropertyDefinition.SplitValue (DomainObjectIDs.Order1);
 
@@ -158,8 +161,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var columnValue1 = new ColumnValue (_columnDefinition1, null);
       var columnValue2 = new ColumnValue (_columnDefinition2, null);
 
-      _objectIDColumnStub.Stub (stub => stub.SplitValue (null)).Return (new[]{ columnValue1 });
-      _classIDColumnStub.Stub (stub => stub.SplitValue (null)).Return (new[] { columnValue2});
+      _valuePropertyStub.Stub (stub => stub.SplitValue (null)).Return (new[]{ columnValue1 });
+      _classIDPropertyStub.Stub (stub => stub.SplitValue (null)).Return (new[] { columnValue2});
 
       var result = _objectIDStoragePropertyDefinition.SplitValue (null);
 
@@ -169,8 +172,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void SplitValueForComparison ()
     {
-      var columnValue1 = new ColumnValue (_columnDefinition1, null);
-      _objectIDColumnStub.Stub (stub => stub.SplitValueForComparison (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
+      var columnValue1 = new ColumnValue (_columnDefinition1, 12);
+      _valuePropertyStub.Stub (stub => stub.SplitValueForComparison (DomainObjectIDs.Order1.Value)).Return (new[] { columnValue1 });
 
       var result = _objectIDStoragePropertyDefinition.SplitValueForComparison (DomainObjectIDs.Order1).ToArray();
 
@@ -181,11 +184,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SplitValueForComparison_NullValue ()
     {
       var columnValue1 = new ColumnValue (_columnDefinition1, null);
-      _objectIDColumnStub.Stub (stub => stub.SplitValueForComparison (null)).Return (new[] { columnValue1 });
+      _valuePropertyStub.Stub (stub => stub.SplitValueForComparison (null)).Return (new[] { columnValue1 });
 
       var result = _objectIDStoragePropertyDefinition.SplitValueForComparison (null).ToArray ();
 
       Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
+    }
+
+    [Test]
+    public void SplitValuesForComparison ()
+    {
+      var row1 = new ColumnValueTable.Row (new[] { "1" });
+      var row2 = new ColumnValueTable.Row (new[] { "2" });
+      var columnValueTable = new ColumnValueTable (new[] { _columnDefinition1 }, new[] { row1, row2 });
+
+      _valuePropertyStub
+          .Stub (stub => stub.SplitValuesForComparison (Arg<IEnumerable<object>>.List.Equal (
+              new[] { DomainObjectIDs.Order1.Value, DomainObjectIDs.Order2.Value })))
+          .Return (columnValueTable);
+
+      var result = _objectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+
+      ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
+    }
+
+    [Test]
+    public void SplitValuesForComparison_NullValue ()
+    {
+      var row1 = new ColumnValueTable.Row (new[] { "1" });
+      var row2 = new ColumnValueTable.Row (new[] { "2" });
+      var columnValueTable = new ColumnValueTable (new[] { _columnDefinition1 }, new[] { row1, row2 });
+
+      // Bug in Rhino Mocks: List.Equal constraint cannot handle nulls within the sequence
+      _valuePropertyStub
+          .Stub (stub => stub.SplitValuesForComparison (
+              Arg<IEnumerable<object>>.Matches (seq => seq.SequenceEqual (new[] { null, DomainObjectIDs.Order2.Value }))))
+          .Return (columnValueTable);
+
+      var result = _objectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order2 });
+
+      ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
     }
   }
 }

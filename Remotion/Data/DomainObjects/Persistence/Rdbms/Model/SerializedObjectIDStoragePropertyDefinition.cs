@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -71,20 +72,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
 
-      if (objectID == null)
-        return _serializedIDProperty.SplitValue (null);
-
-      return _serializedIDProperty.SplitValue (objectID.ToString());
+      return _serializedIDProperty.SplitValue (GetStringOrNull (objectID));
     }
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
 
-      if (objectID == null)
-        return _serializedIDProperty.SplitValueForComparison (null);
+      return _serializedIDProperty.SplitValueForComparison (GetStringOrNull (objectID));
+    }
 
-      return _serializedIDProperty.SplitValueForComparison (objectID.ToString ());
+    public ColumnValueTable SplitValuesForComparison (IEnumerable<object> values)
+    {
+      ArgumentUtility.CheckNotNull ("values", values);
+
+      return _serializedIDProperty.SplitValuesForComparison (values.Select (v => (object) GetStringOrNull ((ObjectID) v)));
+    }
+
+    private string GetStringOrNull (ObjectID objectID)
+    {
+      return objectID == null ? null : objectID.ToString ();
     }
   }
 }

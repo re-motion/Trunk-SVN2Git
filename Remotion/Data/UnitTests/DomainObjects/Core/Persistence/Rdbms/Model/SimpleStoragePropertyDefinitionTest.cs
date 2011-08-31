@@ -119,5 +119,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (result, Is.EqualTo (new[] { new ColumnValue (_innerColumnDefinition, null) }));
     }
+
+    [Test]
+    public void SplitValuesForComparison ()
+    {
+      var value1 = new object ();
+      var value2 = new object ();
+
+      var result = _storagePropertyDefinition.SplitValuesForComparison (new[] { value1, value2 });
+
+      var expectedTable = new ColumnValueTable (
+          new[] { _innerColumnDefinition }, 
+          new[]
+          {
+              new ColumnValueTable.Row (new[] { value1 }), 
+              new ColumnValueTable.Row (new[] { value2 }),
+          });
+      ColumnValueTableTestHelper.CheckTable (expectedTable, result);
+    }
+
+    [Test]
+    public void SplitValuesForComparison_NullValue ()
+    {
+      var value2 = new object ();
+
+      var result = _storagePropertyDefinition.SplitValuesForComparison (new[] { null, value2 });
+
+      var expectedTable = new ColumnValueTable (
+          new[] { _innerColumnDefinition },
+          new[]
+          {
+              new ColumnValueTable.Row (new object[] { null }), 
+              new ColumnValueTable.Row (new[] { value2 }),
+          });
+      ColumnValueTableTestHelper.CheckTable (expectedTable, result);
+    }
   }
 }

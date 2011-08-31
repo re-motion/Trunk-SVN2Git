@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -115,7 +116,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       var objectID = ArgumentUtility.CheckType<ObjectID> ("value", value);
 
-      return _valueProperty.SplitValueForComparison (objectID != null ? objectID.Value : null);
+      return _valueProperty.SplitValueForComparison (GetValueOrNull (objectID));
+    }
+
+    public ColumnValueTable SplitValuesForComparison (IEnumerable<object> values)
+    {
+      ArgumentUtility.CheckNotNull ("values", values);
+
+      return _valueProperty.SplitValuesForComparison (values.Select (v => GetValueOrNull ((ObjectID) v)));
+    }
+
+    private object GetValueOrNull (ObjectID objectID)
+    {
+      return objectID != null ? objectID.Value : null;
     }
   }
 }

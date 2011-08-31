@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
@@ -148,6 +149,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _serializedObjectIDStoragePropertyDefinition.SplitValueForComparison (null).ToArray ();
 
       Assert.That (result, Is.EqualTo (new[] { columnValue1 }));
+    }
+
+    [Test]
+    public void SplitValuesForComparison ()
+    {
+      var row1 = new ColumnValueTable.Row (new[] { "1" });
+      var row2 = new ColumnValueTable.Row (new[] { "2" });
+      var columnValueTable = new ColumnValueTable (new[] { _columnDefinition }, new[] { row1, row2 });
+
+      _serializedIDPropertyStub
+          .Stub (stub => stub.SplitValuesForComparison (Arg<IEnumerable<object>>.List.Equal (
+              new[] { DomainObjectIDs.Order1.ToString (), DomainObjectIDs.Order2.ToString () })))
+          .Return (columnValueTable);
+
+      var result = _serializedObjectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+
+      ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
+    }
+
+    [Test]
+    public void SplitValuesForComparison_NullValue ()
+    {
+      var row1 = new ColumnValueTable.Row (new[] { "1" });
+      var row2 = new ColumnValueTable.Row (new[] { "2" });
+      var columnValueTable = new ColumnValueTable (new[] { _columnDefinition }, new[] { row1, row2 });
+
+      // Bug in Rhino Mocks: List.Equal constraint cannot handle nulls within the sequence
+      _serializedIDPropertyStub
+          .Stub (stub => stub.SplitValuesForComparison (
+              Arg<IEnumerable<object>>.Matches (seq => seq.SequenceEqual (new[] { null, DomainObjectIDs.Order2.ToString () }))))
+          .Return (columnValueTable);
+
+      var result = _serializedObjectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order2 });
+
+      ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
     }
   }
 }

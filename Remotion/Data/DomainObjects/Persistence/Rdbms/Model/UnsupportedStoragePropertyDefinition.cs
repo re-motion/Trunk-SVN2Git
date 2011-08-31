@@ -69,5 +69,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       throw new NotSupportedException ();
     }
+
+    public ColumnValueTable SplitValuesForComparison (IEnumerable<object> values)
+    {
+      throw new NotSupportedException();
+    }
   }
 }

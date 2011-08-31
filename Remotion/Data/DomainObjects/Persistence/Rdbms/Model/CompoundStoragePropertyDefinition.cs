@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
-using Remotion.Text;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -97,7 +96,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
-      throw new NotSupportedException ("Compound properties cannot be used to look up values for comparison.");
+      return _properties.SelectMany (p => p.StoragePropertyDefinition.SplitValueForComparison (p.ValueAccessor (value)));
+    }
+
+    public ColumnValueTable SplitValuesForComparison (IEnumerable<object> values)
+    {
+      ArgumentUtility.CheckNotNull ("values", values);
+
+      var valueList = values.ToList();
+      return ColumnValueTable.Combine (
+          _properties.Select (p => p.StoragePropertyDefinition.SplitValuesForComparison (valueList.Select (v => p.ValueAccessor (v)))));
     }
   }
 }
