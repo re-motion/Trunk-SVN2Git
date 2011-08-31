@@ -28,28 +28,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
   [TestFixture]
   public class QueryDbCommandBuilderTest
   {
-    private IStorageTypeInformation _storageTypeInformationMock1;
-    private IStorageTypeInformation _storageTypeInformationMock2;
-    private QueryParameter _queryParameter1;
-    private QueryParameter _queryParameter2;
-    private QueryParameterWithType _queryParameterWithType1;
-    private QueryParameterWithType _queryParameterWithType2;
+    private IStorageTypeInformation _valueParameterStorageTypeInformationMock;
+    private IStorageTypeInformation _textParameterStorageTypeInformationMock;
+    private QueryParameter _valueQueryParameter;
+    private QueryParameter _textQueryParameter;
+    private QueryParameterWithType _valueQueryParameterWithType;
+    private QueryParameterWithType _textQueryParameterWithType;
     private QueryDbCommandBuilder _commandBuilder;
 
     [SetUp]
     public void SetUp ()
     {
-      _storageTypeInformationMock1 = MockRepository.GenerateStrictMock<IStorageTypeInformation>();
-      _storageTypeInformationMock2 = MockRepository.GenerateStrictMock<IStorageTypeInformation>();
+      _valueParameterStorageTypeInformationMock = MockRepository.GenerateStrictMock<IStorageTypeInformation>();
+      _textParameterStorageTypeInformationMock = MockRepository.GenerateStrictMock<IStorageTypeInformation>();
 
-      _queryParameter1 = new QueryParameter ("@param1", 5,QueryParameterType.Value);
-      _queryParameter2 = new QueryParameter ("@param2", "test", QueryParameterType.Text);
+      _valueQueryParameter = new QueryParameter ("@param1", 5,QueryParameterType.Value);
+      _textQueryParameter = new QueryParameter ("@param2", "test", QueryParameterType.Text);
 
-      _queryParameterWithType1 = new QueryParameterWithType (_queryParameter1, _storageTypeInformationMock1);
-      _queryParameterWithType2 = new QueryParameterWithType (_queryParameter2, _storageTypeInformationMock2);
+      _valueQueryParameterWithType = new QueryParameterWithType (_valueQueryParameter, _valueParameterStorageTypeInformationMock);
+      _textQueryParameterWithType = new QueryParameterWithType (_textQueryParameter, _textParameterStorageTypeInformationMock);
 
       _commandBuilder = new QueryDbCommandBuilder (
-          "Statement @param1 @param2", new[] { _queryParameterWithType1, _queryParameterWithType2 }, MockRepository.GenerateStub<ISqlDialect>());
+          "Statement @param1 @param2", new[] { _valueQueryParameterWithType, _textQueryParameterWithType }, MockRepository.GenerateStub<ISqlDialect>());
     }
 
     [Test]
@@ -64,11 +64,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       executionContextStub.Stub (stub => stub.CreateDbCommand()).Return(dbCommandStub);
 
       var dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
-      _storageTypeInformationMock1
+      _valueParameterStorageTypeInformationMock
         .Expect (mock => mock.CreateDataParameter (dbCommandStub, 5))
         .Return (dbDataParameterStub);
-      _storageTypeInformationMock1.Replay();
-      _storageTypeInformationMock2.Replay();
+      _valueParameterStorageTypeInformationMock.Replay();
+
+      _textParameterStorageTypeInformationMock.Replay();
 
       dataParameterCollectionStrictMock.Expect (mock => mock.Add (dbDataParameterStub)).Return (0);
       dataParameterCollectionStrictMock.Replay();
@@ -76,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var result = _commandBuilder.Create (executionContextStub);
 
       dataParameterCollectionStrictMock.VerifyAllExpectations();
-      _storageTypeInformationMock1.VerifyAllExpectations();
-      _storageTypeInformationMock2.VerifyAllExpectations();
+      _valueParameterStorageTypeInformationMock.VerifyAllExpectations();
+      _textParameterStorageTypeInformationMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (dbCommandStub));
       Assert.That (result.CommandText, Is.EqualTo ("Statement @param1 test"));
     }
