@@ -54,48 +54,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     public IEnumerable<ForeignKeyConstraintDefinition> CreateForeignKeyConstraints (ClassDefinition classDefinition)
     {
-      var foreignKeyConstraintDefinitions = new List<ForeignKeyConstraintDefinition>();
-
-      var allClassDefinitions = classDefinition
+      var allClassDefinitionsInHierarchy = classDefinition
           .CreateSequence (cd => cd.BaseClass)
           .Concat (classDefinition.GetAllDerivedClasses ());
-      var allRelationEndPointDefinitions = allClassDefinitions.SelectMany (cd => cd.MyRelationEndPointDefinitions);
 
-      foreach (var endPoint in allRelationEndPointDefinitions)
-      {
-        if (endPoint.IsVirtual)
-          continue;
-
-        var oppositeClassDefinition = endPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (endPoint.PropertyName);
-
-        // Foreign keys can only be declared within the same storage provider
-        if (GetStorageProviderDefinition (oppositeClassDefinition) != GetStorageProviderDefinition (endPoint.ClassDefinition))
-          continue;
-
-        // No foreign keys for non-persistent properties.
-        var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
-        if (propertyDefinition.StorageClass != StorageClass.Persistent)
-          continue;
-
-        // Foreign keys can only be declared if we have an opposite table (not if we have an opposite union view, for example)
-        if (FindTableName (oppositeClassDefinition) == null)
-          continue;
-
-        // We can't access the opposite entity definition from here, but we can get the ID column from the provider
-        var oppositeStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition();
-        var endPointStorageProperty = _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
-        var referencingColumn = oppositeStoragePropertyDefinition.GetColumnForForeignKey();
-        var referencedColumn = endPointStorageProperty.GetColumnForForeignKey ();
-
-        var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
-            _storageNameProvider.GetForeignKeyConstraintName (classDefinition, referencedColumn),
-            new EntityNameDefinition (null, FindTableName (oppositeClassDefinition)),
-            new[] { referencingColumn },
-            new[] { referencedColumn });
-        foreignKeyConstraintDefinitions.Add (foreignKeyConstraintDefinition);
-      }
-
-      return foreignKeyConstraintDefinitions;
+      return (from classDefinitionInHierarchy in allClassDefinitionsInHierarchy
+              from endPointDefinition in classDefinitionInHierarchy.MyRelationEndPointDefinitions
+              where !endPointDefinition.IsVirtual
+              let oppositeClassDefinition = endPointDefinition.ClassDefinition.GetMandatoryOppositeClassDefinition (endPointDefinition.PropertyName)
+              where GetStorageProviderDefinition (oppositeClassDefinition) == GetStorageProviderDefinition (endPointDefinition.ClassDefinition)
+              let propertyDefinition = ((RelationEndPointDefinition) endPointDefinition).PropertyDefinition
+              where propertyDefinition.StorageClass == StorageClass.Persistent
+              where FindTableName (oppositeClassDefinition) != null
+              let oppositeStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition()
+              let endPointStorageProperty = _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition)
+              let referencingColumn = oppositeStoragePropertyDefinition.GetColumnForForeignKey()
+              let referencedColumn = endPointStorageProperty.GetColumnForForeignKey()
+              select new ForeignKeyConstraintDefinition (
+                  _storageNameProvider.GetForeignKeyConstraintName (classDefinition, referencedColumn), 
+                  new EntityNameDefinition (null, FindTableName (oppositeClassDefinition)), 
+                  new[] { referencingColumn }, 
+                  new[] { referencedColumn })).ToList();
     }
 
     private StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition oppositeClassDefinition)
