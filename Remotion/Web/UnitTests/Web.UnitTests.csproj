@@ -126,6 +126,8 @@
     <Reference Include="System.Web.Abstractions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.XML" />
     <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
@@ -230,6 +232,7 @@
     <Compile Include="Core\UI\Controls\WebTreeViewImplementation\IWebTreeViewRendererTest.cs" />
     <Compile Include="Core\UI\HtmlHeadAppenderTest.cs" />
     <Compile Include="Core\Utilities\VirtualPathUtilityTests.cs" />
+    <Compile Include="Core\Utilities\WebServiceUtilityTest.cs" />
     <Compile Include="LegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">
       <SubType>Code</SubType>
