@@ -164,13 +164,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void GetForeignKeyConstraintName ()
+    public void GetForeignKeyConstraintName_One ()
     {
       var columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("FakeColumn");
 
-      var result = _provider.GetForeignKeyConstraintName (_classDefinition, columnDefinition);
+      var result = _provider.GetForeignKeyConstraintName (_classDefinition, new[] { columnDefinition });
 
       Assert.That (result, Is.EqualTo ("FK_Company_FakeColumn"));
+    }
+
+    [Test]
+    public void GetForeignKeyConstraintName_Many ()
+    {
+      var columnDefinition1 = ColumnDefinitionObjectMother.CreateColumn ("FakeColumn1");
+      var columnDefinition2 = ColumnDefinitionObjectMother.CreateColumn ("FakeColumn2");
+
+      var result = _provider.GetForeignKeyConstraintName (_classDefinition, new[] { columnDefinition1, columnDefinition2 });
+
+      Assert.That (result, Is.EqualTo ("FK_Company_FakeColumn1_FakeColumn2"));
     }
   }
 }

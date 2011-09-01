@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -97,15 +99,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return String.Format ("PK_{0}", tableName);
     }
 
-    public string GetForeignKeyConstraintName (ClassDefinition classDefinition, ColumnDefinition foreignKeyColumn)
+    public string GetForeignKeyConstraintName (ClassDefinition classDefinition, IEnumerable<ColumnDefinition> foreignKeyColumns)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("foreignKeyColumn", foreignKeyColumn);
+      ArgumentUtility.CheckNotNull ("foreignKeyColumns", foreignKeyColumns);
       
       var tableName = GetTableName (classDefinition).EntityName;
-      var columnName = foreignKeyColumn.Name;
 
-      return String.Format ("FK_{0}_{1}", tableName, columnName);
+      return String.Format ("FK_{0}_{1}", tableName, SeparatedStringBuilder.Build ("_", foreignKeyColumns, cd => cd.Name));
     }
 
     private string GetColumnNameFromAttribute (PropertyDefinition propertyDefinition)

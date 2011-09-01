@@ -68,13 +68,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
               where FindTableName (oppositeClassDefinition) != null
               let oppositeStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition()
               let endPointStorageProperty = _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition)
-              let referencingColumn = oppositeStoragePropertyDefinition.GetColumnForForeignKey()
-              let referencedColumn = endPointStorageProperty.GetColumnForForeignKey()
+              let referencingColumns = new[] { oppositeStoragePropertyDefinition.GetColumnForLookup() }
+              let referencedColumns = new[] { endPointStorageProperty.GetColumnForLookup() }
               select new ForeignKeyConstraintDefinition (
-                  _storageNameProvider.GetForeignKeyConstraintName (classDefinition, referencedColumn), 
+                  _storageNameProvider.GetForeignKeyConstraintName (classDefinition, referencedColumns), 
                   new EntityNameDefinition (null, FindTableName (oppositeClassDefinition)), 
-                  new[] { referencingColumn }, 
-                  new[] { referencedColumn })).ToList();
+                  referencingColumns, 
+                  referencedColumns)).ToList();
     }
 
     private StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition oppositeClassDefinition)

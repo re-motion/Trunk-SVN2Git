@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
@@ -37,6 +38,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     string GetRelationClassIDColumnName (RelationEndPointDefinition relationEndPointDefinition);
     
     string GetPrimaryKeyConstraintName (ClassDefinition classDefinition);
-    string GetForeignKeyConstraintName (ClassDefinition classDefinition, ColumnDefinition foreignKeyColumn);
+    string GetForeignKeyConstraintName (ClassDefinition classDefinition, IEnumerable<ColumnDefinition> foreignKeyColumns);
   }
 }
