@@ -45,10 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinition = ColumnDefinitionObjectMother.CreateColumn();
 
       _serializedIDPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _serializedIDPropertyStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition);
-      _serializedIDPropertyStub.Stub (stub => stub.GetColumnForForeignKey()).Return (_columnDefinition);
-      _serializedIDPropertyStub.Stub (stub => stub.GetColumns()).Return (new[] { _columnDefinition });
-
       _serializedObjectIDStoragePropertyDefinition = new SerializedObjectIDStoragePropertyDefinition (_serializedIDPropertyStub);
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
@@ -67,7 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumnForLookup ()
     {
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumnForLookup(), Is.SameAs (_columnDefinition));
+      _serializedIDPropertyStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition);
+      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumnForLookup (), Is.SameAs (_columnDefinition));
     }
 
     [Test]
@@ -80,6 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumns ()
     {
+      _serializedIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition });
       Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumns(), Is.EqualTo (_serializedIDPropertyStub.GetColumns()));
     }
 
@@ -184,6 +182,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _serializedObjectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order2 });
 
       ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "String-serialized ObjectID values cannot be used as foreign keys.")]
+    public void CreateForeignKeyConstraint ()
+    {
+      _serializedObjectIDStoragePropertyDefinition.CreateForeignKeyConstraint (
+          cols => { throw new Exception ("Should not be called."); }, 
+          new EntityNameDefinition ("entityschema", "entityname"), 
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty);
     }
   }
 }

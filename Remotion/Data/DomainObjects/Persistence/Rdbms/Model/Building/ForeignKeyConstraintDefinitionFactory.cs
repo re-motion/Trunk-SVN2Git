@@ -61,20 +61,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return (from classDefinitionInHierarchy in allClassDefinitionsInHierarchy
               from endPointDefinition in classDefinitionInHierarchy.MyRelationEndPointDefinitions
               where !endPointDefinition.IsVirtual
-              let oppositeClassDefinition = endPointDefinition.ClassDefinition.GetMandatoryOppositeClassDefinition (endPointDefinition.PropertyName)
-              where GetStorageProviderDefinition (oppositeClassDefinition) == GetStorageProviderDefinition (endPointDefinition.ClassDefinition)
+              let referencedClassDefinition = endPointDefinition.ClassDefinition.GetMandatoryOppositeClassDefinition (endPointDefinition.PropertyName)
+              where GetStorageProviderDefinition (referencedClassDefinition) == GetStorageProviderDefinition (endPointDefinition.ClassDefinition)
               let propertyDefinition = ((RelationEndPointDefinition) endPointDefinition).PropertyDefinition
               where propertyDefinition.StorageClass == StorageClass.Persistent
-              where FindTableName (oppositeClassDefinition) != null
-              let oppositeStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition()
-              let endPointStorageProperty = _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition)
-              let referencingColumns = new[] { oppositeStoragePropertyDefinition.GetColumnForLookup() }
-              let referencedColumns = new[] { endPointStorageProperty.GetColumnForLookup() }
-              select new ForeignKeyConstraintDefinition (
-                  _storageNameProvider.GetForeignKeyConstraintName (classDefinition, referencedColumns), 
-                  new EntityNameDefinition (null, FindTableName (oppositeClassDefinition)), 
-                  referencingColumns, 
-                  referencedColumns)).ToList();
+              let referencedTableName = FindTableName (referencedClassDefinition)
+              where referencedTableName != null
+              let referencedStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition()
+              let referencingStorageProperty =
+                  (IObjectIDStoragePropertyDefinition) _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition)
+              let referencedColumns = new[] { referencingStorageProperty.GetColumnForLookup() }
+              select referencingStorageProperty.CreateForeignKeyConstraint (
+                  referencingColumns => _storageNameProvider.GetForeignKeyConstraintName (classDefinition, referencingColumns),
+                  referencedTableName,
+                  referencedStoragePropertyDefinition)
+             ).ToList();
     }
 
     private StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition oppositeClassDefinition)
@@ -82,13 +83,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClassDefinition.StorageGroupType, null);
     }
 
-    private string FindTableName (ClassDefinition classDefinition)
+    private EntityNameDefinition FindTableName (ClassDefinition classDefinition)
     {
       var tableName = classDefinition
           .CreateSequence (cd => cd.BaseClass)
           .Select (cd => _storageNameProvider.GetTableName (cd))
           .FirstOrDefault (name => name != null);
-      return tableName != null ? tableName.EntityName : null;
+      return tableName;
     }
   }
 }

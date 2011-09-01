@@ -87,8 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
-          .Return (new EntityNameDefinition(null, "FakeTableName"))
-          .Repeat.Twice();
+          .Return (new EntityNameDefinition(null, "FakeTableName"));
       _storageNameProviderMock.Replay();
 
       _storageProviderDefinitionFinderStub
@@ -113,8 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (foreignKeyConstraint.ReferencedTableName.EntityName, Is.EqualTo ("FakeTableName"));
       Assert.That (foreignKeyConstraint.ReferencedTableName.SchemaName, Is.Null);
       Assert.That (foreignKeyConstraint.ConstraintName, Is.EqualTo ("FakeConstraintName"));
-      Assert.That (foreignKeyConstraint.ReferencingColumns, Is.EqualTo (new[] { _fakeObjectIDStoragePropertyDefinition.GetColumnForLookup() }));
-      Assert.That (foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeForeignKeyStoragePropertyDefinition.GetColumnForLookup() }));
+      Assert.That (foreignKeyConstraint.ReferencingColumns, Is.EqualTo (new[] { _fakeForeignKeyStoragePropertyDefinition.GetColumnForLookup () }));
+      Assert.That (foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeObjectIDStoragePropertyDefinition.GetColumnForLookup () }));
     }
     
     [Test]
@@ -143,8 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (employeeClassDefinition))
-          .Return (new EntityNameDefinition(null, "FakeTableName"))
-          .Repeat.Times (2);
+          .Return (new EntityNameDefinition(null, "FakeTableName"));
       _storageNameProviderMock.Replay();
 
       _storageProviderDefinitionFinderStub

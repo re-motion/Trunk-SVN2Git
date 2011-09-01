@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -28,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/> property that is stored as an ID column and a ClassID
   /// column.
   /// </summary>
-  public class ObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
+  public class ObjectIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
     private readonly IRdbmsStoragePropertyDefinition _valueProperty;
     private readonly IRdbmsStoragePropertyDefinition _classIDProperty;
@@ -124,6 +125,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("values", values);
 
       return _valueProperty.SplitValuesForComparison (values.Select (v => GetValueOrNull ((ObjectID) v)));
+    }
+
+    public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (
+        Func<IEnumerable<ColumnDefinition>, string> nameProvider,
+        EntityNameDefinition referencedTableName,
+        ObjectIDStoragePropertyDefinition referencedObjectIDProperty)
+    {
+      ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
+      ArgumentUtility.CheckNotNull ("referencedTableName", referencedTableName);
+      ArgumentUtility.CheckNotNull ("referencedObjectIDProperty", referencedObjectIDProperty);
+
+      var referencingColumns = new[] { GetColumnForLookup () };
+      var referencedColumns = new[] { referencedObjectIDProperty.GetColumnForLookup () };
+      return new ForeignKeyConstraintDefinition (nameProvider (referencingColumns),  referencedTableName,  referencingColumns, referencedColumns);
     }
 
     private object GetValueOrNull (ObjectID objectID)

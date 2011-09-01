@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// ClassID column. This can only be used when the <see cref="ClassDefinition"/> of the referenced <see cref="ObjectID"/> is known in advance
   /// (i.e., if there is no inheritance involved).
   /// </summary>
-  public class ObjectIDWithoutClassIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
+  public class ObjectIDWithoutClassIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
     private readonly IRdbmsStoragePropertyDefinition _valueProperty;
     private readonly ClassDefinition _classDefinition;
@@ -110,6 +110,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           });
 
       return _valueProperty.SplitValuesForComparison (innerValues);
+    }
+
+    public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (
+        Func<IEnumerable<ColumnDefinition>, string> nameProvider,
+        EntityNameDefinition referencedTableName,
+        ObjectIDStoragePropertyDefinition referencedObjectIDProperty)
+    {
+      ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
+      ArgumentUtility.CheckNotNull ("referencedTableName", referencedTableName);
+      ArgumentUtility.CheckNotNull ("referencedObjectIDProperty", referencedObjectIDProperty);
+
+      var referencingColumns = new[] { ValueProperty.GetColumnForLookup() };
+      var referencedColumns = new[] { referencedObjectIDProperty.ValueProperty.GetColumnForLookup () };
+      return new ForeignKeyConstraintDefinition (nameProvider (referencingColumns), referencedTableName, referencingColumns, referencedColumns);
     }
 
     private void CheckClassDefinition (ObjectID objectID, string paramName)

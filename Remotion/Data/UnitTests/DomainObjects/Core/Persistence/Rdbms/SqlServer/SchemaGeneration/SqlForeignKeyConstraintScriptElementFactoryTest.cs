@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var expectedResult = 
         "ALTER TABLE [dbo].[TableName1] ADD\r\n"
-       +"  CONSTRAINT [FK1] FOREIGN KEY ([Column2]) REFERENCES [dbo].[TableName1] ([Column1])";
+       +"  CONSTRAINT [FK1] FOREIGN KEY ([Column1]) REFERENCES [dbo].[TableName1] ([Column2])";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
       Assert.That (((ScriptStatement) result).Statement, Is.EqualTo(expectedResult));
     }
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var expectedResult =
         "ALTER TABLE [SchemaName].[TableName2] ADD\r\n"
-       + "  CONSTRAINT [FK2] FOREIGN KEY ([Column2], [Column1]) REFERENCES [SchemaName].[TableName2] ([Column1], [Column2])";
+       + "  CONSTRAINT [FK2] FOREIGN KEY ([Column1], [Column2]) REFERENCES [SchemaName].[TableName2] ([Column2], [Column1])";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
       Assert.That (((ScriptStatement) result).Statement, Is.EqualTo (expectedResult));
     }

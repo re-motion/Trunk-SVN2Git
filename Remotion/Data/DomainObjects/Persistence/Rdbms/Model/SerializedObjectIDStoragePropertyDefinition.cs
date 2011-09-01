@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="ObjectIDStoragePropertyDefinition"/> represents an <see cref="ObjectID"/> property that is stored in a single string-typed column.
   /// </summary>
-  public class SerializedObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
+  public class SerializedObjectIDStoragePropertyDefinition : IObjectIDStoragePropertyDefinition
   {
     private readonly IRdbmsStoragePropertyDefinition _serializedIDProperty;
 
@@ -87,6 +87,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("values", values);
 
       return _serializedIDProperty.SplitValuesForComparison (values.Select (v => (object) GetStringOrNull ((ObjectID) v)));
+    }
+
+    public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (Func<IEnumerable<ColumnDefinition>, string> nameProvider, EntityNameDefinition referencedTableName, ObjectIDStoragePropertyDefinition referencedObjectIDProperty)
+    {
+      ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
+      ArgumentUtility.CheckNotNull ("referencedTableName", referencedTableName);
+      ArgumentUtility.CheckNotNull ("referencedObjectIDProperty", referencedObjectIDProperty);
+
+      throw new NotSupportedException ("String-serialized ObjectID values cannot be used as foreign keys.");
     }
 
     private string GetStringOrNull (ObjectID objectID)

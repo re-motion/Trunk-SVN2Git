@@ -66,10 +66,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return string.Format (
           "  CONSTRAINT [{0}] FOREIGN KEY ({1}) REFERENCES [{2}].[{3}] ({4})",
           foreignKeyConstraintDefinition.ConstraintName,
-          referencedColumnNameList,
+          referencingColumnNameList,
           foreignKeyConstraintDefinition.ReferencedTableName.SchemaName ?? DefaultSchema,
           foreignKeyConstraintDefinition.ReferencedTableName.EntityName,
-          referencingColumnNameList);
+          referencedColumnNameList);
     }
 
     private string GetColumnNameList (IEnumerable<ColumnDefinition> columns)
