@@ -692,6 +692,7 @@
     <Compile Include="Utilities\UrlUtility.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\VirtualPathUtility.cs" />
     <Compile Include="Utilities\WebTypeUtility.cs">
       <SubType>Code</SubType>
     </Compile>
