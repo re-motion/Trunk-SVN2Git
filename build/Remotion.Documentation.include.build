@@ -120,33 +120,42 @@
       <_properties Include="WorkingPath">
         <Value>$(DocumentationBaseDirectory)Working\</Value>
       </_properties>
+
+      <_namespaces Remove="@(_namespaces)" />
+      <_namespaces Include="MSBuild2003">
+        <Prefix>mb</Prefix>
+        <Uri>http://schemas.microsoft.com/developer/msbuild/2003</Uri>
+      </_namespaces>
     </ItemGroup>
 
-    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateElement"
                                        File="$(DocumentationSandcastleProjectFile)"
-                                       XPath="/Project/PropertyGroup"
-                                       Element="%(_properties.Identity)"
-                                       InnerText="%(_properties.Value)"/>
+                                       XPath="/mb:Project/mb:PropertyGroup/mb:%(_properties.Identity)"
+                                       InnerText="%(_properties.Value)"
+                                       Namespaces="@(_namespaces)"/>
 
     <!-- use a different cache location for each project to enable parallelization -->
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
                                        File="$(DocumentationSandcastleProjectFile)"
-                                       XPath="/Project/PropertyGroup/ComponentConfigurations/ComponentConfig[@id='Cached MSDN URL References']/component/helpOutput/cache"
+                                       XPath="/mb:Project/mb:PropertyGroup/mb:ComponentConfigurations/ComponentConfig[@id='Cached MSDN URL References']/component/helpOutput/cache"
                                        Key="filename"
-                                       Value="{@LocalDataFolder}Cache\$(ProductNameShort)\MsdnUrl.cache"/>
+                                       Value="{@LocalDataFolder}Cache\$(ProductNameShort)\MsdnUrl.cache"
+                                       Namespaces="@(_namespaces)"/>
 
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
                                        File="$(DocumentationSandcastleProjectFile)"
-                                       XPath="/Project/PropertyGroup/ComponentConfigurations/ComponentConfig[@id='Cached Reflection Index Data']/component/index/cache"
+                                       XPath="/mb:Project/mb:PropertyGroup/mb:ComponentConfigurations/ComponentConfig[@id='Cached Reflection Index Data']/component/index/cache"
                                        Key="cacheFile"
-                                       Value="{@LocalDataFolder}Cache\$(ProductNameShort)\Reflection.cache"/>
+                                       Value="{@LocalDataFolder}Cache\$(ProductNameShort)\Reflection.cache"
+                                       Namespaces="@(_namespaces)"/>
 
     <!-- There's no way to specify the cache location for the Cached Framework Comments component (it is determined by SHFB at runtime), so we have to disable it. -->
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
                                        File="$(DocumentationSandcastleProjectFile)"
-                                       XPath="/Project/PropertyGroup/ComponentConfigurations/ComponentConfig[@id='Cached Framework Comments Index Data']"
+                                       XPath="/mb:Project/mb:PropertyGroup/mb:ComponentConfigurations/ComponentConfig[@id='Cached Framework Comments Index Data']"
                                        Key="enabled"
-                                       Value="false"/>
+                                       Value="false"
+                                       Namespaces="@(_namespaces)"/>
 
     <Remotion.BuildTools.MSBuildTasks.SandcastleProjectBuilder File="$(DocumentationSandcastleProjectFile)"
                                                                Assemblies="@(BinaryFiles)"
