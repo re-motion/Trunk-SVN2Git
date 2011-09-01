@@ -26,7 +26,7 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class ObjectIDReaderTest : SqlProviderBaseTest
+  public class ObjectIDReaderTest : StandardMappingTest
   {
     private IDataReader _dataReaderStub;
     private ObjectIDReader _reader;

@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class TimestampReaderTest : SqlProviderBaseTest
+  public class TimestampReaderTest : StandardMappingTest
   {
     private IDataReader _dataReaderStub;
     private IRdbmsStoragePropertyDefinition _idPropertyStub;

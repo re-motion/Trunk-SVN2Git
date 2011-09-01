@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class ObjectReaderFactoryTest : SqlProviderBaseTest
+  public class ObjectReaderFactoryTest : StandardMappingTest
   {
     private IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProviderStub;
     private ObjectReaderFactory _factory;

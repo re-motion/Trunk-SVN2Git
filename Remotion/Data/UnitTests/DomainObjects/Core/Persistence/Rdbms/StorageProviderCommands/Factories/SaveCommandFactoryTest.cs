@@ -33,7 +33,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
 {
   [TestFixture]
-  public class SaveCommandFactoryTest : SqlProviderBaseTest
+  public class SaveCommandFactoryTest : StandardMappingTest
   {
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStrictMock;
     private RdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
@@ -52,8 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _factory = new SaveCommandFactory (
           _dbCommandBuilderFactoryStrictMock,
           _rdbmsPersistenceModelProvider,
-          _tableDefinitionFinderStrictMock,
-          new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider));
+          _tableDefinitionFinderStrictMock);
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
     }

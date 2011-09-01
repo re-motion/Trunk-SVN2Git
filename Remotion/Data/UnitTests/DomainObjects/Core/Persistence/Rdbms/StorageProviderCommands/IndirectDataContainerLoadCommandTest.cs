@@ -27,7 +27,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands
 {
   [TestFixture]
-  public class IndirectDataContainerLoadCommandTest : SqlProviderBaseTest
+  public class IndirectDataContainerLoadCommandTest : StandardMappingTest
   {
     private IStorageProviderCommand<IEnumerable<ObjectID>, IRdbmsProviderCommandExecutionContext> _objectIDLoadCommandStub;
     private IStorageProviderCommand<ObjectLookupResult<DataContainer>[], IRdbmsProviderCommandExecutionContext> _dataContainerLoadCommandStub;

@@ -63,24 +63,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       RdbmsProvider rdbmsProvider = Provider;
       Assert.IsFalse (rdbmsProvider.IsConnected);
     }
-
-    [Test]
-    public void ConnectionReturnsSqlConnection ()
-    {
-      // Note: If Provider.Connection returns a SqlConnection instead of IDbConnection, the line below does not create a compiler error.
-#pragma warning disable 168
-      var sqlConnection = Provider.Connection;
-#pragma warning restore 168
-    }
-
-    [Test]
-    public void TransactionReturnsSqlTransaction ()
-    {
-      // Note: If Provider.Transaction returns a SqlTransaction instead of IDbTransaction, the line below does not create a compiler error.
-#pragma warning disable 168
-      var sqlTransaction = Provider.Transaction;
-#pragma warning restore 168
-    }
-    
   }
 }

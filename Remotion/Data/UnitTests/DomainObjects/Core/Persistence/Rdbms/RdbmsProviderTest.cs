@@ -40,7 +40,7 @@ using SortOrder = Remotion.Data.DomainObjects.Mapping.SortExpressions.SortOrder;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class RdbmsProviderTest : SqlProviderBaseTest
+  public class RdbmsProviderTest : StandardMappingTest
   {
     public interface IConnectionCreator
     {
@@ -463,12 +463,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedID_ClassDefinitionWithDifferentStorageProviderDefinition ()
     {
-      var providerWithDifferentStorageProvider = new RdbmsProvider (
+      var providerWithDifferentID = new RdbmsProvider (
           new RdbmsProviderDefinition ("Test", new SqlStorageObjectFactory(), TestDomainConnectionString),
-          StorageNameProvider,
+          _storageNameProviderStub,
           SqlDialect.Instance,
           NullPersistenceListener.Instance,
-          CommandFactory,
+          _commandFactoryMock,
           () => new SqlConnection());
       var objectID = DomainObjectIDs.Order1;
       var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
@@ -476,7 +476,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _mockRepository.ReplayAll();
 
       Assert.That (
-          () => providerWithDifferentStorageProvider.LoadDataContainersByRelatedID (relationEndPointDefinition, null, objectID),
+          () => providerWithDifferentID.LoadDataContainersByRelatedID (relationEndPointDefinition, null, objectID),
           Throws.Exception.TypeOf<ArgumentException>().With.Message.EqualTo (
               "The StorageProviderID 'TestDomain' of the provided ClassDefinition does not match with this StorageProvider's ID 'Test'.\r\nParameter name: classDefinition"));
     }

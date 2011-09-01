@@ -31,7 +31,7 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class rdbmsProviderSaveExistingTest : SqlProviderBaseTest
+  public class SqlProviderSaveExistingTest : SqlProviderBaseTest
   {
     public override void TestFixtureSetUp ()
     {

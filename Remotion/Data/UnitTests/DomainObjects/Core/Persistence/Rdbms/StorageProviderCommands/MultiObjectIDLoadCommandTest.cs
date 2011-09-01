@@ -31,7 +31,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands
 {
   [TestFixture]
-  public class MultiObjectIDLoadCommandTest : SqlProviderBaseTest
+  public class MultiObjectIDLoadCommandTest : StandardMappingTest
   {
     private IDbCommandBuilder _dbCommandBuilder1Mock;
     private IDbCommandBuilder _dbCommandBuilder2Mock;

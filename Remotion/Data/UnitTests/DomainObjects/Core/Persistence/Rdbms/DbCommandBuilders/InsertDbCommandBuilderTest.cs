@@ -29,7 +29,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
-  public class InsertDbCommandBuilderTest : SqlProviderBaseTest
+  public class InsertDbCommandBuilderTest : StandardMappingTest
   {
     private IInsertedColumnsSpecification _insertedColumnsSpecificationStub;
     private ISqlDialect _sqlDialectStub;

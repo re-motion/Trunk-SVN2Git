@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders
 {
   [TestFixture]
-  public class DeleteDbCommandBuilderTest : SqlProviderBaseTest
+  public class DeleteDbCommandBuilderTest : StandardMappingTest
   {
     private IComparedColumnsSpecification _comparedColumnsSpecificationStrictMock;
     private ISqlDialect _sqlDialectStub;

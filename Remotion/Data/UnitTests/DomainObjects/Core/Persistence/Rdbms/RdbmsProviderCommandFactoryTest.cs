@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -37,7 +38,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class RdbmsProviderCommandFactoryTest : SqlProviderBaseTest
+  public class RdbmsProviderCommandFactoryTest : StandardMappingTest
   {
     private RdbmsProviderCommandFactory _factory;
     private TableDefinition _tableDefinition1;
@@ -53,14 +54,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
+      var storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
+
+      var infrastructureStoragePropertyDefinitionProvider = 
+          new InfrastructureStoragePropertyDefinitionProvider (storageTypeInformationProvider, storageNameProvider);
       _factory = new RdbmsProviderCommandFactory (
           new SqlDbCommandBuilderFactory (SqlDialect.Instance),
           rdbmsPersistenceModelProvider,
-          new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider),
-          new ObjectReaderFactory (
-              rdbmsPersistenceModelProvider, new InfrastructureStoragePropertyDefinitionProvider (StorageTypeInformationProvider, StorageNameProvider)),
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
           new TableDefinitionFinder (rdbmsPersistenceModelProvider),
-          StorageTypeInformationProvider,
+          storageTypeInformationProvider,
           TestDomainStorageProviderDefinition);
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));

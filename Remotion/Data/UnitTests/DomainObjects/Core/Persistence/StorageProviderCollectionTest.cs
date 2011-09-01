@@ -23,29 +23,35 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
   [TestFixture]
-  public class StorageProviderCollectionTest : SqlProviderBaseTest
+  public class StorageProviderCollectionTest : StandardMappingTest
   {
-    private StorageProviderCollection _collection;
+    private IStorageNameProvider _storageNameProviderStub;
+    private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactoryStub;
+
     private StorageProvider _provider;
-    private ReflectionBasedStorageNameProvider _storageNameProvider;
+
+    private StorageProviderCollection _collection;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _storageNameProvider = new ReflectionBasedStorageNameProvider();
+      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
+      _storageProviderCommandFactoryStub = MockRepository.GenerateStub<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
+
       _provider = new RdbmsProvider (
           new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString"),
-          _storageNameProvider,
+          _storageNameProviderStub,
           SqlDialect.Instance,
           NullPersistenceListener.Instance,
-          CommandFactory,
-          ()=>new SqlConnection());
+          _storageProviderCommandFactoryStub,
+          () => new SqlConnection());
+
       _collection = new StorageProviderCollection();
     }
 
@@ -53,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void ContainsProviderTrue ()
     {
       _collection.Add (_provider);
-      Assert.IsTrue (_collection.Contains (_provider));
+      Assert.That (_collection.Contains (_provider), Is.True);
     }
 
     [Test]
@@ -63,12 +69,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       StorageProvider copy = new RdbmsProvider (
           (RdbmsProviderDefinition) _provider.StorageProviderDefinition,
-          _storageNameProvider,
+          _storageNameProviderStub,
           SqlDialect.Instance,
           NullPersistenceListener.Instance,
-          CommandFactory,
-          ()=>new SqlConnection());
-      Assert.IsFalse (_collection.Contains (copy));
+          _storageProviderCommandFactoryStub,
+          () => new SqlConnection());
+      Assert.That (_collection.Contains (copy), Is.False);
     }
   }
 }

@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories
@@ -35,23 +34,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
-    private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
 
     public SaveCommandFactory (
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
-        ITableDefinitionFinder tableDefinitionFinder,
-        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
+        ITableDefinitionFinder tableDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("tableDefinitionFinder", tableDefinitionFinder);
-      ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _tableDefinitionFinder = tableDefinitionFinder;
-      _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
     }
 
     public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)

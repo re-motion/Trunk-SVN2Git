@@ -71,7 +71,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var commandFactory = (RdbmsProviderCommandFactory) PrivateInvoke.GetNonPublicProperty (result, "StorageProviderCommandFactory");
       Assert.That (commandFactory.DbCommandBuilderFactory, Is.TypeOf (typeof (SqlDbCommandBuilderFactory)));
       Assert.That (commandFactory.RdbmsPersistenceModelProvider, Is.TypeOf (typeof (RdbmsPersistenceModelProvider)));
-      Assert.That (commandFactory.InfrastructureStoragePropertyDefinitionProvider, Is.TypeOf (typeof (InfrastructureStoragePropertyDefinitionProvider)));
       Assert.That (commandFactory.ObjectReaderFactory, Is.TypeOf (typeof (ObjectReaderFactory)));
     }
 
