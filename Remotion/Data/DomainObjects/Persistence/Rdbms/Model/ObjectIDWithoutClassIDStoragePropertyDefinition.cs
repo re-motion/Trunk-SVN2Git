@@ -58,11 +58,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _valueProperty.GetColumnForLookup();
     }
 
-    public ColumnDefinition GetColumnForForeignKey ()
-    {
-      return _valueProperty.GetColumnForForeignKey();
-    }
-
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return _valueProperty.GetColumns();

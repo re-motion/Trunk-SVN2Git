@@ -84,15 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumnForForeignKey ()
-    {
-      _valuePropertyStub.Stub (stub => stub.GetColumnForForeignKey ()).Return (_valueColumnDefinition);
-      _classIDPropertyStub.Stub (stub => stub.GetColumnForForeignKey ()).Return (_classIDColumnDefinition);
-
-      Assert.That (_objectIDStoragePropertyDefinition.GetColumnForForeignKey (), Is.SameAs (_valueColumnDefinition));
-    }
-
-    [Test]
     public void GetColumns ()
     {
       _valuePropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _valueColumnDefinition });

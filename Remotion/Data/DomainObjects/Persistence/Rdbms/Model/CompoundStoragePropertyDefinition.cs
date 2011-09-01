@@ -75,11 +75,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       throw new NotSupportedException ("Compound properties cannot be used to look up values.");
     }
 
-    public ColumnDefinition GetColumnForForeignKey ()
-    {
-      throw new NotSupportedException ("Compound properties cannot be used as a foreign key.");
-    }
-
     public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);

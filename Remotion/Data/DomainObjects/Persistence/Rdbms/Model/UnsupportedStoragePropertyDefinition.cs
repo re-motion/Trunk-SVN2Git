@@ -47,11 +47,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       throw new NotSupportedException();
     }
 
-    public ColumnDefinition GetColumnForForeignKey ()
-    {
-      throw new NotSupportedException();
-    }
-
     public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);

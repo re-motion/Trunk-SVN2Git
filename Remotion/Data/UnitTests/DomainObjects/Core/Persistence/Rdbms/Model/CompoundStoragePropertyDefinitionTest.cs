@@ -81,13 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Compound properties cannot be used as a foreign key.")]
-    public void GetColumnForForeignKey ()
-    {
-      _compoundStoragePropertyDefinition.GetColumnForForeignKey();
-    }
-
-    [Test]
     public void Read ()
     {
       var dataReaderStub = MockRepository.GenerateStub<IDataReader>();

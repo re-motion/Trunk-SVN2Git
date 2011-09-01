@@ -68,13 +68,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "String-serialized ObjectID values cannot be used as foreign keys.")]
-    public void GetColumnForForeignKey ()
-    {
-      _serializedObjectIDStoragePropertyDefinition.GetColumnForForeignKey();
-    }
-
-    [Test]
     public void GetColumns ()
     {
       _serializedIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition });

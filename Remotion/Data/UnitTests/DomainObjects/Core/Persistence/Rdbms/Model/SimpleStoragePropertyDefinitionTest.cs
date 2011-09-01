@@ -68,12 +68,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumnForForeignKey ()
-    {
-      Assert.That (_storagePropertyDefinition.GetColumnForForeignKey (), Is.SameAs (_innerColumnDefinition));
-    }
-
-    [Test]
     public void Read ()
     {
       _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (_innerColumnDefinition, _dataReaderStub)).Return (5);

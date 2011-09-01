@@ -52,11 +52,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _columnDefinition;
     }
 
-    public ColumnDefinition GetColumnForForeignKey ()
-    {
-      return _columnDefinition;
-    }
-
     public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);

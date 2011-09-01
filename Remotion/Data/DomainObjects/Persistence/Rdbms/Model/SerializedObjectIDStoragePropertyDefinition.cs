@@ -47,11 +47,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _serializedIDProperty.GetColumnForLookup();
     }
 
-    public ColumnDefinition GetColumnForForeignKey ()
-    {
-      throw new NotSupportedException ("String-serialized ObjectID values cannot be used as foreign keys.");
-    }
-
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return _serializedIDProperty.GetColumns();

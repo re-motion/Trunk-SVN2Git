@@ -29,7 +29,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     IEnumerable<ColumnDefinition> GetColumns ();
     ColumnDefinition GetColumnForLookup ();
-    ColumnDefinition GetColumnForForeignKey ();
 
     object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
     IEnumerable<ColumnValue> SplitValue (object value);

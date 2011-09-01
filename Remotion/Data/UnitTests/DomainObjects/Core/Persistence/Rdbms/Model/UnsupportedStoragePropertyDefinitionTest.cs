@@ -54,13 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void GetColumnForForeignKey ()
-    {
-      _columnDefinition.GetColumnForForeignKey();
-    }
-
-    [Test]
     [ExpectedException(typeof(NotSupportedException))]
     public void Read ()
     {
