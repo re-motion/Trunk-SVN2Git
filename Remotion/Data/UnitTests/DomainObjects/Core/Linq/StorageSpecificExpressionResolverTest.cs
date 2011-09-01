@@ -181,6 +181,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Compound-column IDs are not supported by this LINQ provider.")]
+    public void ResoveIDColumn_CompoundColumn ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var entityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      var objectIDStoragePropertyWithManyLookupColumns = new ObjectIDStoragePropertyDefinition (
+          CompoundStoragePropertyDefinitionObjectMother.CreateWithTwoProperties(),
+          SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
+
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (entityDefinitionStub);
+      entityDefinitionStub
+          .Stub (stub => stub.ObjectIDProperty)
+          .Return (objectIDStoragePropertyWithManyLookupColumns);
+
+      _storageSpecificExpressionResolver.ResolveIDColumn (entityExpression, _classDefinition);
+    }
+
+    [Test]
     public void ResolveClassIDColumn ()
     {
       var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "columnName", false);
@@ -364,8 +385,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Return (_rdbmsStoragePropertyDefinitionStub);
       var columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Customer");
       _rdbmsStoragePropertyDefinitionStub
-          .Stub (stub => stub.GetColumnForLookup())
-          .Return (columnDefinition);
+          .Stub (stub => stub.GetColumnsForComparison())
+          .Return (new[] { columnDefinition });
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
@@ -405,7 +426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.GetStoragePropertyDefinition (rightEndPointDefinition.PropertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
       _rdbmsStoragePropertyDefinitionStub
-          .Stub (stub => stub.GetColumnForLookup()).Return (ColumnDefinitionObjectMother.CreateColumn ("Customer"));
+          .Stub (stub => stub.GetColumnsForComparison()).Return (new[] { ColumnDefinitionObjectMother.CreateColumn ("Customer") });
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 

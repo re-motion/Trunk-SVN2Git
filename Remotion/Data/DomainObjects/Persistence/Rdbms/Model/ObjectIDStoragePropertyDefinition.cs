@@ -53,14 +53,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _classIDProperty; }
     }
 
-    public ColumnDefinition GetColumnForLookup ()
+    public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
       // TODO in case of integer primary keys: 
       // If RdbmsProvider or one of its derived classes needs to support integer primary keys in addition to GUIDs,
       // two lookup columns should be used: ID and ClassID (because int IDs wouldn't be globally unique).
       // For GUID keys, we don't want to include the ClassID, however.
 
-      return _valueProperty.GetColumnForLookup();
+      return _valueProperty.GetColumnsForComparison();
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()
@@ -131,8 +131,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("referencedTableName", referencedTableName);
       ArgumentUtility.CheckNotNull ("referencedObjectIDProperty", referencedObjectIDProperty);
 
-      var referencingColumns = new[] { GetColumnForLookup () };
-      var referencedColumns = new[] { referencedObjectIDProperty.GetColumnForLookup () };
+      var referencingColumns = GetColumnsForComparison ();
+      var referencedColumns = referencedObjectIDProperty.GetColumnsForComparison ();
       return new ForeignKeyConstraintDefinition (nameProvider (referencingColumns),  referencedTableName,  referencingColumns, referencedColumns);
     }
 

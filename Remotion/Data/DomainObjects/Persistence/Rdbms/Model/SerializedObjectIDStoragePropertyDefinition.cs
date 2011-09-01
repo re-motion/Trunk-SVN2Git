@@ -42,9 +42,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _serializedIDProperty; }
     }
 
-    public ColumnDefinition GetColumnForLookup ()
+    public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
-      return _serializedIDProperty.GetColumnForLookup();
+      return _serializedIDProperty.GetColumnsForComparison();
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()

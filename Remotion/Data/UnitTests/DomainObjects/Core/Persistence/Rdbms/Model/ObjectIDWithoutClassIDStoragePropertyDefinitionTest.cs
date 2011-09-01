@@ -59,7 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub).Repeat.Once();
     }
 
-
     [Test]
     public void Initialization ()
     {
@@ -68,11 +67,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumnForLookup ()
+    public void GetColumnsForComparison ()
     {
-      _valuePropertyStub.Stub (stub => stub.GetColumnForLookup ()).Return (_valueColumnDefinition);
+      _valuePropertyStub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { _valueColumnDefinition });
 
-      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnForLookup(), Is.SameAs (_valueColumnDefinition));
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.GetColumnsForComparison(), Is.EqualTo (new[] { _valueColumnDefinition }));
     }
 
     [Test]
@@ -223,15 +222,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var referencedColumnDefinition = ColumnDefinitionObjectMother.CreateColumn ("c2");
       
       var referencedValuePropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      referencedValuePropertyStub.Stub (stub => stub.GetColumnForLookup()).Return (referencedColumnDefinition);
+      referencedValuePropertyStub.Stub (stub => stub.GetColumnsForComparison()).Return (new[] { referencedColumnDefinition });
 
       var referencedObjectIDProperty = new ObjectIDStoragePropertyDefinition (
           referencedValuePropertyStub,
           SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
 
       _valuePropertyStub
-          .Stub (stub => stub.GetColumnForLookup())
-          .Return (_valueColumnDefinition);
+          .Stub (stub => stub.GetColumnsForComparison())
+          .Return (new[] { _valueColumnDefinition });
       
       var result = _objectIDWithoutClassIDStorageDefinition.CreateForeignKeyConstraint (
           cols =>

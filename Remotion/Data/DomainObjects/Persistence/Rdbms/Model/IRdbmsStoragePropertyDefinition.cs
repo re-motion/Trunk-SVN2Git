@@ -16,7 +16,6 @@
 // 
 using System.Collections.Generic;
 using System.Data;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 
@@ -28,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition
   {
     IEnumerable<ColumnDefinition> GetColumns ();
-    ColumnDefinition GetColumnForLookup ();
+    IEnumerable<ColumnDefinition> GetColumnsForComparison ();
 
     object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
     IEnumerable<ColumnValue> SplitValue (object value);

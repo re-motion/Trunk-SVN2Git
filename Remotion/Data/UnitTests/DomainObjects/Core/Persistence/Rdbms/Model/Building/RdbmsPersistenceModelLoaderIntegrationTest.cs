@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
               _fakeBaseStoragePropertyDefinition.ColumnDefinition,
               _fakeTableStoragePropertyDefinition1.ColumnDefinition
           },
-          new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { _infrastructureObjectIDStoragePropertyDefinition.GetColumnForLookup() })
+          new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, _infrastructureObjectIDStoragePropertyDefinition.GetColumnsForComparison())
           );
     }
 
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
               _fakeDerivedStoragePropertyDefinition2.ColumnDefinition,
               _fakeDerivedDerivedStoragePropertyDefinition.ColumnDefinition
           },
-          new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, new[] { _infrastructureObjectIDStoragePropertyDefinition.GetColumnForLookup() })
+          new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, _infrastructureObjectIDStoragePropertyDefinition.GetColumnsForComparison())
           );
     }
 

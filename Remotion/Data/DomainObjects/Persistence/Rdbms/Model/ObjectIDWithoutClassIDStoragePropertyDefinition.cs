@@ -53,9 +53,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _classDefinition; }
     }
 
-    public ColumnDefinition GetColumnForLookup ()
+    public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
-      return _valueProperty.GetColumnForLookup();
+      return _valueProperty.GetColumnsForComparison();
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()
@@ -116,8 +116,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("referencedTableName", referencedTableName);
       ArgumentUtility.CheckNotNull ("referencedObjectIDProperty", referencedObjectIDProperty);
 
-      var referencingColumns = new[] { ValueProperty.GetColumnForLookup() };
-      var referencedColumns = new[] { referencedObjectIDProperty.ValueProperty.GetColumnForLookup () };
+      var referencingColumns = ValueProperty.GetColumnsForComparison();
+      var referencedColumns = referencedObjectIDProperty.ValueProperty.GetColumnsForComparison ();
       return new ForeignKeyConstraintDefinition (nameProvider (referencingColumns), referencedTableName, referencingColumns, referencedColumns);
     }
 

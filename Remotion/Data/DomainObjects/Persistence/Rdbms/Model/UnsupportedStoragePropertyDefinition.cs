@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new ColumnDefinition[0];
     }
 
-    public ColumnDefinition GetColumnForLookup ()
+    public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
       throw new NotSupportedException();
     }

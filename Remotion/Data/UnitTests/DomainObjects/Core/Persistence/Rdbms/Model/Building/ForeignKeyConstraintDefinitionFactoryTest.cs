@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderMock
           .Expect (mock => mock.GetForeignKeyConstraintName (
               Arg.Is (orderClassDefinition), 
-              Arg<IEnumerable<ColumnDefinition>>.Is.Equal (new[] { _fakeForeignKeyStoragePropertyDefinition.GetColumnForLookup() })))
+              Arg<IEnumerable<ColumnDefinition>>.List.Equal (_fakeForeignKeyStoragePropertyDefinition.GetColumnsForComparison())))
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
@@ -112,8 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (foreignKeyConstraint.ReferencedTableName.EntityName, Is.EqualTo ("FakeTableName"));
       Assert.That (foreignKeyConstraint.ReferencedTableName.SchemaName, Is.Null);
       Assert.That (foreignKeyConstraint.ConstraintName, Is.EqualTo ("FakeConstraintName"));
-      Assert.That (foreignKeyConstraint.ReferencingColumns, Is.EqualTo (new[] { _fakeForeignKeyStoragePropertyDefinition.GetColumnForLookup () }));
-      Assert.That (foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeObjectIDStoragePropertyDefinition.GetColumnForLookup () }));
+      Assert.That (foreignKeyConstraint.ReferencingColumns, Is.EqualTo (_fakeForeignKeyStoragePropertyDefinition.GetColumnsForComparison()));
+      Assert.That (foreignKeyConstraint.ReferencedColumns, Is.EqualTo (_fakeObjectIDStoragePropertyDefinition.GetColumnsForComparison()));
     }
     
     [Test]
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderMock
           .Expect (mock => mock.GetForeignKeyConstraintName (
               Arg.Is (computerClassDefinition),
-              Arg<IEnumerable<ColumnDefinition>>.Is.Equal (new[] { _fakeForeignKeyStoragePropertyDefinition.GetColumnForLookup() })))
+              Arg<IEnumerable<ColumnDefinition>>.List.Equal (_fakeForeignKeyStoragePropertyDefinition.GetColumnsForComparison())))
           .Return ("FakeConstraintName");
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (employeeClassDefinition))

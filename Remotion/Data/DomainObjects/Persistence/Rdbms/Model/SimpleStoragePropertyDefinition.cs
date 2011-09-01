@@ -44,12 +44,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
-      yield return _columnDefinition;
+      return EnumerableUtility.Singleton (_columnDefinition);
     }
 
-    public ColumnDefinition GetColumnForLookup ()
+    public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
-      return _columnDefinition;
+      return EnumerableUtility.Singleton (_columnDefinition);
     }
 
     public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
-      yield return new ColumnValue (_columnDefinition, value);
+      return EnumerableUtility.Singleton (new ColumnValue (_columnDefinition, value));
     }
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)

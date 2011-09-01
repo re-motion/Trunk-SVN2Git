@@ -881,6 +881,7 @@
     <Compile Include="DomainObjects\Core\UnitTestStorageObjectFactoryStub.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationConfiguration.cs" />
     <Compile Include="DomainObjects\Factories\ColumnDefinitionObjectMother.cs" />
+    <Compile Include="DomainObjects\Factories\CompoundStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\ObjectIDStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\SimpleStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\DomainObjectIDs.cs" />

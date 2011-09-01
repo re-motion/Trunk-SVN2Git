@@ -68,7 +68,8 @@ namespace Remotion.Data.DomainObjects.Linq
       if (columns.Count > 1)
         throw new NotSupportedException ("Compound-column properties are not supported by this LINQ provider.");
 
-      return GetColumnFromEntity (columns[0], originatingEntity);
+      var column = columns.Single();
+      return GetColumnFromEntity (column, originatingEntity);
     }
 
     public SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition)
@@ -77,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
-      var idColumn = entityDefinition.ObjectIDProperty.GetColumnForLookup();
+      var idColumn = GetSingleColumnForLookup (entityDefinition.ObjectIDProperty);
 
       Assertion.IsTrue (idColumn.IsPartOfPrimaryKey);
       return GetColumnFromEntity (idColumn, originatingEntity);
@@ -143,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Linq
       {
         var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
         var storagePropertyDefinition = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
-        var column = storagePropertyDefinition.GetColumnForLookup();
+        var column = GetSingleColumnForLookup (storagePropertyDefinition);
         return GetColumnFromEntity (column, entityDefinition);
       }
     }
@@ -151,6 +152,15 @@ namespace Remotion.Data.DomainObjects.Linq
     private SqlColumnExpression GetColumnFromEntity (ColumnDefinition columnDefinition, SqlEntityExpression originatingEntity)
     {
       return originatingEntity.GetColumn (columnDefinition.PropertyType, columnDefinition.Name, columnDefinition.IsPartOfPrimaryKey);
+    }
+
+    private ColumnDefinition GetSingleColumnForLookup (IRdbmsStoragePropertyDefinition storagePropertyDefinition)
+    {
+      var columns = storagePropertyDefinition.GetColumnsForComparison ().ToList();
+      if (columns.Count > 1)
+        throw new NotSupportedException ("Compound-column IDs are not supported by this LINQ provider.");
+
+      return columns.Single();
     }
   }
 }

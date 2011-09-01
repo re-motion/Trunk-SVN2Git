@@ -61,10 +61,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumnForLookup ()
+    public void GetColumnsForComparison ()
     {
-      _serializedIDPropertyStub.Stub (stub => stub.GetColumnForLookup()).Return (_columnDefinition);
-      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumnForLookup (), Is.SameAs (_columnDefinition));
+      _serializedIDPropertyStub.Stub (stub => stub.GetColumnsForComparison()).Return (new[] { _columnDefinition });
+      Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumnsForComparison (), Is.EqualTo (new[] { _columnDefinition }));
     }
 
     [Test]

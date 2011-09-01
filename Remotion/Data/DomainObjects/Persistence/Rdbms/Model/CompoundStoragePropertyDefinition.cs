@@ -70,9 +70,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _properties.SelectMany (p => p.StoragePropertyDefinition.GetColumns());
     }
 
-    public ColumnDefinition GetColumnForLookup ()
+    public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
-      throw new NotSupportedException ("Compound properties cannot be used to look up values.");
+      return _properties.SelectMany (p => p.StoragePropertyDefinition.GetColumnsForComparison());
     }
 
     public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)

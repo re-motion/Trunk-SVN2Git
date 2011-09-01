@@ -74,10 +74,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Compound properties cannot be used to look up values.")]
-    public void GetColumnForLookup ()
+    public void GetColumnsForComparison ()
     {
-      _compoundStoragePropertyDefinition.GetColumnForLookup();
+      _property1Stub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { _columnDefinition1 });
+      _property2Stub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { _columnDefinition2 });
+      _property3Stub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { _columnDefinition3 });
+
+      var result = _compoundStoragePropertyDefinition.GetColumnsForComparison ();
+
+      Assert.That (result, Is.EqualTo (new[] { _columnDefinition1, _columnDefinition2, _columnDefinition3 }));
     }
 
     [Test]

@@ -62,9 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumnForLookup ()
+    public void GetColumnsForComparison ()
     {
-      Assert.That (_storagePropertyDefinition.GetColumnForLookup(), Is.SameAs (_innerColumnDefinition));
+      Assert.That (_storagePropertyDefinition.GetColumnsForComparison(), Is.EqualTo (new[] { _innerColumnDefinition }));
     }
 
     [Test]

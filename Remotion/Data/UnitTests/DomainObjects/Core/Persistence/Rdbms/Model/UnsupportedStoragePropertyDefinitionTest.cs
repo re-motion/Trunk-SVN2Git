@@ -48,9 +48,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
-    public void GetColumnForLookup ()
+    public void GetColumnsForComparison ()
     {
-      _columnDefinition.GetColumnForLookup();
+      _columnDefinition.GetColumnsForComparison();
     }
 
     [Test]

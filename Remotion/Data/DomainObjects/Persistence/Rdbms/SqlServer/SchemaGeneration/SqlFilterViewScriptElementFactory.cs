@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Text;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -32,7 +33,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
 
       var tableDefinition = filterViewDefinition.GetBaseTable ();
-      var classIDColumn = filterViewDefinition.ObjectIDProperty.ClassIDProperty.GetColumnForLookup();
+
+      var classIDColumns = filterViewDefinition.ObjectIDProperty.ClassIDProperty.GetColumnsForComparison().ToList();
+      Assertion.IsTrue (
+          classIDColumns.Count == 1, 
+          "The SQL provider's model is built with a single ClassID column by InfrastructureStoragePropertyDefinitionProvider.");
+
       return string.Format (
             "  SELECT {0}\r\n"
           + "    FROM [{1}].[{2}]\r\n"
@@ -40,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             GetColumnList (filterViewDefinition.GetAllColumns()),
             tableDefinition.TableName.SchemaName ?? DefaultSchema,
             tableDefinition.TableName.EntityName,
-            classIDColumn.Name,
+            classIDColumns.Single().Name,
             GetClassIDList (filterViewDefinition.ClassIDs));
     }
 

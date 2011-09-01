@@ -70,7 +70,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
               let referencedStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition()
               let referencingStorageProperty =
                   (IObjectIDStoragePropertyDefinition) _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition)
-              let referencedColumns = new[] { referencingStorageProperty.GetColumnForLookup() }
               select referencingStorageProperty.CreateForeignKeyConstraint (
                   referencingColumns => _storageNameProvider.GetForeignKeyConstraintName (classDefinition, referencingColumns),
                   referencedTableName,
