@@ -22,7 +22,7 @@ namespace Remotion.Web.Infrastructure
 {
   /// <summary>
   /// Responsible for resolving resource urls for the current <see cref="ResourceTheme"/>.
-  /// The <see cref="ThemedResourceUrlResolver"/> is only intended for use with controls located <b>Remotion.Web</b> that do not have their own renderers.
+  /// The <see cref="ThemedResourceUrlResolver"/> is only intended for use with controls located in <b>Remotion.Web</b> that do not have their own renderers.
   /// </summary>
   public class ThemedResourceUrlResolver : IThemedResourceUrlResolver
   {

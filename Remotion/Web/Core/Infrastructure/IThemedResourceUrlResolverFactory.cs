@@ -21,7 +21,7 @@ using Remotion.Web.Infrastructure.Factories;
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
-  /// Defines a factory method for creating an object of type <see cref="IThemedResourceUrlResolver"/>.
+  /// Defines a factory method for creating an object of type <see cref="IThemedResourceUrlResolver"/> used for resolving the themed resources provided by the <b>Remotion.Web</b> assembly.
   /// </summary>
   [ConcreteImplementation (typeof(ThemedResourceUrlResolverFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IThemedResourceUrlResolverFactory

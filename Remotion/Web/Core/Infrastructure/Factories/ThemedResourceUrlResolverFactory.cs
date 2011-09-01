@@ -20,7 +20,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.Web.Infrastructure.Factories
 {
   /// <summary>
-  /// Responsible for creating <see cref="ThemedResourceUrlResolver"/> for the themed resources provided by the <b>Remotion.Web</b> assembly.
+  /// Responsible for creating a <see cref="ThemedResourceUrlResolver"/> used for resolving the themed resources provided by the <b>Remotion.Web</b> assembly.
   /// </summary>
   public class ThemedResourceUrlResolverFactory : IThemedResourceUrlResolverFactory
   {

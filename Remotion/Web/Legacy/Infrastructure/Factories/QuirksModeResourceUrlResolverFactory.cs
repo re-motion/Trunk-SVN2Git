@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.Legacy.Infrastructure.Factories
 {
   /// <summary>
-  /// Responsible for creating <see cref="QuirksModeResourceUrlResolver"/> for the themed resources provided by the <b>Remotion.Web</b> assembly.
+  /// Responsible for creating a <see cref="QuirksModeResourceUrlResolver"/> used for resolving the themed resources provided by the <b>Remotion.Web.Legacy</b> assembly.
   /// </summary>
   public class QuirksModeResourceUrlResolverFactory : IThemedResourceUrlResolverFactory
   {
