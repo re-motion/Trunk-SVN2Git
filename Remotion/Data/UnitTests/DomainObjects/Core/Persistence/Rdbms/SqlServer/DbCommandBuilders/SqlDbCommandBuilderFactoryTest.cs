@@ -76,23 +76,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (
           ((ComparedColumnsSpecification) dbCommandBuilder.ComparedColumns).ComparedColumnValues,
           Is.EqualTo (new[] { _columnValue1, _columnValue2 }));
-      Assert.That (
-          ((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
+      Assert.That (((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
     }
 
     [Test]
     public void CreateForSelect_Table_MultiValueLookup ()
     {
-      var result = _factory.CreateForSelect (_tableDefinition, new[] { _column1, _column2 }, _column1, new object[] { 12 });
+      var columnValueTable = new ColumnValueTable (
+          new[] { _column1 },
+          new[]
+          {
+            new ColumnValueTable.Row (new object[] { 12 }), 
+            new ColumnValueTable.Row (new object[] { 13 }), 
+          }
+          );
+      var result = _factory.CreateForSelect (_tableDefinition, new[] { _column1, _column2 }, columnValueTable, new[] { _orderColumn1, _orderColumn2 });
 
       Assert.That (result, Is.TypeOf (typeof (SelectDbCommandBuilder)));
       var dbCommandBuilder = (SelectDbCommandBuilder) result;
       Assert.That (dbCommandBuilder.Table, Is.SameAs (_tableDefinition));
       Assert.That (((SelectedColumnsSpecification) dbCommandBuilder.SelectedColumns).SelectedColumns, Is.EqualTo (new[] { _column1, _column2 }));
       Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ColumnDefinition, Is.SameAs (_column1));
-      Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ObjectValues, Is.EqualTo (new[] { 12 }));
-      Assert.That (dbCommandBuilder.OrderedColumns, Is.TypeOf(typeof(OrderedColumnsSpecification)));
-      Assert.That (((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.Empty);
+      Assert.That (((SqlXmlSetComparedColumnSpecification) dbCommandBuilder.ComparedColumns).ObjectValues, Is.EqualTo (new[] { 12, 13 }));
+      Assert.That (((OrderedColumnsSpecification) dbCommandBuilder.OrderedColumns).Columns, Is.EqualTo (new[] { _orderColumn1, _orderColumn2 }));
+    }
+
+    [Test]
+    public void CreateForSelect_Table_MultiValueLookup_MoreThanOneColumn ()
+    {
+      var columnValueTable = new ColumnValueTable (
+          new[] { _column1, _column2 },
+          new[]
+          {
+            new ColumnValueTable.Row (new object[] { 12, 14 }), 
+            new ColumnValueTable.Row (new object[] { 13, 15 }), 
+          }
+          );
+
+      Assert.That (
+          () => _factory.CreateForSelect (_tableDefinition, new[] { _column1, _column2 }, columnValueTable, new[] { _orderColumn1, _orderColumn2 }),
+          Throws.TypeOf<NotSupportedException> ()
+              .With.Message.EqualTo ("The SQL provider can only handle multi-value comparisons with a single ColumnDefinition.")
+              .And.InnerException.TypeOf<InvalidOperationException>());
     }
 
     [Test]

@@ -35,12 +35,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
     IDbCommandBuilder CreateForSelect (
         TableDefinition table, 
         IEnumerable<ColumnDefinition> selectedColumns, 
-        ColumnDefinition comparedColumn, 
-        IEnumerable<object> comparedValues);
+        ColumnValueTable comparedColumnValueTable,
+        IEnumerable<OrderedColumn> orderedColumns);
     IDbCommandBuilder CreateForSelect (
         UnionViewDefinition view,
         IEnumerable<ColumnDefinition> selectedColumns,
-        IEnumerable<ColumnValue> comparedColumnValues,
+        IEnumerable<ColumnValue> comparedColumnValue,
         IEnumerable<OrderedColumn> orderedColumns);
 
     IDbCommandBuilder CreateForQuery (string statement, IEnumerable<QueryParameterWithType> parametersWithType);

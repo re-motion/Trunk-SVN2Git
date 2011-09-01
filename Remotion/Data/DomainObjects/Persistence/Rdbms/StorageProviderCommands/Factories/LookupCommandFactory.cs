@@ -122,23 +122,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         IEnumerable<ColumnDefinition> selectedColumns,
         IEnumerable<ObjectID> objectIDs)
     {
-      var columnValuesForObjectIDs = objectIDs.Select (id =>
+      var checkedCastObjectIDs = objectIDs.Select (id =>
       {
         if (id.StorageProviderDefinition != _storageProviderDefinition)
           throw new NotSupportedException ("Multi-ID lookups can only be performed for ObjectIDs from this storage provider.");
-        return tableDefinition.ObjectIDProperty.SplitValueForComparison (id).Single();
+        return (object) id;
       }).ToList();
 
-      if (columnValuesForObjectIDs.Count == 1)
-        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, columnValuesForObjectIDs, new OrderedColumn[0]);
-
-      var comparedColumn = tableDefinition.ObjectIDProperty.GetColumnForLookup();
-      var comparedValues = columnValuesForObjectIDs.Select (cv =>
+      if (checkedCastObjectIDs.Count == 1)
       {
-        Assertion.IsTrue (cv.Column == comparedColumn, "We only support implementations with a single lookup column for now.");
-        return cv.Value;
-      }).ToList();
-      return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumn, comparedValues);
+        var columnValues = tableDefinition.ObjectIDProperty.SplitValueForComparison (checkedCastObjectIDs[0]);
+        return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, columnValues, Enumerable.Empty<OrderedColumn>());
+      }
+
+      var comparedColumnValueTable = tableDefinition.ObjectIDProperty.SplitValuesForComparison (checkedCastObjectIDs);
+      return _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumnValueTable, Enumerable.Empty<OrderedColumn> ());
     }
   }
 }

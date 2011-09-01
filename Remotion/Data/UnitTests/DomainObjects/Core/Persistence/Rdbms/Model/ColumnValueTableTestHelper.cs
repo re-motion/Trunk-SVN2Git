@@ -17,6 +17,7 @@
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -30,6 +31,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (actualRows.Length, Is.EqualTo (expectedRows.Length));
       for (int i = 0; i < expectedRows.Length; ++i)
         Assert.That (actualRows[i].Values, Is.EqualTo (expectedRows[i].Values));
+    }
+
+    public static bool AreEqual (ColumnValueTable t1, ColumnValueTable t2)
+    {
+      if (!t1.Columns.SequenceEqual (t2.Columns))
+        return false;
+
+      var rows1 = t2.Rows.ToArray ();
+      var rows2 = t1.Rows.ToArray ();
+      if (rows1.Length != rows2.Length)
+        return false;
+
+      return rows2.Zip (rows1).All (t => t.Item1.Values.SequenceEqual (t.Item2.Values));
     }
   }
 }

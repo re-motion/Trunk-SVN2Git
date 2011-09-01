@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -64,19 +65,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
     public IDbCommandBuilder CreateForSelect (
         TableDefinition table, 
         IEnumerable<ColumnDefinition> selectedColumns, 
-        ColumnDefinition comparedColumn, 
-        IEnumerable<object> comparedValues)
+        ColumnValueTable comparedColumnValueTable,
+        IEnumerable<OrderedColumn> orderedColumns)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       ArgumentUtility.CheckNotNull ("selectedColumns", selectedColumns);
-      ArgumentUtility.CheckNotNull ("comparedColumn", comparedColumn);
-      ArgumentUtility.CheckNotNull ("comparedValues", comparedValues);
+      ArgumentUtility.CheckNotNull ("orderedColumns", orderedColumns);
+
+      var comparedValues = GetValuesForSingleColumnDefinition (comparedColumnValueTable);
 
       return new SelectDbCommandBuilder (
           table,
           new SelectedColumnsSpecification (selectedColumns),
-          new SqlXmlSetComparedColumnSpecification (comparedColumn, comparedValues),
-          OrderedColumnsSpecification.CreateEmpty(),
+          new SqlXmlSetComparedColumnSpecification (comparedValues.Item1, comparedValues.Item2),
+          new OrderedColumnsSpecification (orderedColumns),
           _sqlDialect);
     }
 
@@ -137,6 +139,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       ArgumentUtility.CheckNotNull ("comparedColumnValues", comparedColumnValues);
 
       return new DeleteDbCommandBuilder (tableDefinition, new ComparedColumnsSpecification (comparedColumnValues), _sqlDialect);
+    }
+
+    private Tuple<ColumnDefinition, IEnumerable<object>> GetValuesForSingleColumnDefinition (ColumnValueTable comparedColumnValueTable)
+    {
+      ColumnDefinition singleColumn;
+      try
+      {
+        singleColumn = comparedColumnValueTable.Columns.Single ();
+      }
+      catch (InvalidOperationException ex)
+      {
+        throw new NotSupportedException ("The SQL provider can only handle multi-value comparisons with a single ColumnDefinition.", ex);
+      }
+
+      // We assume that the Single below can never throw when the Single above didn't throw. (Otherwise, the ColumnValueTable wouldn't be correct.)
+      var values = comparedColumnValueTable.Rows.Select (r => r.Values.Single ());
+
+      return Tuple.Create (singleColumn, values);
     }
   }
 }
