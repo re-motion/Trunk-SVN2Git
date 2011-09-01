@@ -22,7 +22,7 @@ using System.Web.Script.Services;
 using System.Web.Services;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Sample;
-using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -36,7 +36,7 @@ namespace OBWTest.IndividualControlTests
   [WebServiceBinding (ConformsTo = WsiProfiles.BasicProfile1_1)]
   [ToolboxItem (false)]
   [ScriptService]
-  public class AutoCompleteService : WebService
+  public class AutoCompleteService : WebService, ISearchAvailableObjectWebService
   {
     #region Values
 
@@ -154,7 +154,7 @@ namespace OBWTest.IndividualControlTests
 
     [WebMethod]
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
-    public BusinessObjectWithIdentityProxy[] GetPersonList (
+    public BusinessObjectWithIdentityProxy[] Search (
         string prefixText,
         int? completionSetCount,
         string businessObjectClass,

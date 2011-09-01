@@ -17,11 +17,12 @@
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Web;
+using System.Web.Compilation;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
@@ -71,7 +72,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object. </summary>
     private string _displayName;
 
-    private string _serviceMethod = string.Empty;
     private string _servicePath = string.Empty;
     private string _args = string.Empty;
     private int _completionSetCount = 10;
@@ -162,6 +162,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (!IsReadOnly)
         PreRenderEditModeValue();
+
+      CheckServiceReference();
+    }
+
+    private void CheckServiceReference ()
+    {
+      if (IsDesignMode)
+        return;
+
+      if (string.IsNullOrEmpty (ServicePath))
+        throw new InvalidOperationException (string.Format ("BocAutoCompleteReferenceValue '{0}' does not have a service path set.", ID));
+
+      var virtualServicePath = VirtualPathUtility.GetVirtualPath (this, ServicePath);
+      var compiledType = BuildManager.GetCompiledType (virtualServicePath);
+
+      if (!typeof (ISearchAvailableObjectWebService).IsAssignableFrom (compiledType))
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "BocAutoCompleteReferenceValue '{0}' uses web service '{1}' which does not implement mandatory interface '{2}'.",
+                ID,
+                ServicePath,
+                typeof (ISearchAvailableObjectWebService).FullName));
+      }
     }
 
     protected override string GetOptionsMenuTitle ()
@@ -213,7 +237,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
 
     /// <summary> Loads the <see cref="BocReferenceValueBase.Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/LoadValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
       if (interim)
@@ -234,10 +258,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Populates the <see cref="BocReferenceValueBase.Value"/> with the unbound <paramref name="value"/>. </summary>
-    /// <param name="value"> 
-    ///   The object implementing <see cref="IBusinessObjectWithIdentity"/> to load, or <see langword="null"/>. 
-    /// </param>
-    /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/LoadUnboundValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (IBusinessObjectWithIdentity value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -254,7 +275,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Saves the <see cref="BocReferenceValueBase.Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/SaveValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/SaveValue/*' />
     public override void SaveValue (bool interim)
     {
       if (interim)
@@ -416,12 +437,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _labelStyle; }
     }
 
-    [Category ("AutoComplete")]
-    [DefaultValue ("")]
-    public string ServiceMethod
+    string IBocAutoCompleteReferenceValue.ServiceMethod
     {
-      get { return _serviceMethod; }
-      set { _serviceMethod = StringUtility.NullToEmpty (value); }
+      get { return "Search"; }
     }
 
     [Editor (typeof (UrlEditor), typeof (UITypeEditor))]

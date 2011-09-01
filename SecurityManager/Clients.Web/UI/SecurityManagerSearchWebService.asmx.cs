@@ -25,7 +25,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
@@ -52,10 +52,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       control.ServicePath =
           resourceUrlFactory.CreateResourceUrl (typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx")
               .GetUrl();
-      control.ServiceMethod = "Search";
     }
 
-    [WebMethod (EnableSession = true)]
+    [WebMethod]
+    [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy[] Search (
         string prefixText,
         int? completionSetCount,

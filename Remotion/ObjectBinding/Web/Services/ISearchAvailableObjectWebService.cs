@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web
+namespace Remotion.ObjectBinding.Web.Services
 {
   /// <summary>
   /// The <see cref="ISearchAvailableObjectWebService"/> interface defines a facade for <see cref="ISearchAvailableObjectsService"/> when accessed 

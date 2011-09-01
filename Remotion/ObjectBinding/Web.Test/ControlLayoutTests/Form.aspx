@@ -21,7 +21,7 @@
 </asp:content>
 <asp:content contentplaceholderid="body" runat="server">
     <asp:ScriptManager ID="ScriptManager" runat="server" EnablePartialRendering="true" AsyncPostBackTimeout="3600" />
-    <remotion:BindableObjectDataSourceControl id=CurrentObject runat="server" Type="Remotion.ObjectBinding.Sample::Person"/>
+    <remotion:BindableObjectDataSourceControl id="CurrentObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person"/>
     <remotion:FormGridManager ID="FormGridManager" runat="server" />    
         
     <remotion:SingleView ID="OuterSingleView" runat="server">
@@ -31,7 +31,7 @@
       
       <View>
       <asp:PlaceHolder runat="server">
-        <table ID=FormGrid runat="server">
+        <table ID="FormGrid" runat="server">
           <tr>
             <td>Line&nbsp;1</td>
             <td>
@@ -46,7 +46,7 @@
                   <remotion:WebMenuItem ItemID="Item1" Text="Item 1"/>
                 </OptionsMenuItems>
               </remotion:BocReferenceValue> 
-              <remotion:BocAutoCompleteReferenceValue ID="Line01AutoCompleteReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em">
+              <remotion:BocAutoCompleteReferenceValue ID="Line01AutoCompleteReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx">
                 <OptionsMenuItems>
                   <remotion:WebMenuItem ItemID="Item1" Text="Item 1"/>
                 </OptionsMenuItems>
@@ -77,7 +77,7 @@
                 </OptionsMenuItems>
               </remotion:BocReferenceValue> 
               M
-              <remotion:BocAutoCompleteReferenceValue ID="Line02AutoCompleteReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em">
+              <remotion:BocAutoCompleteReferenceValue ID="Line02AutoCompleteReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx">
                 <OptionsMenuItems>
                   <remotion:WebMenuItem ItemID="Item1" Text="Item 1"/>
                 </OptionsMenuItems>
@@ -129,7 +129,7 @@
             </OptionsMenuItems>
           </remotion:BocReferenceValue> 
           M
-          <remotion:BocAutoCompleteReferenceValue ID="Line11AutoCompleteReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em">
+          <remotion:BocAutoCompleteReferenceValue ID="Line11AutoCompleteReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em"  ServicePath="~/IndividualControlTests/AutoCompleteService.asmx">
             <OptionsMenuItems>
               <remotion:WebMenuItem ItemID="Item1" Text="Item 1"/>
             </OptionsMenuItems>

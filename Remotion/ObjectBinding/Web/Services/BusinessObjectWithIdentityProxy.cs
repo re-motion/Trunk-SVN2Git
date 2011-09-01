@@ -14,19 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web
+namespace Remotion.ObjectBinding.Web.Services
 {
   /// <summary>
-  /// Represents a DTO for transfering the result of the <see cref="ISearchAvailableObjectWebService"/> to the client and displaying 
+  /// Represents a DTO for transfering the result of the <see cref="BocAutoCompleteReferenceValue"/> to the client and displaying 
   /// the elements as options in the <see cref="BocAutoCompleteReferenceValue"/>.
   /// </summary>
   /// <remarks>
   /// This type offers setable properties and a default constructor to comply with the .NET 2.0 web service implementation.
-  /// Returning a not fully initialized objects will result in unexpected behavior by the <see cref="BocAutoCompleteReferenceValue"/>.
+  /// Returning a not fully initialized objects will result in unexpected behavior by the <see cref="ISearchAvailableObjectWebService"/>.
   /// </remarks>
   public sealed class BusinessObjectWithIdentityProxy
   {
@@ -49,13 +48,13 @@ namespace Remotion.ObjectBinding.Web
     public string UniqueIdentifier
     {
       get { return _uniqueIdentifier; }
-      set { _uniqueIdentifier = ArgumentUtility.CheckNotNullOrEmpty ("UniqueIdentifier", value); }
+      set { _uniqueIdentifier = ArgumentUtility.CheckNotNullOrEmpty ("value", value); }
     }
 
     public string DisplayName
     {
       get { return _displayName; }
-      set { _displayName = ArgumentUtility.CheckNotNullOrEmpty ("DisplayName", value); }
+      set { _displayName = ArgumentUtility.CheckNotNullOrEmpty ("value", value); }
     }
 
     public string IconUrl
