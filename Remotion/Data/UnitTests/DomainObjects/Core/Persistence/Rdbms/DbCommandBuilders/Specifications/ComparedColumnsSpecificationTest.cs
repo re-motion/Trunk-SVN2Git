@@ -45,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     public void SetUp ()
     {
       _storageTypeInformationMock1 = MockRepository.GenerateStrictMock<IStorageTypeInformation>();
-      _column1 = new ColumnDefinition ("First", typeof (int), _storageTypeInformationMock1, true, false);
+      _column1 = new ColumnDefinition ("First", _storageTypeInformationMock1, true, false);
       _value1 = 17;
 
       _storageTypeInformationMock2 = MockRepository.GenerateStrictMock<IStorageTypeInformation> ();
-      _column2 = new ColumnDefinition ("Second", typeof (int), _storageTypeInformationMock2, true, false);
+      _column2 = new ColumnDefinition ("Second", _storageTypeInformationMock2, true, false);
       _value2 = 18;
 
       _statement = new StringBuilder();

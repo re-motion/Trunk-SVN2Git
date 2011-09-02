@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageTypeInformationStub = MockRepository.GenerateStub<IStorageTypeInformation>();
-      _innerColumnDefinition = new ColumnDefinition ("Test", typeof (string), _storageTypeInformationStub, true, false);
+      _innerColumnDefinition = new ColumnDefinition ("Test", _storageTypeInformationStub, true, false);
       _storagePropertyDefinition = new SimpleStoragePropertyDefinition (typeof (string), _innerColumnDefinition);
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();

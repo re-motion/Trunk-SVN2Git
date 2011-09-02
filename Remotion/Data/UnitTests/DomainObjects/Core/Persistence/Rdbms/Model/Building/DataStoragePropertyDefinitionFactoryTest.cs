@@ -121,7 +121,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       Assert.That (result.PropertyType, Is.SameAs (typeof (bool)));
       Assert.That (result.ColumnDefinition.Name, Is.EqualTo ("FakeColumnName"));
-      Assert.That (result.ColumnDefinition.PropertyType, Is.SameAs (typeof (bool)));
       Assert.That (result.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation));
     }
 
@@ -234,7 +233,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var valueStoragePropertyDefinition = ((SimpleStoragePropertyDefinition) objectIDWithoutClassIDStorageProperty.ValueProperty);
       Assert.That (valueStoragePropertyDefinition.PropertyType, Is.SameAs (typeof (object)));
       Assert.That (valueStoragePropertyDefinition.ColumnDefinition.Name, Is.EqualTo ("FakeRelationColumnName"));
-      Assert.That (valueStoragePropertyDefinition.ColumnDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (valueStoragePropertyDefinition.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformationForObjectID));
       Assert.That (valueStoragePropertyDefinition.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
 
@@ -284,13 +282,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       Assert.That (valueIDColumn.Name, Is.EqualTo ("FakeRelationColumnName"));
       Assert.That (valueIDColumn.IsNullable, Is.True);
-      Assert.That (valueIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (valueIDColumn.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformationForObjectID));
       Assert.That (valueIDColumn.IsPartOfPrimaryKey, Is.False);
 
       Assert.That (classIDColumn.Name, Is.EqualTo ("FakeRelationClassID"));
       Assert.That (classIDColumn.IsNullable, Is.True);
-      Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
       Assert.That (classIDColumn.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformationForClassID));
       Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
     }
@@ -335,7 +331,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       Assert.That (serializedIDProperty.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (serializedIDProperty.ColumnDefinition.Name, Is.EqualTo ("FakeRelationColumnName"));
-      Assert.That (serializedIDProperty.ColumnDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (serializedIDProperty.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformationForSerializedObjectID));
       Assert.That (serializedIDProperty.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
     }

@@ -24,7 +24,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class ColumnDefinitionTest
   {
-    private Type _type;
     private StorageTypeInformation _storageTypeInformation;
 
     private ColumnDefinition _columnDefinition;
@@ -32,17 +31,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _type = typeof (string);
       _storageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation();
 
-      _columnDefinition = new ColumnDefinition ("Name", _type, _storageTypeInformation, true, true);
+      _columnDefinition = new ColumnDefinition ("Name", _storageTypeInformation, true, true);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
-      Assert.That (_columnDefinition.PropertyType, Is.SameAs (_type));
       Assert.That (_columnDefinition.StorageTypeInfo, Is.SameAs (_storageTypeInformation));
       Assert.That (_columnDefinition.IsNullable, Is.True);
       Assert.That (_columnDefinition.IsPartOfPrimaryKey, Is.True);

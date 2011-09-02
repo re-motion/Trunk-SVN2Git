@@ -79,7 +79,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               typeof (Guid),
               new ColumnDefinition (
                   "ID",
-                  typeof (Guid),
                   new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
                   false,
                   true));
@@ -88,7 +87,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               typeof (string),
               new ColumnDefinition (
                   "FirstName",
-                  typeof (string),
                   new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
                   false,
                   false));
@@ -97,7 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               typeof (string),
               new ColumnDefinition (
                   "LastName",
-                  typeof (string),
                   new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
                   false,
                   false));
@@ -106,7 +103,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               typeof (string),
               new ColumnDefinition (
                   "XmlColumn1",
-                  typeof (string),
                   new StorageTypeInformation (typeof (string), "xml", DbType.Xml, typeof (string), new StringConverter()),
                   false,
                   false));
@@ -195,13 +191,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var column1 = new ColumnDefinition (
           "ID",
-          typeof (Guid),
           new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
           false,
           true);
       var column2 = new ColumnDefinition (
           "Name",
-          typeof (string),
           new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
           false,
           false);
@@ -231,19 +225,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var idColumn = new ColumnDefinition (
           "ObjectID",
-          typeof (int),
           new StorageTypeInformation (typeof (Int32), "integer", DbType.Int32, typeof (int), new Int32Converter()),
           false,
           true);
       var classIDColumn = new ColumnDefinition (
           "ClassID",
-          typeof (string),
           new StorageTypeInformation (typeof (string), "varchar", DbType.String, typeof (string), new StringConverter()),
           false,
           false);
       var timestampColumn = new ColumnDefinition (
           "Timestamp",
-          typeof (DateTime),
           new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
           true,
           false);

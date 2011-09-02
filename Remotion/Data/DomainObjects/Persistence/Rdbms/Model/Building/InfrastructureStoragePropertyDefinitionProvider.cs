@@ -41,19 +41,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
       _idColumnDefinition = new ColumnDefinition (
           storageNameProvider.GetIDColumnName(),
-          typeof (ObjectID),
           storageTypeInformationProvider.GetStorageTypeForID(),
           false,
           true);
       _classIDColumnDefinition = new ColumnDefinition (
           storageNameProvider.GetClassIDColumnName(),
-          typeof (string),
           storageTypeInformationProvider.GetStorageTypeForClassID(),
           false,
           false);
       _timestampColumnDefinition = new ColumnDefinition (
           storageNameProvider.GetTimestampColumnName(),
-          typeof (object),
           storageTypeInformationProvider.GetStorageTypeForTimestamp(),
           false,
           false);
