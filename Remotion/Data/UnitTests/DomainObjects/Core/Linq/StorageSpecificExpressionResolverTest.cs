@@ -74,16 +74,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           simpleProperty);
       _classDefinition.SetStorageEntity (tableDefinition);
 
-      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (_classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
-      var expectedIdColumn = new SqlColumnDefinitionExpression (typeof (Guid), "o", "ID", true);
+      var expectedIdColumn = new SqlColumnDefinitionExpression (objectIDProperty.PropertyType, "o", "ID", true);
       var expectedClassIdColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "ClassID", false);
-      var expectedTimestampColumn = new SqlColumnDefinitionExpression (typeof (DateTime), "o", "Timestamp", false);
-      var expectedForeignKeyColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "ForeignKey", false);
-      var expectedColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "Column1", false);
+      var expectedTimestampColumn = new SqlColumnDefinitionExpression (timestampProperty.PropertyType, "o", "Timestamp", false);
+      var expectedForeignKeyColumn = new SqlColumnDefinitionExpression (foreignKeyProperty.PropertyType, "o", "ForeignKey", false);
+      var expectedColumn = new SqlColumnDefinitionExpression (simpleProperty.PropertyType, "o", "Column1", false);
 
       var expectedExpression = new SqlEntityDefinitionExpression (
           typeof (Order),
@@ -91,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           null,
           expectedIdColumn,
           new[] { expectedIdColumn, expectedClassIdColumn, expectedTimestampColumn, expectedForeignKeyColumn, expectedColumn });
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result);
     }
 
     [Test]
@@ -105,16 +106,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
+      
       var columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("OrderNumber");
-      _rdbmsStoragePropertyDefinitionStub
-          .Stub (stub => stub.GetColumns ())
-          .Return (new[] { columnDefinition });
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.PropertyType).Return (typeof (string));
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns ()).Return (new[] { columnDefinition });
 
       var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition);
 
       Assert.That (result.ColumnName, Is.EqualTo ("OrderNumber"));
       Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
-      Assert.That (result.Type, Is.EqualTo (columnDefinition.PropertyType));
+      Assert.That (result.Type, Is.SameAs (typeof (string)));
       Assert.That (result.IsPrimaryKey, Is.False);
     }
 
@@ -129,16 +130,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
+      
       var columnDefinition = ColumnDefinitionObjectMother.IDColumn;
-      _rdbmsStoragePropertyDefinitionStub
-          .Stub (stub => stub.GetColumns())
-          .Return (new[] { columnDefinition });
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.PropertyType).Return (typeof (string));
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumns ()).Return (new[] { columnDefinition });
 
       var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition);
 
       Assert.That (result.ColumnName, Is.EqualTo ("ID"));
       Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
-      Assert.That (result.Type, Is.EqualTo (columnDefinition.PropertyType));
+      Assert.That (result.Type, Is.SameAs (typeof (string)));
       Assert.That (result.IsPrimaryKey, Is.True);
     }
 
@@ -177,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.ColumnName, Is.EqualTo ("ID"));
       Assert.That (result.IsPrimaryKey, Is.True);
       Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
-      Assert.That (result.Type, Is.SameAs (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (entityDefinition.ObjectIDProperty).PropertyType));
+      Assert.That (result.Type, Is.SameAs (typeof (ObjectID)));
     }
 
     [Test]
@@ -384,9 +385,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Stub (stub => stub.GetStoragePropertyDefinition (leftEndPointDefinition.PropertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
       var columnDefinition = ColumnDefinitionObjectMother.CreateColumn ("Customer");
-      _rdbmsStoragePropertyDefinitionStub
-          .Stub (stub => stub.GetColumnsForComparison())
-          .Return (new[] { columnDefinition });
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { columnDefinition });
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.PropertyType).Return (typeof (ObjectID));
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
@@ -399,10 +399,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (((SqlColumnExpression) result.LeftKey).ColumnName, Is.EqualTo ("Customer"));
       Assert.That (((SqlColumnExpression) result.LeftKey).OwningTableAlias, Is.EqualTo ("c"));
-      Assert.That (result.LeftKey.Type, Is.EqualTo (columnDefinition.PropertyType));
+      Assert.That (result.LeftKey.Type, Is.EqualTo (typeof (ObjectID)));
       Assert.That (((SqlColumnExpression) result.LeftKey).IsPrimaryKey, Is.False);
       Assert.That (((SqlColumnExpression) result.RightKey).ColumnName, Is.EqualTo ("ID"));
-      Assert.That (result.RightKey.Type, Is.EqualTo (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (entityDefinition.ObjectIDProperty).PropertyType));
+      Assert.That (result.RightKey.Type, Is.EqualTo (typeof (ObjectID)));
       Assert.That (((SqlColumnExpression) result.RightKey).OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (((SqlColumnExpression) result.RightKey).IsPrimaryKey, Is.True);
     }
@@ -425,8 +425,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetStoragePropertyDefinition (rightEndPointDefinition.PropertyDefinition))
           .Return (_rdbmsStoragePropertyDefinitionStub);
+
       _rdbmsStoragePropertyDefinitionStub
-          .Stub (stub => stub.GetColumnsForComparison()).Return (new[] { ColumnDefinitionObjectMother.CreateColumn ("Customer") });
+          .Stub (stub => stub.GetColumnsForComparison())
+          .Return (new[] { ColumnDefinitionObjectMother.CreateColumn ("Customer") });
+      _rdbmsStoragePropertyDefinitionStub.Stub (stub => stub.PropertyType).Return (typeof (ObjectID));
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
