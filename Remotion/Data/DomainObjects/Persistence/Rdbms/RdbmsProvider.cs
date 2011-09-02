@@ -239,7 +239,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("id", id);
-      CheckStorageProviderID (id, "id");
+      CheckStorageProvider (id, "id");
 
       Connect();
 
@@ -254,12 +254,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var checkedIDs = ids.Select (id => CheckStorageProviderID (id, "ids"));
+      var checkedIDs = ids.Select (id => CheckStorageProvider (id, "ids"));
       var command = _storageProviderCommandFactory.CreateForSortedMultiIDLookup (checkedIDs);
       return command.Execute (this);
     }
 
-    public override IEnumerable<DataContainer> LoadDataContainersByRelatedID (RelationEndPointDefinition relationEndPointDefinition, SortExpressionDefinition sortExpressionDefinition, ObjectID relatedID)
+    public override IEnumerable<DataContainer> LoadDataContainersByRelatedID (
+        RelationEndPointDefinition relationEndPointDefinition,
+        SortExpressionDefinition sortExpressionDefinition,
+        ObjectID relatedID)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
@@ -388,7 +391,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     protected RdbmsProviderException CreateRdbmsProviderException (Exception innerException, string formatString, params object[] args)
     {
-      return new RdbmsProviderException (string.Format (formatString, args), innerException);
+      var message = string.Format (formatString, args);
+      return new RdbmsProviderException (message, innerException);
     }
 
     private void DisposeTransaction ()
@@ -407,7 +411,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _connection = null;
     }
 
-    private ObjectID CheckStorageProviderID (ObjectID id, string argumentName)
+    private ObjectID CheckStorageProvider (ObjectID id, string argumentName)
     {
       if (id.StorageProviderDefinition != StorageProviderDefinition)
       {
