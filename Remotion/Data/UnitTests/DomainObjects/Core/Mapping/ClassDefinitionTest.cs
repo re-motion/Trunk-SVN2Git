@@ -27,17 +27,11 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using Client = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client;
-using Customer = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer;
-using FileSystemItem = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem;
-using Folder = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder;
-using Order = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order;
-using Person = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Person;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -62,16 +56,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
 
       _domainBaseClass = ClassDefinitionFactory.CreateClassDefinition (
-          "DomainBase", null, UnitTestDomainStorageProviderDefinition, typeof (DomainBase), false);
+          "TIDomainBase", null, UnitTestDomainStorageProviderDefinition, typeof (TIDomainBase), false);
       _personClass = ClassDefinitionFactory.CreateClassDefinition (
-          "Person", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Person), false, _domainBaseClass);
+          "TIPerson", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (TIPerson), false, _domainBaseClass);
       _customerClass = ClassDefinitionFactory.CreateClassDefinition (
-          "Customer", null, UnitTestDomainStorageProviderDefinition, typeof (Customer), false, _personClass);
+          "TICustomer", null, UnitTestDomainStorageProviderDefinition, typeof (TICustomer), false, _personClass);
       _organizationalUnitClass = ClassDefinitionFactory.CreateClassDefinition (
-          "OrganizationalUnit",
+          "TIOrganizationalUnit",
           "TableInheritance_OrganizationalUnit",
           UnitTestDomainStorageProviderDefinition,
-          typeof (OrganizationalUnit),
+          typeof (TIOrganizationalUnit),
           false,
           _domainBaseClass);
 
@@ -109,11 +103,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "DomainBase",
           null,
           UnitTestDomainStorageProviderDefinition,
-          typeof (DomainBase),
+          typeof (TIDomainBase),
           false,
           null,
           null,
-          new PersistentMixinFinder (typeof (DomainBase)));
+          new PersistentMixinFinder (typeof (TIDomainBase)));
       Assert.That (classDefinition.StorageGroupType, Is.Null);
     }
 
@@ -126,11 +120,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "DomainBase",
           null,
           UnitTestDomainStorageProviderDefinition,
-          typeof (DomainBase),
+          typeof (TIDomainBase),
           false,
           null,
           typeof (DBStorageGroupAttribute),
-          new PersistentMixinFinder (typeof (DomainBase)));
+          new PersistentMixinFinder (typeof (TIDomainBase)));
       Assert.That (classDefinition.StorageGroupType, Is.Not.Null);
       Assert.That (classDefinition.StorageGroupType, Is.SameAs (typeof (DBStorageGroupAttribute)));
     }
@@ -146,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'TIDomainBase' is read-only.")]
     public void SetStorageEntityDefinition_ClassIsReadOnly ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (_storageProviderDefinition, new EntityNameDefinition (null, "Tablename"));
@@ -170,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The property-definitions for class 'DomainBase' have already been set."
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The property-definitions for class 'TIDomainBase' have already been set."
         )]
     public void SetPropertyDefinitions_Twice_ThrowsException ()
     {
@@ -181,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'TIDomainBase' is read-only.")]
     public void SetPropertyDefinitions_ClassIsReadOnly ()
     {
       _domainBaseClass.SetReadOnly();
@@ -204,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Relation end point for property 'Test' cannot be added to class 'DomainBase', because it was initialized for class 'Distributor'.")]
+        "Relation end point for property 'Test' cannot be added to class 'TIDomainBase', because it was initialized for class 'Distributor'.")]
     public void SetRelationEndPointDefinitions_DifferentClassDefinition_ThrowsException ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
@@ -215,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Relation end point for property 'Test' cannot be added to class 'Person', because base class 'DomainBase' already defines a relation end point "
+        "Relation end point for property 'Test' cannot be added to class 'TIPerson', because base class 'TIDomainBase' already defines a relation end point "
         + "with the same property name.")]
     public void SetRelationEndPointDefinitions_EndPointWithSamePropertyNameWasAlreadyAdded_ThrowsException ()
     {
@@ -230,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The relation end point definitions for class 'DomainBase' have already been set.")]
+        "The relation end point definitions for class 'TIDomainBase' have already been set.")]
     public void SetRelationEndPointDefinitions_Twice_ThrowsException ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
@@ -241,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'TIDomainBase' is read-only.")]
     public void SetRelationEndPointDefinitions_ClassIsReadonly ()
     {
       _domainBaseClass.SetReadOnly();
@@ -259,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The derived-classes for class 'Person' have already been set.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The derived-classes for class 'TIPerson' have already been set.")]
     public void SetDerivedClasses_Twice_ThrowsException ()
     {
       _personClass.SetDerivedClasses (new[] { _customerClass });
@@ -267,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'Person' is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'TIPerson' is read-only.")]
     public void SetDerivedClasses_ClasssIsReadOnly ()
     {
       _personClass.SetReadOnly();
@@ -276,7 +270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Derived class 'Order' cannot be added to class 'Person', because it has no base class definition defined.")]
+        "Derived class 'Order' cannot be added to class 'TIPerson', because it has no base class definition defined.")]
     public void SetDerivedClasses_DerivedClassHasNoBaseClassDefined ()
     {
       _personClass.SetDerivedClasses (new[] { _orderClass });
@@ -284,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Derived class 'Person' cannot be added to class 'Customer', because it has class 'DomainBase' as its base class definition defined.")]
+        "Derived class 'TIPerson' cannot be added to class 'TICustomer', because it has class 'TIDomainBase' as its base class definition defined.")]
     public void SetDerivedClasses_DerivedClassHasWrongBaseClassDefined ()
     {
       _customerClass.SetDerivedClasses (new[] { _personClass });

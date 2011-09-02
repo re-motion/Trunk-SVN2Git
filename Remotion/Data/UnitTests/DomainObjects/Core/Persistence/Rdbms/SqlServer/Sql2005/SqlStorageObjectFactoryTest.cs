@@ -30,7 +30,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlGeneration;
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor ()
     {
-      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (TIOrder), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
       var result = _sqlProviderFactory.CreateLinqQueryExecutor (
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor_CanBeMixed ()
     {
-      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (TIOrder), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor_WithMixedStages ()
     {
-      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (TIOrder), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
       using (MixinConfiguration.BuildNew()

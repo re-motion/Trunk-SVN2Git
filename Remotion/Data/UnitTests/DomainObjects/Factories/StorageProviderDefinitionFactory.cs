@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.UnitTests.DomainObjects.Core;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {

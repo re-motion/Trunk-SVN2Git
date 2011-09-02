@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
@@ -27,6 +28,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
   [TestFixture]
   public class ObjectIDTest : StandardMappingTest
   {
+    [Test]
+    public void InitializeWithAbstractType ()
+    {
+      try
+      {
+        new ObjectID (typeof (TIDomainBase), Guid.NewGuid ());
+        Assert.Fail ("ArgumentException was expected.");
+      }
+      catch (ArgumentException ex)
+      {
+        string expectedMessage = string.Format (
+            "An ObjectID cannot be constructed for abstract type '{0}' of class '{1}'.\r\nParameter name: classDefinition",
+            typeof (TIDomainBase).AssemblyQualifiedName, "TI_DomainBase");
+
+        Assert.AreEqual (expectedMessage, ex.Message);
+      }
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Value cannot contain '&amp;pipe;'.\r\nParameter name: value")]
     public void EscapedDelimiterPlaceholderInValue ()
@@ -321,5 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
 
       id.CompareTo ("test");
     }
+
+
   }
 }

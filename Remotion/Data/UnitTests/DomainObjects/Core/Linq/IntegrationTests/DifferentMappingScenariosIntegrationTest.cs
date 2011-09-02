@@ -17,27 +17,24 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
-using Remotion.Mixins;
-using @STI=Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using @CTI = Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
   [TestFixture]
   public class DifferentMappingScenariosIntegrationTest : IntegrationTestBase
   {
-    private DomainObjectIDs _concreteObjectIDs;
+    private TableInheritanceDomainObjectIDs _concreteObjectIDs;
 
     [SetUp]
     public override void SetUp ()
     {
 // ReSharper disable RedundantNameQualifier
-      _concreteObjectIDs = new TableInheritance.DomainObjectIDs (Configuration);
+      _concreteObjectIDs = new TableInheritanceDomainObjectIDs (Configuration);
 // ReSharper restore RedundantNameQualifier
       base.SetUp();
     }
@@ -45,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void ConcreteObjects_PropertyAccessInBaseClass_SingleTableInheritance ()
     {
-      var customer = (from c in QueryFactory.CreateLinqQuery<STI.Customer>()
+      var customer = (from c in QueryFactory.CreateLinqQuery<Customer>()
                    where c.Name == "Kunde 3"
                    select c);
 
@@ -55,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void ConcreteObjects_PropertyAccessInSameClass_SingleTableInheritance ()
     {
-      var customer = (from c in QueryFactory.CreateLinqQuery<STI.Customer> ()
+      var customer = (from c in QueryFactory.CreateLinqQuery<Customer> ()
                       where c.Type == UnitTests.DomainObjects.TestDomain.Customer.CustomerType.Standard
                       select c);
 
@@ -65,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void ConcreteObjects_MemberAccessInSameClass_SingleTableInheritance ()
     {
-      var orders = (from c in QueryFactory.CreateLinqQuery<STI.Customer> ()
+      var orders = (from c in QueryFactory.CreateLinqQuery<Customer> ()
                       from o in c.Orders
                       where c.Name=="Kunde 3"
                       select o);
@@ -76,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void ConcreteObjects_MemberAccessInBaseClass_SingleTableInheritance ()
     {
-      var customers = (from c in QueryFactory.CreateLinqQuery<STI.Customer> ()
+      var customers = (from c in QueryFactory.CreateLinqQuery<Customer> ()
                     where c.IndustrialSector.ID == DomainObjectIDs.IndustrialSector2
                     select c);
 
@@ -86,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void BaseObjects_PropertyAccessInSameClass_SingleTableInheritance ()
     {
-      var company = (from c in QueryFactory.CreateLinqQuery<STI.Company> ()
+      var company = (from c in QueryFactory.CreateLinqQuery<Company> ()
                      where c.Name == "Firma 2"
                      select c);
 
@@ -96,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void BaseObjects_MemberAccessInSameClass_SingleTableInheritance ()
     {
-      var company = (from c in QueryFactory.CreateLinqQuery<STI.Company> ()
+      var company = (from c in QueryFactory.CreateLinqQuery<Company> ()
                      where c.IndustrialSector.ID == DomainObjectIDs.IndustrialSector2 && c.Name=="Firma 2"
                      select c);
 
@@ -106,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void ConcreteObjects_PropertyAccessInBaseClass_ConcreteTableInheritance ()
     {
-      var fsi = (from f in QueryFactory.CreateLinqQuery<CTI.File> ()
+      var fsi = (from f in QueryFactory.CreateLinqQuery<TIFile> ()
                      where f.Name == "Datei im Root"
                      select f);
 
@@ -116,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void ConcreteObjects_PropertyAccessInSameClass_ConcreteTableInheritance ()
     {
-      var fsi = (from f in QueryFactory.CreateLinqQuery<CTI.File> ()
+      var fsi = (from f in QueryFactory.CreateLinqQuery<TIFile> ()
                  where f.Size == 512
                  select f);
 
@@ -126,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void ConcreteObjects_MemberAccessInBaseClass_ConcreteTableInheritance ()
     {
-      var fsi = (from f in QueryFactory.CreateLinqQuery<CTI.File> ()
+      var fsi = (from f in QueryFactory.CreateLinqQuery<TIFile> ()
                  where f.ParentFolder.ID == _concreteObjectIDs.FolderRoot
                  select f);
 
@@ -136,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void BaseObjects_PropertyAccessInSameClass_ConcreteTableInheritance ()
     {
-      var fsi = (from f in QueryFactory.CreateLinqQuery<CTI.FileSystemItem> ()
+      var fsi = (from f in QueryFactory.CreateLinqQuery<TIFileSystemItem> ()
                  where f.Name == "Datei im Root"
                  select f);
 
@@ -146,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void BaseObjects_MemberAccessInSameClass_ConcreteTableInheritance ()
     {
-      var fsi = (from f in QueryFactory.CreateLinqQuery<CTI.FileSystemItem> ()
+      var fsi = (from f in QueryFactory.CreateLinqQuery<TIFileSystemItem> ()
                  where f.ParentFolder.ID == _concreteObjectIDs.FolderRoot
                  select f);
 

@@ -18,7 +18,9 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
@@ -66,12 +68,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void TableInheritance_MemberJoinViaBaseClass ()
     {
-      var query = from c in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.Client> ()
+      var query = from c in QueryFactory.CreateLinqQuery<TIClient> ()
                   from domainBase in c.AssignedObjects
                   where domainBase.CreatedAt == new DateTime (2006, 01, 03)
                   select domainBase;
       
-      var domainObjectIDs = new TableInheritance.DomainObjectIDs (Configuration);
+      var domainObjectIDs = new TableInheritanceDomainObjectIDs (Configuration);
       CheckQueryResult (query, domainObjectIDs.Person);
     }
   }

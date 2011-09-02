@@ -20,7 +20,6 @@ using log4net;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.Data.SqlClient;
@@ -43,12 +42,13 @@ namespace Remotion.Data.UnitTests.DomainObjects
         Assert.That (LogManager.GetLogger (typeof (LoggingClientTransactionListener)).IsDebugEnabled, Is.False);
 
         StandardConfiguration.Initialize();
+        TableInheritanceConfiguration.Initialize ();
 
         SqlConnection.ClearAllPools();
 
-        DatabaseAgent masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
+        var masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
         masterAgent.ExecuteBatchFile ("DataDomainObjects_CreateDB.sql", false);
-        DatabaseAgent testDomainAgent = new DatabaseAgent (DatabaseTest.TestDomainConnectionString);
+        var testDomainAgent = new DatabaseAgent (DatabaseTest.TestDomainConnectionString);
         testDomainAgent.ExecuteBatchFile ("DataDomainObjects_SetupDB.sql", true);
 
         _standardMappingDatabaseAgent = new StandardMappingDatabaseAgent (DatabaseTest.TestDomainConnectionString);

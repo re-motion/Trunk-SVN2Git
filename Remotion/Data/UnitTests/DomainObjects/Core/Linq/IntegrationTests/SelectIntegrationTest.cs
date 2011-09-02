@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
@@ -52,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void Query_WithView ()
     {
       var domainBases =
-          from d in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.DomainBase>()
+          from d in QueryFactory.CreateLinqQuery<TIDomainBase>()
           select d;
 
       Assert.That (domainBases.ToArray(), Is.Not.Empty);

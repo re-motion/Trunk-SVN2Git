@@ -385,7 +385,7 @@
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedCollectionRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\LookupCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\SaveCommandFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithoutHierarchy.cs" />
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithoutHierarchy.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorTest.cs" />
@@ -1206,7 +1206,7 @@
     <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializableStub.cs" />
     <Compile Include="DomainObjects\Core\Serialization\ObjectIDTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\SpecificFolder.cs" />
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TISpecificFolder.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithEnumNotDefiningZero.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithMixedProperty.cs" />
@@ -1520,86 +1520,82 @@
     </Compile>
     <Compile Include="DomainObjects\SetupFixture.cs" />
     <Compile Include="DomainObjects\Factories\StandardConfiguration.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\DomainObjectIDs.cs">
+    <Compile Include="DomainObjects\Factories\TableInheritanceDomainObjectIDs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\DomainObjectTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\TableInheritance\TableInheritanceDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\IntegrationTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\TableInheritance\TableInheritanceIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\StorageEntitiesIntegrationTest.cs">
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\TableInheritanceStorageEntitiesIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\ObjectIDTest.cs">
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\SqlProviderTableInheritanceTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TableInheritanceSetupFixture.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTest.cs">
+    <Compile Include="DomainObjects\Factories\TableInheritanceConfiguration.cs" />
+    <Compile Include="DomainObjects\TableInheritanceMappingTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TableInheritanceConfiguration.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\TableInheritanceMappingTest.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\AbstractBaseClassWithHierarchy.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractBaseClassWithHierarchy.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithoutDerivations.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithoutDerivations.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIAddress.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\Address.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\BaseClassWithInvalidRelationClassIDColumns.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\BaseClassWithInvalidRelationClassIDColumns.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIClient.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\Client.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIClassWithUnidirectionalRelation.cs" />
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TICustomer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\ClassWithUnidirectionalRelation.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\Customer.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\DerivedClassWithEntityFromBaseClassWithHierarchy.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\DerivedClassWithEntityFromBaseClassWithHierarchy.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\DerivedClassWithEntityWithHierarchy.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\DerivedClassWithEntityWithHierarchy.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\DerivedClassWithInvalidRelationClassIDColumns.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\DerivedClassWithInvalidRelationClassIDColumns.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIDomainBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\DomainBase.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIFile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\File.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIFileSystemItem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\FileSystemItem.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIFolder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\Folder.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIHistoryEntry.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\HistoryEntry.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIOrder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\Order.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIOrganizationalUnit.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\OrganizationalUnit.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIPerson.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\Person.cs">
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TIRegion.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\Region.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\TableInheritanceTestDomainAttribute.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\UnidirectionalRelationTest.cs" />
+    <Compile Include="DomainObjects\TestDomain\TableInheritance\TableInheritanceTestDomainAttribute.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\TableInheritance\TableInheritanceUnidirectionalRelationTest.cs" />
     <Compile Include="DomainObjects\TestDomain\AbstractClass.cs" />
     <Compile Include="DomainObjects\TestDomain\Ceo.cs">
       <SubType>Code</SubType>
@@ -1808,9 +1804,9 @@
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
-    <None Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithHierarchy.cd" />
-    <None Include="DomainObjects\Core\TableInheritance\TestDomain\TestDomain.cd" />
-    <None Include="DomainObjects\Core\TableInheritance\TestDomain\FileSystem.cd" />
+    <None Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithHierarchy.cd" />
+    <None Include="DomainObjects\TestDomain\TableInheritance\TestDomain.cd" />
+    <None Include="DomainObjects\TestDomain\TableInheritance\FileSystem.cd" />
     <None Include="DomainObjects\Database\DataDomainObjects_DropFulltextIndices.sql" />
     <None Include="DomainObjects\Database\DataDomainObjects_CreateFulltextIndices.sql" />
     <None Include="DomainObjects\RdbmsTools\Test.config">
@@ -1889,7 +1885,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DomainObjects\Core\Mapping\Validation\Persistence\" />
-    <Folder Include="DomainObjects\Core\Persistence\Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -19,7 +19,9 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
@@ -363,10 +365,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void TableInheritance_AccessingPropertyFromBaseClass ()
     {
-      var query = from c in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.ClassWithUnidirectionalRelation> ()
+      var query = from c in QueryFactory.CreateLinqQuery<TIClassWithUnidirectionalRelation> ()
                   where c.DomainBase.CreatedAt == new DateTime (2006, 01, 04)
                   select c;
-      CheckQueryResult (query, new TableInheritance.DomainObjectIDs (Configuration).ClassWithUnidirectionalRelation);
+      CheckQueryResult (query, new TableInheritanceDomainObjectIDs (Configuration).ClassWithUnidirectionalRelation);
     }
 
     [Test]
