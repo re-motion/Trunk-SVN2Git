@@ -15,22 +15,67 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using System.Linq;
+using SortOrder = Remotion.Data.DomainObjects.Mapping.SortExpressions.SortOrder;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
   [TestFixture]
-  public class SqlProviderTest : SqlProviderBaseTest
+  public class SqlProviderTest : TableInheritanceMappingTest
   {
+    private RdbmsProvider _provider;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      var storageNameProvider = new ReflectionBasedStorageNameProvider ();
+      var storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
+
+      var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
+      var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
+          storageTypeInformationProvider, storageNameProvider);
+
+      var commandFactory = new RdbmsProviderCommandFactory (
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
+          rdbmsPersistenceModelProvider,
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          storageTypeInformationProvider,
+          TableInheritanceTestDomainStorageProviderDefinition);
+
+      _provider = new RdbmsProvider (
+          TableInheritanceTestDomainStorageProviderDefinition,
+          storageNameProvider,
+          SqlDialect.Instance,
+          NullPersistenceListener.Instance,
+          commandFactory,
+          () => new SqlConnection ());
+    }
+
+    public override void TearDown ()
+    {
+      _provider.Dispose ();
+      base.TearDown ();
+    }
     [Test]
     public void LoadConcreteSingle ()
     {
-      DataContainer customerContainer = Provider.LoadDataContainer (DomainObjectIDs.Customer).LocatedObject;
+      DataContainer customerContainer = _provider.LoadDataContainer (DomainObjectIDs.Customer).LocatedObject;
       Assert.IsNotNull (customerContainer);
       Assert.AreEqual (DomainObjectIDs.Customer, customerContainer.ID);
       Assert.AreEqual (
@@ -49,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var createdAtProperty = GetPropertyDefinition (typeof (DomainBase), "CreatedAt");
       var sortExpression = new SortExpressionDefinition (new[] { new SortedPropertySpecification (createdAtProperty, SortOrder.Ascending) });
 
-      var loadedDataContainers = Provider.LoadDataContainersByRelatedID (
+      var loadedDataContainers = _provider.LoadDataContainersByRelatedID (
           (RelationEndPointDefinition) relationEndPointDefinition,
           sortExpression,
           DomainObjectIDs.Client).ToList();
@@ -67,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       var relationEndPointDefinition = GetEndPointDefinition (typeof (AbstractClassWithoutDerivations), "DomainBase");
 
-      var result = Provider.LoadDataContainersByRelatedID (
+      var result = _provider.LoadDataContainersByRelatedID (
           (RelationEndPointDefinition) relationEndPointDefinition,
           null,
           DomainObjectIDs.Customer);

@@ -596,6 +596,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       savedCeoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"] = null;
 
       Provider.Save (new[] { savedCeoContainer });
+      Provider.Disconnect();
 
       using (SqlConnection connection = new SqlConnection (TestDomainConnectionString))
       {

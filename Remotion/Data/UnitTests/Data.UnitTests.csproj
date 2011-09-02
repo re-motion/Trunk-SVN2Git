@@ -1536,9 +1536,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\TableInheritanceSetupFixture.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderBaseTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTest.cs">
       <SubType>Code</SubType>
     </Compile>
