@@ -232,7 +232,9 @@
     <Compile Include="Core\UI\Controls\WebTreeViewImplementation\IWebTreeViewRendererTest.cs" />
     <Compile Include="Core\UI\HtmlHeadAppenderTest.cs" />
     <Compile Include="Core\Utilities\VirtualPathUtilityTests.cs" />
-    <Compile Include="Core\Utilities\WebServiceUtilityTest.cs" />
+    <Compile Include="Core\Utilities\WebServiceUtilityTests\CheckJsonService.cs" />
+    <Compile Include="Core\Utilities\WebServiceUtilityTests\CheckScriptService.cs" />
+    <Compile Include="Core\Utilities\WebServiceUtilityTests\CheckWebService.cs" />
     <Compile Include="LegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">
       <SubType>Code</SubType>

@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using System.Web.Script.Services;
+using System.Web.Services;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Utilities
@@ -26,14 +27,43 @@ namespace Remotion.Web.Utilities
   /// </summary>
   public static class WebServiceUtility
   {
+    /// <summary>
+    /// Checks that <paramref name="type"/> and <paramref name="method"/> declare a valid web service.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> of the web service. Must not be <see langword="null" />.</param>
+    /// <param name="method">The service method of the web service. Must not be <see langword="null" /> or empty.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the required attributes for a web service are not set or the web service declaration itself is invalid.
+    /// </exception>
+    public static void CheckWebService (Type type, string method)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNullOrEmpty ("method", method);
+
+      CheckType (type);
+      GetCheckedAttribute<WebServiceAttribute> (type);
+      var methodinfo = GetCheckedMethodInfo (type, method);
+      GetCheckedAttribute<WebMethodAttribute> (type, methodinfo);
+    }
+
+    /// <summary>
+    /// Checks that <paramref name="type"/> and <paramref name="method"/> declare a valid script web service.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> of the script web service. Must not be <see langword="null" />.</param>
+    /// <param name="method">The service method of the script web service. Must not be <see langword="null" /> or empty.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the required attributes for a script web service are not set or the web service declaration itself is invalid.
+    /// </exception>
     public static void CheckScriptService (Type type, string method)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("method", method);
 
-      CheckScriptServiceAttribute (type);
+      CheckWebService (type, method);
+
+      GetCheckedAttribute<ScriptServiceAttribute> (type);
       var methodInfo = GetCheckedMethodInfo (type, method);
-      GetCheckedScriptMethodAttribute (type, methodInfo);
+      GetCheckedAttribute<ScriptMethodAttribute> (type, methodInfo);
     }
 
     /// <summary>
@@ -49,9 +79,10 @@ namespace Remotion.Web.Utilities
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("method", method);
 
-      CheckScriptServiceAttribute (type);
+      CheckScriptService (type, method);
+
       var methodInfo = GetCheckedMethodInfo (type, method);
-      var scriptMethodAttribute = GetCheckedScriptMethodAttribute (type, methodInfo);
+      var scriptMethodAttribute = GetCheckedAttribute<ScriptMethodAttribute> (type, methodInfo);
       if (scriptMethodAttribute.ResponseFormat != ResponseFormat.Json)
       {
         throw CreateArgumentException (
@@ -62,35 +93,53 @@ namespace Remotion.Web.Utilities
       }
     }
 
-    private static void CheckScriptServiceAttribute (Type type)
+    private static void CheckType (Type type)
     {
-      if (!AttributeUtility.IsDefined<ScriptServiceAttribute> (type, true))
-      {
-        throw CreateArgumentException (
-            "Web service type '{0}' does not have the '{1}' applied.",
-            type.FullName,
-            typeof (ScriptServiceAttribute).FullName);
-      }
-      return;
+      if (!typeof (WebService).IsAssignableFrom (type))
+        throw CreateArgumentException ("Web service type '{0}' does not derive from '{1}'.", type.FullName, typeof (WebService).FullName);
     }
 
     private static MethodInfo GetCheckedMethodInfo (Type type, string method)
     {
-      return type.GetMethod (method, BindingFlags.Instance | BindingFlags.Public);
+      var methodInfo = type.GetMethod (method, BindingFlags.Instance | BindingFlags.Public);
+      if (methodInfo == null)
+      {
+        throw CreateArgumentException (
+            "Web method '{0}' was not found on the public API of web service type '{1}'.",
+            method,
+            type.FullName);
+      }
+      return methodInfo;
     }
 
-    private static ScriptMethodAttribute GetCheckedScriptMethodAttribute (Type type, MethodInfo methodInfo)
+    private static T GetCheckedAttribute<T> (Type type)
+        where T: Attribute
     {
-      var scriptMethodAttribute = AttributeUtility.GetCustomAttribute<ScriptMethodAttribute> (methodInfo, true);
-      if (scriptMethodAttribute == null)
+      var attribute = AttributeUtility.GetCustomAttribute<T> (type, true);
+      if (attribute == null)
+      {
+        throw CreateArgumentException (
+            "Web service type '{0}' does not have the '{1}' applied.",
+            type.FullName,
+            typeof (T).FullName);
+      }
+
+      return attribute;
+    }
+
+    private static T GetCheckedAttribute<T> (Type type, MethodInfo methodInfo)
+        where T: Attribute
+    {
+      var attribute = AttributeUtility.GetCustomAttribute<T> (methodInfo, true);
+      if (attribute == null)
       {
         throw CreateArgumentException (
             "Web method '{0}' on web service type '{1}' does not have the '{2}' applied.",
             methodInfo.Name,
             type.FullName,
-            typeof (ScriptMethodAttribute).FullName);
+            typeof (T).FullName);
       }
-      return scriptMethodAttribute;
+      return attribute;
     }
 
     private static ArgumentException CreateArgumentException (string message, params object[] args)
