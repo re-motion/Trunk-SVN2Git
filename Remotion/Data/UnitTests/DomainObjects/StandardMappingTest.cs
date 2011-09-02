@@ -18,9 +18,7 @@ using System;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Database;
@@ -30,7 +28,7 @@ using DomainObjectIDs = Remotion.Data.UnitTests.DomainObjects.Factories.DomainOb
 
 namespace Remotion.Data.UnitTests.DomainObjects
 {
-  public class StandardMappingTest : DatabaseTest
+  public abstract class StandardMappingTest : DatabaseTest
   {
     public const string CreateTestDataFileName = "DataDomainObjects_CreateTestData.sql";
 

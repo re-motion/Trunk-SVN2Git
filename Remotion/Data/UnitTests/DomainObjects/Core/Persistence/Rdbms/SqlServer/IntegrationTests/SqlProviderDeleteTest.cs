@@ -14,15 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Data.SqlClient;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.IntegrationTests
@@ -30,43 +26,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlProviderDeleteTest : SqlProviderBaseTest
   {
-    private RdbmsProvider _provider;
-    private ReflectionBasedStorageNameProvider _storageNameProvider;
-
     public override void TestFixtureSetUp ()
     {
       base.TestFixtureSetUp();
       SetDatabaseModifyable();
     }
 
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _provider = new RdbmsProvider (
-          TestDomainStorageProviderDefinition,
-          _storageNameProvider,
-          SqlDialect.Instance,
-          NullPersistenceListener.Instance,
-          CommandFactory,
-          ()=>new SqlConnection());
-    }
-
-    public override void TearDown ()
-    {
-      _provider.Dispose();
-      base.TearDown();
-    }
-
     [Test]
     public void DeleteSingleDataContainer ()
     {
-      DataContainerCollection containers = CreateDataContainerCollection (GetDeletedOrderTicketContainer());
-      _provider.Connect();
-      _provider.Save (containers);
+      IEnumerable<DataContainer> containers = new[] { GetDeletedOrderTicketContainer() };
+      Provider.Connect();
+      Provider.Save (containers);
 
-      Assert.IsNull (_provider.LoadDataContainer (DomainObjectIDs.OrderTicket1).LocatedObject);
+      Assert.IsNull (Provider.LoadDataContainer (DomainObjectIDs.OrderTicket1).LocatedObject);
     }
 
     [Test]
@@ -80,13 +53,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       subordinate.Delete();
       computer.Delete();
 
-      DataContainerCollection containers = CreateDataContainerCollection (
-          supervisor.InternalDataContainer,
-          subordinate.InternalDataContainer,
-          computer.InternalDataContainer);
+      IEnumerable<DataContainer> containers = new[] 
+                                              {
+                                                  supervisor.InternalDataContainer,
+                                                  subordinate.InternalDataContainer,
+                                                  computer.InternalDataContainer
+                                              };
 
-      _provider.Connect();
-      _provider.Save (containers);
+      Provider.Connect();
+      Provider.Save (containers);
     }
 
     [Test]
@@ -114,9 +89,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         deletedDataContainer = deletedOrderTicket.InternalDataContainer;
       }
 
-      _provider.Connect();
-      _provider.Save (CreateDataContainerCollection (changedDataContainer));
-      _provider.Save (CreateDataContainerCollection (deletedDataContainer));
+      Provider.Connect();
+      Provider.Save (new[] { changedDataContainer });
+      Provider.Save (new[] { deletedDataContainer });
     }
 
     [Test]
@@ -146,18 +121,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         deletedObject.Delete();
       }
 
-      _provider.Connect();
-      _provider.Save (CreateDataContainerCollection (changedDataContainer));
-      _provider.Save (CreateDataContainerCollection (deletedDataContainer));
-    }
-
-    private DataContainerCollection CreateDataContainerCollection (params DataContainer[] dataContainers)
-    {
-      DataContainerCollection collection = new DataContainerCollection();
-      foreach (DataContainer dataContainer in dataContainers)
-        collection.Add (dataContainer);
-
-      return collection;
+      Provider.Connect();
+      Provider.Save (new[] { changedDataContainer });
+      Provider.Save (new[] { deletedDataContainer });
     }
 
     private DataContainer GetDeletedOrderTicketContainer ()

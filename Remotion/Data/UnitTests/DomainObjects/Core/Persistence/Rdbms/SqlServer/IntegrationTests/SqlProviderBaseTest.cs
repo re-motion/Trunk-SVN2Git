@@ -29,34 +29,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   public class SqlProviderBaseTest : ClientTransactionBaseTest
   {
     private RdbmsProvider _provider;
-    private ReflectionBasedStorageNameProvider _storageNameProvider;
-    private RdbmsProviderCommandFactory _commandFactory;
-    private SqlStorageTypeInformationProvider _storageTypeInformationProvider;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _storageTypeInformationProvider = new SqlStorageTypeInformationProvider();
-      _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
-      var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
-          _storageTypeInformationProvider, _storageNameProvider);
-      _commandFactory = new RdbmsProviderCommandFactory (
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          rdbmsPersistenceModelProvider,
-          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
-          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
-          _storageTypeInformationProvider,
-          TestDomainStorageProviderDefinition);
-
-      _provider = new RdbmsProvider (
-          TestDomainStorageProviderDefinition,
-          _storageNameProvider,
-          SqlDialect.Instance,
-          NullPersistenceListener.Instance,
-          _commandFactory,
-          ()=>new SqlConnection());
+      _provider = CreateStorageProvider();
     }
 
     public override void TearDown ()
@@ -70,19 +48,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       get { return _provider; }
     }
 
-    protected ReflectionBasedStorageNameProvider StorageNameProvider
+    protected RdbmsProvider CreateStorageProvider ()
     {
-      get { return _storageNameProvider; }
-    }
+      var storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider ();
+      var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
+      var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
+          storageTypeInformationProvider, storageNameProvider);
+      var commandFactory = new RdbmsProviderCommandFactory (
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
+          rdbmsPersistenceModelProvider,
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          storageTypeInformationProvider,
+          TestDomainStorageProviderDefinition);
 
-    protected SqlStorageTypeInformationProvider StorageTypeInformationProvider
-    {
-      get { return _storageTypeInformationProvider; }
-    }
-
-    protected RdbmsProviderCommandFactory CommandFactory
-    {
-      get { return _commandFactory; }
+      return new RdbmsProvider (
+          TestDomainStorageProviderDefinition,
+          storageNameProvider,
+          SqlDialect.Instance,
+          NullPersistenceListener.Instance,
+          commandFactory,
+          () => new SqlConnection ());
     }
   }
 }

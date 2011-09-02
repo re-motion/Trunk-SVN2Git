@@ -15,55 +15,50 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
+using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
   public class SqlProviderBaseTest : TableInheritanceMappingTest
   {
-    private StorageProviderManager _storageProviderManager;
     private RdbmsProvider _provider;
-    private StorageProviderDefinition _storageProviderDefinition;
-    private ReflectionBasedStorageNameProvider _storageNameProvider;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _storageProviderManager = new StorageProviderManager (NullPersistenceListener.Instance);
-      _storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
-      _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _provider = (RdbmsProvider) _storageProviderManager.GetMandatory (TableInheritanceTestDomainProviderID);
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
+      var storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
+
+      var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
+      var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
+          storageTypeInformationProvider, storageNameProvider);
+
+      var commandFactory = new RdbmsProviderCommandFactory (
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
+          rdbmsPersistenceModelProvider,
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          storageTypeInformationProvider,
+          TableInheritanceTestDomainStorageProviderDefinition);
+
+      _provider = new RdbmsProvider (
+          TableInheritanceTestDomainStorageProviderDefinition,
+          storageNameProvider,
+          SqlDialect.Instance,
+          NullPersistenceListener.Instance,
+          commandFactory,
+          () => new SqlConnection ());
+
       _provider.Connect ();
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown();
-      _storageProviderManager.Dispose ();
-    }
-
-    protected StorageProviderManager StorageProviderManager
-    {
-      get { return _storageProviderManager; }
-    }
-
-    protected StorageProviderDefinition StorageProviderDefinition
-    {
-      get { return _storageProviderDefinition; }
-    }
-
-    protected ReflectionBasedStorageNameProvider StorageNameProvider
-    {
-      get { return _storageNameProvider; }
     }
 
     protected RdbmsProvider Provider

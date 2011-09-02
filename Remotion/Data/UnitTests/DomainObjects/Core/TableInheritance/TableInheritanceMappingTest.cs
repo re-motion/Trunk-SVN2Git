@@ -19,23 +19,33 @@ using Remotion.Configuration;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
-  public class TableInheritanceMappingTest: DatabaseTest
+  public abstract class TableInheritanceMappingTest : DatabaseTest
   {
     public const string CreateTestDataFileName = "DataDomainObjects_CreateTableInheritanceTestData.sql";
     public const string TableInheritanceTestDomainProviderID = "TableInheritanceTestDomain";
 
     private ClientTransactionScope _transactionScope;
 
-    public TableInheritanceMappingTest()
+    protected TableInheritanceMappingTest()
       : base (new DatabaseAgent (TestDomainConnectionString), CreateTestDataFileName)
     {
     }
+
+    protected RdbmsProviderDefinition TableInheritanceTestDomainStorageProviderDefinition
+    {
+      get
+      {
+        return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[TableInheritanceTestDomainProviderID];
+      }
+    }
+
 
     public override void TestFixtureSetUp()
     {

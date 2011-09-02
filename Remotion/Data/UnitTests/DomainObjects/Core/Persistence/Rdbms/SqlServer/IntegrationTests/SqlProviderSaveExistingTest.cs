@@ -22,8 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
@@ -39,328 +37,274 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       SetDatabaseModifyable();
     }
 
-    private DataContainer LoadDataContainer (RdbmsProvider rdbmsProvider, ObjectID id)
-    {
-      DataContainer dataContainer = rdbmsProvider.LoadDataContainer (id).LocatedObject;
-      return dataContainer;
-    }
-
     [Test]
     public void Save ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+      var savedClassWithAllDataTypes = LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
-        Assert.AreEqual (
-            ClassWithAllDataTypes.EnumType.Value1,
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"] =
-            ClassWithAllDataTypes.EnumType.Value2;
+      Assert.AreEqual (
+          ClassWithAllDataTypes.EnumType.Value1,
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"] =
+          ClassWithAllDataTypes.EnumType.Value2;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (classWithAllDataTypes);
+      Provider.Save (new[] { savedClassWithAllDataTypes });
 
-        rdbmsProvider.Save (collection);
-      }
-
-      using (
-          var rdbmsProvider = new RdbmsProvider (
-              TestDomainStorageProviderDefinition,
-              StorageNameProvider,
-              SqlDialect.Instance,
-              NullPersistenceListener.Instance,
-              CommandFactory,
-              ()=>new SqlConnection()))
-      {
-        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+      DataContainer reloadedClassWithAllDataTypes = ReloadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
         Assert.AreEqual (
             ClassWithAllDataTypes.EnumType.Value2,
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
-      }
+            reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
     }
 
     [Test]
     public void SaveAllSimpleDataTypes ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+      DataContainer savedClassWithAllDataTypes = LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
-        Assert.AreEqual (false, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
-        Assert.AreEqual (85, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"]);
-        Assert.AreEqual (
-            new DateTime (2005, 1, 1), classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateProperty"]);
-        Assert.AreEqual (
-            new DateTime (2005, 1, 1, 17, 0, 0),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateTimeProperty"]);
-        Assert.AreEqual (123456.789, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"]);
-        Assert.AreEqual (987654.321, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DoubleProperty"]);
-        Assert.AreEqual (
-            ClassWithAllDataTypes.EnumType.Value1,
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
-        Assert.AreEqual (
-            Color.Values.Red(), classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"]);
-        Assert.AreEqual (
-            new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}"),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty"]);
-        Assert.AreEqual (32767, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int16Property"]);
-        Assert.AreEqual (2147483647, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int32Property"]);
-        Assert.AreEqual (
-            9223372036854775807, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int64Property"]);
-        Assert.AreEqual (6789.321f, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.SingleProperty"]);
-        Assert.AreEqual ("abcdeföäü", classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"]);
-        Assert.AreEqual (
-            "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"]);
-        ResourceManager.IsEqualToImage1 (
-            (byte[]) classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"]);
+      Assert.AreEqual (false, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
+      Assert.AreEqual (85, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"]);
+      Assert.AreEqual (
+          new DateTime (2005, 1, 1), savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateProperty"]);
+      Assert.AreEqual (
+          new DateTime (2005, 1, 1, 17, 0, 0),
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateTimeProperty"]);
+      Assert.AreEqual (
+          123456.789, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"]);
+      Assert.AreEqual (
+          987654.321, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DoubleProperty"]);
+      Assert.AreEqual (
+          ClassWithAllDataTypes.EnumType.Value1,
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
+      Assert.AreEqual (
+          Color.Values.Red(),
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"]);
+      Assert.AreEqual (
+          new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}"),
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty"]);
+      Assert.AreEqual (32767, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int16Property"]);
+      Assert.AreEqual (2147483647, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int32Property"]);
+      Assert.AreEqual (
+          9223372036854775807, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int64Property"]);
+      Assert.AreEqual (6789.321f, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.SingleProperty"]);
+      Assert.AreEqual (
+          "abcdeföäü", savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"]);
+      Assert.AreEqual (
+          "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"]);
+      ResourceManager.IsEqualToImage1 (
+          (byte[]) savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"]);
 
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"] = true;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"] = (byte) 42;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateProperty"] = new DateTime (1972, 10, 26);
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateTimeProperty"] = new DateTime (
-            1974, 10, 26, 15, 17, 19);
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"] = (decimal) 564.956;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DoubleProperty"] = 5334.2456;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"] =
-            ClassWithAllDataTypes.EnumType.Value0;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"] = Color.Values.Green();
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty"] =
-            new Guid ("{98E0FE88-7DB4-4f6c-A1C1-86682D5C95C9}");
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int16Property"] = (short) 67;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int32Property"] = 42424242;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int64Property"] = 424242424242424242;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.SingleProperty"] = (float) 42.42;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"] = "zyxwvuZaphodBeeblebrox";
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"] =
-            "123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876";
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"] = ResourceManager.GetImage2();
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"] = true;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"] = (byte) 42;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateProperty"] = new DateTime (1972, 10, 26);
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateTimeProperty"] = new DateTime (
+          1974, 10, 26, 15, 17, 19);
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"] = (decimal) 564.956;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DoubleProperty"] = 5334.2456;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"] =
+          ClassWithAllDataTypes.EnumType.Value0;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"] =
+          Color.Values.Green();
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty"] =
+          new Guid ("{98E0FE88-7DB4-4f6c-A1C1-86682D5C95C9}");
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int16Property"] = (short) 67;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int32Property"] = 42424242;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int64Property"] = 424242424242424242;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.SingleProperty"] = (float) 42.42;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"] = "zyxwvuZaphodBeeblebrox";
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"] =
+          "123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876";
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"] =
+          ResourceManager.GetImage2();
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (classWithAllDataTypes);
+      Provider.Save (new[] { savedClassWithAllDataTypes });
 
-        rdbmsProvider.Save (collection);
-      }
+      DataContainer reloadedClassWithAllDataTypes = ReloadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
-
-        Assert.AreEqual (true, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
-        Assert.AreEqual (42, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"]);
-        Assert.AreEqual (
-            new DateTime (1972, 10, 26), classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateProperty"]);
-        Assert.AreEqual (
-            new DateTime (1974, 10, 26, 15, 17, 19),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateTimeProperty"]);
-        Assert.AreEqual (564.956, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"]);
-        Assert.AreEqual (5334.2456, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DoubleProperty"]);
-        Assert.AreEqual (
-            ClassWithAllDataTypes.EnumType.Value0,
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
-        Assert.AreEqual (
-            Color.Values.Green(),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"]);
-        Assert.AreEqual (
-            new Guid ("{98E0FE88-7DB4-4f6c-A1C1-86682D5C95C9}"),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty"]);
-        Assert.AreEqual (67, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int16Property"]);
-        Assert.AreEqual (42424242, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int32Property"]);
-        Assert.AreEqual (
-            424242424242424242, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int64Property"]);
-        Assert.AreEqual (42.42f, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.SingleProperty"]);
-        Assert.AreEqual (
-            "zyxwvuZaphodBeeblebrox", classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"]);
-        Assert.AreEqual (
-            "123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876",
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"]);
-        ResourceManager.IsEqualToImage2 (
-            (byte[]) classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"]);
-      }
+      Assert.AreEqual (true, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
+      Assert.AreEqual (42, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"]);
+      Assert.AreEqual (
+          new DateTime (1972, 10, 26),
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateProperty"]);
+      Assert.AreEqual (
+          new DateTime (1974, 10, 26, 15, 17, 19),
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateTimeProperty"]);
+      Assert.AreEqual (564.956, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"]);
+      Assert.AreEqual (
+          5334.2456, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DoubleProperty"]);
+      Assert.AreEqual (
+          ClassWithAllDataTypes.EnumType.Value0,
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
+      Assert.AreEqual (
+          Color.Values.Green(),
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"]);
+      Assert.AreEqual (
+          new Guid ("{98E0FE88-7DB4-4f6c-A1C1-86682D5C95C9}"),
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty"]);
+      Assert.AreEqual (67, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int16Property"]);
+      Assert.AreEqual (42424242, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int32Property"]);
+      Assert.AreEqual (
+          424242424242424242, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int64Property"]);
+      Assert.AreEqual (42.42f, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.SingleProperty"]);
+      Assert.AreEqual (
+          "zyxwvuZaphodBeeblebrox",
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"]);
+      Assert.AreEqual (
+          "123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876123450987612345098761234509876",
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"]);
+      ResourceManager.IsEqualToImage2 (
+          (byte[]) reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"]);
     }
 
     [Test]
     public void SaveAllNullableTypes ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+      DataContainer savedClassWithAllDataTypes = LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
-        Assert.AreEqual (true, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
-        Assert.AreEqual ((byte) 78, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
-        Assert.AreEqual (
-            new DateTime (2005, 2, 1), classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
-        Assert.AreEqual (
-            new DateTime (2005, 2, 1, 5, 0, 0),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
-        Assert.AreEqual (765.098m, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
-        Assert.AreEqual (
-            654321.789d, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
-        Assert.AreEqual (
-            ClassWithAllDataTypes.EnumType.Value2,
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
-        Assert.AreEqual (
-            new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}"),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
-        Assert.AreEqual (
-            (short) 12000, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
-        Assert.AreEqual (-2147483647, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
-        Assert.AreEqual (3147483647L, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
-        Assert.AreEqual (12.456F, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
+      Assert.AreEqual (true, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
+      Assert.AreEqual ((byte) 78, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
+      Assert.AreEqual (
+          new DateTime (2005, 2, 1), savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
+      Assert.AreEqual (
+          new DateTime (2005, 2, 1, 5, 0, 0),
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
+      Assert.AreEqual (765.098m, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
+      Assert.AreEqual (
+          654321.789d, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
+      Assert.AreEqual (
+          ClassWithAllDataTypes.EnumType.Value2,
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
+      Assert.AreEqual (
+          new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}"),
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
+      Assert.AreEqual (
+          (short) 12000, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
+      Assert.AreEqual (-2147483647, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
+      Assert.AreEqual (3147483647L, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
+      Assert.AreEqual (12.456F, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
+      Assert.IsNull (savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
 
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"] = false;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"] = (byte) 100;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"] = new DateTime (2007, 1, 18);
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"] = new DateTime (
-            2005, 1, 18, 10, 10, 10);
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"] = 20.123m;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"] = 56.87d;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"] =
-            ClassWithAllDataTypes.EnumType.Value0;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"] =
-            new Guid ("{10FD9EDE-F3BB-4bb9-9434-9B121C6733A0}");
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"] = (short) -43;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"] = -42;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"] = -41L;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"] = -40F;
-        classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] =
-            ResourceManager.GetImage1();
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"] = false;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"] = (byte) 100;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"] = new DateTime (2007, 1, 18);
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"] = new DateTime (
+          2005, 1, 18, 10, 10, 10);
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"] = 20.123m;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"] = 56.87d;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"] =
+          ClassWithAllDataTypes.EnumType.Value0;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"] =
+          new Guid ("{10FD9EDE-F3BB-4bb9-9434-9B121C6733A0}");
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"] = (short) -43;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"] = -42;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"] = -41L;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"] = -40F;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] =
+          ResourceManager.GetImage1();
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (classWithAllDataTypes);
+      Provider.Save (new[] { savedClassWithAllDataTypes });
 
-        rdbmsProvider.Save (collection);
-      }
+      DataContainer reloadedClassWithAllDataTypes = ReloadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
-
-        Assert.AreEqual (false, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
-        Assert.AreEqual ((byte) 100, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
-        Assert.AreEqual (
-            new DateTime (2007, 1, 18), classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
-        Assert.AreEqual (
-            new DateTime (2005, 1, 18, 10, 10, 10),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
-        Assert.AreEqual (20.123m, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
-        Assert.AreEqual (56.87d, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
-        Assert.AreEqual (
-            ClassWithAllDataTypes.EnumType.Value0,
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
-        Assert.AreEqual (
-            new Guid ("{10FD9EDE-F3BB-4bb9-9434-9B121C6733A0}"),
-            classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
-        Assert.AreEqual ((short) -43, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
-        Assert.AreEqual (-42, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
-        Assert.AreEqual (-41L, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
-        Assert.AreEqual (-40F, classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
-      }
+      Assert.AreEqual (false, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
+      Assert.AreEqual ((byte) 100, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
+      Assert.AreEqual (
+          new DateTime (2007, 1, 18), reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
+      Assert.AreEqual (
+          new DateTime (2005, 1, 18, 10, 10, 10),
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
+      Assert.AreEqual (20.123m, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
+      Assert.AreEqual (56.87d, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
+      Assert.AreEqual (
+          ClassWithAllDataTypes.EnumType.Value0,
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
+      Assert.AreEqual (
+          new Guid ("{10FD9EDE-F3BB-4bb9-9434-9B121C6733A0}"),
+          reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
+      Assert.AreEqual ((short) -43, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
+      Assert.AreEqual (-42, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
+      Assert.AreEqual (-41L, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
+      Assert.AreEqual (-40F, reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
     }
 
     [Test]
     public void SaveAllNullableTypesWithNull ()
     {
-      DataContainer classWithAllDataTypes1;
-
       // Note for NullableBinaryProperty: Because the value in the database is already null, the property has
       //  to be changed first to something different to ensure the null value is written back.
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        classWithAllDataTypes1 = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
-        classWithAllDataTypes1["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] =
-            ResourceManager.GetImage1();
+      DataContainer tempClassWithAllDataTypes = LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
+      tempClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] =
+          ResourceManager.GetImage1();
+      Provider.Save (new[] { tempClassWithAllDataTypes });
+      
+      var savedClassWithAllDataTypes = LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (classWithAllDataTypes1);
+      Assert.AreEqual (true, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
+      Assert.AreEqual ((byte) 78, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
+      Assert.AreEqual (
+          new DateTime (2005, 2, 1), savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
+      Assert.AreEqual (
+          new DateTime (2005, 2, 1, 5, 0, 0),
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
+      Assert.AreEqual (765.098m, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
+      Assert.AreEqual (
+          654321.789d, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
+      Assert.AreEqual (
+          ClassWithAllDataTypes.EnumType.Value2,
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
+      Assert.AreEqual (
+          new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}"),
+          savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
+      Assert.AreEqual (
+          (short) 12000, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
+      Assert.AreEqual (
+          -2147483647, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
+      Assert.AreEqual (
+          3147483647L, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
+      Assert.AreEqual (12.456F, savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
+      ResourceManager.IsEqualToImage1 (
+          (byte[]) savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
 
-        rdbmsProvider.Save (collection);
-      }
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"] = null;
+      savedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] = null;
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer classWithAllDataTypes2 = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
+      Provider.Save (new[] { savedClassWithAllDataTypes });
 
-        Assert.AreEqual (true, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
-        Assert.AreEqual ((byte) 78, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
-        Assert.AreEqual (
-            new DateTime (2005, 2, 1), classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
-        Assert.AreEqual (
-            new DateTime (2005, 2, 1, 5, 0, 0),
-            classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
-        Assert.AreEqual (765.098m, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
-        Assert.AreEqual (
-            654321.789d, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
-        Assert.AreEqual (
-            ClassWithAllDataTypes.EnumType.Value2,
-            classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
-        Assert.AreEqual (
-            new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}"),
-            classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
-        Assert.AreEqual (
-            (short) 12000, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
-        Assert.AreEqual (
-            -2147483647, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
-        Assert.AreEqual (
-            3147483647L, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
-        Assert.AreEqual (12.456F, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
-        ResourceManager.IsEqualToImage1 (
-            (byte[]) classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
+      DataContainer reloadedClassWithAllDataTypes = ReloadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"] = null;
-        classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] = null;
-
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (classWithAllDataTypes2);
-
-        rdbmsProvider.Save (collection);
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
-
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
-        Assert.IsNull (classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
-      }
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
+      Assert.IsNull (reloadedClassWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
     }
 
     [Test]
     public void SaveWithNoChanges ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer classWithAllDataTypes = LoadDataContainer (rdbmsProvider, DomainObjectIDs.ClassWithAllDataTypes1);
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (classWithAllDataTypes);
+      DataContainer classWithAllDataTypes = LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1);
 
-        rdbmsProvider.Save (collection);
-      }
+      Provider.Save (new[] { classWithAllDataTypes });
 
       // expectation: no exception
     }
@@ -369,33 +313,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void SaveMultipleDataContainers ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        DataContainer orderItemContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderItem1);
+      DataContainer savedOrderContainer = LoadDataContainer (DomainObjectIDs.Order1);
+      DataContainer savedOrderItemContainer = LoadDataContainer (DomainObjectIDs.OrderItem1);
 
-        Assert.AreEqual (1, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
-        Assert.AreEqual ("Mainboard", orderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"]);
+      Assert.AreEqual (1, savedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
+      Assert.AreEqual ("Mainboard", savedOrderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"]);
 
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
-        orderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"] = "Raumschiff";
+      savedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      savedOrderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"] = "Raumschiff";
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderContainer);
-        collection.Add (orderItemContainer);
+      Provider.Save (new[] { savedOrderContainer, savedOrderItemContainer });
 
-        rdbmsProvider.Save (collection);
-      }
+      DataContainer orderContainer = ReloadDataContainer (DomainObjectIDs.Order1);
+      DataContainer orderItemContainer = ReloadDataContainer (DomainObjectIDs.OrderItem1);
 
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        DataContainer orderItemContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderItem1);
-
-        Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
-        Assert.AreEqual ("Raumschiff", orderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"]);
-      }
+      Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
+      Assert.AreEqual ("Raumschiff", orderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"]);
     }
 
     [Test]
@@ -404,107 +337,69 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         )]
     public void ConcurrentSave ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer1 = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        DataContainer orderContainer2 = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+      DataContainer orderContainer1 = LoadDataContainer (DomainObjectIDs.Order1);
+      DataContainer orderContainer2 = LoadDataContainer (DomainObjectIDs.Order1);
 
-        orderContainer1["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
-        orderContainer2["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 11;
+      orderContainer1["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      orderContainer2["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 11;
 
-        DataContainerCollection collection1 = new DataContainerCollection();
-        collection1.Add (orderContainer1);
-        rdbmsProvider.Save (collection1);
-
-        DataContainerCollection collection2 = new DataContainerCollection();
-        collection2.Add (orderContainer2);
-        rdbmsProvider.Save (collection2);
-      }
+      Provider.Save (new[] { orderContainer1 });
+      Provider.Save (new[] { orderContainer2 });
     }
 
     [Test]
     public void SaveWithConnect ()
     {
-      DataContainerCollection collection = new DataContainerCollection();
+      DataContainer savedOrderContainer = LoadDataContainerWithSeparateProvider (DomainObjectIDs.Order1);
+      savedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
-        collection.Add (orderContainer);
-      }
+      Assert.That (!Provider.IsConnected);
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        rdbmsProvider.Save (collection);
-      }
+      Provider.Save (new[] { savedOrderContainer });
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
-      }
+      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.Order1);
+      Assert.AreEqual (10, reloadedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
     }
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException))]
     public void WrapSqlException ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainerCollection collection = new DataContainerCollection();
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+      DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
 
-        PropertyDefinition newDefinition =
-            MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem))["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"];
+      PropertyDefinition newDefinition =
+          MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem))["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"];
 
-        orderContainer.PropertyValues.Add (new PropertyValue (newDefinition, "Raumschiff"));
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"] = "Auto";
+      orderContainer.PropertyValues.Add (new PropertyValue (newDefinition, "Raumschiff"));
+      orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"] = "Auto";
 
-        collection.Add (orderContainer);
-        rdbmsProvider.Save (collection);
-      }
+      Provider.Save (new[] { orderContainer });
     }
 
     [Test]
     public void UpdateTimestamps ()
     {
-      object oldTimestamp = null;
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainerCollection collection = new DataContainerCollection();
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+      DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
 
-        oldTimestamp = orderContainer.Timestamp;
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
-        collection.Add (orderContainer);
+      object oldTimestamp = orderContainer.Timestamp;
+      orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-        rdbmsProvider.Save (collection);
-        rdbmsProvider.UpdateTimestamps (collection);
+      Provider.Save (new[] { orderContainer });
+      Provider.UpdateTimestamps (new[] { orderContainer });
 
-        Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
-      }
+      Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
     }
 
     [Test]
     public void UpdateTimestampsWithConnect ()
     {
-      DataContainerCollection collection = new DataContainerCollection();
-      DataContainer orderContainer = null;
-      object oldTimestamp = null;
+      DataContainer orderContainer = LoadDataContainerWithSeparateProvider (DomainObjectIDs.Order1);
+      object oldTimestamp = orderContainer.Timestamp;
+      orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        oldTimestamp = orderContainer.Timestamp;
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
-        collection.Add (orderContainer);
-      }
+      Assert.That (!Provider.IsConnected);
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        rdbmsProvider.UpdateTimestamps (collection);
-      }
+      Provider.UpdateTimestamps (new[] { orderContainer });
 
       Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
     }
@@ -512,30 +407,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void UpdateTimestampsForMultipleDataContainers ()
     {
-      object oldOrderTimestamp = null;
-      object oldOrderItemTimestamp = null;
+      DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
+      DataContainer orderItemContainer = LoadDataContainer (DomainObjectIDs.OrderItem1);
 
-      DataContainer orderContainer = null;
-      DataContainer orderItemContainer = null;
+      object oldOrderTimestamp = orderContainer.Timestamp;
+      object oldOrderItemTimestamp = orderItemContainer.Timestamp;
 
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        orderItemContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderItem1);
+      orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      orderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"] = "Raumschiff";
 
-        oldOrderTimestamp = orderContainer.Timestamp;
-        oldOrderItemTimestamp = orderItemContainer.Timestamp;
-
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
-        orderItemContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"] = "Raumschiff";
-
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderContainer);
-        collection.Add (orderItemContainer);
-
-        rdbmsProvider.Save (collection);
-        rdbmsProvider.UpdateTimestamps (collection);
-      }
+      Provider.Save (new[] { orderContainer, orderItemContainer });
+      Provider.UpdateTimestamps (new[] { orderContainer, orderItemContainer });
 
       Assert.IsFalse (oldOrderTimestamp.Equals (orderContainer.Timestamp));
       Assert.IsFalse (oldOrderItemTimestamp.Equals (orderItemContainer.Timestamp));
@@ -544,105 +426,69 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void TransactionalSave ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+      DataContainer savedOrderContainer = LoadDataContainer (DomainObjectIDs.Order1);
 
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      savedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderContainer);
+      Provider.BeginTransaction();
+      Provider.Save (new[] { savedOrderContainer });
+      Provider.Commit();
 
-        rdbmsProvider.BeginTransaction();
-        rdbmsProvider.Save (collection);
-        rdbmsProvider.Commit();
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
-      }
+      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.Order1);
+      Assert.AreEqual (10, reloadedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
     }
 
     [Test]
     public void TransactionalLoadDataContainerAndSave ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        rdbmsProvider.BeginTransaction();
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+      Provider.BeginTransaction ();
+      DataContainer reloadedAndSavedOrderContainer = Provider.LoadDataContainer (DomainObjectIDs.Order1).LocatedObject;
 
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      reloadedAndSavedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderContainer);
+      Provider.Save (new[] { reloadedAndSavedOrderContainer });
+      Provider.Commit();
 
-        rdbmsProvider.Save (collection);
-        rdbmsProvider.Commit();
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
-      }
+      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.Order1);
+      Assert.AreEqual (10, reloadedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
     }
 
     [Test]
     public void TransactionalLoadDataContainersByRelatedIDAndSave ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        rdbmsProvider.BeginTransaction();
+      Provider.BeginTransaction();
 
-        var relationEndPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
-        var orderTicketContainers = rdbmsProvider.LoadDataContainersByRelatedID (
-            (RelationEndPointDefinition) relationEndPointDefinition,
-            null,
-            DomainObjectIDs.Order1).ToList();
+      var relationEndPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
+      var orderTicketContainers = Provider.LoadDataContainersByRelatedID (
+          (RelationEndPointDefinition) relationEndPointDefinition,
+          null,
+          DomainObjectIDs.Order1).ToList();
 
-        ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, orderTicketContainers[0]);
+      orderTicketContainers[0]["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"] = "C:\newFile.jpg";
 
-        orderTicketContainers[0]["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"] = "C:\newFile.jpg";
+      Provider.Save (orderTicketContainers);
+      Provider.Commit();
 
-        rdbmsProvider.Save (orderTicketContainers);
-        rdbmsProvider.Commit();
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderTicketContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderTicket1);
-        Assert.AreEqual ("C:\newFile.jpg", orderTicketContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"]);
-      }
+      DataContainer reloadedOrderTicketContainer = ReloadDataContainer (DomainObjectIDs.OrderTicket1);
+      Assert.AreEqual ("C:\newFile.jpg", reloadedOrderTicketContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"]);
     }
 
     [Test]
     public void TransactionalSaveAndSetTimestamp ()
     {
-      object oldTimestamp = null;
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        rdbmsProvider.BeginTransaction();
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+      Provider.BeginTransaction();
+      DataContainer savedOrderContainer = Provider.LoadDataContainer (DomainObjectIDs.Order1).LocatedObject;
 
-        oldTimestamp = orderContainer.Timestamp;
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      object oldTimestamp = savedOrderContainer.Timestamp;
+      savedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderContainer);
+      Provider.Save (new[] { savedOrderContainer });
+      Provider.UpdateTimestamps (new[] { savedOrderContainer });
+      Provider.Commit ();
 
-        rdbmsProvider.Save (collection);
-        rdbmsProvider.UpdateTimestamps (collection);
-        rdbmsProvider.Commit();
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        Assert.AreEqual (10, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
-        Assert.IsFalse (oldTimestamp.Equals (orderContainer.Timestamp));
-      }
+      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.Order1);
+      Assert.AreEqual (10, reloadedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
+      Assert.IsFalse (oldTimestamp.Equals (reloadedOrderContainer.Timestamp));
     }
 
     [Test]
@@ -650,42 +496,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         ExpectedMessage = "Commit cannot be called without calling BeginTransaction first.")]
     public void CommitWithoutBeginTransaction ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
+      orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderContainer);
-
-        rdbmsProvider.Save (collection);
-        rdbmsProvider.Commit();
-      }
+      Provider.Save (new[] { orderContainer });
+      Provider.Commit ();
     }
 
     [Test]
     public void SaveWithRollback ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        rdbmsProvider.BeginTransaction();
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
+      Provider.BeginTransaction ();
+      DataContainer savedOrderContainer = Provider.LoadDataContainer (DomainObjectIDs.Order1).LocatedObject;
 
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      savedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderContainer);
+      Provider.Save (new[] { savedOrderContainer });
+      Provider.UpdateTimestamps (new[] { savedOrderContainer });
+      Provider.Rollback ();
 
-        rdbmsProvider.Save (collection);
-        rdbmsProvider.UpdateTimestamps (collection);
-        rdbmsProvider.Rollback();
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        Assert.AreEqual (1, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
-      }
+      DataContainer reloadedOrderContainer = LoadDataContainer (DomainObjectIDs.Order1);
+      Assert.AreEqual (1, reloadedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
     }
 
     [Test]
@@ -693,32 +524,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         ExpectedMessage = "Rollback cannot be called without calling BeginTransaction first.")]
     public void RollbackWithoutBeginTransaction ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Order1);
-        orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
+      orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderContainer);
-
-        rdbmsProvider.Save (collection);
-        rdbmsProvider.Rollback();
-      }
+      Provider.Save (new[] { orderContainer });
+      Provider.Rollback ();
     }
 
     [Test]
     public void SaveForeignKeyInSameStorageProvider ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-        orderTicket.Order = Order.GetObject (DomainObjectIDs.Order2);
+      DataContainer orderTicketContainer = LoadDataContainer (DomainObjectIDs.OrderTicket1);
+      orderTicketContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"] = DomainObjectIDs.Order2;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (orderTicket.InternalDataContainer);
-
-        rdbmsProvider.Save (collection);
-      }
+      Provider.Save (new[] { orderTicketContainer });
 
       // expectation: no exception
     }
@@ -726,111 +545,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void SaveForeignKeyInOtherStorageProvider ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        Order order = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
-        order.Official = Official.GetObject (DomainObjectIDs.Official2);
+      DataContainer savedOrderContainer = LoadDataContainer (DomainObjectIDs.OrderWithoutOrderItem);
+      savedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"] = DomainObjectIDs.Official2;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (order.InternalDataContainer);
+      Provider.Save (new[] { savedOrderContainer });
 
-        rdbmsProvider.Save (collection);
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer orderContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.OrderWithoutOrderItem);
-        Assert.AreEqual (DomainObjectIDs.Official2, orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"]);
-      }
+      DataContainer reloadedOrderContainer = ReloadDataContainer (DomainObjectIDs.OrderWithoutOrderItem);
+      Assert.AreEqual (DomainObjectIDs.Official2, reloadedOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"]);
     }
 
     [Test]
     public void SaveForeignKeyWithClassIDColumnAndDerivedClass ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
-        ceo.Company = Partner.GetObject (DomainObjectIDs.Partner1);
+      DataContainer savedCeoContainer = LoadDataContainer (DomainObjectIDs.Ceo1);
+      savedCeoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"] = DomainObjectIDs.Partner1;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (ceo.InternalDataContainer);
+      Provider.Save (new[] { savedCeoContainer });
 
-        rdbmsProvider.Save (collection);
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer ceoContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Ceo1);
-        Assert.AreEqual (DomainObjectIDs.Partner1, ceoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"]);
-      }
+      DataContainer reloadedCeoContainer = ReloadDataContainer (DomainObjectIDs.Ceo1);
+      Assert.AreEqual (DomainObjectIDs.Partner1, reloadedCeoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"]);
     }
 
     [Test]
     public void SaveForeignKeyWithClassIDColumnAndBaseClass ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
-        ceo.Company = Supplier.GetObject (DomainObjectIDs.Supplier1);
+      DataContainer savedCeoContainer = LoadDataContainer (DomainObjectIDs.Ceo1);
+      savedCeoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"] = DomainObjectIDs.Supplier1;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (ceo.InternalDataContainer);
+      Provider.Save (new[] { savedCeoContainer });
 
-        rdbmsProvider.Save (collection);
-      }
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer ceoContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Ceo1);
-        Assert.AreEqual (DomainObjectIDs.Supplier1, ceoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"]);
-      }
+      DataContainer reloadedCeoContainer = ReloadDataContainer (DomainObjectIDs.Ceo1);
+      Assert.AreEqual (DomainObjectIDs.Supplier1, reloadedCeoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"]);
     }
 
     [Test]
     public void SaveNullForeignKey ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
-        computer.Employee = null;
+      DataContainer savedComputerContainer = LoadDataContainer (DomainObjectIDs.Computer1);
+      savedComputerContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"] = null;
+      Provider.Save (new[] { savedComputerContainer });
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (computer.InternalDataContainer);
-
-        rdbmsProvider.Save (collection);
-      }
-
-
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        DataContainer computerContainer = LoadDataContainer (rdbmsProvider, DomainObjectIDs.Computer1);
-        Assert.IsNull (computerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
-      }
+      DataContainer reloadedComputerContainer = ReloadDataContainer (DomainObjectIDs.Computer1);
+      Assert.IsNull (reloadedComputerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
     }
 
     [Test]
     public void SaveNullForeignKeyWithInheritance ()
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
-      {
-        Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
-        ceo.Company = null;
+      DataContainer savedCeoContainer = LoadDataContainer (DomainObjectIDs.Ceo1);
+      savedCeoContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"] = null;
 
-        DataContainerCollection collection = new DataContainerCollection();
-        collection.Add (ceo.InternalDataContainer);
-
-        rdbmsProvider.Save (collection);
-      }
+      Provider.Save (new[] { savedCeoContainer });
 
       using (SqlConnection connection = new SqlConnection (TestDomainConnectionString))
       {
-        connection.Open();
+        connection.Open ();
         using (SqlCommand command = new SqlCommand ("select * from Ceo where ID = @id", connection))
         {
           command.Parameters.AddWithValue ("@id", DomainObjectIDs.Ceo1.Value);
-          using (SqlDataReader reader = command.ExecuteReader())
+          using (SqlDataReader reader = command.ExecuteReader ())
           {
-            reader.Read();
+            reader.Read ();
             int columnOrdinal = reader.GetOrdinal ("CompanyIDClassID");
             Assert.IsTrue (reader.IsDBNull (columnOrdinal));
           }
@@ -838,27 +613,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       }
     }
 
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Cannot call BeginTransaction when a transaction is already in progress.")]
-    public void CallBeginTransactionTwice ()
+    private DataContainer LoadDataContainer (ObjectID id)
     {
-      using (var rdbmsProvider = CreaterdbmsProvider())
+      return Provider.LoadDataContainer (id).LocatedObject;
+    }
+
+    private DataContainer LoadDataContainerWithSeparateProvider (ObjectID id)
+    {
+      using (var separateProvider = CreateStorageProvider ())
       {
-        rdbmsProvider.BeginTransaction();
-        rdbmsProvider.BeginTransaction();
+        return separateProvider.LoadDataContainer (id).LocatedObject;
       }
     }
 
-    private RdbmsProvider CreaterdbmsProvider ()
+    private DataContainer ReloadDataContainer (ObjectID id)
     {
-      return new RdbmsProvider (
-          TestDomainStorageProviderDefinition,
-          StorageNameProvider,
-          SqlDialect.Instance,
-          NullPersistenceListener.Instance,
-          CommandFactory,
-          ()=>new SqlConnection());
+      Provider.Disconnect();
+
+      return LoadDataContainerWithSeparateProvider (id);
     }
   }
 }

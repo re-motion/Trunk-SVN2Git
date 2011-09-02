@@ -93,6 +93,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "Cannot call BeginTransaction when a transaction is already in progress.")]
+    public void BeginTransaction_Twice ()
+    {
+      _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+      _connectionStub.Stub (stub => stub.BeginTransaction (IsolationLevel.Serializable)).Return (_transactionStub);
+      _mockRepository.ReplayAll ();
+
+      _provider.BeginTransaction ();
+      _provider.BeginTransaction ();
+    }
+
+    [Test]
     public void UpdateTimestamps ()
     {
       var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
