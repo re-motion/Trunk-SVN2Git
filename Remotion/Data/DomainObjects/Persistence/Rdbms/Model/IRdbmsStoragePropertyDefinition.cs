@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -26,6 +27,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IRdbmsStoragePropertyDefinition : IStoragePropertyDefinition
   {
+    Type PropertyType { get; }
+
     IEnumerable<ColumnDefinition> GetColumns ();
     IEnumerable<ColumnDefinition> GetColumnsForComparison ();
 

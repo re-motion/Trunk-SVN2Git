@@ -43,6 +43,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _classDefinition = classDefinition;
     }
 
+    public Type PropertyType
+    {
+      get { return typeof (ObjectID); }
+    }
+
     public IRdbmsStoragePropertyDefinition ValueProperty
     {
       get { return _valueProperty; }
@@ -57,6 +62,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return _valueProperty.GetColumnsForComparison();
     }
+
 
     public IEnumerable<ColumnDefinition> GetColumns ()
     {

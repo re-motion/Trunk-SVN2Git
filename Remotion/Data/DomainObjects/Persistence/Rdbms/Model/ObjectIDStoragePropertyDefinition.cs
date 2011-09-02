@@ -43,6 +43,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _classIDProperty = classIDProperty;
     }
 
+    public Type PropertyType
+    {
+      get { return typeof (ObjectID); }
+    }
+
     public IRdbmsStoragePropertyDefinition ValueProperty
     {
       get { return _valueProperty; }

@@ -57,6 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _dayProperty = new CompoundStoragePropertyDefinition.NestedPropertyInfo (_property3Stub, o => ((DateTime) o).Day);
 
       _compoundStoragePropertyDefinition = new CompoundStoragePropertyDefinition (
+          typeof (DateTime),
           new[] { _yearProperty, _monthProperty, _dayProperty },
           objects => new DateTime ((int) objects[0], (int) objects[1], (int) objects[2]));
     }

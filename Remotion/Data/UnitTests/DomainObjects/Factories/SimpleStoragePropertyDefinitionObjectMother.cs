@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
@@ -23,22 +22,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
   public static class SimpleStoragePropertyDefinitionObjectMother
   {
     public static readonly SimpleStoragePropertyDefinition IDProperty = 
-        new SimpleStoragePropertyDefinition (ColumnDefinitionObjectMother.IDColumn);
+        new SimpleStoragePropertyDefinition (typeof (object), ColumnDefinitionObjectMother.IDColumn);
 
     public static readonly SimpleStoragePropertyDefinition ClassIDProperty =
-        new SimpleStoragePropertyDefinition (ColumnDefinitionObjectMother.ClassIDColumn);
+        new SimpleStoragePropertyDefinition (typeof (string), ColumnDefinitionObjectMother.ClassIDColumn);
 
     public static readonly SimpleStoragePropertyDefinition TimestampProperty =
-        new SimpleStoragePropertyDefinition (ColumnDefinitionObjectMother.TimestampColumn);
+        new SimpleStoragePropertyDefinition (typeof (object), ColumnDefinitionObjectMother.TimestampColumn);
 
     public static SimpleStoragePropertyDefinition CreateStorageProperty ()
     {
-      return new SimpleStoragePropertyDefinition (ColumnDefinitionObjectMother.CreateColumn());
+      return new SimpleStoragePropertyDefinition (typeof (object), ColumnDefinitionObjectMother.CreateColumn ());
     }
 
     public static SimpleStoragePropertyDefinition CreateStorageProperty (string columnName)
     {
-      return new SimpleStoragePropertyDefinition (ColumnDefinitionObjectMother.CreateColumn(columnName));
+      return new SimpleStoragePropertyDefinition (typeof (object), ColumnDefinitionObjectMother.CreateColumn (columnName));
     }
   }
 }

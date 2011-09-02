@@ -37,6 +37,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _serializedIDProperty = serializedIDProperty;
     }
 
+    public Type PropertyType
+    {
+      get { return typeof (ObjectID); }
+    }
+
     public IRdbmsStoragePropertyDefinition SerializedIDProperty
     {
       get { return _serializedIDProperty; }

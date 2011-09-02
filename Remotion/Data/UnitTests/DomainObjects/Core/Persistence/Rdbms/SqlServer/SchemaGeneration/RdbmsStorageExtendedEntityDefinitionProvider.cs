@@ -76,6 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var storageProperty1 =
           new SimpleStoragePropertyDefinition (
+              typeof (Guid),
               new ColumnDefinition (
                   "ID",
                   typeof (Guid),
@@ -84,6 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                   true));
       var storageProperty2 =
           new SimpleStoragePropertyDefinition (
+              typeof (string),
               new ColumnDefinition (
                   "FirstName",
                   typeof (string),
@@ -92,6 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                   false));
       var storageProperty3 =
           new SimpleStoragePropertyDefinition (
+              typeof (string),
               new ColumnDefinition (
                   "LastName",
                   typeof (string),
@@ -100,6 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                   false));
       var storageProperty4 =
           new SimpleStoragePropertyDefinition (
+              typeof (string),
               new ColumnDefinition (
                   "XmlColumn1",
                   typeof (string),
@@ -202,8 +206,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false,
           false);
 
-      var property1 = new SimpleStoragePropertyDefinition (column1);
-      var property2 = new SimpleStoragePropertyDefinition (column2);
+      var property1 = new SimpleStoragePropertyDefinition (typeof (Guid), column1);
+      var property2 = new SimpleStoragePropertyDefinition (typeof (string), column2);
 
       var nonClusteredUniqueIndex = new SqlIndexDefinition (
           "IDX_ClusteredUniqueIndex", new[] { new SqlIndexedColumnDefinition (column2) }, null, true, true, true, false);
@@ -245,9 +249,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false);
 
       var objectIDProperty = new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (idColumn),
-          new SimpleStoragePropertyDefinition (classIDColumn));
-      var timestampProperty = new SimpleStoragePropertyDefinition (timestampColumn);
+          new SimpleStoragePropertyDefinition (typeof (object), idColumn),
+          new SimpleStoragePropertyDefinition (typeof (string), classIDColumn));
+      var timestampProperty = new SimpleStoragePropertyDefinition (typeof (object), timestampColumn);
 
       return new TableDefinition (
           storageProviderDefinition,

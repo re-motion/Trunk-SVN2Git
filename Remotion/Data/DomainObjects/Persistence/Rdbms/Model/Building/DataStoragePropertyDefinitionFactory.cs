@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -77,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       }
       catch (NotSupportedException ex)
       {
-        return new UnsupportedStoragePropertyDefinition (ex.Message);
+        return new UnsupportedStoragePropertyDefinition (propertyDefinition.PropertyType, ex.Message);
       }
 
       var columnDefinition = new ColumnDefinition (
@@ -87,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
           false);
         
-      return new SimpleStoragePropertyDefinition (columnDefinition);
+      return new SimpleStoragePropertyDefinition (propertyDefinition.PropertyType, columnDefinition);
     }
 
     protected virtual IRdbmsStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
@@ -125,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID(),
           true,
           false);
-      return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (columnDefinition));
+      return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (typeof (ObjectID), columnDefinition));
     }
 
     private IRdbmsStoragePropertyDefinition CreateSameProviderRelationStoragePropertyDefinition (
@@ -145,7 +146,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       {
         // For ClassDefinitions without inheritance hierarchy, we don't include a ClassID relation column - the ClassID is known anyway
         return new ObjectIDWithoutClassIDStoragePropertyDefinition (
-            new SimpleStoragePropertyDefinition (valueColumnDefinition), 
+            new SimpleStoragePropertyDefinition (typeof (object), valueColumnDefinition),
             relatedClassDefinition);
       }
       
@@ -156,8 +157,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           true,
           false);
       return new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (valueColumnDefinition), 
-          new SimpleStoragePropertyDefinition (classIDColumnDefinition));
+          new SimpleStoragePropertyDefinition (typeof (object), valueColumnDefinition), 
+          new SimpleStoragePropertyDefinition (typeof (string), classIDColumnDefinition));
     }
   }
 }

@@ -323,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       return CreateSortedPropertySpecification (
           classDefinition,
           typeof (Order).GetProperty ("OrderNumber"),
-          new SimpleStoragePropertyDefinition (sortedColumn),
+          new SimpleStoragePropertyDefinition (typeof (int), sortedColumn),
           sortOrder);
     }
 
@@ -337,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           classDefinition,
           typeof (Order).GetProperty ("OrderNumber"),
           new ObjectIDStoragePropertyDefinition (
-              new SimpleStoragePropertyDefinition (sortedColumn1), new SimpleStoragePropertyDefinition (sortedColumn2)),
+              new SimpleStoragePropertyDefinition (typeof (int), sortedColumn1), new SimpleStoragePropertyDefinition (typeof (int), sortedColumn2)),
           sortOrder);
     }
 

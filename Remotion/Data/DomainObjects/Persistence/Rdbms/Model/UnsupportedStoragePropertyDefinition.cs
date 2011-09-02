@@ -24,17 +24,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   public class UnsupportedStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
+    private readonly Type _propertyType;
     private readonly string _message;
 
-    public UnsupportedStoragePropertyDefinition (string message)
+    public UnsupportedStoragePropertyDefinition (Type propertyType, string message)
     {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
       ArgumentUtility.CheckNotNullOrEmpty ("message", message);
+
+      _propertyType = propertyType;
       _message = message;
     }
 
     public string Message
     {
       get { return _message; }
+    }
+
+    public Type PropertyType
+    {
+      get { return _propertyType; }
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()

@@ -55,14 +55,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private readonly NestedPropertyInfo[] _properties;
     private readonly Func<object[], object> _valueCombinator;
+    private readonly Type _propertyType;
 
-    public CompoundStoragePropertyDefinition (IEnumerable<NestedPropertyInfo> properties, Func<object[], object> valueCombinator)
+    public CompoundStoragePropertyDefinition (Type propertyType, IEnumerable<NestedPropertyInfo> properties, Func<object[], object> valueCombinator)
     {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
       ArgumentUtility.CheckNotNull ("properties", properties);
       ArgumentUtility.CheckNotNull ("valueCombinator", valueCombinator);
 
-      _properties = properties.ToArray();
+      _propertyType = propertyType;
+      _properties = properties.ToArray ();
       _valueCombinator = valueCombinator;
+    }
+
+    public Type PropertyType
+    {
+      get { return _propertyType; }
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()

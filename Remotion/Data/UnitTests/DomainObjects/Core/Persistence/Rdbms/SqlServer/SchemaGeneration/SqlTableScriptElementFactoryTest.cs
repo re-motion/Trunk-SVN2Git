@@ -42,19 +42,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "Column1", typeof (string), StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), false, false);
       var column2 = new ColumnDefinition (
           "Column2", typeof (bool), StorageTypeInformationObjectMother.CreateBitStorageTypeInformation(), true, false);
-      var property1 = new SimpleStoragePropertyDefinition (column1);
-      var property2 = new SimpleStoragePropertyDefinition (column2);
+      var property1 = new SimpleStoragePropertyDefinition (typeof (string), column1);
+      var property2 = new SimpleStoragePropertyDefinition (typeof (bool), column2);
 
       var idColumn = new ColumnDefinition (
           "ID", typeof (Guid), StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation(), false, true);
       var classIDColumn = new ColumnDefinition (
           "ClassID", typeof (string), StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), true, false);
       var objectIDProperty = new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (idColumn), 
-          new SimpleStoragePropertyDefinition (classIDColumn));
+          new SimpleStoragePropertyDefinition (typeof (object), idColumn), 
+          new SimpleStoragePropertyDefinition (typeof (string), classIDColumn));
       var timestampColumn = new ColumnDefinition (
           "Timestamp", typeof (DateTime), StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation(), true, false);
-      var timestampProperty = new SimpleStoragePropertyDefinition (timestampColumn);
+      var timestampProperty = new SimpleStoragePropertyDefinition (typeof (object), timestampColumn);
 
       _tableDefinitionWithoutPrimaryKeyConstraint = TableDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,

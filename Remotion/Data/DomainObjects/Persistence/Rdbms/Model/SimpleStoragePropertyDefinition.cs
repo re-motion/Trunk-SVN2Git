@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -28,18 +29,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class SimpleStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
   {
+    private readonly Type _propertyType;
     private readonly ColumnDefinition _columnDefinition;
 
-    public SimpleStoragePropertyDefinition (ColumnDefinition columnDefinition)
+    public SimpleStoragePropertyDefinition (Type propertyType, ColumnDefinition columnDefinition)
     {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
       _columnDefinition = columnDefinition;
+      _propertyType = propertyType;
     }
 
     public ColumnDefinition ColumnDefinition
     {
       get { return _columnDefinition; }
+    }
+
+    public Type PropertyType
+    {
+      get { return _propertyType; }
     }
 
     public IEnumerable<ColumnDefinition> GetColumns ()

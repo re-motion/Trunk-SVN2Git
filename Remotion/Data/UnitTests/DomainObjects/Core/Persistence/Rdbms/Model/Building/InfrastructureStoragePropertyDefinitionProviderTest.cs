@@ -73,7 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition ();
 
       Assert.That (result.ValueProperty, Is.TypeOf<SimpleStoragePropertyDefinition> ());
-      var idColumn = StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (result);
+      Assert.That (result.ValueProperty.PropertyType, Is.SameAs (typeof (object)));
+      var idColumn = StoragePropertyDefinitionTestHelper.GetSingleColumn (result.ValueProperty);
       Assert.That (idColumn.Name, Is.EqualTo ("ID"));
       Assert.That (idColumn.IsNullable, Is.False);
       Assert.That (idColumn.IsPartOfPrimaryKey, Is.True);
@@ -81,7 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (idColumn.StorageTypeInfo, Is.SameAs (_idStorageTypeInformation));
 
       Assert.That (result.ClassIDProperty, Is.TypeOf<SimpleStoragePropertyDefinition> ());
-      var classIDColumn = StoragePropertyDefinitionTestHelper.GetClassIDColumnDefinition (result);
+      Assert.That (result.ClassIDProperty.PropertyType, Is.SameAs (typeof (string)));
+      var classIDColumn = StoragePropertyDefinitionTestHelper.GetSingleColumn (result.ClassIDProperty);
       Assert.That (classIDColumn.Name, Is.EqualTo ("ClassID"));
       Assert.That (classIDColumn.IsNullable, Is.False);
       Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
@@ -102,7 +104,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var result = _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition ();
 
-      Assert.That (result, Is.TypeOf<SimpleStoragePropertyDefinition>());
+      Assert.That (result, Is.TypeOf<SimpleStoragePropertyDefinition> ());
+      Assert.That (result.PropertyType, Is.SameAs (typeof (object)));
       var column = ((SimpleStoragePropertyDefinition) result).ColumnDefinition;
       Assert.That (column.Name, Is.EqualTo ("Timestamp"));
       Assert.That (column.IsNullable, Is.False);

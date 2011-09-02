@@ -75,6 +75,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void PropertyType ()
+    {
+      Assert.That (_objectIDStoragePropertyDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
+    }
+
+    [Test]
     public void GetColumnsForComparison ()
     {
       _valuePropertyStub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { _valueColumnDefinition });
