@@ -186,6 +186,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                 ServicePath,
                 typeof (ISearchAvailableObjectWebService).FullName));
       }
+
+      WebServiceUtility.CheckJsonService (compiledType, ((IBocAutoCompleteReferenceValue) this).ServiceMethod);
     }
 
     protected override string GetOptionsMenuTitle ()
