@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using System.Web.Script.Services;
 using System.Web.Services;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Utilities
@@ -27,6 +28,12 @@ namespace Remotion.Web.Utilities
   /// </summary>
   public static class WebServiceUtility
   {
+    private static readonly ICache<Tuple<MemberInfo, Type>, Attribute> s_attributeCache =
+        CacheFactory.CreateWithLocking<Tuple<MemberInfo, Type>, Attribute>();
+
+    private static readonly ICache<Tuple<Type, string>, MethodInfo> s_methodInfoCache =
+        CacheFactory.CreateWithLocking<Tuple<Type, string>, MethodInfo>();
+
     /// <summary>
     /// Checks that <paramref name="type"/> and <paramref name="method"/> declare a valid web service.
     /// </summary>
@@ -101,7 +108,10 @@ namespace Remotion.Web.Utilities
 
     private static MethodInfo GetCheckedMethodInfo (Type type, string method)
     {
-      var methodInfo = type.GetMethod (method, BindingFlags.Instance | BindingFlags.Public);
+      var methodInfo = s_methodInfoCache.GetOrCreateValue (
+          Tuple.Create (type, method),
+          key => key.Item1.GetMethod (key.Item2, BindingFlags.Instance | BindingFlags.Public));
+
       if (methodInfo == null)
       {
         throw CreateArgumentException (
@@ -115,7 +125,7 @@ namespace Remotion.Web.Utilities
     private static T GetCheckedAttribute<T> (Type type)
         where T: Attribute
     {
-      var attribute = AttributeUtility.GetCustomAttribute<T> (type, true);
+      var attribute = GetAttributeFromCache<T> (type);
       if (attribute == null)
       {
         throw CreateArgumentException (
@@ -123,14 +133,13 @@ namespace Remotion.Web.Utilities
             type.FullName,
             typeof (T).FullName);
       }
-
       return attribute;
     }
 
     private static T GetCheckedAttribute<T> (Type type, MethodInfo methodInfo)
         where T: Attribute
     {
-      var attribute = AttributeUtility.GetCustomAttribute<T> (methodInfo, true);
+      var attribute = GetAttributeFromCache<T> (methodInfo);
       if (attribute == null)
       {
         throw CreateArgumentException (
@@ -140,6 +149,14 @@ namespace Remotion.Web.Utilities
             typeof (T).FullName);
       }
       return attribute;
+    }
+
+    private static T GetAttributeFromCache<T> (MemberInfo memberInfo)
+        where T: Attribute
+    {
+      return (T) s_attributeCache.GetOrCreateValue (
+          Tuple.Create (memberInfo, typeof (T)),
+          key => AttributeUtility.GetCustomAttribute<T> (key.Item1, true));
     }
 
     private static ArgumentException CreateArgumentException (string message, params object[] args)
