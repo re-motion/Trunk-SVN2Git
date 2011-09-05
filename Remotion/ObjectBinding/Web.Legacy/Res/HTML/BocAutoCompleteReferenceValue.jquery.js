@@ -180,7 +180,7 @@
 
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
-                    } else if (wasVisible && $input.val() == '') /* re-motion: allow deletion of current value by entering the empty string */ {
+                    } else if ($input.val() == '') /* re-motion: allow deletion of current value by entering the empty string */ {
                         closeDropDownListAndSetValue('');
                         $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
                     } else /* invalid input */ {
@@ -246,9 +246,7 @@
             hasFocus++;
         }).blur(function() {
             hasFocus = 0;
-            if (!select.visible()) {
-                $input.val(previousValidValue);
-            } else if (!config.mouseDownOnSelect) {
+            if (select.visible() && !config.mouseDownOnSelect) {
                 
                         var isLastKeyPressedNavigationKey;
                         switch (lastKeyPressCode) {
