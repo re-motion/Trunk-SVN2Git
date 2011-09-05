@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreatePersistenceModelLoader ()
     {
-      var result = _sqlProviderFactory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder, _rdbmsProviderDefinition);
+      var result = _sqlProviderFactory.CreatePersistenceModelLoader (_rdbmsProviderDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result, Is.TypeOf (typeof (RdbmsPersistenceModelLoader)));
       Assert.That (((RdbmsPersistenceModelLoader) result).DataStoragePropertyDefinitionFactory, Is.TypeOf (typeof (DataStoragePropertyDefinitionFactory)));

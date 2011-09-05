@@ -80,7 +80,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new ColumnDefinition (
                   "ID",
                   new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, false, typeof (Guid), new GuidConverter()),
-                  false,
                   true));
       var storageProperty2 =
           new SimpleStoragePropertyDefinition (
@@ -88,7 +87,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new ColumnDefinition (
                   "FirstName",
                   new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, false, typeof (string), new StringConverter ()),
-                  false,
                   false));
       var storageProperty3 =
           new SimpleStoragePropertyDefinition (
@@ -96,7 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new ColumnDefinition (
                   "LastName",
                   new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, false, typeof (string), new StringConverter ()),
-                  false,
                   false));
       var storageProperty4 =
           new SimpleStoragePropertyDefinition (
@@ -104,7 +101,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new ColumnDefinition (
                   "XmlColumn1",
                   new StorageTypeInformation (typeof (string), "xml", DbType.Xml, false, typeof (string), new StringConverter ()),
-                  false,
                   false));
 
       var tableName = new EntityNameDefinition (null, "IndexTestTable");
@@ -192,12 +188,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var column1 = new ColumnDefinition (
           "ID",
           new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, false, typeof (Guid), new GuidConverter ()),
-          false,
           true);
       var column2 = new ColumnDefinition (
           "Name",
           new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, false, typeof (string), new StringConverter ()),
-          false,
           false);
 
       var property1 = new SimpleStoragePropertyDefinition (typeof (Guid), column1);
@@ -226,17 +220,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var idColumn = new ColumnDefinition (
           "ObjectID",
           new StorageTypeInformation (typeof (Int32), "integer", DbType.Int32, false, typeof (int), new Int32Converter ()),
-          false,
           true);
       var classIDColumn = new ColumnDefinition (
           "ClassID",
           new StorageTypeInformation (typeof (string), "varchar", DbType.String, false, typeof (string), new StringConverter ()),
-          false,
           false);
       var timestampColumn = new ColumnDefinition (
           "Timestamp",
           new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, true, typeof (DateTime), new DateTimeConverter()),
-          true,
           false);
 
       var objectIDProperty = new ObjectIDStoragePropertyDefinition (

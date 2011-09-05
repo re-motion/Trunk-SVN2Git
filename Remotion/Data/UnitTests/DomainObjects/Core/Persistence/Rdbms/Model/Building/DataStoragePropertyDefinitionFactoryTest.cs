@@ -82,6 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _classBelowBelowDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
       _dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
+          TestDomainStorageProviderDefinition,
           _storageTypeInformationProviderStrictMock,
           _storageNameProviderStub,
           _storageProviderDefinitionFinder);

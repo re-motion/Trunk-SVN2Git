@@ -20,9 +20,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public static class ObjectIDStoragePropertyDefinitionObjectMother
   {
-    public static readonly ObjectIDStoragePropertyDefinition ObjectIDProperty =
-        new ObjectIDStoragePropertyDefinition (
-            SimpleStoragePropertyDefinitionObjectMother.IDProperty, 
-            SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
+    public static readonly ObjectIDStoragePropertyDefinition ObjectIDProperty = new ObjectIDStoragePropertyDefinition (
+        SimpleStoragePropertyDefinitionObjectMother.IDProperty, 
+        SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
+
+    public static ObjectIDStoragePropertyDefinition Create (string columnName)
+    {
+      return new ObjectIDStoragePropertyDefinition (
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty (columnName),
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty (columnName + "ClassID"));
+    }
   }
 }

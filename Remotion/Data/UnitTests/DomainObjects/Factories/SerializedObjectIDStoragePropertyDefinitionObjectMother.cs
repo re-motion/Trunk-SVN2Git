@@ -14,20 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
+namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
-  /// <summary>
-  /// Represents an RDBMS storage property for <see cref="ObjectID"/> values.
-  /// </summary>
-  public interface IObjectIDStoragePropertyDefinition : IRdbmsStoragePropertyDefinition
+  public static class SerializedObjectIDStoragePropertyDefinitionObjectMother
   {
-    bool CanCreateForeignKeyConstraint { get; }
-    ForeignKeyConstraintDefinition CreateForeignKeyConstraint (
-        Func<IEnumerable<ColumnDefinition>, string> nameProvider,
-        EntityNameDefinition referencedTableName,
-        ObjectIDStoragePropertyDefinition referencedObjectIDProperty);
+    public static SerializedObjectIDStoragePropertyDefinition Create (string columnName)
+    {
+      return new SerializedObjectIDStoragePropertyDefinition (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty (columnName));
+    }
   }
 }

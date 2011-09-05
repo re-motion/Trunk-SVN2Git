@@ -75,7 +75,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.ValueProperty.PropertyType, Is.SameAs (typeof (object)));
       var idColumn = StoragePropertyDefinitionTestHelper.GetSingleColumn (result.ValueProperty);
       Assert.That (idColumn.Name, Is.EqualTo ("ID"));
-      Assert.That (idColumn.IsNullable, Is.False);
       Assert.That (idColumn.IsPartOfPrimaryKey, Is.True);
       Assert.That (idColumn.StorageTypeInfo, Is.SameAs (_idStorageTypeInformation));
 
@@ -83,7 +82,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.ClassIDProperty.PropertyType, Is.SameAs (typeof (string)));
       var classIDColumn = StoragePropertyDefinitionTestHelper.GetSingleColumn (result.ClassIDProperty);
       Assert.That (classIDColumn.Name, Is.EqualTo ("ClassID"));
-      Assert.That (classIDColumn.IsNullable, Is.False);
       Assert.That (classIDColumn.StorageTypeInfo, Is.SameAs (_classIDStorageTypeInformation));
       Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
     }
@@ -105,7 +103,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       Assert.That (result.PropertyType, Is.SameAs (typeof (object)));
       var column = ((SimpleStoragePropertyDefinition) result).ColumnDefinition;
       Assert.That (column.Name, Is.EqualTo ("Timestamp"));
-      Assert.That (column.IsNullable, Is.False);
       Assert.That (column.StorageTypeInfo, Is.SameAs (_timestampStorageTypeInformation));
       Assert.That (column.IsPartOfPrimaryKey, Is.False);
     }

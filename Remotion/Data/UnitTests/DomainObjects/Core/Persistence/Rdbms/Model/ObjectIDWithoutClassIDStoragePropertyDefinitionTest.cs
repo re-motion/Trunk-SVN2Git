@@ -73,6 +73,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void CanCreateForeignKeyConstraint ()
+    {
+      Assert.That (_objectIDWithoutClassIDStorageDefinition.CanCreateForeignKeyConstraint, Is.True);
+    }
+
+    [Test]
     public void GetColumnsForComparison ()
     {
       _valuePropertyStub.Stub (stub => stub.GetColumnsForComparison ()).Return (new[] { _valueColumnDefinition });

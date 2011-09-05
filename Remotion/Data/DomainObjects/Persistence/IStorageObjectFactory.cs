@@ -31,8 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   {
     StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition);
 
-    IPersistenceModelLoader CreatePersistenceModelLoader (
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition);
+    IPersistenceModelLoader CreatePersistenceModelLoader (StorageProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder);
 
     IQueryExecutor CreateLinqQueryExecutor (
         ClassDefinition startingClassDefinition,

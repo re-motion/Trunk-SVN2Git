@@ -39,8 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       throw new NotImplementedException();
     }
 
-    public IPersistenceModelLoader CreatePersistenceModelLoader (
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition)
+    public IPersistenceModelLoader CreatePersistenceModelLoader (StorageProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       throw new NotImplementedException();
     }

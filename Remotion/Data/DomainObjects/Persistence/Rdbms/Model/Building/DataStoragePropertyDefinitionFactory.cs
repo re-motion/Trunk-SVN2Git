@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -28,19 +29,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class DataStoragePropertyDefinitionFactory : IDataStoragePropertyDefinitionFactory
   {
+    private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
     private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
     private readonly IStorageNameProvider _storageNameProvider;
 
     public DataStoragePropertyDefinitionFactory (
+        StorageProviderDefinition storageProviderDefinition,
         IStorageTypeInformationProvider storageTypeInformationProvider,
         IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
+      _storageProviderDefinition = storageProviderDefinition;
       _storageTypeInformationProvider = storageTypeInformationProvider;
       _storageNameProvider = storageNameProvider;
       _providerDefinitionFinder = providerDefinitionFinder;
@@ -80,12 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         return new UnsupportedStoragePropertyDefinition (propertyDefinition.PropertyType, ex.Message);
       }
 
-      var columnDefinition = new ColumnDefinition (
-          _storageNameProvider.GetColumnName (propertyDefinition),
-          storageType,
-          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
-          false);
-        
+      var columnDefinition = new ColumnDefinition (_storageNameProvider.GetColumnName (propertyDefinition), storageType, false);
       return new SimpleStoragePropertyDefinition (propertyDefinition.PropertyType, columnDefinition);
     }
 
@@ -98,12 +98,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNullOrEmpty ("relationColumnName", relationColumnName);
       ArgumentUtility.CheckNotNullOrEmpty ("relationClassIDColumnName", relationClassIDColumnName);
 
-      // TODO 4237: Inject via ctor.
-      var leftProvider = _providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition.StorageGroupType, null);
+      var relatedStorageProviderDefinition = _providerDefinitionFinder.GetStorageProviderDefinition (relatedClassDefinition.StorageGroupType, null);
 
-      var rightProvider = _providerDefinitionFinder.GetStorageProviderDefinition (relatedClassDefinition.StorageGroupType, null);
-
-      if (leftProvider != rightProvider)
+      if (_storageProviderDefinition != relatedStorageProviderDefinition)
         return CreateCrossProviderRelationStoragePropertyDefinition (relationColumnName);
       else
         return CreateSameProviderRelationStoragePropertyDefinition (relatedClassDefinition, relationColumnName, relationClassIDColumnName);
@@ -118,11 +115,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     private IRdbmsStoragePropertyDefinition CreateCrossProviderRelationStoragePropertyDefinition (string relationColumnName)
     {
-      var columnDefinition = new ColumnDefinition (
-          relationColumnName,
-          _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID (true),
-          true,
-          false);
+      var storageTypeInfo = _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID (true);
+      var columnDefinition = new ColumnDefinition (relationColumnName, storageTypeInfo, false);
       return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (typeof (ObjectID), columnDefinition));
     }
 
@@ -131,12 +125,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         string relationColumnName, 
         string relationClassIDColumnName)
     {
-      var valueColumnDefinition = new ColumnDefinition (
-          relationColumnName,
-        // Relation properties are always nullable within the same storage provider
-          _storageTypeInformationProvider.GetStorageTypeForID (true),
-          true,
-          false);
+      // Relation properties are always nullable within the same storage provider
+      var storageTypeInfo = _storageTypeInformationProvider.GetStorageTypeForID (true);
+      var valueColumnDefinition = new ColumnDefinition (relationColumnName, storageTypeInfo, false);
 
       if (!relatedClassDefinition.IsPartOfInheritanceHierarchy)
       {
@@ -145,12 +136,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
             new SimpleStoragePropertyDefinition (typeof (object), valueColumnDefinition),
             relatedClassDefinition);
       }
-      
-      var classIDColumnDefinition = new ColumnDefinition (
-          relationClassIDColumnName,
-          _storageTypeInformationProvider.GetStorageTypeForClassID (true),
-            true,
-          false);
+
+      var storageTypeForClassID = _storageTypeInformationProvider.GetStorageTypeForClassID (true);
+      var classIDColumnDefinition = new ColumnDefinition (relationClassIDColumnName, storageTypeForClassID, false);
       return new ObjectIDStoragePropertyDefinition (
           new SimpleStoragePropertyDefinition (typeof (object), valueColumnDefinition), 
           new SimpleStoragePropertyDefinition (typeof (string), classIDColumnDefinition));

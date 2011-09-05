@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
@@ -33,23 +32,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     private readonly IRdbmsPersistenceModelProvider _persistenceModelProvider;
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
-    private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     public ForeignKeyConstraintDefinitionFactory (
         IStorageNameProvider storageNameProvider,
         IRdbmsPersistenceModelProvider persistenceModelProvider,
-        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("persistenceModelProvider", persistenceModelProvider);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       _storageNameProvider = storageNameProvider;
       _persistenceModelProvider = persistenceModelProvider;
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
-      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
     }
 
     public IEnumerable<ForeignKeyConstraintDefinition> CreateForeignKeyConstraints (ClassDefinition classDefinition)
@@ -62,24 +57,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
               from endPointDefinition in classDefinitionInHierarchy.MyRelationEndPointDefinitions
               where !endPointDefinition.IsVirtual
               let referencedClassDefinition = endPointDefinition.ClassDefinition.GetMandatoryOppositeClassDefinition (endPointDefinition.PropertyName)
-              where GetStorageProviderDefinition (referencedClassDefinition) == GetStorageProviderDefinition (endPointDefinition.ClassDefinition)
               let propertyDefinition = ((RelationEndPointDefinition) endPointDefinition).PropertyDefinition
               where propertyDefinition.StorageClass == StorageClass.Persistent
+              let referencingStorageProperty =
+                  (IObjectIDStoragePropertyDefinition) _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition)
+              where referencingStorageProperty.CanCreateForeignKeyConstraint
               let referencedTableName = FindTableName (referencedClassDefinition)
               where referencedTableName != null
               let referencedStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition()
-              let referencingStorageProperty =
-                  (IObjectIDStoragePropertyDefinition) _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition)
               select referencingStorageProperty.CreateForeignKeyConstraint (
                   referencingColumns => _storageNameProvider.GetForeignKeyConstraintName (classDefinition, referencingColumns),
                   referencedTableName,
                   referencedStoragePropertyDefinition)
              ).ToList();
-    }
-
-    private StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition oppositeClassDefinition)
-    {
-      return _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClassDefinition.StorageGroupType, null);
     }
 
     private EntityNameDefinition FindTableName (ClassDefinition classDefinition)

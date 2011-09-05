@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _storageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation();
 
-      _columnDefinition = new ColumnDefinition ("Name", _storageTypeInformation, true, true);
+      _columnDefinition = new ColumnDefinition ("Name", _storageTypeInformation, true);
     }
 
     [Test]
@@ -41,7 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
       Assert.That (_columnDefinition.StorageTypeInfo, Is.SameAs (_storageTypeInformation));
-      Assert.That (_columnDefinition.IsNullable, Is.True);
       Assert.That (_columnDefinition.IsPartOfPrimaryKey, Is.True);
     }
 

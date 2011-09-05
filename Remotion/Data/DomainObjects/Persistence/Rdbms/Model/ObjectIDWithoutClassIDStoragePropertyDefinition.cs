@@ -58,6 +58,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _classDefinition; }
     }
 
+    public bool CanCreateForeignKeyConstraint
+    {
+      get { return true; }
+    }
+
     public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
       return _valueProperty.GetColumnsForComparison();

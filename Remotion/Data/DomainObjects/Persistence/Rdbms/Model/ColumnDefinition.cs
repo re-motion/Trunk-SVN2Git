@@ -25,18 +25,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class ColumnDefinition
   {
     private readonly string _name;
-    private readonly bool _isNullable;
     private readonly bool _isPartOfPrimaryKey;
     private readonly IStorageTypeInformation _storageTypeInfo;
 
-    public ColumnDefinition (string name, IStorageTypeInformation storageTypeInfo, bool isNullable, bool isPartOfPrimaryKey)
+    public ColumnDefinition (string name, IStorageTypeInformation storageTypeInfo, bool isPartOfPrimaryKey)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("storageTypeInfo", storageTypeInfo);
       
       _name = name;
       _storageTypeInfo = storageTypeInfo;
-      _isNullable = isNullable;
       _isPartOfPrimaryKey = isPartOfPrimaryKey;
     }
 
@@ -48,11 +46,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IStorageTypeInformation StorageTypeInfo
     {
       get { return _storageTypeInfo; }
-    }
-
-    public bool IsNullable
-    {
-      get { return _isNullable; }
     }
 
     public bool IsPartOfPrimaryKey

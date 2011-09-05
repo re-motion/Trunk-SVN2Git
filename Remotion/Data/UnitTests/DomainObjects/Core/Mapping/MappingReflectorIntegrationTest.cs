@@ -45,15 +45,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actualClassDefinitions, Is.Not.Null);
 
       var inheritanceRootClasses = actualClassDefinitions.Values.Select (cd => cd.GetInheritanceRootClass()).Distinct();
-      var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+
+      // Pretend that all classes have the storage provider definition used by FakeMappingConfiguration
+      var storageProviderDefinition = FakeMappingConfiguration.Current.StorageProviderDefinition;
+      var storageProviderDefinitionFinderStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder> ();
+      storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (Arg<Type>.Is.Anything, Arg<string>.Is.Anything))
+          .Return (storageProviderDefinition);
+
       foreach (ClassDefinition classDefinition in inheritanceRootClasses)
       {
-        DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Factory.CreatePersistenceModelLoader (
-            storageProviderDefinitionFinder, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition).
-            ApplyPersistenceModelToHierarchy (classDefinition);
+        var persistenceModelLoader = storageProviderDefinition.Factory.CreatePersistenceModelLoader (storageProviderDefinition, storageProviderDefinitionFinderStub);
+        persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
       }
 
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
+      var classDefinitionChecker = new ClassDefinitionChecker();
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.TypeDefinitions.Values, actualClassDefinitions, false, true);
       classDefinitionChecker.CheckPersistenceModel (FakeMappingConfiguration.Current.TypeDefinitions.Values, actualClassDefinitions);
       Assert.That (actualClassDefinitions.ContainsKey (typeof (TestDomainBase)), Is.False);

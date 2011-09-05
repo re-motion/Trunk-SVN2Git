@@ -49,7 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     public IPersistenceModelLoader CreatePersistenceModelLoader (
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition)
+        StorageProviderDefinition storageProviderDefinition, 
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
@@ -58,11 +59,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
           new SqlStorageTypeInformationProvider(), storageNameProvider);
       var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
-          new SqlStorageTypeInformationProvider(), storageNameProvider, storageProviderDefinitionFinder);
+          storageProviderDefinition, new SqlStorageTypeInformationProvider(), storageNameProvider, storageProviderDefinitionFinder);
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
       var storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver (rdbmsPersistenceModelProvider);
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          storageNameProvider, rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
+          storageNameProvider,
+          rdbmsPersistenceModelProvider,
+          infrastructureStoragePropertyDefinitionProvider);
       var entityDefinitionFactory = new RdbmsStorageEntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionProvider,
           foreignKeyConstraintDefinitionFactory,

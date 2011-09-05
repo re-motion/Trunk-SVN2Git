@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 
@@ -46,23 +48,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     // member fields
 
+    private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly ReadOnlyDictionary<Type, ClassDefinition> _typeDefinitions;
     private readonly ReadOnlyDictionary<string, RelationDefinition> _relationDefinitions;
-    private readonly UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     // construction and disposing
 
     private FakeMappingConfiguration ()
     {
-      _typeDefinitions = new ReadOnlyDictionary<Type, ClassDefinition> (CreateClassDefinitions());
-      _relationDefinitions = new ReadOnlyDictionary<string, RelationDefinition> (CreateRelationDefinitions());
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
+      _typeDefinitions = new ReadOnlyDictionary<Type, ClassDefinition> (CreateClassDefinitions ());
+      _relationDefinitions = new ReadOnlyDictionary<string, RelationDefinition> (CreateRelationDefinitions());
 
       foreach (ClassDefinition classDefinition in _typeDefinitions.Values)
         classDefinition.SetReadOnly();
     }
 
     // methods and properties
+
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
+    }
 
     public ReadOnlyDictionary<Type, ClassDefinition> TypeDefinitions
     {

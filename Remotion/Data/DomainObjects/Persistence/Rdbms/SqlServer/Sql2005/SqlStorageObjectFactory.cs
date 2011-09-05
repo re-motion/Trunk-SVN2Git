@@ -84,9 +84,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
                   (Func<IDbConnection>) (() => new SqlConnection())));
     }
 
-    public virtual IPersistenceModelLoader CreatePersistenceModelLoader (
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder,
-        StorageProviderDefinition storageProviderDefinition)
+    public virtual IPersistenceModelLoader CreatePersistenceModelLoader (StorageProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
@@ -97,9 +95,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (
           storageTypeInformationProvider, storageNameProvider);
       var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (
-          storageTypeInformationProvider, storageNameProvider, storageProviderDefinitionFinder);
+          storageProviderDefinition, storageTypeInformationProvider, storageNameProvider, storageProviderDefinitionFinder);
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
-          storageNameProvider, infrastructureStoragePropertyDefinitionFactory, storageProviderDefinitionFinder);
+          storageNameProvider, 
+          infrastructureStoragePropertyDefinitionFactory);
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionFactory,
           foreignKeyConstraintDefintiionFactory,
@@ -201,29 +200,32 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     }
 
     protected virtual IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (
+        StorageProviderDefinition storageProviderDefinition,
         IStorageTypeInformationProvider storageTypeInformationProvider,
         IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
-      return new DataStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider, providerDefinitionFinder);
+      return new DataStoragePropertyDefinitionFactory (
+          storageProviderDefinition,
+          storageTypeInformationProvider,
+          storageNameProvider,
+          providerDefinitionFinder);
     }
 
     protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
         IStorageNameProvider storageNameProvider,
-        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       var persistenceModelProvider = CreateRdbmsPersistenceModelProvider();
-      return new ForeignKeyConstraintDefinitionFactory (
-          storageNameProvider, persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageProviderDefinitionFinder);
+      return new ForeignKeyConstraintDefinitionFactory (storageNameProvider, persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider);
     }
 
     protected virtual TableScriptBuilder CreateTableBuilder ()
