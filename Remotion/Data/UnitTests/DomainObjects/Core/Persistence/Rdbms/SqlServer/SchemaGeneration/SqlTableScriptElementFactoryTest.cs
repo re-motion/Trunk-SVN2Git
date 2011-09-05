@@ -38,17 +38,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlTableScriptElementFactory();
 
-      var column1 = new ColumnDefinition ("Column1", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), false, false);
-      var column2 = new ColumnDefinition ("Column2", StorageTypeInformationObjectMother.CreateBitStorageTypeInformation(), true, false);
+      var column1 = new ColumnDefinition ("Column1", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation (false), false, false);
+      var column2 = new ColumnDefinition ("Column2", StorageTypeInformationObjectMother.CreateBitStorageTypeInformation (true), true, false);
       var property1 = new SimpleStoragePropertyDefinition (typeof (string), column1);
       var property2 = new SimpleStoragePropertyDefinition (typeof (bool), column2);
 
-      var idColumn = new ColumnDefinition ("ID", StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation(), false, true);
-      var classIDColumn = new ColumnDefinition ("ClassID", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), true, false);
+      var idColumn = new ColumnDefinition ("ID", StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation (false), false, true);
+      var classIDColumn = new ColumnDefinition ("ClassID", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation (true), true, false);
       var objectIDProperty = new ObjectIDStoragePropertyDefinition (
           new SimpleStoragePropertyDefinition (typeof (object), idColumn), 
           new SimpleStoragePropertyDefinition (typeof (string), classIDColumn));
-      var timestampColumn = new ColumnDefinition ("Timestamp", StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation(), true, false);
+      var timestampColumn = new ColumnDefinition ("Timestamp", StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation (true), true, false);
       var timestampProperty = new SimpleStoragePropertyDefinition (typeof (object), timestampColumn);
 
       _tableDefinitionWithoutPrimaryKeyConstraint = TableDefinitionObjectMother.Create (

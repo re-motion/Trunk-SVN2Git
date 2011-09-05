@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _typeConverterStub = MockRepository.GenerateStub<TypeConverter>();
-      _storageTypeInformation = new StorageTypeInformation (typeof(bool), "test", DbType.Boolean, typeof (int), _typeConverterStub);
+      _storageTypeInformation = new StorageTypeInformation (typeof(bool), "test", DbType.Boolean, false, typeof (int), _typeConverterStub);
     }
 
     [Test]

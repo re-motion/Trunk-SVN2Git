@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -74,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       IStorageTypeInformation storageType;
       try
       {
-        storageType = _storageTypeInformationProvider.GetStorageType (propertyDefinition);
+        storageType = _storageTypeInformationProvider.GetStorageType (propertyDefinition, MustBeNullable (propertyDefinition));
       }
       catch (NotSupportedException ex)
       {
@@ -121,7 +120,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       var columnDefinition = new ColumnDefinition (
           relationColumnName,
-          _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID(),
+          _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID (true),
           true,
           false);
       return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (typeof (ObjectID), columnDefinition));
@@ -134,8 +133,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       var valueColumnDefinition = new ColumnDefinition (
           relationColumnName,
-          _storageTypeInformationProvider.GetStorageTypeForID(),
-          // Relation properties are always nullable within the same storage provider
+        // Relation properties are always nullable within the same storage provider
+          _storageTypeInformationProvider.GetStorageTypeForID (true),
           true,
           false);
 
@@ -149,8 +148,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       
       var classIDColumnDefinition = new ColumnDefinition (
           relationClassIDColumnName,
-          _storageTypeInformationProvider.GetStorageTypeForClassID(),
-          true,
+          _storageTypeInformationProvider.GetStorageTypeForClassID (true),
+            true,
           false);
       return new ObjectIDStoragePropertyDefinition (
           new SimpleStoragePropertyDefinition (typeof (object), valueColumnDefinition), 

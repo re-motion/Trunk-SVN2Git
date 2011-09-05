@@ -36,20 +36,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly Type _storageType;
     private readonly string _storageTypeName;
     private readonly DbType _storageDbType;
+    private readonly bool _isStorageTypeNullable;
     private readonly Type _dotNetType;
     private readonly TypeConverter _dotNetTypeConverter;
 
-    public StorageTypeInformation (Type storageType, string storageTypeName, DbType storageDbType, Type dotNetType, TypeConverter dotNetTypeConverter)
+    public StorageTypeInformation (Type storageType, string storageTypeName, DbType storageDbType, bool isStorageTypeNullable, Type dotNetType, TypeConverter dotNetTypeConverter)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("storageTypeName", storageTypeName);
       ArgumentUtility.CheckNotNull ("storageType", storageType);
       ArgumentUtility.CheckNotNull ("dotNetType", dotNetType);
       ArgumentUtility.CheckNotNull ("dotNetTypeConverter", dotNetTypeConverter);
 
+      _storageType = storageType;
       _storageTypeName = storageTypeName;
       _storageDbType = storageDbType;
+      _isStorageTypeNullable = isStorageTypeNullable;
       _dotNetType = dotNetType;
-      _storageType = storageType;
       _dotNetTypeConverter = dotNetTypeConverter;
     }
 
@@ -72,6 +74,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public DbType StorageDbType
     {
       get { return _storageDbType; }
+    }
+
+    public bool IsStorageTypeNullable
+    {
+      get { return _isStorageTypeNullable; }
     }
 
     /// <inheritdoc />

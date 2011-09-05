@@ -40,6 +40,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     string StorageTypeName { get; }
 
     /// <summary>
+    /// Gets a value indicating whether the storage type is nullable in the underlying database.
+    /// </summary>
+    /// <value>
+    /// 	<see langword="true"/> if the storage type is nullable; otherwise, <see langword="false"/>.
+    /// </value>
+    bool IsStorageTypeNullable { get; }
+
+    /// <summary>
     /// Gets the storage type after conversion. This is the <see cref="Type"/> of values returned by <see cref="Read"/> and put into 
     /// <see cref="CreateDataParameter"/>.
     /// For example, for <see cref="Enum"/> values, this would be the respective <see cref="Enum"/> type.

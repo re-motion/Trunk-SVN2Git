@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               typeof (Guid),
               new ColumnDefinition (
                   "ID",
-                  new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
+                  new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, false, typeof (Guid), new GuidConverter()),
                   false,
                   true));
       var storageProperty2 =
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               typeof (string),
               new ColumnDefinition (
                   "FirstName",
-                  new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
+                  new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, false, typeof (string), new StringConverter ()),
                   false,
                   false));
       var storageProperty3 =
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               typeof (string),
               new ColumnDefinition (
                   "LastName",
-                  new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
+                  new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, false, typeof (string), new StringConverter ()),
                   false,
                   false));
       var storageProperty4 =
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               typeof (string),
               new ColumnDefinition (
                   "XmlColumn1",
-                  new StorageTypeInformation (typeof (string), "xml", DbType.Xml, typeof (string), new StringConverter()),
+                  new StorageTypeInformation (typeof (string), "xml", DbType.Xml, false, typeof (string), new StringConverter ()),
                   false,
                   false));
 
@@ -191,12 +191,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var column1 = new ColumnDefinition (
           "ID",
-          new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, typeof (Guid), new GuidConverter()),
+          new StorageTypeInformation (typeof (Guid), "uniqueidentifier", DbType.Guid, false, typeof (Guid), new GuidConverter ()),
           false,
           true);
       var column2 = new ColumnDefinition (
           "Name",
-          new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, typeof (string), new StringConverter()),
+          new StorageTypeInformation (typeof (string), "varchar(100)", DbType.String, false, typeof (string), new StringConverter ()),
           false,
           false);
 
@@ -225,17 +225,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var idColumn = new ColumnDefinition (
           "ObjectID",
-          new StorageTypeInformation (typeof (Int32), "integer", DbType.Int32, typeof (int), new Int32Converter()),
+          new StorageTypeInformation (typeof (Int32), "integer", DbType.Int32, false, typeof (int), new Int32Converter ()),
           false,
           true);
       var classIDColumn = new ColumnDefinition (
           "ClassID",
-          new StorageTypeInformation (typeof (string), "varchar", DbType.String, typeof (string), new StringConverter()),
+          new StorageTypeInformation (typeof (string), "varchar", DbType.String, false, typeof (string), new StringConverter ()),
           false,
           false);
       var timestampColumn = new ColumnDefinition (
           "Timestamp",
-          new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, typeof (DateTime), new DateTimeConverter()),
+          new StorageTypeInformation (typeof (DateTime), "datetime", DbType.DateTime, true, typeof (DateTime), new DateTimeConverter()),
           true,
           false);
 

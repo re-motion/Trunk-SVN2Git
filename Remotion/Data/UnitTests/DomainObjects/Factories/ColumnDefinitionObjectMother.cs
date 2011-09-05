@@ -22,19 +22,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
   public static class ColumnDefinitionObjectMother
   {
     public static readonly ColumnDefinition IDColumn =
-        new ColumnDefinition ("ID", StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation(), false, true);
+        new ColumnDefinition ("ID", StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation (false), false, true);
 
     public static readonly ColumnDefinition ClassIDColumn =
-        new ColumnDefinition ("ClassID", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(), true, false);
+        new ColumnDefinition ("ClassID", StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation (true), true, false);
 
     public static readonly ColumnDefinition TimestampColumn =
-        new ColumnDefinition ("Timestamp", StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation(), true, false);
+        new ColumnDefinition ("Timestamp", StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation (true), true, false);
 
     public static ColumnDefinition CreateColumn ()
     {
       return new ColumnDefinition (
           Guid.NewGuid().ToString(),
-          StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(),
+          StorageTypeInformationObjectMother.CreateStorageTypeInformation(),
           true,
           false);
     }
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       return new ColumnDefinition (
           columnName,
-          StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation(),
+          StorageTypeInformationObjectMother.CreateStorageTypeInformation(),
           true,
           false);
     }

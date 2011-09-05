@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -43,19 +42,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider> ();
 
-      _idStorageTypeInformation = StorageTypeInformationObjectMother.CreateUniqueIdentifierStorageTypeInformation ();
+      _idStorageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
       _storageTypeInformationProviderStub
-          .Stub (stub => stub.GetStorageTypeForID ())
+          .Stub (stub => stub.GetStorageTypeForID (false))
           .Return (_idStorageTypeInformation);
 
-      _classIDStorageTypeInformation = StorageTypeInformationObjectMother.CreateVarchar100StorageTypeInformation();
+      _classIDStorageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
       _storageTypeInformationProviderStub
-          .Stub (stub => stub.GetStorageTypeForClassID())
+          .Stub (stub => stub.GetStorageTypeForClassID (false))
           .Return (_classIDStorageTypeInformation);
 
-      _timestampStorageTypeInformation = StorageTypeInformationObjectMother.CreateDateTimeStorageTypeInformation ();
+      _timestampStorageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
       _storageTypeInformationProviderStub
-          .Stub (stub => stub.GetStorageTypeForTimestamp())
+          .Stub (stub => stub.GetStorageTypeForTimestamp (false))
           .Return (_timestampStorageTypeInformation);
 
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
