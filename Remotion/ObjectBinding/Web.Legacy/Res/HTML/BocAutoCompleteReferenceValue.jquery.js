@@ -180,11 +180,10 @@
 
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
-                    } else if ($input.val() == '') /* re-motion: allow deletion of current value by entering the empty string */ {
-                        closeDropDownListAndSetValue('');
-                        $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
-                    } else /* invalid input */ {
-                        closeDropDownListAndSetValue(previousValidValue);
+                    } else {
+                        // re-motion: allows empty input and invalid input
+                        closeDropDownListAndSetValue($input.val());
+                        $input.trigger("result", { DisplayName: $input.val(), UniqueIdentifier: options.nullValue });
                     }
 
                     if (event.keyCode == KEY.RETURN) {

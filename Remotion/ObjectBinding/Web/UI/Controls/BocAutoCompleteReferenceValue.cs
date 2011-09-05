@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web.Compilation;
@@ -109,9 +110,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HiddenFieldUniqueID; }
     }
 
-    protected override void OnDataChanged ()
+    protected override bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      _displayName = PageUtility.GetPostBackCollectionItem (Page, TextBoxClientID);
+      var isDataChanged = base.LoadPostData (postDataKey, postCollection);
+
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, TextBoxUniqueID);
+      if (newValue != null)
+      {
+        if (_displayName == null && !string.IsNullOrEmpty (newValue))
+          isDataChanged = true;
+        else if (_displayName != null && newValue != _displayName)
+          isDataChanged = true;
+      }
+
+      if (isDataChanged)
+      {
+        _displayName = StringUtility.EmptyToNull (newValue);
+        IsDirty = true;
+      }
+      return isDataChanged;
     }
 
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
@@ -139,9 +156,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void SetEditModeValue ()
     {
-      IBusinessObjectWithIdentity obj = Value;
-      if (obj != null)
-        _displayName = GetDisplayName (obj);
+      var value = GetValue();
+      if (value != null)
+        _displayName = GetDisplayName (value);
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -295,19 +312,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocReferenceValueBase.GetLabelText ()
     {
-      string text;
-      if (InternalValue != null)
-        text = _displayName;
-      else
-        text = String.Empty;
-      if (StringUtility.IsNullOrEmpty (text) && IsDesignMode)
+      if (IsDesignMode)
       {
-        text = c_designModeEmptyLabelContents;
+        return c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width
         //  _label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
 
-      return text;
+      return _displayName;
     }
 
     private void PreRenderEditModeValue ()

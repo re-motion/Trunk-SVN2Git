@@ -146,10 +146,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return DropDownListUniqueID; }
     }
 
-    protected override void OnDataChanged ()
-    {
-    }
-
     public string DropDownListUniqueID
     {
       get { return UniqueID + IdSeparator + c_dropDownListIDPostfix; }

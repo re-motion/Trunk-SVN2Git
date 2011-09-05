@@ -573,12 +573,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           InternalValue = newValue;
         
         IsDirty = true;
-        OnDataChanged ();
       }
       return isDataChanged;
     }
-
-    protected abstract void OnDataChanged ();
 
     /// <summary> Fires the <see cref="SelectionChanged"/> event. </summary>
     protected virtual void OnSelectionChanged ()

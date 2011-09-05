@@ -319,46 +319,65 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadPostDataNullValue ()
+    public void LoadPostData_ContainsNoData ()
     {
       PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
 
-      var key = _control.HiddenFieldClientID;
       var postbackCollection = new NameValueCollection();
-
-      postbackCollection.Add (key, null);
 
       _control.IsDirty = false;
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      bool result = ((IPostBackDataHandler) _control).LoadPostData (key, postbackCollection);
-      Assert.IsFalse (_control.IsDirty);
-      Assert.IsFalse (result);
+      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
+      Assert.That (_control.IsDirty, Is.False);
+      Assert.That (result, Is.False);
     }
 
     [Test]
-    public void LoadPostDataEmptyValue ()
+    public void LoadPostData_Empty_NotChanged ()
     {
       PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
 
-      var key = _control.HiddenFieldUniqueID;
       var postbackCollection = new NameValueCollection();
 
-      postbackCollection.Add (key, string.Empty);
+      postbackCollection.Add (_control.HiddenFieldUniqueID, ((IBocAutoCompleteReferenceValue)_control).NullValueString);
+      postbackCollection.Add (_control.TextBoxUniqueID, string.Empty);
+
+      _control.Value = null;
+      _control.IsDirty = false;
+      PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+
+      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
+      Assert.That (_control.IsDirty, Is.False);
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void LoadPostData_NotEmpty_SetEmpty()
+    {
+      PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
+
+      var postbackCollection = new NameValueCollection();
+
+      postbackCollection.Add (_control.HiddenFieldUniqueID, string.Empty);
+      postbackCollection.Add (_control.TextBoxUniqueID, string.Empty);
 
       _control.IsDirty = false;
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      bool result = ((IPostBackDataHandler) _control).LoadPostData (key, postbackCollection);
-      Assert.That (_control.IsDirty);
-      Assert.IsTrue (result);
+      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
+      Assert.That (_control.IsDirty, Is.True);
+      Assert.That (result, Is.True);
       Assert.That (_control.Value, Is.Null);
+      Assert.That (_control.BusinessObjectUniqueIdentifier, Is.Null);
+      Assert.That (((IBocAutoCompleteReferenceValue) _control).GetLabelText(), Is.Null);
     }
 
     [Test]
-    public void LoadPostDataReferenceValue ()
+    public void LoadPostData_NotEmpty_ChangedToValidValue ()
     {
       PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
 
@@ -366,38 +385,89 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       Guid value = Guid.NewGuid();
       postbackCollection.Add (_control.HiddenFieldUniqueID, value.ToString());
-      postbackCollection.Add (_control.TextBoxClientID, "NewValue");
+      postbackCollection.Add (_control.TextBoxUniqueID, "NewValue");
 
       _control.IsDirty = false;
 
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.HiddenFieldClientID, postbackCollection);
-      Assert.That (_control.IsDirty);
-      Assert.IsTrue (result);
-      Assert.That (((IBocReferenceValueBase) _control).GetLabelText(), Is.EqualTo ("NewValue"));
+      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
+      Assert.That (_control.IsDirty, Is.True);
+      Assert.That (result, Is.True);
       Assert.That (_control.BusinessObjectUniqueIdentifier, Is.EqualTo (value.ToString()));
+      Assert.That (((IBocAutoCompleteReferenceValue) _control).GetLabelText(), Is.EqualTo ("NewValue"));
     }
 
     [Test]
-    public void LoadPostDataSameReferenceValue ()
+    public void LoadPostData_NotEmpty_NotChanged ()
     {
       PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
 
       var postbackCollection = new NameValueCollection();
 
       string value = _control.Value.UniqueIdentifier;
-      postbackCollection.Add (_control.HiddenFieldClientID, value);
+      string displayName = _control.Value.DisplayNameSafe;
+      Assert.That (value, Is.Not.Null.Or.Empty);
+      Assert.That (displayName, Is.Not.Null.Or.Empty);
+      postbackCollection.Add (_control.HiddenFieldUniqueID, value);
+      postbackCollection.Add (_control.TextBoxUniqueID, displayName);
 
       _control.IsDirty = false;
 
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.HiddenFieldClientID, postbackCollection);
-      Assert.IsFalse (_control.IsDirty);
-      Assert.IsFalse (result);
+      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
+      Assert.That (_control.IsDirty, Is.False);
+      Assert.That (result, Is.False);
+      Assert.That (((IBocAutoCompleteReferenceValue) _control).BusinessObjectUniqueIdentifier, Is.EqualTo (displayName));
+      Assert.That (((IBocAutoCompleteReferenceValue) _control).GetLabelText(), Is.EqualTo (displayName));
+    }
+
+    [Test]
+    public void LoadPostData_Empty_ChangedToInvalidValue ()
+    {
+      PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
+
+      var postbackCollection = new NameValueCollection();
+
+      postbackCollection.Add (_control.HiddenFieldUniqueID, ((IBocAutoCompleteReferenceValue) _control).NullValueString);
+      postbackCollection.Add (_control.TextBoxUniqueID, "InvalidValue");
+
+      _control.Value = null;
+      _control.IsDirty = false;
+
+      PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+
+      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
+      Assert.That (_control.IsDirty, Is.True);
+      Assert.That (result, Is.True);
+      Assert.That (_control.BusinessObjectUniqueIdentifier, Is.Null);
+      Assert.That (((IBocAutoCompleteReferenceValue) _control).GetLabelText(), Is.EqualTo ("InvalidValue"));
+    }
+
+    [Test]
+    public void LoadPostData_NotEmpty_ChangedToInvalidValue ()
+    {
+      PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
+
+      var postbackCollection = new NameValueCollection();
+
+      postbackCollection.Add (_control.HiddenFieldUniqueID, ((IBocAutoCompleteReferenceValue) _control).NullValueString);
+      postbackCollection.Add (_control.TextBoxUniqueID, "InvalidValue");
+
+      _control.IsDirty = false;
+
+      PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+
+      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
+      Assert.That (_control.IsDirty, Is.True);
+      Assert.That (result, Is.True);
+      Assert.That (_control.BusinessObjectUniqueIdentifier, Is.Null);
+      Assert.That (((IBocAutoCompleteReferenceValue) _control).GetLabelText(), Is.EqualTo ("InvalidValue"));
     }
 
     [Test]
