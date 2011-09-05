@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
     private string GetColumnDeclaration (ColumnDefinition column)
     {
-      return string.Format ("  [{0}] {1} {2}", column.Name, column.StorageTypeInfo.StorageTypeName, column.IsNullable ? "NULL" : "NOT NULL");
+      return string.Format ("  [{0}] {1} {2}", column.Name, column.StorageTypeInfo.StorageTypeName, column.StorageTypeInfo.IsStorageTypeNullable ? "NULL" : "NOT NULL");
     }
 
     private string GetPrimaryKeyDeclaration (TableDefinition tableDefinition)
