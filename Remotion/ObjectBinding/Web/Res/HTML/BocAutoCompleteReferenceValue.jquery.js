@@ -863,38 +863,54 @@
         }
 
         function moveSelect(step, updateInput) {
-            listItems.slice(active, active + 1).removeClass(CLASSES.ACTIVE);
-            movePosition(step);
-            var activeItem = listItems.slice(active, active + 1).addClass(CLASSES.ACTIVE);
-            var result = $.data(activeItem[0], "ac_data").result;
-            if (updateInput)
-              $(input).val(result);
-            // re-motion: do not select the text in the input element when moving the drop-down selection 
-            //$.Autocompleter.Selection(input, 0, input.value.length);
-
-            var resultsElement = $('.' + options.resultsClass);
-
-            if (options.scroll) {
-                var offset = 0;
-                listItems.slice(0, active).each(function() {
-                    offset += this.offsetHeight;
-                });
-
-                if ((offset + activeItem[0].offsetHeight - resultsElement.scrollTop()) > resultsElement[0].clientHeight) {
-                    resultsElement.scrollTop(offset + activeItem[0].offsetHeight - resultsElement.innerHeight());
-                } else if (offset < resultsElement.scrollTop()) {
-                    resultsElement.scrollTop(offset);
-                }
-
-            }
+            var position = calculatePosition(active, step);
+            setSelect (position, updateInput);
         };
 
-        function movePosition(step) {
-            active += step;
-            if (active < 0) {
-                active = listItems.size() - 1;
-            } else if (active >= listItems.size()) {
-                active = 0;
+        function setSelect(position, updateInput) {
+            listItems.slice(active, active + 1).removeClass(CLASSES.ACTIVE);
+            setPosition (position);
+            var activeItem = listItems.slice(active, active + 1).addClass(CLASSES.ACTIVE);
+            if (active >= 0) {
+                var result = $.data(activeItem[0], "ac_data").result;
+                if (updateInput)
+                  $(input).val(result);
+
+                // re-motion: do not select the text in the input element when moving the drop-down selection 
+                //$.Autocompleter.Selection(input, 0, input.value.length);
+
+                var resultsElement = $('.' + options.resultsClass);
+
+                if (options.scroll) {
+                    var offset = 0;
+                    listItems.slice(0, active).each(function() {
+                        offset += this.offsetHeight;
+                    });
+
+                    if ((offset + activeItem[0].offsetHeight - resultsElement.scrollTop()) > resultsElement[0].clientHeight) {
+                        resultsElement.scrollTop(offset + activeItem[0].offsetHeight - resultsElement.innerHeight());
+                    } else if (offset < resultsElement.scrollTop()) {
+                        resultsElement.scrollTop(offset);
+                    }
+                }
+            }
+        }
+
+        function calculatePosition(currentPosition, step) {
+            currentPosition += step;
+            if (currentPosition < 0) {
+                currentPosition = listItems.size() - 1;
+            } else if (currentPosition >= listItems.size()) {
+                currentPosition = 0;
+            }
+            return currentPosition;
+        }
+
+        function setPosition(position) {
+            if (position >= listItems.size() || position < 0) {
+                active = -1;
+            } else {
+                active = position;
             }
         }
 
@@ -1042,13 +1058,15 @@
                 // re-motion: scroll dropDown list to value from input
                 var selectedItemIndex = -1;
                 var inputValue = $(input).val().toLowerCase();
-                listItems.each(function(i) {
-                    var textValue = $.data(this, "ac_data").result;
-                    if (textValue.toLowerCase() == inputValue) {
-                        selectedItemIndex = i;
-                        return false;
-                    }
-                });
+                if (inputValue.length > 0) {
+                    listItems.each(function(i) {
+                        var textValue = $.data(this, "ac_data").result;
+                        if (textValue.toLowerCase().startsWith (inputValue)) {
+                            selectedItemIndex = i;
+                            return false;
+                        }
+                    });
+                }
 
                 // re-motion: reposition element 
                 applyPositionToDropDown();
@@ -1069,9 +1087,8 @@
                 }
                 repositionTimer = setTimeout(repositonHandler, options.repositionInterval);
 
-                // re-motion: moved selection to selectedItemIndex+1, instead of the actual index.
-                if (selectedItemIndex >= 0)
-                  moveSelect (selectedItemIndex, false);
+                // re-motion: set selection
+                setSelect (selectedItemIndex, false);
 
                 if (options.scroll) {
                     if (selectedItemIndex >= 0) {
@@ -1113,12 +1130,7 @@
             },
             // re-motion: selects the item at the specified index
             selectItem: function (index) {
-                if (index != -1) {
-                    var step = index - Math.max (active, 0);
-                    moveSelect (step, false);
-                } else if (listItems) {
-                    listItems.filter("." + CLASSES.ACTIVE).removeClass(CLASSES.ACTIVE);
-                }
+                setSelect (index, false);
             },
             unbind: function() {
                 element && element.remove();
