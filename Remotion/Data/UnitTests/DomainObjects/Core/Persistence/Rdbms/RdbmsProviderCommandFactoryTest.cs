@@ -68,7 +68,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           storageNameProvider,
           storageProviderDefinitionFinder);
       _factory = new RdbmsProviderCommandFactory (TestDomainStorageProviderDefinition,
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance), rdbmsPersistenceModelProvider, new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider), new TableDefinitionFinder (rdbmsPersistenceModelProvider), storageTypeInformationProvider, dataStoragePropertyDefinitionFactory);
+                                                  new SqlDbCommandBuilderFactory (SqlDialect.Instance),
+                                                  rdbmsPersistenceModelProvider,
+                                                  new ObjectReaderFactory (
+                                                      rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
+                                                  new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+                                                  dataStoragePropertyDefinitionFactory);
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
       _tableDefinition2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));

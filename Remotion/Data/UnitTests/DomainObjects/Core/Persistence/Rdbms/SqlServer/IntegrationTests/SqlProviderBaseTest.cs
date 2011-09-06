@@ -61,8 +61,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           storageTypeInformationProvider,
           storageNameProvider,
           new StorageEntityBasedStorageProviderDefinitionFinder());
-      var commandFactory = new RdbmsProviderCommandFactory (TestDomainStorageProviderDefinition,
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance), rdbmsPersistenceModelProvider, new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider), new TableDefinitionFinder (rdbmsPersistenceModelProvider), storageTypeInformationProvider, dataStoragePropertyDefinitionFactory);
+      var commandFactory = new RdbmsProviderCommandFactory (
+          TestDomainStorageProviderDefinition,
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
+          rdbmsPersistenceModelProvider,
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          dataStoragePropertyDefinitionFactory);
 
       return new RdbmsProvider (
           TestDomainStorageProviderDefinition,

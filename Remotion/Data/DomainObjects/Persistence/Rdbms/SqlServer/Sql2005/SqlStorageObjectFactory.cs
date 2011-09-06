@@ -287,8 +287,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var dbCommandBuilderFactory = CreateDbCommandBuilderFactory ();
       var rdbmsPersistenceModelProvider = CreateRdbmsPersistenceModelProvider();
-      return new RdbmsProviderCommandFactory (storageProviderDefinition,
-          dbCommandBuilderFactory, rdbmsPersistenceModelProvider, new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider), new TableDefinitionFinder (rdbmsPersistenceModelProvider), storageTypeInformationProvider, dataStoragePropertyDefinitionFactory);
+      return new RdbmsProviderCommandFactory (
+          storageProviderDefinition,
+          dbCommandBuilderFactory,
+          rdbmsPersistenceModelProvider,
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          dataStoragePropertyDefinitionFactory);
     }
 
     protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory ()

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -33,27 +32,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
   /// </summary>
   public class QueryCommandFactory
   {
-    private readonly StorageProviderDefinition _storageProviderDefinition;
-    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
     private readonly IObjectReaderFactory _objectReaderFactory;
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
 
     public QueryCommandFactory (
-        StorageProviderDefinition storageProviderDefinition,
-        IStorageTypeInformationProvider storageTypeInformationProvider,
         IObjectReaderFactory objectReaderFactory,
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("objectReaderFactory", objectReaderFactory);
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
 
-      _storageProviderDefinition = storageProviderDefinition;
-      _storageTypeInformationProvider = storageTypeInformationProvider;
       _objectReaderFactory = objectReaderFactory;
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _dataStoragePropertyDefinitionFactory = dataStoragePropertyDefinitionFactory;
@@ -63,9 +54,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
+      var dbCommandBuilder = CreateDbCommandBuilder (query);
       var dataContainerReader = _objectReaderFactory.CreateDataContainerReader ();
-
-      var dbCommandBuilder = CreateDbCommandBuilder(query);
       return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
@@ -79,27 +69,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     private IDbCommandBuilder CreateDbCommandBuilder (IQuery query)
     {
+      // Use ToList to trigger error detection here
       var queryParametersWithType = query.Parameters
           .Cast<QueryParameter> ()
-          .Select (GetQueryParameterWithType);
+          .Select (GetQueryParameterWithType)
+          .ToList();
 
       return _dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType);
     }
 
     private QueryParameterWithType GetQueryParameterWithType (QueryParameter parameter)
     {
-      // var storagePropertyDefinition = _
-
-      if (parameter.Value is ObjectID)
+      var storagePropertyDefinition = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (parameter.Value);
+      var columnValues = storagePropertyDefinition.SplitValueForComparison (parameter.Value).ToArray();
+      if (columnValues.Length != 1)
       {
-        var objectID = (ObjectID) parameter.Value;
-        if (objectID.StorageProviderDefinition != _storageProviderDefinition)
-          parameter = new QueryParameter (parameter.Name, objectID.ToString (), parameter.ParameterType);
-        else
-          parameter = new QueryParameter (parameter.Name, objectID.Value, parameter.ParameterType);
+        var message = string.Format (
+            "The query parameter '{0}' is mapped to {1} database-level values. Only values that map to a single database-level value can be used "
+            + "as query parameters.",
+            parameter.Name,
+            columnValues.Length);
+        throw new InvalidOperationException (message);
       }
 
-      return new QueryParameterWithType (parameter, _storageTypeInformationProvider.GetStorageType (parameter.Value));
+      var adaptedParameter = new QueryParameter (parameter.Name, columnValues[0].Value, parameter.ParameterType);
+      return new QueryParameterWithType (adaptedParameter, columnValues[0].Column.StorageTypeInfo);
     }
   }
 }

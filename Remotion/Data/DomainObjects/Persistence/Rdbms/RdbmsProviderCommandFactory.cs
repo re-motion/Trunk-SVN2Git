@@ -48,7 +48,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
         IObjectReaderFactory objectReaderFactory,
         ITableDefinitionFinder tableDefinitionFinder,
-        IStorageTypeInformationProvider storageTypeInformationProvider,
         IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
@@ -56,7 +55,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("objectReaderFactory", objectReaderFactory);
       ArgumentUtility.CheckNotNull ("tableDefinitionFinder", tableDefinitionFinder);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
@@ -75,8 +73,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _objectReaderFactory);
       _saveCommandFactory = new SaveCommandFactory (_dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder);
       _queryCommandFactory = new QueryCommandFactory (
-          storageProviderDefinition, 
-          storageTypeInformationProvider, 
           objectReaderFactory, 
           dbCommandBuilderFactory,
           dataStoragePropertyDefinitionFactory);

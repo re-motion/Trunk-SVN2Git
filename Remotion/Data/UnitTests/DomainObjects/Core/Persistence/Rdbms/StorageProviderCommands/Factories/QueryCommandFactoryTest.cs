@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
@@ -9,6 +10,8 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands.Factories
@@ -16,7 +19,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   [TestFixture]
   public class QueryCommandFactoryTest : StandardMappingTest
   {
-    private IStorageTypeInformationProvider _storageTypeInformationProviderStrictMock;
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStrictMock;
     private IObjectReaderFactory _objectReaderFactoryStrictMock;
     private IObjectReader<DataContainer> _dataContainerReader1Stub;
@@ -28,20 +30,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private QueryParameter _queryParameter2;
     private QueryParameter _queryParameter3;
     private IQuery _queryStub;
+    private ObjectIDStoragePropertyDefinition _property1;
+    private SimpleStoragePropertyDefinition _property2;
+    private SerializedObjectIDStoragePropertyDefinition _property3;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _storageTypeInformationProviderStrictMock = MockRepository.GenerateStrictMock<IStorageTypeInformationProvider>();
       _dbCommandBuilderFactoryStrictMock = MockRepository.GenerateStrictMock<IDbCommandBuilderFactory>();
 
       _objectReaderFactoryStrictMock = MockRepository.GenerateStrictMock<IObjectReaderFactory>();
       _dataStoragePropertyDefinitionFactoryStrictMock = MockRepository.GenerateStrictMock<IDataStoragePropertyDefinitionFactory> ();
 
       _factory = new QueryCommandFactory (
-          TestDomainStorageProviderDefinition,
-          _storageTypeInformationProviderStrictMock,
           _objectReaderFactoryStrictMock,
           _dbCommandBuilderFactoryStrictMock,
           _dataStoragePropertyDefinitionFactoryStrictMock);
@@ -56,18 +58,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _queryStub = MockRepository.GenerateStub<IQuery>();
       _queryStub.Stub (stub => stub.Statement).Return ("statement");
       _queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection (collection, true));
+
+      _property1 = ObjectIDStoragePropertyDefinitionObjectMother.Create ("Test");
+      _property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ();
+      _property3 = SerializedObjectIDStoragePropertyDefinitionObjectMother.Create ("Test");
     }
 
     [Test]
     public void CreateForDataContainerQuery ()
     {
-      var type1 = MockRepository.GenerateStub<IStorageTypeInformation>();
-      var type2 = MockRepository.GenerateStub<IStorageTypeInformation>();
-      var type3 = MockRepository.GenerateStub<IStorageTypeInformation>();
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order1.Value)).Return (type1);
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order2.Value)).Return (type2);
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Official1.ToString())).Return (type3);
-      _storageTypeInformationProviderStrictMock.Replay();
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order1))
+          .Return (_property1);
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order2.Value))
+          .Return (_property2);
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Official1))
+          .Return (_property3);
+      _dataStoragePropertyDefinitionFactoryStrictMock.Replay();
 
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
       var expectedParametersWithType =
@@ -75,11 +84,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           {
               new QueryParameterWithType (
                   new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType),
-                  type1),
-              new QueryParameterWithType (_queryParameter2, type2),
+                  StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_property1).StorageTypeInfo),
+              new QueryParameterWithType (_queryParameter2, _property2.ColumnDefinition.StorageTypeInfo),
               new QueryParameterWithType (
                   new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
-                  type3)
+                  StoragePropertyDefinitionTestHelper.GetSingleColumn (_property3.SerializedIDProperty).StorageTypeInfo)
           };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
@@ -92,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var result = _factory.CreateForDataContainerQuery (_queryStub);
 
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations();
+      _dataStoragePropertyDefinitionFactoryStrictMock.VerifyAllExpectations ();
       _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations();
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
 
@@ -104,15 +113,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
+    public void CreateForDataContainerQuery_TooComplexParameter ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.Statement).Return ("statement");
+      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection { new QueryParameter ("p1", Tuple.Create (1, "a")) });
+      
+      var compoundProperty = CompoundStoragePropertyDefinitionObjectMother.CreateWithTwoProperties ();
+
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Stub (stub => stub.CreateStoragePropertyDefinition (Tuple.Create (1, "a")))
+          .Return (compoundProperty);
+      _dataStoragePropertyDefinitionFactoryStrictMock.Replay ();
+
+      Assert.That (() => _factory.CreateForDataContainerQuery (queryStub), Throws.InvalidOperationException.With.Message.EqualTo (
+          "The query parameter 'p1' is mapped to 2 database-level values. Only values that map to a single database-level value can be used as query "
+          + "parameters."));
+    }
+
+    [Test]
     public void CreateForScalarQuery ()
     {
-      var type1 = MockRepository.GenerateStub<IStorageTypeInformation> ();
-      var type2 = MockRepository.GenerateStub<IStorageTypeInformation> ();
-      var type3 = MockRepository.GenerateStub<IStorageTypeInformation> ();
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order1.Value)).Return (type1);
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Order2.Value)).Return (type2);
-      _storageTypeInformationProviderStrictMock.Expect (mock => mock.GetStorageType (DomainObjectIDs.Official1.ToString ())).Return (type3);
-      _storageTypeInformationProviderStrictMock.Replay ();
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order1))
+          .Return (_property1);
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order2.Value))
+          .Return (_property2);
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Official1))
+          .Return (_property3);
+      _dataStoragePropertyDefinitionFactoryStrictMock.Replay ();
 
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder> ();
       var expectedParametersWithType =
@@ -120,11 +151,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           {
               new QueryParameterWithType (
                   new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType),
-                  type1),
-              new QueryParameterWithType (_queryParameter2, type2),
+                  StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_property1).StorageTypeInfo),
+              new QueryParameterWithType (_queryParameter2, _property2.ColumnDefinition.StorageTypeInfo),
               new QueryParameterWithType (
                   new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
-                  type3)
+                  StoragePropertyDefinitionTestHelper.GetSingleColumn (_property3.SerializedIDProperty).StorageTypeInfo)
           };
       _dbCommandBuilderFactoryStrictMock
           .Expect (
@@ -134,12 +165,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var result = _factory.CreateForScalarQuery (_queryStub);
 
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
+      _dataStoragePropertyDefinitionFactoryStrictMock.VerifyAllExpectations ();
       _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.TypeOf (typeof (ScalarValueLoadCommand)));
       var command = ((ScalarValueLoadCommand) result);
       Assert.That (command.DbCommandBuilder, Is.SameAs (commandBuilderStub));
+    }
+
+    [Test]
+    public void CreateForScalarQuery_TooComplexParameter ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.Statement).Return ("statement");
+      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection { new QueryParameter ("p1", Tuple.Create (1, "a")) });
+
+      var compoundProperty = CompoundStoragePropertyDefinitionObjectMother.CreateWithTwoProperties ();
+
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Stub (stub => stub.CreateStoragePropertyDefinition (Tuple.Create (1, "a")))
+          .Return (compoundProperty);
+      _dataStoragePropertyDefinitionFactoryStrictMock.Replay ();
+
+      Assert.That (() => _factory.CreateForScalarQuery (queryStub), Throws.InvalidOperationException.With.Message.EqualTo (
+          "The query parameter 'p1' is mapped to 2 database-level values. Only values that map to a single database-level value can be used as query "
+          + "parameters."));
     }
   }
 }
