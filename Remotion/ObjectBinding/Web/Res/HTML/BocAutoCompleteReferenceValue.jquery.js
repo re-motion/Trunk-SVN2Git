@@ -181,9 +181,7 @@
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
                     } else {
-                        // re-motion: allows empty input and invalid input
-                        closeDropDownListAndSetValue($input.val());
-                        $input.trigger("result", { DisplayName: $input.val(), UniqueIdentifier: options.nullValue });
+                        acceptCurrent();
                     }
 
                     if (event.keyCode == KEY.RETURN) {
@@ -277,7 +275,7 @@
                         if (isLastKeyPressedNavigationKey && selectCurrent()) {
                             //SelectCurrent already does everything that's needed.
                         } else {
-                            closeDropDownListAndSetValue(previousValidValue);
+                            acceptCurrent();
                         }
                     }, 
                     200);
@@ -356,7 +354,7 @@
                     if (isLastKeyPressedNavigationKey && selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
                     } else {
-                        closeDropDownListAndSetValue(previousValidValue);
+                        acceptCurrent();
                     }
                 } else {
                     $input.focus();
@@ -364,6 +362,12 @@
                     clearTimeout(timeout);
                 }
             });
+        }
+
+        // re-motion: allows empty input and invalid input
+        function acceptCurrent() {
+            closeDropDownListAndSetValue($input.val());
+            $input.trigger("result", { DisplayName: $input.val(), UniqueIdentifier: options.nullValue });
         }
 
         function selectCurrent() {
@@ -531,7 +535,7 @@
                     select.hide();
                 }
             } else {
-                closeDropDownListAndSetValue(previousValidValue);
+                acceptCurrent();
             }
         };
 
