@@ -104,7 +104,7 @@
         var previousValidValue = $input.val();
         var cache = $.Autocompleter.Cache(options);
         var hasFocus = 0;
-        var lastKeyPressCode;
+        var lastKeyPressCode = -1;
         var config = {
             mouseDownOnSelect: false
         };
@@ -244,39 +244,11 @@
         }).blur(function() {
             hasFocus = 0;
             if (select.visible() && !config.mouseDownOnSelect) {
-                
-                var isLastKeyPressedNavigationKey;
-                switch (lastKeyPressCode) {
-                    case KEY.UP:
-                    case KEY.DOWN:
-                    case KEY.PAGEUP:
-                    case KEY.PAGEDOWN:
-                        isLastKeyPressedNavigationKey = true;
-                        break;
-                    default:
-                        isLastKeyPressedNavigationKey = false;
-                        break;
-                }
-                
                 var value = $input.val();
-
                 clearTimeout(timeout);
                 timeout = setTimeout(
                     function() {
-                    
-                        if (isLastKeyPressedNavigationKey) {
-                            var index = -1;
-                            if (value != '')
-                                index = select.findItem (value);
-                        
-                            select.selectItem (index);
-                        }
-
-                        if (isLastKeyPressedNavigationKey && selectCurrent()) {
-                            //SelectCurrent already does everything that's needed.
-                        } else {
-                            acceptCurrent();
-                        }
+                        acceptInput (lastKeyPressCode);
                     }, 
                     200);
             }
@@ -330,38 +302,44 @@
                 event.stopPropagation();
                 
                 if (select.visible()) {
-                    var isLastKeyPressedNavigationKey;
-                    switch (lastKeyPressCode) {
-                        case KEY.UP:
-                        case KEY.DOWN:
-                        case KEY.PAGEUP:
-                        case KEY.PAGEDOWN:
-                            isLastKeyPressedNavigationKey = true;
-                            break;
-                        default:
-                            isLastKeyPressedNavigationKey = false;
-                            break;
-                    }
-
-                    if (isLastKeyPressedNavigationKey) {
-                        var index = -1;
-                        if ($input.val() != '')
-                            index = select.findItem ($input.val());
-                        
-                        select.selectItem (index);
-                    }
-
-                    if (isLastKeyPressedNavigationKey && selectCurrent()) {
-                        //SelectCurrent already does everything that's needed.
-                    } else {
-                        acceptCurrent();
-                    }
+                    acceptInput (lastKeyPressCode);
                 } else {
                     $input.focus();
                     onChange(1, true, $input.val());
                     clearTimeout(timeout);
                 }
             });
+        }
+
+        function acceptInput(lastKeyPressCode) {
+            var isLastKeyPressedNavigationKey = false;
+            switch (lastKeyPressCode) {
+                case KEY.UP:
+                case KEY.DOWN:
+                case KEY.PAGEUP:
+                case KEY.PAGEDOWN:
+                    isLastKeyPressedNavigationKey = true;
+                    break;
+                default:
+                    isLastKeyPressedNavigationKey = false;
+                    break;
+            }
+
+            if (isLastKeyPressedNavigationKey) {
+                var index = -1;
+                if ($input.val() != '')
+                    index = select.findItem ($input.val());
+                        
+                select.selectItem (index);
+            }
+
+            if (isLastKeyPressedNavigationKey && selectCurrent()) {
+                //SelectCurrent already does everything that's needed.
+            } else if (lastKeyPressCode != -1) {
+                acceptCurrent();
+            } else {
+                closeDropDownListAndSetValue(previousValidValue);
+            }
         }
 
         // re-motion: allows empty input and invalid input
