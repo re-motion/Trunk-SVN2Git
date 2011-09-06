@@ -60,41 +60,54 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (relationEndPointDefinition != null)
       {
         Assertion.IsTrue (propertyDefinition.PropertyType == typeof (ObjectID));
-        return CreateRelationStoragePropertyDefinition (relationEndPointDefinition);
+        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+        var relationColumnName = _storageNameProvider.GetRelationColumnName (relationEndPointDefinition);
+        var relationClassIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (relationEndPointDefinition);
+        return CreateRelationStoragePropertyDefinition (oppositeEndPointDefinition.ClassDefinition, relationColumnName, relationClassIDColumnName);
       }
       else
       {
-        return CreateValueStoragePropertyDefinition (propertyDefinition);
+        IStorageTypeInformation storageType;
+        try
+        {
+          storageType = _storageTypeInformationProvider.GetStorageType (propertyDefinition, MustBeNullable (propertyDefinition));
+        }
+        catch (NotSupportedException ex)
+        {
+          return new UnsupportedStoragePropertyDefinition (propertyDefinition.PropertyType, ex.Message);
+        }
+        var columnName = _storageNameProvider.GetColumnName (propertyDefinition);
+        return CreateValueStoragePropertyDefinition (columnName, storageType, propertyDefinition.PropertyType);
       }
     }
 
-    private IRdbmsStoragePropertyDefinition CreateValueStoragePropertyDefinition (PropertyDefinition propertyDefinition)
+    public virtual IRdbmsStoragePropertyDefinition CreateStoragePropertyDefinition (object value)
     {
-      IStorageTypeInformation storageType;
-      try
+      var objectID = value as ObjectID;
+      if (objectID != null)
       {
-        storageType = _storageTypeInformationProvider.GetStorageType (propertyDefinition, MustBeNullable (propertyDefinition));
+        return CreateRelationStoragePropertyDefinition (objectID.ClassDefinition, "Value", "ValueClassID");
       }
-      catch (NotSupportedException ex)
+      else
       {
-        return new UnsupportedStoragePropertyDefinition (propertyDefinition.PropertyType, ex.Message);
+        var propertyType = value != null ? value.GetType() : typeof (object);
+        IStorageTypeInformation storageType;
+        try
+        {
+          storageType = _storageTypeInformationProvider.GetStorageType (value);
+        }
+        catch (NotSupportedException ex)
+        {
+          return new UnsupportedStoragePropertyDefinition (propertyType, ex.Message);
+        }
+        return CreateValueStoragePropertyDefinition ("Value", storageType, propertyType);
       }
-      var columnName = _storageNameProvider.GetColumnName (propertyDefinition);
-      return CreateValueStoragePropertyDefinition (columnName, storageType, propertyDefinition.PropertyType);
     }
 
     private IRdbmsStoragePropertyDefinition CreateValueStoragePropertyDefinition (string columnName, IStorageTypeInformation storageType, Type propertyType)
     {
       var columnDefinition = new ColumnDefinition (columnName, storageType, false);
       return new SimpleStoragePropertyDefinition (propertyType, columnDefinition);
-    }
-
-    private IRdbmsStoragePropertyDefinition CreateRelationStoragePropertyDefinition (RelationEndPointDefinition relationEndPointDefinition)
-    {
-      var rightEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
-      var relationColumnName = _storageNameProvider.GetRelationColumnName (relationEndPointDefinition);
-      var relationClassIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (relationEndPointDefinition);
-      return CreateRelationStoragePropertyDefinition (rightEndPointDefinition.ClassDefinition, relationColumnName, relationClassIDColumnName);
     }
 
     protected virtual IRdbmsStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
