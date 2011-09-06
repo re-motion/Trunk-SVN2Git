@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       var testDomainNamespace = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration." + testDomainNamespaceSuffix;
       new MappingConfiguration (
           MappingReflectorFactory.CreateMappingReflector (GetTypeDiscoveryService (testDomainNamespace, GetType ().Assembly)),
-          new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     private ITypeDiscoveryService GetTypeDiscoveryService (string testDomainNamespace, params Assembly[] rootAssemblies)

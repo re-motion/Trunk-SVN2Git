@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
 
     private QueryDefinitionCollection LoadAllQueryDefinitions ()
     {
-      var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      var storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
 
       if (QueryFiles.Count == 0)
         return new QueryConfigurationLoader (GetDefaultQueryFilePath(), storageProviderDefinitionFinder).GetQueryDefinitions ();

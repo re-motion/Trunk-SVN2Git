@@ -43,19 +43,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly QueryCommandFactory _queryCommandFactory;
 
     public RdbmsProviderCommandFactory (
+        RdbmsProviderDefinition storageProviderDefinition,
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
         IObjectReaderFactory objectReaderFactory,
         ITableDefinitionFinder tableDefinitionFinder,
-        IStorageTypeInformationProvider storageTypeInformationProvider, 
-        RdbmsProviderDefinition storageProviderDefinition)
+        IStorageTypeInformationProvider storageTypeInformationProvider,
+        IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("objectReaderFactory", objectReaderFactory);
       ArgumentUtility.CheckNotNull ("tableDefinitionFinder", tableDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
 
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
@@ -71,10 +73,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           _dbCommandBuilderFactory,
           _rdbmsPersistenceModelProvider,
           _objectReaderFactory);
-      _saveCommandFactory = new SaveCommandFactory (
-          _dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder);
+      _saveCommandFactory = new SaveCommandFactory (_dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder);
       _queryCommandFactory = new QueryCommandFactory (
-          storageProviderDefinition, storageTypeInformationProvider, objectReaderFactory, dbCommandBuilderFactory);
+          storageProviderDefinition, 
+          storageTypeInformationProvider, 
+          objectReaderFactory, 
+          dbCommandBuilderFactory,
+          dataStoragePropertyDefinitionFactory);
     }
 
     public IDbCommandBuilderFactory DbCommandBuilderFactory

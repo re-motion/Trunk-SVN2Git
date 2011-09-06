@@ -17,14 +17,24 @@
 using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>
-  /// <see cref="IStorageProviderDefinitionFinder"/> defines the API for the storage provider definition finder implementations.
+  /// Returns the <see cref="StorageProviderDefinition"/> of a <see cref="ClassDefinition"/> based on its 
+  /// <see cref="ClassDefinition.StorageEntityDefinition"/>.
   /// </summary>
-  public interface IStorageProviderDefinitionFinder
+  public class StorageEntityBasedStorageProviderDefinitionFinder : IStorageProviderDefinitionFinder
   {
-    StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition classDefinition, string errorMessageContext);
+    public StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition classDefinition, string errorMessageContext)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      if (classDefinition.StorageEntityDefinition == null)
+        throw new InvalidOperationException ("Cannot obtain storage provider for ClassDefinitions without storage entities. " + errorMessageContext);
+
+      return classDefinition.StorageEntityDefinition.StorageProviderDefinition;
+    }
   }
 }

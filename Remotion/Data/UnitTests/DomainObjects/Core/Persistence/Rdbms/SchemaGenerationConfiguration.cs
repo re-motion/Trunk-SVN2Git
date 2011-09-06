@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mappingConfiguration = new MappingConfiguration (
           MappingReflectorFactory.CreateMappingReflector (typeDiscoveryService), 
-          new PersistenceModelLoader (new StorageProviderDefinitionFinder (_storageConfiguration)));
+          new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (_storageConfiguration)));
       _domainObjectsConfiguration = new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration);
     }
 

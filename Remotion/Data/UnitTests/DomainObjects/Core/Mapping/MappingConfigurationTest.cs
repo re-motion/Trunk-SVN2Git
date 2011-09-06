@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
-          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
       _mockRepository.VerifyAll();
 
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         _mockRepository.ReplayAll();
 
         var configuration = new MappingConfiguration (
-            _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+            _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
         MappingConfiguration.SetCurrent (configuration);
 
         Assert.AreSame (configuration, MappingConfiguration.Current);
@@ -296,7 +296,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
-          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]
@@ -318,7 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
-          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]
@@ -340,7 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
-          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]
@@ -482,7 +482,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
-          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.Null);
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
@@ -589,7 +589,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
-          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
       _mockRepository.VerifyAll();
 

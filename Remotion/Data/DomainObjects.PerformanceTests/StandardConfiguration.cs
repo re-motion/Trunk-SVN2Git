@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
       MappingConfiguration mappingConfiguration = new MappingConfiguration (
           new MappingReflector (typeDiscoveryService, new ClassIDProvider(), new DomainModelConstraintProvider(), new ReflectionBasedNameResolver()),
-          new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       MappingConfiguration.SetCurrent (mappingConfiguration);
     }
   }

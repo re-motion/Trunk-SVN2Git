@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   {
     private string _storageProviderID;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
-    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+    private StorageGroupBasedStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     private ReflectionBasedStorageNameProvider _storageNameProvider;
     private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       _storageProviderID = "DefaultStorageProvider";
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID);
-      _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      _storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
 
       _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (

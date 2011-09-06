@@ -62,7 +62,7 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects
             new MappingConfiguration (
                 new MappingReflector (
                     typeDiscoveryService, new ClassIDProvider(), new DomainModelConstraintProvider(), new ReflectionBasedNameResolver()),
-                new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
+                new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
       }
       catch (Exception e)
       {

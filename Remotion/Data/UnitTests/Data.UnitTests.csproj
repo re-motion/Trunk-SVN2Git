@@ -379,6 +379,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\SingleObjectLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\DelegateBasedStorageProviderCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\StorageEntityBasedStorageProviderDefinitionFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedRealObjectRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedVirtualObjectRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\DelegatingFetchedRelationDataRegistrationAgentTest.cs" />
@@ -456,7 +457,7 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeBaseClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\StorageGroupTypesAreSameWithinInheritanceTreeRuleTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionFinderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageGroupBasedStorageProviderDefinitionFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InvalidRdbmsStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\DataStoragePropertyDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\StoragePropertyDefinitionResolverTest.cs" />

@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNullOrEmpty ("relationColumnName", relationColumnName);
       ArgumentUtility.CheckNotNullOrEmpty ("relationClassIDColumnName", relationClassIDColumnName);
 
-      var relatedStorageProviderDefinition = _providerDefinitionFinder.GetStorageProviderDefinition (relatedClassDefinition.StorageGroupType, null);
+      var relatedStorageProviderDefinition = _providerDefinitionFinder.GetStorageProviderDefinition (relatedClassDefinition, null);
 
       if (_storageProviderDefinition != relatedStorageProviderDefinition)
         return CreateCrossProviderRelationStoragePropertyDefinition (relationColumnName);

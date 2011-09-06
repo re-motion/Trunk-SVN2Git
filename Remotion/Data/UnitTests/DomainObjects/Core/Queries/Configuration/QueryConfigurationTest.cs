@@ -33,13 +33,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
   [TestFixture]
   public class QueryConfigurationTest : StandardMappingTest
   {
-    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+    private StorageGroupBasedStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      _storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
     }
 
     [Test]

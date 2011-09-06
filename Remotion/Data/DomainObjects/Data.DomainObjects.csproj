@@ -241,6 +241,7 @@
     <Compile Include="Mapping\RelationDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
+    <Compile Include="Persistence\StorageEntityBasedStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\ObjectLookupResult.cs" />
     <Compile Include="Persistence\FixedValueStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
@@ -464,7 +465,7 @@
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleObjectLoadCommand.cs" />
     <Compile Include="Persistence\DelegateBasedStorageProviderCommand.cs" />
-    <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
+    <Compile Include="Persistence\StorageGroupBasedStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\IDataStoragePropertyDefinitionFactory.cs" />

@@ -22,18 +22,27 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>
-  /// The <see cref="StorageProviderDefinitionFinder"/> is responsible for finding the <see cref="StorageProviderDefinition"/> for a 
-  /// <see cref="ClassDefinition"/>.
+  /// The <see cref="StorageGroupBasedStorageProviderDefinitionFinder"/> is responsible for finding the <see cref="StorageProviderDefinition"/> for a 
+  /// <see cref="ClassDefinition"/> based on the <see cref="ClassDefinition.StorageGroupType"/>.
   /// </summary>
-  public class StorageProviderDefinitionFinder : IStorageProviderDefinitionFinder
+  public class StorageGroupBasedStorageProviderDefinitionFinder : IStorageProviderDefinitionFinder
   {
     private readonly StorageConfiguration _storageConfiguration;
 
-    public StorageProviderDefinitionFinder (StorageConfiguration storageConfiguration)
+    public StorageGroupBasedStorageProviderDefinitionFinder (StorageConfiguration storageConfiguration)
     {
       ArgumentUtility.CheckNotNull ("storageConfiguration", storageConfiguration);
 
       _storageConfiguration = storageConfiguration;
+    }
+
+    public StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition classDefinition, string errorMessageContext)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      var storageGroupTypeOrNull = classDefinition.StorageGroupType;
+
+      return GetStorageProviderDefinition(storageGroupTypeOrNull, errorMessageContext);
     }
 
     public StorageProviderDefinition GetStorageProviderDefinition (Type storageGroupTypeOrNull, string errorMessageContext)

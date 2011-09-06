@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlStorageObjectFactory _sqlProviderFactory;
     private RdbmsProviderDefinition _rdbmsProviderDefinition;
     private IPersistenceListener _persistenceListenerStub;
-    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+    private StorageGroupBasedStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     [SetUp]
     public void SetUp ()
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString");
       _sqlProviderFactory = new SqlStorageObjectFactory();
       _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener>();
-      _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      _storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
     }
 
     [Test]

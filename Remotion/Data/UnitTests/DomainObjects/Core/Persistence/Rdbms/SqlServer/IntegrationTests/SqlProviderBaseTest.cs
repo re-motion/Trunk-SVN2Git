@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Data.SqlClient;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -55,13 +56,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
       var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
           storageTypeInformationProvider, storageNameProvider);
-      var commandFactory = new RdbmsProviderCommandFactory (
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          rdbmsPersistenceModelProvider,
-          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
-          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+      var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
+          TestDomainStorageProviderDefinition,
           storageTypeInformationProvider,
-          TestDomainStorageProviderDefinition);
+          storageNameProvider,
+          new StorageEntityBasedStorageProviderDefinitionFinder());
+      var commandFactory = new RdbmsProviderCommandFactory (TestDomainStorageProviderDefinition,
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance), rdbmsPersistenceModelProvider, new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider), new TableDefinitionFinder (rdbmsPersistenceModelProvider), storageTypeInformationProvider, dataStoragePropertyDefinitionFactory);
 
       return new RdbmsProvider (
           TestDomainStorageProviderDefinition,

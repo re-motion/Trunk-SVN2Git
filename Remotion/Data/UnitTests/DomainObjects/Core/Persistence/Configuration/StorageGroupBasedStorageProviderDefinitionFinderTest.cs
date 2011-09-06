@@ -21,12 +21,13 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
 {
   [TestFixture]
-  public class StorageProviderDefinitionFinderTest : StandardMappingTest
+  public class StorageGroupBasedStorageProviderDefinitionFinderTest : StandardMappingTest
   {
     private StorageConfiguration _storageConfigurationWithoutDefaultProvider;
 
@@ -47,25 +48,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Missing default storage provider.", MatchType = MessageMatch.Contains)]
     public void GetStorageProviderDefinition_ClassWithoutStorageGroupType_NoDefaultStorageProviderDefinitionDefined ()
     {
-      var finder = new StorageProviderDefinitionFinder (_storageConfigurationWithoutDefaultProvider);
+      var finder = new StorageGroupBasedStorageProviderDefinitionFinder (_storageConfigurationWithoutDefaultProvider);
 
-      finder.GetStorageProviderDefinition (null, null);
+      finder.GetStorageProviderDefinition ((Type) null, null);
     }
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Missing default storage provider. Test", MatchType = MessageMatch.Contains)]
     public void GetStorageProviderDefinition_ClassWithoutStorageGroupType_NoDefaultStorageProviderDefinitionDefined_WithContext ()
     {
-      var finder = new StorageProviderDefinitionFinder (_storageConfigurationWithoutDefaultProvider);
+      var finder = new StorageGroupBasedStorageProviderDefinitionFinder (_storageConfigurationWithoutDefaultProvider);
 
-      finder.GetStorageProviderDefinition (null, "Test");
+      finder.GetStorageProviderDefinition ((Type) null, "Test");
     }
 
     [Test]
     public void GetStorageProviderDefinition_ClassWithoutStorageGroupType_DefaultStorageProviderDefinitionDefined ()
     {
-      var finder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      var result = finder.GetStorageProviderDefinition (null, null);
+      var finder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      var result = finder.GetStorageProviderDefinition ((Type) null, null);
 
       Assert.That (result.Name, Is.EqualTo ("DefaultStorageProvider"));
     }
@@ -74,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Missing default storage provider.", MatchType = MessageMatch.Contains)]
     public void GetStorageProviderDefinition_ClassWithStorageGroupType_StorageGroupNotDefined_NoDefaultStorageProviderDefinitionDefined ()
     {
-      var finder = new StorageProviderDefinitionFinder (_storageConfigurationWithoutDefaultProvider);
+      var finder = new StorageGroupBasedStorageProviderDefinitionFinder (_storageConfigurationWithoutDefaultProvider);
 
       finder.GetStorageProviderDefinition (typeof (StubStorageGroup1Attribute), null);
     }
@@ -84,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
         "Missing default storage provider. Test", MatchType = MessageMatch.Contains)]
     public void GetStorageProviderDefinition_ClassWithStorageGroupType_StorageGroupNotDefined_NoDefaultStorageProviderDefinitionDefined_WithContext ()
     {
-      var finder = new StorageProviderDefinitionFinder (_storageConfigurationWithoutDefaultProvider);
+      var finder = new StorageGroupBasedStorageProviderDefinitionFinder (_storageConfigurationWithoutDefaultProvider);
 
       finder.GetStorageProviderDefinition (typeof (StubStorageGroup1Attribute), "Test");
     }
@@ -92,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [Test]
     public void GetStorageProviderDefinition_ClassWithStorageGroupType_StorageGroupNotDefined_DefaultStorageProviderDefinitionDefined ()
     {
-      var finder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      var finder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       var result = finder.GetStorageProviderDefinition (typeof (StubStorageGroup1Attribute), null);
 
       Assert.That (result.Name, Is.EqualTo ("DefaultStorageProvider"));
@@ -111,11 +112,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition);
 
       storageConfiguration.StorageGroups.Add (new StorageGroupElement (new StubStorageGroup1Attribute (), providerID));
-      var finder = new StorageProviderDefinitionFinder (storageConfiguration);
+      var finder = new StorageGroupBasedStorageProviderDefinitionFinder (storageConfiguration);
 
       var result = finder.GetStorageProviderDefinition (typeof (StubStorageGroup1Attribute), null);
 
       Assert.That (result.Name, Is.EqualTo (providerID));
+    }
+
+    [Test]
+    public void GetStorageProviderDefinition_ClassDefinition ()
+    {
+      var finder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      var result = finder.GetStorageProviderDefinition (Configuration.GetTypeDefinition (typeof (Order)), null);
+
+      Assert.That (result, Is.SameAs (TestDomainStorageProviderDefinition));
     }
   }
 }

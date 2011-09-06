@@ -37,22 +37,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
     private readonly IObjectReaderFactory _objectReaderFactory;
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
+    private readonly IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
 
     public QueryCommandFactory (
         StorageProviderDefinition storageProviderDefinition,
         IStorageTypeInformationProvider storageTypeInformationProvider,
         IObjectReaderFactory objectReaderFactory,
-        IDbCommandBuilderFactory dbCommandBuilderFactory)
+        IDbCommandBuilderFactory dbCommandBuilderFactory,
+        IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("objectReaderFactory", objectReaderFactory);
       ArgumentUtility.CheckNotNull ("dbCommandBuilderFactory", dbCommandBuilderFactory);
+      ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
 
       _storageProviderDefinition = storageProviderDefinition;
       _storageTypeInformationProvider = storageTypeInformationProvider;
       _objectReaderFactory = objectReaderFactory;
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
+      _dataStoragePropertyDefinitionFactory = dataStoragePropertyDefinitionFactory;
     }
 
     public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)
@@ -84,6 +88,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     private QueryParameterWithType GetQueryParameterWithType (QueryParameter parameter)
     {
+      // var storagePropertyDefinition = _
+
       if (parameter.Value is ObjectID)
       {
         var objectID = (ObjectID) parameter.Value;

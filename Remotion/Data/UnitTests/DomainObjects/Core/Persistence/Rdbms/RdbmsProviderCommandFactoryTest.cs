@@ -17,8 +17,10 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -59,13 +61,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var infrastructureStoragePropertyDefinitionProvider = 
           new InfrastructureStoragePropertyDefinitionProvider (storageTypeInformationProvider, storageNameProvider);
-      _factory = new RdbmsProviderCommandFactory (
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          rdbmsPersistenceModelProvider,
-          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
-          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+      var storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder(DomainObjectsConfiguration.Current.Storage);
+      var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
+          TestDomainStorageProviderDefinition,
           storageTypeInformationProvider,
-          TestDomainStorageProviderDefinition);
+          storageNameProvider,
+          storageProviderDefinitionFinder);
+      _factory = new RdbmsProviderCommandFactory (TestDomainStorageProviderDefinition,
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance), rdbmsPersistenceModelProvider, new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider), new TableDefinitionFinder (rdbmsPersistenceModelProvider), storageTypeInformationProvider, dataStoragePropertyDefinitionFactory);
 
       _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
       _tableDefinition2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));

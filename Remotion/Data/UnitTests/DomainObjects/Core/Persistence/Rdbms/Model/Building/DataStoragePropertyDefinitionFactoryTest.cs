@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private StorageTypeInformation _fakeStorageTypeInformation1;
     private StorageTypeInformation _fakeStorageTypeInformation2;
 
-    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+    private StorageGroupBasedStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
     private IStorageNameProvider _storageNameProviderStub;
     private IStorageTypeInformationProvider _storageTypeInformationProviderStrictMock;
 
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _fakeStorageTypeInformation1 = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
       _fakeStorageTypeInformation2 = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
 
-      _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      _storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _storageTypeInformationProviderStrictMock = MockRepository.GenerateStrictMock<IStorageTypeInformationProvider> ();
 
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();

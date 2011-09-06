@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Mapping
             () =>
             new MappingConfiguration (
                 DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader(),
-                new PersistenceModelLoader(new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
+                new PersistenceModelLoader(new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
 
     public static MappingConfiguration Current
     {

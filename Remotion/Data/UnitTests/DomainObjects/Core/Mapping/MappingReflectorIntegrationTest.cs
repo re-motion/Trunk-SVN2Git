@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var storageProviderDefinition = FakeMappingConfiguration.Current.StorageProviderDefinition;
       var storageProviderDefinitionFinderStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder> ();
       storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (Arg<Type>.Is.Anything, Arg<string>.Is.Anything))
+          .Stub (stub => stub.GetStorageProviderDefinition (Arg<ClassDefinition>.Is.Anything, Arg<string>.Is.Anything))
           .Return (storageProviderDefinition);
 
       foreach (ClassDefinition classDefinition in inheritanceRootClasses)
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               });
       var reflector = MappingReflectorFactory.CreateMappingReflector(typeDiscoveryServiceStub);
       var mappingConfiguration = new MappingConfiguration (
-          reflector, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          reflector, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
       var derivedClass1 = mappingConfiguration.GetTypeDefinition (typeof (DerivedInheritanceRootClass1));
       var derivedClass2 = mappingConfiguration.GetTypeDefinition (typeof (DerivedInheritanceRootClass2));

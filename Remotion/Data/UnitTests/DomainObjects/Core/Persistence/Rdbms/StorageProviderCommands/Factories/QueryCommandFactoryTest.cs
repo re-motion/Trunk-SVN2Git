@@ -20,6 +20,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private IDbCommandBuilderFactory _dbCommandBuilderFactoryStrictMock;
     private IObjectReaderFactory _objectReaderFactoryStrictMock;
     private IObjectReader<DataContainer> _dataContainerReader1Stub;
+    private IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactoryStrictMock;
+
     private QueryCommandFactory _factory;
 
     private QueryParameter _queryParameter1;
@@ -35,12 +37,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dbCommandBuilderFactoryStrictMock = MockRepository.GenerateStrictMock<IDbCommandBuilderFactory>();
 
       _objectReaderFactoryStrictMock = MockRepository.GenerateStrictMock<IObjectReaderFactory>();
+      _dataStoragePropertyDefinitionFactoryStrictMock = MockRepository.GenerateStrictMock<IDataStoragePropertyDefinitionFactory> ();
 
       _factory = new QueryCommandFactory (
           TestDomainStorageProviderDefinition,
           _storageTypeInformationProviderStrictMock,
           _objectReaderFactoryStrictMock,
-          _dbCommandBuilderFactoryStrictMock);
+          _dbCommandBuilderFactoryStrictMock,
+          _dataStoragePropertyDefinitionFactoryStrictMock);
 
       _dataContainerReader1Stub = MockRepository.GenerateStub<IObjectReader<DataContainer>>();
 

@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private IPersistenceModelLoader GetProviderSpecificPersistenceModelLoader (ClassDefinition classDefinition)
     {
-      var storageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition.StorageGroupType, null);
+      var storageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition, null);
       return storageProviderDefinition.Factory.CreatePersistenceModelLoader (storageProviderDefinition, _storageProviderDefinitionFinder);
     }
   }

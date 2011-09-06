@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -48,14 +49,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
       var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
           storageTypeInformationProvider, storageNameProvider);
-
-      var commandFactory = new RdbmsProviderCommandFactory (
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          rdbmsPersistenceModelProvider,
-          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
-          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+      var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
+          TableInheritanceTestDomainStorageProviderDefinition,
           storageTypeInformationProvider,
-          TableInheritanceTestDomainStorageProviderDefinition);
+          storageNameProvider,
+          new StorageEntityBasedStorageProviderDefinitionFinder ());
+
+      var commandFactory = new RdbmsProviderCommandFactory (TableInheritanceTestDomainStorageProviderDefinition,
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance), rdbmsPersistenceModelProvider, new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider), new TableDefinitionFinder (rdbmsPersistenceModelProvider), storageTypeInformationProvider, dataStoragePropertyDefinitionFactory);
 
       _provider = new RdbmsProvider (
           TableInheritanceTestDomainStorageProviderDefinition,

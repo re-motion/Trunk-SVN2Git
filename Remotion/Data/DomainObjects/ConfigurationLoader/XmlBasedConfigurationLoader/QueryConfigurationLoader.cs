@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
 {
   public class QueryConfigurationLoader : BaseFileLoader
   {
-    private readonly StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+    private readonly StorageGroupBasedStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
     // types
 
     // static members and constants
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
     // construction and disposing
 
     //TODO: resolve parameter
-    public QueryConfigurationLoader (string configurationFile, StorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public QueryConfigurationLoader (string configurationFile, StorageGroupBasedStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       try
       {
