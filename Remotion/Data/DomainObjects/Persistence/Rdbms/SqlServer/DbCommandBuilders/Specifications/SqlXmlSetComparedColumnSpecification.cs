@@ -21,10 +21,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders.Specifications
 {
   /// <summary>
   /// The <see cref="SqlXmlSetComparedColumnSpecification"/> builds a specification command that allows retrieving a set of records.
