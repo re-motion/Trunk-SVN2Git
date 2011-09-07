@@ -19,6 +19,7 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -39,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageTypeInformationStub = MockRepository.GenerateStub<IStorageTypeInformation>();
-      _innerColumnDefinition = new ColumnDefinition ("Test", _storageTypeInformationStub, false);
+      _innerColumnDefinition = ColumnDefinitionObjectMother.CreateColumn (_storageTypeInformationStub);
       _storagePropertyDefinition = new SimpleStoragePropertyDefinition (typeof (string), _innerColumnDefinition);
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();

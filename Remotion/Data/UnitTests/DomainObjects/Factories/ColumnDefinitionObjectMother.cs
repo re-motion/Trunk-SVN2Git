@@ -32,12 +32,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     public static ColumnDefinition CreateColumn ()
     {
-      return new ColumnDefinition (Guid.NewGuid().ToString(), StorageTypeInformationObjectMother.CreateStorageTypeInformation(), false);
+      return new ColumnDefinition (GetUniqueColumnName(), StorageTypeInformationObjectMother.CreateStorageTypeInformation(), false);
     }
 
     public static ColumnDefinition CreateColumn (string columnName)
     {
       return new ColumnDefinition (columnName, StorageTypeInformationObjectMother.CreateStorageTypeInformation(), false);
+    }
+
+    public static ColumnDefinition CreateColumn (IStorageTypeInformation storageTypeInformation)
+    {
+      return new ColumnDefinition (GetUniqueColumnName(), storageTypeInformation, false);
+    }
+
+    private static string GetUniqueColumnName ()
+    {
+      return Guid.NewGuid().ToString();
     }
   }
 }

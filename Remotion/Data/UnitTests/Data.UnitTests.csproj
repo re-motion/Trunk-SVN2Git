@@ -292,6 +292,7 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\FixedValueStorageProviderCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CompositeScriptBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\ColumnValueReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\DataContainerReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\ObjectIDReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\DictionaryBasedColumnOrdinalProviderTest.cs" />

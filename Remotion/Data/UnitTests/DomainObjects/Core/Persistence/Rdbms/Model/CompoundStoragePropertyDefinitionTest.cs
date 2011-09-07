@@ -44,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       var storageTypeInformation = StorageTypeInformationObjectMother.CreateStorageTypeInformation();
-      _columnDefinition1 = new ColumnDefinition ("Year", storageTypeInformation, false);
-      _columnDefinition2 = new ColumnDefinition ("Month", storageTypeInformation, false);
-      _columnDefinition3 = new ColumnDefinition ("Month", storageTypeInformation, false);
+      _columnDefinition1 = ColumnDefinitionObjectMother.CreateColumn (storageTypeInformation);
+      _columnDefinition2 = ColumnDefinitionObjectMother.CreateColumn (storageTypeInformation);
+      _columnDefinition3 = ColumnDefinitionObjectMother.CreateColumn (storageTypeInformation);
 
       _property1Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       _property2Stub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
