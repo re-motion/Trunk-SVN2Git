@@ -251,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void CombineValue_ValueAndClassIdIsNull_ReturnsNull ()
     {
       _valuePropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (null);
-      _classIDPropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).WhenCalled (mi => Assert.Fail ("Should not be called."));
+      _classIDPropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (null);
 
       var result = _objectIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
 
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
-      "Incorrect database value encountered. The value CombineValue from 'Column2' must contain null.")]
+      "Incorrect database value encountered. The value read from 'Column2' must contain null.")]
     public void CombineValue_ValueIsNullAndClassIDIsNotNull_ThrowsException ()
     {
       _classIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _classIDColumnDefinition });
@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
-      "Incorrect database value encountered. The value CombineValue from 'Column2' must not contain null.")]
+      "Incorrect database value encountered. The value read from 'Column2' must not contain null.")]
     public void CombineValue_ValueIsNotNullAndClassIDIsNull_ThrowsException ()
     {
       _classIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _classIDColumnDefinition });
