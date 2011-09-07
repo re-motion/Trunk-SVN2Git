@@ -31,57 +31,68 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
   [TestFixture]
   public class DataContainerReaderTest : StandardMappingTest
   {
-    private IDataReader _dataReaderStub;
-    private DataContainerReader _dataContainerReader;
-    private object _timestamp;
-    private IRdbmsStoragePropertyDefinition _idPropertyStub;
-    private IRdbmsStoragePropertyDefinition _timestampPropertyStub;
+    private IDataReader _dataReaderStrictMock;
+    private IRdbmsStoragePropertyDefinition _idPropertyStrictMock;
+    private IRdbmsStoragePropertyDefinition _timestampPropertyStrictMock;
+    private IRdbmsStoragePropertyDefinition _fileNamePropertyStrictMock;
+    private IRdbmsStoragePropertyDefinition _orderPropertyStrictMock;
+
     private IColumnOrdinalProvider _ordinalProviderStub;
     private IRdbmsPersistenceModelProvider _persistenceModelProviderStub;
-    private IRdbmsStoragePropertyDefinition _orderPropertyStub;
-    private IRdbmsStoragePropertyDefinition _fileNamePropertyStub;
+
+    private DataContainerReader _dataContainerReader;
+
+    private object _fakeTimestamp;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
 
-      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
-      _idPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _timestampPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _fileNamePropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
-      _orderPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition> ();
+      _dataReaderStrictMock = MockRepository.GenerateStrictMock<IDataReader>();
+      _idPropertyStrictMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition>();
+      _timestampPropertyStrictMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition>();
+      _fileNamePropertyStrictMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition> ();
+      _orderPropertyStrictMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition> ();
       
       _ordinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
       _persistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
 
-      _dataContainerReader = new DataContainerReader (_idPropertyStub, _timestampPropertyStub, _ordinalProviderStub, _persistenceModelProviderStub);
+      _dataContainerReader = new DataContainerReader (
+          _idPropertyStrictMock,
+          _timestampPropertyStrictMock,
+          _ordinalProviderStub,
+          _persistenceModelProviderStub);
 
-      _timestamp = new object();
+      _fakeTimestamp = new object();
     }
 
     [Test]
     public void Read_DataReaderReadFalse ()
     {
-      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+      _dataReaderStrictMock.Expect (mock => mock.Read()).Return (false);
+      _dataReaderStrictMock.Replay();
 
-      var result = _dataContainerReader.Read (_dataReaderStub);
+      var result = _dataContainerReader.Read (_dataReaderStrictMock);
 
+      _dataReaderStrictMock.VerifyAllExpectations();
       Assert.That (result, Is.Null);
     }
 
     [Test]
     public void Read_DataReaderReadTrue_ValueIDNotNull ()
     {
-      _dataReaderStub.Stub (stub => stub.Read()).Return (true);
+      _dataReaderStrictMock.Expect (mock => mock.Read()).Return (true);
 
-      StubPersistenceModelProviderForProperty (typeof (OrderTicket), "FileName", _fileNamePropertyStub);
-      StubPersistenceModelProviderForProperty (typeof (OrderTicket), "Order", _orderPropertyStub);
+      StubPersistenceModelProviderForProperty (typeof (OrderTicket), "FileName", _fileNamePropertyStrictMock);
+      StubPersistenceModelProviderForProperty (typeof (OrderTicket), "Order", _orderPropertyStrictMock);
 
-      StubPropertyReadsForOrderTicket (DomainObjectIDs.OrderTicket1, 17, "abc", DomainObjectIDs.Order1);
-
-      var dataContainer = _dataContainerReader.Read (_dataReaderStub);
-
+      ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket1, 17, "abc", DomainObjectIDs.Order1);
+      ReplayAll();
+      
+      var dataContainer = _dataContainerReader.Read (_dataReaderStrictMock);
+      
+      VerifyAll();
       Assert.That (dataContainer, Is.Not.Null);
       CheckLoadedDataContainer(dataContainer, DomainObjectIDs.OrderTicket1, 17, "abc", DomainObjectIDs.Order1);
     }
@@ -89,13 +100,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void Read_DataReaderReadTrue_ValueIDNull ()
     {
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true);
+      _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true);
 
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (null);
-      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).WhenCalled (mi => Assert.Fail ("Should not be called."));
+      _idPropertyStrictMock
+          .Stub (stub => stub.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (null);
+      ReplayAll();
 
-      var dataContainer = _dataContainerReader.Read (_dataReaderStub);
+      var dataContainer = _dataContainerReader.Read (_dataReaderStrictMock);
 
+      VerifyAll();
       Assert.That (dataContainer, Is.Null);
     }
 
@@ -105,24 +119,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid': TestException")]
     public void Read_DataReaderReadTrue_ThrowsException ()
     {
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true);
+      _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true);
 
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (DomainObjectIDs.OrderTicket1);
-      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (_timestamp);
+      _idPropertyStrictMock
+          .Stub (stub => stub.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (DomainObjectIDs.OrderTicket1);
+      _timestampPropertyStrictMock
+          .Stub (stub => stub.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (_fakeTimestamp);
+      ReplayAll();
+
       var propertyDefinition = GetPropertyDefinition (typeof(OrderTicket), "FileName");
       _persistenceModelProviderStub
         .Stub (stub => stub.GetStoragePropertyDefinition (propertyDefinition))
         .Throw (new InvalidOperationException ("TestException"));
       
-      _dataContainerReader.Read (_dataReaderStub);
+      _dataContainerReader.Read (_dataReaderStrictMock);
     }
 
     [Test]
     public void ReadSequence_DataReaderReadFalse ()
     {
-      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+      _dataReaderStrictMock.Expect (mock => mock.Read()).Return (false);
 
-      var result = _dataContainerReader.ReadSequence (_dataReaderStub);
+      var result = _dataContainerReader.ReadSequence (_dataReaderStrictMock);
 
       Assert.That (result, Is.Empty);
     }
@@ -130,18 +150,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void ReadSequence_DataReaderReadTrue ()
     {
-      StubPersistenceModelProviderForProperty (typeof (OrderTicket), "FileName", _fileNamePropertyStub);
-      StubPersistenceModelProviderForProperty (typeof (OrderTicket), "Order", _orderPropertyStub);
+      StubPersistenceModelProviderForProperty (typeof (OrderTicket), "FileName", _fileNamePropertyStrictMock);
+      StubPersistenceModelProviderForProperty (typeof (OrderTicket), "Order", _orderPropertyStrictMock);
 
-      StubPropertyReadsForOrderTicket (DomainObjectIDs.OrderTicket1, 0, "first", DomainObjectIDs.Order1);
-      StubPropertyReadsForOrderTicket (DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order2);
-      StubPropertyReadsForOrderTicket (DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order3);
+      ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket1, 0, "first", DomainObjectIDs.Order1);
+      ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order2);
+      ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order3);
 
-      _dataReaderStub.Stub (stub => stub.Read()).Return (true).Repeat.Times (3);
-      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+      _dataReaderStrictMock.Expect (mock => mock.Read()).Return (true).Repeat.Times (3);
+      _dataReaderStrictMock.Expect (mock => mock.Read()).Return (false);
+      ReplayAll();
 
-      var result = _dataContainerReader.ReadSequence (_dataReaderStub).ToArray ();
+      var result = _dataContainerReader.ReadSequence (_dataReaderStrictMock).ToArray ();
 
+      VerifyAll();
       Assert.That (result.Length, Is.EqualTo (3));
 
       CheckLoadedDataContainer (result[0], DomainObjectIDs.OrderTicket1, 0, "first", DomainObjectIDs.Order1);
@@ -152,24 +174,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void ReadSequence_DataReaderReadTrue_NullIDIsReturned ()
     {
-      _dataReaderStub.Stub (stub => stub.Read()).Return (true).Repeat.Once();
-      _dataReaderStub.Stub (stub => stub.Read()).Return (false);
+      _dataReaderStrictMock.Expect (mock => mock.Read()).Return (true).Repeat.Once();
+      _dataReaderStrictMock.Expect (mock => mock.Read()).Return (false);
       
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (null);
-      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).WhenCalled (mi => Assert.Fail ("Should not be called."));
+      _idPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (null);
+      ReplayAll();
       
-      var result = _dataContainerReader.ReadSequence (_dataReaderStub).ToArray();
+      var result = _dataContainerReader.ReadSequence (_dataReaderStrictMock).ToArray();
 
+      VerifyAll();
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.Null);
     }
 
-    private void StubPropertyReadsForOrderTicket (ObjectID objectID, object timestamp, string fileName, ObjectID order)
+    private void ExpectPropertyCombinesForOrderTicket (ObjectID objectID, object timestamp, string fileName, ObjectID order)
     {
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (objectID).Repeat.Once ();
-      _timestampPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (timestamp).Repeat.Once ();
-      _fileNamePropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (fileName).Repeat.Once ();
-      _orderPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _ordinalProviderStub)).Return (order).Repeat.Once ();
+      _idPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (objectID)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+          .Repeat.Once ();
+      _timestampPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (timestamp)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+          .Repeat.Once ();
+      _fileNamePropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (fileName)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+          .Repeat.Once ();
+      _orderPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+          .Return (order)
+          .Repeat.Once ();
+    }
+
+    private void CheckColumnValueReader (ColumnValueReader columnValueReader)
+    {
+      Assert.That (columnValueReader.DataReader, Is.SameAs (_dataReaderStrictMock));
+      Assert.That (columnValueReader.ColumnOrdinalProvider, Is.SameAs (_ordinalProviderStub));
     }
 
     private void StubPersistenceModelProviderForProperty (
@@ -186,6 +233,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       Assert.That (dataContainer.PropertyValues[typeof (OrderTicket).FullName + ".FileName"].Value, Is.EqualTo (expectedFileName));
       Assert.That (dataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.EqualTo (expectedOrder));
+    }
+
+    private void ReplayAll()
+    {
+      _dataReaderStrictMock.Replay();
+      _idPropertyStrictMock.Replay();
+      _timestampPropertyStrictMock.Replay();
+      _fileNamePropertyStrictMock.Replay();
+      _orderPropertyStrictMock.Replay();
+    }
+
+    private void VerifyAll()
+    {
+      _dataReaderStrictMock.VerifyAllExpectations();
+      _idPropertyStrictMock.VerifyAllExpectations();
+      _timestampPropertyStrictMock.VerifyAllExpectations();
+      _fileNamePropertyStrictMock.VerifyAllExpectations();
+      _orderPropertyStrictMock.VerifyAllExpectations();
     }
   }
 }

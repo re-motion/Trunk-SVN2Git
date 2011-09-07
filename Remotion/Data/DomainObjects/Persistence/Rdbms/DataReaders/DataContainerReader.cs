@@ -96,20 +96,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      var id = (ObjectID) _idProperty.Read (dataReader, _ordinalProvider);
+      var columnValueReader = new ColumnValueReader (dataReader, _ordinalProvider);
+
+      var id = (ObjectID) _idProperty.CombineValue (columnValueReader);
       if (id == null)
         return null;
 
-      var timestamp = _timestampProperty.Read (dataReader, _ordinalProvider);
-      return DataContainer.CreateForExisting (id, timestamp, pd => ReadPropertyValue (pd, dataReader, id));
+      var timestamp = _timestampProperty.CombineValue (columnValueReader);
+      return DataContainer.CreateForExisting (id, timestamp, pd => ReadPropertyValue (pd, columnValueReader, id));
     }
 
-    private object ReadPropertyValue (PropertyDefinition propertyDefinition, IDataReader dataReader, ObjectID id)
+    private object ReadPropertyValue (PropertyDefinition propertyDefinition, IColumnValueProvider columnValueProvider, ObjectID id)
     {
       try
       {
         var storagePropertyDefinition = _persistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
-        return storagePropertyDefinition.Read (dataReader, _ordinalProvider) ?? propertyDefinition.DefaultValue;
+        return storagePropertyDefinition.CombineValue (columnValueProvider) ?? propertyDefinition.DefaultValue;
       }
       catch (Exception e)
       {
