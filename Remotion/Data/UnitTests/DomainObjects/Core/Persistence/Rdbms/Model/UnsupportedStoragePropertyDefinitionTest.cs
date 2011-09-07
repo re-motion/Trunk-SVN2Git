@@ -54,24 +54,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException(typeof(NotSupportedException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void Read ()
     {
       _columnDefinition.Read (MockRepository.GenerateStub<IDataReader>(), MockRepository.GenerateStub<IColumnOrdinalProvider>());
     }
 
     [Test]
-    [ExpectedException(typeof(NotSupportedException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void SplitValue ()
     {
       _columnDefinition.SplitValue (null);
     }
 
     [Test]
-    [ExpectedException(typeof(NotSupportedException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void SplitValueForComparison ()
     {
       _columnDefinition.SplitValueForComparison (null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void CombineValue ()
+    {
+      _columnDefinition.CombineValue (MockRepository.GenerateStub<IColumnValueProvider>());
     }
   }
 }
