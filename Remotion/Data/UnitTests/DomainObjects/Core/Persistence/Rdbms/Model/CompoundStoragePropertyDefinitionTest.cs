@@ -170,5 +170,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       ColumnValueTableTestHelper.CheckTable (expectedTable, result);
     }
+
+    [Test]
+    public void CombineValue ()
+    {
+      var columnValueProviderStub = MockRepository.GenerateStub<IColumnValueProvider> ();
+
+      _property1Stub.Stub (stub => stub.CombineValue (columnValueProviderStub)).Return (2011);
+      _property2Stub.Stub (stub => stub.CombineValue (columnValueProviderStub)).Return (5);
+      _property3Stub.Stub (stub => stub.CombineValue (columnValueProviderStub)).Return (17);
+
+      var result = _compoundStoragePropertyDefinition.CombineValue (columnValueProviderStub);
+
+      Assert.That (result, Is.EqualTo (new DateTime (2011, 5, 17)));
+    }
   }
 }

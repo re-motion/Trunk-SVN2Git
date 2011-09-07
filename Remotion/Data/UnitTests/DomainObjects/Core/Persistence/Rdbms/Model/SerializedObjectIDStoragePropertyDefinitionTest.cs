@@ -32,8 +32,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private IRdbmsStoragePropertyDefinition _serializedIDPropertyStub;
     private SerializedObjectIDStoragePropertyDefinition _serializedObjectIDStoragePropertyDefinition;
+
     private IDataReader _dataReaderStub;
     private IColumnOrdinalProvider _columnOrdinalProviderStub;
+    private IColumnValueProvider _columnValueProviderStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private ColumnDefinition _columnDefinition;
@@ -41,17 +43,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public override void SetUp ()
     {
       base.SetUp();
-
-      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn();
-
+      
       _serializedIDPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       _serializedObjectIDStoragePropertyDefinition = new SerializedObjectIDStoragePropertyDefinition (_serializedIDPropertyStub);
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
+      _columnValueProviderStub = MockRepository.GenerateStub<IColumnValueProvider> ();
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub).Repeat.Once();
+      _columnDefinition = ColumnDefinitionObjectMother.CreateColumn ();
     }
 
     [Test]
@@ -187,6 +189,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _serializedObjectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order2 });
 
       ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
+    }
+
+    [Test]
+    public void CombineValue ()
+    {
+      _serializedIDPropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (DomainObjectIDs.Order1.ToString ());
+
+      var result = _serializedObjectIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
+
+      Assert.That (result, Is.TypeOf (typeof (ObjectID)));
+      Assert.That (((ObjectID) result).Value.ToString (), Is.EqualTo (DomainObjectIDs.Order1.Value.ToString ()));
+      Assert.That (((ObjectID) result).ClassID, Is.EqualTo ("Order"));
+    }
+
+    [Test]
+    public void CombineValue_ValueIsNull_ReturnsNull ()
+    {
+      _serializedIDPropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (null);
+
+      var result = _serializedObjectIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
+
+      Assert.That (result, Is.Null);
     }
 
     [Test]

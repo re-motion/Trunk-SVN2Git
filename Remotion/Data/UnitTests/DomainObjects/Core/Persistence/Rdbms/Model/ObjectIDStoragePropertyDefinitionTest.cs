@@ -41,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     private IDataReader _dataReaderStub;
     private IColumnOrdinalProvider _columnOrdinalProviderStub;
+    private IColumnValueProvider _columnValueProviderStub;
     private IDbDataParameter _dbDataParameter1Stub;
     private IDbDataParameter _dbDataParameter2Stub;
     private IDbCommand _dbCommandStub;
@@ -58,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
+      _columnValueProviderStub = MockRepository.GenerateStub<IColumnValueProvider> ();
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbDataParameter1Stub = MockRepository.GenerateStub<IDbDataParameter>();
       _dbDataParameter2Stub = MockRepository.GenerateStub<IDbDataParameter> ();
@@ -230,6 +232,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _objectIDStoragePropertyDefinition.SplitValuesForComparison (new object[] { null, DomainObjectIDs.Order2 });
 
       ColumnValueTableTestHelper.CheckTable (columnValueTable, result);
+    }
+
+    [Test]
+    public void CombineValue ()
+    {
+      _valuePropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (DomainObjectIDs.Order1.Value);
+      _classIDPropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return ("Order");
+
+      var result = _objectIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
+
+      Assert.That (result, Is.TypeOf (typeof (ObjectID)));
+      Assert.That (((ObjectID) result).Value.ToString (), Is.EqualTo (DomainObjectIDs.Order1.Value.ToString ()));
+      Assert.That (((ObjectID) result).ClassID, Is.EqualTo ("Order"));
+    }
+
+    [Test]
+    public void CombineValue_ValueAndClassIdIsNull_ReturnsNull ()
+    {
+      _valuePropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (null);
+      _classIDPropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).WhenCalled (mi => Assert.Fail ("Should not be called."));
+
+      var result = _objectIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
+      "Incorrect database value encountered. The value CombineValue from 'Column2' must contain null.")]
+    public void CombineValue_ValueIsNullAndClassIDIsNotNull_ThrowsException ()
+    {
+      _classIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _classIDColumnDefinition });
+      _classIDPropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return ("Order");
+
+      _objectIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
+      "Incorrect database value encountered. The value CombineValue from 'Column2' must not contain null.")]
+    public void CombineValue_ValueIsNotNullAndClassIDIsNull_ThrowsException ()
+    {
+      _classIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _classIDColumnDefinition });
+      _valuePropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (DomainObjectIDs.Order1.Value);
+
+      _objectIDStoragePropertyDefinition.CombineValue (_columnValueProviderStub);
     }
 
     [Test]

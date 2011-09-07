@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -131,6 +130,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("values", values);
 
       return _valueProperty.SplitValuesForComparison (values.Select (v => GetValueOrNull ((ObjectID) v)));
+    }
+
+    public object CombineValue (IColumnValueProvider columnValueProvider)
+    {
+      ArgumentUtility.CheckNotNull ("columnValueProvider", columnValueProvider);
+
+      var value = _valueProperty.CombineValue (columnValueProvider);
+      var classID = (string) _classIDProperty.CombineValue (columnValueProvider);
+      if (value == null)
+      {
+        if (classID != null)
+        {
+          throw new RdbmsProviderException (
+              string.Format (
+                  "Incorrect database value encountered. The value read from '{0}' must contain null.",
+                  SeparatedStringBuilder.Build (", ", _classIDProperty.GetColumns (), c => c.Name)));
+        }
+
+        return null;
+      }
+
+      if (classID == null)
+      {
+        throw new RdbmsProviderException (
+            string.Format (
+                "Incorrect database value encountered. The value read from '{0}' must not contain null.",
+                SeparatedStringBuilder.Build (", ", _classIDProperty.GetColumns (), c => c.Name)));
+      }
+
+      return new ObjectID (classID, value);
     }
 
     public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (

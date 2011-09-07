@@ -110,5 +110,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return ColumnValueTable.Combine (
           _properties.Select (p => p.StoragePropertyDefinition.SplitValuesForComparison (valueList.Select (v => p.ValueAccessor (v)))));
     }
+
+    public object CombineValue (IColumnValueProvider columnValueProvider)
+    {
+      ArgumentUtility.CheckNotNull ("columnValueProvider", columnValueProvider);
+      var values = _properties.Select (p => p.StoragePropertyDefinition.CombineValue (columnValueProvider)).ToArray ();
+      return _valueCombinator (values);
+    }
   }
 }

@@ -148,5 +148,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           });
       ColumnValueTableTestHelper.CheckTable (expectedTable, result);
     }
+
+    [Test]
+    public void CombineValue ()
+    {
+      var columnValueProviderStub = MockRepository.GenerateStub<IColumnValueProvider>();
+      columnValueProviderStub.Stub (stub => stub.GetValueForColumn (_innerColumnDefinition)).Return (12);
+
+      var result = _storagePropertyDefinition.CombineValue (columnValueProviderStub);
+
+      Assert.That (result, Is.EqualTo (12));
+    }
   }
 }

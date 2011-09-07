@@ -33,9 +33,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private ClassDefinition _classDefinition;
     private IRdbmsStoragePropertyDefinition _valuePropertyStub;
+
     private ObjectIDWithoutClassIDStoragePropertyDefinition _objectIDWithoutClassIDStorageDefinition;
+
     private IDataReader _dataReaderStub;
     private IColumnOrdinalProvider _columnOrdinalProviderStub;
+    private IColumnValueProvider _columnValueProviderStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
     private ColumnDefinition _valueColumnDefinition;
@@ -54,6 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
+      _columnValueProviderStub = MockRepository.GenerateStub<IColumnValueProvider> ();
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
       _dbCommandStub.Stub (stub => stub.CreateParameter()).Return (_dbDataParameterStub).Repeat.Once();
@@ -226,6 +230,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _objectIDWithoutClassIDStorageDefinition.SplitValuesForComparison (new object[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 })
           .Columns.ToArray();
+    }
+
+    [Test]
+    public void CombineValue ()
+    {
+      _valuePropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (DomainObjectIDs.Order1.Value);
+
+      var result = _objectIDWithoutClassIDStorageDefinition.CombineValue (_columnValueProviderStub);
+
+      Assert.That (result, Is.TypeOf (typeof (ObjectID)));
+      Assert.That (((ObjectID) result).Value.ToString (), Is.EqualTo (DomainObjectIDs.Order1.Value.ToString ()));
+      Assert.That (((ObjectID) result).ClassDefinition, Is.SameAs (_classDefinition));
+    }
+
+    [Test]
+    public void CombineValue_ValueIsNull_ReturnsNull ()
+    {
+      _valuePropertyStub.Stub (stub => stub.CombineValue (_columnValueProviderStub)).Return (null);
+
+      var result = _objectIDWithoutClassIDStorageDefinition.CombineValue (_columnValueProviderStub);
+
+      Assert.That (result, Is.Null);
     }
 
     [Test]

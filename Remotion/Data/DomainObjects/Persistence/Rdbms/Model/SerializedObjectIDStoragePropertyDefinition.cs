@@ -94,6 +94,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _serializedIDProperty.SplitValuesForComparison (values.Select (v => (object) GetStringOrNull ((ObjectID) v)));
     }
 
+    public object CombineValue (IColumnValueProvider columnValueProvider)
+    {
+      ArgumentUtility.CheckNotNull ("columnValueProvider", columnValueProvider);
+
+      var value = _serializedIDProperty.CombineValue (columnValueProvider);
+      if (value == null)
+        return null;
+      return ObjectID.Parse ((string) value);
+    }
+
     public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (Func<IEnumerable<ColumnDefinition>, string> nameProvider, EntityNameDefinition referencedTableName, ObjectIDStoragePropertyDefinition referencedObjectIDProperty)
     {
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);

@@ -78,5 +78,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       throw new NotSupportedException();
     }
+
+    public object CombineValue (IColumnValueProvider columnValueProvider)
+    {
+      throw new NotSupportedException();
+    }
   }
 }

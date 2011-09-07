@@ -118,6 +118,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _valueProperty.SplitValuesForComparison (innerValues);
     }
 
+    public object CombineValue (IColumnValueProvider columnValueProvider)
+    {
+      ArgumentUtility.CheckNotNull ("columnValueProvider", columnValueProvider);
+
+      var value = _valueProperty.CombineValue (columnValueProvider);
+      if (value == null)
+        return null;
+      return new ObjectID (_classDefinition, value);
+    }
+
     public ForeignKeyConstraintDefinition CreateForeignKeyConstraint (
         Func<IEnumerable<ColumnDefinition>, string> nameProvider,
         EntityNameDefinition referencedTableName,

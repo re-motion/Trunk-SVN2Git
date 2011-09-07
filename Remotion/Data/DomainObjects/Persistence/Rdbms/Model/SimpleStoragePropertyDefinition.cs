@@ -88,5 +88,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           EnumerableUtility.Singleton (_columnDefinition), 
           values.Select (v => new ColumnValueTable.Row (EnumerableUtility.Singleton (v))));
     }
+
+    public object CombineValue (IColumnValueProvider columnValueProvider)
+    {
+      ArgumentUtility.CheckNotNull ("columnValueProvider", columnValueProvider);
+      return columnValueProvider.GetValueForColumn (_columnDefinition);
+    }
   }
 }
