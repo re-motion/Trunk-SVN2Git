@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Data;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using System.Linq;
@@ -59,15 +57,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
       return EnumerableUtility.Singleton (_columnDefinition);
-    }
-
-    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
-    {
-      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
-      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
-
-      int ordinal = ordinalProvider.GetOrdinal (_columnDefinition, dataReader);
-      return _columnDefinition.StorageTypeInfo.Read (dataReader, ordinal);
     }
 
     public IEnumerable<ColumnValue> SplitValue (object value)

@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Data;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -53,14 +51,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
-      throw new NotSupportedException();
-    }
-
-    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
-    {
-      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
-      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
-
       throw new NotSupportedException();
     }
 

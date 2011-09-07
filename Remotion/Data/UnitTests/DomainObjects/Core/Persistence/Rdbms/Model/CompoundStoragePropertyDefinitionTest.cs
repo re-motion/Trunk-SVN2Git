@@ -16,10 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
@@ -84,21 +82,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _compoundStoragePropertyDefinition.GetColumnsForComparison ();
 
       Assert.That (result, Is.EqualTo (new[] { _columnDefinition1, _columnDefinition2, _columnDefinition3 }));
-    }
-
-    [Test]
-    public void Read ()
-    {
-      var dataReaderStub = MockRepository.GenerateStub<IDataReader>();
-      var columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
-
-      _property1Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (2011);
-      _property2Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (5);
-      _property3Stub.Stub (stub => stub.Read (dataReaderStub, columnOrdinalProviderStub)).Return (17);
-
-      var result = _compoundStoragePropertyDefinition.Read (dataReaderStub, columnOrdinalProviderStub);
-
-      Assert.That (result, Is.EqualTo (new DateTime (2011, 5, 17)));
     }
 
     [Test]

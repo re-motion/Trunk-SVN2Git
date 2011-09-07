@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Data;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -60,17 +58,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return _serializedIDProperty.GetColumns();
-    }
-
-    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
-    {
-      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
-      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
-
-      var value = _serializedIDProperty.Read (dataReader, ordinalProvider);
-      if (value == null)
-        return null;
-      return ObjectID.Parse ((string) value);
     }
 
     public IEnumerable<ColumnValue> SplitValue (object value)

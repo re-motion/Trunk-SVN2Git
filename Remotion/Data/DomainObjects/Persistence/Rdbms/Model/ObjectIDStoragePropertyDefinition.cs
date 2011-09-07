@@ -16,9 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -76,37 +74,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
       return _valueProperty.GetColumns().Concat (_classIDProperty.GetColumns());
-    }
-
-    public object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider)
-    {
-      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
-      ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
-
-      var value = _valueProperty.Read (dataReader, ordinalProvider);
-      var classID = (string) _classIDProperty.Read (dataReader, ordinalProvider);
-      if (value == null)
-      {
-        if (classID != null)
-        {
-          throw new RdbmsProviderException (
-              string.Format (
-                  "Incorrect database value encountered. The value read from '{0}' must contain null.",
-                  SeparatedStringBuilder.Build (", ", _classIDProperty.GetColumns(), c => c.Name)));
-        }
-
-        return null;
-      }
-
-      if (classID == null)
-      {
-        throw new RdbmsProviderException (
-            string.Format (
-                "Incorrect database value encountered. The value read from '{0}' must not contain null.",
-                SeparatedStringBuilder.Build (", ", _classIDProperty.GetColumns(), c => c.Name)));
-      }
-
-      return new ObjectID (classID, value);
     }
 
     public IEnumerable<ColumnValue> SplitValue (object value)

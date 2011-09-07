@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
@@ -51,13 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumnsForComparison ()
     {
       _columnDefinition.GetColumnsForComparison();
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void Read ()
-    {
-      _columnDefinition.Read (MockRepository.GenerateStub<IDataReader>(), MockRepository.GenerateStub<IColumnOrdinalProvider>());
     }
 
     [Test]

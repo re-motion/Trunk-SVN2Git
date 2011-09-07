@@ -20,7 +20,6 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
@@ -39,8 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     private ObjectIDStoragePropertyDefinition _objectIDStoragePropertyDefinition;
 
-    private IDataReader _dataReaderStub;
-    private IColumnOrdinalProvider _columnOrdinalProviderStub;
     private IColumnValueProvider _columnValueProviderStub;
     private IDbDataParameter _dbDataParameter1Stub;
     private IDbDataParameter _dbDataParameter2Stub;
@@ -57,8 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _classIDPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       _objectIDStoragePropertyDefinition = new ObjectIDStoragePropertyDefinition (_valuePropertyStub, _classIDPropertyStub);
 
-      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
-      _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
       _columnValueProviderStub = MockRepository.GenerateStub<IColumnValueProvider> ();
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbDataParameter1Stub = MockRepository.GenerateStub<IDbDataParameter>();
@@ -104,49 +99,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _classIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _classIDColumnDefinition });
 
       Assert.That (_objectIDStoragePropertyDefinition.GetColumns(), Is.EqualTo (new[] { _valueColumnDefinition, _classIDColumnDefinition }));
-    }
-
-    [Test]
-    public void Read ()
-    {
-      _valuePropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
-      _classIDPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return ("Order");
-      
-      var result = _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
-
-      Assert.That (result, Is.TypeOf (typeof (ObjectID)));
-      Assert.That (((ObjectID) result).Value.ToString(), Is.EqualTo (DomainObjectIDs.Order1.Value.ToString()));
-      Assert.That (((ObjectID) result).ClassID, Is.EqualTo ("Order"));
-    }
-
-    [Test]
-    public void Read_ValueAndClassIdIsNull_ReturnsNull ()
-    {
-      var result = _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
-
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
-      "Incorrect database value encountered. The value read from 'Column2' must contain null.")]
-    public void Read_ValueIsNullAndClassIDIsNotNull_ThrowsException ()
-    {
-      _classIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _classIDColumnDefinition });
-      _classIDPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return ("Order");
-
-      _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
-    }
-
-    [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
-      "Incorrect database value encountered. The value read from 'Column2' must not contain null.")]
-    public void Read_ValueIsNotNullAndClassIDIsNull_ThrowsException ()
-    {
-      _classIDPropertyStub.Stub (stub => stub.GetColumns()).Return (new[] { _classIDColumnDefinition });
-      _valuePropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.Value);
-
-      _objectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
     }
 
     [Test]

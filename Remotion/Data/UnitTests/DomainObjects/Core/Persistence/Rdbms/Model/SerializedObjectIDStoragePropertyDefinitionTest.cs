@@ -20,7 +20,6 @@ using System.Data;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
@@ -33,8 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private IRdbmsStoragePropertyDefinition _serializedIDPropertyStub;
     private SerializedObjectIDStoragePropertyDefinition _serializedObjectIDStoragePropertyDefinition;
 
-    private IDataReader _dataReaderStub;
-    private IColumnOrdinalProvider _columnOrdinalProviderStub;
     private IColumnValueProvider _columnValueProviderStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
@@ -47,8 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _serializedIDPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
       _serializedObjectIDStoragePropertyDefinition = new SerializedObjectIDStoragePropertyDefinition (_serializedIDPropertyStub);
 
-      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
-      _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
       _columnValueProviderStub = MockRepository.GenerateStub<IColumnValueProvider> ();
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter>();
@@ -86,28 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _serializedIDPropertyStub.Stub (stub => stub.GetColumns ()).Return (new[] { _columnDefinition });
       Assert.That (_serializedObjectIDStoragePropertyDefinition.GetColumns(), Is.EqualTo (_serializedIDPropertyStub.GetColumns()));
-    }
-
-    [Test]
-    public void Read ()
-    {
-      _serializedIDPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (DomainObjectIDs.Order1.ToString());
-
-      var result = _serializedObjectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
-
-      Assert.That (result, Is.TypeOf (typeof (ObjectID)));
-      Assert.That (((ObjectID) result).Value.ToString(), Is.EqualTo (DomainObjectIDs.Order1.Value.ToString()));
-      Assert.That (((ObjectID) result).ClassID, Is.EqualTo ("Order"));
-    }
-
-    [Test]
-    public void Read_ValueIsNull_ReturnsNull ()
-    {
-      _serializedIDPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (null);
-
-      var result = _serializedObjectIDStoragePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
-
-      Assert.That (result, Is.Null);
     }
 
     [Test]

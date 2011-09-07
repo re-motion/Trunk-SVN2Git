@@ -17,7 +17,6 @@
 using System;
 using System.Data;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
@@ -31,8 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ColumnDefinition _innerColumnDefinition;
     private SimpleStoragePropertyDefinition _storagePropertyDefinition;
 
-    private IDataReader _dataReaderStub;
-    private IColumnOrdinalProvider _columnOrdinalProviderStub;
     private IDbCommand _dbCommandStub;
     private IDbDataParameter _dbDataParameterStub;
 
@@ -43,8 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _innerColumnDefinition = ColumnDefinitionObjectMother.CreateColumn (_storageTypeInformationStub);
       _storagePropertyDefinition = new SimpleStoragePropertyDefinition (typeof (string), _innerColumnDefinition);
 
-      _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
-      _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand>();
       _dbDataParameterStub = MockRepository.GenerateStub<IDbDataParameter> ();
       _dbCommandStub.Stub (stub => stub.CreateParameter ()).Return (_dbDataParameterStub);
@@ -66,17 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumnsForComparison ()
     {
       Assert.That (_storagePropertyDefinition.GetColumnsForComparison(), Is.EqualTo (new[] { _innerColumnDefinition }));
-    }
-
-    [Test]
-    public void Read ()
-    {
-      _columnOrdinalProviderStub.Stub (stub => stub.GetOrdinal (_innerColumnDefinition, _dataReaderStub)).Return (5);
-      _storageTypeInformationStub.Stub (mock => mock.Read (_dataReaderStub, 5)).Return ("converted");
-
-      var result = _storagePropertyDefinition.Read (_dataReaderStub, _columnOrdinalProviderStub);
-
-      Assert.That (result, Is.EqualTo ("converted"));
     }
 
     [Test]

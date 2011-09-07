@@ -16,9 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -32,7 +30,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     IEnumerable<ColumnDefinition> GetColumns ();
     IEnumerable<ColumnDefinition> GetColumnsForComparison ();
 
-    object Read (IDataReader dataReader, IColumnOrdinalProvider ordinalProvider);
     IEnumerable<ColumnValue> SplitValue (object value);
     IEnumerable<ColumnValue> SplitValueForComparison (object value);
     ColumnValueTable SplitValuesForComparison (IEnumerable<object> values);
