@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       if (dataReader.Read())
-        return CreateDataContainerFromReader (dataReader);
+        return CreateDataContainerFromReader (dataReader, new ColumnValueReader (dataReader, _ordinalProvider));
       else
         return null;
     }
@@ -88,15 +88,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
+      var columnValueReader = new ColumnValueReader (dataReader, _ordinalProvider);
       while (dataReader.Read())
-        yield return CreateDataContainerFromReader (dataReader);
+      {
+        yield return CreateDataContainerFromReader (dataReader, columnValueReader);
+      }
     }
 
-    protected virtual DataContainer CreateDataContainerFromReader (IDataReader dataReader)
+    protected virtual DataContainer CreateDataContainerFromReader (IDataReader dataReader, ColumnValueReader columnValueReader)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
-
-      var columnValueReader = new ColumnValueReader (dataReader, _ordinalProvider);
 
       var id = (ObjectID) _idProperty.CombineValue (columnValueReader);
       if (id == null)

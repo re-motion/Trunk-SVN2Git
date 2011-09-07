@@ -30,9 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
   [TestFixture]
   public class TimestampReaderTest : StandardMappingTest
   {
-    private IDataReader _dataReaderStub;
-    private IRdbmsStoragePropertyDefinition _idPropertyStub;
-    private IRdbmsStoragePropertyDefinition _timestampStub;
+    private IDataReader _dataReaderStrictMock;
+    private IRdbmsStoragePropertyDefinition _idPropertyStrictMock;
+    private IRdbmsStoragePropertyDefinition _timestampStrictMock;
+
     private IColumnOrdinalProvider _columnOrdinalProviderStub;
 
     private TimestampReader _reader;
@@ -44,12 +45,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     {
       base.SetUp();
 
-      _dataReaderStub = MockRepository.GenerateStub<IDataReader> ();
-      _idPropertyStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      _timestampStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
+      _dataReaderStrictMock = MockRepository.GenerateStrictMock<IDataReader> ();
+      _idPropertyStrictMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition>();
+      _timestampStrictMock = MockRepository.GenerateStrictMock<IRdbmsStoragePropertyDefinition>();
       _columnOrdinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
 
-      _reader = new TimestampReader (_idPropertyStub, _timestampStub, _columnOrdinalProviderStub);
+      _reader = new TimestampReader (_idPropertyStrictMock, _timestampStrictMock, _columnOrdinalProviderStub);
 
       _fakeObjectIDResult = new ObjectID (typeof (Order), Guid.NewGuid ());
       _fakeTimestampResult = new object();
@@ -58,33 +59,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void Read_DataReaderReadFalse ()
     {
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (false);
+      _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (false);
+      ReplayAll();
 
-      var result = _reader.Read (_dataReaderStub);
+      var result = _reader.Read (_dataReaderStrictMock);
 
+      VerifyAll();
       Assert.That (result, Is.Null);
     }
 
     [Test]
     public void Read_DataReaderReadTrue_NullValue ()
     {
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (null);
+      _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true).Repeat.Once ();
+      _idPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (null)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]));
+      ReplayAll();
 
-      var result = _reader.Read (_dataReaderStub);
+      var result = _reader.Read (_dataReaderStrictMock);
 
+      VerifyAll();
       Assert.That (result, Is.Null);
     }
 
     [Test]
     public void Read_DataReaderReadTrue_NonNullValue ()
     {
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_fakeObjectIDResult);
-      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_fakeTimestampResult);
+      _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true).Repeat.Once ();
+      _idPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (_fakeObjectIDResult)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]));
+      _timestampStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (_fakeTimestampResult)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]));
+      ReplayAll();
       
-      var result = _reader.Read (_dataReaderStub);
+      var result = _reader.Read (_dataReaderStrictMock);
 
+      VerifyAll();
       Assert.That (result, Is.EqualTo (Tuple.Create(_fakeObjectIDResult, _fakeTimestampResult)));
     }
 
@@ -94,16 +110,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       var fakeObjectIDResult2 = new ObjectID (typeof (OrderItem), Guid.NewGuid ());
       var fakeTimestampResult2 = new object ();
 
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (true).Repeat.Times (3);
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_fakeObjectIDResult).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (null).Repeat.Once ();
-      _idPropertyStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (fakeObjectIDResult2).Repeat.Once ();
-      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (_fakeTimestampResult).Repeat.Once();
-      _timestampStub.Stub (stub => stub.Read (_dataReaderStub, _columnOrdinalProviderStub)).Return (fakeTimestampResult2).Repeat.Once();
-      
-      var result = _reader.ReadSequence (_dataReaderStub).ToArray ();
+      _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true).Repeat.Times (3);
+      _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (false).Repeat.Once ();
 
+      _idPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (_fakeObjectIDResult)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+          .Repeat.Once ();
+      _idPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (null)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+          .Repeat.Once ();
+      _idPropertyStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+          .Return (fakeObjectIDResult2)
+          .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+          .Repeat.Once ();
+      _timestampStrictMock
+        .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+        .Return (_fakeTimestampResult)
+        .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+        .Repeat.Once();
+      _timestampStrictMock
+          .Expect (mock => mock.CombineValue (Arg<IColumnValueProvider>.Is.Anything))
+        .WhenCalled (mi => CheckColumnValueReader ((ColumnValueReader) mi.Arguments[0]))
+          .Return (fakeTimestampResult2)
+          .Repeat.Once();
+      ReplayAll();
+      
+      var result = _reader.ReadSequence (_dataReaderStrictMock).ToArray ();
+
+      VerifyAll();
       Assert.That (result.Length, Is.EqualTo (3));
       Assert.That (result[0], Is.EqualTo (Tuple.Create (_fakeObjectIDResult, _fakeTimestampResult)));
       Assert.That (result[1], Is.Null);
@@ -113,11 +152,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void ReadSequence_NoData ()
     {
-      _dataReaderStub.Stub (stub => stub.Read ()).Return (false).Repeat.Once ();
+      _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (false).Repeat.Once ();
+      ReplayAll();
 
-      var result = _reader.ReadSequence (_dataReaderStub);
+      var result = _reader.ReadSequence (_dataReaderStrictMock).ToArray();
 
+      VerifyAll();
       Assert.That (result, Is.Empty);
     }
+
+    private void ReplayAll()
+    {
+      _dataReaderStrictMock.Replay();
+      _idPropertyStrictMock.Replay();
+      _timestampStrictMock.Replay();
+    }
+
+    private void VerifyAll()
+    {
+      _dataReaderStrictMock.VerifyAllExpectations();
+      _idPropertyStrictMock.VerifyAllExpectations();
+      _timestampStrictMock.VerifyAllExpectations();
+    }
+
+    private void CheckColumnValueReader (ColumnValueReader columnValueReader)
+    {
+      Assert.That (columnValueReader.DataReader, Is.SameAs (_dataReaderStrictMock));
+      Assert.That (columnValueReader.ColumnOrdinalProvider, Is.SameAs (_columnOrdinalProviderStub));
+    }
+ 
   }
 }

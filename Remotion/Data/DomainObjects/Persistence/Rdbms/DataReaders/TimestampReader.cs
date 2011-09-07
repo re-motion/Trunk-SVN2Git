@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
       if (dataReader.Read ())
-        return GetTimestampTuple(dataReader);
+        return GetTimestampTuple (new ColumnValueReader (dataReader, _columnOrdinalProvider));
       else
         return null;
     }
@@ -75,17 +75,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
+      var columnValueProvider = new ColumnValueReader (dataReader, _columnOrdinalProvider);
       while (dataReader.Read ())
-        yield return GetTimestampTuple (dataReader);
+      {
+        yield return GetTimestampTuple (columnValueProvider);
+      }
     }
 
-    private Tuple<ObjectID, object> GetTimestampTuple (IDataReader dataReader)
+    private Tuple<ObjectID, object> GetTimestampTuple (IColumnValueProvider columnValueProvider)
     {
-      var objectIDValue = (ObjectID) _idProperty.Read (dataReader, _columnOrdinalProvider);
+      var objectIDValue = (ObjectID) _idProperty.CombineValue (columnValueProvider);
       if (objectIDValue == null)
         return null;
 
-      var timestampValue = _timestampProperty.Read (dataReader, _columnOrdinalProvider);
+      var timestampValue = _timestampProperty.CombineValue (columnValueProvider);
       return Tuple.Create (objectIDValue, timestampValue);
     }
   }
