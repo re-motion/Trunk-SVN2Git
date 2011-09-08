@@ -267,8 +267,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void UpdateTimestamps_SingleID ()
     {
-      SetDatabaseModifyable();
-
       var dataContainer = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee1);
 
       _testHelper.ExpectExecuteReader (
@@ -286,8 +284,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void UpdateTimestamps_MultipleIDs_SameTable ()
     {
-      SetDatabaseModifyable();
-
       var dataContainer1 = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee1);
       var dataContainer2 = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee2);
 
@@ -306,8 +302,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void UpdateTimestamps_MultipleIDs_MultipleTables ()
     {
-      SetDatabaseModifyable();
-
       var dataContainer1 = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee1);
       var dataContainer2 = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee2);
       var dataContainer3 = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Customer1);
