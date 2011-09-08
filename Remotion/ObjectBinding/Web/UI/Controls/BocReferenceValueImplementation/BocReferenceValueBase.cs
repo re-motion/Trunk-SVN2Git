@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -65,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// <summary> The command rendered for this reference value. </summary>
     private readonly SingleControlItemCollection _command;
 
-    private string _errorMessage;
+    private string _requiredFieldErrorMessage;
     private readonly ArrayList _validators;
     private string _optionsTitle;
     private bool _showOptionsMenu = true;
@@ -201,20 +202,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
     ///   In case of the default value, the text is read from the resources for this control.
     /// </value>
-    [Description ("Validation message displayed if there is an error.")]
+    [Description ("Validation message displayed if the value is not set but the control is required.")]
     [Category ("Validator")]
     [DefaultValue ("")]
-    public string ErrorMessage
+    public string RequiredFieldErrorMessage
     {
-      get { return _errorMessage; }
+      get { return _requiredFieldErrorMessage; }
       set
       {
-        _errorMessage = value;
-        for (int i = 0; i < _validators.Count; i++)
-        {
-          BaseValidator validator = (BaseValidator) _validators[i];
-          validator.ErrorMessage = _errorMessage;
-        }
+        _requiredFieldErrorMessage = value;
+        foreach (var validator in _validators.OfType<RequiredFieldValidator>())
+          validator.ErrorMessage = _requiredFieldErrorMessage;
       }
     }
 
@@ -313,6 +311,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
       set { _hiddenMenuItems = value; }
     }
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public abstract string ValidationValue { get;}
 
     /// <summary>
     ///   Gets the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the selected 
@@ -687,9 +690,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         return;
       base.LoadResources (resourceManager);
 
-      string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (RequiredFieldErrorMessage);
       if (!string.IsNullOrEmpty (key))
-        ErrorMessage = resourceManager.GetString (key);
+        RequiredFieldErrorMessage = resourceManager.GetString (key);
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -720,7 +723,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected abstract IResourceManager GetResourceManager ();
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValueBase/CreateValidators/*' />
+    /// <CreateValidators>
+    ///   <remarks>
+    ///     Generates a <see cref="RequiredFieldValidator"/> checking that the selected item is not the null-item if the
+    ///     control is in edit mode and input is required.
+    ///   </remarks>
+    ///   <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
+    /// </CreateValidators>
     public override BaseValidator[] CreateValidators ()
     {
       if (IsReadOnly || !IsRequired)
@@ -731,10 +740,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       RequiredFieldValidator notNullItemValidator = new RequiredFieldValidator ();
       notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
       notNullItemValidator.ControlToValidate = ID;
-      if (string.IsNullOrEmpty (ErrorMessage))
+      if (string.IsNullOrEmpty (RequiredFieldErrorMessage))
         notNullItemValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
       else
-        notNullItemValidator.ErrorMessage = ErrorMessage;
+        notNullItemValidator.ErrorMessage = RequiredFieldErrorMessage;
       validators[0] = notNullItemValidator;
 
       _validators.AddRange (validators);

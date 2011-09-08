@@ -702,7 +702,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void CreateValidatorsReadOnly ()
     {
-      _control.ErrorMessage = "ErrorMessage";
+      _control.RequiredFieldErrorMessage = "RequiredFieldErrorMessage";
       _control.ReadOnly = true;
       _control.Required = true;
       BaseValidator[] validators = _control.CreateValidators();
@@ -712,7 +712,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void CreateValidatorsNotRequired ()
     {
-      _control.ErrorMessage = "ErrorMessage";
+      _control.RequiredFieldErrorMessage = "RequiredFieldErrorMessage";
       _control.ReadOnly = false;
       _control.Required = false;
       BaseValidator[] validators = _control.CreateValidators();
@@ -722,7 +722,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void CreateValidatorsEditableRequired ()
     {
-      _control.ErrorMessage = "ErrorMessage";
+      _control.RequiredFieldErrorMessage = "RequiredFieldErrorMessage";
       _control.ReadOnly = false;
       _control.Required = true;
       BaseValidator[] validators = _control.CreateValidators();
@@ -760,6 +760,36 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       ((IPostBackDataHandler) _control).RaisePostDataChangedEvent();
 
       Assert.That (!eventHandlerCalled);
+    }
+
+    [Test]
+    public void GetValidationValue_ValueSet ()
+    {
+        var value = TypeWithReference.Create ("Name");
+      _control.Value = (IBusinessObjectWithIdentity) value;
+
+      Assert.That (_control.ValidationValue, Is.EqualTo (value.UniqueIdentifier + "\n" + value.DisplayName));
+    }
+
+    [Test]
+    public void GetValidationValue_ValueNull ()
+    {
+      _control.Value = null;
+
+      Assert.That (_control.ValidationValue, Is.Null);
+    }
+
+    [Test]
+    public void GetValidationValue_UniqueIdentifierNull ()
+    {
+      var businessObjectWithIdentityStub = MockRepository.GenerateStub<IBusinessObjectWithIdentity>();
+      businessObjectWithIdentityStub.Stub (stub => stub.UniqueIdentifier).Return (null);
+      businessObjectWithIdentityStub.Stub (stub => stub.DisplayName).Return ("Name");
+      businessObjectWithIdentityStub.Stub (stub => stub.DisplayNameSafe).Return ("Name");
+
+      _control.Value = businessObjectWithIdentityStub;
+
+      Assert.That (_control.ValidationValue, Is.EqualTo ("\nName"));
     }
   }
 }

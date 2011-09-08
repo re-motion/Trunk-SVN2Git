@@ -113,10 +113,10 @@
           <description>Resource Identifier</description>
         </listheader>
         <item>
-          <term> <see cref="BocReferenceValueBase.ErrorMessage"/> </term>
+          <term> <see cref="BocReferenceValueBase.RequiredFieldErrorMessage"/> </term>
           <description>
-            <para> &lt;BocReferenceValue Resource ID&gt;:ErrorMessage </para>
-            <para> e.g. auto:MyBocReferenceValue:ErrorMessage </para>
+            <para> &lt;BocReferenceValue Resource ID&gt;:RequiredFieldErrorMessage </para>
+            <para> e.g. auto:MyBocReferenceValue:RequiredFieldErrorMessage </para>
           </description>
         </item>
         <item>

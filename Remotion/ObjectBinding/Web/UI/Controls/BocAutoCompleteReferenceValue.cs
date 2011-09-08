@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -36,7 +37,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  [ValidationProperty ("BusinessObjectUniqueIdentifier")]
+  [ValidationProperty ("ValidationValue")]
   [DefaultEvent ("SelectionChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
   [Designer (typeof (BocDesigner))]
@@ -83,6 +84,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private int _selectionUpdateDelay = 200;
     private SearchAvailableObjectWebServiceContext _webServiceContextFromPreviousLifeCycle = SearchAvailableObjectWebServiceContext.Create (null, null, null);
     private IBuildManager _buildManager = new BuildManagerWrapper();
+    private readonly ArrayList _validators;
 
     // construction and disposing
 
@@ -91,6 +93,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _commonStyle = new Style();
       _textBoxStyle = new SingleRowTextBoxStyle();
       _labelStyle = new Style();
+      _validators = new ArrayList();
 
       EnableIcon = true;
       ShowOptionsMenu = true;
@@ -245,6 +248,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var renderer = CreateRenderer();
       renderer.Render (CreateRenderingContext(writer));
+    }
+
+    public override BaseValidator[] CreateValidators ()
+    {
+      var baseValidators = base.CreateValidators();
+      if (IsReadOnly)
+        return baseValidators;
+
+      var invalidDisplayNameValidator = new BocAutoCompleteReferenceValueInvalidDisplayNameValidator();
+      invalidDisplayNameValidator.ID = ID + "_ValidatorValidDisplayName";
+      invalidDisplayNameValidator.ControlToValidate = ID;
+      invalidDisplayNameValidator.ErrorMessage = "The entered text does not correspond to an item. Please correct your input.";
+
+      _validators.Add (invalidDisplayNameValidator);
+
+      return baseValidators.Concat (new[] { invalidDisplayNameValidator }).ToArray();
     }
 
     protected virtual IBocAutoCompleteReferenceValueRenderer CreateRenderer ()
@@ -558,6 +577,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _args; }
       set { _args = value; }
+    }
+
+    public override string ValidationValue
+    {
+      get
+      {
+        if (InternalValue == null && _displayName == null)
+          return null;
+
+        return string.Format ("{0}\n{1}", InternalValue, _displayName); 
+      }
     }
 
     [EditorBrowsable (EditorBrowsableState.Advanced)]

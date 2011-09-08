@@ -470,5 +470,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.AreEqual (value, _businessObject.ReferenceValue);
       Assert.IsFalse (_bocReferenceValue.IsDirty);
     }
+
+    [Test]
+    public void GetValidationValue_ValueSet ()
+    {
+        var value = TypeWithReference.Create ("Name");
+      _bocReferenceValue.Value = (IBusinessObjectWithIdentity) value;
+
+      Assert.That (_bocReferenceValue.ValidationValue, Is.EqualTo (value.UniqueIdentifier));
+    }
+
+    [Test]
+    public void GetValidationValue_ValueNull ()
+    {
+      _bocReferenceValue.Value = null;
+
+      Assert.That (_bocReferenceValue.ValidationValue, Is.Null);
+    }
   }
 }

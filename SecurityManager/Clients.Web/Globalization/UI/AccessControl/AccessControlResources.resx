@@ -123,7 +123,7 @@
   <data name="auto:MissingStateCombinationsValidator:ErrorMessage" xml:space="preserve">
     <value>Please assign at least one state.</value>
   </data>
-  <data name="auto:SpecificTenantField:ErrorMessage" xml:space="preserve">
+  <data name="auto:SpecificTenantField:RequiredFieldErrorMessage" xml:space="preserve">
     <value>Please select a tenant.</value>
   </data>
   <data name="DeleteAccessControlEntryButton:Text" xml:space="preserve">
@@ -159,16 +159,16 @@
   <data name="StatelessAccessControlListTitle" xml:space="preserve">
     <value>Class-based permissions</value>
   </data>
-  <data name="auto:SpecificGroupField:ErrorMessage" xml:space="preserve">
+  <data name="auto:SpecificGroupField:RequiredFieldErrorMessage" xml:space="preserve">
     <value>Please select a group.</value>
   </data>
-  <data name="auto:SpecificGroupTypeField:ErrorMessage" xml:space="preserve">
+  <data name="auto:SpecificGroupTypeField:RequiredFieldErrorMessage" xml:space="preserve">
     <value>Please select a group type.</value>
   </data>
-  <data name="auto:SpecificPositionField:ErrorMessage" xml:space="preserve">
+  <data name="auto:SpecificPositionField:RequiredFieldErrorMessage" xml:space="preserve">
     <value>Please select a position.</value>
   </data>
-  <data name="auto:SpecificUserField:ErrorMessage" xml:space="preserve">
+  <data name="auto:SpecificUserField:RequiredFieldErrorMessage" xml:space="preserve">
     <value>Please select a user.</value>
   </data>
   <data name="CollapseAccessControlEntryButton:Text" xml:space="preserve">

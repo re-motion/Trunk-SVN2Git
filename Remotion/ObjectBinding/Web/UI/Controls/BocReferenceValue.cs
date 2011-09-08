@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -35,9 +34,9 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary> This control can be used to display or edit reference values. </summary>
-  /// <include file='doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/Class/*' />
   // TODO: see "Doc\Bugs and ToDos.txt"
-  [ValidationProperty ("BusinessObjectUniqueIdentifier")]
+  [ValidationProperty ("ValidationValue")]
   [DefaultEvent ("SelectionChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
   [Designer (typeof (BocReferenceValueDesigner))]
@@ -689,6 +688,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _enableSelectStatement; }
       set { _enableSelectStatement = value; }
+    }
+
+    public override string ValidationValue
+    {
+      get { return InternalValue; }
     }
 
     /// <summary> Gets the evaluated value for the <see cref="EnableSelectStatement"/> property. </summary>

@@ -200,6 +200,7 @@
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocRowEditModeColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\NullColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\BocAutoCompleteReferenceValueInvalidDisplayNameValidator.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRendererBase.cs" />
