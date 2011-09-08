@@ -138,6 +138,7 @@
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <Compile Include="Design\DesignTimeThemedResourceUrl.cs" />
     <Compile Include="Design\DesignTimeResourceUrl.cs" />
+    <Compile Include="Infrastructure\IBuildManager.cs" />
     <Compile Include="StaticResourceUrl.cs" />
     <Compile Include="IResourceUrlFactory.cs" />
     <Compile Include="Factories\ResourceUrlFactory.cs">
@@ -253,6 +254,7 @@
     <Compile Include="UI\Controls\WebTreeViewImplementation\IWebTreeView.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\WebTreeViewRenderer.cs" />
     <Compile Include="UI\Controls\WebUpdatePanelRenderMode.cs" />
+    <Compile Include="Infrastructure\BuildManagerWrapper.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />

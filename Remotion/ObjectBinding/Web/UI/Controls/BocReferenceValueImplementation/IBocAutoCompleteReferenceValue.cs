@@ -38,6 +38,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     int DropDownDisplayDelay { get; }
     int DropDownRefreshDelay { get; }
     int SelectionUpdateDelay { get; }
-    string Args { get; }
   }
 }

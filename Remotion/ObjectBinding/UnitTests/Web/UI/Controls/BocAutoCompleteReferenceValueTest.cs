@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Specialized;
 using System.Web;
+using System.Web.Script.Services;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
@@ -25,7 +27,9 @@ using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -47,6 +51,42 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       public IBusinessObjectWithIdentity GetObject (BindableObjectClassWithIdentity classWithIdentity, string uniqueIdentifier)
       {
         return _objectToReturn;
+      }
+    }
+
+    [WebService]
+    [ScriptService]
+    private class FakeSearchAvailableObjectWebService : WebService, ISearchAvailableObjectWebService
+    {
+      [WebMethod]
+      [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
+      public BusinessObjectWithIdentityProxy[] Search (
+          string prefixText, 
+          int? completionSetCount, 
+          string businessObjectClass,
+          string businessObjectProperty, 
+          string businessObjectID, 
+          string args)
+      {
+        return new BusinessObjectWithIdentityProxy[0];
+      }
+    }
+    
+    [WebService]
+    [ScriptService]
+    private class FakeSearchAvailableObjectWebServiceWithResult : WebService, ISearchAvailableObjectWebService
+    {
+      [WebMethod]
+      [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
+      public BusinessObjectWithIdentityProxy[] Search (
+          string prefixText, 
+          int? completionSetCount, 
+          string businessObjectClass,
+          string businessObjectProperty, 
+          string businessObjectID, 
+          string args)
+      {
+        return new[] { new BusinessObjectWithIdentityProxy() { DisplayName = "ValidName", UniqueIdentifier = "ValidIdentifier" } };
       }
     }
 
@@ -287,22 +327,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.That (state is object[]);
 
       object[] stateArray = (object[]) state;
-      Assert.That (stateArray.Length, Is.EqualTo (3));
+      Assert.That (stateArray.Length, Is.EqualTo (4));
 
       Assert.That (stateArray[1], Is.EqualTo (_control.Value.UniqueIdentifier));
       Assert.That (stateArray[2], Is.EqualTo (_control.Value.DisplayName));
+      Assert.That (stateArray[3], Is.InstanceOf<SearchAvailableObjectWebServiceContext>());
     }
 
     [Test]
     public void LoadControlState ()
     {
       object parentState = ((object[]) _control.SaveControlState())[0];
-      object[] state = new object[3];
+      object[] state = new object[4];
 
       Guid uniqueIdentifier = Guid.NewGuid();
       state[0] = parentState;
       state[1] = uniqueIdentifier.ToString();
       state[2] = "DisplayName";
+      state[3] = SearchAvailableObjectWebServiceContext.Create (null, null, null);
 
       _control.LoadControlState (state);
       Assert.That (((IBocReferenceValueBase) _control).GetLabelText(), Is.EqualTo ("DisplayName"));
@@ -441,6 +483,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
+      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
+      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
+      _control.BuildManager = buildManagerStub;
+      _control.AppRelativeTemplateSourceDirectory = "~/";
+      _control.ServicePath = "~/SearchService.asmx";
+
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);
       Assert.That (result, Is.True);
@@ -463,11 +511,44 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
+      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
+      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
+      _control.BuildManager = buildManagerStub;
+      _control.AppRelativeTemplateSourceDirectory = "~/";
+      _control.ServicePath = "~/SearchService.asmx";
+
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);
       Assert.That (result, Is.True);
       Assert.That (_control.BusinessObjectUniqueIdentifier, Is.Null);
       Assert.That (((IBocAutoCompleteReferenceValue) _control).GetLabelText(), Is.EqualTo ("InvalidValue"));
+    }
+
+    [Test]
+    public void LoadPostData_ResolvesDisplayName ()
+    {
+      PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
+
+      var postbackCollection = new NameValueCollection();
+
+      postbackCollection.Add (_control.HiddenFieldUniqueID, ((IBocAutoCompleteReferenceValue) _control).NullValueString);
+      postbackCollection.Add (_control.TextBoxUniqueID, "SomeValue");
+
+      _control.IsDirty = false;
+      PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+
+      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
+      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebServiceWithResult));
+      _control.BuildManager = buildManagerStub;
+      _control.AppRelativeTemplateSourceDirectory = "~/";
+      _control.ServicePath = "~/SearchService.asmx";
+
+      bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
+      Assert.That (_control.IsDirty, Is.True);
+      Assert.That (result, Is.True);
+      Assert.That (_control.BusinessObjectUniqueIdentifier, Is.EqualTo ("ValidIdentifier"));
+      Assert.That (((IBocAutoCompleteReferenceValue) _control).GetLabelText(), Is.EqualTo ("ValidName"));
     }
 
     [Test]

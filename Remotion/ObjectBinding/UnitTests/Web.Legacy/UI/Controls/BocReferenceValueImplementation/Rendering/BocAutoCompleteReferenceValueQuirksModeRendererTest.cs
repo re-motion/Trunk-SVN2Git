@@ -25,6 +25,7 @@ using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
@@ -636,7 +637,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     private BocAutoCompleteReferenceValueRenderingContext CreateRenderingContext ()
     {
       return new BocAutoCompleteReferenceValueRenderingContext (
-          HttpContext, Html.Writer, Control, BusinessObjectServiceContext.Create (Control.DataSource, Control.Property));
+          HttpContext, Html.Writer, Control, SearchAvailableObjectWebServiceContext.Create (Control.DataSource, Control.Property, "SearchArgs"));
     }
   }
 }

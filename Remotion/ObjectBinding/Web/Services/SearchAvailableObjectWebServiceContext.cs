@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -16,20 +16,23 @@
 // 
 using System;
 using Remotion.FunctionalProgramming;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
+namespace Remotion.ObjectBinding.Web.Services
 {
   /// <summary>
-  /// Contains all context information required by a business object service.
+  /// Contains all context information required by the <see cref="ISearchAvailableObjectWebService"/>.
   /// </summary>
   [Serializable]
-  public class BusinessObjectServiceContext
+  public class SearchAvailableObjectWebServiceContext
   {
     private readonly string _businessObjectClass;
     private readonly string _businessObjectProperty;
     private readonly string _businessObjectIdentifier;
+    private readonly string _args;
 
-    public static BusinessObjectServiceContext Create (IBusinessObjectDataSource dataSource, IBusinessObjectProperty property)
+    public static SearchAvailableObjectWebServiceContext Create (IBusinessObjectDataSource dataSource, IBusinessObjectProperty property, string args)
     {
       var dataSourceOrNull = Maybe.ForValue (dataSource);
 
@@ -42,18 +45,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       var businessObjectIdentifier =
           dataSourceOrNull.Select (ds => ds.BusinessObject as IBusinessObjectWithIdentity).Select (o => o.UniqueIdentifier).ValueOrDefault();
 
-      return new BusinessObjectServiceContext (businessObjectClass, businessObjectProperty, businessObjectIdentifier);
+      return new SearchAvailableObjectWebServiceContext (
+          businessObjectClass, businessObjectProperty, businessObjectIdentifier, StringUtility.EmptyToNull (args));
     }
 
-    private BusinessObjectServiceContext (string businessObjectClass, string businessObjectProperty, string businessObjectIdentifier)
+    private SearchAvailableObjectWebServiceContext (
+        string businessObjectClass, string businessObjectProperty, string businessObjectIdentifier, string args)
     {
       _businessObjectClass = businessObjectClass;
       _businessObjectProperty = businessObjectProperty;
       _businessObjectIdentifier = businessObjectIdentifier;
+      _args = args;
     }
 
     /// <summary>
-    /// The <see cref="IBusinessObjectClass.Identifier"/> of the <see cref="IBusinessObjectClass"/> the reference value is bound to.
+    /// Gets the <see cref="IBusinessObjectClass.Identifier"/> of the <see cref="IBusinessObjectClass"/> 
+    /// the <see cref="BocAutoCompleteReferenceValue"/> is bound to.
     /// </summary>
     public string BusinessObjectClass
     {
@@ -61,7 +68,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     /// <summary>
-    /// The <see cref="IBusinessObjectProperty.Identifier"/> of the <see cref="IBusinessObjectReferenceProperty"/> the reference value is bound to.
+    /// Gets the <see cref="IBusinessObjectProperty.Identifier"/> of the <see cref="IBusinessObjectReferenceProperty"/> 
+    /// the <see cref="BocAutoCompleteReferenceValue"/> is bound to.
     /// </summary>
     public string BusinessObjectProperty
     {
@@ -69,11 +77,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     /// <summary>
-    /// The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the <see cref="IBusinessObjectWithIdentity"/> the reference value is bound to.
+    /// Gets the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the <see cref="IBusinessObjectWithIdentity"/> 
+    /// the <see cref="BocAutoCompleteReferenceValue"/> is bound to.
     /// </summary>
     public string BusinessObjectIdentifier
     {
       get { return _businessObjectIdentifier; }
+    }
+
+    /// <summary>
+    /// Gets the search arguments specified for the <see cref="BocAutoCompleteReferenceValue"/>.
+    /// </summary>
+    public string Args
+    {
+      get { return _args; }
     }
   }
 }

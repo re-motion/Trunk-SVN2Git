@@ -19,11 +19,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Linq;
-using System.Web.Compilation;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
-using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
@@ -31,6 +29,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Ren
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -82,7 +81,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private int _dropDownDisplayDelay = 1000;
     private int _dropDownRefreshDelay = 2000;
     private int _selectionUpdateDelay = 200;
-
+    private SearchAvailableObjectWebServiceContext _webServiceContextFromPreviousLifeCycle = SearchAvailableObjectWebServiceContext.Create (null, null, null);
+    private IBuildManager _buildManager = new BuildManagerWrapper();
 
     // construction and disposing
 
@@ -129,22 +129,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (isDataChanged)
       {
         _displayName = StringUtility.EmptyToNull (newValue);
+
+        if (_displayName != null && InternalValue == null)
+        {
+          var searchAvailableObjectWebService = GetSearchAvailableObjectService();
+          var result = searchAvailableObjectWebService.Search (
+              _displayName,
+              1,
+              _webServiceContextFromPreviousLifeCycle.BusinessObjectClass,
+              _webServiceContextFromPreviousLifeCycle.BusinessObjectProperty,
+              _webServiceContextFromPreviousLifeCycle.BusinessObjectIdentifier,
+              _webServiceContextFromPreviousLifeCycle.Args);
+
+          var firstResultValue = result.FirstOrDefault();
+          if (firstResultValue != null)
+          {
+            InternalValue = firstResultValue.UniqueIdentifier;
+            _displayName = firstResultValue.DisplayName;
+          }
+        }
+
         IsDirty = true;
       }
       return isDataChanged;
-
-        //      if (_displayName != null && businessObjectClass != null)
-        //{
-        //  var searchAvailableObjectWebService = GetSearchAvailableObjectService();
-        //  var result = searchAvailableObjectWebService.Search (_displayName, 1, businessObjectClass, businessObjectProperty, businessObjectID, Args);
-        //  var firstResultValue = result.FirstOrDefault();
-        //  if (firstResultValue != null)
-        //  {
-        //    InternalValue = firstResultValue.UniqueIdentifier;
-        //    _displayName = firstResultValue.DisplayName;
-        //  }
-        //}
-
     }
 
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
@@ -249,7 +256,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      return new BocAutoCompleteReferenceValueRenderingContext (Context, writer, this, BusinessObjectServiceContext.Create (DataSource, Property));
+      return new BocAutoCompleteReferenceValueRenderingContext (Context, writer, this, CreateSearchAvailableObjectWebServiceContext());
+    }
+    
+    private SearchAvailableObjectWebServiceContext CreateSearchAvailableObjectWebServiceContext ()
+    {
+      return SearchAvailableObjectWebServiceContext.Create (DataSource, Property, Args);
     }
 
     protected override void LoadControlState (object savedState)
@@ -259,15 +271,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.LoadControlState (values[0]);
       InternalValue = (string) values[1];
       _displayName = (string) values[2];
+      _webServiceContextFromPreviousLifeCycle = (SearchAvailableObjectWebServiceContext) values[3];
     }
 
     protected override object SaveControlState ()
     {
-      object[] values = new object[3];
+      object[] values = new object[4];
 
       values[0] = base.SaveControlState();
       values[1] = InternalValue;
       values[2] = _displayName;
+      values[3] = CreateSearchAvailableObjectWebServiceContext();
 
       return values;
     }
@@ -544,6 +558,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _args; }
       set { _args = value; }
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Advanced)]
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public IBuildManager BuildManager
+    {
+      get { return _buildManager; }
+      set { _buildManager = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     bool IBocReferenceValueBase.IsCommandEnabled (bool readOnly)

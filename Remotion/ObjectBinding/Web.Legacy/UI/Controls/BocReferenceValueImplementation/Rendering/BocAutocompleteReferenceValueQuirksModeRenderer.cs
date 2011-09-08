@@ -134,13 +134,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
       script.AppendFormat ("'{0}'", renderingContext.Control.NullValueString);
       script.Append (", ");
-      AppendStringValueOrNullToScript (script, renderingContext.ServiceContext.BusinessObjectClass);
+      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectClass);
       script.Append (", ");
-      AppendStringValueOrNullToScript (script, renderingContext.ServiceContext.BusinessObjectProperty);
+      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectProperty);
       script.Append (", ");
-      AppendStringValueOrNullToScript (script, renderingContext.ServiceContext.BusinessObjectIdentifier);
+      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectIdentifier);
       script.Append (", ");
-      script.AppendFormat ("'{0}'", renderingContext.Control.Args);
+      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.Args);
       script.Append ("); } );");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString ());
