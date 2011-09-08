@@ -384,6 +384,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
+    public int ExecuteNonQuery (IDbCommand command)
+    {
+      CheckDisposed ();
+      ArgumentUtility.CheckNotNull ("command", command);
+
+      try
+      {
+        return command.ExecuteNonQuery();
+      }
+      catch (Exception e)
+      {
+        throw CreateRdbmsProviderException (e, "Error while executing SQL command: " + e.Message);
+      }
+    }
+
     protected IDbConnection CreateConnection ()
     {
       return _connectionFactory ();

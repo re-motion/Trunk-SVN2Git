@@ -51,24 +51,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
 
       foreach (var tuple in _tuples)
       {
-        var command = tuple.Item2.Create (executionContext);
-        if (command == null)
-          continue;
+        using (var command = tuple.Item2.Create (executionContext))
+        {
+          if (command == null)
+            continue;
 
-        int recordsAffected;
-        try
-        {
-          recordsAffected = command.ExecuteNonQuery();
-        }
-        catch (Exception e)
-        {
-          throw new RdbmsProviderException (string.Format("Error while saving object '{0}'.", tuple.Item1), e);
-        }
+          int recordsAffected;
+          try
+          {
+            recordsAffected = executionContext.ExecuteNonQuery (command);
+          }
+          catch (RdbmsProviderException e)
+          {
+            throw new RdbmsProviderException (string.Format ("Error while saving object '{0}'. {1}", tuple.Item1, e.Message), e);
+          }
 
-        if (recordsAffected != 1)
-        {
-          throw new ConcurrencyViolationException (
-              string.Format ("Concurrency violation encountered. Object '{0}' has already been changed by someone else.", tuple.Item1));
+          if (recordsAffected != 1)
+          {
+            throw new ConcurrencyViolationException (
+                string.Format ("Concurrency violation encountered. Object '{0}' has already been changed by someone else.", tuple.Item1));
+          }
         }
       }
     }

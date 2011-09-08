@@ -32,11 +32,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
   {
     private ObjectID _objectID1;
     private ObjectID _objectID2;
-    private IDbCommandBuilder _dbCommandBuilder1Mock;
-    private IDbCommandBuilder _dbCommandBuilder2Mock;
-    private IDbCommand _dbCommand1Mock;
-    private IDbCommand _dbCommand2Mock;
-    private IRdbmsProviderCommandExecutionContext _rdbmsExecutionContextStub;
+
+    private MockRepository _mockRepository;
+
+    private IDbCommandBuilder _dbCommandBuilderMock1;
+    private IDbCommandBuilder _dbCommandBuilderMock2;
+
+    private IDbCommand _dbCommandMock1;
+    private IDbCommand _dbCommandMock2;
+
+    private IRdbmsProviderCommandExecutionContext _rdbmsExecutionContextStrictMock;
+
     private Tuple<ObjectID, IDbCommandBuilder> _tuple1;
     private Tuple<ObjectID, IDbCommandBuilder> _tuple2;
 
@@ -47,16 +53,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _objectID1 = DomainObjectIDs.Order1;
       _objectID2 = DomainObjectIDs.Order2;
 
-      _dbCommandBuilder1Mock = MockRepository.GenerateStrictMock<IDbCommandBuilder>();
-      _dbCommandBuilder2Mock = MockRepository.GenerateStrictMock<IDbCommandBuilder> ();
+      _mockRepository = new MockRepository();
 
-      _dbCommand1Mock = MockRepository.GenerateStrictMock<IDbCommand> ();
-      _dbCommand2Mock = MockRepository.GenerateStrictMock<IDbCommand> ();
+      _dbCommandBuilderMock1 = _mockRepository.StrictMock<IDbCommandBuilder>();
+      _dbCommandBuilderMock2 = _mockRepository.StrictMock<IDbCommandBuilder> ();
 
-      _tuple1 = Tuple.Create (_objectID1, _dbCommandBuilder1Mock);
-      _tuple2 = Tuple.Create (_objectID2, _dbCommandBuilder2Mock);
+      _dbCommandMock1 = _mockRepository.StrictMock<IDbCommand>();
+      _dbCommandMock2 = _mockRepository.StrictMock<IDbCommand> ();
 
-      _rdbmsExecutionContextStub = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
+      _rdbmsExecutionContextStrictMock = _mockRepository.StrictMock<IRdbmsProviderCommandExecutionContext>();
+
+      _tuple1 = Tuple.Create (_objectID1, _dbCommandBuilderMock1);
+      _tuple2 = Tuple.Create (_objectID2, _dbCommandBuilderMock2);
     }
 
     [Test]
@@ -64,44 +72,58 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       var command = new MultiDataContainerSaveCommand (new[] { _tuple1 });
 
-      _dbCommandBuilder1Mock.Expect (mock => mock.Create (_rdbmsExecutionContextStub)).Return (null);
-      _dbCommandBuilder1Mock.Replay();
-      _dbCommand1Mock.Replay();
-      
-      command.Execute (_rdbmsExecutionContextStub);
+      _dbCommandBuilderMock1.Expect (mock => mock.Create (_rdbmsExecutionContextStrictMock)).Return (null);
 
-      _dbCommandBuilder1Mock.VerifyAllExpectations();
-      _dbCommand1Mock.VerifyAllExpectations();
+      _mockRepository.ReplayAll();
+
+      command.Execute (_rdbmsExecutionContextStrictMock);
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
-    [ExpectedException (typeof (ConcurrencyViolationException), ExpectedMessage = 
-      "Concurrency violation encountered. Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has already been changed by someone else.")]
     public void Execute_NoAffectedRecords ()
     {
       var command = new MultiDataContainerSaveCommand (new[] { _tuple1 });
 
-      _dbCommandBuilder1Mock.Expect (mock => mock.Create (_rdbmsExecutionContextStub)).Return (_dbCommand1Mock);
-      _dbCommandBuilder1Mock.Replay ();
-      _dbCommand1Mock.Expect (mock => mock.ExecuteNonQuery()).Return (0);
-      _dbCommand1Mock.Replay ();
+      using (_mockRepository.Ordered ())
+      {
+        _dbCommandBuilderMock1.Expect (mock => mock.Create (_rdbmsExecutionContextStrictMock)).Return (_dbCommandMock1);
+        _rdbmsExecutionContextStrictMock.Expect (mock => mock.ExecuteNonQuery (_dbCommandMock1)).Return (0);
+        _dbCommandMock1.Expect (mock => mock.Dispose());
+      }
 
-      command.Execute (_rdbmsExecutionContextStub);
+      _mockRepository.ReplayAll();
+
+      Assert.That (
+          () => command.Execute (_rdbmsExecutionContextStrictMock),
+          Throws.Exception.TypeOf<ConcurrencyViolationException>().With.Message.EqualTo (
+              "Concurrency violation encountered. Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has already been changed by someone else."));
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
-      "Error while saving object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
     public void Execute_ExceptionOccurs ()
     {
       var command = new MultiDataContainerSaveCommand (new[] { _tuple1 });
 
-      _dbCommandBuilder1Mock.Expect (mock => mock.Create (_rdbmsExecutionContextStub)).Return (_dbCommand1Mock);
-      _dbCommandBuilder1Mock.Replay ();
-      _dbCommand1Mock.Expect (mock => mock.ExecuteNonQuery()).WhenCalled (mi => { throw new InvalidOperationException (""); });
-      _dbCommand1Mock.Replay ();
+      _dbCommandBuilderMock1.Expect (mock => mock.Create (_rdbmsExecutionContextStrictMock)).Return (_dbCommandMock1);
+      var rdbmsProviderException = new RdbmsProviderException ("Text");
+      _rdbmsExecutionContextStrictMock
+          .Expect (mock => mock.ExecuteNonQuery (_dbCommandMock1))
+          .Throw (rdbmsProviderException);
+      _dbCommandMock1.Expect (mock => mock.Dispose());
 
-      command.Execute (_rdbmsExecutionContextStub);
+      _mockRepository.ReplayAll();
+
+      Assert.That (
+          () => command.Execute (_rdbmsExecutionContextStrictMock),
+          Throws.Exception.TypeOf<RdbmsProviderException>()
+              .With.Message.EqualTo ("Error while saving object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. Text")
+              .And.InnerException.SameAs (rdbmsProviderException));
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -109,15 +131,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       var command = new MultiDataContainerSaveCommand (new[] { _tuple1 });
 
-      _dbCommandBuilder1Mock.Expect (mock => mock.Create (_rdbmsExecutionContextStub)).Return (_dbCommand1Mock);
-      _dbCommandBuilder1Mock.Replay ();
-      _dbCommand1Mock.Expect (mock => mock.ExecuteNonQuery()).Return (1);
-      _dbCommand1Mock.Replay ();
+      using (_mockRepository.Ordered ())
+      {
+        _dbCommandBuilderMock1.Expect (mock => mock.Create (_rdbmsExecutionContextStrictMock)).Return (_dbCommandMock1);
+        _rdbmsExecutionContextStrictMock.Expect (mock => mock.ExecuteNonQuery (_dbCommandMock1)).Return (1);
+        _dbCommandMock1.Dispose();
+      }
 
-      command.Execute (_rdbmsExecutionContextStub);
+      _mockRepository.ReplayAll();
 
-      _dbCommandBuilder1Mock.Replay();
-      _dbCommand1Mock.Replay();
+      command.Execute (_rdbmsExecutionContextStrictMock);
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -125,19 +150,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       var command = new MultiDataContainerSaveCommand (new[] { _tuple1, _tuple2 });
 
-      _dbCommandBuilder1Mock.Expect (mock => mock.Create (_rdbmsExecutionContextStub)).Return (_dbCommand1Mock);
-      _dbCommandBuilder2Mock.Expect (mock => mock.Create (_rdbmsExecutionContextStub)).Return (_dbCommand2Mock);
-      _dbCommandBuilder1Mock.Replay ();
-      _dbCommand1Mock.Expect (mock => mock.ExecuteNonQuery ()).Return (1);
-      _dbCommand2Mock.Expect (mock => mock.ExecuteNonQuery ()).Return (1);
-      _dbCommand1Mock.Replay ();
+      using (_mockRepository.Ordered ())
+      {
+        _dbCommandBuilderMock1.Expect (mock => mock.Create (_rdbmsExecutionContextStrictMock)).Return (_dbCommandMock1);
+        _rdbmsExecutionContextStrictMock.Expect (mock => mock.ExecuteNonQuery (_dbCommandMock1)).Return (1);
+        _dbCommandMock1.Expect (mock => mock.Dispose());
 
-      command.Execute (_rdbmsExecutionContextStub);
+        _dbCommandBuilderMock2.Expect (mock => mock.Create (_rdbmsExecutionContextStrictMock)).Return (_dbCommandMock2);
+        _rdbmsExecutionContextStrictMock.Expect (mock => mock.ExecuteNonQuery (_dbCommandMock2)).Return (1);
+        _dbCommandMock2.Expect (mock => mock.Dispose());
+      }
 
-      _dbCommandBuilder1Mock.Replay ();
-      _dbCommandBuilder2Mock.Replay ();
-      _dbCommand1Mock.Replay ();
-      _dbCommand2Mock.Replay ();
+      _mockRepository.ReplayAll();
+
+      command.Execute (_rdbmsExecutionContextStrictMock);
+
+      _mockRepository.VerifyAll();
     }
   }
 }

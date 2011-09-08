@@ -29,5 +29,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     IDbCommand CreateDbCommand ();
     IDataReader ExecuteReader (IDbCommand command, CommandBehavior behavior);
     object ExecuteScalar (IDbCommand command);
+    int ExecuteNonQuery (IDbCommand command);
   }
 }

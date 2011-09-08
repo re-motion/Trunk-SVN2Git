@@ -713,5 +713,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _provider.Dispose ();
       _provider.ExecuteScalar (_commandMock);
     }
+
+    [Test]
+    public void ExecuteNonQuery ()
+    {
+      _commandMock.Expect (mock => mock.ExecuteNonQuery ()).Return (12);
+      _commandMock.Replay ();
+
+      var result = _provider.ExecuteNonQuery (_commandMock);
+
+      _commandMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (12));
+    }
+
+    [Test]
+    public void ExecuteNonQuery_Exception ()
+    {
+      var exception = new Exception ("Test");
+      _commandMock.Expect (mock => mock.ExecuteNonQuery ()).Throw (exception);
+      _commandMock.Replay ();
+
+      Assert.That (() => _provider.ExecuteNonQuery (_commandMock),
+          Throws.TypeOf<RdbmsProviderException> ()
+              .With.Message.EqualTo ("Error while executing SQL command: Test")
+              .And.InnerException.SameAs (exception));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDisposedException))]
+    public void ExecuteNonQuery_ChecksDisposed ()
+    {
+      _provider.Dispose ();
+      _provider.ExecuteNonQuery (_commandMock);
+    }
   }
 }
