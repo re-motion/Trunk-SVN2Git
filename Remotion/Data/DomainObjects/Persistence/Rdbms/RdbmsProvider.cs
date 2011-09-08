@@ -384,7 +384,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public int ExecuteNonQuery (IDbCommand command)
+    public virtual int ExecuteNonQuery (IDbCommand command)
     {
       CheckDisposed ();
       ArgumentUtility.CheckNotNull ("command", command);
