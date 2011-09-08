@@ -336,6 +336,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           (byte[]) reloadedDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
     }
 
+    [Test]
+    public void SaveEmpty ()
+    {
+      Provider.Save (new DataContainer[0]);
+    }
+
     private void SetDefaultValues (DataContainer classWithAllDataTypesContainer)
     {
       // Note: Date properties must be set, because SQL Server only accepts dates past 1/1/1753.

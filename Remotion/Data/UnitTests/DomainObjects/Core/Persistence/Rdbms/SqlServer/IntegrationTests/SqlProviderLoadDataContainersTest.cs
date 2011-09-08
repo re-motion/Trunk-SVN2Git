@@ -62,5 +62,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (ids[2], containers[2].LocatedObject.ID);
       Assert.AreEqual (ids[3], containers[3].LocatedObject.ID);
     }
+
+    [Test]
+    public void LoadDataContainers_Empty ()
+    {
+      var result = Provider.LoadDataContainers (new ObjectID[0]).ToList();
+
+      Assert.That (result, Is.Empty);
+    }
   }
 }
