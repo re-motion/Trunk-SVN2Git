@@ -621,7 +621,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private DataContainer LoadDataContainerWithSeparateProvider (ObjectID id)
     {
-      using (var separateProvider = CreateStorageProvider ())
+      using (var separateProvider = CreateRdbmsProvider ())
       {
         return separateProvider.LoadDataContainer (id).LocatedObject;
       }

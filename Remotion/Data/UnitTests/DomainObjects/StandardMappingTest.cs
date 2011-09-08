@@ -97,12 +97,17 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     protected object GetPropertyValue (DataContainer dataContainer, Type declaringType, string shortPropertyName)
     {
-      return dataContainer[declaringType.FullName + "." + shortPropertyName];
+      return dataContainer[GetPropertyIdentifier (declaringType, shortPropertyName)];
     }
 
     protected void SetPropertyValue (DataContainer dataContainer, Type declaringType, string shortPropertyName, object value)
     {
-      dataContainer.SetValue (declaringType.FullName + "." + shortPropertyName, value);
+      dataContainer.SetValue (GetPropertyIdentifier (declaringType, shortPropertyName), value);
+    }
+
+    protected string GetPropertyIdentifier (Type declaringType, string shortPropertyName)
+    {
+      return declaringType.FullName + "." + shortPropertyName;
     }
   }
 }
