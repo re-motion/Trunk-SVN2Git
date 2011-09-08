@@ -111,10 +111,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected string InternalValue
     {
       get { return _internalValue; }
-      set
-      {
-        _internalValue = StringUtility.EmptyToNull (value);
-      }
+      set { _internalValue = (string.IsNullOrEmpty (value) || IsNullValue (value)) ? null : value; }
     }
 
     bool IBocMenuItemContainer.IsReadOnly
@@ -325,12 +322,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     [Browsable (false)]
     public string BusinessObjectUniqueIdentifier
     {
-      get
-      {
-        if (IsNullValue(InternalValue))
-          return null;
-        return InternalValue;
-      }
+      get { return InternalValue; }
     }
 
     /// <summary> Gets or sets the <see cref="IBusinessObjectReferenceProperty"/> object this control is bound to. </summary>
