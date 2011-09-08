@@ -101,5 +101,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _testHelper.VerifyAllExpectations();
     }
+
+    [Test]
+    public void LoadDataContainersByRelatedID_WithEmptyResult ()
+    {
+      var newObjectID = _testHelper.Provider.CreateNewObjectID (Configuration.GetTypeDefinition (typeof (TIClient)));
+
+      _testHelper.ExpectExecuteReader (
+          CommandBehavior.SingleResult,
+          "SELECT [ID], [ClassID] FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID "
+          + "UNION ALL SELECT [ID], [ClassID] FROM [TableInheritance_OrganizationalUnit] WHERE [ClientID] = @ClientID;",
+          Tuple.Create ("@ClientID", DbType.Guid, newObjectID.Value));
+      _testHelper.Replay();
+
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (TIDomainBase), "Client");
+      _testHelper.Provider.LoadDataContainersByRelatedID (relationEndPointDefinition, null, newObjectID).ToArray();
+
+      _testHelper.VerifyAllExpectations();
+    }
   }
 }
