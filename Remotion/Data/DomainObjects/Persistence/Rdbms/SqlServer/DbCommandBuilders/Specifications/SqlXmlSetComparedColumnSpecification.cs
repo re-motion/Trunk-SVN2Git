@@ -92,7 +92,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuild
       statement.Append (" FROM ");
       statement.Append (GetParameterName (sqlDialect));
       statement.Append (".nodes('/L/I') T(c))");
-      statement.Append (sqlDialect.StatementDelimiter);
 
       command.CommandText = statement.ToString();
     }

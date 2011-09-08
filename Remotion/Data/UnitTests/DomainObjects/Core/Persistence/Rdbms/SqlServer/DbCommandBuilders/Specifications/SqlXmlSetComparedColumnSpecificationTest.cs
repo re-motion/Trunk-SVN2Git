@@ -19,7 +19,6 @@ using System.Data;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders.Specifications;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -99,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       
       _specification.AppendComparisons (_statement, _commandStub, _sqlDialectStub);
 
-      Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar(100)') FROM pColumn.nodes('/L/I') T(c))delimiter"));
+      Assert.That (_statement.ToString (), Is.EqualTo ("[delimited Column] IN (SELECT T.c.value('.', 'varchar(100)') FROM pColumn.nodes('/L/I') T(c))"));
     }
   }
 }
