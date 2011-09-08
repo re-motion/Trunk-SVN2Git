@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("stringBuilder", stringBuilder);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      stringBuilder.Append (SeparatedStringBuilder.Build (", ", _selectedColumns, c => sqlDialect.DelimitIdentifier(c.Name)));
+      stringBuilder.Append (SeparatedStringBuilder.Build (", ", _selectedColumns, c => c == null ? "NULL" : sqlDialect.DelimitIdentifier(c.Name)));
     }
 
     public ISelectedColumnsSpecification Union (IEnumerable<ColumnDefinition> additionalColumns)
@@ -57,6 +57,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("additionalColumns", additionalColumns);
 
       return new SelectedColumnsSpecification (_selectedColumns.Union (additionalColumns));
+    }
+
+    public ISelectedColumnsSpecification AdjustForTable (TableDefinition table)
+    {
+      ArgumentUtility.CheckNotNull ("table", table);
+
+      return new SelectedColumnsSpecification (table.CalculateAdjustedColumnList (_selectedColumns));
     }
   }
 }

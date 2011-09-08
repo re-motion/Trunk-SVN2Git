@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -46,6 +47,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
       ArgumentUtility.CheckNotNull ("additionalColumns", additionalColumns);
 
       return this;
+    }
+
+    public ISelectedColumnsSpecification AdjustForTable (TableDefinition table)
+    {
+      throw new NotSupportedException ("Cannot create an adjusted * projection.");
     }
   }
 }

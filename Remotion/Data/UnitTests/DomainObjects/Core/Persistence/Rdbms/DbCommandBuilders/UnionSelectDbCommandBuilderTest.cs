@@ -88,9 +88,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1] ASC, [Column2] DESC"));
 
-      _fullSelectedColumnsStub
+      var adjustedSelectedColumnsStub = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
+      adjustedSelectedColumnsStub
           .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
+      _fullSelectedColumnsStub
+          .Stub (stub => stub.AdjustForTable (_table1))
+          .Return (adjustedSelectedColumnsStub);
 
       _comparedColumnsStrictMock
           .Expect (stub => stub.AddParameters (_dbCommandStub, _sqlDialectStub))
@@ -143,6 +147,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           .Stub (stub => stub.AppendOrderings (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1] ASC, [Column2] DESC"));
 
+
+      var adjustedSelectedColumnsStub1 = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
+      adjustedSelectedColumnsStub1
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
+      var adjustedSelectedColumnsStub2 = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
+      adjustedSelectedColumnsStub2
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], NULL, [Column3]"));
+      var adjustedSelectedColumnsStub3 = MockRepository.GenerateStub<ISelectedColumnsSpecification>();
+      adjustedSelectedColumnsStub3
+          .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
+          .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("NULL, [Column2], [Column3]"));
+      _fullSelectedColumnsStub
+          .Stub (stub => stub.AdjustForTable (_table1))
+          .Return (adjustedSelectedColumnsStub1);
+      _fullSelectedColumnsStub
+          .Stub (stub => stub.AdjustForTable (_table2))
+          .Return (adjustedSelectedColumnsStub2);
+      _fullSelectedColumnsStub
+          .Stub (stub => stub.AdjustForTable (_table3))
+          .Return (adjustedSelectedColumnsStub3);
+
+
       _fullSelectedColumnsStub
           .Stub (stub => stub.AppendProjection (Arg<StringBuilder>.Is.Anything, Arg.Is (_sqlDialectStub)))
           .WhenCalled (mi => ((StringBuilder) mi.Arguments[0]).Append ("[Column1], [Column2], [Column3]"));
@@ -165,8 +193,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
           result.CommandText,
           Is.EqualTo (
               "SELECT [Column1], [Column2], [Column3] FROM [delimited Table1] WHERE [delimited FKID] = pFKID UNION ALL "
-              + "SELECT [Column1], [Column2], [Column3] FROM [delimited Table2] WHERE [delimited FKID] = pFKID UNION ALL "
-              + "SELECT [Column1], [Column2], [Column3] FROM [delimited customSchema].[delimited Table3] WHERE [delimited FKID] = pFKID "
+              + "SELECT [Column1], NULL, [Column3] FROM [delimited Table2] WHERE [delimited FKID] = pFKID UNION ALL "
+              + "SELECT NULL, [Column2], [Column3] FROM [delimited customSchema].[delimited Table3] WHERE [delimited FKID] = pFKID "
               + "ORDER BY [Column1] ASC, [Column2] DESC;"));
       _sqlDialectStub.VerifyAllExpectations();
       _comparedColumnsStrictMock.VerifyAllExpectations();

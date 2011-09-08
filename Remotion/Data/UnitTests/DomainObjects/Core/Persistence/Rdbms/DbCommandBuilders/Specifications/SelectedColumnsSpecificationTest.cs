@@ -19,13 +19,14 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   [TestFixture]
-  public class SelectedColumnsSpecificationTest
+  public class SelectedColumnsSpecificationTest : StandardMappingTest
   {
     private ColumnDefinition _column1;
     private ColumnDefinition _column2;
@@ -33,9 +34,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     private SelectedColumnsSpecification _specification;
     private ISqlDialect _sqlDialectStub;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _column1 = ColumnDefinitionObjectMother.CreateColumn ("Column1");
       _column2 = ColumnDefinitionObjectMother.CreateColumn ("Column2");
       _column3 = ColumnDefinitionObjectMother.CreateColumn ("Column3");
@@ -53,13 +55,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void AppendProjection_StringBuilderIsEmpty ()
+    public void AppendProjection ()
     {
-      var sb = new StringBuilder();
+      var sb = new StringBuilder ("xx");
 
       _specification.AppendProjection (sb, _sqlDialectStub);
 
-      Assert.That (sb.ToString(), Is.EqualTo ("[delimited Column1], [delimited Column2], [delimited Column3]"));
+      Assert.That (sb.ToString(), Is.EqualTo ("xx[delimited Column1], [delimited Column2], [delimited Column3]"));
+    }
+
+    [Test]
+    public void AppendProjection_WithNulls ()
+    {
+      var sb = new StringBuilder();
+
+      var specification = new SelectedColumnsSpecification (new[] { null, _column2, null });
+      specification.AppendProjection (sb, _sqlDialectStub);
+
+      Assert.That (sb.ToString(), Is.EqualTo ("NULL, [delimited Column2], NULL"));
     }
 
     [Test]
@@ -74,13 +87,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
     }
 
     [Test]
-    public void Union_DuplicatedColumns()
+    public void Union_DuplicatedColumns ()
     {
       var column4 = ColumnDefinitionObjectMother.CreateColumn ("Column4");
-      
+
       var result = (SelectedColumnsSpecification) _specification.Union (new[] { column4, column4 });
 
       Assert.That (result.SelectedColumns, Is.EqualTo (new[] { _column1, _column2, _column3, column4 }));
+    }
+
+    [Test]
+    public void AdjustForTable ()
+    {
+      var table = TableDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new[] { new SimpleStoragePropertyDefinition (typeof (int), _column1) });
+
+      var result = _specification.AdjustForTable (table);
+
+      Assert.That (result, Is.TypeOf<SelectedColumnsSpecification>());
+      Assert.That (((SelectedColumnsSpecification) result).SelectedColumns, Is.EqualTo (new[] { _column1, null, null }));
     }
   }
 }

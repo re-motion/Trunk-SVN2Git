@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
@@ -72,6 +73,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       visitor.VisitTableDefinition (this);
+    }
+
+    public ColumnDefinition[] CalculateAdjustedColumnList (IEnumerable<ColumnDefinition> fullColumnList)
+    {
+      ArgumentUtility.CheckNotNull ("fullColumnList", fullColumnList);
+
+      var availableColumnsAsDictionary = GetAllColumns().ToDictionary (c => c);
+
+      return fullColumnList.Select (columnDefinition => availableColumnsAsDictionary.GetValueOrDefault (columnDefinition)).ToArray();
     }
   }
 }

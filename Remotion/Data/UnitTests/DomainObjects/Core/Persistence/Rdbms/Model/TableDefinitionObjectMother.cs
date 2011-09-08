@@ -130,5 +130,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new IIndexDefinition[0],
           synonyms);
     }
+
+    public static TableDefinition Create (StorageProviderDefinition storageProviderDefinition, IRdbmsStoragePropertyDefinition[] dataPropertyDefinitions)
+    {
+      return Create (
+          storageProviderDefinition,
+          new EntityNameDefinition (null, "Test"),
+          null,
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          dataPropertyDefinitions);
+    }
   }
 }

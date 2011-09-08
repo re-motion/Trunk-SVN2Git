@@ -109,5 +109,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       visitorMock.VerifyAllExpectations();
     }
+
+    [Test]
+    public void CalculateAdjustedColumnList ()
+    {
+      var fullColumnList = 
+          new[]
+          {
+              _property3.ColumnDefinition,
+              _property1.ColumnDefinition,
+              ColumnDefinitionObjectMother.CreateColumn()
+          };
+      
+      var adjustedColumnList = _tableDefintion.CalculateAdjustedColumnList (fullColumnList);
+
+      Assert.That (adjustedColumnList, Is.EqualTo (new[] { _property3.ColumnDefinition, _property1.ColumnDefinition, null }));
+    }
   }
 }

@@ -14,17 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   [TestFixture]
-  public class AllSelectedColumnsSpecificationTest
+  public class AllSelectedColumnsSpecificationTest : StandardMappingTest
   {
     [Test]
     public void AppendProjection_StringBuilderEmpty ()
@@ -42,6 +44,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       var instance = AllSelectedColumnsSpecification.Instance;
 
       Assert.That (instance.Union (new ColumnDefinition[0]), Is.SameAs (instance));
+    }
+
+    [Test]
+    public void AdjustForTable ()
+    {
+      var instance = AllSelectedColumnsSpecification.Instance;
+      Assert.That (
+          () => instance.AdjustForTable (TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition)),
+          Throws.TypeOf<NotSupportedException>());
     }
   }
 }

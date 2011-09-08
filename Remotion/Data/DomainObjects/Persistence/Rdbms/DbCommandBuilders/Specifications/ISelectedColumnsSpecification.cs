@@ -28,5 +28,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
   {
     void AppendProjection (StringBuilder stringBuilder, ISqlDialect sqlDialect);
     ISelectedColumnsSpecification Union (IEnumerable<ColumnDefinition> additionalColumns);
+    ISelectedColumnsSpecification AdjustForTable (TableDefinition table);
   }
 }

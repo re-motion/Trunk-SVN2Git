@@ -89,8 +89,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders
       {
         if (!first)
           statement.Append (" UNION ALL ");
-        
-        AppendSelectClause (statement, fullProjection);
+
+        var adjustedProjection = fullProjection.AdjustForTable (table);
+        AppendSelectClause (statement, adjustedProjection);
         AppendFromClause (statement, table);
 
         statement.Append (" WHERE ");

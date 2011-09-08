@@ -74,9 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _testHelper.ExpectExecuteReader (
           CommandBehavior.SingleResult,
-          "SELECT [ID], [ClassID], [CreatedAt], [CreatedBy] FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID "
-          + "UNION ALL SELECT [ID], [ClassID], [CreatedAt], [CreatedBy] FROM [TableInheritance_OrganizationalUnit] WHERE [ClientID] = @ClientID "
-          + "ORDER BY [CreatedAt] DESC, [CreatedBy] ASC;",
+          "SELECT [ID], [ClassID], [CreatedAt], [LastName] FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID "
+          + "UNION ALL SELECT [ID], [ClassID], [CreatedAt], NULL FROM [TableInheritance_OrganizationalUnit] WHERE [ClientID] = @ClientID "
+          + "ORDER BY [CreatedAt] DESC, [LastName] ASC;",
           Tuple.Create ("@ClientID", DbType.Guid, DomainObjectIDs.Client.Value));
       _testHelper.ExpectExecuteReader (
           CommandBehavior.SingleResult,
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new[]
           {
               new SortedPropertySpecification (GetPropertyDefinition (typeof (TIDomainBase), "CreatedAt"), SortOrder.Descending),
-              new SortedPropertySpecification (GetPropertyDefinition (typeof (TIDomainBase), "CreatedBy"), SortOrder.Ascending)
+              new SortedPropertySpecification (GetPropertyDefinition (typeof (TIPerson), "LastName"), SortOrder.Ascending)
           });
       _testHelper.Provider.LoadDataContainersByRelatedID (relationEndPointDefinition, sortExpression, DomainObjectIDs.Client).ToArray();
 
