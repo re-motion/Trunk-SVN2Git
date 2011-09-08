@@ -407,6 +407,7 @@
     <Compile Include="Web\UI\Controls\BocLiteralTest.cs" />
     <Compile Include="Web\UI\Controls\BocMultilineTextBoxValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocMultilineTextValueTest.cs" />
+    <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\BusinessObjectServiceContextTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\IBocAutoCompleteReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\IBocReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\TestableBocAutoCompleteReferenceValueRenderer.cs" />

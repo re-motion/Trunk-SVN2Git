@@ -205,6 +205,7 @@
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\IBocAutoCompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\IBocReferenceValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\BusinessObjectServiceContext.cs" />
     <Compile Include="UI\Controls\BocRenderingContext.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRenderingContext.cs" />

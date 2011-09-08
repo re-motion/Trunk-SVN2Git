@@ -25,9 +25,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// </summary>
   public class BocAutoCompleteReferenceValueRenderingContext : BocRenderingContext<IBocAutoCompleteReferenceValue>
   {
-    public BocAutoCompleteReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
-        : base(httpContext, writer, control)
+    private readonly BusinessObjectServiceContext _serviceContext;
+
+    public BocAutoCompleteReferenceValueRenderingContext (
+        HttpContextBase httpContext,
+        HtmlTextWriter writer,
+        IBocAutoCompleteReferenceValue control,
+        BusinessObjectServiceContext serviceContext)
+        : base (httpContext, writer, control)
     {
+      _serviceContext = serviceContext;
+    }
+
+    public BusinessObjectServiceContext ServiceContext
+    {
+      get { return _serviceContext; }
     }
   }
 }

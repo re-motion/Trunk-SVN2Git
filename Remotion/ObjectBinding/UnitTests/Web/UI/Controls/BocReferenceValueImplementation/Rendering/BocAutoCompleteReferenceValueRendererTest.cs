@@ -404,7 +404,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
+      renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
 
       var document = Html.GetResultDocument();
@@ -420,7 +420,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       var renderer = new TestableBocAutoCompleteReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubTextBox());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
+      renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
       
       var document = Html.GetResultDocument();
@@ -570,7 +570,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
       var renderer = new TestableBocAutoCompleteReferenceValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), () => TextBox);
-      renderer.Render (new BocAutoCompleteReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
+      renderer.Render (CreateRenderingContext());
 
       var document = Html.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);
@@ -591,6 +591,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       }
 
       return containerDiv;
+    }
+
+    private BocAutoCompleteReferenceValueRenderingContext CreateRenderingContext ()
+    {
+      return new BocAutoCompleteReferenceValueRenderingContext (
+          HttpContext, Html.Writer, Control, BusinessObjectServiceContext.Create (Control.DataSource, Control.Property));
     }
   }
 }

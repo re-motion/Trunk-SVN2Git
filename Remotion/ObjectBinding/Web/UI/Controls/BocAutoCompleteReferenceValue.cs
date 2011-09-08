@@ -18,15 +18,18 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Linq;
 using System.Web.Compilation;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -129,6 +132,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         IsDirty = true;
       }
       return isDataChanged;
+
+        //      if (_displayName != null && businessObjectClass != null)
+        //{
+        //  var searchAvailableObjectWebService = GetSearchAvailableObjectService();
+        //  var result = searchAvailableObjectWebService.Search (_displayName, 1, businessObjectClass, businessObjectProperty, businessObjectID, Args);
+        //  var firstResultValue = result.FirstOrDefault();
+        //  if (firstResultValue != null)
+        //  {
+        //    InternalValue = firstResultValue.UniqueIdentifier;
+        //    _displayName = firstResultValue.DisplayName;
+        //  }
+        //}
+
     }
 
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
@@ -180,13 +196,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!IsReadOnly)
         PreRenderEditModeValue();
 
-      CheckServiceReference();
+      GetSearchAvailableObjectService();
     }
 
-    private void CheckServiceReference ()
+    private ISearchAvailableObjectWebService GetSearchAvailableObjectService ()
     {
       if (IsDesignMode)
-        return;
+        return null;
 
       if (string.IsNullOrEmpty (ServicePath))
         throw new InvalidOperationException (string.Format ("BocAutoCompleteReferenceValue '{0}' does not have a service path set.", ID));
@@ -205,6 +221,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       WebServiceUtility.CheckJsonService (compiledType, ((IBocAutoCompleteReferenceValue) this).ServiceMethod);
+
+      return (ISearchAvailableObjectWebService) TypesafeActivator.CreateInstance (compiledType).With();
     }
 
     protected override string GetOptionsMenuTitle ()
@@ -231,7 +249,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      return new BocAutoCompleteReferenceValueRenderingContext (Context, writer, this);
+      return new BocAutoCompleteReferenceValueRenderingContext (Context, writer, this, BusinessObjectServiceContext.Create (DataSource, Property));
     }
 
     protected override void LoadControlState (object savedState)

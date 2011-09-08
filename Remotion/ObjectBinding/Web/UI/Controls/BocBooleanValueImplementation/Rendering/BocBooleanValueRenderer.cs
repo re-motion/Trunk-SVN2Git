@@ -18,7 +18,6 @@ using System;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -171,11 +170,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       scriptBuilder.Append (", ");
       scriptBuilder.Append (requiredFlag);
       scriptBuilder.Append (", ");
-      AppendStringValueOrNull (scriptBuilder, renderingContext.Control.TrueDescription);
+      AppendStringValueOrNullToScript (scriptBuilder, renderingContext.Control.TrueDescription);
       scriptBuilder.Append (", ");
-      AppendStringValueOrNull (scriptBuilder, renderingContext.Control.FalseDescription);
+      AppendStringValueOrNullToScript (scriptBuilder, renderingContext.Control.FalseDescription);
       scriptBuilder.Append (", ");
-      AppendStringValueOrNull(scriptBuilder, renderingContext.Control.NullDescription);
+      AppendStringValueOrNullToScript(scriptBuilder, renderingContext.Control.NullDescription);
       scriptBuilder.Append (");");
 
       script = scriptBuilder.ToString();
@@ -184,14 +183,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
         script += renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, "") + ";";
       script += "return false;";
       return script;
-    }
-
-    private void AppendStringValueOrNull (StringBuilder scriptBuilder, string stringValue)
-    {
-      if (string.IsNullOrEmpty (stringValue))
-        scriptBuilder.Append ("null");
-      else
-        scriptBuilder.Append ("'").Append (ScriptUtility.EscapeClientScript (stringValue)).Append ("'");
     }
 
     private void PrepareVisibleControls (BocBooleanValueRenderingContext renderingContext, BocBooleanValueResourceSet resourceSet, Image imageControl, 

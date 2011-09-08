@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -66,6 +68,14 @@ namespace Remotion.Web.UI.Controls
         if (!string.IsNullOrEmpty (value))
           renderingContext.Writer.AddAttribute (attribute, value);
       }
+    }
+
+    protected void AppendStringValueOrNullToScript (StringBuilder scriptBuilder, string stringValue)
+    {
+      if (string.IsNullOrEmpty (stringValue))
+        scriptBuilder.Append ("null");
+      else
+        scriptBuilder.Append ("'").Append (ScriptUtility.EscapeClientScript (stringValue)).Append ("'");
     }
   }
 }

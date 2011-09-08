@@ -118,14 +118,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       string key = renderingContext.Control.UniqueID + "_BindScript";
 
-      var dataSource = Maybe.ForValue (renderingContext.Control.DataSource);
-      string businessObjectClass =
-          dataSource.Select (ds => ds.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault (
-              dataSource.Select (ds => ds.BusinessObject).Select (o => o.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault (""));
-      string businessObjectProperty = Maybe.ForValue (renderingContext.Control.Property).Select (p => p.Identifier).ValueOrDefault ("");
-      string businessObjectID =
-          dataSource.Select (ds => (IBusinessObjectWithIdentity) ds.BusinessObject).Select (o => o.UniqueIdentifier).ValueOrDefault ("");
-
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Bind(");
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.TextBoxClientID);
@@ -140,10 +132,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       script.AppendFormat ("{0}, ", renderingContext.Control.DropDownRefreshDelay);
       script.AppendFormat ("{0}, ", renderingContext.Control.SelectionUpdateDelay);
 
-      script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
-      script.AppendFormat ("'{0}', ", businessObjectClass);
-      script.AppendFormat ("'{0}', ", businessObjectProperty);
-      script.AppendFormat ("'{0}', ", businessObjectID);
+      script.AppendFormat ("'{0}'", renderingContext.Control.NullValueString);
+      script.Append (", ");
+      AppendStringValueOrNullToScript (script, renderingContext.ServiceContext.BusinessObjectClass);
+      script.Append (", ");
+      AppendStringValueOrNullToScript (script, renderingContext.ServiceContext.BusinessObjectProperty);
+      script.Append (", ");
+      AppendStringValueOrNullToScript (script, renderingContext.ServiceContext.BusinessObjectIdentifier);
+      script.Append (", ");
       script.AppendFormat ("'{0}'", renderingContext.Control.Args);
       script.Append ("); } );");
 

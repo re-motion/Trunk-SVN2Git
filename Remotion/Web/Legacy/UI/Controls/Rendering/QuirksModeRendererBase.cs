@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Text;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Legacy.UI.Controls.Rendering
 {
@@ -65,6 +67,14 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
         if (!string.IsNullOrEmpty (value))
           renderingContext.Writer.AddAttribute (attribute, value);
       }
+    }
+
+    protected void AppendStringValueOrNullToScript (StringBuilder scriptBuilder, string stringValue)
+    {
+      if (string.IsNullOrEmpty (stringValue))
+        scriptBuilder.Append ("null");
+      else
+        scriptBuilder.Append ("'").Append (ScriptUtility.EscapeClientScript (stringValue)).Append ("'");
     }
   }
 }
