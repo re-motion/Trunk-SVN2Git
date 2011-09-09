@@ -145,13 +145,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           isDataChanged = true;
       }
 
+      var searchAvailableObjectWebService = GetSearchAvailableObjectService();
       if (isDataChanged)
       {
         _displayName = StringUtility.EmptyToNull (newValue);
 
         if (_displayName != null && InternalValue == null)
         {
-          var searchAvailableObjectWebService = GetSearchAvailableObjectService();
           var result = searchAvailableObjectWebService.Search (
               _displayName,
               1,
