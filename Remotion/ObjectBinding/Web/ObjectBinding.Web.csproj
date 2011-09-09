@@ -438,6 +438,12 @@
     <Compile Include="UI\Design\PropertyPathBindingCollectionEditor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>

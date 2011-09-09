@@ -420,11 +420,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return "function() { return BocReferenceValue_GetSelectionCount ('" + DropDownListClientID + "', '" + c_nullIdentifier + "'); }";
     }
 
-    protected override string GetOptionsMenuTitle ()
-    {
-      return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
-    }
-
     /// <summary> Sets the <see cref="IBusinessObjectWithIdentity"/> objects to be displayed in edit mode. </summary>
     /// <remarks>
     ///   Use this method to set the listed items, e.g. from the parent control, if no <see cref="Select"/>

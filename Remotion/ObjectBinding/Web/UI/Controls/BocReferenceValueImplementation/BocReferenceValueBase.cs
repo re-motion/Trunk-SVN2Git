@@ -197,7 +197,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       get { return _command; }
     }
 
-    /// <summary> Gets or sets the validation error message. </summary>
+    /// <summary> Gets or sets the validation error message displayed when the value is not set but the control is required. </summary>
     /// <value> 
     ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
     ///   In case of the default value, the text is read from the resources for this control.
@@ -755,7 +755,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       OptionsMenu.Enabled = Enabled;
       OptionsMenu.IsReadOnly = IsReadOnly;
       if (string.IsNullOrEmpty (OptionsTitle))
-        OptionsMenu.TitleText = GetOptionsMenuTitle();
+      {
+        OptionsMenu.TitleText = GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
+      }
       else
         OptionsMenu.TitleText = OptionsTitle;
       OptionsMenu.Style["vertical-align"] = "middle";
@@ -777,8 +779,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     protected abstract string GetSelectionCountFunction ();
-
-    protected abstract string GetOptionsMenuTitle ();
 
     /// <summary>
     ///   Returns the string to be used in the drop down list for the specified <see cref="IBusinessObjectWithIdentity"/>.

@@ -58,6 +58,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_iconIDPostfix = "Boc_Icon";
 
     // types
+    
+    /// <summary> A list of control specific resources. </summary>
+    /// <remarks> 
+    ///   Resources will be accessed using 
+    ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
+    ///   See the documentation of <b>GetString</b> for further details.
+    /// </remarks>
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocAutoCompleteReferenceValue")]
+    protected new enum ResourceIdentifier
+    {
+      /// <summary> The validation error message displayed when the display name does not identify a valid item. </summary>
+      InvalidItemValidationMessage,
+    }
 
     // static members
 
@@ -75,6 +89,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object. </summary>
     private string _displayName;
+
+    private string _invalidItemErrorMessage;
 
     private string _servicePath = string.Empty;
     private string _args = string.Empty;
@@ -235,11 +251,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return (ISearchAvailableObjectWebService) TypesafeActivator.CreateInstance (compiledType).With();
     }
 
-    protected override string GetOptionsMenuTitle ()
-    {
-      return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
-    }
-
     protected override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
@@ -259,7 +270,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       var invalidDisplayNameValidator = new BocAutoCompleteReferenceValueInvalidDisplayNameValidator();
       invalidDisplayNameValidator.ID = ID + "_ValidatorValidDisplayName";
       invalidDisplayNameValidator.ControlToValidate = ID;
-      invalidDisplayNameValidator.ErrorMessage = "The entered text does not correspond to an item. Please correct your input.";
+      if (string.IsNullOrEmpty (InvalidItemErrorMessage))
+        invalidDisplayNameValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.InvalidItemValidationMessage);
+      else
+        invalidDisplayNameValidator.ErrorMessage = InvalidItemErrorMessage;
 
       _validators.Add (invalidDisplayNameValidator);
 
@@ -506,6 +520,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return "Search"; }
     }
+    
+    /// <summary> Gets or sets the validation error message displayed when the entered text does not identify an item. </summary>
+    /// <value> 
+    ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
+    ///   In case of the default value, the text is read from the resources for this control.
+    /// </value>
+    [Description ("Validation message displayed if the entered text does not identify an item.")]
+    [Category ("Validator")]
+    [DefaultValue ("")]
+    public string InvalidItemErrorMessage
+    {
+      get { return _invalidItemErrorMessage; }
+      set
+      {
+        _invalidItemErrorMessage = value;
+        foreach (var validator in _validators.OfType<BocAutoCompleteReferenceValueInvalidDisplayNameValidator>())
+          validator.ErrorMessage = _invalidItemErrorMessage;
+      }
+    }
 
     [Editor (typeof (UrlEditor), typeof (UITypeEditor))]
     [Category ("AutoComplete")]
@@ -664,7 +697,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return c_nullIdentifier; }
     }
 
-    protected override string GetSelectionCountFunction ()
+    protected override sealed string GetSelectionCountFunction ()
     {
       return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "', '" + c_nullIdentifier + "'); }";
     }

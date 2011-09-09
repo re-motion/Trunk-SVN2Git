@@ -19,6 +19,9 @@ using System.Web.UI.WebControls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
+  /// <summary>
+  /// Validator for <see cref="BocAutoCompleteReferenceValue"/> that checks whether the display name corresponds to a valid item.
+  /// </summary>
   public class BocAutoCompleteReferenceValueInvalidDisplayNameValidator : BaseValidator
   {
     public BocAutoCompleteReferenceValueInvalidDisplayNameValidator ()
