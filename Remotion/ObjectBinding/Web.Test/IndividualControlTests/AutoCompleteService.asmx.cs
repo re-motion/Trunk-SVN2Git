@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -185,7 +186,14 @@ namespace OBWTest.IndividualControlTests
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy SearchExact (string prefixText, string businessObjectClass, string businessObjectProperty, string businessObject, string args)
     {
-      throw new NotImplementedException();
+      var result = Search (prefixText, 2, businessObjectClass, businessObjectProperty, businessObject, args);
+      if (result.Length == 0)
+        return null;
+      if (result.Length == 1)
+        return result[0];
+      if (string.Equals (result[0].DisplayName, prefixText, StringComparison.CurrentCultureIgnoreCase))
+        return result[0];
+      return null;
     }
 
     private string GetUrl (IconInfo iconInfo)
