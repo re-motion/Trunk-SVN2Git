@@ -134,6 +134,15 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The entered name does not identify a group. Please correct your input..
+        /// </summary>
+        internal static string auto_SpecificGroupField_InvalidItemErrorMessage {
+            get {
+                return ResourceManager.GetString("auto:SpecificGroupField:InvalidItemErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select a group..
         /// </summary>
         internal static string auto_SpecificGroupField_RequiredFieldErrorMessage {
@@ -166,6 +175,15 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         internal static string auto_SpecificTenantField_RequiredFieldErrorMessage {
             get {
                 return ResourceManager.GetString("auto:SpecificTenantField:RequiredFieldErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The entered name does not identify a user. Please correct your input..
+        /// </summary>
+        internal static string auto_SpecificUserField_InvalidItemErrorMessage {
+            get {
+                return ResourceManager.GetString("auto:SpecificUserField:InvalidItemErrorMessage", resourceCulture);
             }
         }
         

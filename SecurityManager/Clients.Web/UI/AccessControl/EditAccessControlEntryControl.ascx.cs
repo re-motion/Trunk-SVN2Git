@@ -104,17 +104,17 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
               Icon = new IconInfo (GetIconUrl ("PermissionDenied.gif").GetUrl())
           });
       AllPermisionsMenu.EventCommandClick += AllPermisionsMenu_EventCommandClick;
-    }
-
-    protected override void OnPreRender (EventArgs e)
-    {
-      base.OnPreRender (e);
 
       if (string.IsNullOrEmpty (SpecificGroupField.ServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (SpecificGroupField);
 
       if (string.IsNullOrEmpty (SpecificUserField.ServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (SpecificUserField);
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
 
       if (IsCollapsed)
       {

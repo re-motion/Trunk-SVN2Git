@@ -225,4 +225,10 @@
   <data name="UserCondition.None" xml:space="preserve">
     <value>any</value>
   </data>
+  <data name="auto:SpecificGroupField:InvalidItemErrorMessage" xml:space="preserve">
+    <value>The entered name does not identify a group. Please correct your input.</value>
+  </data>
+  <data name="auto:SpecificUserField:InvalidItemErrorMessage" xml:space="preserve">
+    <value>The entered name does not identify a user. Please correct your input.</value>
+  </data>
 </root>

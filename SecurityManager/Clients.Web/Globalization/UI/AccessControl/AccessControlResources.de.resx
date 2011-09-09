@@ -225,4 +225,10 @@
   <data name="UserCondition.None" xml:space="preserve">
     <value>beliebig</value>
   </data>
+  <data name="auto:SpecificGroupField:InvalidItemErrorMessage" xml:space="preserve">
+    <value>Der eingegebene Name konnte keiner Gruppe zugeordnet werden. Bitte korrigieren Sie Ihre Eingabe.</value>
+  </data>
+  <data name="auto:SpecificUserField:InvalidItemErrorMessage" xml:space="preserve">
+    <value>Der eingegebene Name konnte keinem Benutzer zugeordnet werden. Bitte korrigieren Sie Ihre Eingabe.</value>
+  </data>
 </root>
