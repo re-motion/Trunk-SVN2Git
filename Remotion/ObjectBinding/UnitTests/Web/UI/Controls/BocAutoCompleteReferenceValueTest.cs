@@ -65,12 +65,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
           int? completionSetCount, 
           string businessObjectClass,
           string businessObjectProperty, 
-          string businessObjectID, 
+          string businessObject, 
           string args)
       {
-        return new BusinessObjectWithIdentityProxy[0];
+        throw new NotImplementedException();
       }
-    }
+
+      [WebMethod]
+      [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
+      public BusinessObjectWithIdentityProxy SearchExact (
+          string prefixText, 
+          string businessObjectClass,
+          string businessObjectProperty, 
+          string businessObject, 
+          string args)
+      {
+        return null;
+      }
+   }
     
     [WebService]
     [ScriptService]
@@ -86,9 +98,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
           string businessObjectID, 
           string args)
       {
-        return new[] { new BusinessObjectWithIdentityProxy() { DisplayName = "ValidName", UniqueIdentifier = "ValidIdentifier" } };
+        throw new NotImplementedException();
       }
-    }
+  
+      [WebMethod]
+      [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
+      public BusinessObjectWithIdentityProxy SearchExact (
+          string prefixText, 
+          string businessObjectClass,
+          string businessObjectProperty, 
+          string businessObject, 
+          string args)
+      {
+        return new BusinessObjectWithIdentityProxy() { DisplayName = "ValidName", UniqueIdentifier = "ValidIdentifier" };
+      }
+  }
 
     private Page _page;
     private BocAutoCompleteReferenceValueMock _control;
@@ -371,6 +395,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
+      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
+      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
+      _control.BuildManager = buildManagerStub;
+      _control.AppRelativeTemplateSourceDirectory = "~/";
+      _control.ServicePath = "~/SearchService.asmx";
+
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.False);
       Assert.That (result, Is.False);
@@ -391,6 +421,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
+      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
+      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
+      _control.BuildManager = buildManagerStub;
+      _control.AppRelativeTemplateSourceDirectory = "~/";
+      _control.ServicePath = "~/SearchService.asmx";
+
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.False);
       Assert.That (result, Is.False);
@@ -409,6 +445,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = false;
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+
+      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
+      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
+      _control.BuildManager = buildManagerStub;
+      _control.AppRelativeTemplateSourceDirectory = "~/";
+      _control.ServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);
@@ -433,6 +475,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+
+      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
+      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
+      _control.BuildManager = buildManagerStub;
+      _control.AppRelativeTemplateSourceDirectory = "~/";
+      _control.ServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);
@@ -459,6 +507,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+
+      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
+      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
+      _control.BuildManager = buildManagerStub;
+      _control.AppRelativeTemplateSourceDirectory = "~/";
+      _control.ServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.False);
@@ -712,22 +766,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void CreateValidatorsNotRequired ()
     {
-      _control.RequiredFieldErrorMessage = "RequiredFieldErrorMessage";
       _control.ReadOnly = false;
       _control.Required = false;
       BaseValidator[] validators = _control.CreateValidators();
-      Assert.That (validators.Length, Is.EqualTo (0));
+      Assert.That (validators.Length, Is.EqualTo (1));
+      Assert.That (validators[0] is BocAutoCompleteReferenceValueInvalidDisplayNameValidator);
     }
 
     [Test]
     public void CreateValidatorsEditableRequired ()
     {
-      _control.RequiredFieldErrorMessage = "RequiredFieldErrorMessage";
       _control.ReadOnly = false;
       _control.Required = true;
       BaseValidator[] validators = _control.CreateValidators();
-      Assert.That (validators.Length, Is.EqualTo (1));
+      Assert.That (validators.Length, Is.EqualTo (2));
       Assert.That (validators[0] is RequiredFieldValidator);
+      Assert.That (validators[1] is BocAutoCompleteReferenceValueInvalidDisplayNameValidator);
     }
 
     [Test]

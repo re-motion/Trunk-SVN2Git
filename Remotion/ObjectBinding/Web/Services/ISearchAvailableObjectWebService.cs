@@ -25,12 +25,58 @@ namespace Remotion.ObjectBinding.Web.Services
   /// </summary>
   public interface ISearchAvailableObjectWebService
   {
+    /// <summary>
+    /// Retrieves a list of objects based on the <paramref name="prefixText"/> and the search context (i.e. the <paramref name="businessObjectClass"/> etc).
+    /// </summary>
+    /// <param name="prefixText">The text all returned values must match.</param>
+    /// <param name="completionSetCount">
+    /// The maximum number of items to be returned or <see langword="null" /> if the search service implementation can define the result set size.
+    /// </param>
+    /// <param name="businessObjectClass">
+    /// The <see cref="IBusinessObjectClass.Identifier"/> of the <see cref="IBusinessObjectClass"/> the control is bound to or <see langword="null" />.
+    /// This value is either the <see cref="IBusinessObject.BusinessObjectClass"/> of the bound <see cref="IBusinessObject"/> or the 
+    /// <see cref="IBusinessObjectDataSource.BusinessObjectClass"/> of the <see cref="IBusinessObjectDataSource"/>.
+    /// </param>
+    /// <param name="businessObjectProperty">
+    ///   The <see cref="IBusinessObjectProperty.Identifier"/> of the bound <see cref="IBusinessObjectProperty"/> or <see langword="null" />.
+    /// </param>
+    /// <param name="businessObject">
+    ///   The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the bound <see cref="IBusinessObjectWithIdentity"/> or <see langword="null" />
+    ///   if the bound object only implements the <see cref="IBusinessObject"/> interface.
+    /// </param>
+    /// <param name="args">Additional search arguments.</param>
+    /// <returns>An array of <see cref="BusinessObjectWithIdentityProxy"/> objects containing the search result.</returns>
     BusinessObjectWithIdentityProxy[] Search (
         string prefixText,
         int? completionSetCount,
         string businessObjectClass,
         string businessObjectProperty,
-        string businessObjectID,
+        string businessObject,
+        string args);
+
+    /// <summary>
+    /// Retrieves a single object that exactly matches the <paramref name="prefixText"/> and the search context (i.e. the <paramref name="businessObjectClass"/> etc).
+    /// </summary>
+    /// <param name="prefixText">The text all returned values must match.</param>
+    /// <param name="businessObjectClass">
+    /// The <see cref="IBusinessObjectClass.Identifier"/> of the <see cref="IBusinessObjectClass"/> the control is bound to or <see langword="null" />.
+    /// This value is either the <see cref="IBusinessObject.BusinessObjectClass"/> of the bound <see cref="IBusinessObject"/> or the 
+    /// <see cref="IBusinessObjectDataSource.BusinessObjectClass"/> of the <see cref="IBusinessObjectDataSource"/>.
+    /// </param>
+    /// <param name="businessObjectProperty">
+    ///   The <see cref="IBusinessObjectProperty.Identifier"/> of the bound <see cref="IBusinessObjectProperty"/> or <see langword="null" />.
+    /// </param>
+    /// <param name="businessObject">
+    ///   The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the bound <see cref="IBusinessObjectWithIdentity"/> or <see langword="null" />
+    ///   if the bound object only implements the <see cref="IBusinessObject"/> interface.
+    /// </param>
+    /// <param name="args">Additional search arguments.</param>
+    /// <returns>A <see cref="BusinessObjectWithIdentityProxy"/> object if an exact match is found or <see langword="null" />.</returns>
+    BusinessObjectWithIdentityProxy SearchExact (
+        string prefixText,
+        string businessObjectClass,
+        string businessObjectProperty,
+        string businessObject,
         string args);
   }
 }

@@ -547,12 +547,11 @@
                 //           under "JSON, objects, and strings: oh my!" for details.
                 var params = {
                     prefixText: (options.ignoreInput ? '' : lastWord(term)),
-                    completionSetCount: options.max,
-                    businessObjectClass: options.extraParams['businessObjectClass'],
-                    businessObjectProperty: options.extraParams['businessObjectProperty'],
-                    businessObjectID: options.extraParams['businessObjectID'],
-                    args: options.extraParams['args']
+                    completionSetCount: options.max
                 };
+                for (var propertyName in options.extraParams)
+                  params[propertyName] = options.extraParams[propertyName];
+
                 executingRequest = Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethod, false, params,
                                           function(result, context, methodName) {
                                               executingRequest = null;

@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
         int? completionSetCount,
         string businessObjectClass,
         string businessObjectProperty,
-        string businessObjectID,
+        string businessObject,
         string args)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("businessObjectClass", businessObjectClass);
@@ -86,6 +86,21 @@ namespace Remotion.SecurityManager.Clients.Web.UI
           result = result.Take (0);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();
       }
+    }
+
+    [WebMethod]
+    [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
+    public BusinessObjectWithIdentityProxy SearchExact (
+        string prefixText,
+        string businessObjectClass,
+        string businessObjectProperty,
+        string businessObject,
+        string args)
+    {
+      var result = Search (prefixText, 2, businessObjectClass, businessObjectProperty, businessObject, args);
+      if (result.Count() == 1)
+        return result.Single();
+      return null;
     }
   }
 }

@@ -40,7 +40,7 @@ namespace OBWTest.IndividualControlTests
   {
     #region Values
 
-    private static string[] s_values = new string[]
+    private static readonly string[] s_values = new []
                                        {
                                            "sdfg",
                                            "sdfgh",
@@ -159,7 +159,7 @@ namespace OBWTest.IndividualControlTests
         int? completionSetCount,
         string businessObjectClass,
         string businessObjectProperty,
-        string businessObjectID,
+        string businessObject,
         string args)
     {
       if (prefixText.Equals ("throw", StringComparison.OrdinalIgnoreCase))
@@ -179,6 +179,13 @@ namespace OBWTest.IndividualControlTests
       filteredPersons.Sort ((left, right) => string.Compare (left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase));
 
       return filteredPersons.ToArray();
+    }
+
+    [WebMethod]
+    [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
+    public BusinessObjectWithIdentityProxy SearchExact (string prefixText, string businessObjectClass, string businessObjectProperty, string businessObject, string args)
+    {
+      throw new NotImplementedException();
     }
 
     private string GetUrl (IconInfo iconInfo)

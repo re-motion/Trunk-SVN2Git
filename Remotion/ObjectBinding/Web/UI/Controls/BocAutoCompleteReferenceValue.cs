@@ -152,19 +152,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         if (_displayName != null && InternalValue == null)
         {
-          var result = searchAvailableObjectWebService.Search (
+          var result = searchAvailableObjectWebService.SearchExact (
               _displayName,
-              1,
               _webServiceContextFromPreviousLifeCycle.BusinessObjectClass,
               _webServiceContextFromPreviousLifeCycle.BusinessObjectProperty,
               _webServiceContextFromPreviousLifeCycle.BusinessObjectIdentifier,
               _webServiceContextFromPreviousLifeCycle.Args);
 
-          var firstResultValue = result.FirstOrDefault();
-          if (firstResultValue != null)
+          if (result != null)
           {
-            InternalValue = firstResultValue.UniqueIdentifier;
-            _displayName = firstResultValue.DisplayName;
+            InternalValue = result.UniqueIdentifier;
+            _displayName = result.DisplayName;
           }
         }
 

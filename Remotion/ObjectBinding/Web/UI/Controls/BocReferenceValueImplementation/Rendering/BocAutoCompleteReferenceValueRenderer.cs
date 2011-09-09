@@ -16,10 +16,8 @@
 // 
 using System;
 using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -125,15 +123,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.AppendFormat ("{0}, ", renderingContext.Control.DropDownRefreshDelay);
       script.AppendFormat ("{0}, ", renderingContext.Control.SelectionUpdateDelay);
 
-      script.AppendFormat ("'{0}'", renderingContext.Control.NullValueString);
-      script.Append (", ");
+      script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
+
+      script.Append ("{ ");
+      script.Append ("businessObjectClass : ");
       AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectClass);
       script.Append (", ");
+      script.Append ("businessObjectProperty : ");
       AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectProperty);
       script.Append (", ");
+      script.Append ("businessObject : ");
       AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectIdentifier);
       script.Append (", ");
+      script.Append ("args : ");
       AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.Args);
+      script.Append (" }");
+
       script.Append ("); } );");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
