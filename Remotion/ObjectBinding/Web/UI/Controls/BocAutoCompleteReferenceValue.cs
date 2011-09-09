@@ -23,6 +23,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
+using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
@@ -101,6 +102,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private SearchAvailableObjectWebServiceContext _webServiceContextFromPreviousLifeCycle = SearchAvailableObjectWebServiceContext.Create (null, null, null);
     private IBuildManager _buildManager = new BuildManagerWrapper();
     private readonly ArrayList _validators;
+
+    private static Tuple<string, string[]>[] s_searchServiceMethods =
+        typeof (ISearchAvailableObjectWebService).GetMethods().Select (
+            mi => Tuple.Create (
+                mi.Name,
+                mi.GetParameters().Select (pi => pi.Name).ToArray())).ToArray();
 
     // construction and disposing
 
@@ -244,7 +251,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                 typeof (ISearchAvailableObjectWebService).FullName));
       }
 
-      WebServiceUtility.CheckJsonService (compiledType, ((IBocAutoCompleteReferenceValue) this).ServiceMethod);
+      foreach (var searchServiceMethod in s_searchServiceMethods)
+        WebServiceUtility.CheckJsonService (compiledType, searchServiceMethod.Item1, searchServiceMethod.Item2);
 
       return (ISearchAvailableObjectWebService) TypesafeActivator.CreateInstance (compiledType).With();
     }
@@ -512,11 +520,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public Style LabelStyle
     {
       get { return _labelStyle; }
-    }
-
-    string IBocAutoCompleteReferenceValue.ServiceMethod
-    {
-      get { return "Search"; }
     }
     
     /// <summary> Gets or sets the validation error message displayed when the entered text does not identify an item. </summary>

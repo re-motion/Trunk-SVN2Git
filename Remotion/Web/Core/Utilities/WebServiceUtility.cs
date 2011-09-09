@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -78,13 +79,15 @@ namespace Remotion.Web.Utilities
     /// </summary>
     /// <param name="type">The <see cref="Type"/> of the JSON web service. Must not be <see langword="null" />.</param>
     /// <param name="method">The service method of the JSON web service. Must not be <see langword="null" /> or empty.</param>
+    /// <param name="parameters">The parameters of the JSON web service. Must not be <see langword="null" />. </param>
     /// <exception cref="ArgumentException">
     /// Thrown if the required attributes for a JSON web service are not set or the web service declaration itself is invalid.
     /// </exception>
-    public static void CheckJsonService (Type type, string method)
+    public static void CheckJsonService (Type type, string method, params string[] parameters)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("method", method);
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
 
       CheckScriptService (type, method);
 
@@ -98,6 +101,7 @@ namespace Remotion.Web.Utilities
             type.FullName,
             typeof (ScriptMethodAttribute).Name);
       }
+      CheckParameters (type, methodInfo, parameters);
     }
 
     private static void CheckType (Type type)
@@ -149,6 +153,33 @@ namespace Remotion.Web.Utilities
             typeof (T).FullName);
       }
       return attribute;
+    }
+
+    private static void CheckParameters (Type type, MethodInfo methodInfo, string[] expectedParameters)
+    {
+      var actualParameters = methodInfo.GetParameters().Select (pi => pi.Name).ToArray();
+      var missingParameters = expectedParameters.Except (actualParameters);
+      var unexpectedParameters = actualParameters.Except (expectedParameters);
+
+      var firstMissingParameter = missingParameters.FirstOrDefault();
+      if (firstMissingParameter != null)
+      {
+        throw CreateArgumentException (
+            "Web method '{0}' on web service type '{1}' does not declare the required parameter '{2}'. Parameters are matched by name and case.",
+            methodInfo.Name,
+            type.FullName,
+            firstMissingParameter);
+      }
+
+      var firstUnexpectedParameter = unexpectedParameters.FirstOrDefault();
+      if (firstUnexpectedParameter != null)
+      {
+        throw CreateArgumentException (
+            "Web method '{0}' on web service type '{1}' has unexpected parameter '{2}'.",
+            methodInfo.Name,
+            type.FullName,
+            firstUnexpectedParameter);
+      }
     }
 
     private static T GetAttributeFromCache<T> (MemberInfo memberInfo)

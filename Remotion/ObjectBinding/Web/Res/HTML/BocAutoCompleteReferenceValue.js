@@ -19,11 +19,11 @@ function BocAutoCompleteReferenceValue()
 }
 
 BocAutoCompleteReferenceValue.Bind =
-function (textbox, hiddenField, button, webServiceUrl, webServiceMethod,
+function (textbox, hiddenField, button, webServiceUrl,
          completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
          nullValueString, searchContext)
 {
-  textbox.autocomplete(webServiceUrl, webServiceMethod,
+  textbox.autocomplete(webServiceUrl, 'Search',
         {
           extraParams: searchContext,
           nullValue: nullValueString, // the hidden field value indicating that no value has been selected

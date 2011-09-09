@@ -116,7 +116,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
 
       script.AppendFormat ("'{0}', ", renderingContext.Control.ResolveClientUrl (StringUtility.NullToEmpty (renderingContext.Control.ServicePath)));
-      script.AppendFormat ("'{0}', ", StringUtility.NullToEmpty (renderingContext.Control.ServiceMethod));
 
       script.AppendFormat ("{0}, ", renderingContext.Control.CompletionSetCount);
       script.AppendFormat ("{0}, ", renderingContext.Control.DropDownDisplayDelay);
