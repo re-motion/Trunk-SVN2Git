@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI.WebControls;
 using Remotion.ObjectBinding;
 
 namespace OBWTest
@@ -48,7 +49,8 @@ namespace OBWTest
     protected override void OnUnload (EventArgs e)
     {
       base.OnUnload (e);
-      LevelOneDataSource.SaveValues (true);
+      if (LevelOneDataSource != null)
+        LevelOneDataSource.SaveValues (true);
     }
 
     protected void ValidateButton_OnClick (object sender, EventArgs e)
@@ -67,6 +69,12 @@ namespace OBWTest
     {
       if (ValidateDataSource ())
         LevelOneDataSource.SaveValues (false);
+    }
+
+    protected void LevelThreeIntValueFieldCustomValidator_OnServerValidate (object sender, ServerValidateEventArgs args)
+    {
+      if (args.Value == "0")
+        args.IsValid = false;
     }
   }
 }

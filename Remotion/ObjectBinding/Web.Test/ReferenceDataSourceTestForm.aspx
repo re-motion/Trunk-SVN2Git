@@ -93,6 +93,7 @@
               <td>
                 <remotion:BocTextValue ID="LevelThreeIntValueField" runat="server" DataSourceControl="LevelThreeDataSource"
                   PropertyIdentifier="IntValue" />
+                <asp:CustomValidator ID="LevelThreeIntValueFieldCustomValidator" runat="server" OnServerValidate="LevelThreeIntValueFieldCustomValidator_OnServerValidate" ErrorMessage="Most not be 0" ControlToValidate="LevelThreeIntValueField" />
               </td>
             </tr>
           </table>
