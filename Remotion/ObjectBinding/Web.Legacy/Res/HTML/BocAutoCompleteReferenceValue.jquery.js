@@ -131,8 +131,8 @@
             lastKeyPressCode = event.keyCode;
 
             clearTimeout(timeout);
-            stopLoading();
             // re-motion: cancel an already running request
+            stopLoading();
             abortRequest();
 
             switch (event.keyCode) {
@@ -338,7 +338,7 @@
             if (isLastKeyPressedNavigationKey && selectCurrent()) {
                 //SelectCurrent already does everything that's needed.
             } else if (lastKeyPressCode != -1) {
-                acceptCurrent();
+                acceptCurrent(true);
             } else {
                 closeDropDownListAndSetValue(previousValidValue);
             }
