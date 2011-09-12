@@ -377,7 +377,7 @@
                 $input.trigger("result", { DisplayName: term, UniqueIdentifier: options.nullValue });
 
             }
-        }
+        };
 
         function selectCurrent() {
             var selected = select.selected();
@@ -531,7 +531,7 @@
             lastKeyPressCode = -1;
             previousValue = '';
             config.mouseDownOnSelect = false;
-        }
+        };
 
         function receiveData(q, data) {
             if (data && hasFocus) {
@@ -600,43 +600,42 @@
             }
         };
 
-        function requestDataExact(term, success, failure)
-        {
-          if (!options.matchCase)
-            term = term.toLowerCase();
+        function requestDataExact(term, success, failure) {
+            if (!options.matchCase)
+              term = term.toLowerCase();
 
-          // re-motion: cancel an already running request
-          abortRequest();
+            // re-motion: cancel an already running request
+            abortRequest();
 
-          // re-motion: if an async postback is in progress, updating the DOM results in an exception
-          var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
-          if (pageRequestManager.get_isInAsyncPostBack())
-          {
-            failure(term);
-            return;
-          }
+            // re-motion: if an async postback is in progress, updating the DOM results in an exception
+            var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
+            if (pageRequestManager.get_isInAsyncPostBack())
+            {
+              failure(term);
+              return;
+            }
 
-          var params = {
-            prefixText: lastWord(term),
-          };
-          for (var propertyName in options.extraParams)
-            params[propertyName] = options.extraParams[propertyName];
+            var params = {
+              prefixText: lastWord(term)
+            };
+            for (var propertyName in options.extraParams)
+              params[propertyName] = options.extraParams[propertyName];
 
-          executingRequest = Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethodSearchExact, false, params,
-                                                function (result, context, methodName) {
+            executingRequest = Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethodSearchExact, false, params,
+                                                  function (result, context, methodName) {
+                                                      executingRequest = null;
+                                                      var parsed = null;
+                                                      if (result != null) {
+                                                          var resultArray = new Array ( result );
+                                                          var parsedArray = options.parse && options.parse(resultArray) || parse(resultArray);
+                                                          parsed = parsedArray[0];
+                                                      }
+                                                      success(term, parsed);
+                                                  },
+                                                  function (err, context, methodName) {
                                                     executingRequest = null;
-                                                    var parsed = null;
-                                                    if (result != null) {
-                                                        var resultArray = new Array ( result );
-                                                        var parsedArray = options.parse && options.parse(resultArray) || parse(resultArray);
-                                                        parsed = parsedArray[0];
-                                                    }
-                                                    success(term, parsed);
-                                                },
-                                                function (err, context, methodName) {
-                                                  executingRequest = null;
-                                                });
-        }
+                                                  });
+        };
 
         // re-motion: cancel an already running request
         function abortRequest() {
@@ -654,7 +653,7 @@
                 }
                 executingRequest = null;
             }
-        }
+        };
 
         function parse(data) {
             var parsed = [];
