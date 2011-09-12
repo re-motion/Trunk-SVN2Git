@@ -561,10 +561,10 @@
     <EmbeddedResource Include="Globalization\BocMultilineTextValue.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\BocReferenceValueBase.de.resx">
+    <EmbeddedResource Include="Globalization\BocReferenceValue.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\BocReferenceValueBase.resx">
+    <EmbeddedResource Include="Globalization\BocReferenceValue.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\BocTextValue.de.resx">

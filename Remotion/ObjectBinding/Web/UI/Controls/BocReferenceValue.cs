@@ -62,6 +62,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // types
 
+        /// <summary> A list of control specific resources. </summary>
+    /// <remarks> 
+    ///   Resources will be accessed using 
+    ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
+    ///   See the documentation of <b>GetString</b> for further details.
+    /// </remarks>
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocReferenceValue")]
+    public enum ResourceIdentifier
+    {
+      /// <summary> Label displayed in the OptionsMenu. </summary>
+      OptionsTitle,
+      /// <summary> The validation error message displayed when the null item is selected. </summary>
+      NullItemValidationMessage,
+    }
+
+
     // static members
 
     private static readonly ILog s_log = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
@@ -415,7 +432,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
-    protected override string GetSelectionCountFunction ()
+    protected override sealed string GetNullItemValidationMessage ()
+    {
+      return GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
+    }
+
+    protected override sealed string GetOptionsMenuTitle ()
+    {
+      return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
+    }
+
+    protected override sealed string GetSelectionCountFunction ()
     {
       return "function() { return BocReferenceValue_GetSelectionCount ('" + DropDownListClientID + "', '" + c_nullIdentifier + "'); }";
     }

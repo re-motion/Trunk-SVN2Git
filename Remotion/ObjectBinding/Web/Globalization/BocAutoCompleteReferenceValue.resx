@@ -120,4 +120,10 @@
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.InvalidItemValidationMessage" xml:space="preserve">
     <value>The entered text does not correspond to an item. Please correct your input.</value>
   </data>
+  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.NullItemValidationMessage" xml:space="preserve">
+    <value>Please select an item.</value>
+  </data>
+  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.OptionsTitle" xml:space="preserve">
+    <value>Options</value>
+  </data>
 </root>

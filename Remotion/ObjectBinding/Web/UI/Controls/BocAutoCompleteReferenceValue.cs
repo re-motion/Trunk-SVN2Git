@@ -68,8 +68,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     [ResourceIdentifiers]
     [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocAutoCompleteReferenceValue")]
-    protected new enum ResourceIdentifier
+    public enum ResourceIdentifier
     {
+      /// <summary> Label displayed in the OptionsMenu. </summary>
+      OptionsTitle,
+      /// <summary> The validation error message displayed when the null item is selected. </summary>
+      NullItemValidationMessage,
       /// <summary> The validation error message displayed when the display name does not identify a valid item. </summary>
       InvalidItemValidationMessage,
     }
@@ -696,6 +700,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string IBocAutoCompleteReferenceValue.NullValueString
     {
       get { return c_nullIdentifier; }
+    }
+    
+    protected override sealed string GetNullItemValidationMessage ()
+    {
+      return GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
+    }
+
+    protected override sealed string GetOptionsMenuTitle ()
+    {
+      return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
     }
 
     protected override sealed string GetSelectionCountFunction ()

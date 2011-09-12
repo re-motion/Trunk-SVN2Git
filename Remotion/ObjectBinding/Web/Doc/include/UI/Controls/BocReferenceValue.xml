@@ -100,7 +100,7 @@
       <h4 class="dtH4">Localization Support</h4>
       <para>
         The resources required by this control are defined by the 
-        <see cref="BocReferenceValueBase.ResourceIdentifier"/> enum. See the <b>ResourceIdentifier</b>'s documentation
+        <see cref="BocReferenceValue.ResourceIdentifier"/> enum. See the <b>ResourceIdentifier</b>'s documentation
         for details on localization.
       </para><para>
         The control supports resource dispatching to its properties through the <see cref="ResourceDispatcher"/>.

@@ -36,22 +36,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   public abstract class BocReferenceValueBase : BusinessObjectBoundEditableWebControl, IPostBackDataHandler, IPostBackEventHandler, IBocMenuItemContainer
   {
     protected const string c_nullIdentifier = "==null==";
-
-    /// <summary> A list of control specific resources. </summary>
-    /// <remarks> 
-    ///   Resources will be accessed using 
-    ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
-    ///   See the documentation of <b>GetString</b> for further details.
-    /// </remarks>
-    [ResourceIdentifiers]
-    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocReferenceValueBase")]
-    protected enum ResourceIdentifier
-    {
-      /// <summary> Label displayed in the OptionsMenu. </summary>
-      OptionsTitle,
-      /// <summary> The validation error message displayed when the null item is selected. </summary>
-      NullItemValidationMessage,
-    }
     
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
 
@@ -741,7 +725,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
       notNullItemValidator.ControlToValidate = ID;
       if (string.IsNullOrEmpty (RequiredFieldErrorMessage))
-        notNullItemValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
+      {
+        notNullItemValidator.ErrorMessage = GetNullItemValidationMessage();
+      }
       else
         notNullItemValidator.ErrorMessage = RequiredFieldErrorMessage;
       validators[0] = notNullItemValidator;
@@ -756,7 +742,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       OptionsMenu.IsReadOnly = IsReadOnly;
       if (string.IsNullOrEmpty (OptionsTitle))
       {
-        OptionsMenu.TitleText = GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
+        OptionsMenu.TitleText = GetOptionsMenuTitle();
       }
       else
         OptionsMenu.TitleText = OptionsTitle;
@@ -777,6 +763,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         OptionsMenu.GetSelectionCount = getSelectionCount;
       }
     }
+
+    protected abstract string GetNullItemValidationMessage ();
+
+    protected abstract string GetOptionsMenuTitle ();
 
     protected abstract string GetSelectionCountFunction ();
 
