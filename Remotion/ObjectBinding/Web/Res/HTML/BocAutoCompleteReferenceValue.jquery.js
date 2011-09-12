@@ -183,7 +183,8 @@
                     var wasVisible = select.visible();
                     config.mouseDownOnSelect = false;
 
-                    if (selectCurrent()) {
+                    var isCancelKey = event.keyCode == KEY.TAB || event.keyCode == KEY.ESC;
+                    if (!isCancelKey && selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
                     } else {
                         acceptCurrent(true);
@@ -345,7 +346,7 @@
             } else {
                 closeDropDownListAndSetValue(previousValidValue);
             }
-        }
+        };
 
         // re-motion: allows empty input and invalid input
         function acceptCurrent(confirmValue) {
@@ -403,12 +404,6 @@
 
             closeDropDownListAndSetValue(v);
             $input.trigger("updateResult", selected.data);
-
-            // re-motion: reset the timer
-            if (autoFillTimeout) {
-                clearTimeout(autoFillTimeout);
-                autoFillTimeout = null;
-            }
 
             return true;
         }
@@ -497,6 +492,12 @@
         };
 
         function closeDropDownListAndSetValue(value){
+            // re-motion: reset the timer
+            if (autoFillTimeout) {
+                clearTimeout(autoFillTimeout);
+                autoFillTimeout = null;
+            }
+
             hideResults();
             $input.val(value);
             resetState();
