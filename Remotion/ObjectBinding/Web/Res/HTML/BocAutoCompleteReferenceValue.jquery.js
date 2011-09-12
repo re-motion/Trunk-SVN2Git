@@ -132,6 +132,7 @@
 
             clearTimeout(timeout);
             // re-motion: cancel an already running request
+            stopLoading();
             abortRequest();
 
             switch (event.keyCode) {
@@ -353,8 +354,10 @@
                 var successHandler = function(term, data) {
                   if (data != null) {
                       stopLoading();
-                      $input.val(data.result);
-                      $input.trigger("result", { DisplayName: data.result, UniqueIdentifier: data.value });
+                      if ($input.val().toLowerCase() == term.toLowerCase()) {
+                          $input.val(data.result);
+                          $input.trigger("result", { DisplayName: data.result, UniqueIdentifier: data.value });
+                      }
                   } else {
                       stopLoading();
                       $input.trigger("result", { DisplayName: term, UniqueIdentifier: options.nullValue });
@@ -639,8 +642,16 @@
         function abortRequest() {
             if (executingRequest != null) {
                 var executor = executingRequest.get_executor();
-                if (executor.get_started())
-                    executor.abort();
+                if (executor.get_started()) {
+                    var emptyMethodBackup = Function.emptyMethod;
+                    try {
+                        //patch for IE9 issue: XmlHttpRequest.abort passes an argument to the onreadystatechange handler by ASP.NET AJAX requires an empty argument list
+                        Function.emptyMethod = function() {};
+                        executor.abort();
+                    } finally {
+                        Function.emptyMethod = emptyMethodBackup;
+                    }
+                }
                 executingRequest = null;
             }
         }
