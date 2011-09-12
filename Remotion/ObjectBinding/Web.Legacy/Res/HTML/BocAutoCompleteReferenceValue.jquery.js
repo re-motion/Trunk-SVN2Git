@@ -350,17 +350,32 @@
 
         // re-motion: allows empty input and invalid input
         function acceptCurrent(confirmValue) {
-            closeDropDownListAndSetValue($input.val());
             var term = $input.val();
+            var selectedItem = null;
+            if (confirmValue && term != '' && select.visible())
+            {
+              var itemIndex = select.findItem (term);
+              var item = null;
+              if (itemIndex != -1)
+              {
+                select.selectItem (itemIndex);
+                selectedItem = select.selected();
+              }
+            }
+            closeDropDownListAndSetValue(term);
+            if (selectedItem != null) {
 
-            if (confirmValue && term != '' && !options.isAutoPostBackEnabled) {
+                $input.val(selectedItem.result);
+                $input.trigger("updateResult", selectedItem.data);
+
+            } else if (confirmValue && term != '' && !options.isAutoPostBackEnabled) {
 
                 var successHandler = function(term, data) {
                   if (data != null) {
                       stopLoading();
                       if ($input.val().toLowerCase() == term.toLowerCase()) {
                           $input.val(data.result);
-                          $input.trigger("updateResult", { DisplayName: data.result, UniqueIdentifier: data.value });
+                          $input.trigger("updateResult", data.data);
                       }
                   } else {
                       stopLoading();
