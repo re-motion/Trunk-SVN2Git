@@ -348,7 +348,7 @@
             closeDropDownListAndSetValue($input.val());
             var term = $input.val();
 
-            if (confirmValue && term != '') {
+            if (confirmValue && term != '' && !options.isAutoPostBackEnabled) {
 
                 var successHandler = function(term, data) {
                   if (data != null) {
@@ -687,6 +687,7 @@
         cacheLength: 10,
         max: 100,
         mustMatch: false,
+        isAutoPostBackEnabled: false,
         extraParams: {},
         // re-motion: changed selectFirst from boolean field to function
         selectFirst: function(inputValue, searchTerm) { return true; },

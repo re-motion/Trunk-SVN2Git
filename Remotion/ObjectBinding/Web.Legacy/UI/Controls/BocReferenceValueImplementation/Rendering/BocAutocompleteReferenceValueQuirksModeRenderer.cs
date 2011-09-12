@@ -131,6 +131,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       script.AppendFormat ("{0}, ", renderingContext.Control.SelectionUpdateDelay);
 
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
+      AppendBooleanValueToScript (script, renderingContext.Control.TextBoxStyle.AutoPostBack ?? false);
+      script.Append (", ");
 
       script.Append ("{ ");
       script.Append ("businessObjectClass : ");

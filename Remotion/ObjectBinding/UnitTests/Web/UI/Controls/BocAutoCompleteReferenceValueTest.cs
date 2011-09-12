@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
           int? completionSetCount, 
           string businessObjectClass,
           string businessObjectProperty, 
-          string businessObjectID, 
+          string businessObject, 
           string args)
       {
         throw new NotImplementedException();

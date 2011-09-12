@@ -77,5 +77,10 @@ namespace Remotion.Web.UI.Controls
       else
         scriptBuilder.Append ("'").Append (ScriptUtility.EscapeClientScript (stringValue)).Append ("'");
     }
+
+    protected void AppendBooleanValueToScript (StringBuilder scriptBuilder, bool booleanValue)
+    {
+      scriptBuilder.Append (booleanValue ? "true" : "false");
+    }
   }
 }
