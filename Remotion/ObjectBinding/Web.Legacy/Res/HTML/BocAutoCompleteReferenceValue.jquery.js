@@ -35,13 +35,14 @@
 ; (function($) {
 
     $.fn.extend({
-        autocomplete: function(serviceUrl, serviceMethod, options) {
+        autocomplete: function(serviceUrl, serviceMethodSearch, serviceMethodSearchExact, options) {
             var $input = $(this);
             options = $.extend({}, $.Autocompleter.defaults, {
                 // re-motion: instead of a single URL property, use separate service URL and service method properties. 
                 //           data cannot be inserted directly any more
                 serviceUrl: serviceUrl,
-                serviceMethod: serviceMethod,
+                serviceMethodSearch: serviceMethodSearch,
+                serviceMethodSearchExact: serviceMethodSearchExact,
                 data: null,
                 // re-motion: clicking this control will display the dropdown list with an assumed input of '' (regardless of textbox value)
                 dropDownButtonId: null
@@ -181,7 +182,7 @@
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
                     } else {
-                        acceptCurrent();
+                        acceptCurrent(true);
                     }
 
                     if (event.keyCode == KEY.RETURN) {
@@ -343,9 +344,36 @@
         }
 
         // re-motion: allows empty input and invalid input
-        function acceptCurrent() {
+        function acceptCurrent(confirmValue) {
             closeDropDownListAndSetValue($input.val());
-            $input.trigger("result", { DisplayName: $input.val(), UniqueIdentifier: options.nullValue });
+            var term = $input.val();
+
+            if (confirmValue && term != '') {
+
+                var successHandler = function(term, data) {
+                  if (data != null) {
+                      stopLoading();
+                      $input.val(data.result);
+                      $input.trigger("result", { DisplayName: data.result, UniqueIdentifier: data.value });
+                  } else {
+                      stopLoading();
+                      $input.trigger("result", { DisplayName: term, UniqueIdentifier: options.nullValue });
+                  }
+                };
+
+                var failureHandler = function() {
+                    stopLoading();
+                    $input.trigger("result", { DisplayName: term, UniqueIdentifier: options.nullValue });
+                };
+
+              startLoading();
+              requestDataExact (term, successHandler, failureHandler);
+
+            } else {
+
+                $input.trigger("result", { DisplayName: term, UniqueIdentifier: options.nullValue });
+
+            }
         }
 
         function selectCurrent() {
@@ -392,7 +420,7 @@
 
             currentValue = lastWord(currentValue);
             if (currentValue.length >= options.minChars) {
-                $input.addClass(options.loadingClass);
+                startLoading();
                 if (!options.matchCase)
                     currentValue = currentValue.toLowerCase();
 
@@ -513,7 +541,7 @@
                     select.hide();
                 }
             } else {
-                acceptCurrent();
+                acceptCurrent(false);
             }
         };
 
@@ -538,7 +566,7 @@
 
                 // re-motion: if a webservice url and a method name have been supplied, try loading the data now
             } else if ((typeof options.serviceUrl == "string") && (options.serviceUrl.length > 0)
-                        && (typeof options.serviceMethod == "string") && (options.serviceMethod.length > 0)) {
+                        && (typeof options.serviceMethodSearch == "string") && (options.serviceMethodSearch.length > 0)) {
 
                 // re-motion: replaced jQuery AJAX call with .NET call because of the following problem:
                 //           when extending the parameter list with the necessary arguments for the web service method call,
@@ -552,7 +580,7 @@
                 for (var propertyName in options.extraParams)
                   params[propertyName] = options.extraParams[propertyName];
 
-                executingRequest = Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethod, false, params,
+                executingRequest = Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethodSearch, false, params,
                                           function(result, context, methodName) {
                                               executingRequest = null;
                                               var parsed = options.parse && options.parse(result) || parse(result);
@@ -568,6 +596,44 @@
                 failure(term);
             }
         };
+
+        function requestDataExact(term, success, failure)
+        {
+          if (!options.matchCase)
+            term = term.toLowerCase();
+
+          // re-motion: cancel an already running request
+          abortRequest();
+
+          // re-motion: if an async postback is in progress, updating the DOM results in an exception
+          var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
+          if (pageRequestManager.get_isInAsyncPostBack())
+          {
+            failure(term);
+            return;
+          }
+
+          var params = {
+            prefixText: lastWord(term),
+          };
+          for (var propertyName in options.extraParams)
+            params[propertyName] = options.extraParams[propertyName];
+
+          executingRequest = Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethodSearchExact, false, params,
+                                                function (result, context, methodName) {
+                                                    executingRequest = null;
+                                                    var parsed = null;
+                                                    if (result != null) {
+                                                        var resultArray = new Array ( result );
+                                                        var parsedArray = options.parse && options.parse(resultArray) || parse(resultArray);
+                                                        parsed = parsedArray[0];
+                                                    }
+                                                    success(term, parsed);
+                                                },
+                                                function (err, context, methodName) {
+                                                  executingRequest = null;
+                                                });
+        }
 
         // re-motion: cancel an already running request
         function abortRequest() {
@@ -594,6 +660,10 @@
                 }
             }
             return parsed;
+        };
+
+        function startLoading() {
+            $input.addClass(options.loadingClass);
         };
 
         function stopLoading() {

@@ -23,7 +23,7 @@ function(textbox, hiddenField, button, webServiceUrl,
          completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
          nullValueString, searchContext)
 {
-  textbox.autocomplete(webServiceUrl, 'Search',
+  textbox.autocomplete(webServiceUrl, 'Search', 'SearchExact', 
         {
           extraParams: searchContext,
           nullValue: nullValueString, // the hidden field value indicating that no value has been selected
