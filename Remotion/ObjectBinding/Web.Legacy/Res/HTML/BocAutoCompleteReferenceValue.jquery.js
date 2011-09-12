@@ -58,8 +58,11 @@
                 new $.Autocompleter(this, options);
             });
         },
-        result: function(handler) {
-            return this.bind("result", handler);
+        invalidateResult: function(handler) {
+            return this.bind("invalidateResult", handler);
+        },
+        updateResult: function(handler) {
+            return this.bind("updateResult", handler);
         },
         search: function(handler) {
             return this.trigger("search", [handler]);
@@ -270,7 +273,7 @@
                     }
                 }
                 if (typeof fn == "function") fn(result);
-                else $input.trigger("result", result.data);
+                else $input.trigger("updateResult", result.data);
             }
             $.each(trimWords($input.val()), function(i, value) {
                 requestData(value, findValueCallback, findValueCallback);
@@ -356,25 +359,26 @@
                       stopLoading();
                       if ($input.val().toLowerCase() == term.toLowerCase()) {
                           $input.val(data.result);
-                          $input.trigger("result", { DisplayName: data.result, UniqueIdentifier: data.value });
+                          $input.trigger("updateResult", { DisplayName: data.result, UniqueIdentifier: data.value });
                       }
                   } else {
                       stopLoading();
-                      $input.trigger("result", { DisplayName: term, UniqueIdentifier: options.nullValue });
+                      $input.trigger("updateResult", { DisplayName: term, UniqueIdentifier: options.nullValue });
                   }
                 };
 
                 var failureHandler = function() {
                     stopLoading();
-                    $input.trigger("result", { DisplayName: term, UniqueIdentifier: options.nullValue });
+                    $input.trigger("updateResult", { DisplayName: term, UniqueIdentifier: options.nullValue });
                 };
 
               startLoading();
+              $input.trigger("invalidateResult");
               requestDataExact (term, successHandler, failureHandler);
 
             } else {
 
-                $input.trigger("result", { DisplayName: term, UniqueIdentifier: options.nullValue });
+                $input.trigger("updateResult", { DisplayName: term, UniqueIdentifier: options.nullValue });
 
             }
         };
@@ -398,7 +402,7 @@
             }
 
             closeDropDownListAndSetValue(v);
-            $input.trigger("result", selected.data);
+            $input.trigger("updateResult", selected.data);
 
             // re-motion: reset the timer
             if (autoFillTimeout) {

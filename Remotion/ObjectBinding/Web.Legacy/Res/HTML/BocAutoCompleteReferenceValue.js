@@ -73,9 +73,13 @@ function (textbox, hiddenField, button, webServiceUrl,
             return item.DisplayName;
           }
         }
-    ).result(function(e, item)
+    ).invalidateResult(function (e, item)
     {
-      hiddenField.val(item.UniqueIdentifier); //What we populate on hidden box
+      hiddenField.val(nullValueString);
+      //Do not fire change-event
+    }).updateResult(function (e, item)
+    {
+      hiddenField.val(item.UniqueIdentifier);
       hiddenField.trigger('change');
     });
 };
