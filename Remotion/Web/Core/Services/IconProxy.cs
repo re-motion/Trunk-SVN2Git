@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Services
 {
@@ -29,8 +31,9 @@ namespace Remotion.Web.Services
     private readonly int? _heightInPixels;
     private readonly int? _widthInPixels;
 
-    public static IconProxy Create (IconInfo iconInfo)
+    public static IconProxy Create (HttpContextBase httpContext, IconInfo iconInfo)
     {
+      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("iconInfo", iconInfo);
 
       int? heightInPixels = null;
@@ -41,7 +44,8 @@ namespace Remotion.Web.Services
       if (!iconInfo.Width.IsEmpty && iconInfo.Width.Type == UnitType.Pixel)
         widthInPixels = (int) iconInfo.Width.Value;
 
-      return new IconProxy (iconInfo.Url, iconInfo.AlternateText, iconInfo.ToolTip, heightInPixels, widthInPixels);
+      var absoluteUrl = UrlUtility.GetAbsoluteUrl (httpContext, iconInfo.Url);
+      return new IconProxy (absoluteUrl, iconInfo.AlternateText, iconInfo.ToolTip, heightInPixels, widthInPixels);
     }
 
     private IconProxy (string url, string alternateText, string toolTip, int? heightInPixels, int? widthInPixels)

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using Remotion.ObjectBinding;
@@ -24,7 +25,6 @@ using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
 using Remotion.Web.Services;
-using Remotion.Web.UI.Controls;
 
 namespace OBWTest.IndividualControlTests
 {
@@ -53,7 +53,7 @@ namespace OBWTest.IndividualControlTests
 
       var iconInfo = BusinessObjectBoundWebControl.GetIcon (businessObjectWithIdentity, bindableObjectClass.BusinessObjectProvider);
       if (iconInfo != null)
-        return IconProxy.Create (iconInfo);
+        return IconProxy.Create (new HttpContextWrapper (Context), iconInfo);
 
       return null;
     }
