@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       ArgumentUtility.CheckNotNull ("control", control);
 
       var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>();
-      control.ServicePath =
+      control.SearchServicePath =
           resourceUrlFactory.CreateResourceUrl (typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx")
               .GetUrl();
     }

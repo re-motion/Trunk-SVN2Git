@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Linq;
 using System.Web.UI;
+using System.Web.UI.Design;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Design;
@@ -57,6 +58,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private Unit _optionsMenuWidth = Unit.Empty;
     private bool? _hasValueEmbeddedInsideOptionsMenu;
     private string[] _hiddenMenuItems;
+    private string _iconServicePath;
 
     protected BocReferenceValueBase ()
     {
@@ -357,8 +359,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     ///   provides an instance of type <see cref="IBusinessObjectWebUIService"/> and 
     ///   <see cref="IBusinessObjectWebUIService.GetIcon"/> returns not <see langword="null"/>.
     /// </remarks>
-    [PersistenceMode (PersistenceMode.Attribute), Category ("Appearance"), Description ("Flag that determines whether to show the icon in front of the value."), DefaultValue (true)]
+    [PersistenceMode (PersistenceMode.Attribute)]
+    [Category ("Appearance")]
+    [Description ("Flag that determines whether to show the icon in front of the value.")]
+    [DefaultValue (true)]
     public bool EnableIcon { get; set; }
+    
+    [Editor (typeof (UrlEditor), typeof (UITypeEditor))]
+    [Category ("Appearance")]
+    [DefaultValue ("")]
+    public string IconServicePath
+    {
+      get { return _iconServicePath; }
+      set { _iconServicePath = StringUtility.NullToEmpty (value); }
+    }
 
     /// <summary> The <see cref="BocReferenceValue"/> supports only scalar properties. </summary>
     /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="false"/>. </returns>

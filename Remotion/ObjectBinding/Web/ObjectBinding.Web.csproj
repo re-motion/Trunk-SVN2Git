@@ -161,6 +161,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Services\BusinessObjectWithIdentityProxy.cs" />
+    <Compile Include="Services\IBusinessObjectIconWebService.cs" />
     <Compile Include="Services\ISearchAvailableObjectWebService.cs" />
     <Compile Include="Services\SearchAvailableObjectWebServiceContext.cs" />
     <Compile Include="UI\Controls\BindableObjectDataSourceControl.cs">

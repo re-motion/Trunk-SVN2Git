@@ -30,10 +30,7 @@ using Remotion.Web.Utilities;
 
 namespace OBWTest.IndividualControlTests
 {
-  /// <summary>
-  /// Summary description for AutoCompleteService
-  /// </summary>
-  [WebService (Namespace = "http://tempuri.org/")]
+  [WebService (Namespace = "http://re-motion.org/ObjectBinding.Web/")]
   [WebServiceBinding (ConformsTo = WsiProfiles.BasicProfile1_1)]
   [ToolboxItem (false)]
   [ScriptService]

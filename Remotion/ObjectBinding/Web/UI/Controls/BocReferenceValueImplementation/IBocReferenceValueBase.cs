@@ -35,6 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     new IBusinessObjectWithIdentity Value { get; }
     bool IsCommandEnabled (bool readOnly);
     IconInfo GetIcon ();
+    string IconServicePath { get; }
     string GetLabelText ();
     string IconClientID { get; }
     string LabelClientID { get; }

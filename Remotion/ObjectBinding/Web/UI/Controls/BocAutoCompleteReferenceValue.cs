@@ -23,15 +23,14 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
-using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
-using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Services;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -97,21 +96,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private string _invalidItemErrorMessage;
 
-    private string _servicePath = string.Empty;
+    private string _searchServicePath = string.Empty;
     private string _args = string.Empty;
     private int _completionSetCount = 10;
     private int _dropDownDisplayDelay = 1000;
     private int _dropDownRefreshDelay = 2000;
     private int _selectionUpdateDelay = 200;
-    private SearchAvailableObjectWebServiceContext _webServiceContextFromPreviousLifeCycle = SearchAvailableObjectWebServiceContext.Create (null, null, null);
-    private IBuildManager _buildManager = new BuildManagerWrapper();
+    private SearchAvailableObjectWebServiceContext _searchServiceContextFromPreviousLifeCycle = SearchAvailableObjectWebServiceContext.Create (null, null, null);
+    private IWebServiceFactory _webServiceFactory = new WebServiceFactory (new BuildManagerWrapper());
     private readonly ArrayList _validators;
-
-    private static Tuple<string, string[]>[] s_searchServiceMethods =
-        typeof (ISearchAvailableObjectWebService).GetMethods().Select (
-            mi => Tuple.Create (
-                mi.Name,
-                mi.GetParameters().Select (pi => pi.Name).ToArray())).ToArray();
 
     // construction and disposing
 
@@ -165,10 +158,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           var result = searchAvailableObjectWebService.SearchExact (
               _displayName,
-              _webServiceContextFromPreviousLifeCycle.BusinessObjectClass,
-              _webServiceContextFromPreviousLifeCycle.BusinessObjectProperty,
-              _webServiceContextFromPreviousLifeCycle.BusinessObjectIdentifier,
-              _webServiceContextFromPreviousLifeCycle.Args);
+              _searchServiceContextFromPreviousLifeCycle.BusinessObjectClass,
+              _searchServiceContextFromPreviousLifeCycle.BusinessObjectProperty,
+              _searchServiceContextFromPreviousLifeCycle.BusinessObjectIdentifier,
+              _searchServiceContextFromPreviousLifeCycle.Args);
 
           if (result != null)
           {
@@ -239,26 +232,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (IsDesignMode)
         return null;
 
-      if (string.IsNullOrEmpty (ServicePath))
+      if (string.IsNullOrEmpty (SearchServicePath))
         throw new InvalidOperationException (string.Format ("BocAutoCompleteReferenceValue '{0}' does not have a service path set.", ID));
 
-      var virtualServicePath = VirtualPathUtility.GetVirtualPath (this, ServicePath);
-      var compiledType = BuildManager.GetCompiledType (virtualServicePath);
-
-      if (!typeof (ISearchAvailableObjectWebService).IsAssignableFrom (compiledType))
-      {
-        throw new InvalidOperationException (
-            string.Format (
-                "BocAutoCompleteReferenceValue '{0}' uses web service '{1}' which does not implement mandatory interface '{2}'.",
-                ID,
-                ServicePath,
-                typeof (ISearchAvailableObjectWebService).FullName));
-      }
-
-      foreach (var searchServiceMethod in s_searchServiceMethods)
-        WebServiceUtility.CheckJsonService (compiledType, searchServiceMethod.Item1, searchServiceMethod.Item2);
-
-      return (ISearchAvailableObjectWebService) TypesafeActivator.CreateInstance (compiledType).With();
+      var virtualServicePath = VirtualPathUtility.GetVirtualPath (this, SearchServicePath);
+      return _webServiceFactory.CreateJsonService<ISearchAvailableObjectWebService> (virtualServicePath);
     }
 
     protected override void Render (HtmlTextWriter writer)
@@ -314,7 +292,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.LoadControlState (values[0]);
       InternalValue = (string) values[1];
       _displayName = (string) values[2];
-      _webServiceContextFromPreviousLifeCycle = (SearchAvailableObjectWebServiceContext) values[3];
+      _searchServiceContextFromPreviousLifeCycle = (SearchAvailableObjectWebServiceContext) values[3];
     }
 
     protected override object SaveControlState ()
@@ -409,10 +387,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           //  Only reload if value is outdated
       else if (_value == null || _value.UniqueIdentifier != InternalValue)
       {
-        if (Property != null)
-          _value = ((IBusinessObjectClassWithIdentity) Property.ReferenceClass).GetObject (InternalValue);
-        else if (DataSource != null)
-          _value = ((IBusinessObjectClassWithIdentity) DataSource.BusinessObjectClass).GetObject (InternalValue);
+        var businessObjectClass = GetBusinessObjectClass();
+        if (businessObjectClass != null)
+          _value = businessObjectClass.GetObject (InternalValue);
       }
       return _value;
     }
@@ -548,10 +525,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Editor (typeof (UrlEditor), typeof (UITypeEditor))]
     [Category ("AutoComplete")]
     [DefaultValue ("")]
-    public string ServicePath
+    public string SearchServicePath
     {
-      get { return _servicePath; }
-      set { _servicePath = StringUtility.NullToEmpty (value); }
+      get { return _searchServicePath; }
+      set { _searchServicePath = StringUtility.NullToEmpty (value); }
     }
 
     [Category ("AutoComplete")]
@@ -631,10 +608,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [EditorBrowsable (EditorBrowsableState.Advanced)]
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public IBuildManager BuildManager
+    public IWebServiceFactory WebServiceFactory
     {
-      get { return _buildManager; }
-      set { _buildManager = ArgumentUtility.CheckNotNull ("value", value); }
+      get { return _webServiceFactory; }
+      set { _webServiceFactory = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     bool IBocReferenceValueBase.IsCommandEnabled (bool readOnly)
@@ -684,7 +661,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     IconInfo IBocReferenceValueBase.GetIcon ()
     {
-      return GetIcon (Value, Property == null ? null : Property.ReferenceClass.BusinessObjectProvider);
+      var businessObjectClass = GetBusinessObjectClass();
+      if (businessObjectClass == null)
+        return null;
+      return GetIcon (Value, businessObjectClass.BusinessObjectProvider);
     }
 
     DropDownMenu IBocReferenceValueBase.OptionsMenu
@@ -715,6 +695,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override sealed string GetSelectionCountFunction ()
     {
       return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "', '" + c_nullIdentifier + "'); }";
+    }
+
+    private IBusinessObjectClassWithIdentity GetBusinessObjectClass ()
+    {
+      IBusinessObjectClassWithIdentity businessObjectClass = null;
+      if (Property != null)
+        businessObjectClass = (IBusinessObjectClassWithIdentity) Property.ReferenceClass;
+      else if (DataSource != null)
+        businessObjectClass = (IBusinessObjectClassWithIdentity) DataSource.BusinessObjectClass;
+      return businessObjectClass;
     }
   }
 }

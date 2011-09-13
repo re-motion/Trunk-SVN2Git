@@ -477,6 +477,9 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubCustomCellDefinition.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubRenderer.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubRowRenderer.cs" />
+    <Compile Include="Web\UI\Controls\StubDataSource.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Web\UI\Controls\StubResourceUrlResolver.cs" />
     <Compile Include="Web\UI\Controls\StubResourceUrlResolverFactory.cs" />
     <Compile Include="Web\UI\Controls\StubServiceLocator.cs" />

@@ -14,13 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Web.Script.Services;
 using System.Web.Services;
 using NUnit.Framework;
-using Remotion.Web.Utilities;
+using Remotion.Web.Services;
 
-namespace Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests
+namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
 {
   [TestFixture]
   public class CheckScriptService

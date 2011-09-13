@@ -181,6 +181,10 @@
       <DependentUpon>BocAutoCompleteReferenceValueUserControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="IndividualControlTests\IconService.asmx.cs">
+      <DependentUpon>IconService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="QuirksMode.Master.cs">
       <DependentUpon>QuirksMode.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -510,6 +514,7 @@
     <Content Include="IndividualControlTests\Form.aspx">
       <SubType>Form</SubType>
     </Content>
+    <Content Include="IndividualControlTests\IconService.asmx" />
     <Content Include="LeftFrame.aspx">
       <SubType>Form</SubType>
     </Content>

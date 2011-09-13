@@ -105,10 +105,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
           });
       AllPermisionsMenu.EventCommandClick += AllPermisionsMenu_EventCommandClick;
 
-      if (string.IsNullOrEmpty (SpecificGroupField.ServicePath))
+      if (string.IsNullOrEmpty (SpecificGroupField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (SpecificGroupField);
 
-      if (string.IsNullOrEmpty (SpecificUserField.ServicePath))
+      if (string.IsNullOrEmpty (SpecificUserField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (SpecificUserField);
     }
 

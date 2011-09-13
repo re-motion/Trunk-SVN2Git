@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Specialized;
 using System.Web;
-using System.Web.Script.Services;
-using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
@@ -29,7 +27,7 @@ using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
-using Remotion.Web.Infrastructure;
+using Remotion.Web.Services;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -53,66 +51,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
         return _objectToReturn;
       }
     }
-
-    [WebService]
-    [ScriptService]
-    private class FakeSearchAvailableObjectWebService : WebService, ISearchAvailableObjectWebService
-    {
-      [WebMethod]
-      [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
-      public BusinessObjectWithIdentityProxy[] Search (
-          string prefixText, 
-          int? completionSetCount, 
-          string businessObjectClass,
-          string businessObjectProperty, 
-          string businessObject, 
-          string args)
-      {
-        throw new NotImplementedException();
-      }
-
-      [WebMethod]
-      [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
-      public BusinessObjectWithIdentityProxy SearchExact (
-          string prefixText, 
-          string businessObjectClass,
-          string businessObjectProperty, 
-          string businessObject, 
-          string args)
-      {
-        return null;
-      }
-   }
-    
-    [WebService]
-    [ScriptService]
-    private class FakeSearchAvailableObjectWebServiceWithResult : WebService, ISearchAvailableObjectWebService
-    {
-      [WebMethod]
-      [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
-      public BusinessObjectWithIdentityProxy[] Search (
-          string prefixText, 
-          int? completionSetCount, 
-          string businessObjectClass,
-          string businessObjectProperty, 
-          string businessObject, 
-          string args)
-      {
-        throw new NotImplementedException();
-      }
-  
-      [WebMethod]
-      [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
-      public BusinessObjectWithIdentityProxy SearchExact (
-          string prefixText, 
-          string businessObjectClass,
-          string businessObjectProperty, 
-          string businessObject, 
-          string args)
-      {
-        return new BusinessObjectWithIdentityProxy() { DisplayName = "ValidName", UniqueIdentifier = "ValidIdentifier" };
-      }
-  }
 
     private Page _page;
     private BocAutoCompleteReferenceValueMock _control;
@@ -139,7 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _propertyReferenceValue =
           (IBusinessObjectReferenceProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceValue");
 
-      _dataSource = new BusinessObjectReferenceDataSource();
+      _dataSource = new StubDataSource (((IBusinessObject) _businessObject).BusinessObjectClass);
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
 
       ((IBusinessObject) _businessObject).BusinessObjectClass.BusinessObjectProvider.AddService<IGetObjectService>
@@ -395,11 +333,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
-      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
-      _control.BuildManager = buildManagerStub;
+      var webServiceFactoryStub = MockRepository.GenerateStub<IWebServiceFactory>();
+      webServiceFactoryStub.Stub (stub => stub.CreateJsonService<ISearchAvailableObjectWebService> ("~/SearchService.asmx"))
+          .Return (MockRepository.GenerateStub<ISearchAvailableObjectWebService>());
+      _control.WebServiceFactory = webServiceFactoryStub;
       _control.AppRelativeTemplateSourceDirectory = "~/";
-      _control.ServicePath = "~/SearchService.asmx";
+      _control.SearchServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.False);
@@ -421,11 +360,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
-      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
-      _control.BuildManager = buildManagerStub;
+      var webServiceFactoryStub = MockRepository.GenerateStub<IWebServiceFactory>();
+      webServiceFactoryStub.Stub (stub => stub.CreateJsonService<ISearchAvailableObjectWebService> ("~/SearchService.asmx"))
+          .Return (MockRepository.GenerateStub<ISearchAvailableObjectWebService>());
+      _control.WebServiceFactory = webServiceFactoryStub;
       _control.AppRelativeTemplateSourceDirectory = "~/";
-      _control.ServicePath = "~/SearchService.asmx";
+      _control.SearchServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.False);
@@ -446,11 +386,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
-      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
-      _control.BuildManager = buildManagerStub;
+      var webServiceFactoryStub = MockRepository.GenerateStub<IWebServiceFactory>();
+      webServiceFactoryStub.Stub (stub => stub.CreateJsonService<ISearchAvailableObjectWebService> ("~/SearchService.asmx"))
+          .Return (MockRepository.GenerateStub<ISearchAvailableObjectWebService>());
+      _control.WebServiceFactory = webServiceFactoryStub;
       _control.AppRelativeTemplateSourceDirectory = "~/";
-      _control.ServicePath = "~/SearchService.asmx";
+      _control.SearchServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);
@@ -476,11 +417,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
-      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
-      _control.BuildManager = buildManagerStub;
+      var webServiceFactoryStub = MockRepository.GenerateStub<IWebServiceFactory>();
+      webServiceFactoryStub
+          .Stub (stub => stub.CreateJsonService<ISearchAvailableObjectWebService> ("~/SearchService.asmx"))
+          .Return (MockRepository.GenerateStub<ISearchAvailableObjectWebService>());
+      _control.WebServiceFactory = webServiceFactoryStub;
       _control.AppRelativeTemplateSourceDirectory = "~/";
-      _control.ServicePath = "~/SearchService.asmx";
+      _control.SearchServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);
@@ -508,11 +451,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
-      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
-      _control.BuildManager = buildManagerStub;
+      var webServiceFactoryStub = MockRepository.GenerateStub<IWebServiceFactory>();
+      webServiceFactoryStub
+          .Stub (stub => stub.CreateJsonService<ISearchAvailableObjectWebService> ("~/SearchService.asmx"))
+          .Return (MockRepository.GenerateStub<ISearchAvailableObjectWebService>());
+      _control.WebServiceFactory = webServiceFactoryStub;
       _control.AppRelativeTemplateSourceDirectory = "~/";
-      _control.ServicePath = "~/SearchService.asmx";
+      _control.SearchServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.False);
@@ -537,11 +482,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
-      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
-      _control.BuildManager = buildManagerStub;
+      var webServiceFactoryStub = MockRepository.GenerateStub<IWebServiceFactory>();
+      webServiceFactoryStub
+          .Stub (stub => stub.CreateJsonService<ISearchAvailableObjectWebService> ("~/SearchService.asmx"))
+          .Return (MockRepository.GenerateStub<ISearchAvailableObjectWebService>());
+      _control.WebServiceFactory = webServiceFactoryStub;
       _control.AppRelativeTemplateSourceDirectory = "~/";
-      _control.ServicePath = "~/SearchService.asmx";
+      _control.SearchServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);
@@ -565,11 +512,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
-      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebService));
-      _control.BuildManager = buildManagerStub;
+      var webServiceFactoryStub = MockRepository.GenerateStub<IWebServiceFactory>();
+      webServiceFactoryStub
+          .Stub (stub => stub.CreateJsonService<ISearchAvailableObjectWebService> ("~/SearchService.asmx"))
+          .Return (MockRepository.GenerateStub<ISearchAvailableObjectWebService>());
+      _control.WebServiceFactory = webServiceFactoryStub;
       _control.AppRelativeTemplateSourceDirectory = "~/";
-      _control.ServicePath = "~/SearchService.asmx";
+      _control.SearchServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);
@@ -590,13 +539,27 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _control.IsDirty = false;
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
+      var searchAvailableObjectWebServiceContext = SearchAvailableObjectWebServiceContext.Create (_dataSource, _propertyReferenceValue, "Args");
+      PrivateInvoke.SetNonPublicField (_control, "_searchServiceContextFromPreviousLifeCycle", searchAvailableObjectWebServiceContext);
       ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
 
-      var buildManagerStub = MockRepository.GenerateStub<IBuildManager>();
-      buildManagerStub.Stub (stub => stub.GetCompiledType ("~/SearchService.asmx")).Return (typeof (FakeSearchAvailableObjectWebServiceWithResult));
-      _control.BuildManager = buildManagerStub;
+      var webServiceFactoryStub = MockRepository.GenerateStub<IWebServiceFactory>();
+      var searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectWebService>();
+      searchServiceStub
+          .Stub (
+              stub => stub.SearchExact (
+                  "SomeValue",
+                  searchAvailableObjectWebServiceContext.BusinessObjectClass,
+                  searchAvailableObjectWebServiceContext.BusinessObjectProperty,
+                  searchAvailableObjectWebServiceContext.BusinessObjectIdentifier,
+                  searchAvailableObjectWebServiceContext.Args))
+          .Return (new BusinessObjectWithIdentityProxy { DisplayName = "ValidName", UniqueIdentifier = "ValidIdentifier" });
+      webServiceFactoryStub
+          .Stub (stub => stub.CreateJsonService<ISearchAvailableObjectWebService> ("~/SearchService.asmx"))
+          .Return (searchServiceStub);
+      _control.WebServiceFactory = webServiceFactoryStub;
       _control.AppRelativeTemplateSourceDirectory = "~/";
-      _control.ServicePath = "~/SearchService.asmx";
+      _control.SearchServicePath = "~/SearchService.asmx";
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.UniqueID, postbackCollection);
       Assert.That (_control.IsDirty, Is.True);

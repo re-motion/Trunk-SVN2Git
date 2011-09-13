@@ -139,6 +139,10 @@
     <Compile Include="Design\DesignTimeThemedResourceUrl.cs" />
     <Compile Include="Design\DesignTimeResourceUrl.cs" />
     <Compile Include="Infrastructure\IBuildManager.cs" />
+    <Compile Include="Services\IconProxy.cs" />
+    <Compile Include="Services\IWebServiceFactory.cs" />
+    <Compile Include="Services\WebServiceFactory.cs" />
+    <Compile Include="Services\WebServiceUtility.cs" />
     <Compile Include="StaticResourceUrl.cs" />
     <Compile Include="IResourceUrlFactory.cs" />
     <Compile Include="Factories\ResourceUrlFactory.cs">
@@ -696,7 +700,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\VirtualPathUtility.cs" />
-    <Compile Include="Utilities\WebServiceUtility.cs" />
     <Compile Include="Utilities\WebTypeUtility.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -924,6 +927,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

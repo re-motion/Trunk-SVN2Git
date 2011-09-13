@@ -17,9 +17,9 @@
 using System.Web.Script.Services;
 using System.Web.Services;
 using NUnit.Framework;
-using Remotion.Web.Utilities;
+using Remotion.Web.Services;
 
-namespace Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests
+namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
 {
   [TestFixture]
   public class CheckJsonService

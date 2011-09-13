@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     string HiddenFieldUniqueID { get; }
     string HiddenFieldClientID { get; }
     string DropDownButtonClientID { get; }
-    string ServicePath { get; }
+    string SearchServicePath { get; }
 
     /// <summary> Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) only. </summary>
     /// <remarks> These style settings override the styles defined in <see cref="IBocReferenceValueBase.CommonStyle"/>. </remarks>
