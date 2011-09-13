@@ -29,8 +29,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
-using Remotion.Web.Services;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -103,7 +101,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private int _dropDownRefreshDelay = 2000;
     private int _selectionUpdateDelay = 200;
     private SearchAvailableObjectWebServiceContext _searchServiceContextFromPreviousLifeCycle = SearchAvailableObjectWebServiceContext.Create (null, null, null);
-    private IWebServiceFactory _webServiceFactory = new WebServiceFactory (new BuildManagerWrapper());
     private readonly ArrayList _validators;
 
     // construction and disposing
@@ -233,10 +230,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return null;
 
       if (string.IsNullOrEmpty (SearchServicePath))
-        throw new InvalidOperationException (string.Format ("BocAutoCompleteReferenceValue '{0}' does not have a service path set.", ID));
+        throw new InvalidOperationException (string.Format ("BocAutoCompleteReferenceValue '{0}' does not have a SearchServicePath set.", ID));
 
       var virtualServicePath = VirtualPathUtility.GetVirtualPath (this, SearchServicePath);
-      return _webServiceFactory.CreateJsonService<ISearchAvailableObjectWebService> (virtualServicePath);
+      return WebServiceFactory.CreateJsonService<ISearchAvailableObjectWebService> (virtualServicePath);
     }
 
     protected override void Render (HtmlTextWriter writer)
@@ -603,15 +600,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         return string.Format ("{0}\n{1}", InternalValue, _displayName); 
       }
-    }
-
-    [EditorBrowsable (EditorBrowsableState.Advanced)]
-    [Browsable (false)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public IWebServiceFactory WebServiceFactory
-    {
-      get { return _webServiceFactory; }
-      set { _webServiceFactory = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     bool IBocReferenceValueBase.IsCommandEnabled (bool readOnly)

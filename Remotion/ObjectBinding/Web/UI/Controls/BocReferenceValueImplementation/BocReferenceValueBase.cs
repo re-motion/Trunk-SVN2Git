@@ -24,9 +24,12 @@ using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.Services;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -59,6 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private bool? _hasValueEmbeddedInsideOptionsMenu;
     private string[] _hiddenMenuItems;
     private string _iconServicePath;
+    private IWebServiceFactory _webServiceFactory = new WebServiceFactory (new BuildManagerWrapper());
 
     protected BocReferenceValueBase ()
     {
@@ -374,6 +378,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       set { _iconServicePath = StringUtility.NullToEmpty (value); }
     }
 
+    [EditorBrowsable (EditorBrowsableState.Advanced)]
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public IWebServiceFactory WebServiceFactory
+    {
+      get { return _webServiceFactory; }
+      set { _webServiceFactory = ArgumentUtility.CheckNotNull ("value", value); }
+    }
+
     /// <summary> The <see cref="BocReferenceValue"/> supports only scalar properties. </summary>
     /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="false"/>. </returns>
     /// <seealso cref="BusinessObjectBoundWebControl.SupportsPropertyMultiplicity"/>
@@ -401,12 +414,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
     }
 
-    /// <include file='doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValue/InitializeMenusItems/*' />
+    /// <include file='..\..\..\doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValue/InitializeMenusItems/*' />
     protected virtual void InitializeMenusItems ()
     {
     }
 
-    /// <include file='doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValue/PreRenderMenuItems/*' />
+    /// <include file='..\..\..\doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValue/PreRenderMenuItems/*' />
     protected virtual void PreRenderMenuItems ()
     {
       if (_hiddenMenuItems == null)
@@ -545,7 +558,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     ///   Uses the <paramref name="postCollection"/> to determine whether the value of this control has been changed
     ///   between postbacks.
     /// </summary>
-    /// <include file='doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValueBase/LoadPostData/*' />
+    /// <include file='..\..\..\doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValueBase/LoadPostData/*' />
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
       string newValue = PageUtility.GetPostBackCollectionItem (Page, ValueContainingControlID);
@@ -714,7 +727,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
 
       if (Command != null)
-        Command.RegisterForSynchronousPostBack (this, null, string.Format ("BocReferenceValue '{0}', Object Command", ID));
+        Command.RegisterForSynchronousPostBack (this, null, string.Format ("{0} '{1}', Object Command", GetType().Name, ID));
+
+      CheckIconService();
+    }
+
+    private void CheckIconService ()
+    {
+      if (IsDesignMode)
+        return;
+
+      if (string.IsNullOrEmpty (IconServicePath))
+        return;
+
+      var virtualServicePath = VirtualPathUtility.GetVirtualPath (this, IconServicePath);
+      WebServiceFactory.CreateJsonService<IBusinessObjectIconWebService> (virtualServicePath);
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
