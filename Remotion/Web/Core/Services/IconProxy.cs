@@ -16,45 +16,47 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Services
 {
+  /// <summary>
+  /// Represents an icon sent over a web service interface.
+  /// </summary>
   public sealed class IconProxy
   {
     private readonly string _url;
     private readonly string _alternateText;
     private readonly string _toolTip;
-    private readonly int? _heightInPixels;
-    private readonly int? _widthInPixels;
+    private readonly string _height;
+    private readonly string _width;
 
     public static IconProxy Create (HttpContextBase httpContext, IconInfo iconInfo)
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("iconInfo", iconInfo);
 
-      int? heightInPixels = null;
-      if (!iconInfo.Height.IsEmpty && iconInfo.Height.Type == UnitType.Pixel)
-        heightInPixels = (int) iconInfo.Height.Value;
-
-      int? widthInPixels = null;
-      if (!iconInfo.Width.IsEmpty && iconInfo.Width.Type == UnitType.Pixel)
-        widthInPixels = (int) iconInfo.Width.Value;
-
+      if (string.IsNullOrEmpty (iconInfo.Url))
+        throw new ArgumentException ("IconProxy does not support IconInfo objects without an empty Url.", "iconInfo");
       var absoluteUrl = UrlUtility.GetAbsoluteUrl (httpContext, iconInfo.Url);
-      return new IconProxy (absoluteUrl, iconInfo.AlternateText, iconInfo.ToolTip, heightInPixels, widthInPixels);
+
+      return new IconProxy (
+          absoluteUrl,
+          StringUtility.EmptyToNull (iconInfo.AlternateText),
+          StringUtility.EmptyToNull (iconInfo.ToolTip),
+          StringUtility.EmptyToNull (iconInfo.Height.ToString()),
+          StringUtility.EmptyToNull (iconInfo.Width.ToString()));
     }
 
-    private IconProxy (string url, string alternateText, string toolTip, int? heightInPixels, int? widthInPixels)
+    private IconProxy (string url, string alternateText, string toolTip, string height, string width)
     {
       _url = url;
       _alternateText = alternateText;
       _toolTip = toolTip;
-      _heightInPixels = heightInPixels;
-      _widthInPixels = widthInPixels;
+      _height = height;
+      _width = width;
     }
 
     public string Url
@@ -72,14 +74,14 @@ namespace Remotion.Web.Services
       get { return _toolTip; }
     }
 
-    public int? HeightInPixels
+    public string Height
     {
-      get { return _heightInPixels; }
+      get { return _height; }
     }
 
-    public int? WidthInPixels
+    public string Width
     {
-      get { return _widthInPixels; }
+      get { return _width; }
     }
   }
 }

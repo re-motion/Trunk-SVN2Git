@@ -84,7 +84,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           () => WebServiceUtility.CheckJsonService (typeof (TestNotAWebService), "Method"),
           Throws.ArgumentException
               .And.Message.EqualTo (
-                  "Web service type 'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckJsonService+TestNotAWebService'"
+                  "Web service type 'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckJsonService+TestNotAWebService'"
                   + " does not derive from 'System.Web.Services.WebService'."));
     }
 
@@ -95,7 +95,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           () => WebServiceUtility.CheckJsonService (typeof (TestWebService), "Method"),
           Throws.ArgumentException
               .And.Message.EqualTo (
-                  "Web service type 'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckJsonService+TestWebService'"
+                  "Web service type 'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckJsonService+TestWebService'"
                   + " does not have the 'System.Web.Script.Services.ScriptServiceAttribute' applied."));
     }
 
@@ -107,7 +107,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           Throws.ArgumentException
               .And.Message.EqualTo (
                   "Web method 'MethodWithResponeFormatNotJson' on web service type "
-                  + "'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckJsonService+TestScriptService'"
+                  + "'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckJsonService+TestScriptService'"
                   + " does not have the ResponseFormat property of the ScriptMethodAttribute set to Json."));
     }
 
@@ -127,7 +127,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           Throws.ArgumentException
               .And.Message.EqualTo (
                   "Web method 'MethodWithParameters' on web service type "
-                  + "'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckJsonService+TestScriptService'"
+                  + "'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckJsonService+TestScriptService'"
                   + " does not declare the required parameter 'param3'. Parameters are matched by name and case."));
     }
 
@@ -139,7 +139,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           Throws.ArgumentException
               .And.Message.EqualTo (
                   "Web method 'MethodWithParameters' on web service type "
-                  + "'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckJsonService+TestScriptService'"
+                  + "'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckJsonService+TestScriptService'"
                   + " has unexpected parameter 'param1'."));
     }
 
@@ -151,7 +151,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           Throws.ArgumentException
               .And.Message.EqualTo (
                   "Web method 'MethodWithParameters' on web service type "
-                  + "'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckJsonService+TestScriptService'"
+                  + "'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckJsonService+TestScriptService'"
                   + " does not declare the required parameter 'Param2'. Parameters are matched by name and case."));
     }
   }

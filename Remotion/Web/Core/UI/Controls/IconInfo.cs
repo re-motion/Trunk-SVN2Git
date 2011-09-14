@@ -215,10 +215,7 @@ namespace Remotion.Web.UI.Controls
       if (attributeValue.IsEmpty)
         return;
 
-      if (attributeValue.Type == UnitType.Pixel || attributeValue.Type == UnitType.Percentage)
-        writer.AddAttribute (attribute, attributeValue.ToString ());
-      else
-        writer.AddStyleAttribute (GetDimensionAsStyleAttribute (attribute), attributeValue.ToString());
+      writer.AddStyleAttribute (GetDimensionAsStyleAttribute (attribute), attributeValue.ToString());
     }
 
     private HtmlTextWriterStyle GetDimensionAsStyleAttribute (HtmlTextWriterAttribute attribute)

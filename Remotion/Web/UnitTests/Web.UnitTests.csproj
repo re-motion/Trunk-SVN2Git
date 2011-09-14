@@ -182,6 +182,7 @@
     <Compile Include="Core\Design\DesignTimeResourceUrlTest.cs" />
     <Compile Include="Core\Design\DesignTimeThemedResourceUrlTest.cs" />
     <Compile Include="Core\Factories\ResourceUrlFactoryTest.cs" />
+    <Compile Include="Core\Services\IconProxyTest.cs" />
     <Compile Include="Core\ThemedResourceUrlTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ChildTransactionStrategyTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ChildTransactionExecutionListenerTest.cs" />

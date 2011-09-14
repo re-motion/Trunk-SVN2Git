@@ -66,7 +66,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           () => WebServiceUtility.CheckJsonService (typeof (TestNotAWebService), "Method"),
           Throws.ArgumentException
               .And.Message.EqualTo (
-                  "Web service type 'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckScriptService+TestNotAWebService'"
+                  "Web service type 'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckScriptService+TestNotAWebService'"
                   + " does not derive from 'System.Web.Services.WebService'."));
     }
 
@@ -77,7 +77,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           () => WebServiceUtility.CheckScriptService (typeof (TestWebService), "Method"),
           Throws.ArgumentException
               .And.Message.EqualTo (
-                  "Web service type 'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckScriptService+TestWebService'"
+                  "Web service type 'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckScriptService+TestWebService'"
                   + " does not have the 'System.Web.Script.Services.ScriptServiceAttribute' applied."));
     }
 
@@ -89,7 +89,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           Throws.ArgumentException
               .And.Message.EqualTo (
                   "Web method 'MethodWithoutScriptMethodAttribute' on web service type "
-                  + "'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckScriptService+TestScriptService'"
+                  + "'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckScriptService+TestScriptService'"
                   + " does not have the 'System.Web.Script.Services.ScriptMethodAttribute' applied."));
     }
   }

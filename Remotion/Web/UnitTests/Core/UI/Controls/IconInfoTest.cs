@@ -46,7 +46,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var document = _html.GetResultDocument();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
 
-      _html.AssertAttribute (imgTag, "height", "20px");
+      _html.AssertStyleAttribute (imgTag, "height", "20px");
     }
 
     [Test]
@@ -59,7 +59,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var document = _html.GetResultDocument ();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
 
-      _html.AssertAttribute (imgTag, "width", "10px");
+      _html.AssertStyleAttribute (imgTag, "width", "10px");
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var document = _html.GetResultDocument ();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
 
-      _html.AssertAttribute (imgTag, "height", "20%");
+      _html.AssertStyleAttribute (imgTag, "height", "20%");
     }
 
 
@@ -86,7 +86,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var document = _html.GetResultDocument();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
 
-      _html.AssertAttribute (imgTag, "width", "10%");
+      _html.AssertStyleAttribute (imgTag, "width", "10%");
     }
 
     [Test]
@@ -99,7 +99,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var document = _html.GetResultDocument();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
 
-      _html.AssertNoAttribute (imgTag, "height");
       _html.AssertStyleAttribute (imgTag, "height", "20pt");
     }
 
@@ -113,7 +112,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var document = _html.GetResultDocument ();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
 
-      _html.AssertNoAttribute (imgTag, "width");
       _html.AssertStyleAttribute (imgTag, "width", "20em");
     }
   }

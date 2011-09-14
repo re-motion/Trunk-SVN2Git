@@ -145,8 +145,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
         var icon = titleAnchor.GetAssertedChildElement ("img", 0);
         icon.AssertAttributeValueEquals ("src", c_Icon_Url);
         icon.AssertAttributeValueEquals ("alt", c_IconAlternateText);
-        icon.AssertAttributeValueEquals ("width", s_iconWidth.ToString ());
-        icon.AssertAttributeValueEquals ("height", s_iconHeight.ToString ());
+        icon.AssertStyleAttribute ("width", s_iconWidth.ToString ());
+        icon.AssertStyleAttribute ("height", s_iconHeight.ToString ());
       }
     }
 

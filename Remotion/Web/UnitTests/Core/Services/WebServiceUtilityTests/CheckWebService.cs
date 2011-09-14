@@ -61,7 +61,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           () => WebServiceUtility.CheckWebService (typeof (TestNotAWebService), "Method"),
           Throws.ArgumentException
               .And.Message.EqualTo (
-                  "Web service type 'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckWebService+TestNotAWebService'"
+                  "Web service type 'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckWebService+TestNotAWebService'"
                   + " does not derive from 'System.Web.Services.WebService'."));
     }
 
@@ -72,7 +72,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           () => WebServiceUtility.CheckScriptService (typeof (TestWebServiceWithoutAttribute), "Method"),
           Throws.ArgumentException
               .And.Message.EqualTo (
-                  "Web service type 'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckWebService+TestWebServiceWithoutAttribute'"
+                  "Web service type 'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckWebService+TestWebServiceWithoutAttribute'"
                   + " does not have the 'System.Web.Services.WebServiceAttribute' applied."));
     }
 
@@ -84,7 +84,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           Throws.ArgumentException
               .And.Message.EqualTo (
                   "Web method 'MethodWithoutWebMethodAttribute' on web service type "
-                  + "'Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckWebService+TestWebService'"
+                  + "'Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckWebService+TestWebService'"
                   + " does not have the 'System.Web.Services.WebMethodAttribute' applied."));
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests
           Throws.ArgumentException
               .And.Message.EqualTo (
                   "Web method 'NonPublicMethod' was not found on the public API of web service type '"
-                  + "Remotion.Web.UnitTests.Core.Utilities.WebServiceUtilityTests.CheckWebService+TestWebService'."));
+                  + "Remotion.Web.UnitTests.Core.Services.WebServiceUtilityTests.CheckWebService+TestWebService'."));
     }
   }
 }
