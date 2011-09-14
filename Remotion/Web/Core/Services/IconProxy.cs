@@ -33,6 +33,13 @@ namespace Remotion.Web.Services
     private readonly string _height;
     private readonly string _width;
 
+    /// <summary>
+    /// Creates an <see cref="IconProxy"/> from an <see cref="IconInfo"/>.
+    /// </summary>
+    /// <param name="httpContext">The <see cref="HttpContext"/> of the current request. Used for resolving the URL. Must not be <see langword="null" />.</param>
+    /// <param name="iconInfo">The <see cref="IconInfo"/> to be converted into an <see cref="IconProxy"/>. Must not be <see langword="null" />.</param>
+    /// <returns>An <see cref="IconProxy"/> representing the <paramref name="iconInfo"/> in a web service interface. </returns>
+    /// <exception cref="ArgumentException">Thrown if the <see cref="IconInfo.Url"/> of the <paramref name="iconInfo"/> is not set.</exception>
     public static IconProxy Create (HttpContextBase httpContext, IconInfo iconInfo)
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
