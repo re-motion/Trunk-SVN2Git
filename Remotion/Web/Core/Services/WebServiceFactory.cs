@@ -28,35 +28,65 @@ namespace Remotion.Web.Services
   /// </summary>
   public class WebServiceFactory : IWebServiceFactory
   {
-    private static readonly ICache<Type, Tuple<string, string[]>[]> s_serviceMethodCache = 
+    private static readonly ICache<Type, Tuple<string, string[]>[]> s_serviceMethodCache =
         CacheFactory.CreateWithLocking<Type, Tuple<string, string[]>[]>();
 
     private readonly IBuildManager _buildManager;
-    
+
     public WebServiceFactory (IBuildManager buildManager)
     {
       ArgumentUtility.CheckNotNull ("buildManager", buildManager);
       _buildManager = buildManager;
     }
 
-    public T CreateJsonService<T> (string virtualPath) where T:class
+    public T CreateWebService<T> (string virtualPath) where T: class
+    {
+      var compiledType = GetAndCheckCompiledType<T> (virtualPath);
+
+      foreach (var searchServiceMethod in GetServiceMethodsFromCache<T>())
+        WebServiceUtility.CheckWebService (compiledType, searchServiceMethod.Item1);
+
+      return (T) TypesafeActivator.CreateInstance (compiledType).With();
+    }
+
+    public T CreateScriptService<T> (string virtualPath) where T: class
+    {
+      var compiledType = GetAndCheckCompiledType<T> (virtualPath);
+
+      foreach (var serviceMethod in GetServiceMethodsFromCache<T>())
+        WebServiceUtility.CheckScriptService (compiledType, serviceMethod.Item1);
+
+      return (T) TypesafeActivator.CreateInstance (compiledType).With();
+    }
+
+    public T CreateJsonService<T> (string virtualPath) where T: class
+    {
+      var compiledType = GetAndCheckCompiledType<T> (virtualPath);
+
+      foreach (var serviceMethod in GetServiceMethodsFromCache<T>())
+        WebServiceUtility.CheckJsonService (compiledType, serviceMethod.Item1, serviceMethod.Item2);
+
+      return (T) TypesafeActivator.CreateInstance (compiledType).With();
+    }
+
+    private Type GetAndCheckCompiledType<T> (string virtualPath)
     {
       var compiledType = _buildManager.GetCompiledType (virtualPath);
 
       if (!typeof (T).IsAssignableFrom (compiledType))
       {
-        throw new InvalidOperationException (
-            string.Format (
-                "Web service '{0}' does not implement mandatory interface '{1}'.",
-                virtualPath,
-                typeof (T).FullName));
+        var message = typeof (T).IsInterface
+                          ? "Web service '{0}' does not implement mandatory interface '{1}'."
+                          : "Web service '{0}' is not based on type '{1}'.";
+
+        throw new ArgumentException (string.Format (message, virtualPath, typeof (T).FullName));
       }
+      return compiledType;
+    }
 
-      var serviceMethods = s_serviceMethodCache.GetOrCreateValue (typeof (T), GetServiceMethods);
-     foreach (var searchServiceMethod in serviceMethods)
-        WebServiceUtility.CheckJsonService (compiledType, searchServiceMethod.Item1, searchServiceMethod.Item2);
-
-      return (T) TypesafeActivator.CreateInstance (compiledType).With();
+    private Tuple<string, string[]>[] GetServiceMethodsFromCache<T> ()
+    {
+      return s_serviceMethodCache.GetOrCreateValue (typeof (T), GetServiceMethods);
     }
 
     private Tuple<string, string[]>[] GetServiceMethods (Type type)
