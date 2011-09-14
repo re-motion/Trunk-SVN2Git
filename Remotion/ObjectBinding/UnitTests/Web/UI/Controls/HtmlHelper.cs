@@ -37,8 +37,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
         imageSourcePart = businessObjectClass.Substring (0, businessObjectClass.IndexOf (", "));
       }
       AssertAttribute (img, "src", imageSourcePart, AttributeValueCompareMode.Contains);
-      AssertAttribute (img, "width", "16px");
-      AssertAttribute (img, "height", "16px");
+      AssertStyleAttribute (img, "width", "16px");
+      AssertStyleAttribute (img, "height", "16px");
       AssertAttribute (img, "alt", "");
     }
   }
