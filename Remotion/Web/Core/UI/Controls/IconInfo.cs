@@ -37,7 +37,12 @@ namespace Remotion.Web.UI.Controls
 
     public static IconInfo Spacer
     {
-      get { return s_spacer.Value; }
+      get
+      {
+        var spacer = s_spacer.Value;
+        return new IconInfo (spacer.Url)
+               { Height = spacer.Height, Width = spacer.Width, AlternateText = spacer.AlternateText, ToolTip = spacer.ToolTip };
+      }
     }
 
     public static bool ShouldSerialize (IconInfo icon)
@@ -58,7 +63,7 @@ namespace Remotion.Web.UI.Controls
     {
       var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
       string url = themedResourceUrlResolver.GetResourceUrl (null, ResourceType.Image, "Spacer.gif");
-      return new IconInfo (url) { Height = Unit.Pixel (0), Width = Unit.Pixel (0), AlternateText = "" };
+      return new IconInfo (url) { Height = Unit.Empty, Width = Unit.Empty, AlternateText = "" };
     }
 
     private string _url;

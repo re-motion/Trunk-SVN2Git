@@ -29,7 +29,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-  /// <include file='doc\include\UI\Controls\TabbedMultiView.xml' path='TabbedMultiView/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\TabbedMultiView.xml' path='TabbedMultiView/Class/*' />
   [ToolboxData ("<{0}:TabbedMultiView id=\"MultiView\" runat=\"server\"></{0}:TabbedMultiView>")]
   [DefaultEvent ("ActiveViewChanged")]
   public class TabbedMultiView : WebControl, ITabbedMultiView

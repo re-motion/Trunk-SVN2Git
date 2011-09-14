@@ -219,7 +219,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab0 = MockRepository.GenerateStub<IWebTab>();
       _tab0.Stub (stub => stub.ItemID).Return ("Tab0");
       _tab0.Stub (stub => stub.Text).Return ("First Tab");
-      _tab0.Stub (stub => stub.Icon).Return (new IconInfo());
+      _tab0.Stub (stub => stub.Icon).Return (new IconInfo ());
       _tab0.Stub (stub => stub.EvaluateEnabled()).Return (true);
       _tab0.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab0.ItemID));
       _tab0.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
@@ -354,27 +354,23 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       var anchorBody = link.GetAssertedChildElement ("span", 0);
       anchorBody.AssertAttributeValueEquals ("class", _renderer.CssClassTabAnchorBody);
 
-      string url = "/Spacer.gif";
-      string alt = "";
       string text = StringUtility.NullToEmpty (tab.Text);
-      if (tab.Icon != null)
+      var hasIcon = tab.Icon != null && !string.IsNullOrEmpty (tab.Icon.Url);
+      if (hasIcon)
       {
-        alt = StringUtility.NullToEmpty (tab.Icon.AlternateText);
-        if (!string.IsNullOrEmpty (tab.Icon.Url))
-        {
-          url = tab.Icon.Url.TrimStart ('~');
-          text = HtmlHelper.WhiteSpace + text;
-        }
-      }
+        string url = tab.Icon.Url.TrimStart ('~');
+        string alt = StringUtility.NullToEmpty (tab.Icon.AlternateText);
+        text = HtmlHelper.WhiteSpace + text;
 
-      var image = anchorBody.GetAssertedChildElement ("img", 0);
-      image.AssertAttributeValueEquals ("src", url);
-      image.AssertAttributeValueEquals ("alt", alt);
+        var image = anchorBody.GetAssertedChildElement ("img", 0);
+        image.AssertAttributeValueEquals ("src", url);
+        image.AssertAttributeValueEquals ("alt", alt);
+      }
 
       if (string.IsNullOrEmpty (text))
         text = HtmlHelper.WhiteSpace;
 
-      anchorBody.AssertTextNode (text, 1);
+      anchorBody.AssertTextNode (text, hasIcon ? 1 : 0);
     }
   }
 }
