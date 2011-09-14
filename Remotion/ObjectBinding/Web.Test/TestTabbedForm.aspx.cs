@@ -42,6 +42,7 @@ public class TestTabbedForm : TestWxeBasePage
   private PlaceHolder _wxeControlsPlaceHolder;
   protected SmartHyperLink SmartHyperLink1;
   private bool _currentObjectSaved = false;
+  protected WebUpdatePanel UpdatePanel;
 
   public TestTabbedForm ()
   {
@@ -233,6 +234,9 @@ public class TestTabbedForm : TestWxeBasePage
     string mode = Global.PreferQuirksModeRendering ? "Quirks" : "Standard";
     string theme = Global.PreferQuirksModeRendering ? "" : SafeServiceLocator.Current.GetInstance<ResourceTheme> ().Name;
     NavigationTabs.StatusText = mode + " " + theme;
+
+    if (Global.PreferQuirksModeRendering)
+      UpdatePanel.Style.Clear();
   }
 
   protected override void OnUnload (EventArgs e)
