@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Legacy;
@@ -23,7 +22,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
 
-namespace Remotion.ObjectBinding.UnitTests
+namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
 {
   [TestFixture]
   public class BocLegacyServiceConfigurationServiceTest
@@ -33,13 +32,18 @@ namespace Remotion.ObjectBinding.UnitTests
     {
       var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IBocList).Assembly })
           .Select (e => e.ServiceType).ToList();
+      var nonLegacyServices = new[] { typeof (BocListCssClassDefinition) };
       var legacyServiceTypes = allServiceTypes
-          .Except (new[] { typeof (BocListCssClassDefinition) })
+          .Except (nonLegacyServices)
           .Concat (new[] { typeof (BocListQuirksModeCssClassDefinition) });
 
       Assert.That (
           legacyServiceTypes.ToArray(),
           Is.EquivalentTo (BocLegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType).ToArray()));
+
+      Assert.That (
+          BocLegacyServiceConfigurationService.GetConfiguration ().Where (e => !nonLegacyServices.Contains (e.ServiceType)).Select (e => e.ImplementationType.Assembly).ToArray (),
+          Is.All.EqualTo (typeof (BocLegacyServiceConfigurationService).Assembly));
     }
 
     [Test]

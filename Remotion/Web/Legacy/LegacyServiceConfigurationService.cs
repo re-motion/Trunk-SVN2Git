@@ -68,7 +68,7 @@ namespace Remotion.Web.Legacy
           typeof (ITabbedMenuRenderer), typeof (TabbedMenuQuirksModeRenderer), LifetimeKind.Singleton);
 
       yield return new ServiceConfigurationEntry (
-          typeof (ITabbedMultiViewRenderer), typeof (TabbedMultiViewRenderer), LifetimeKind.Singleton);
+          typeof (ITabbedMultiViewRenderer), typeof (TabbedMultiViewQuirksModeRenderer), LifetimeKind.Singleton);
 
       yield return new ServiceConfigurationEntry (
           typeof (IWebButtonRenderer), typeof (WebButtonQuirksModeRenderer), LifetimeKind.Singleton);

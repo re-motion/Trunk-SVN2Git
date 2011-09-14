@@ -239,7 +239,7 @@
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckJsonService.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckScriptService.cs" />
     <Compile Include="Core\Services\WebServiceUtilityTests\CheckWebService.cs" />
-    <Compile Include="LegacyServiceConfigurationServiceTest.cs" />
+    <Compile Include="Legacy\LegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">
       <SubType>Code</SubType>
     </Compile>

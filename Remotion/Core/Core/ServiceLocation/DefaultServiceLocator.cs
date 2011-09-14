@@ -66,7 +66,7 @@ namespace Remotion.ServiceLocation
   {
     private static readonly MethodInfo s_genericGetInstanceMethod = typeof (IServiceLocator).GetMethod ("GetInstance", Type.EmptyTypes);
 
-    private readonly LockingCacheDecorator<Type, Func<object>> _cache = CacheFactory.CreateWithLocking<Type, Func<object>>();
+    private readonly IDataStore<Type, Func<object>> _dataStore = DataStoreFactory.CreateWithLocking<Type, Func<object>>();
 
     /// <summary>
     /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or
@@ -218,7 +218,7 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("instanceFactory", instanceFactory);
 
-      Func<object> factory = _cache.GetOrCreateValue (serviceType, t => instanceFactory);
+      Func<object> factory = _dataStore.GetOrCreateValue (serviceType, t => instanceFactory);
       if (factory != instanceFactory)
         throw new InvalidOperationException (string.Format ("Register cannot be called after GetInstance for service type: {0}", serviceType.Name));
     }
@@ -257,7 +257,7 @@ namespace Remotion.ServiceLocation
 
     private object GetInstanceOrNull (Type serviceType)
     {
-      var factory = _cache.GetOrCreateValue (serviceType, CreateInstanceFactory);
+      var factory = _dataStore.GetOrCreateValue (serviceType, CreateInstanceFactory);
       try
       {
         return factory ();

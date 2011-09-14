@@ -88,7 +88,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="BocLegacyServiceConfigurationServiceTest.cs" />
+    <Compile Include="Web.Legacy\BocLegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseImplementationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseIntegrationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseTest.cs" />
