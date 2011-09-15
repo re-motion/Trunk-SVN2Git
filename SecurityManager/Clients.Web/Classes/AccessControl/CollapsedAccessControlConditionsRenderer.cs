@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.TenantCondition)
       {
         case TenantCondition.None:
-          writer.Write (HttpUtility.HtmlEncode (AccessControlResources.TenantCondition_None));
+          writer.WriteEncodedText (AccessControlResources.TenantCondition_None);
           break;
         case TenantCondition.OwningTenant:
           RenderTenantHierarchyIcon (writer, container);
@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.GroupCondition)
       {
         case GroupCondition.None:
-          writer.Write (HttpUtility.HtmlEncode (AccessControlResources.GroupCondition_None));
+          writer.WriteEncodedText (AccessControlResources.GroupCondition_None);
           break;
         case GroupCondition.OwningGroup:
           RenderGroupHierarchyIcon (writer, container);
@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.UserCondition)
       {
         case UserCondition.None:
-          writer.Write (HttpUtility.HtmlEncode (AccessControlResources.UserCondition_None));
+          writer.WriteEncodedText (AccessControlResources.UserCondition_None);
           break;
         case UserCondition.Owner:
           RenderPropertyPathString (writer, "UserCondition");
@@ -140,13 +140,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       writer.RenderEndTag();
       writer.Write (" (");
       string label = GetPropertyDisplayName (propertyPathIdentifier);
-      writer.Write (HttpUtility.HtmlEncode (label));
+      writer.WriteEncodedText (label);
       writer.Write (")");
     }
 
     private void RenderLabelBeforePropertyPathString (HtmlTextWriter writer, string label, string propertyPathIdentifier)
     {
-      writer.Write (HttpUtility.HtmlEncode (label));
+      writer.WriteEncodedText (label);
       writer.Write (" ");
       writer.RenderBeginTag (HtmlTextWriterTag.Em);
       RenderPropertyPathString (writer, propertyPathIdentifier);
@@ -157,7 +157,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
     {
       IBusinessObject businessObject = _accessControlEntry;
       var propertyPath = BusinessObjectPropertyPath.Parse (businessObject.BusinessObjectClass, propertyPathIdentifier);
-      writer.Write (HttpUtility.HtmlEncode (propertyPath.GetString (businessObject, null)));
+      writer.WriteEncodedText (propertyPath.GetString (businessObject, null));
     }
 
     private string GetPropertyDisplayName (string propertyPathIdentifier)

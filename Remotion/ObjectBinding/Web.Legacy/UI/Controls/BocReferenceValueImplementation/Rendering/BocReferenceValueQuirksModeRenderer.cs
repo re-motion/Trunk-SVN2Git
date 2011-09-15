@@ -143,7 +143,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
               if (renderingContext.Control.Value == null)
                 icon.AlternateText = String.Empty;
               else
-                icon.AlternateText = HttpUtility.HtmlEncode (renderingContext.Control.GetLabelText ());
+                icon.AlternateText = renderingContext.Control.GetLabelText ();
             }
             else
               icon.AlternateText = iconInfo.AlternateText;

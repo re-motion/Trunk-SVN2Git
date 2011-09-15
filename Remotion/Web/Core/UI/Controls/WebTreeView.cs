@@ -34,7 +34,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls
 {
   /// <summary> A tree view. </summary>
-  /// <include file='doc\include\UI\Controls\WebTreeView.xml' path='WebTreeView/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\WebTreeView.xml' path='WebTreeView/Class/*' />
   [ToolboxData ("<{0}:WebTreeView runat=server></{0}:WebTreeView>")]
   [DefaultEvent ("Click")]
   public class WebTreeView : WebControl, IWebTreeView, IPostBackEventHandler, IResourceDispatchTarget
@@ -659,7 +659,7 @@ namespace Remotion.Web.UI.Controls
           writer.Write ("&nbsp;");
         }
         if (!StringUtility.IsNullOrEmpty (node.Text))
-          writer.Write (HttpUtility.HtmlEncode (node.Text));
+          writer.WriteEncodedText (node.Text);
       }
       else
         _treeNodeRenderMethod.Invoke (writer, node);

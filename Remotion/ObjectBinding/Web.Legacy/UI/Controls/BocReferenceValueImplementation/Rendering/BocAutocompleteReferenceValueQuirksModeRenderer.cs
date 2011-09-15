@@ -207,7 +207,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
           if (renderingContext.Control.IsCommandEnabled (renderingContext.Control.IsReadOnly))
           {
             if (string.IsNullOrEmpty (iconInfo.AlternateText))
-              icon.AlternateText = HttpUtility.HtmlEncode (renderingContext.Control.GetLabelText ());
+              icon.AlternateText = renderingContext.Control.GetLabelText ();
             else
               icon.AlternateText = iconInfo.AlternateText;
           }
