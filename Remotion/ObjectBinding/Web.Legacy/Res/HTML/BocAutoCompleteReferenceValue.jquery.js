@@ -363,6 +363,14 @@
               }
             }
             closeDropDownListAndSetValue(term);
+
+            if (previousValidValue == term) {
+              return;
+            } else {
+              previousValue = term;
+              previousValidValue = term;
+            }
+
             if (selectedItem != null) {
 
                 $input.val(selectedItem.result);
@@ -374,6 +382,8 @@
                   if (data != null) {
                       stopLoading();
                       if ($input.val().toLowerCase() == term.toLowerCase()) {
+                          previousValue = data.result;
+                          previousValidValue = data.result;
                           $input.val(data.result);
                           $input.trigger("updateResult", data.data);
                       }
