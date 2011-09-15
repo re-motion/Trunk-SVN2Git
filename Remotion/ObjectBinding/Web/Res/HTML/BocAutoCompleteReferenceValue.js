@@ -64,7 +64,7 @@ function (textbox, hiddenField, button, webServiceUrl,
             var row = $('<div/>');
             row.text(item.DisplayName);
 
-            if (item.IconUrl && item.IconUrl != "")
+            if (item.IconUrl != '')
             {
               var img = $('<img/>');
               img.attr({ src: item.IconUrl });
