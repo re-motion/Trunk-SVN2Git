@@ -40,6 +40,7 @@ namespace OBWTest.IndividualControlTests
 
     private static readonly string[] s_values = new []
                                        {
+                                           "aaa<b><i>iii</i></b>a'a\"a",
                                            "sdfg",
                                            "sdfgh",
                                            "sdfghj",

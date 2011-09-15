@@ -21,11 +21,11 @@ function BocAutoCompleteReferenceValue()
 BocAutoCompleteReferenceValue.Bind =
 function (textbox, hiddenField, button, webServiceUrl,
           completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
-          nullValueString, 
+          nullValueString,
           isAutoPostBackEnabled,
           searchContext)
 {
-  textbox.autocomplete(webServiceUrl, 'Search', 'SearchExact', 
+  textbox.autocomplete(webServiceUrl, 'Search', 'SearchExact',
         {
           extraParams: searchContext,
           isAutoPostBackEnabled: isAutoPostBackEnabled,
@@ -61,12 +61,18 @@ function (textbox, hiddenField, button, webServiceUrl,
           },
           formatItem: function (item) //What we display on input box
           {
-            var itemBody = ""
-            if (item.IconUrl && item.IconUrl != "")
-              itemBody += "<img src=\"" + item.IconUrl + "\"/> ";
-            itemBody += item.DisplayName;
+            var row = $('<div/>');
+            row.text(item.DisplayName);
 
-            return itemBody;
+            if (item.IconUrl && item.IconUrl != "")
+            {
+              var img = $('<img/>');
+              img.attr({ src: item.IconUrl });
+              row.prepend(' ');
+              row.prepend(img);
+            }
+
+            return row.html();
           },
           formatMatch: function (item) //The value used by the cache
           {
