@@ -738,6 +738,8 @@
         multiple: false,
         multipleSeparator: ", ",
         highlight: function(value, term) {
+            if (term == '')
+              return value;
             return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
         },
         scroll: true,
