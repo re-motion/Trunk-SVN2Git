@@ -110,12 +110,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string key = renderingContext.Control.UniqueID + "_BindScript";
 
       var script = new StringBuilder (1000);
-      script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Bind(");
+      script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Initialize(");
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.TextBoxClientID);
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.HiddenFieldClientID);
       script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
+      script.AppendFormat ("$('#{0} > .body > .command'),", renderingContext.Control.ClientID);
 
-      script.AppendFormat ("'{0}', ", renderingContext.Control.ResolveClientUrl (StringUtility.NullToEmpty (renderingContext.Control.SearchServicePath)));
+      script.AppendFormat ("'{0}', ", renderingContext.Control.ResolveClientUrl (renderingContext.Control.SearchServicePath));
 
       script.AppendFormat ("{0}, ", renderingContext.Control.CompletionSetCount);
       script.AppendFormat ("{0}, ", renderingContext.Control.DropDownDisplayDelay);
@@ -139,6 +140,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.Append ("args : ");
       AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.Args);
       script.Append (" }");
+
+      script.Append (", ");
+      var iconServicePath = string.IsNullOrEmpty (renderingContext.Control.IconServicePath)
+                            ? null
+                            : renderingContext.Control.ResolveClientUrl (renderingContext.Control.IconServicePath);
+      AppendStringValueOrNullToScript (script, iconServicePath);
+      script.Append (", ");
+
+      var iconServiceContext = renderingContext.IconWebServiceContext;
+      if (iconServiceContext == null)
+      {
+        script.Append ("null");
+      }
+      else
+      {
+        script.Append ("{ ");
+        script.Append ("businessObjectClass : ");
+        AppendStringValueOrNullToScript (script, iconServiceContext.BusinessObjectClass);
+        script.Append (" }");
+      }
 
       script.Append ("); } );");
 

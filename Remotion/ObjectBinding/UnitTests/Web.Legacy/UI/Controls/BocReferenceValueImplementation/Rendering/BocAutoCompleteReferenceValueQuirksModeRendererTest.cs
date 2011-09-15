@@ -71,6 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       Control.Stub (stub => stub.Command).Return (new BocCommand ());
       Control.Command.Type = CommandType.Event;
       Control.Command.Show = CommandShow.Always;
+      Control.Stub (stub => stub.SearchServicePath).Return ("~/SearchService.asmx");
 
       Control.Stub (stub => stub.OptionsMenu).Return (OptionsMenu);
 
@@ -637,7 +638,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     private BocAutoCompleteReferenceValueRenderingContext CreateRenderingContext ()
     {
       return new BocAutoCompleteReferenceValueRenderingContext (
-          HttpContext, Html.Writer, Control, SearchAvailableObjectWebServiceContext.Create (Control.DataSource, Control.Property, "SearchArgs"));
+          HttpContext,
+          Html.Writer,
+          Control,
+          SearchAvailableObjectWebServiceContext.Create (Control.DataSource, Control.Property, "SearchArgs"),
+          BusinessObjectIconWebServiceContext.Create (null));
     }
   }
 }

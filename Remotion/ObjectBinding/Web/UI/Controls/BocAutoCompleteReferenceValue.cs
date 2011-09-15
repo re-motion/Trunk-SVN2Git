@@ -274,12 +274,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      return new BocAutoCompleteReferenceValueRenderingContext (Context, writer, this, CreateSearchAvailableObjectWebServiceContext());
+      return new BocAutoCompleteReferenceValueRenderingContext (
+          Context,
+          writer,
+          this,
+          CreateSearchAvailableObjectWebServiceContext(),
+          CreateIconWebServiceContext());
     }
-    
+
     private SearchAvailableObjectWebServiceContext CreateSearchAvailableObjectWebServiceContext ()
     {
       return SearchAvailableObjectWebServiceContext.Create (DataSource, Property, Args);
+    }
+
+    private BusinessObjectIconWebServiceContext CreateIconWebServiceContext ()
+    {
+      return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass());
     }
 
     protected override void LoadControlState (object savedState)

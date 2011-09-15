@@ -18,14 +18,17 @@ function BocAutoCompleteReferenceValue()
 {
 }
 
-BocAutoCompleteReferenceValue.Bind =
-function (textbox, hiddenField, button, webServiceUrl,
+BocAutoCompleteReferenceValue.Initialize =
+function (textbox, hiddenField, button, command, searchServiceUrl,
           completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
           nullValueString,
           isAutoPostBackEnabled,
-          searchContext)
+          searchContext,
+          iconServiceUrl,
+          iconContext
+          )
 {
-  textbox.autocomplete(webServiceUrl, 'Search', 'SearchExact',
+  textbox.autocomplete(searchServiceUrl, 'Search', 'SearchExact',
         {
           extraParams: searchContext,
           isAutoPostBackEnabled: isAutoPostBackEnabled,
@@ -82,12 +85,30 @@ function (textbox, hiddenField, button, webServiceUrl,
     ).invalidateResult(function (e, item)
     {
       hiddenField.val(nullValueString);
+      UpdateCommand(nullValueString);
       //Do not fire change-event
     }).updateResult(function (e, item)
     {
       hiddenField.val(item.UniqueIdentifier);
+      UpdateCommand(item.UniqueIdentifier);
       hiddenField.trigger('change');
     });
+
+
+  function UpdateCommand(selectedValue)
+  {
+    if (command == null)
+      return;
+
+    if (isAutoPostBackEnabled)
+      return;
+
+    var businessObject = null;
+    if (selectedValue != nullValueString)
+      businessObject = selectedValue;
+
+    command = BaseUpdateCommand(command, businessObject, iconServiceUrl, iconContext, '/dev/Remotion/trunk/Remotion/ObjectBinding/Web.Test/res/Remotion.Web/Themes/NovaBlue/Image/Spacer.gif');
+  }
 };
 
 //  Returns the number of rows selected for the specified ReferenceValue
@@ -99,3 +120,66 @@ BocAutoCompleteReferenceValue.GetSelectionCount = function (referenceValueHidden
 
   return 1;
 }
+
+function BaseUpdateCommand(oldCommand, businessObject, iconServiceUrl, iconContext, nullIconUrl)
+{
+  ArgumentUtility.CheckNotNull('oldCommand', oldCommand);
+  ArgumentUtility.CheckTypeIsString('businessObject', businessObject);
+  ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
+
+  var oldIcon = oldCommand.find('img');
+
+    var newCommand = $('<span/>');
+    var oldCommandAttributes = oldCommand[0].attributes;
+    for (var i = 0; i < oldCommandAttributes.length; i++)
+      newCommand.attr(oldCommandAttributes[i].nodeName, oldCommandAttributes[i].nodeValue);
+
+    var newIcon = oldIcon.clone();
+    newIcon.attr({ src: nullIconUrl, alt: '' });
+    newIcon.removeAttr('title');
+    var newCommandTitle = newCommand.attr('title');
+    if (!StringUtility.IsNullOrEmpty(newCommandTitle))
+      newIcon.attr('title', newCommandTitle);
+    newIcon.css({ width: oldIcon.width(), height: oldIcon.height() });
+    newCommand.append(newIcon);
+
+    oldCommand.replaceWith(newCommand);
+
+    if (iconServiceUrl != null && iconContext != null && businessObject != null)
+    {
+      var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
+      if (pageRequestManager.get_isInAsyncPostBack())
+        return;
+
+      var success = function (icon)
+      {
+        if (icon == null)
+          return;
+        
+        newIcon.attr('src', icon.Url);
+        
+        newIcon.attr('alt', '');
+        newIcon.attr('alt', icon.AlternateText);
+
+        if (!StringUtility.IsNullOrEmpty(icon.ToolTip) && StringUtility.IsNullOrEmpty (newIcon.attr('title')))
+          newIcon.attr('title', icon.ToolTip);
+        
+        newIcon.css({ width: icon.Width, heght: icon.Height });
+      }
+            
+      var params = { businessObject: businessObject };
+      for (var propertyName in iconContext)
+        params[propertyName] = iconContext[propertyName];
+
+      Sys.Net.WebServiceProxy.invoke(iconServiceUrl, 'GetIcon', false, params,
+                                                  function (result, context, methodName)
+                                                  {
+                                                    success (result);
+                                                  },
+                                                  function (err, context, methodName)
+                                                  {
+                                                  });
+    }
+
+    return newCommand;
+  }

@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.Services;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
@@ -27,20 +28,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   public class BocAutoCompleteReferenceValueRenderingContext : BocRenderingContext<IBocAutoCompleteReferenceValue>
   {
     private readonly SearchAvailableObjectWebServiceContext _searchAvailableObjectWebServiceContext;
+    private readonly BusinessObjectIconWebServiceContext _iconWebServiceContext;
 
     public BocAutoCompleteReferenceValueRenderingContext (
         HttpContextBase httpContext,
         HtmlTextWriter writer,
         IBocAutoCompleteReferenceValue control,
-        SearchAvailableObjectWebServiceContext searchAvailableObjectWebServiceContext)
+        SearchAvailableObjectWebServiceContext searchAvailableObjectWebServiceContext,
+        BusinessObjectIconWebServiceContext iconWebServiceContext)
         : base (httpContext, writer, control)
     {
+      ArgumentUtility.CheckNotNull ("searchAvailableObjectWebServiceContext", searchAvailableObjectWebServiceContext);
+
       _searchAvailableObjectWebServiceContext = searchAvailableObjectWebServiceContext;
+      _iconWebServiceContext = iconWebServiceContext;
     }
 
     public SearchAvailableObjectWebServiceContext SearchAvailableObjectWebServiceContext
     {
       get { return _searchAvailableObjectWebServiceContext; }
+    }
+
+    public BusinessObjectIconWebServiceContext IconWebServiceContext
+    {
+      get { return _iconWebServiceContext; }
     }
   }
 }
