@@ -18,16 +18,30 @@ function BocAutoCompleteReferenceValue()
 {
 }
 
-BocAutoCompleteReferenceValue.Initialize =
-function (textbox, hiddenField, button, command, searchServiceUrl,
-          completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
-          nullValueString,
-          isAutoPostBackEnabled,
-          searchContext,
-          iconServiceUrl,
-          iconContext
-          )
+BocAutoCompleteReferenceValue.Initialize = function (
+    textbox, hiddenField, button, command, searchServiceUrl,
+    completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
+    nullValueString,
+    isAutoPostBackEnabled,
+    searchContext,
+    iconServiceUrl,
+    iconContext)
 {
+  ArgumentUtility.CheckNotNullAndTypeIsObject('textbox', textbox);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('hiddenField', hiddenField);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('button', button);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('command', command);
+  ArgumentUtility.CheckNotNullAndTypeIsString('searchServiceUrl', searchServiceUrl);
+  ArgumentUtility.CheckNotNullAndTypeIsNumber('completionSetCount', completionSetCount);
+  ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownDisplayDelay', dropDownDisplayDelay);
+  ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownRefreshDelay', dropDownRefreshDelay);
+  ArgumentUtility.CheckNotNullAndTypeIsNumber('selectionUpdateDelay', selectionUpdateDelay);
+  ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
+  ArgumentUtility.CheckTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('searchContext', searchContext);
+  ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
+  ArgumentUtility.CheckTypeIsObject('iconContext', iconContext);
+
   textbox.autocomplete(searchServiceUrl, 'Search', 'SearchExact',
         {
           extraParams: searchContext,
@@ -101,20 +115,25 @@ function (textbox, hiddenField, button, command, searchServiceUrl,
 
     if (isAutoPostBackEnabled)
     {
-      BocReferenceValueBase.UpdateCommand(command, null, null, null);
-    };
+      command = BocReferenceValueBase.UpdateCommand(command, null, null, null);
+    }
+    else
+    {
+      var businessObject = null;
+      if (selectedValue != nullValueString)
+        businessObject = selectedValue;
 
-    var businessObject = null;
-    if (selectedValue != nullValueString)
-      businessObject = selectedValue;
-
-    command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext);
+      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext);
+    } 
   }
 };
 
 //  Returns the number of rows selected for the specified ReferenceValue
 BocAutoCompleteReferenceValue.GetSelectionCount = function (referenceValueHiddenFieldID, nullValue)
 {
+  ArgumentUtility.CheckNotNullAndTypeIsString('referenceValueDropDownListID', referenceValueDropDownListID);
+  ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
+
   var hiddenField = document.getElementById(referenceValueHiddenFieldID);
   if (hiddenField == null || hiddenField.value == nullValue)
     return 0;

@@ -675,7 +675,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HasOptionsMenu; }
     }
 
-    string IBocAutoCompleteReferenceValue.NullValueString
+    string IBocReferenceValueBase.NullValueString
     {
       get { return c_nullIdentifier; }
     }

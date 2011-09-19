@@ -15,8 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using System.Web.UI;
+using System.Text;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -64,6 +63,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       base.Render (renderingContext);
+
+      RegisterInitializationScript (renderingContext);
     }
 
     protected override void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
@@ -82,6 +83,48 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
+    }
+
+    private void RegisterInitializationScript (BocReferenceValueRenderingContext renderingContext)
+    {
+      if (renderingContext.Control.IsReadOnly)
+        return;
+
+      string key = renderingContext.Control.UniqueID + "_BindScript";
+
+      var script = new StringBuilder (1000);
+      script.Append ("$(document).ready( function() { BocReferenceValue.Initialize(");
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.DropDownListClientID);
+      script.AppendFormat ("$('#{0} > .body > .command'),", renderingContext.Control.ClientID);
+
+      script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
+      AppendBooleanValueToScript (script, renderingContext.Control.DropDownListStyle.AutoPostBack ?? false);
+      script.Append (", ");
+
+      //var iconServicePath = string.IsNullOrEmpty (renderingContext.Control.IconServicePath)
+      //                      ? null
+      //                      : renderingContext.Control.ResolveClientUrl (renderingContext.Control.IconServicePath);
+      //AppendStringValueOrNullToScript (script, iconServicePath);
+      script.Append ("null");
+      script.Append (", ");
+
+      //var iconServiceContext = renderingContext.IconWebServiceContext;
+      //if (iconServiceContext == null)
+      //{
+      script.Append ("null");
+      //}
+      //else
+      //{
+      //  script.Append ("{ ");
+      //  script.Append ("businessObjectClass : ");
+      //  AppendStringValueOrNullToScript (script, iconServiceContext.BusinessObjectClass);
+      //  script.Append (" }");
+      //}
+
+      script.Append ("); } );");
+
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+          renderingContext.Control, typeof (IBocReferenceValue), key, script.ToString ());
     }
 
     protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocRenderingContext<IBocReferenceValue> renderingContext)

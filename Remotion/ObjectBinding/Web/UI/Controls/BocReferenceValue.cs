@@ -444,7 +444,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override sealed string GetSelectionCountFunction ()
     {
-      return "function() { return BocReferenceValue_GetSelectionCount ('" + DropDownListClientID + "', '" + c_nullIdentifier + "'); }";
+      return "function() { return BocReferenceValue.GetSelectionCount ('" + DropDownListClientID + "', '" + c_nullIdentifier + "'); }";
     }
 
     /// <summary> Sets the <see cref="IBusinessObjectWithIdentity"/> objects to be displayed in edit mode. </summary>
@@ -797,6 +797,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string IBocReferenceValueBase.IconClientID
     {
       get { return ClientID +  ClientIDSeparator + "Boc_Icon"; }
+    }
+
+    string IBocReferenceValueBase.NullValueString
+    {
+      get { return c_nullIdentifier; }
     }
   }
 }

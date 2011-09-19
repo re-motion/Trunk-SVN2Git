@@ -111,6 +111,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private void RegisterInitializationScript (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
+      if (renderingContext.Control.IsReadOnly)
+        return;
+
       string key = renderingContext.Control.UniqueID + "_BindScript";
 
       var script = new StringBuilder (1000);

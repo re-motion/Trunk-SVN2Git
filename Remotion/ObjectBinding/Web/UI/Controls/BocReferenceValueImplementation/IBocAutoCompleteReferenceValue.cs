@@ -32,7 +32,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// <remarks> These style settings override the styles defined in <see cref="IBocReferenceValueBase.CommonStyle"/>. </remarks>
     SingleRowTextBoxStyle TextBoxStyle { get; }
 
-    string NullValueString { get; }
     int CompletionSetCount { get; }
     int DropDownDisplayDelay { get; }
     int DropDownRefreshDelay { get; }

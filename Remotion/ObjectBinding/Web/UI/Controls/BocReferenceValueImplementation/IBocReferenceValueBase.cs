@@ -56,6 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
     Style LabelStyle { get; }
 
+    string NullValueString { get; }
     string BusinessObjectUniqueIdentifier { get; }
   }
 }

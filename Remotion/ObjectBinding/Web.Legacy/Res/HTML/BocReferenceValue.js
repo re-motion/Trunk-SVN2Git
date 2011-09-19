@@ -12,10 +12,14 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
-// 
+//
+
+function BocReferenceValue()
+{
+}
 
 //  Returns the number of rows selected for the specified BocList
-function BocReferenceValue_GetSelectionCount (referenceValueDropDownListID, nullValue)
+BocReferenceValue.GetSelectionCount = function (referenceValueDropDownListID, nullValue)
 {
   var dropDownList = document.getElementById (referenceValueDropDownListID);
   if (dropDownList == null || dropDownList.selectedIndex < 0)
