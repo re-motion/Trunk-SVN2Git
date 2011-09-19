@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      return new BocReferenceValueRenderingContext (Context, writer, this);
+      return new BocReferenceValueRenderingContext (Context, writer, this, CreateIconWebServiceContext());
     }
 
     /// <remarks>
@@ -577,10 +577,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           //  Only reload if value is outdated
       else if (_value == null || _value.UniqueIdentifier != InternalValue)
       {
-        if (Property != null)
-          _value = ((IBusinessObjectClassWithIdentity) Property.ReferenceClass).GetObject (InternalValue);
-        else if (DataSource != null)
-          _value = ((IBusinessObjectClassWithIdentity) DataSource.BusinessObjectClass).GetObject (InternalValue);
+        var businessObjectClass = GetBusinessObjectClass ();
+        if (businessObjectClass != null)
+          _value = businessObjectClass.GetObject (InternalValue);
       }
 
       return _value;
@@ -781,7 +780,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     IconInfo IBocReferenceValueBase.GetIcon ()
     {
-      return GetIcon (Value, Property == null ? null : Property.ReferenceClass.BusinessObjectProvider);
+      var businessObjectClass = GetBusinessObjectClass ();
+      if (businessObjectClass == null)
+        return null;
+      return GetIcon (Value, businessObjectClass.BusinessObjectProvider);
     }
 
     public string DropDownListClientID

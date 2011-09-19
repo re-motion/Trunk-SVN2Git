@@ -853,5 +853,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       return newValue == c_nullIdentifier;
     }
+
+    protected IBusinessObjectClassWithIdentity GetBusinessObjectClass ()
+    {
+      IBusinessObjectClassWithIdentity businessObjectClass = null;
+      if (Property != null)
+        businessObjectClass = (IBusinessObjectClassWithIdentity) Property.ReferenceClass;
+      else if (DataSource != null)
+        businessObjectClass = (IBusinessObjectClassWithIdentity) DataSource.BusinessObjectClass;
+      return businessObjectClass;
+    }
+
+    protected BusinessObjectIconWebServiceContext CreateIconWebServiceContext ()
+    {
+      return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass());
+    }
   }
 }

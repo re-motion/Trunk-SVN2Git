@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.Services;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
@@ -25,9 +26,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// </summary>
   public class BocReferenceValueRenderingContext : BocRenderingContext<IBocReferenceValue>
   {
-    public BocReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocReferenceValue control)
+    private readonly BusinessObjectIconWebServiceContext _iconWebServiceContext;
+
+    public BocReferenceValueRenderingContext (
+        HttpContextBase httpContext,
+        HtmlTextWriter writer,
+        IBocReferenceValue control,
+        BusinessObjectIconWebServiceContext iconWebServiceContext)
         : base (httpContext, writer, control)
     {
+      _iconWebServiceContext = iconWebServiceContext;
+    }
+
+    public BusinessObjectIconWebServiceContext IconWebServiceContext
+    {
+      get { return _iconWebServiceContext; }
     }
   }
 }

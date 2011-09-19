@@ -3,6 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -64,6 +65,32 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
           renderingContext.Control, typeof (BocReferenceValueRendererBase<>), key, script.ToString ());
+    }
+
+    protected string GetIconServicePath (RenderingContext<TControl> renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      var iconServicePath = renderingContext.Control.IconServicePath;
+
+      if (string.IsNullOrEmpty (iconServicePath))
+        return null;
+      return renderingContext.Control.ResolveClientUrl (iconServicePath);
+    }
+
+    protected string GetIconContextAsJson (BusinessObjectIconWebServiceContext iconServiceContext)
+    {
+      if (iconServiceContext == null)
+        return null;
+
+      var jsonBuilder = new StringBuilder (1000);
+
+      jsonBuilder.Append ("{ ");
+      jsonBuilder.Append ("businessObjectClass : ");
+      AppendStringValueOrNullToScript (jsonBuilder, iconServiceContext.BusinessObjectClass);
+      jsonBuilder.Append (" }");
+
+      return jsonBuilder.ToString ();
     }
 
     protected virtual void RenderContents (BocRenderingContext<TControl> renderingContext)

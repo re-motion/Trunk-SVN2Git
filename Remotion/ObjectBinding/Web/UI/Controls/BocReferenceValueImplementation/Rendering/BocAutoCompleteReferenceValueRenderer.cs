@@ -18,6 +18,7 @@ using System;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -133,45 +134,37 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
       AppendBooleanValueToScript (script, renderingContext.Control.TextBoxStyle.AutoPostBack ?? false);
       script.Append (", ");
-
-      script.Append ("{ ");
-      script.Append ("businessObjectClass : ");
-      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectClass);
+      script.Append (GetSearchContextAsJson (renderingContext.SearchAvailableObjectWebServiceContext));
       script.Append (", ");
-      script.Append ("businessObjectProperty : ");
-      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectProperty);
+      AppendStringValueOrNullToScript (script, GetIconServicePath (renderingContext));
       script.Append (", ");
-      script.Append ("businessObject : ");
-      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectIdentifier);
-      script.Append (", ");
-      script.Append ("args : ");
-      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.Args);
-      script.Append (" }");
-
-      script.Append (", ");
-      var iconServicePath = string.IsNullOrEmpty (renderingContext.Control.IconServicePath)
-                            ? null
-                            : renderingContext.Control.ResolveClientUrl (renderingContext.Control.IconServicePath);
-      AppendStringValueOrNullToScript (script, iconServicePath);
-      script.Append (", ");
-
-      var iconServiceContext = renderingContext.IconWebServiceContext;
-      if (iconServiceContext == null)
-      {
-        script.Append ("null");
-      }
-      else
-      {
-        script.Append ("{ ");
-        script.Append ("businessObjectClass : ");
-        AppendStringValueOrNullToScript (script, iconServiceContext.BusinessObjectClass);
-        script.Append (" }");
-      }
+      script.Append (GetIconContextAsJson (renderingContext.IconWebServiceContext) ?? "null");
 
       script.Append ("); } );");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
           renderingContext.Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString());
+    }
+
+    private string GetSearchContextAsJson (SearchAvailableObjectWebServiceContext searchContext)
+    {
+      var jsonBuilder = new StringBuilder (1000);
+
+      jsonBuilder.Append ("{ ");
+      jsonBuilder.Append ("businessObjectClass : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchContext.BusinessObjectClass);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("businessObjectProperty : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchContext.BusinessObjectProperty);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("businessObject : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchContext.BusinessObjectIdentifier);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("args : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchContext.Args);
+      jsonBuilder.Append (" }");
+
+      return jsonBuilder.ToString();
     }
 
     protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)

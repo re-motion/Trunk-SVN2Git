@@ -100,27 +100,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
       AppendBooleanValueToScript (script, renderingContext.Control.DropDownListStyle.AutoPostBack ?? false);
       script.Append (", ");
-
-      //var iconServicePath = string.IsNullOrEmpty (renderingContext.Control.IconServicePath)
-      //                      ? null
-      //                      : renderingContext.Control.ResolveClientUrl (renderingContext.Control.IconServicePath);
-      //AppendStringValueOrNullToScript (script, iconServicePath);
-      script.Append ("null");
+      AppendStringValueOrNullToScript (script, GetIconServicePath (renderingContext));
       script.Append (", ");
-
-      //var iconServiceContext = renderingContext.IconWebServiceContext;
-      //if (iconServiceContext == null)
-      //{
-      script.Append ("null");
-      //}
-      //else
-      //{
-      //  script.Append ("{ ");
-      //  script.Append ("businessObjectClass : ");
-      //  AppendStringValueOrNullToScript (script, iconServiceContext.BusinessObjectClass);
-      //  script.Append (" }");
-      //}
-
+      script.Append (GetIconContextAsJson (renderingContext.IconWebServiceContext) ?? "null");
       script.Append ("); } );");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (

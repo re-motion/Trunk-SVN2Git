@@ -287,11 +287,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return SearchAvailableObjectWebServiceContext.Create (DataSource, Property, Args);
     }
 
-    private BusinessObjectIconWebServiceContext CreateIconWebServiceContext ()
-    {
-      return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass());
-    }
-
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -693,16 +688,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override sealed string GetSelectionCountFunction ()
     {
       return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "', '" + c_nullIdentifier + "'); }";
-    }
-
-    private IBusinessObjectClassWithIdentity GetBusinessObjectClass ()
-    {
-      IBusinessObjectClassWithIdentity businessObjectClass = null;
-      if (Property != null)
-        businessObjectClass = (IBusinessObjectClassWithIdentity) Property.ReferenceClass;
-      else if (DataSource != null)
-        businessObjectClass = (IBusinessObjectClassWithIdentity) DataSource.BusinessObjectClass;
-      return businessObjectClass;
     }
   }
 }
