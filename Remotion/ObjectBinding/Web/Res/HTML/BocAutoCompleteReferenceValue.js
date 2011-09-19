@@ -25,7 +25,8 @@ BocAutoCompleteReferenceValue.Initialize = function (
     isAutoPostBackEnabled,
     searchContext,
     iconServiceUrl,
-    iconContext)
+    iconContext,
+    commandInfo)
 {
   ArgumentUtility.CheckNotNullAndTypeIsObject('textbox', textbox);
   ArgumentUtility.CheckNotNullAndTypeIsObject('hiddenField', hiddenField);
@@ -41,6 +42,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
   ArgumentUtility.CheckNotNullAndTypeIsObject('searchContext', searchContext);
   ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
   ArgumentUtility.CheckTypeIsObject('iconContext', iconContext);
+  ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
 
   textbox.autocomplete(searchServiceUrl, 'Search', 'SearchExact',
         {
@@ -115,7 +117,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
     if (isAutoPostBackEnabled)
     {
-      command = BocReferenceValueBase.UpdateCommand(command, null, null, null);
+      command = BocReferenceValueBase.UpdateCommand(command, null, null, null, null);
     }
     else
     {
@@ -123,7 +125,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
       if (selectedValue != nullValueString)
         businessObject = selectedValue;
 
-      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext);
+      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo);
     } 
   }
 };

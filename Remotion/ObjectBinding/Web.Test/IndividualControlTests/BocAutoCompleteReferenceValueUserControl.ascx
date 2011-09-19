@@ -83,7 +83,7 @@
     <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=DisabledPartnerField runat="server" SearchServicePath="AutoCompleteService.asmx" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" hasvalueembeddedinsideoptionsmenu="True" enabled="true">
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledPartnerField runat="server" SearchServicePath="AutoCompleteService.asmx" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" hasvalueembeddedinsideoptionsmenu="True" enabled="false">
 
 <persistedcommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>

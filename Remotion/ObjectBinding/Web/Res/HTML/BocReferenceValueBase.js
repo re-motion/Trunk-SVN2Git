@@ -25,13 +25,15 @@ BocReferenceValueBase.InitializeGlobals = function (nullIconUrl)
   BocReferenceValueBase._nullIconUrl = nullIconUrl;
 }
 
-BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, iconServiceUrl, iconContext)
+BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, iconServiceUrl, iconContext, commandInfo)
 {
   ArgumentUtility.CheckNotNull('oldCommand', oldCommand);
   ArgumentUtility.CheckTypeIsString('businessObject', businessObject);
   ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
+  ArgumentUtility.CheckTypeIsObject('iconContext', iconContext);
+  ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
 
-  var newCommand = BocReferenceValueBase.CreateCommand(oldCommand);
+  var newCommand = BocReferenceValueBase.CreateCommand(oldCommand, commandInfo, businessObject);
 
   var oldIcon = oldCommand.find('img');
   var newIcon = BocReferenceValueBase.CreateEmptyIcon(oldIcon, newCommand.attr('title'));
@@ -66,18 +68,57 @@ BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, icon
   return newCommand;
 }
 
-BocReferenceValueBase.CreateCommand = function (oldCommand)
+BocReferenceValueBase.CreateCommand = function (oldCommand, commandInfo, businessObject)
 {
-  var newCommand = $('<span/>');
+  ArgumentUtility.CheckNotNull('oldCommand', oldCommand);
+  ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
+  ArgumentUtility.CheckTypeIsString('businessObject', businessObject);
+
+  var newCommand = null;
+  if (businessObject == null || commandInfo == null)
+    newCommand = $('<span/>');
+  else
+    newCommand = $('<a/>');
+
+  var tempCommandInfo = null;
+  if (commandInfo != null)
+  {
+    var tempCommandInfo = jQuery.extend(true, {}, commandInfo);
+    if (businessObject == null)
+    {
+      tempCommandInfo.href = null;
+      tempCommandInfo.target = null;
+      tempCommandInfo.onClick = null;
+      tempCommandInfo.title = null;
+    }
+    else if (commandInfo.href != null)
+    {
+      tempCommandInfo.href = String.format(commandInfo.href, businessObject);
+    }
+  }
+
   var oldCommandAttributes = oldCommand[0].attributes;
+
   for (var i = 0; i < oldCommandAttributes.length; i++)
     newCommand.attr(oldCommandAttributes[i].nodeName, oldCommandAttributes[i].nodeValue);
+
+  for (var property in tempCommandInfo)
+  {
+    var value = tempCommandInfo[property];
+    if (value == null)
+      newCommand.removeAttr(property);
+    else
+      newCommand.attr(property, value);
+  }
 
   return newCommand;
 }
 
 BocReferenceValueBase.CreateEmptyIcon = function (oldIcon, title)
 {
+  ArgumentUtility.CheckNotNull('oldIcon', oldIcon);
+  ArgumentUtility.CheckTypeIsString('title', title);
+
   var newIcon = oldIcon.clone();
   newIcon.attr({ src: BocReferenceValueBase._nullIconUrl, alt: '' });
   newIcon.removeAttr('title');
@@ -90,6 +131,9 @@ BocReferenceValueBase.CreateEmptyIcon = function (oldIcon, title)
 
 BocReferenceValueBase.UpdateIconFromWebService = function (icon, iconInformation)
 {
+  ArgumentUtility.CheckNotNull('icon', icon);
+  ArgumentUtility.CheckTypeIsObject('iconInformation', iconInformation);
+
   if (iconInformation == null)
     return;
 

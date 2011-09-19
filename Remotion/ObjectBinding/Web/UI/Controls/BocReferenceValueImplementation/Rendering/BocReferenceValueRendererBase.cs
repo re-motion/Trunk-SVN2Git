@@ -93,6 +93,49 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return jsonBuilder.ToString ();
     }
 
+    protected string GetCommandInfoAsJson (RenderingContext<TControl> renderingContext)
+    {
+      var command = renderingContext.Control.Command;
+      if (command == null)
+        return null;
+
+      if (!command.HasAccess (null))
+        return null;
+
+      if (command.Show == CommandShow.ReadOnly)
+        return null;
+
+      var jsonBuilder = new StringBuilder (1000);
+
+      jsonBuilder.Append ("{ ");
+
+      jsonBuilder.Append ("href : ");
+      string href = command.Type == CommandType.Href ? command.HrefCommand.FormatHref ("-0-").Replace ("-0-", "{0}") : "#";
+      AppendStringValueOrNullToScript (jsonBuilder, href);
+
+      jsonBuilder.Append (", ");
+
+      jsonBuilder.Append ("target : ");
+      string target = command.Type == CommandType.Href ? command.HrefCommand.Target : null;
+      AppendStringValueOrNullToScript (jsonBuilder, target);
+
+      jsonBuilder.Append (", ");
+
+      jsonBuilder.Append ("onClick : ");
+      string onClick = command.Type == CommandType.Event || command.Type == CommandType.WxeFunction ? (renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, string.Empty) + ";") : null;
+      AppendStringValueOrNullToScript (jsonBuilder, onClick);
+
+      jsonBuilder.Append (", ");
+
+      jsonBuilder.Append ("title : ");
+      string title = StringUtility.EmptyToNull (command.ToolTip);
+      AppendStringValueOrNullToScript (jsonBuilder, title);
+
+      jsonBuilder.Append (" }");
+
+      return jsonBuilder.ToString ();
+    }
+
     protected virtual void RenderContents (BocRenderingContext<TControl> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);

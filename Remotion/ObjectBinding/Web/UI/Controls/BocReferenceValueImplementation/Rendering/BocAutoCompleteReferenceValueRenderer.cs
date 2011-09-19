@@ -115,6 +115,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (renderingContext.Control.IsReadOnly)
         return;
 
+      if (!renderingContext.Control.Enabled)
+        return;
+
       string key = renderingContext.Control.UniqueID + "_BindScript";
 
       var script = new StringBuilder (1000);
@@ -139,6 +142,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       AppendStringValueOrNullToScript (script, GetIconServicePath (renderingContext));
       script.Append (", ");
       script.Append (GetIconContextAsJson (renderingContext.IconWebServiceContext) ?? "null");
+      script.Append (", ");
+      script.Append (GetCommandInfoAsJson (renderingContext) ?? "null");
 
       script.Append ("); } );");
 

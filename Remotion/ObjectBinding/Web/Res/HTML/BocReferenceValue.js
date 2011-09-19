@@ -18,7 +18,14 @@ function BocReferenceValue()
 {
 }
 
-BocReferenceValue.Initialize = function (dropDownList, command, nullValueString, isAutoPostBackEnabled, iconServiceUrl, iconContext)
+BocReferenceValue.Initialize = function (
+    dropDownList,
+    command,
+    nullValueString,
+    isAutoPostBackEnabled,
+    iconServiceUrl,
+    iconContext,
+    commandInfo)
 {
   ArgumentUtility.CheckNotNullAndTypeIsObject('dropDownList', dropDownList);
   ArgumentUtility.CheckNotNullAndTypeIsObject('command', command);
@@ -26,6 +33,7 @@ BocReferenceValue.Initialize = function (dropDownList, command, nullValueString,
   ArgumentUtility.CheckTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
   ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
   ArgumentUtility.CheckTypeIsObject('iconContext', iconContext);
+  ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
 
   dropDownList.change(function ()
   {
@@ -34,12 +42,12 @@ BocReferenceValue.Initialize = function (dropDownList, command, nullValueString,
 
     if (isAutoPostBackEnabled)
     {
-      command = BocReferenceValueBase.UpdateCommand(command, null, null, null);
+      command = BocReferenceValueBase.UpdateCommand(command, null, null, null, null);
     }
     else
     {
       var businessObject = BocReferenceValue.GetSelectedValue(dropDownList, nullValueString);
-      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext);
+      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo);
     }
   });
 };
