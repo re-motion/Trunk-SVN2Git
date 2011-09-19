@@ -61,13 +61,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      RegisterBindScript (renderingContext);
-
       base.Render (renderingContext);
+
+      RegisterInitializationScript (renderingContext);
     }
 
-    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
+    protected override sealed void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterJavaScriptFiles (htmlHeadAppender);
+
       htmlHeadAppender.RegisterJQueryIFrameShimJavaScriptInclude();
 
       string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_JQueryAutoCompleteScript";
@@ -105,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           HtmlHeadAppender.Priority.Library);
     }
 
-    private void RegisterBindScript (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    private void RegisterInitializationScript (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
       string key = renderingContext.Control.UniqueID + "_BindScript";
 

@@ -1,9 +1,11 @@
 using System;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
@@ -22,7 +24,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected abstract void RenderEditModeValueWithSeparateOptionsMenu (BocRenderingContext<TControl> renderingContext);
     protected abstract void RenderEditModeValueWithIntegratedOptionsMenu (BocRenderingContext<TControl> renderingContext);
 
-    public void Render (BocRenderingContext<TControl> renderingContext)
+    protected virtual void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      string scriptKey = typeof (BocReferenceValueRendererBase<>).FullName + "_Script";
+      htmlHeadAppender.RegisterJavaScriptInclude (
+          scriptKey,
+          ResourceUrlFactory.CreateResourceUrl (typeof (BocReferenceValueRendererBase<>), ResourceType.Html, "BocReferenceValueBase.js"));
+    }
+
+    protected void Render (BocRenderingContext<TControl> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
@@ -32,6 +44,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       RenderContents (renderingContext);
 
       renderingContext.Writer.RenderEndTag ();
+
+      RegisterInitializationScript (renderingContext);
+    }
+
+    private void RegisterInitializationScript (BocRenderingContext<TControl> renderingContext)
+    {
+      string key = typeof (BocReferenceValueRendererBase<>).FullName + "_InitializeGlobals";
+
+      if (renderingContext.Control.Page.ClientScript.IsClientScriptBlockRegistered (typeof (BocReferenceValueRendererBase<>), key))
+        return;
+
+      var nullIconUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (IControl), ResourceType.Image, "Spacer.gif");
+
+      var script = new StringBuilder (1000);
+      script.Append ("BocReferenceValueBase.InitializeGlobals(");
+      script.AppendFormat ("'{0}'", nullIconUrl.GetUrl());
+      script.Append (");");
+
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+          renderingContext.Control, typeof (BocReferenceValueRendererBase<>), key, script.ToString ());
     }
 
     protected virtual void RenderContents (BocRenderingContext<TControl> renderingContext)

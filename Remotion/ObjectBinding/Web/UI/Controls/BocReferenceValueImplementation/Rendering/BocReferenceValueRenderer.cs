@@ -66,8 +66,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       base.Render (renderingContext);
     }
 
-    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
+    protected override void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterJavaScriptFiles (htmlHeadAppender);
+
       string scriptFileKey = typeof (BocReferenceValueRenderer).FullName + "_Script";
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);

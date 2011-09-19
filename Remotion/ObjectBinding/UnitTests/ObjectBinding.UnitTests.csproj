@@ -480,6 +480,7 @@
     <Compile Include="Web\UI\Controls\StubDataSource.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Web\UI\Controls\StubResourceUrl.cs" />
     <Compile Include="Web\UI\Controls\StubResourceUrlResolver.cs" />
     <Compile Include="Web\UI\Controls\StubResourceUrlResolverFactory.cs" />
     <Compile Include="Web\UI\Controls\StubServiceLocator.cs" />

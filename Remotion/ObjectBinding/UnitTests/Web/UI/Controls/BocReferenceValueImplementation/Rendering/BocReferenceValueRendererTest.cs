@@ -47,6 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     private BusinessObjectReferenceDataSource _dataSource;
     protected static readonly Unit Width = Unit.Pixel (250);
     protected static readonly Unit Height = Unit.Point (12);
+    private IResourceUrlFactory _resourceUrlFactoryStub;
     public IClientScriptManager ClientScriptManagerMock { get; set; }
     public IBocReferenceValue Control { get; set; }
     public TypeWithReference BusinessObject { get; set; }
@@ -101,13 +102,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.IconClientID).Return (Control.ClientID + "_Boc_Icon");
       Control.Stub (stub => stub.PopulateDropDownList (Arg<DropDownList>.Is.NotNull))
           .WhenCalled (
-          invocation =>
-          {
-            foreach (var item in BusinessObject.ReferenceList)
-              ((DropDownList) invocation.Arguments[0]).Items.Add (new ListItem (item.DisplayName, item.UniqueIdentifier));
-          });
+              invocation =>
+              {
+                foreach (var item in BusinessObject.ReferenceList)
+                  ((DropDownList) invocation.Arguments[0]).Items.Add (new ListItem (item.DisplayName, item.UniqueIdentifier));
+              });
 
       Control.Stub (stub => stub.GetLabelText()).Return ("MyText");
+
+      _resourceUrlFactoryStub = MockRepository.GenerateStub<IResourceUrlFactory>();
+      StubResourceUrl.StubFactoryForAnyResourceUrl (_resourceUrlFactoryStub);
+      StubResourceUrl.StubFactoryForAnyThemedResourceUrl (_resourceUrlFactoryStub);
     }
 
     [TearDown]
@@ -397,7 +402,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     [Ignore ("Assertions for embedded menu are incorrect: COMMONS-2431")]
     public void RenderOptions ()
     {
-      var renderer = new TestableBocReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => new StubDropDownList());
       Control.Stub (stub => stub.HasValueEmbeddedInsideOptionsMenu).Return (true);
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
 
@@ -416,7 +421,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => new StubDropDownList());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
@@ -485,7 +490,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new TestableBocReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => DropDownList);
+      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => DropDownList);
       renderer.Render (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
 
       var document = Html.GetResultDocument();
