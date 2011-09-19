@@ -93,14 +93,16 @@ function (textbox, hiddenField, button, command, searchServiceUrl,
       UpdateCommand(item.UniqueIdentifier);
       hiddenField.trigger('change');
     });
-    
+
   function UpdateCommand(selectedValue)
   {
     if (command == null)
       return;
 
     if (isAutoPostBackEnabled)
-      return;
+    {
+      BocReferenceValueBase.UpdateCommand(command, null, null, null);
+    };
 
     var businessObject = null;
     if (selectedValue != nullValueString)
