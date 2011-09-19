@@ -408,7 +408,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
+      renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
 
       var document = Html.GetResultDocument();
@@ -424,7 +424,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => new StubDropDownList());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
+      renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
       
       var document = Html.GetResultDocument();
@@ -491,7 +491,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
       var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, () => DropDownList);
-      renderer.Render (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
+      renderer.Render (CreateRenderingContext());
 
       var document = Html.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);
@@ -559,6 +559,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         icon.AssertAttributeValueEquals ("src", "~/Images/NullIcon.gif");
         icon.AssertStyleAttribute ("border-width", "0px");
       }
+    }
+
+    private BocReferenceValueRenderingContext CreateRenderingContext ()
+    {
+      return new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control, null);
     }
   }
 }

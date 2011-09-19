@@ -421,7 +421,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     {
       var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
+      renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
       
       var document = Html.GetResultDocument();
@@ -436,7 +436,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
       var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
+      renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
       
       var document = Html.GetResultDocument();
@@ -451,7 +451,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
       var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory);
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
+      renderer.RenderOptionsMenuTitle (CreateRenderingContext());
       Html.Writer.RenderEndTag();
 
       var document = Html.GetResultDocument();
@@ -461,7 +461,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
       var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory, () => DropDownList);
-      renderer.Render (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
+      renderer.Render (CreateRenderingContext());
 
       var document = Html.GetResultDocument();
       var div = document.GetAssertedChildElement ("div", 0);
@@ -635,6 +635,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
         icon.AssertAttributeValueEquals ("src", "~/Images/NullIcon.gif");
         icon.AssertStyleAttribute ("border-width", "0px");
       }
+    }
+
+    private BocReferenceValueRenderingContext CreateRenderingContext ()
+    {
+      return new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control, null);
     }
   }
 }
