@@ -560,8 +560,10 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("postBackEvent", postBackEvent);
       if (Type != CommandType.WxeFunction)
+      {
         throw new InvalidOperationException (
             "Call to AddAttributesToRenderForWxeFunctionCommand not allowed unless Type is set to CommandType.WxeFunction.");
+      }
 
       writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + StringUtility.NullToEmpty (onClick));
