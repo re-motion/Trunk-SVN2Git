@@ -82,5 +82,16 @@ namespace Remotion.Web.UI.Controls
     {
       scriptBuilder.Append (booleanValue ? "true" : "false");
     }
+
+    protected void CheckScriptManager (IControl control, string errorMessageFormat, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNullOrEmpty ("errorMessageFormat", errorMessageFormat);
+      ArgumentUtility.CheckNotNull ("args", args);
+
+      var page = control.Page.WrappedInstance;
+      if (page != null && ScriptManager.GetCurrent (page) == null)
+        throw new InvalidOperationException (string.Format (errorMessageFormat, args));
+    }
   }
 }

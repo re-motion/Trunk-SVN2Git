@@ -104,6 +104,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       base.Render (renderingContext);
 
       RegisterInitializationScript (renderingContext);
+
+      CheckScriptManager (
+          renderingContext.Control,
+          "{0} '{1}' requires that the page contains a ScriptManager.",
+          renderingContext.Control.GetType().Name,
+          renderingContext.Control.ID);
     }
 
     protected override void RenderContents (BocAutoCompleteReferenceValueRenderingContext renderingContext)

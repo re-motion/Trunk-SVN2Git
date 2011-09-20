@@ -50,6 +50,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       renderingContext.Writer.RenderEndTag ();
 
       RegisterInitializationScript (renderingContext);
+
+      if (!string.IsNullOrEmpty (renderingContext.Control.IconServicePath))
+      {
+        CheckScriptManager (
+            renderingContext.Control,
+            "{0} '{1}' requires that the page contains a ScriptManager because the IconServicePath is set.",
+            renderingContext.Control.GetType().Name,
+            renderingContext.Control.ID);
+      }
     }
 
     private void RegisterInitializationScript (BocRenderingContext<TControl> renderingContext)

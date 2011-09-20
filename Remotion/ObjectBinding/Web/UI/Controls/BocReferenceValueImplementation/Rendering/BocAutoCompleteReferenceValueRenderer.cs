@@ -65,6 +65,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       base.Render (renderingContext);
 
       RegisterInitializationScript (renderingContext);
+
+      CheckScriptManager (
+          renderingContext.Control,
+          "{0} '{1}' requires that the page contains a ScriptManager.",
+          renderingContext.Control.GetType().Name,
+          renderingContext.Control.ID);
+
     }
 
     protected override sealed void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)

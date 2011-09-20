@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Text;
 using System.Web.UI;
 using Remotion.Utilities;
@@ -80,6 +81,17 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
     protected void AppendBooleanValueToScript (StringBuilder scriptBuilder, bool booleanValue)
     {
       scriptBuilder.Append (booleanValue ? "true" : "false");
+    }
+
+    protected void CheckScriptManager (IControl control, string errorMessageFormat, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNullOrEmpty ("errorMessageFormat", errorMessageFormat);
+      ArgumentUtility.CheckNotNull ("args", args);
+
+      var page = control.Page.WrappedInstance;
+      if (page != null && ScriptManager.GetCurrent (page) == null)
+        throw new InvalidOperationException (string.Format (errorMessageFormat, args));
     }
   }
 }
