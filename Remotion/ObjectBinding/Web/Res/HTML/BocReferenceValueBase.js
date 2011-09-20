@@ -100,7 +100,11 @@ BocReferenceValueBase.CreateCommand = function (oldCommand, commandInfo, busines
   var oldCommandAttributes = oldCommand[0].attributes;
 
   for (var i = 0; i < oldCommandAttributes.length; i++)
-    newCommand.attr(oldCommandAttributes[i].nodeName, oldCommandAttributes[i].nodeValue);
+  {
+    var value = oldCommandAttributes[i].nodeValue;
+    if (value != null && value != '')
+      newCommand.attr(oldCommandAttributes[i].nodeName, value);
+  }
 
   for (var property in tempCommandInfo)
   {
