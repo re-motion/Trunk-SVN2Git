@@ -131,13 +131,13 @@ BocAutoCompleteReferenceValue.Initialize = function (
 };
 
 //  Returns the number of rows selected for the specified ReferenceValue
-BocAutoCompleteReferenceValue.GetSelectionCount = function (referenceValueHiddenFieldID, nullValue)
+BocAutoCompleteReferenceValue.GetSelectionCount = function (referenceValueHiddenFieldID, nullValueString)
 {
-  ArgumentUtility.CheckNotNullAndTypeIsString('referenceValueDropDownListID', referenceValueDropDownListID);
+  ArgumentUtility.CheckNotNullAndTypeIsString('referenceValueHiddenFieldID', referenceValueHiddenFieldID);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
 
   var hiddenField = document.getElementById(referenceValueHiddenFieldID);
-  if (hiddenField == null || hiddenField.value == nullValue)
+  if (hiddenField == null || hiddenField.value == nullValueString)
     return 0;
 
   return 1;
