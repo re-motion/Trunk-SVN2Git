@@ -90,6 +90,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
+      if (!renderingContext.Control.EnableIcon)
+        return null;
+
       var iconServicePath = renderingContext.Control.IconServicePath;
 
       if (string.IsNullOrEmpty (iconServicePath))
@@ -101,7 +104,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       if (iconServiceContext == null)
         return null;
-
+      
       var jsonBuilder = new StringBuilder (1000);
 
       jsonBuilder.Append ("{ ");

@@ -31,7 +31,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
   ArgumentUtility.CheckNotNullAndTypeIsObject('textbox', textbox);
   ArgumentUtility.CheckNotNullAndTypeIsObject('hiddenField', hiddenField);
   ArgumentUtility.CheckNotNullAndTypeIsObject('button', button);
-  ArgumentUtility.CheckNotNullAndTypeIsObject('command', command);
+  ArgumentUtility.CheckTypeIsObject('command', command);
   ArgumentUtility.CheckNotNullAndTypeIsString('searchServiceUrl', searchServiceUrl);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('completionSetCount', completionSetCount);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownDisplayDelay', dropDownDisplayDelay);

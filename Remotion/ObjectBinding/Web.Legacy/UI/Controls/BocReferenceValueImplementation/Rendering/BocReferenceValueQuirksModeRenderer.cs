@@ -113,7 +113,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocReferenceValue.Initialize(");
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.DropDownListClientID);
-      script.AppendFormat ("$('#{0} .{1}'),", renderingContext.Control.ClientID, CssClassCommand);
+
+      if (renderingContext.Control.EnableIcon)
+        script.AppendFormat ("$('#{0} .{1}'), ", renderingContext.Control.ClientID, CssClassCommand);
+      else
+        script.Append ("null, ");
 
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
       AppendBooleanValueToScript (script, renderingContext.Control.DropDownListStyle.AutoPostBack ?? false);
@@ -157,7 +161,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     private Image GetIcon (BocReferenceValueRenderingContext renderingContext)
     {
       var icon = new Image { EnableViewState = false, ID = renderingContext.Control.IconClientID, Visible = false };
-      if (renderingContext.Control.EnableIcon && renderingContext.Control.Property != null)
+      if (renderingContext.Control.EnableIcon)
       {
         IconInfo iconInfo = renderingContext.Control.GetIcon ();
 

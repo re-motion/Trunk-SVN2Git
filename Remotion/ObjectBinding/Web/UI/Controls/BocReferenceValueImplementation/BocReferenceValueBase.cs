@@ -866,6 +866,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected BusinessObjectIconWebServiceContext CreateIconWebServiceContext ()
     {
+      if (!EnableIcon)
+        return null;
       return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass());
     }
   }

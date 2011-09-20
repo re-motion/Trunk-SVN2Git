@@ -28,7 +28,7 @@ BocReferenceValue.Initialize = function (
     commandInfo)
 {
   ArgumentUtility.CheckNotNullAndTypeIsObject('dropDownList', dropDownList);
-  ArgumentUtility.CheckNotNullAndTypeIsObject('command', command);
+  ArgumentUtility.CheckTypeIsObject('command', command);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
   ArgumentUtility.CheckTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
   ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);

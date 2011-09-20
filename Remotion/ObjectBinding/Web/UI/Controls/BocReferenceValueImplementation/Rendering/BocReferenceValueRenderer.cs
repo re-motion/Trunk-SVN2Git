@@ -97,7 +97,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocReferenceValue.Initialize(");
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.DropDownListClientID);
-      script.AppendFormat ("$('#{0} .{1}'),", renderingContext.Control.ClientID, CssClassCommand);
+
+      if (renderingContext.Control.EnableIcon)
+      script.AppendFormat ("$('#{0} .{1}'), ", renderingContext.Control.ClientID, CssClassCommand);
+      else
+        script.Append ("null, ");
 
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
       AppendBooleanValueToScript (script, renderingContext.Control.DropDownListStyle.AutoPostBack ?? false);

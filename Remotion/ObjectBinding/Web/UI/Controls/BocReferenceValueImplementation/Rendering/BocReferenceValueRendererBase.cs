@@ -74,6 +74,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
+      if (!renderingContext.Control.EnableIcon)
+        return null;
+
       var iconServicePath = renderingContext.Control.IconServicePath;
 
       if (string.IsNullOrEmpty (iconServicePath))
@@ -290,7 +293,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private Image GetIcon (BocRenderingContext<TControl> renderingContext)
     {
       var icon = new Image { EnableViewState = false, ID = renderingContext.Control.IconClientID, GenerateEmptyAlternateText = true, Visible = false };
-      if (renderingContext.Control.EnableIcon && renderingContext.Control.Property != null)
+      if (renderingContext.Control.EnableIcon)
       {
         IconInfo iconInfo = renderingContext.Control.GetIcon ();
 
