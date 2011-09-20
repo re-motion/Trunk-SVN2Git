@@ -397,7 +397,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("style", style);
 
-      var commandInfo = GetCommandInfo (securableObject, parameters, onClick, additionalUrlParameters, includeNavigationUrlParameters, postBackEvent);
+      var commandInfo = GetCommandInfo (postBackEvent, parameters, onClick, securableObject, additionalUrlParameters, includeNavigationUrlParameters);
       if (commandInfo != null)
         commandInfo.AddAttributesToRender (writer);
       style.AddAttributesToRender (writer);
@@ -426,12 +426,36 @@ namespace Remotion.Web.UI.Controls
       RenderBegin (writer, postBackEvent, parameters, onClick, securableObject, new NameValueCollection (0), true, new Style());
     }
 
-    private CommandInfo GetCommandInfo (ISecurableObject securableObject,
+    /// <summary> Gets the <see cref="CommandInfo"/> for the command. </summary>
+    /// <param name="postBackEvent">
+    ///   The string executed upon the click on a command of types
+    ///   <see cref="CommandType.Event"/> or <see cref="CommandType.WxeFunction"/>.
+    ///   This string is usually the call to the <c>__doPostBack</c> script function used by ASP.net
+    ///   to force a post back.
+    /// </param>
+    /// <param name="parameters">
+    ///   The strings inserted into the href attribute using <c>string.Format</c>.
+    /// </param>
+    /// <param name="onClick"> 
+    ///   The string always rendered in the <c>onClick</c> tag of the anchor element. 
+    /// </param>
+    /// <param name="securableObject">
+    ///   The <see cref="ISecurableObject"/> for which security is evaluated. Use <see landword="null"/> if security is stateless or not evaluated.
+    /// </param>
+    /// <param name="additionalUrlParameters">
+    ///   The <see cref="NameValueCollection"/> containing additional url parameters.
+    ///   Must not be <see langword="null"/>.
+    /// </param>
+    /// <param name="includeNavigationUrlParameters"> 
+    ///   <see langword="true"/> to include URL parameters provided by <see cref="ISmartNavigablePage"/>.
+    /// </param>
+    public CommandInfo GetCommandInfo (
+        string postBackEvent,
         string[] parameters,
         string onClick,
+        ISecurableObject securableObject,
         NameValueCollection additionalUrlParameters,
-        bool includeNavigationUrlParameters,
-        string postBackEvent)
+        bool includeNavigationUrlParameters)
     {
       if (!HasAccess (securableObject))
         return null;

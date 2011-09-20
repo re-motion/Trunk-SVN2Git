@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.Text;
 using System.Web;
 using System.Web.UI;
@@ -93,16 +94,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return jsonBuilder.ToString ();
     }
 
-    protected string GetCommandInfoAsJson (RenderingContext<TControl> renderingContext)
+    protected string GetCommandInfoAsJson (BocRenderingContext<TControl> renderingContext)
     {
       var command = renderingContext.Control.Command;
       if (command == null)
         return null;
 
-      if (!command.HasAccess (null))
+      if (command.Show == CommandShow.ReadOnly)
         return null;
 
-      if (command.Show == CommandShow.ReadOnly)
+      var postBackEvent = GetPostBackEvent (renderingContext);
+      var commandInfo = command.GetCommandInfo (postBackEvent, new[] { "-0-" }, "", null, new NameValueCollection(), false);
+
+      if (commandInfo == null)
         return null;
 
       var jsonBuilder = new StringBuilder (1000);
@@ -110,25 +114,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       jsonBuilder.Append ("{ ");
 
       jsonBuilder.Append ("href : ");
-      string href = command.Type == CommandType.Href ? command.HrefCommand.FormatHref ("-0-").Replace ("-0-", "{0}") : "#";
+      string href = commandInfo.Href.Replace ("-0-", "{0}");
       AppendStringValueOrNullToScript (jsonBuilder, href);
 
       jsonBuilder.Append (", ");
 
       jsonBuilder.Append ("target : ");
-      string target = command.Type == CommandType.Href ? command.HrefCommand.Target : null;
+      string target = commandInfo.Target;
       AppendStringValueOrNullToScript (jsonBuilder, target);
 
       jsonBuilder.Append (", ");
 
       jsonBuilder.Append ("onClick : ");
-      string onClick = command.Type == CommandType.Event || command.Type == CommandType.WxeFunction ? (renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, string.Empty) + ";") : null;
+      string onClick = commandInfo.OnClick;
       AppendStringValueOrNullToScript (jsonBuilder, onClick);
 
       jsonBuilder.Append (", ");
 
       jsonBuilder.Append ("title : ");
-      string title = StringUtility.EmptyToNull (command.ToolTip);
+      string title = commandInfo.Title;
       AppendStringValueOrNullToScript (jsonBuilder, title);
 
       jsonBuilder.Append (" }");
@@ -167,10 +171,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
-      string argument = string.Empty;
-      string postBackEvent = "";
-      if (!renderingContext.Control.IsDesignMode)
-        postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
@@ -214,8 +215,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
-      string argument = string.Empty;
-      string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
@@ -233,6 +233,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
         renderingContext.Writer.RenderEndTag ();
       }
+    }
+
+    private string GetPostBackEvent (BocRenderingContext<TControl> renderingContext)
+    {
+      if (renderingContext.Control.IsDesignMode)
+        return "";
+
+      string argument = string.Empty;
+      return renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
     }
 
     private void RenderSeparateIcon (BocRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
