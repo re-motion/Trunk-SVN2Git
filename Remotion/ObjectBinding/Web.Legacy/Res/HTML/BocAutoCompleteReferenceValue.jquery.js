@@ -207,11 +207,8 @@
                 default:
                     break;
             }
-        }).keyup(function(event) { // re-motion
-            var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER && event.keyCode != KEY.BACKSPACE && event.keyCode != KEY.DEL;
-            var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
-
-            if (!isControlKey && !isValueSeparatorKey) {
+        }).bind ('keyup paste', function(event) { // re-motion
+            var handleInput = function() {
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
                 timeout = setTimeout(
@@ -219,6 +216,18 @@
                         onChange(0, false, currentValue); 
                     }, 
                     dropDownDelay);
+            };
+
+            if (event.type == 'keyup') {
+                var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER && event.keyCode != KEY.BACKSPACE && event.keyCode != KEY.DEL;
+                var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
+                if (!isControlKey && !isValueSeparatorKey)
+                    handleInput();
+            } else if (event.type == 'paste') {
+                lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
+                setTimeout(handleInput, 0);
+            } else {
+                throw 'Unexpected event match occurred.';
             }
             
             if (autoFillTimeout) {
