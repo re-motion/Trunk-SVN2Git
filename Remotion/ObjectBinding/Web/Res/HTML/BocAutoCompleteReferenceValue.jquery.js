@@ -854,7 +854,7 @@
                         if (c) {
                             var csub = [];
                             $.each(c, function(i, x) {
-                                if (matchSubset(x.value, q)) {
+                                if (matchSubset(x.result, q)) {
                                     csub[csub.length] = x;
                                 }
                             });
