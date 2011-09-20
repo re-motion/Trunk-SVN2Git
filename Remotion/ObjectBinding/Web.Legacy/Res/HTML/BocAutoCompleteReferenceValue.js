@@ -18,14 +18,33 @@ function BocAutoCompleteReferenceValue()
 {
 }
 
-BocAutoCompleteReferenceValue.Bind =
-function (textbox, hiddenField, button, webServiceUrl,
-          completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
-          nullValueString,
-          isAutoPostBackEnabled,
-          searchContext)
+BocAutoCompleteReferenceValue.Initialize = function (
+    textbox, hiddenField, button, command, searchServiceUrl,
+    completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
+    nullValueString,
+    isAutoPostBackEnabled,
+    searchContext,
+    iconServiceUrl,
+    iconContext,
+    commandInfo)
 {
-  textbox.autocomplete(webServiceUrl, 'Search', 'SearchExact', 
+  ArgumentUtility.CheckNotNullAndTypeIsObject('textbox', textbox);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('hiddenField', hiddenField);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('button', button);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('command', command);
+  ArgumentUtility.CheckNotNullAndTypeIsString('searchServiceUrl', searchServiceUrl);
+  ArgumentUtility.CheckNotNullAndTypeIsNumber('completionSetCount', completionSetCount);
+  ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownDisplayDelay', dropDownDisplayDelay);
+  ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownRefreshDelay', dropDownRefreshDelay);
+  ArgumentUtility.CheckNotNullAndTypeIsNumber('selectionUpdateDelay', selectionUpdateDelay);
+  ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
+  ArgumentUtility.CheckTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('searchContext', searchContext);
+  ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
+  ArgumentUtility.CheckTypeIsObject('iconContext', iconContext);
+  ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
+
+  textbox.autocomplete(searchServiceUrl, 'Search', 'SearchExact', 
         {
           extraParams: searchContext,
           isAutoPostBackEnabled: isAutoPostBackEnabled,
@@ -82,19 +101,43 @@ function (textbox, hiddenField, button, webServiceUrl,
     ).invalidateResult(function (e, item)
     {
       hiddenField.val(nullValueString);
+      UpdateCommand(nullValueString);
       //Do not fire change-event
     }).updateResult(function (e, item)
     {
       hiddenField.val(item.UniqueIdentifier);
+      UpdateCommand(item.UniqueIdentifier);
       hiddenField.trigger('change');
     });
+
+  function UpdateCommand(selectedValue)
+  {
+    if (command == null)
+      return;
+
+    if (isAutoPostBackEnabled)
+    {
+      command = BocReferenceValueBase.UpdateCommand(command, null, null, null, null);
+    }
+    else
+    {
+      var businessObject = null;
+      if (selectedValue != nullValueString)
+        businessObject = selectedValue;
+
+      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo);
+    }
+  }
 };
 
 //  Returns the number of rows selected for the specified ReferenceValue
-BocAutoCompleteReferenceValue.GetSelectionCount = function(referenceValueHiddenFieldID, nullValue)
+BocAutoCompleteReferenceValue.GetSelectionCount = function (referenceValueHiddenFieldID, nullValueString)
 {
+  ArgumentUtility.CheckNotNullAndTypeIsString('referenceValueHiddenFieldID', referenceValueHiddenFieldID);
+  ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
+
   var hiddenField = document.getElementById(referenceValueHiddenFieldID);
-  if (hiddenField == null || hiddenField.value == nullValue)
+  if (hiddenField == null || hiddenField.value == nullValueString)
     return 0;
 
   return 1;

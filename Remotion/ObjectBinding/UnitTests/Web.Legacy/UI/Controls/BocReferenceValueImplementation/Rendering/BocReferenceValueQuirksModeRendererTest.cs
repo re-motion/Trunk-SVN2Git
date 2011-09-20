@@ -108,6 +108,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       Control.Stub (stub => stub.GetLabelText ()).Return ("MyText");
 
       _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
+      StubResourceUrl.StubFactoryForAnyResourceUrl (_resourceUrlFactory);
+      StubResourceUrl.StubFactoryForAnyThemedResourceUrl (_resourceUrlFactory);
     }
 
     [TearDown]
@@ -541,7 +543,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       iconCell.AssertStyleAttribute ("padding-right", "0.3em");
       iconCell.AssertChildElementCount (1);
 
-      AssertIcon(iconCell, false);
+      XmlNode iconParent;
+      if (Control.IsCommandEnabled (Control.IsReadOnly))
+        iconParent = iconCell.GetAssertedChildElement ("a", 0);
+      else
+        iconParent = iconCell.GetAssertedChildElement ("span", 0);
+
+      AssertIcon (iconParent, false);
     }
 
     private void AssertValueCell (XmlNode row, bool hasLabel, int index)
@@ -569,7 +577,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
         }
         else
         {
-          var label = valueCell.GetAssertedChildElement ("span", 0);
+          var span = valueCell.GetAssertedChildElement ("span", 0);
+          var label = span.GetAssertedChildElement ("span", 0);
           label.AssertAttributeValueEquals ("id", Control.ClientID + "_Boc_Label");
           label.AssertTextNode ("MyText", 0);
         }

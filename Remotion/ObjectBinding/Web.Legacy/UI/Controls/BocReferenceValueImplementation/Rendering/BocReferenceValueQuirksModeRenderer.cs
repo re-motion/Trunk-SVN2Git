@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -35,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocReferenceValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocReferenceValue>, IBocReferenceValueRenderer
+  public class BocReferenceValueQuirksModeRenderer : BocReferenceValueQuirksModeRendererBase<IBocReferenceValue, BocReferenceValueRenderingContext>, IBocReferenceValueRenderer
   {
     private const string c_defaultControlWidth = "150pt";
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
@@ -57,8 +58,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
+      RegisterJavaScriptFiles (htmlHeadAppender);
 
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
       string scriptFileKey = typeof (BocReferenceValueQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
@@ -74,12 +76,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       }
     }
 
-    public void Render (BocReferenceValueRenderingContext renderingContext)
+    public new void Render (BocReferenceValueRenderingContext renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddAttributesToRender (renderingContext, false);
-      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      base.Render (renderingContext);
+
+      RegisterInitializationScript (renderingContext);
+    }
+
+    protected override void RenderContents (BocReferenceValueRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       DropDownList dropDownList = GetDropDownList (renderingContext);
       dropDownList.Page = renderingContext.Control.Page.WrappedInstance;
@@ -90,8 +98,35 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
         RenderContentsWithIntegratedOptionsMenu (renderingContext, dropDownList, label);
       else
         RenderContentsWithSeparateOptionsMenu (renderingContext, dropDownList, label, icon);
+    }
 
-      renderingContext.Writer.RenderEndTag ();
+    private void RegisterInitializationScript (BocReferenceValueRenderingContext renderingContext)
+    {
+      if (renderingContext.Control.IsReadOnly)
+        return;
+
+      if (!renderingContext.Control.Enabled)
+        return;
+
+      string key = renderingContext.Control.UniqueID + "_InitializationScript";
+
+      var script = new StringBuilder (1000);
+      script.Append ("$(document).ready( function() { BocReferenceValue.Initialize(");
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.DropDownListClientID);
+      script.AppendFormat ("$('#{0} .{1}'),", renderingContext.Control.ClientID, CssClassCommand);
+
+      script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
+      AppendBooleanValueToScript (script, renderingContext.Control.DropDownListStyle.AutoPostBack ?? false);
+      script.Append (", ");
+      AppendStringValueOrNullToScript (script, GetIconServicePath (renderingContext));
+      script.Append (", ");
+      script.Append (GetIconContextAsJson (renderingContext.IconWebServiceContext) ?? "null");
+      script.Append (", ");
+      script.Append (GetCommandInfoAsJson (renderingContext) ?? "null");
+      script.Append ("); } );");
+
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+          renderingContext.Control, typeof (IBocReferenceValue), key, script.ToString ());
     }
 
     private DropDownList GetDropDownList (BocReferenceValueRenderingContext renderingContext)
@@ -173,6 +208,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       get { return "bocReferenceValueContent"; }
     }
 
+    private string CssClassCommand
+    {
+      get { return "command"; }
+    }
+
     private void RenderContentsWithSeparateOptionsMenu (BocReferenceValueRenderingContext renderingContext, DropDownList dropDownList, Label label, Image icon)
     {
       bool isReadOnly = renderingContext.Control.IsReadOnly;
@@ -213,10 +253,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
       bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
-      string argument = string.Empty;
-      string postBackEvent = "";
-      if (!renderingContext.Control.IsDesignMode)
-        postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
@@ -307,8 +344,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
       bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
-      string argument = string.Empty;
-      string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
@@ -337,15 +373,23 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
       {
         renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
         if (!string.IsNullOrEmpty (renderingContext.Control.Command.ToolTip))
           icon.ToolTip = renderingContext.Control.Command.ToolTip;
       }
+      else
+      {
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      }
+
       icon.RenderControl (renderingContext.Writer);
       if (isCommandEnabled)
         renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
+      else
+        renderingContext.Writer.RenderEndTag ();
 
       renderingContext.Writer.RenderEndTag (); //  End td
     }
@@ -357,8 +401,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
         renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+      else
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       if (icon.Visible)
       {
         icon.RenderControl (renderingContext.Writer);
@@ -367,6 +414,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       label.RenderControl (renderingContext.Writer);
       if (isCommandEnabled)
         renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
+      else
+        renderingContext.Writer.RenderEndTag ();
 
       renderingContext.Writer.RenderEndTag (); //  End td
     }

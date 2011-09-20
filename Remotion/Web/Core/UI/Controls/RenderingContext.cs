@@ -24,14 +24,14 @@ namespace Remotion.Web.UI.Controls
   /// <summary>
   /// Groups all arguments required for rendering a <see cref="IStyledControl"/>.
   /// </summary>
-  public class RenderingContext<TControl>
+  public abstract class RenderingContext<TControl>
       where TControl : IStyledControl
   {
     private readonly HttpContextBase _httpContext;
     private readonly HtmlTextWriter _writer;
     private readonly TControl _control;
 
-    public RenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, TControl control)
+    protected RenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, TControl control)
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("writer", writer);

@@ -118,14 +118,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (!renderingContext.Control.Enabled)
         return;
 
-      string key = renderingContext.Control.UniqueID + "_BindScript";
+      string key = renderingContext.Control.UniqueID + "_InitializationScript";
 
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Initialize(");
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.TextBoxClientID);
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.HiddenFieldClientID);
       script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
-      script.AppendFormat ("$('#{0} > .body > .command'),", renderingContext.Control.ClientID);
+      script.AppendFormat ("$('#{0} .{1}'),", renderingContext.Control.ClientID, CssClassCommand);
 
       script.AppendFormat ("'{0}', ", renderingContext.Control.ResolveClientUrl (renderingContext.Control.SearchServicePath));
 

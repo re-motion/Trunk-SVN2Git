@@ -86,6 +86,7 @@
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRendererBase.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListQuirksModeCssClassDefinition.cs" />
     <Compile Include="UI\Controls\BocQuirksModeRendererBase.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueQuirksModeRendererBase.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueQuirksModeRendererBase.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueQuirksModeResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutocompleteReferenceValueQuirksModeRenderer.cs" />
@@ -176,6 +177,7 @@
     <Content Include="Res\HTML\BocMultilineTextValue.css" />
     <Content Include="Res\HTML\BocReferenceValue.css" />
     <Content Include="Res\HTML\BocReferenceValue.js" />
+    <Content Include="Res\HTML\BocReferenceValueBase.js" />
     <Content Include="Res\HTML\BocTextValue.css" />
     <Content Include="Res\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Image\CheckBoxNull.gif" />

@@ -52,10 +52,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
-
       RegisterBrowserCompatibilityScript (htmlHeadAppender);
-      RegisterJavaScriptFiles(htmlHeadAppender);
-      RegisterStylesheets(htmlHeadAppender);
+      RegisterJavaScriptFiles (htmlHeadAppender);
+      RegisterStylesheets (htmlHeadAppender);
     }
 
     public void Render (BocReferenceValueRenderingContext renderingContext)
@@ -93,12 +92,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (!renderingContext.Control.Enabled)
         return;
 
-      string key = renderingContext.Control.UniqueID + "_BindScript";
+      string key = renderingContext.Control.UniqueID + "_InitializationScript";
 
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocReferenceValue.Initialize(");
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.DropDownListClientID);
-      script.AppendFormat ("$('#{0} > .body > .command'),", renderingContext.Control.ClientID);
+      script.AppendFormat ("$('#{0} .{1}'),", renderingContext.Control.ClientID, CssClassCommand);
 
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
       AppendBooleanValueToScript (script, renderingContext.Control.DropDownListStyle.AutoPostBack ?? false);

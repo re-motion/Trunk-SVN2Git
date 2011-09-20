@@ -19,6 +19,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
@@ -36,7 +37,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocAutoCompleteReferenceValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValueRenderer
+  public class BocAutoCompleteReferenceValueQuirksModeRenderer : 
+      BocReferenceValueQuirksModeRendererBase<IBocAutoCompleteReferenceValue, BocAutoCompleteReferenceValueRenderingContext>, IBocAutoCompleteReferenceValueRenderer
   {
     private const string c_defaultControlWidth = "150pt";
 
@@ -62,8 +64,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       RegisterStylesheets (htmlHeadAppender);
     }
 
-    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
+    protected sealed override void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterJavaScriptFiles (htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
       htmlHeadAppender.RegisterJQueryIFrameShimJavaScriptInclude ();
 
       string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_JQueryAutoCompleteScript";
@@ -90,14 +97,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       htmlHeadAppender.RegisterStylesheetLink (jqueryAutocompleteStyleKey, jqueryStyleUrl, HtmlHeadAppender.Priority.Library);
     }
 
-    public void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    public new void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      RegisterBindScript (renderingContext);
+      base.Render (renderingContext);
 
-      AddAttributesToRender (renderingContext, false);
-      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      RegisterInitializationScript (renderingContext);
+    }
+
+    protected override void RenderContents (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       TextBox textBox = GetTextbox (renderingContext);
       textBox.Page = renderingContext.Control.Page.WrappedInstance;
@@ -105,25 +116,30 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       Label label = GetLabel (renderingContext);
       Image icon = GetIcon (renderingContext);
 
-      if (IsEmbedInOptionsMenu(renderingContext))
+      if (IsEmbedInOptionsMenu (renderingContext))
         RenderContentsWithIntegratedOptionsMenu (renderingContext, textBox, label);
       else
         RenderContentsWithSeparateOptionsMenu (renderingContext, textBox, hiddenField, label, icon);
-
-      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RegisterBindScript (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    private void RegisterInitializationScript (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
-      string key = renderingContext.Control.UniqueID + "_BindScript";
+      if (renderingContext.Control.IsReadOnly)
+        return;
+
+      if (!renderingContext.Control.Enabled)
+        return;
+
+      string key = renderingContext.Control.UniqueID + "_InitializationScript";
 
       var script = new StringBuilder (1000);
-      script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Bind(");
+      script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Initialize(");
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.TextBoxClientID);
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.HiddenFieldClientID);
       script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
+      script.AppendFormat ("$('#{0} .{1}'),", renderingContext.Control.ClientID, CssClassCommand);
 
-      script.AppendFormat ("'{0}', ", renderingContext.Control.ResolveClientUrl (StringUtility.NullToEmpty (renderingContext.Control.SearchServicePath)));
+      script.AppendFormat ("'{0}', ", renderingContext.Control.ResolveClientUrl (renderingContext.Control.SearchServicePath));
 
       script.AppendFormat ("{0}, ", renderingContext.Control.CompletionSetCount);
       script.AppendFormat ("{0}, ", renderingContext.Control.DropDownDisplayDelay);
@@ -133,24 +149,39 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
       AppendBooleanValueToScript (script, renderingContext.Control.TextBoxStyle.AutoPostBack ?? false);
       script.Append (", ");
-
-      script.Append ("{ ");
-      script.Append ("businessObjectClass : ");
-      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectClass);
+      script.Append (GetSearchContextAsJson (renderingContext.SearchAvailableObjectWebServiceContext));
       script.Append (", ");
-      script.Append ("businessObjectProperty : ");
-      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectProperty);
+      AppendStringValueOrNullToScript (script, GetIconServicePath (renderingContext));
       script.Append (", ");
-      script.Append ("businessObject : ");
-      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.BusinessObjectIdentifier);
+      script.Append (GetIconContextAsJson (renderingContext.IconWebServiceContext) ?? "null");
       script.Append (", ");
-      script.Append ("args : ");
-      AppendStringValueOrNullToScript (script, renderingContext.SearchAvailableObjectWebServiceContext.Args);
-      script.Append (" }");
+      script.Append (GetCommandInfoAsJson (renderingContext) ?? "null");
 
       script.Append ("); } );");
 
-      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString ());
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+          renderingContext.Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString ());
+    }
+
+    private string GetSearchContextAsJson (SearchAvailableObjectWebServiceContext searchContext)
+    {
+      var jsonBuilder = new StringBuilder (1000);
+
+      jsonBuilder.Append ("{ ");
+      jsonBuilder.Append ("businessObjectClass : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchContext.BusinessObjectClass);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("businessObjectProperty : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchContext.BusinessObjectProperty);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("businessObject : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchContext.BusinessObjectIdentifier);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("args : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchContext.Args);
+      jsonBuilder.Append (" }");
+
+      return jsonBuilder.ToString ();
     }
 
     private TextBox GetTextbox (BocAutoCompleteReferenceValueRenderingContext renderingContext)
@@ -234,6 +265,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       get { return "bocAutoCompleteReferenceValueContent"; }
     }
 
+    private string CssClassCommand
+    {
+      get { return "command"; }
+    }
+
     private void RenderContentsWithSeparateOptionsMenu (BocAutoCompleteReferenceValueRenderingContext renderingContext, TextBox textBox, HiddenField hiddenField, Label label, Image icon)
     {
       bool isReadOnly = renderingContext.Control.IsReadOnly;
@@ -274,10 +310,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
       bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
-      string argument = string.Empty;
-      string postBackEvent = "";
-      if (!renderingContext.Control.IsDesignMode)
-        postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
@@ -370,8 +403,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
       bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
-      string argument = string.Empty;
-      string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
@@ -399,15 +431,22 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
       {
         renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
         if (!string.IsNullOrEmpty (renderingContext.Control.Command.ToolTip))
           icon.ToolTip = renderingContext.Control.Command.ToolTip;
       }
+      else
+      {
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      }
       icon.RenderControl (renderingContext.Writer);
       if (isCommandEnabled)
         renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
+      else
+        renderingContext.Writer.RenderEndTag();
 
       renderingContext.Writer.RenderEndTag (); //  End td
     }
@@ -418,8 +457,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
         renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+      else
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       if (icon.Visible)
       {
         icon.RenderControl (renderingContext.Writer);
@@ -428,6 +470,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       label.RenderControl (renderingContext.Writer);
       if (isCommandEnabled)
         renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
+      else
+        renderingContext.Writer.RenderEndTag ();
 
       renderingContext.Writer.RenderEndTag(); //  End td
     }

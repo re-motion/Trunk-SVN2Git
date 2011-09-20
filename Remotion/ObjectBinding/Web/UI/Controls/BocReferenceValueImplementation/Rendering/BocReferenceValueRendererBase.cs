@@ -30,6 +30,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
+
       string scriptKey = typeof (BocReferenceValueRendererBase<>).FullName + "_Script";
       htmlHeadAppender.RegisterJavaScriptInclude (
           scriptKey,
@@ -40,7 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddAttributesToRender (new RenderingContext<TControl> (renderingContext.HttpContext, renderingContext.Writer, renderingContext.Control));
+      AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       RenderContents (renderingContext);
@@ -344,7 +346,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return cssClass;
     }
 
-    private string CssClassContent
+    protected string CssClassContent
     {
       get { return "body"; }
     }
@@ -374,7 +376,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       get { return "optionsMenu"; }
     }
 
-    private string CssClassCommand
+    protected string CssClassCommand
     {
       get { return "command"; }
     }
