@@ -57,8 +57,10 @@ BocAutoCompleteReferenceValue.Initialize = function (
           selectionUpdateDelay: selectionUpdateDelay,
 
           autoFill: true,
-          mustMatch: false, //set true if should clear input on no results
+          mustMatch: false, // set true if should clear input on no results
+          matchSubset: false, // set false to disable partial cache hits
           matchContains: true,
+          multiple: false, // not supprted
           scrollHeight: 220,
           dropDownButtonId: button.attr('id'),
           // this can be set to true/removed once the problem is fixed that an empty textbox still selects the first element, making it impossible to clear the selection
