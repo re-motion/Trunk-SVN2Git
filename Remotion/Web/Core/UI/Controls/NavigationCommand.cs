@@ -18,7 +18,6 @@ using System;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Web;
-using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -39,8 +38,7 @@ namespace Remotion.Web.UI.Controls
     {
     }
 
-    /// <summary> Adds the attributes for the Wxe Function command to the anchor tag. </summary>
-    /// <param name="writer"> The <see cref="HtmlTextWriter"/> object to use. Must not be <see langword="null"/>. </param>
+    /// <summary> Creates a <see cref="CommandInfo"/> for the <see cref="Command.WxeFunctionCommand"/>. </summary>
     /// <param name="postBackEvent">
     ///   The string executed upon the click on a command of types
     ///   <see cref="CommandType.Event"/> or <see cref="CommandType.WxeFunction"/>.
@@ -68,30 +66,27 @@ namespace Remotion.Web.UI.Controls
     ///     <see cref="Command.WxeFunctionCommandInfo.TypeName"/> specify different functions.
     ///   </para>
     /// </exception> 
-    protected override void AddAttributesToRenderForWxeFunctionCommand (
-        HtmlTextWriter writer,
+    protected override CommandInfo GetCommandInfoForWxeFunctionCommand (
         string postBackEvent,
         string onClick,
         NameValueCollection additionalUrlParameters,
         bool includeNavigationUrlParameters)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("postBackEvent", postBackEvent);
       ArgumentUtility.CheckNotNull ("additionalUrlParameters", additionalUrlParameters);
       if (Type != CommandType.WxeFunction)
         throw new InvalidOperationException (
-            "Call to AddAttributesToRenderForWxeFunctionCommand not allowed unless Type is set to CommandType.WxeFunction.");
+            "Call to GetCommandInfoForWxeFunctionCommand not allowed unless Type is set to CommandType.WxeFunction.");
 
       string href = "#";
       if (HttpContext.Current != null)
         href = GetWxeFunctionPermanentUrl (additionalUrlParameters);
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, href);
-      if (! StringUtility.IsNullOrEmpty (WxeFunctionCommand.Target))
-        writer.AddAttribute (HtmlTextWriterAttribute.Target, WxeFunctionCommand.Target);
-      if (! StringUtility.IsNullOrEmpty (onClick))
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClick);
-      if (! StringUtility.IsNullOrEmpty (ToolTip))
-        writer.AddAttribute (HtmlTextWriterAttribute.Title, ToolTip);
+
+      return CommandInfo.CreateForLink (
+          StringUtility.EmptyToNull (ToolTip),
+          href,
+          StringUtility.EmptyToNull (WxeFunctionCommand.Target),
+          StringUtility.EmptyToNull (onClick));
     }
 
     /// <summary> 

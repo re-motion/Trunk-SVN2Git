@@ -77,6 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderCommandCell ()
     {
       Column.Command = new BocListItemCommand (CommandType.Href);
+      Column.Command.HrefCommand.Href = "url";
 
       var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
 
@@ -87,7 +88,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
-      Html.AssertAttribute (a, "href", "");
+      Html.AssertAttribute (a, "href", "url");
       Html.AssertAttribute (a, "onclick", "BocList_OnCommandClick();");
 
       var span = Html.GetAssertedChildElement (a, "span", 0);

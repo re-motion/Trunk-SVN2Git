@@ -397,26 +397,9 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("style", style);
 
-      if (HasAccess (securableObject))
-      {
-        switch (_type)
-        {
-          case CommandType.Href:
-            AddAttributesToRenderForHrefCommand (writer, parameters, onClick, additionalUrlParameters, includeNavigationUrlParameters);
-            break;
-          case CommandType.Event:
-            AddAttributesToRenderForEventCommand (writer, postBackEvent, onClick);
-            break;
-          case CommandType.WxeFunction:
-            AddAttributesToRenderForWxeFunctionCommand (writer, postBackEvent, onClick, additionalUrlParameters, includeNavigationUrlParameters);
-            break;
-          case CommandType.None:
-            break;
-          default:
-            throw new InvalidOperationException (
-                string.Format ("The CommandType '{0}' is not supported by the '{1}'.", _type, typeof (Command).FullName));
-        }
-      }
+      var commandInfo = GetCommandInfo (securableObject, parameters, onClick, additionalUrlParameters, includeNavigationUrlParameters, postBackEvent);
+      if (commandInfo != null)
+        commandInfo.AddAttributesToRender (writer);
       style.AddAttributesToRender (writer);
       writer.RenderBeginTag (HtmlTextWriterTag.A);
     }
@@ -443,8 +426,33 @@ namespace Remotion.Web.UI.Controls
       RenderBegin (writer, postBackEvent, parameters, onClick, securableObject, new NameValueCollection (0), true, new Style());
     }
 
-    /// <summary> Adds the attributes for the Href command to the anchor tag. </summary>
-    /// <param name="writer"> The <see cref="HtmlTextWriter"/> object to use. Must not be <see langword="null"/>. </param>
+    private CommandInfo GetCommandInfo (ISecurableObject securableObject,
+        string[] parameters,
+        string onClick,
+        NameValueCollection additionalUrlParameters,
+        bool includeNavigationUrlParameters,
+        string postBackEvent)
+    {
+      if (!HasAccess (securableObject))
+        return null;
+
+      switch (_type)
+      {
+        case CommandType.Href:
+          return GetCommandInfoForHrefCommand (parameters, onClick, additionalUrlParameters, includeNavigationUrlParameters);
+        case CommandType.Event:
+          return GetCommandInfoForEventCommand (postBackEvent, onClick);
+        case CommandType.WxeFunction:
+          return GetCommandInfoForWxeFunctionCommand (postBackEvent, onClick, additionalUrlParameters, includeNavigationUrlParameters);
+        case CommandType.None:
+          return null;
+        default:
+          throw new InvalidOperationException (
+              string.Format ("The CommandType '{0}' is not supported by the '{1}'.", _type, typeof (Command).FullName));
+      }
+    }
+
+    /// <summary> Creates a <see cref="CommandInfo"/> for the <see cref="HrefCommand"/>. </summary>
     /// <param name="parameters">
     ///   The strings inserted into the href attribute using <c>string.Format</c>.
     /// </param>
@@ -462,18 +470,16 @@ namespace Remotion.Web.UI.Controls
     /// <exception cref="InvalidOperationException">
     ///   If called while the <see cref="Type"/> is not set to <see cref="CommandType.Href"/>.
     /// </exception> 
-    protected virtual void AddAttributesToRenderForHrefCommand (
-        HtmlTextWriter writer,
+    protected virtual CommandInfo GetCommandInfoForHrefCommand (
         string[] parameters,
         string onClick,
         NameValueCollection additionalUrlParameters,
         bool includeNavigationUrlParameters)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
       ArgumentUtility.CheckNotNull ("additionalUrlParameters", additionalUrlParameters);
       if (Type != CommandType.Href)
-        throw new InvalidOperationException ("Call to AddAttributesToRenderForHrefCommand not allowed unless Type is set to CommandType.Href.");
+        throw new InvalidOperationException ("Call to GetCommandInfoForHrefCommand not allowed unless Type is set to CommandType.Href.");
 
       string href = HrefCommand.FormatHref (parameters);
       if (includeNavigationUrlParameters)
@@ -491,16 +497,15 @@ namespace Remotion.Web.UI.Controls
       href = UrlUtility.AddParameters (href, additionalUrlParameters);
       if (OwnerControl != null)
         href = OwnerControl.ResolveClientUrl (href);
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, href);
-      if (!StringUtility.IsNullOrEmpty (HrefCommand.Target))
-        writer.AddAttribute (HtmlTextWriterAttribute.Target, HrefCommand.Target);
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClick);
-      if (!StringUtility.IsNullOrEmpty (_toolTip))
-        writer.AddAttribute (HtmlTextWriterAttribute.Title, _toolTip);
+
+      return CommandInfo.CreateForLink (
+          StringUtility.EmptyToNull (_toolTip),
+          href,
+          StringUtility.EmptyToNull (HrefCommand.Target),
+          StringUtility.EmptyToNull (onClick));
     }
 
-    /// <summary> Adds the attributes for the Event command to the anchor tag. </summary>
-    /// <param name="writer"> The <see cref="HtmlTextWriter"/> object to use. Must not be <see langword="null"/>. </param>
+    /// <summary> Creates a <see cref="CommandInfo"/> for the <see cref="EventCommand"/>. </summary>
     /// <param name="postBackEvent">
     ///   The string executed upon the click on a command of types
     ///   <see cref="CommandType.Event"/> or <see cref="CommandType.WxeFunction"/>.
@@ -513,24 +518,18 @@ namespace Remotion.Web.UI.Controls
     /// <exception cref="InvalidOperationException">
     ///   If called while the <see cref="Type"/> is not set to <see cref="CommandType.Event"/>.
     /// </exception> 
-    protected virtual void AddAttributesToRenderForEventCommand (
-        HtmlTextWriter writer,
-        string postBackEvent,
-        string onClick)
+    protected virtual CommandInfo GetCommandInfoForEventCommand (string postBackEvent, string onClick)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("postBackEvent", postBackEvent);
       if (Type != CommandType.Event)
-        throw new InvalidOperationException ("Call to AddAttributesToRenderForEventCommand not allowed unless Type is set to CommandType.Event.");
+        throw new InvalidOperationException ("Call to GetCommandInfoForEventCommand not allowed unless Type is set to CommandType.Event.");
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + StringUtility.NullToEmpty (onClick));
-      if (!StringUtility.IsNullOrEmpty (_toolTip))
-        writer.AddAttribute (HtmlTextWriterAttribute.Title, _toolTip);
+      return CommandInfo.CreateForPostBack (
+          StringUtility.EmptyToNull (_toolTip),
+          postBackEvent + StringUtility.NullToEmpty (onClick));
     }
 
-    /// <summary> Adds the attributes for the Wxe Function command to the anchor tag. </summary>
-    /// <param name="writer"> The <see cref="HtmlTextWriter"/> object to use. Must not be <see langword="null"/>. </param>
+    /// <summary> Creates a <see cref="CommandInfo"/> for the <see cref="WxeFunctionCommand"/>. </summary>
     /// <param name="postBackEvent">
     ///   The string executed upon the click on a command of types
     ///   <see cref="CommandType.Event"/> or <see cref="CommandType.WxeFunction"/>.
@@ -550,25 +549,22 @@ namespace Remotion.Web.UI.Controls
     /// <exception cref="InvalidOperationException">
     ///   If called while the <see cref="Type"/> is not set to <see cref="CommandType.WxeFunction"/>.
     /// </exception> 
-    protected virtual void AddAttributesToRenderForWxeFunctionCommand (
-        HtmlTextWriter writer,
+    protected virtual CommandInfo GetCommandInfoForWxeFunctionCommand (
         string postBackEvent,
         string onClick,
         NameValueCollection additionalUrlParameters,
         bool includeNavigationUrlParameters)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("postBackEvent", postBackEvent);
       if (Type != CommandType.WxeFunction)
       {
         throw new InvalidOperationException (
-            "Call to AddAttributesToRenderForWxeFunctionCommand not allowed unless Type is set to CommandType.WxeFunction.");
+            "Call to GetCommandInfoForWxeFunctionCommand not allowed unless Type is set to CommandType.WxeFunction.");
       }
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + StringUtility.NullToEmpty (onClick));
-      if (!StringUtility.IsNullOrEmpty (_toolTip))
-        writer.AddAttribute (HtmlTextWriterAttribute.Title, _toolTip);
+      return CommandInfo.CreateForPostBack (
+          StringUtility.EmptyToNull (_toolTip),
+          postBackEvent + StringUtility.NullToEmpty (onClick));
     }
 
     /// <summary> Renders the closing tag for the command. </summary>

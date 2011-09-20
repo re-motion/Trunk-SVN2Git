@@ -75,6 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderCommandCell ()
     {
       Column.Command = new BocListItemCommand (CommandType.Href);
+      Column.Command.HrefCommand.Href = "url";
 
       var renderer = new BocSimpleColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
 
@@ -85,7 +86,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (td, "class", _bocListCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
-      Html.AssertAttribute (a, "href", "");
+      Html.AssertAttribute (a, "href", "url");
       Html.AssertAttribute (a, "onclick", "BocList_OnCommandClick();");
 
       var span = Html.GetAssertedChildElement (a, "span", 0);
