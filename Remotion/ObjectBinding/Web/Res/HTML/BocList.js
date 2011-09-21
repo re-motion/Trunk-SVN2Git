@@ -426,12 +426,12 @@ function BocList_syncCheckboxes(container)
     {
         var checkName = $(this).attr('name');
         var realCheckName = checkName.replace('_fake', '');
-        var checkStatus = $(this).attr('checked');
-        $('input[name*=' + realCheckName + ']').attr('checked', checkStatus);
+        var checkStatus = $(this).prop('checked');
+        $('input[name*=' + realCheckName + ']').prop('checked', checkStatus);
     });
 }
 
 function checkScrollBarPresence(element)
 {
-        return ((element.attr('scrollHeight') > element.innerHeight()) || (element.attr('scrollWidth') > element.innerWidth()));
+  return ((element.prop('scrollHeight') > element.innerHeight()) || (element.prop('scrollWidth') > element.innerWidth()));
 }

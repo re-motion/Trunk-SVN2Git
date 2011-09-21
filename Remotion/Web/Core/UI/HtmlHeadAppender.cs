@@ -310,7 +310,7 @@ namespace Remotion.Web.UI
     public void RegisterUtilitiesJavaScriptInclude ()
     {
       string jqueryKey = typeof (HtmlHeadContents).FullName + "_JQuery";
-      var jqueryFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery.js");
+      var jqueryFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery-1.6.4.js");
       RegisterJavaScriptInclude (jqueryKey, jqueryFileUrl);
 
       string utilitiesKey = typeof (HtmlHeadContents).FullName + "_Utilities";

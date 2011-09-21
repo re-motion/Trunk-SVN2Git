@@ -36,7 +36,7 @@ BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, icon
   var newCommand = BocReferenceValueBase.CreateCommand(oldCommand, commandInfo, businessObject);
 
   var oldIcon = oldCommand.find('img');
-  var newIcon = BocReferenceValueBase.CreateEmptyIcon(oldIcon, newCommand.attr('title'));
+  var newIcon = BocReferenceValueBase.CreateEmptyIcon(oldIcon, newCommand.prop('title'));
   newCommand.append(newIcon);
 
   oldCommand.replaceWith(newCommand);
@@ -127,7 +127,7 @@ BocReferenceValueBase.CreateEmptyIcon = function (oldIcon, title)
   newIcon.attr({ src: BocReferenceValueBase._nullIconUrl, alt: '' });
   newIcon.removeAttr('title');
   if (!StringUtility.IsNullOrEmpty(title))
-    newIcon.attr('title', title);
+    newIcon.attr({ title: title });
   newIcon.css({ width: oldIcon.width(), height: oldIcon.height() });
 
   return newIcon;
@@ -141,14 +141,14 @@ BocReferenceValueBase.UpdateIconFromWebService = function (icon, iconInformation
   if (iconInformation == null)
     return;
 
-  icon.attr('src', iconInformation.Url);
+  icon.attr({ src: iconInformation.Url });
 
-  icon.attr('alt', '');
+  icon.attr({ alt: '' });
   if (!StringUtility.IsNullOrEmpty(iconInformation.AlternateText))
-    icon.attr('alt', iconInformation.AlternateText);
+    icon.attr({ alt: iconInformation.AlternateText });
 
-  if (!StringUtility.IsNullOrEmpty(iconInformation.ToolTip) && StringUtility.IsNullOrEmpty(icon.attr('title')))
-    icon.attr('title', iconInformation.ToolTip);
+  if (!StringUtility.IsNullOrEmpty(iconInformation.ToolTip) && StringUtility.IsNullOrEmpty(icon.prop('title')))
+    icon.attr({ title: iconInformation.ToolTip });
 
   icon.css({ width: iconInformation.Width, heght: iconInformation.Height });
 }

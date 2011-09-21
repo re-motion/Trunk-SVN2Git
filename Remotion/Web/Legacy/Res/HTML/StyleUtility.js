@@ -5,27 +5,27 @@
 StyleUtility.CreateBorderSpans = function(selector)
 {
   var element = $(selector);
-  while (element.length > 0 && ((element.attr('id') == null) || (element.attr('id').length == 0)))
+  while (element.length > 0 && element.attr('id') == undefined)
     element = element.parent();
 
   var elementBody = $(selector)[0];
   if (element.length == 0 || elementBody.length == 0)
     return;
 
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'top');
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'left');
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'bottom');
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'right');
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'topLeft');
-  var topRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'topRight');
-  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'bottomLeft');
-  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'bottomRight');
+  var elementID = element.attr('id');
+
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, elementID, 'top');
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, elementID, 'left');
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, elementID, 'bottom');
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, elementID, 'right');
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, elementID, 'topLeft');
+  var topRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, elementID, 'topRight');
+  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(elementBody, elementID, 'bottomLeft');
+  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, elementID, 'bottomRight');
 
   StyleUtility.CalculateBorderSpans(element[0], topRight, bottomLeft, bottomRight);
 
-  var elementID = element.attr('id'); 
-  if (elementID != '')
-    PageUtility.Instance.RegisterResizeHandler('#' + elementID, StyleUtility.OnResize);
+  PageUtility.Instance.RegisterResizeHandler('#' + elementID, StyleUtility.OnResize);
 }
 
 StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bottomRight)

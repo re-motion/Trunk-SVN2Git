@@ -57,16 +57,16 @@ BocReferenceValue.GetSelectedValue = function (dropDownList, nullValueString)
   ArgumentUtility.CheckNotNullAndTypeIsObject('dropDownList', dropDownList);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
 
-  if (dropDownList.length == 0 || dropDownList.attr('selectedIndex') < 0)
+  if (dropDownList.length == 0 || dropDownList.prop('selectedIndex') < 0)
     return nullValueString;
-  var selectedValue = dropDownList.children()[dropDownList.attr('selectedIndex')].value;
+  var selectedValue = dropDownList.children()[dropDownList.prop('selectedIndex')].value;
   if (selectedValue == nullValueString)
     return null;
   return selectedValue;
 }
 
 //  Returns the number of rows selected for the specified BocList
-BocReferenceValue.GetSelectionCount = function (referenceValueDropDownListID, nullValue)
+BocReferenceValue.GetSelectionCount = function (referenceValueDropDownListID, nullValueString)
 {
   ArgumentUtility.CheckNotNullAndTypeIsString('referenceValueDropDownListID', referenceValueDropDownListID);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);

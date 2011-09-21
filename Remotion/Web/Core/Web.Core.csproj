@@ -779,6 +779,7 @@
     <Content Include="Doc\include\Utilities\UrlUtility.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Res\HTML\jquery-1.6.4.js" />
     <Content Include="Res\HTML\jquery.iFrameShim.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\DatePicker.css" />
     <Content Include="Res\HTML\DatePicker.js" />
@@ -787,7 +788,6 @@
     <Content Include="Res\Themes\ClassicBlue\HTML\ListMenu.css" />
     <Content Include="Res\HTML\ListMenu.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\FormGrid.css" />
-    <Content Include="Res\HTML\jquery.js" />
     <Content Include="Res\Themes\NovaBlue\HTML\DatePicker.css" />
     <Content Include="Res\Themes\NovaBlue\HTML\DropDownMenu.css" />
     <Content Include="Res\Themes\NovaBlue\HTML\ExecutionEngine.css" />
