@@ -471,11 +471,12 @@ function SmartPage_Context(
   };
 
   // Override for the ASP.NET __doPostBack method.
-  this.DoPostBack = function(eventTarget, eventArgument)
+  this.DoPostBack = function (eventTarget, eventArgument)
   {
     var eventSource = document.getElementById(UniqueIDToClientID(eventTarget));
     this.SetActiveElement(eventSource);
-    this.DoPostBackInternal(eventTarget, eventArgument);
+    var _this = this;
+    setTimeout(function () { _this.DoPostBackInternal(eventTarget, eventArgument); }, 0);
   };
 
   this.DoPostBackInternal = function(eventTarget, eventArgument)
