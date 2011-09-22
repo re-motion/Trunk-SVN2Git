@@ -119,6 +119,8 @@ namespace Remotion.Web.ExecutionEngine
 
     protected override void RenderAttributes (HtmlTextWriter writer)
     {
+      writer.WriteAttribute ("onreset", "return false;");
+
       string action = WxeContext.Current.GetPath (WxeContext.Current.QueryString);
       writer.WriteAttribute ("action", action, true);
       Attributes.Remove ("action");
