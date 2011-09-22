@@ -900,6 +900,9 @@
             .css("position", "absolute")
             .appendTo(document.body);
 
+            if (element.width() == 0)
+                element.width($(input).outerWidth() + $('#' + options.dropDownButtonId).outerWidth());
+
             //re-motion: block blur bind as long we scroll dropDown list 
             var revertInputStatusTimeout = null;
             function revertInputStatus() {
@@ -1062,8 +1065,8 @@
             var elementWidth;
             if (options.width > 0) {
                 elementWidth = options.width;
-            } else if (parseInt(element.css('width')) > 0) {
-                elementWidth = element.css('width');
+            } else if (element.outerWidth() > 0) {
+                elementWidth = element.outerWidth();
             } else {
                 elementWidth = $(input).outerWidth() + $('#' + options.dropDownButtonId).outerWidth();
             }
@@ -1196,16 +1199,16 @@
                 // re-motion: reposition element 
                 if (repositionTimer) 
                     clearTimeout(repositionTimer);
-                var repositonHandler = function() {
+                var repositionHandler = function() {
                     if (repositionTimer) {
                         clearTimeout(repositionTimer);
                     }
                     if (element.is(':visible')) {
                         applyPositionToDropDown();
-                        repositionTimer = setTimeout(repositonHandler, options.repositionInterval);
+                        repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
                     }
                 }
-                repositionTimer = setTimeout(repositonHandler, options.repositionInterval);
+                repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
 
                 // re-motion: set selection
                 setSelect (selectedItemIndex, false);
