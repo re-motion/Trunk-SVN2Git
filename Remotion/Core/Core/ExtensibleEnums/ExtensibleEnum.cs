@@ -44,6 +44,30 @@ namespace Remotion.ExtensibleEnums
     public static readonly ExtensibleEnumDefinition<T> Values = (ExtensibleEnumDefinition<T>) ExtensibleEnumUtility.GetDefinition (typeof (T));
 
     /// <summary>
+    /// Implements the equality operator for extensible enum values. The operator is implemented the same way as the <see cref="Equals"/> method.
+    /// </summary>
+    /// <param name="value1">The first value to be compared for equality.</param>
+    /// <param name="value2">The second value to be compared for equality.</param>
+    /// <returns><see langword="true" /> if both <paramref name="value1"/> and <paramref name="value2"/> are <see langword="null" /> or if they both 
+    /// have equal types and <see cref="ID"/> values. Otherwise, <see langword="false" />.</returns>
+    public static bool operator == (ExtensibleEnum<T> value1, ExtensibleEnum<T> value2)
+    {
+      return object.Equals (value1, value2);
+    }
+
+    /// <summary>
+    /// Implements the inequality operator for extensible enum values. The operator is implemented the same way as the <see cref="Equals"/> method.
+    /// </summary>
+    /// <param name="value1">The first value to be compared for inequality.</param>
+    /// <param name="value2">The second value to be compared for inequality.</param>
+    /// <returns><see langword="true" /> if only one of <paramref name="value1"/> and <paramref name="value2"/> is <see langword="null" /> or if they 
+    /// have different types or <see cref="ID"/> values. Otherwise, <see langword="false" />.</returns>
+    public static bool operator != (ExtensibleEnum<T> value1, ExtensibleEnum<T> value2)
+    {
+      return !(value1 == value2);
+    }
+
+    /// <summary>
     /// Initializes a new enumeration value with a declaration space and a value name. The actual <see cref="ID"/> is formed by combining declaration
     /// space and value name.
     /// </summary>

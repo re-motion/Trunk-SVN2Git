@@ -123,6 +123,55 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void EqualsOperator_True ()
+    {
+      var value1 = new Color ("ID");
+      var value2 = new Color ("ID");
+
+      Assert.That (value1 == value2, Is.True);
+      Assert.That (value1 != value2, Is.False);
+    }
+
+    [Test]
+    public void EqualsOperator_True_Nulls ()
+    {
+      Color value1 = null;
+      Color value2 = null;
+
+      Assert.That (value1 == value2, Is.True);
+      Assert.That (value1 != value2, Is.False);
+    }
+
+    [Test]
+    public void EqualsOperator_False_DifferentIDs ()
+    {
+      var value1 = new Color ("ID1");
+      var value2 = new Color ("ID2");
+
+      Assert.That (value1 == value2, Is.False);
+      Assert.That (value1 != value2, Is.True);
+    }
+
+    [Test]
+    public void EqualsOperator_False_DifferentTypes ()
+    {
+      var value1 = new Color ("ID");
+      var value2 = new MetallicColor ("ID");
+
+      Assert.That (value1 == value2, Is.False);
+      Assert.That (value1 != value2, Is.True);
+    }
+
+    [Test]
+    public void EqualsOperator_False_Null ()
+    {
+      var value = new Color ("ID");
+
+      Assert.That (value == null, Is.False);
+      Assert.That (value != null, Is.True);
+    }
+
+    [Test]
     public void ToString_ReturnsFullID ()
     {
       var value = new EnumWithDifferentCtors ("Prefix", "ValueName");
