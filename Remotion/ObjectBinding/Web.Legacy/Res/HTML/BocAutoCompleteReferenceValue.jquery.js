@@ -681,14 +681,7 @@
             if (executingRequest != null) {
                 var executor = executingRequest.get_executor();
                 if (executor.get_started()) {
-                    var emptyMethodBackup = Function.emptyMethod;
-                    try {
-                        //patch for IE9 issue: XmlHttpRequest.abort passes an argument to the onreadystatechange handler by ASP.NET AJAX requires an empty argument list
-                        Function.emptyMethod = function() {};
                         executor.abort();
-                    } finally {
-                        Function.emptyMethod = emptyMethodBackup;
-                    }
                 }
                 executingRequest = null;
             }
