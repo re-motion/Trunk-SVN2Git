@@ -1176,16 +1176,16 @@
                 // re-motion: reposition element 
                 if (repositionTimer) 
                     clearTimeout(repositionTimer);
-                var repositonHandler = function() {
+                var repositionHandler = function() {
                     if (repositionTimer) {
                         clearTimeout(repositionTimer);
                     }
                     if (element.is(':visible')) {
                         applyPositionToDropDown();
-                        repositionTimer = setTimeout(repositonHandler, options.repositionInterval);
+                        repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
                     }
                 }
-                repositionTimer = setTimeout(repositonHandler, options.repositionInterval);
+                repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
 
                 // re-motion: set selection
                 setSelect (selectedItemIndex, false);
