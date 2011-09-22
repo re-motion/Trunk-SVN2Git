@@ -1075,6 +1075,7 @@ SmartPage_Context.Instance = null;
 // Called after page's html content is complete.
 function SmartPage_OnStartUp(isAsynchronous, isDirty)
 {
+  AspNetPatches.Apply();
   SmartPage_Context.Instance.OnStartUp(isAsynchronous, isDirty);
 }
 

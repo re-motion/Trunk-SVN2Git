@@ -194,3 +194,17 @@ function PageUtility_ResizeHandlerItem(selector, handler)
 }
 
 PageUtility.Instance = new PageUtility();
+
+function AspNetPatches()
+{
+}
+
+AspNetPatches.Apply = function ()
+{
+  if (Function && Function.emptyMethod)
+  {
+    //patch for IE9 issue: XmlHttpRequest.abort passes an argument to the onreadystatechange handler by ASP.NET AJAX requires an empty argument list
+    //Fixed in ASP.NET AJAX 4.0 in the same manner.
+    Function.emptyMethod = function () { };
+  } 
+}
