@@ -128,8 +128,6 @@
 
         // only opera doesn't trigger keydown multiple times while pressed, others don't work with keypress at all
         $input.bind(($.browser.opera ? "keypress" : "keydown") + ".autocomplete", function(event) {
-            // re-motion: block event bubbling
-            event.stopPropagation();
             // track last key pressed
             lastKeyPressCode = event.keyCode;
 
@@ -141,45 +139,55 @@
             switch (event.keyCode) {
                 case KEY.UP:
                     event.preventDefault();
+                    // re-motion: block event bubbling
+                    event.stopPropagation();
                     if (select.visible()) {
                         select.prev();
                     } else {
                         onChange(0, true, $input.val());
                     }
-                    break;
+                    return;
 
                 case KEY.DOWN:
                     event.preventDefault();
+                    // re-motion: block event bubbling
+                    event.stopPropagation();
                     if (select.visible()) {
                         select.next();
                     } else {
                         onChange(0, true, $input.val());
                     }
-                    break;
+                    return;
 
                 case KEY.PAGEUP:
                     event.preventDefault();
+                    // re-motion: block event bubbling
+                    event.stopPropagation();
                     if (select.visible()) {
                         select.pageUp();
                     } else {
                         onChange(0, true, $input.val());
                     }
-                    break;
+                    return;
 
                 case KEY.PAGEDOWN:
                     event.preventDefault();
+                    // re-motion: block event bubbling
+                    event.stopPropagation();
                     if (select.visible()) {
                         select.pageDown();
                     } else {
                         onChange(0, true, $input.val());
                     }
-                    break;
+                    return;
 
                 // matches also semicolon                    
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                 case KEY.TAB:
                 case KEY.ESC:
+                    // re-motion: block event bubbling
+                    event.stopPropagation();
                     var wasVisible = select.visible();
                     config.mouseDownOnSelect = false;
 
@@ -205,7 +213,7 @@
                     }
 
                 default:
-                    break;
+                    return;
             }
         }).bind ('keyup paste', function(event) { // re-motion
             var handleInput = function() {
