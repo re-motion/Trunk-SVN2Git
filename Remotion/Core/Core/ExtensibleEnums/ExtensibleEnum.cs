@@ -33,7 +33,7 @@ namespace Remotion.ExtensibleEnums
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
-  public abstract class ExtensibleEnum<T> : IExtensibleEnum
+  public abstract class ExtensibleEnum<T> : IExtensibleEnum, IEquatable<T>
       where T: ExtensibleEnum<T>
   {
     /// <summary>
@@ -44,7 +44,7 @@ namespace Remotion.ExtensibleEnums
     public static readonly ExtensibleEnumDefinition<T> Values = (ExtensibleEnumDefinition<T>) ExtensibleEnumUtility.GetDefinition (typeof (T));
 
     /// <summary>
-    /// Implements the equality operator for extensible enum values. The operator is implemented the same way as the <see cref="Equals"/> method.
+    /// Implements the equality operator for extensible enum values. The operator is implemented the same way as the <see cref="Equals(T)"/> method.
     /// </summary>
     /// <param name="value1">The first value to be compared for equality.</param>
     /// <param name="value2">The second value to be compared for equality.</param>
@@ -56,7 +56,7 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
-    /// Implements the inequality operator for extensible enum values. The operator is implemented the same way as the <see cref="Equals"/> method.
+    /// Implements the inequality operator for extensible enum values. The operator is implemented the same way as the <see cref="Equals(T)"/> method.
     /// </summary>
     /// <param name="value1">The first value to be compared for inequality.</param>
     /// <param name="value2">The second value to be compared for inequality.</param>
@@ -178,17 +178,31 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
+    /// Determines whether the specified <typeparamref name="T"/> value is equal to this instance. Equality is
+    /// determined by comparing the <see cref="ID"/> and type of the values for equality.
+    /// </summary>
+    /// <param name="obj">The <typeparamref name="T"/> value to compare with this instance.</param>
+    /// <returns>
+    /// 	<see langword="true" /> if the specified <typeparamref name="T"/> value is an extensible enum value of the same
+    /// 	type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool Equals (T obj)
+    {
+      return obj != null && obj.GetType() == GetType() && obj.ID == ID;
+    }
+
+    /// <summary>
     /// Determines whether the specified <see cref="System.Object"/> is equal to this instance. Equality is
     /// determined by comparing the <see cref="ID"/> and type of the values for equality.
     /// </summary>
     /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
     /// <returns>
-    /// 	<see langword="true" /> if the specified <see cref="System.Object"/> is an extensible enum of the same
+    /// 	<see langword="true" /> if the specified <see cref="System.Object"/> is an extensible enum value of the same
     /// 	type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
     /// </returns>
     public override bool Equals (object obj)
     {
-      return obj != null && obj.GetType() == GetType() &&  ((ExtensibleEnum<T>) obj).ID == ID;
+      return Equals (obj as T);
     }
 
     /// <inheritdoc />

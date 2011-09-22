@@ -79,12 +79,47 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void EquatableEqualsTrue ()
+    {
+      IEquatable<Color> value1 = new Color ("ID");
+      var value2 = new Color ("ID");
+
+      Assert.That (value1.Equals (value2), Is.True);
+    }
+
+    [Test]
+    public void EquatableEqualsFalse_DifferentIDs ()
+    {
+      IEquatable<Color> value1 = new Color ("ID1");
+      var value2 = new Color ("ID2");
+
+      Assert.That (value1.Equals (value2), Is.False);
+    }
+
+    [Test]
+    public void EquatableEqualsFalse_DifferentTypes ()
+    {
+      IEquatable<Color> value1 = new Color ("ID");
+      var value2 = new MetallicColor ("ID");
+
+      Assert.That (value1.Equals (value2), Is.False);
+    }
+
+    [Test]
+    public void EquatableEqualsFalse_Null ()
+    {
+      IEquatable<Color> value = new Color ("ID");
+
+      Assert.That (value.Equals (null), Is.False);
+    }
+
+    [Test]
     public void Equals_True ()
     {
       var value1 = new Color ("ID");
       var value2 = new Color ("ID");
 
-      Assert.That (value1.Equals (value2), Is.True);
+      Assert.That (value1.Equals ((object) value2), Is.True);
     }
 
     [Test]
@@ -93,7 +128,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
       var value1 = new Color ("ID1");
       var value2 = new Color ("ID2");
 
-      Assert.That (value1.Equals (value2), Is.False);
+      Assert.That (value1.Equals ((object) value2), Is.False);
     }
 
     [Test]
@@ -102,7 +137,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
       var value1 = new Color ("ID");
       var value2 = new MetallicColor ("ID");
 
-      Assert.That (value1.Equals (value2), Is.False);
+      Assert.That (value1.Equals ((object) value2), Is.False);
     }
 
     [Test]
@@ -110,7 +145,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       var value = new Color ("ID");
 
-      Assert.That (value.Equals (null), Is.False);
+      Assert.That (value.Equals ((object) null), Is.False);
     }
 
     [Test]
