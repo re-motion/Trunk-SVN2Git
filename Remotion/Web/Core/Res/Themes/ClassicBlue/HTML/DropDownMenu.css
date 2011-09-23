@@ -137,7 +137,6 @@ ul.DropDownMenuOptions
   padding: 0;
   list-style: none;
   background: #FFFFFF url(../Image/DropDownMenuItemIconPane.gif) repeat-y top left;
-  z-index: 1000;
 }
 
 ul.DropDownMenuOptions li.selected a
