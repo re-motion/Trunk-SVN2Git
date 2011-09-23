@@ -90,6 +90,17 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
+    public void RenderAsContextMenu (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
+        WcagHelper.Instance.HandleError (1, this);
+
+      var renderer = CreateRenderer ();
+      renderer.RenderAsContextMenu (CreateRenderingContext (writer));
+    }
+
     protected override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);

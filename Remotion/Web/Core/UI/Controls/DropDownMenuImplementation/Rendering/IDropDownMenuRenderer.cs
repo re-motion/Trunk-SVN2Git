@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
@@ -28,5 +27,6 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (DropDownMenuRenderingContext renderingContext);
+    void RenderAsContextMenu (DropDownMenuRenderingContext renderingContext);
   }
 }

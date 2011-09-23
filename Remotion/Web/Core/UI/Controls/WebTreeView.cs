@@ -541,6 +541,8 @@ namespace Remotion.Web.UI.Controls
       writer.RenderEndTag();
       if (IsDesignMode && _nodes.Count == 0)
         RenderDesignModeContents (writer);
+      foreach(DropDownMenu menu in _menuPlaceHolder.Controls)
+        menu.RenderAsContextMenu (writer);
     }
 
     /// <summary> Renders the <paremref name="nodes"/> onto the <paremref name="writer"/>. </summary>

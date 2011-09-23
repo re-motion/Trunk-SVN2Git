@@ -70,6 +70,15 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       renderingContext.Writer.RenderEndTag ();
     }
 
+    public void RenderAsContextMenu (DropDownMenuRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      RegisterMenuItems (renderingContext);
+
+      RegisterEventHandlerScripts (renderingContext);
+    }
+
     private void RenderTitle (DropDownMenuRenderingContext renderingContext)
     {
       string cssClass = CssClassHead;

@@ -58,7 +58,16 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
         htmlHeadAppender.RegisterStylesheetLink (key, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
-    
+
+    public void RenderAsContextMenu (DropDownMenuRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      RegisterMenuItems (renderingContext);
+
+      RegisterEventHandlerScripts (renderingContext);
+    }
+
     public void Render (DropDownMenuRenderingContext renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
