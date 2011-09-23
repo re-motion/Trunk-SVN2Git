@@ -25,20 +25,48 @@ namespace Remotion.UnitTests.Mixins.Validation
   public class ValidationResultTest
   {
     [Test]
-    [Ignore ("TODO 4010")]
+    public void GetDefinitionContextPath_NonNested ()
+    {
+      var validationResult = new ValidationResult (new ValidatedDefinitionID ("Definition", "1", null));
+      Assert.That (validationResult.GetDefinitionContextPath(), Is.EqualTo (""));
+    }
+
+    [Test]
+    public void GetDefinitionContextPath_NestedOnce ()
+    {
+      var validationResult = new ValidationResult (new ValidatedDefinitionID ("Definition", "1", new ValidatedDefinitionID ("Parent Definition", "2", null)));
+
+      Assert.That (validationResult.GetDefinitionContextPath(), Is.EqualTo ("2"));
+    }
+
+    [Test]
+    public void GetDefinitionContextPath_NestedTwice ()
+    {
+      var validationResult = new ValidationResult (
+          new ValidatedDefinitionID (
+              "Definition",
+              "1",
+              new ValidatedDefinitionID (
+                  "Parent Definition",
+                  "2",
+                  new ValidatedDefinitionID ("ParentParent Definition", "3", null))));
+
+      Assert.That (validationResult.GetDefinitionContextPath(), Is.EqualTo ("2 -> 3"));
+    }
+
+    [Test]
     public void Serialization ()
     {
-      var parentDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object));
-      var nestedDefinition = DefinitionObjectMother.CreateMixinDefinition (parentDefinition, typeof (string));
-      var validationResult = new ValidationResult (nestedDefinition);
+      var validationResult = new ValidationResult (
+          new ValidatedDefinitionID ("Definition", "1", new ValidatedDefinitionID ("Parent Definition", "2", null)));
 
       validationResult.Successes.Add (new ValidationResultItem ("rule name 1", "message"));
       validationResult.Exceptions.Add (new ValidationExceptionResultItem ("rule name 2", new Exception ("Test")));
 
       var deserializedResult = Serializer.SerializeAndDeserialize (validationResult);
 
-      Assert.That (deserializedResult.Definition, Is.EqualTo (validationResult.Definition));
-      Assert.That (deserializedResult.GetParentDefinitionString(), Is.EqualTo (validationResult.GetParentDefinitionString()));
+      Assert.That (deserializedResult.ValidatedDefinitionID, Is.EqualTo (validationResult.ValidatedDefinitionID));
+      Assert.That (deserializedResult.GetDefinitionContextPath(), Is.EqualTo (validationResult.GetDefinitionContextPath()));
       Assert.That (deserializedResult.Successes.Count, Is.EqualTo (validationResult.Successes.Count));
       Assert.That (deserializedResult.Exceptions.Count, Is.EqualTo (validationResult.Exceptions.Count));
     }

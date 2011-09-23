@@ -37,7 +37,11 @@ namespace Remotion.Mixins.Validation
         {
           using (ConsoleUtility.EnterColorScope (ConsoleColor.Gray, null))
           {
-            Console.WriteLine ("{0} '{1}', {2} rules executed", result.Definition.GetType().Name, result.Definition.FullName, result.TotalRulesExecuted);
+            Console.WriteLine (
+                "{0} '{1}', {2} rules executed",
+                result.ValidatedDefinitionID.Kind,
+                result.ValidatedDefinitionID.FullName,
+                result.TotalRulesExecuted);
             DumpContext (result);
           }
         }
@@ -50,7 +54,7 @@ namespace Remotion.Mixins.Validation
 
     private static void DumpContext (ValidationResult result)
     {
-      string contextString = result.GetParentDefinitionString();
+      string contextString = result.GetDefinitionContextPath();
       if (contextString.Length > 0)
         Console.WriteLine ("Context: " + contextString);
     }

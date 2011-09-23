@@ -309,6 +309,7 @@
     <Compile Include="Mixins\TestDomain\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Mixins\Validation\ValidatedDefinitionIDTest.cs" />
     <Compile Include="Mixins\Validation\ValidationExceptionResultItemTest.cs" />
     <Compile Include="Mixins\Validation\ValidationExceptionTest.cs" />
     <Compile Include="Mixins\Validation\ValidationResultItemTest.cs" />

@@ -73,7 +73,8 @@ namespace Remotion.Mixins.Validation
     public void ValidationStartsFor (IVisitableDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
-      _currentData.Push (new ValidationResult (definition));
+      var validationResult = new ValidationResult (ValidatedDefinitionID.FromDefinition (definition));
+      _currentData.Push (validationResult);
     }
 
     public void ValidationEndsFor (IVisitableDefinition definition)
@@ -87,13 +88,19 @@ namespace Remotion.Mixins.Validation
       }
       else
       {
-        ValidationResult popped = _currentData.Pop ();
-        if (!popped.Definition.Equals (definition))
+        ValidationResult currentResult = _currentData.Peek();
+        // Only compare the full name rather than creating a new ID - it's more performant, and it's only a safety check anyway
+        if (currentResult.ValidatedDefinitionID.FullName != definition.FullName)
         {
-          string message = string.Format("Cannot end validation for {0} while {1} is validated.", definition.FullName, popped.Definition.FullName);
+          string message = string.Format (
+              "Cannot end validation for {0} while {1} is validated.", 
+              definition.FullName, 
+              currentResult.ValidatedDefinitionID.FullName);
           throw new InvalidOperationException (message);
         }
-        _results.Add (popped);
+
+        _currentData.Pop();
+        _results.Add (currentResult);
       }
     }
 
@@ -142,10 +149,10 @@ namespace Remotion.Mixins.Validation
     {
       foreach (ValidationResult mergedResult in log.GetResults ())
       {
-        ValidationResult? activeResult = FindMatchingResult (mergedResult.Definition);
+        ValidationResult? activeResult = FindMatchingResult (mergedResult.ValidatedDefinitionID);
         if (activeResult == null)
         {
-          activeResult = new ValidationResult (mergedResult.Definition);
+          activeResult = new ValidationResult (mergedResult.ValidatedDefinitionID);
           _results.Add (activeResult.Value);
         }
 
@@ -172,11 +179,11 @@ namespace Remotion.Mixins.Validation
       }
     }
 
-    private ValidationResult? FindMatchingResult (IVisitableDefinition definition)
+    private ValidationResult? FindMatchingResult (ValidatedDefinitionID validatedDefinitionID)
     {
-      foreach (ValidationResult result in GetResults ())
+      foreach (var result in GetResults ())
       {
-        if (result.Definition == definition)
+        if (result.ValidatedDefinitionID == validatedDefinitionID)
           return result;
       }
       return null;

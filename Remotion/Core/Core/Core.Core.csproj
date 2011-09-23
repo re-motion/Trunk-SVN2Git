@@ -143,6 +143,7 @@
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Mixins\TypeExtensions.cs" />
+    <Compile Include="Mixins\Validation\ValidatedDefinitionID.cs" />
     <Compile Include="Reflection\MethodInfoAdapterConverter.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverter.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />

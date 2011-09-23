@@ -16,44 +16,43 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Mixins.Definitions;
 using Remotion.Text;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
+using System.Linq;
 
 namespace Remotion.Mixins.Validation
 {
   [Serializable]
   public struct ValidationResult
   {
-    private readonly IVisitableDefinition _definition;
+    private readonly ValidatedDefinitionID _validatedDefinitionID;
 
     private readonly List<ValidationResultItem> _successes;
     private readonly List<ValidationResultItem> _warnings;
     private readonly List<ValidationResultItem> _failures;
     private readonly List<ValidationExceptionResultItem> _exceptions;
 
-    public ValidationResult (IVisitableDefinition definition)
+    public ValidationResult (ValidatedDefinitionID validatedDefinitionID)
     {
-      ArgumentUtility.CheckNotNull ("definition", definition);
+      ArgumentUtility.CheckNotNull ("validatedDefinitionID", validatedDefinitionID);
 
-      _definition = definition;
+      _validatedDefinitionID = validatedDefinitionID;
+
       _successes = new List<ValidationResultItem> ();
       _warnings = new List<ValidationResultItem> ();
       _failures = new List<ValidationResultItem> ();
       _exceptions = new List<ValidationExceptionResultItem> ();
     }
 
-    // TODO 4010: Precalculate a list of definition parent full names and save here
-    public string GetParentDefinitionString()
+    public ValidatedDefinitionID ValidatedDefinitionID
     {
-      var sb = new SeparatedStringBuilder(" -> ");
-      IVisitableDefinition parent = _definition.Parent;
-      while (parent != null)
-      {
-        sb.Append (parent.FullName);
-        parent = parent.Parent;
-      }
-      return sb.ToString();
+      get { return _validatedDefinitionID; }
+    }
+
+    public string GetDefinitionContextPath()
+    {
+      return SeparatedStringBuilder.Build (" -> ", ValidatedDefinitionID.ParentID.CreateSequence (d => d.ParentID).Select (d => d.FullName));
     }
 
     public int TotalRulesExecuted
@@ -79,12 +78,6 @@ namespace Remotion.Mixins.Validation
     public List<ValidationResultItem> Successes
     {
       get { return _successes; }
-    }
-
-    // TODO 4010: Store definition kind (type name) and Definition FullName
-    public IVisitableDefinition Definition
-    {
-      get { return _definition; }
     }
   }
 }
