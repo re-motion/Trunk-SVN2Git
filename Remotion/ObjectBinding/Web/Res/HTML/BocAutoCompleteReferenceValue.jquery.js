@@ -900,6 +900,9 @@
             .css("position", "absolute")
             .appendTo(document.body);
 
+            // re-motion: Back up the original width because of jQuery 1.4.3 changes to css module
+            $.data (element, 'originalWidth', element.width());
+
             //re-motion: block blur bind as long we scroll dropDown list 
             var revertInputStatusTimeout = null;
             function revertInputStatus() {
@@ -1027,37 +1030,26 @@
             // re-motion: calculate best position where to open dropdown list
             var position = $.Autocompleter.calculateSpaceAround(input);
 
+            var requiredHeight = Math.min (element.outerHeight(), options.scrollHeight);
             var maxHeight;
-            if (position.spaceVertical == 'T' && position.bottom < options.scrollHeight) {
-
+            if (position.spaceVertical == 'T' && requiredHeight > position.bottom) {
                 //element.css('bottom', position.bottom + input.offsetHeight);
                 topPosition = 'auto';
                 bottomPosition = position.bottom + input.offsetHeight;
-
-                if (options.scrollHeight > position.bottom && options.scrollHeight > position.top) {
-                    maxHeight = position.top;
-                } else {
-                    maxHeight = options.scrollHeight;
-                }
-
+                maxHeight = Math.min (position.top, options.scrollHeight);
             } else {
                 //element.css('top', offset.top + input.offsetHeight);
                 bottomPosition = 'auto';
                 topPosition = offset.top + input.offsetHeight;
-                if (options.scrollHeight > position.bottom) {
-                    maxHeight = position.bottom;
-                } else {
-                    maxHeight = options.scrollHeight;
-                }
-
+                maxHeight = Math.min (position.bottom, options.scrollHeight);
             }
 
             // re-motion: need to resize list to specified width in css not in plugin config
             var elementWidth;
             if (options.width > 0) {
                 elementWidth = options.width;
-            } else if (parseInt(element.css('width')) > 0) {
-                elementWidth = element.css('width');
+            } else if ($.data (element, 'originalWidth') > 0) {
+                elementWidth = $.data (element, 'originalWidth');
             } else {
                 elementWidth = $(input).outerWidth();
             }
