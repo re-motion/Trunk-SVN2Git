@@ -63,7 +63,7 @@ namespace Remotion.Mixins.Validation
         {
           Console.WriteLine ("  {0} - {1}", title, resultList.Count);
           foreach (T resultItem in resultList)
-            Console.WriteLine ("    {0} ({1})", resultItem.Message, resultItem.Rule.RuleName);
+            Console.WriteLine ("    {0} ({1})", resultItem.Message, resultItem.RuleName);
         }
       }
     }

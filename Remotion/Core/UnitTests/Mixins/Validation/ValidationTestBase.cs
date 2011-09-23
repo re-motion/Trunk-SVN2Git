@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Validation;
 
@@ -23,33 +24,12 @@ namespace Remotion.UnitTests.Mixins.Validation
   {
     public bool HasFailure (string ruleName, IValidationLog log)
     {
-      return GetFailureRule (ruleName, log) != null;
-    }
-
-    public IValidationRule GetFailureRule (string ruleName, IValidationLog log)
-    {
-      foreach (ValidationResult result in log.GetResults())
-      {
-        foreach (ValidationResultItem item in result.Failures)
-        {
-          if (item.Rule.RuleName == ruleName)
-            return item.Rule;
-        }
-      }
-      return null;
+      return log.GetResults().SelectMany (result => result.Failures).Any (item => item.RuleName == ruleName);
     }
 
     public bool HasWarning (string ruleName, IValidationLog log)
     {
-      foreach (ValidationResult result in log.GetResults())
-      {
-        foreach (ValidationResultItem item in result.Warnings)
-        {
-          if (item.Rule.RuleName == ruleName)
-            return true;
-        }
-      }
-      return false;
+      return log.GetResults().SelectMany (result => result.Warnings).Any (item => item.RuleName == ruleName);
     }
 
     public void AssertSuccess (IValidationLog log)

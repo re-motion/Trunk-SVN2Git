@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 
 namespace Remotion.UnitTests.Mixins.Validation
@@ -26,21 +25,14 @@ namespace Remotion.UnitTests.Mixins.Validation
   public class ValidationResultItemTest
   {
     [Test]
-    [Ignore ("TODO 4010")]
     public void Serialization ()
     {
-      var rule = new DelegateValidationRule<TargetClassDefinition> (DummyRule);
-      var item = new ValidationResultItem (rule);
+      var item = new ValidationResultItem ("special rule", "oh nos!");
 
       var deserializedItem = Serializer.SerializeAndDeserialize (item);
 
       Assert.That (deserializedItem.Message, Is.EqualTo (item.Message));
-      Assert.That (deserializedItem.Rule, Is.EqualTo (item.Rule));
-    }
-
-    private void DummyRule (DelegateValidationRule<TargetClassDefinition>.Args args)
-    {
-      throw new NotImplementedException();
+      Assert.That (deserializedItem.RuleName, Is.EqualTo (item.RuleName));
     }
   }
 }

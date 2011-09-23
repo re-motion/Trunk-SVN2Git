@@ -22,22 +22,21 @@ namespace Remotion.Mixins.Validation
   [Serializable]
   public struct ValidationExceptionResultItem : IDefaultValidationResultItem
   {
-    private readonly IValidationRule _rule;
+    private readonly string _ruleName;
     private readonly Exception _exception;
 
-    public ValidationExceptionResultItem (IValidationRule rule, Exception exception)
+    public ValidationExceptionResultItem (string ruleName, Exception exception)
     {
-      ArgumentUtility.CheckNotNull ("rule", rule);
+      ArgumentUtility.CheckNotNullOrEmpty ("ruleName", ruleName);
       ArgumentUtility.CheckNotNull ("exception", exception);
 
-      _rule = rule;
+      _ruleName = ruleName;
       _exception = exception;
     }
 
-    // TODO 4010: RuleName instead of Rule
-    public IValidationRule Rule
+    public string RuleName
     {
-      get { return _rule; }
+      get { return _ruleName; }
     }
 
     public string Message

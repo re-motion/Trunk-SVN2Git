@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 
 namespace Remotion.UnitTests.Mixins.Validation
@@ -33,10 +32,8 @@ namespace Remotion.UnitTests.Mixins.Validation
       var nestedDefinition = DefinitionObjectMother.CreateMixinDefinition (parentDefinition, typeof (string));
       var validationResult = new ValidationResult (nestedDefinition);
 
-      var rule = new DelegateValidationRule<MixinDefinition> (DummyRule);
-
-      validationResult.Successes.Add (new ValidationResultItem (rule));
-      validationResult.Exceptions.Add (new ValidationExceptionResultItem (rule, new Exception ("Test")));
+      validationResult.Successes.Add (new ValidationResultItem ("rule name 1", "message"));
+      validationResult.Exceptions.Add (new ValidationExceptionResultItem ("rule name 2", new Exception ("Test")));
 
       var deserializedResult = Serializer.SerializeAndDeserialize (validationResult);
 
@@ -44,11 +41,6 @@ namespace Remotion.UnitTests.Mixins.Validation
       Assert.That (deserializedResult.GetParentDefinitionString(), Is.EqualTo (validationResult.GetParentDefinitionString()));
       Assert.That (deserializedResult.Successes.Count, Is.EqualTo (validationResult.Successes.Count));
       Assert.That (deserializedResult.Exceptions.Count, Is.EqualTo (validationResult.Exceptions.Count));
-    }
-
-    private void DummyRule (DelegateValidationRule<MixinDefinition>.Args args)
-    {
-      throw new NotImplementedException();
     }
   }
 }

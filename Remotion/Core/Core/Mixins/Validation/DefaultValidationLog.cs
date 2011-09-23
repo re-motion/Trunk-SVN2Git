@@ -109,27 +109,27 @@ namespace Remotion.Mixins.Validation
     public void Succeed (IValidationRule rule)
     {
       ArgumentUtility.CheckNotNull ("rule", rule);
-      GetCurrentResult().Successes.Add (new ValidationResultItem(rule));
+      GetCurrentResult().Successes.Add (new ValidationResultItem(rule.RuleName, rule.Message));
       ++successes;
     }
 
     public void Warn (IValidationRule rule)
     {
       ArgumentUtility.CheckNotNull ("rule", rule);
-      GetCurrentResult ().Warnings.Add (new ValidationResultItem(rule));
+      GetCurrentResult ().Warnings.Add (new ValidationResultItem(rule.RuleName, rule.Message));
       ++warnings;
     }
 
     public void Fail (IValidationRule rule)
     {
       ArgumentUtility.CheckNotNull ("rule", rule);
-      GetCurrentResult ().Failures.Add (new ValidationResultItem (rule));
+      GetCurrentResult ().Failures.Add (new ValidationResultItem (rule.RuleName, rule.Message));
       ++failures;
     }
 
     public void UnexpectedException (IValidationRule rule, Exception ex)
     {
-      GetCurrentResult ().Exceptions.Add (new ValidationExceptionResultItem (rule, ex));
+      GetCurrentResult ().Exceptions.Add (new ValidationExceptionResultItem (rule.RuleName, ex));
       ++exceptions;
     }
 

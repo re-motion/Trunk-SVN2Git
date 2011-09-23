@@ -20,7 +20,7 @@ namespace Remotion.Mixins.Validation
 {
   public interface IDefaultValidationResultItem
   {
-    IValidationRule Rule { get; }
+    string RuleName { get; }
     string Message { get; }
   }
 }
