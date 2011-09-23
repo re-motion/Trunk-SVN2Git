@@ -309,6 +309,7 @@
     <Compile Include="Mixins\TestDomain\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Mixins\Validation\ValidationExceptionTest.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ArgumentChecks_MethodWrapperEmitterTest.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\NotSupportedScenarios_MethodWrapperEmitterTest.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\Parameters_MethodWrapperEmitterTest.cs" />
