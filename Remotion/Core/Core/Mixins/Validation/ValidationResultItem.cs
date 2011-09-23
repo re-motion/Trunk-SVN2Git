@@ -24,12 +24,14 @@ namespace Remotion.Mixins.Validation
   {
     private readonly IValidationRule _rule;
 
+    // TODO 4010: Store rule name and message instead of rule
     public ValidationResultItem (IValidationRule rule)
     {
       ArgumentUtility.CheckNotNull ("rule", rule);
       _rule = rule;
     }
 
+    // TODO 4010: RuleName instead of Rule
     public IValidationRule Rule
     {
       get { return _rule; }

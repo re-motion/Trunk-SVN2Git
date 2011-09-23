@@ -17,32 +17,25 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 
 namespace Remotion.UnitTests.Mixins.Validation
 {
   [TestFixture]
-  public class ValidationExceptionTest
+  public class ValidationResultItemTest
   {
     [Test]
     [Ignore ("TODO 4010")]
     public void Serialization ()
     {
-      var log = new DefaultValidationLog();
       var rule = new DelegateValidationRule<TargetClassDefinition> (DummyRule);
+      var item = new ValidationResultItem (rule);
 
-      var definition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object));
-      log.ValidationStartsFor (definition);
-      log.Succeed (rule);
-      log.ValidationEndsFor (definition);
+      var deserializedItem = Serializer.SerializeAndDeserialize (item);
 
-      var exception = new ValidationException ("Message", log);
-
-      var deserializedException = Serializer.SerializeAndDeserialize (exception);
-      Assert.That (deserializedException.Message, Is.EqualTo (exception.Message));
-      Assert.That (deserializedException.ValidationLog.GetNumberOfSuccesses(), Is.EqualTo (exception.ValidationLog.GetNumberOfSuccesses()));
+      Assert.That (deserializedItem.Message, Is.EqualTo (item.Message));
+      Assert.That (deserializedItem.Rule, Is.EqualTo (item.Rule));
     }
 
     private void DummyRule (DelegateValidationRule<TargetClassDefinition>.Args args)

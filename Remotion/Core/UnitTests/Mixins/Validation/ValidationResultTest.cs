@@ -17,35 +17,36 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 
 namespace Remotion.UnitTests.Mixins.Validation
 {
   [TestFixture]
-  public class ValidationExceptionTest
+  public class ValidationResultTest
   {
     [Test]
     [Ignore ("TODO 4010")]
     public void Serialization ()
     {
-      var log = new DefaultValidationLog();
-      var rule = new DelegateValidationRule<TargetClassDefinition> (DummyRule);
+      var parentDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object));
+      var nestedDefinition = DefinitionObjectMother.CreateMixinDefinition (parentDefinition, typeof (string));
+      var validationResult = new ValidationResult (nestedDefinition);
 
-      var definition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object));
-      log.ValidationStartsFor (definition);
-      log.Succeed (rule);
-      log.ValidationEndsFor (definition);
+      var rule = new DelegateValidationRule<MixinDefinition> (DummyRule);
 
-      var exception = new ValidationException ("Message", log);
+      validationResult.Successes.Add (new ValidationResultItem (rule));
+      validationResult.Exceptions.Add (new ValidationExceptionResultItem (rule, new Exception ("Test")));
 
-      var deserializedException = Serializer.SerializeAndDeserialize (exception);
-      Assert.That (deserializedException.Message, Is.EqualTo (exception.Message));
-      Assert.That (deserializedException.ValidationLog.GetNumberOfSuccesses(), Is.EqualTo (exception.ValidationLog.GetNumberOfSuccesses()));
+      var deserializedResult = Serializer.SerializeAndDeserialize (validationResult);
+
+      Assert.That (deserializedResult.Definition, Is.EqualTo (validationResult.Definition));
+      Assert.That (deserializedResult.GetParentDefinitionString(), Is.EqualTo (validationResult.GetParentDefinitionString()));
+      Assert.That (deserializedResult.Successes.Count, Is.EqualTo (validationResult.Successes.Count));
+      Assert.That (deserializedResult.Exceptions.Count, Is.EqualTo (validationResult.Exceptions.Count));
     }
 
-    private void DummyRule (DelegateValidationRule<TargetClassDefinition>.Args args)
+    private void DummyRule (DelegateValidationRule<MixinDefinition>.Args args)
     {
       throw new NotImplementedException();
     }

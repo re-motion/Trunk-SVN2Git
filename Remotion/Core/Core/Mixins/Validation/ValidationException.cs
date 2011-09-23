@@ -90,6 +90,7 @@ namespace Remotion.Mixins.Validation
       _validationLog = (IValidationLog) info.GetValue ("ValidationLog", typeof (IValidationLog));
     }
 
+  // TODO 4010: Store validation results instead of log
     public IValidationLog ValidationLog
     {
       get { return _validationLog; }

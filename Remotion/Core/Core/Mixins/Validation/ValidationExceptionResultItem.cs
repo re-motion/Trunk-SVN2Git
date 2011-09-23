@@ -22,8 +22,8 @@ namespace Remotion.Mixins.Validation
   [Serializable]
   public struct ValidationExceptionResultItem : IDefaultValidationResultItem
   {
-    private IValidationRule _rule;
-    private Exception _exception;
+    private readonly IValidationRule _rule;
+    private readonly Exception _exception;
 
     public ValidationExceptionResultItem (IValidationRule rule, Exception exception)
     {
@@ -34,6 +34,7 @@ namespace Remotion.Mixins.Validation
       _exception = exception;
     }
 
+    // TODO 4010: RuleName instead of Rule
     public IValidationRule Rule
     {
       get { return _rule; }

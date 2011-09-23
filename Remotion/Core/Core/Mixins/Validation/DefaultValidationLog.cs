@@ -22,6 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation
 {
+  // TODO 4010: Remove attribute
   [Serializable]
   public class DefaultValidationLog : IValidationLog
   {

@@ -43,6 +43,7 @@ namespace Remotion.Mixins.Validation
       _exceptions = new List<ValidationExceptionResultItem> ();
     }
 
+    // TODO 4010: Precalculate a list of definition parent full names and save here
     public string GetParentDefinitionString()
     {
       var sb = new SeparatedStringBuilder(" -> ");
@@ -80,6 +81,7 @@ namespace Remotion.Mixins.Validation
       get { return _successes; }
     }
 
+    // TODO 4010: Store definition kind (type name) and Definition FullName
     public IVisitableDefinition Definition
     {
       get { return _definition; }

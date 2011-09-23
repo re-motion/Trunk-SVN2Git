@@ -37,9 +37,11 @@ namespace Remotion.Mixins.Validation
 
     // methods for reading the log
 
+    // TODO 4010: Move the results to a new ValidationResultCollection class
     IEnumerable<ValidationResult> GetResults ();
     int ResultCount { get; }
 
+    // TODO 4010: Move these methods to a new ValidationResultCollection class
     int GetNumberOfFailures();
     int GetNumberOfWarnings ();
     int GetNumberOfSuccesses ();

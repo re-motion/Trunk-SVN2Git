@@ -22,7 +22,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation
 {
-  [Serializable]
   public class DelegateValidationRule<TDefinition> : IValidationRule<TDefinition> where TDefinition : IVisitableDefinition
   {
     public struct Args
