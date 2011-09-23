@@ -27,6 +27,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (DropDownMenuRenderingContext renderingContext);
+    //TODO: RM-4326
     void RenderAsContextMenu (DropDownMenuRenderingContext renderingContext);
   }
 }
