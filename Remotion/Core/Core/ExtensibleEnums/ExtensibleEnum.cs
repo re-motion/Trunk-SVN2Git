@@ -188,7 +188,7 @@ namespace Remotion.ExtensibleEnums
     /// </returns>
     public bool Equals (T obj)
     {
-      return obj != null && obj.GetType() == GetType() && obj.ID == ID;
+      return !ReferenceEquals (obj, null) && obj.GetType() == GetType() && obj.ID == ID;
     }
 
     /// <summary>
