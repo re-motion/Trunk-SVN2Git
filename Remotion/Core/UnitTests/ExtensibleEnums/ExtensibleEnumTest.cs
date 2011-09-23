@@ -204,6 +204,9 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
       Assert.That (value == null, Is.False);
       Assert.That (value != null, Is.True);
+
+      Assert.That (null == value, Is.False);
+      Assert.That (null != value, Is.True);
     }
 
     [Test]
