@@ -50,8 +50,6 @@
 
 <labelstyle cssclass="class">
 </LabelStyle></remotion:bocAutoCompleteReferenceValue>
-<embed type="application/x-shockwave-flash"     src="http://s.ytimg.com/yt/swfbin/watch_as3-vfl4_0gF6.swf"     width="640" id="movie_player" height="390"    />
-
 </td>
     <td>bound</td>
     <td style="WIDTH: 20%"><asp:label id=PartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
