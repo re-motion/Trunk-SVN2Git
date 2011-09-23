@@ -152,10 +152,22 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt)
       $(div).css('right', 'auto');
     }
   }
-  if (($(div).height() > space_bottom) && (space_top > space_bottom))
+  if ($(div).height() > space_bottom)
   {
-    $(div).css('top', 'auto');
-    $(div).css('bottom', $(window).height() - titleDiv.offset().top - (titleDiv.outerHeight() - titleDiv.height()));
+    if ($(div).height() > $(window).height())
+    {
+      $(div).css('top', 0);
+    }
+    else if (space_top > $(div).height())
+    {
+      $(div).css('top', 'auto');
+      $(div).css('bottom', $(window).height() - titleDiv.offset().top - (titleDiv.outerHeight() - titleDiv.height()));
+    }
+    else
+    {
+      $(div).css('top', 'auto');
+      $(div).css('bottom', 0);
+    }
   }
 
   $(div).iFrameShim({ top: '0px', left: '0px', width: '100%', height: '100%' });
