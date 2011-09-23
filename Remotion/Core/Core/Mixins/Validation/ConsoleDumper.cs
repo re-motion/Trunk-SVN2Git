@@ -35,16 +35,16 @@ namespace Remotion.Mixins.Validation
         }
         else if (result.TotalRulesExecuted != result.Successes.Count)
         {
-					using (ConsoleUtility.EnterColorScope (ConsoleColor.Gray, null))
-					{
-						Console.WriteLine ("{0} '{1}', {2} rules executed", result.Definition.GetType().Name, result.Definition.FullName, result.TotalRulesExecuted);
-						DumpContext (result);
-					}
+          using (ConsoleUtility.EnterColorScope (ConsoleColor.Gray, null))
+          {
+            Console.WriteLine ("{0} '{1}', {2} rules executed", result.Definition.GetType().Name, result.Definition.FullName, result.TotalRulesExecuted);
+            DumpContext (result);
+          }
         }
         DumpResultList ("unexpected exceptions", result.Exceptions, ConsoleColor.White, ConsoleColor.DarkRed);
-				// DumpResultList ("successes", result.Successes, ConsoleColor.Green, null);
-				DumpResultList ("warnings", result.Warnings, ConsoleColor.Yellow, null);
-				DumpResultList ("failures", result.Failures, ConsoleColor.Red, null);
+        // DumpResultList ("successes", result.Successes, ConsoleColor.Green, null);
+        DumpResultList ("warnings", result.Warnings, ConsoleColor.Yellow, null);
+        DumpResultList ("failures", result.Failures, ConsoleColor.Red, null);
       }
     }
 
@@ -59,12 +59,12 @@ namespace Remotion.Mixins.Validation
     {
       if (resultList.Count > 0)
       {
-				using (ConsoleUtility.EnterColorScope (foreColor, backColor))
-				{
-					Console.WriteLine ("  {0} - {1}", title, resultList.Count);
-					foreach (T resultItem in resultList)
-						Console.WriteLine ("    {0} ({1})", resultItem.Message, resultItem.Rule.RuleName);
-				}
+        using (ConsoleUtility.EnterColorScope (foreColor, backColor))
+        {
+          Console.WriteLine ("  {0} - {1}", title, resultList.Count);
+          foreach (T resultItem in resultList)
+            Console.WriteLine ("    {0} ({1})", resultItem.Message, resultItem.Rule.RuleName);
+        }
       }
     }
   }
