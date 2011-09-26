@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.Validation
     {
       var data = new ValidationLogData();
 
-      var result = new ValidationResult(new ValidatedDefinitionID ("a", "b", null));
+      var result = new ValidationResult(new ValidatedDefinitionDescription ("a", "b", null, null));
       result.Successes.Add (new ValidationResultItem("x", "y"));
       data.Add (result);
 

@@ -223,7 +223,7 @@ namespace Remotion.Mixins
     {
       var builder = new TargetClassDefinitionBuilder ();
 
-      var definitions = from classContext in ActiveConfiguration.ClassContexts
+      var definitions = from classContext in ClassContexts
                         where !classContext.Type.IsGenericTypeDefinition && !classContext.Type.IsInterface
                         select (IVisitableDefinition) builder.Build (classContext);
 

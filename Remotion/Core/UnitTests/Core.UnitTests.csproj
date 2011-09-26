@@ -309,7 +309,7 @@
     <Compile Include="Mixins\TestDomain\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
-    <Compile Include="Mixins\Validation\ValidatedDefinitionIDTest.cs" />
+    <Compile Include="Mixins\Validation\ValidatedDefinitionDescriptionTest.cs" />
     <Compile Include="Mixins\Validation\ValidationExceptionResultItemTest.cs" />
     <Compile Include="Mixins\Validation\ValidationExceptionTest.cs" />
     <Compile Include="Mixins\Validation\ValidationLogDataTest.cs" />
@@ -332,6 +332,7 @@
     <Compile Include="Reflection\MethodInfoAdapterConverterTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverterTest.cs" />
     <Compile Include="Reflection\ReflectionExtensionsTest.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderProviderTest.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\DerivedClassWithReferenceType.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\MethodInfoAdapterTest.cs" />

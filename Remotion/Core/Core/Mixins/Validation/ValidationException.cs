@@ -37,7 +37,7 @@ namespace Remotion.Mixins.Validation
       {
         if (item.TotalRulesExecuted != item.Successes.Count)
         {
-          sb.Append (Environment.NewLine).Append (item.ValidatedDefinitionID.FullName);
+          sb.Append (Environment.NewLine).Append (item.ValidatedDefinitionDescription.FullName);
           string parentString = item.GetDefinitionContextPath ();
           if (parentString.Length > 0)
             sb.Append (" (").Append (parentString).Append ("):").Append (Environment.NewLine);

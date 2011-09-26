@@ -26,18 +26,18 @@ namespace Remotion.Mixins.Validation
   [Serializable]
   public struct ValidationResult
   {
-    private readonly ValidatedDefinitionID _validatedDefinitionID;
+    private readonly ValidatedDefinitionDescription _validatedDefinitionDescription;
 
     private readonly List<ValidationResultItem> _successes;
     private readonly List<ValidationResultItem> _warnings;
     private readonly List<ValidationResultItem> _failures;
     private readonly List<ValidationExceptionResultItem> _exceptions;
 
-    public ValidationResult (ValidatedDefinitionID validatedDefinitionID)
+    public ValidationResult (ValidatedDefinitionDescription validatedDefinitionDescription)
     {
-      ArgumentUtility.CheckNotNull ("validatedDefinitionID", validatedDefinitionID);
+      ArgumentUtility.CheckNotNull ("validatedDefinitionDescription", validatedDefinitionDescription);
 
-      _validatedDefinitionID = validatedDefinitionID;
+      _validatedDefinitionDescription = validatedDefinitionDescription;
 
       _successes = new List<ValidationResultItem> ();
       _warnings = new List<ValidationResultItem> ();
@@ -45,14 +45,14 @@ namespace Remotion.Mixins.Validation
       _exceptions = new List<ValidationExceptionResultItem> ();
     }
 
-    public ValidatedDefinitionID ValidatedDefinitionID
+    public ValidatedDefinitionDescription ValidatedDefinitionDescription
     {
-      get { return _validatedDefinitionID; }
+      get { return _validatedDefinitionDescription; }
     }
 
     public string GetDefinitionContextPath()
     {
-      return SeparatedStringBuilder.Build (" -> ", ValidatedDefinitionID.ParentID.CreateSequence (d => d.ParentID).Select (d => d.FullName));
+      return SeparatedStringBuilder.Build (" -> ", ValidatedDefinitionDescription.ParentDescription.CreateSequence (d => d.ParentDescription).Select (d => d.FullName));
     }
 
     public int TotalRulesExecuted

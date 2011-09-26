@@ -32,7 +32,7 @@ namespace Remotion.Mixins.Validation
     public void ValidationStartsFor (IVisitableDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
-      var validationResult = new ValidationResult (ValidatedDefinitionID.FromDefinition (definition));
+      var validationResult = new ValidationResult (ValidatedDefinitionDescription.FromDefinition (definition));
       _currentData.Push (validationResult);
     }
 
@@ -49,12 +49,12 @@ namespace Remotion.Mixins.Validation
       {
         ValidationResult currentResult = _currentData.Peek();
         // Only compare the full name rather than creating a new ID - it's more performant, and it's only a safety check anyway
-        if (currentResult.ValidatedDefinitionID.FullName != definition.FullName)
+        if (currentResult.ValidatedDefinitionDescription.FullName != definition.FullName)
         {
           string message = string.Format (
               "Cannot end validation for {0} while {1} is validated.", 
               definition.FullName, 
-              currentResult.ValidatedDefinitionID.FullName);
+              currentResult.ValidatedDefinitionDescription.FullName);
           throw new InvalidOperationException (message);
         }
 

@@ -40,25 +40,39 @@ namespace Remotion.Mixins.Validation
       ArgumentUtility.CheckNotNull ("startingPoints", startingPoints);
       ArgumentUtility.CheckNotNull ("customRuleSets", customRuleSets);
 
-      DefaultValidationLog log = new DefaultValidationLog ();
-      foreach (IVisitableDefinition startingPoint in startingPoints)
-        Validate (startingPoint, log, customRuleSets);
+      var log = new DefaultValidationLog ();
+      Validate (startingPoints, log, customRuleSets);
       return log.GetData();
     }
 
-    public static void Validate (IVisitableDefinition startingPoint, IValidationLog log, params IRuleSet[] customRuleSets)
+        public static void Validate (IVisitableDefinition startingPoint, IValidationLog log, params IRuleSet[] customRuleSets)
     {
       ArgumentUtility.CheckNotNull ("startingPoint", startingPoint);
       ArgumentUtility.CheckNotNull ("log", log);
       ArgumentUtility.CheckNotNull ("customRuleSets", customRuleSets);
 
+      Validate (new[] { startingPoint }, log, customRuleSets);
+    }
+
+    public static void Validate (IEnumerable<IVisitableDefinition> startingPoints, IValidationLog log, params IRuleSet[] customRuleSets)
+    {
+      ArgumentUtility.CheckNotNull ("startingPoints", startingPoints);
+      ArgumentUtility.CheckNotNull ("log", log);
+      ArgumentUtility.CheckNotNull ("customRuleSets", customRuleSets);
+
+      var visitor = CreateValidatingVisitor (log, customRuleSets);
+      foreach (IVisitableDefinition startingPoint in startingPoints)
+        startingPoint.Accept (visitor);
+    }
+
+    private static ValidatingVisitor CreateValidatingVisitor (IValidationLog log, IRuleSet[] customRuleSets)
+    {
       ValidatingVisitor visitor = new ValidatingVisitor (log);
       InstallDefaultRules (visitor);
 
       foreach (IRuleSet ruleSet in customRuleSets)
         ruleSet.Install (visitor);
-
-      startingPoint.Accept (visitor);
+      return visitor;
     }
 
     private static void InstallDefaultRules (ValidatingVisitor visitor)

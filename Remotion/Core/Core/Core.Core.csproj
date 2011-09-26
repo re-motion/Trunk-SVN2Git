@@ -143,11 +143,12 @@
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Mixins\TypeExtensions.cs" />
-    <Compile Include="Mixins\Validation\ValidatedDefinitionID.cs" />
+    <Compile Include="Mixins\Validation\ValidatedDefinitionDescription.cs" />
     <Compile Include="Mixins\Validation\ValidationLogData.cs" />
     <Compile Include="Reflection\MethodInfoAdapterConverter.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverter.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderProvider.cs" />
     <Compile Include="Reflection\TypeAdapter.cs" />
     <Compile Include="Reflection\TypeAdapterConverter.cs" />
     <Compile Include="Utilities\CompoundComparer.cs" />

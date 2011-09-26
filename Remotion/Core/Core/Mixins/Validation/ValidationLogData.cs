@@ -51,10 +51,10 @@ namespace Remotion.Mixins.Validation
     {
       foreach (ValidationResult mergedResult in data.GetResults ())
       {
-        ValidationResult? activeResult = FindMatchingResult (mergedResult.ValidatedDefinitionID);
+        ValidationResult? activeResult = FindMatchingResult (mergedResult.ValidatedDefinitionDescription);
         if (activeResult == null)
         {
-          activeResult = new ValidationResult (mergedResult.ValidatedDefinitionID);
+          activeResult = new ValidationResult (mergedResult.ValidatedDefinitionDescription);
           Add (activeResult.Value);
         }
 
@@ -111,11 +111,11 @@ namespace Remotion.Mixins.Validation
       return _successes + _warnings + _failures + _exceptions;
     }
 
-    private ValidationResult? FindMatchingResult (ValidatedDefinitionID validatedDefinitionID)
+    private ValidationResult? FindMatchingResult (ValidatedDefinitionDescription validatedDefinitionDescription)
     {
       foreach (var result in GetResults ())
       {
-        if (result.ValidatedDefinitionID == validatedDefinitionID)
+        if (result.ValidatedDefinitionDescription == validatedDefinitionDescription)
           return result;
       }
       return null;

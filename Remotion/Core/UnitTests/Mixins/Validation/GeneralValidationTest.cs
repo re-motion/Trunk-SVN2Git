@@ -53,7 +53,7 @@ namespace Remotion.UnitTests.Mixins.Validation
       {
         Assert.That (results.MoveNext(), Is.True);
         ValidationResult firstResult = results.Current;
-        Assert.That (firstResult.ValidatedDefinitionID, Is.Not.Null);
+        Assert.That (firstResult.ValidatedDefinitionDescription, Is.Not.Null);
       }
     }
 
@@ -82,18 +82,23 @@ namespace Remotion.UnitTests.Mixins.Validation
     }
 
     [Test]
-    [Ignore ("TODO 4010: ValidatedDefinitionID doesn't uniquely identify members (because signature is missing from full name)")]
-    public void DefaultConfiguration_AllIsVisitedOnce ()
+    public void DefaultConfiguration_EverythingIsVisitedOnce ()
     {
-      var log = MixinConfiguration.ActiveConfiguration.Validate();
+      var activeConfiguration = MixinConfiguration.ActiveConfiguration;
+      
+      ValidationLogData log;
+      using (MixinConfiguration.BuildNew ().EnterScope())
+      {
+        log = activeConfiguration.Validate();
+      }
 
       var validationResults = log.GetResults();
-      var visitedDefinitions = new HashSet<ValidatedDefinitionID>();
+      var visitedDefinitions = new HashSet<ValidatedDefinitionDescription>();
       foreach (ValidationResult result in validationResults)
       {
-        var definitionID = result.ValidatedDefinitionID;
-        Assert.That (visitedDefinitions.Contains (definitionID), Is.False, definitionID.ToString());
-        visitedDefinitions.Add (definitionID);
+        var definitionDescription = result.ValidatedDefinitionDescription;
+        Assert.That (visitedDefinitions.Contains (definitionDescription), Is.False, definitionDescription.ToString());
+        visitedDefinitions.Add (definitionDescription);
       }
 
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
@@ -316,13 +321,13 @@ namespace Remotion.UnitTests.Mixins.Validation
 
       Assert.That (results.Count, Is.EqualTo (4));
 
-      Assert.That (results[0].ValidatedDefinitionID, Is.EqualTo (ValidatedDefinitionID.FromDefinition (bt2)));
+      Assert.That (results[0].ValidatedDefinitionDescription, Is.EqualTo (ValidatedDefinitionDescription.FromDefinition (bt2)));
       Assert.That (results[0].Successes.Count, Is.EqualTo (1));
       Assert.That (results[0].Failures.Count, Is.EqualTo (1));
       Assert.That (results[0].Warnings.Count, Is.EqualTo (1));
       Assert.That (results[0].Exceptions.Count, Is.EqualTo (1));
 
-      Assert.That (results[1].ValidatedDefinitionID, Is.EqualTo (ValidatedDefinitionID.FromDefinition (bt1)));
+      Assert.That (results[1].ValidatedDefinitionDescription, Is.EqualTo (ValidatedDefinitionDescription.FromDefinition (bt1)));
 
       Assert.That (results[1].Successes.Count, Is.EqualTo (2));
       Assert.That (results[1].Successes[0].Message, Is.EqualTo ("4"));
@@ -340,13 +345,13 @@ namespace Remotion.UnitTests.Mixins.Validation
       Assert.That (results[1].Exceptions[0].Exception, Is.EqualTo (exception));
       Assert.That (results[1].Exceptions[1].Exception, Is.EqualTo (exception));
 
-      Assert.That (results[2].ValidatedDefinitionID, Is.EqualTo (ValidatedDefinitionID.FromDefinition (bt3)));
+      Assert.That (results[2].ValidatedDefinitionDescription, Is.EqualTo (ValidatedDefinitionDescription.FromDefinition (bt3)));
       Assert.That (results[2].Successes.Count, Is.EqualTo (1));
       Assert.That (results[2].Failures.Count, Is.EqualTo (1));
       Assert.That (results[2].Warnings.Count, Is.EqualTo (1));
       Assert.That (results[2].Exceptions.Count, Is.EqualTo (1));
 
-      Assert.That (results[3].ValidatedDefinitionID, Is.EqualTo (ValidatedDefinitionID.FromDefinition (bt4)));
+      Assert.That (results[3].ValidatedDefinitionDescription, Is.EqualTo (ValidatedDefinitionDescription.FromDefinition (bt4)));
 
       Assert.That (results[3].Successes.Count, Is.EqualTo (1));
       Assert.That (results[3].Successes[0].Message, Is.EqualTo ("Success2"));
@@ -363,7 +368,7 @@ namespace Remotion.UnitTests.Mixins.Validation
 
     private void AssertVisitedEquivalent (IEnumerable<ValidationResult> validationResults, IVisitableDefinition expectedDefinition)
     {
-      var match = validationResults.Any (result => result.ValidatedDefinitionID == ValidatedDefinitionID.FromDefinition (expectedDefinition));
+      var match = validationResults.Any (result => result.ValidatedDefinitionDescription == ValidatedDefinitionDescription.FromDefinition (expectedDefinition));
       var message = string.Format ("Expected {0} '{1}' to be visited.", expectedDefinition.GetType().Name, expectedDefinition.FullName);
       Assert.That (match, message);
     }
