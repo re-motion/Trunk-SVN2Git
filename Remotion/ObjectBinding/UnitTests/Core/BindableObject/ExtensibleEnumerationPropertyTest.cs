@@ -106,7 +106,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       filterMock
           .Expect (mock => mock.IsEnabled (
               Arg<IEnumerationValueInfo>.Matches (
-                  i => i.Value == extensibleEnumInfo.Value
+                  i => i.Value.Equals (extensibleEnumInfo.Value)
                        && i.Identifier == extensibleEnumInfo.Value.ID
                        && i.DisplayName == null
                        && i.IsEnabled),
