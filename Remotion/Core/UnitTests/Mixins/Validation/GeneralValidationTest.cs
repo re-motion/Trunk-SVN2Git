@@ -33,25 +33,25 @@ namespace Remotion.UnitTests.Mixins.Validation
     [Test]
     public void ValidationVisitsSomething ()
     {
-      IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
+      var log = MixinConfiguration.ActiveConfiguration.Validate();
       Assert.That (log.ResultCount > 1, Is.True);
     }
 
     [Test]
     public void ValidationDump ()
     {
-      IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
-      ConsoleDumper.DumpValidationResults (log.GetResults ());
+      var log = MixinConfiguration.ActiveConfiguration.Validate();
+      ConsoleDumper.DumpValidationResults (log.GetResults());
     }
 
     [Test]
     public void ValidationResultDefinition ()
     {
-      IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate();
+      var log = MixinConfiguration.ActiveConfiguration.Validate();
 
       using (IEnumerator<ValidationResult> results = log.GetResults().GetEnumerator())
       {
-        Assert.That (results.MoveNext (), Is.True);
+        Assert.That (results.MoveNext(), Is.True);
         ValidationResult firstResult = results.Current;
         Assert.That (firstResult.ValidatedDefinitionID, Is.Not.Null);
       }
@@ -60,35 +60,35 @@ namespace Remotion.UnitTests.Mixins.Validation
     [Test]
     public void DefaultConfiguration_IsValid ()
     {
-      IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
+      var log = MixinConfiguration.ActiveConfiguration.Validate();
       AssertSuccess (log);
     }
 
     [Test]
     public void HasDefaultRules ()
     {
-      IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
-      Assert.That (log.GetNumberOfRulesExecuted () > 0, Is.True);
+      var log = MixinConfiguration.ActiveConfiguration.Validate();
+      Assert.That (log.GetNumberOfRulesExecuted() > 0, Is.True);
     }
 
     [Test]
     public void CollectsUnexpectedExceptions ()
     {
       TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DateTime));
-      DefaultValidationLog log = Validator.Validate (bc, new ThrowingRuleSet ());
-      Assert.That (log.GetNumberOfUnexpectedExceptions () > 0, Is.True);
-      var results = new List<ValidationResult> (log.GetResults ());
+      var log = Validator.Validate (bc, new ThrowingRuleSet());
+      Assert.That (log.GetNumberOfUnexpectedExceptions() > 0, Is.True);
+      var results = new List<ValidationResult> (log.GetResults());
       Assert.That (results[0].Exceptions[0].Exception is InvalidOperationException, Is.True);
     }
-    
+
     [Test]
     [Ignore ("TODO 4010: ValidatedDefinitionID doesn't uniquely identify members (because signature is missing from full name)")]
     public void DefaultConfiguration_AllIsVisitedOnce ()
     {
-      IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
+      var log = MixinConfiguration.ActiveConfiguration.Validate();
 
-      var validationResults = log.GetResults ();
-      var visitedDefinitions = new HashSet<ValidatedDefinitionID> ();
+      var validationResults = log.GetResults();
+      var visitedDefinitions = new HashSet<ValidatedDefinitionID>();
       foreach (ValidationResult result in validationResults)
       {
         var definitionID = result.ValidatedDefinitionID;
@@ -100,13 +100,17 @@ namespace Remotion.UnitTests.Mixins.Validation
       AssertVisitedEquivalent (validationResults, bt1);
       TargetClassDefinition bt3 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
       AssertVisitedEquivalent (validationResults, bt3);
-      TargetClassDefinition btWithAdditionalDependencies = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
+      TargetClassDefinition btWithAdditionalDependencies =
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
       AssertVisitedEquivalent (validationResults, btWithAdditionalDependencies);
-      TargetClassDefinition targetWithSuppressAttribute = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassSuppressingBT1Attribute));
+      TargetClassDefinition targetWithSuppressAttribute =
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassSuppressingBT1Attribute));
       AssertVisitedEquivalent (validationResults, targetWithSuppressAttribute);
-      TargetClassDefinition targetWithNonIntroducedAttribute = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithMixinNonIntroducingSimpleAttribute));
+      TargetClassDefinition targetWithNonIntroducedAttribute =
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithMixinNonIntroducingSimpleAttribute));
       AssertVisitedEquivalent (validationResults, targetWithSuppressAttribute);
-      TargetClassDefinition targetClassWinningOverMixinAddingBT1AttributeToMember = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember));
+      TargetClassDefinition targetClassWinningOverMixinAddingBT1AttributeToMember =
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember));
       AssertVisitedEquivalent (validationResults, targetClassWinningOverMixinAddingBT1AttributeToMember);
 
       MixinDefinition bt1m1 = bt1.Mixins[typeof (BT1Mixin1)];
@@ -136,7 +140,9 @@ namespace Remotion.UnitTests.Mixins.Validation
       AssertVisitedEquivalent (validationResults, m3);
       MethodDefinition m4 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")];
       AssertVisitedEquivalent (validationResults, m4);
-      MethodDefinition memberWinningOverMixinAddingAttribute = targetClassWinningOverMixinAddingBT1AttributeToMember.Methods[typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember).GetMethod ("VirtualMethod")];
+      MethodDefinition memberWinningOverMixinAddingAttribute =
+          targetClassWinningOverMixinAddingBT1AttributeToMember.Methods[
+              typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember).GetMethod ("VirtualMethod")];
       AssertVisitedEquivalent (validationResults, memberWinningOverMixinAddingAttribute);
 
       PropertyDefinition p1 = bt1.Properties[typeof (BaseType1).GetProperty ("VirtualProperty")];
@@ -209,13 +215,16 @@ namespace Remotion.UnitTests.Mixins.Validation
       NextCallDependencyDefinition bd1 = bt3m1.NextCallDependencies[typeof (IBaseType31)];
       AssertVisitedEquivalent (validationResults, bd1);
 
-      MixinDependencyDefinition md1 = btWithAdditionalDependencies.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinDependencies[typeof (MixinWithNoAdditionalDependency)];
+      MixinDependencyDefinition md1 =
+          btWithAdditionalDependencies.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinDependencies[typeof (MixinWithNoAdditionalDependency)];
       AssertVisitedEquivalent (validationResults, md1);
 
-      SuppressedAttributeIntroductionDefinition suppressedAttribute1 = mixinWithSuppressedAttribute.SuppressedAttributeIntroductions.GetFirstItem (typeof (BT1Attribute));
+      SuppressedAttributeIntroductionDefinition suppressedAttribute1 =
+          mixinWithSuppressedAttribute.SuppressedAttributeIntroductions.GetFirstItem (typeof (BT1Attribute));
       AssertVisitedEquivalent (validationResults, suppressedAttribute1);
 
-      NonAttributeIntroductionDefinition nonIntroducedAttribute1 = mixinWithNonIntroducedAttribute.NonAttributeIntroductions.GetFirstItem (typeof (SimpleAttribute));
+      NonAttributeIntroductionDefinition nonIntroducedAttribute1 =
+          mixinWithNonIntroducedAttribute.NonAttributeIntroductions.GetFirstItem (typeof (SimpleAttribute));
       AssertVisitedEquivalent (validationResults, nonIntroducedAttribute1);
       NonAttributeIntroductionDefinition nonIntroducedAttribute2 = memberWinningOverMixinAddingAttribute.Overrides[0].NonAttributeIntroductions[0];
       AssertVisitedEquivalent (validationResults, nonIntroducedAttribute2);
@@ -224,31 +233,36 @@ namespace Remotion.UnitTests.Mixins.Validation
     [Test]
     public void ValidationException ()
     {
-      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassOverridingSingleMixinMethod), typeof (AbstractMixinWithoutBase));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
+          typeof (ClassOverridingSingleMixinMethod), typeof (AbstractMixinWithoutBase));
 
       var log = new DefaultValidationLog();
       var visitor = new ValidatingVisitor (log);
       new DefaultMethodRules().Install (visitor);
       definition.Accept (visitor);
 
-      var exception = new ValidationException (log);
-      Assert.That (exception.Message, 
-          Is.EqualTo ("Some parts of the mixin configuration could not be validated." 
+      var validationLogData = log.GetData();
+      var exception = new ValidationException (validationLogData);
+      Assert.That (
+          exception.Message,
+          Is.EqualTo (
+              "Some parts of the mixin configuration could not be validated."
               + Environment.NewLine
               + "Remotion.UnitTests.Mixins.Validation.ValidationTestDomain.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins."
               + "Validation.ValidationTestDomain.AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.TestDomain.ClassOverridingSingleMixinMethod):"
               + Environment.NewLine
-              + "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
+              +
+              "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
               + Environment.NewLine));
 
-      Assert.That (exception.ValidationLog, Is.SameAs (log));
+      Assert.That (exception.ValidationLogData, Is.SameAs (validationLogData));
     }
 
     [Test]
     public void Merge ()
     {
-      IValidationLog sourceLog = new DefaultValidationLog ();
-      var exception = new Exception ();
+      IValidationLog sourceLog = new DefaultValidationLog();
+      var exception = new Exception();
 
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       TargetClassDefinition bt2 = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (typeof (BaseType2));
@@ -269,7 +283,7 @@ namespace Remotion.UnitTests.Mixins.Validation
       sourceLog.UnexpectedException (new DelegateValidationRule<TargetClassDefinition> (delegate { }, "Except2", "Except2"), exception);
       sourceLog.ValidationEndsFor (bt4);
 
-      IValidationLog resultLog = new DefaultValidationLog ();
+      IValidationLog resultLog = new DefaultValidationLog();
       resultLog.ValidationStartsFor (bt2);
       resultLog.Succeed (new DelegateValidationRule<TargetClassDefinition> (delegate { }, "0", "0"));
       resultLog.Warn (new DelegateValidationRule<TargetClassDefinition> (delegate { }, "1", "1"));
@@ -291,13 +305,14 @@ namespace Remotion.UnitTests.Mixins.Validation
       resultLog.UnexpectedException (new DelegateValidationRule<TargetClassDefinition> (delegate { }, "11", "11"), exception);
       resultLog.ValidationEndsFor (bt3);
 
-      resultLog.MergeIn (sourceLog);
-      Assert.That (resultLog.GetNumberOfSuccesses (), Is.EqualTo (5));
-      Assert.That (resultLog.GetNumberOfWarnings (), Is.EqualTo (5));
-      Assert.That (resultLog.GetNumberOfFailures (), Is.EqualTo (5));
-      Assert.That (resultLog.GetNumberOfUnexpectedExceptions (), Is.EqualTo (5));
+      var logData = resultLog.GetData();
+      logData.Add (sourceLog.GetData());
+      Assert.That (logData.GetNumberOfSuccesses(), Is.EqualTo (5));
+      Assert.That (logData.GetNumberOfWarnings(), Is.EqualTo (5));
+      Assert.That (logData.GetNumberOfFailures(), Is.EqualTo (5));
+      Assert.That (logData.GetNumberOfUnexpectedExceptions(), Is.EqualTo (5));
 
-      var results = new List<ValidationResult> (resultLog.GetResults ());
+      var results = new List<ValidationResult> (logData.GetResults());
 
       Assert.That (results.Count, Is.EqualTo (4));
 
@@ -349,7 +364,7 @@ namespace Remotion.UnitTests.Mixins.Validation
     private void AssertVisitedEquivalent (IEnumerable<ValidationResult> validationResults, IVisitableDefinition expectedDefinition)
     {
       var match = validationResults.Any (result => result.ValidatedDefinitionID == ValidatedDefinitionID.FromDefinition (expectedDefinition));
-      var message = string.Format ("Expected {0} '{1}' to be visited.", expectedDefinition.GetType ().Name, expectedDefinition.FullName);
+      var message = string.Format ("Expected {0} '{1}' to be visited.", expectedDefinition.GetType().Name, expectedDefinition.FullName);
       Assert.That (match, message);
     }
   }

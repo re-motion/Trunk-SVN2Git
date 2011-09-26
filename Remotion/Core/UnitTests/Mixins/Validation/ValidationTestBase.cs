@@ -22,17 +22,17 @@ namespace Remotion.UnitTests.Mixins.Validation
 {
   public class ValidationTestBase
   {
-    public bool HasFailure (string ruleName, IValidationLog log)
+    public bool HasFailure (string ruleName, ValidationLogData log)
     {
       return log.GetResults().SelectMany (result => result.Failures).Any (item => item.RuleName == ruleName);
     }
 
-    public bool HasWarning (string ruleName, IValidationLog log)
+    public bool HasWarning (string ruleName, ValidationLogData log)
     {
       return log.GetResults().SelectMany (result => result.Warnings).Any (item => item.RuleName == ruleName);
     }
 
-    public void AssertSuccess (IValidationLog log)
+    public void AssertSuccess (ValidationLogData log)
     {
       try
       {

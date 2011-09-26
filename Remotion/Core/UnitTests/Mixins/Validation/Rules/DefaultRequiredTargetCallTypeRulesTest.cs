@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfRequiredTargetCallClassNotAvailable ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassLookingLikeBaseType3), typeof (MixinWithClassTargetCallDependency));
-      DefaultValidationLog log = Validator.Validate (definition.RequiredTargetCallTypes[typeof (BaseType3)]);
+      var log = Validator.Validate (definition.RequiredTargetCallTypes[typeof (BaseType3)]);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredTargetCallTypeRules.FaceClassMustBeAssignableFromTargetType", log));
     }
@@ -38,7 +38,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfRequiredTargetCallTypeNotVisible ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithInvisibleTargetCallDependency));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredTargetCallTypeRules.RequiredTargetCallTypeMustBePublic", log));
     }

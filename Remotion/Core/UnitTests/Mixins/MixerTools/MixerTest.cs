@@ -172,7 +172,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
     [Test]
     public void Execute_ValidationError ()
     {
-      var validationException = new ValidationException ("x", MockRepository.GenerateMock<IValidationLog>());
+      var validationException = new ValidationException ("x", new ValidationLogData());
 
       var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
       concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Throw (validationException);

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 
@@ -23,8 +22,6 @@ namespace Remotion.Mixins.Validation
 {
   public interface IValidationLog
   {
-    // methods for writing the log
-    
     void ValidationStartsFor (IVisitableDefinition definition);
     void ValidationEndsFor (IVisitableDefinition definition);
 
@@ -35,18 +32,6 @@ namespace Remotion.Mixins.Validation
 
     IDataStore<object, object> ContextStore { get; }
 
-    // methods for reading the log
-
-    // TODO 4010: Move the results to a new ValidationResultCollection class
-    IEnumerable<ValidationResult> GetResults ();
-    int ResultCount { get; }
-
-    // TODO 4010: Move these methods to a new ValidationResultCollection class
-    int GetNumberOfFailures();
-    int GetNumberOfWarnings ();
-    int GetNumberOfSuccesses ();
-    int GetNumberOfUnexpectedExceptions ();
-    int GetNumberOfRulesExecuted ();
-    void MergeIn (IValidationLog log);
+    ValidationLogData GetData ();
   }
 }

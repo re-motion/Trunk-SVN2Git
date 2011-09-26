@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
       {
         TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
             typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersNextCall));
-        DefaultValidationLog log = Validator.Validate (definition);
+        var log = Validator.Validate (definition);
 
         Assert.IsTrue (
             HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredMethodRules.RequiredNextCallMethodMustBePublicOrProtected", log));
@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
       {
         TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
             typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersTargetCall));
-        DefaultValidationLog log = Validator.Validate (definition);
+        var log = Validator.Validate (definition);
 
         AssertSuccess (log);
       }

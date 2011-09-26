@@ -25,17 +25,17 @@ namespace Remotion.Mixins.Validation
 {
   public static class Validator
   {
-    public static DefaultValidationLog Validate (IVisitableDefinition startingPoint, params IRuleSet[] customRuleSets)
+    public static ValidationLogData Validate (IVisitableDefinition startingPoint, params IRuleSet[] customRuleSets)
     {
       ArgumentUtility.CheckNotNull ("startingPoint", startingPoint);
       ArgumentUtility.CheckNotNull ("customRuleSets", customRuleSets);
 
-      DefaultValidationLog log = new DefaultValidationLog ();
+      var log = new DefaultValidationLog ();
       Validate (startingPoint, log, customRuleSets);
-      return log;
+      return log.GetData();
     }
 
-    public static DefaultValidationLog Validate (IEnumerable<IVisitableDefinition> startingPoints, params IRuleSet[] customRuleSets)
+    public static ValidationLogData Validate (IEnumerable<IVisitableDefinition> startingPoints, params IRuleSet[] customRuleSets)
     {
       ArgumentUtility.CheckNotNull ("startingPoints", startingPoints);
       ArgumentUtility.CheckNotNull ("customRuleSets", customRuleSets);
@@ -43,7 +43,7 @@ namespace Remotion.Mixins.Validation
       DefaultValidationLog log = new DefaultValidationLog ();
       foreach (IVisitableDefinition startingPoint in startingPoints)
         Validate (startingPoint, log, customRuleSets);
-      return log;
+      return log.GetData();
     }
 
     public static void Validate (IVisitableDefinition startingPoint, IValidationLog log, params IRuleSet[] customRuleSets)

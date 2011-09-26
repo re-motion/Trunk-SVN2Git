@@ -49,9 +49,9 @@ namespace Remotion.Mixins.Definitions
 
     private static void Validate (TargetClassDefinition definition)
     {
-      DefaultValidationLog log = Validator.Validate (definition);
-      if (log.GetNumberOfFailures () > 0 || log.GetNumberOfUnexpectedExceptions () > 0)
-        throw new ValidationException (log);
+      var logData = Validator.Validate (definition);
+      if (logData.GetNumberOfFailures () > 0 || logData.GetNumberOfUnexpectedExceptions () > 0)
+        throw new ValidationException (logData);
     }
   }
 }

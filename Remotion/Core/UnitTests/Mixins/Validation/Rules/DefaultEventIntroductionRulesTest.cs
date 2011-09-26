@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")];
 
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
       AssertSuccess (log);
     }
 
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultEventIntroductionRules.PublicEventNameMustBeUniqueInTargetClass", log));
     }
 
@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultEventIntroductionRules.PublicEventNameMustBeUniqueInTargetClass", log));
     }
 
@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")];
 
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
       AssertSuccess (log);
     }
 
@@ -87,7 +87,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
       AssertSuccess (log);
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
               typeof (MixinIntroducingMembersWithPrivateVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
       AssertSuccess (log);
     }
 
@@ -116,7 +116,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
               typeof (OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultEventIntroductionRules.PublicEventNameMustBeUniqueInOtherMixins", log));
     }
 
@@ -130,7 +130,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultEventIntroductionRules.PublicEventNameMustBeUniqueInOtherMixins", log));
     }
   }

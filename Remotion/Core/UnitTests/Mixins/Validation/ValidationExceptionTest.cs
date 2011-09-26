@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 
@@ -27,7 +26,6 @@ namespace Remotion.UnitTests.Mixins.Validation
   public class ValidationExceptionTest
   {
     [Test]
-    [Ignore ("TODO 4010")]
     public void Serialization ()
     {
       var log = new DefaultValidationLog();
@@ -38,11 +36,11 @@ namespace Remotion.UnitTests.Mixins.Validation
       log.Succeed (rule);
       log.ValidationEndsFor (definition);
 
-      var exception = new ValidationException ("Message", log);
+      var exception = new ValidationException ("Message", log.GetData());
 
       var deserializedException = Serializer.SerializeAndDeserialize (exception);
       Assert.That (deserializedException.Message, Is.EqualTo (exception.Message));
-      Assert.That (deserializedException.ValidationLog.GetNumberOfSuccesses(), Is.EqualTo (exception.ValidationLog.GetNumberOfSuccesses()));
+      Assert.That (deserializedException.ValidationLogData.GetNumberOfSuccesses(), Is.EqualTo (exception.ValidationLogData.GetNumberOfSuccesses()));
     }
 
     private void DummyRule (DelegateValidationRule<TargetClassDefinition>.Args args)

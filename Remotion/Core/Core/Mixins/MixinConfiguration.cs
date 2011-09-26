@@ -211,7 +211,7 @@ namespace Remotion.Mixins
     /// <summary>
     /// Validates the whole configuration.
     /// </summary>
-    /// <returns>An <see cref="IValidationLog"/>, which contains information about whether the configuration reresented by this context is valid.</returns>
+    /// <returns>An <see cref="ValidationLogData"/> object, which contains information about whether the configuration reresented by this context is valid.</returns>
     /// <remarks>This method retrieves definition items for all the <see cref="ClassContexts"/> known by this configuration and uses the
     /// <see cref="Validator"/> class to validate them. The validation results can be inspected, passed to a <see cref="ValidationException"/>, or
     /// be dumped using the <see cref="ConsoleDumper"/>.</remarks>
@@ -219,7 +219,7 @@ namespace Remotion.Mixins
     /// which it cannot make a closed generic type. Because closed types are needed for validation, this <see cref="MixinConfiguration"/>
     /// cannot be validated as a whole. Even in this case, the configuration might still be correct, but validation is deferred to
     /// <see cref="TargetClassDefinitionFactory.CreateTargetClassDefinition(ClassContext)"/>.</exception>
-    public IValidationLog Validate()
+    public ValidationLogData Validate()
     {
       var builder = new TargetClassDefinitionBuilder ();
 

@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfEmptyNextCallDependencyNotFulfilled ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithUnsatisfiedEmptyNextCallDependency));
-      DefaultValidationLog log = Validator.Validate (
+      var log = Validator.Validate (
           definition.Mixins[typeof (MixinWithUnsatisfiedEmptyNextCallDependency)].NextCallDependencies[typeof (IEmptyInterface)]);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultNextCallDependencyRules.DependencyMustBeSatisfied", log));
@@ -40,7 +40,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassFulfillingAllMemberRequirementsDuck),
           typeof (MixinRequiringAllMembersNextCall));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       AssertSuccess (log);
     }
@@ -49,7 +49,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfAggregateNextCallDependencyIsFullyImplemented ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Base));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       AssertSuccess (log);
     }
@@ -58,7 +58,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfEmptyAggregateNextCallDependencyIsNotAvailable ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (NullTarget), typeof (MixinWithUnsatisfiedEmptyAggregateNextCallDependency));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultNextCallDependencyRules.DependencyMustBeSatisfied", log));
     }

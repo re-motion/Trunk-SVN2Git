@@ -14,23 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
-using Remotion.Mixins.Definitions;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Validation;
-using Remotion.UnitTests.Mixins.Validation.ValidationTestDomain;
 
-namespace Remotion.UnitTests.Mixins.Validation.Rules
+namespace Remotion.UnitTests.Mixins.Validation
 {
   [TestFixture]
-  public class DefaultPropertyRulesTest : ValidationTestBase
+  public class ValidationLogDataTest
   {
     [Test]
-    public void WarnsIfPropertyOverrideAddsMethods ()
+    public void Serialization ()
     {
-      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseWithGetterOnly), typeof (MixinOverridingSetterOnly));
-      var log = Validator.Validate (definition.Properties[typeof (BaseWithGetterOnly).GetProperty ("Property")].Overrides[0]);
+      var data = new ValidationLogData();
 
-      Assert.IsTrue (HasWarning ("Remotion.Mixins.Validation.Rules.DefaultPropertyRules.NewMemberAddedByOverride", log));
+      var result = new ValidationResult(new ValidatedDefinitionID ("a", "b", null));
+      result.Successes.Add (new ValidationResultItem("x", "y"));
+      data.Add (result);
+
+      var deserializedData = Serializer.SerializeAndDeserialize (data);
+
+      Assert.That (deserializedData.GetNumberOfSuccesses(), Is.EqualTo (1));
     }
   }
 }

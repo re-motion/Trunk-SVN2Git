@@ -28,12 +28,12 @@ namespace Remotion.Mixins.Validation
   [Serializable]
   public class ValidationException : Exception
   {
-    private static string BuildExceptionString (IValidationLog log)
+    private static string BuildExceptionString (ValidationLogData data)
     {
-      ArgumentUtility.CheckNotNull ("log", log);
+      ArgumentUtility.CheckNotNull ("data", data);
 
-      StringBuilder sb = new StringBuilder ("Some parts of the mixin configuration could not be validated.");
-      foreach (ValidationResult item in log.GetResults ())
+      var sb = new StringBuilder ("Some parts of the mixin configuration could not be validated.");
+      foreach (ValidationResult item in data.GetResults ())
       {
         if (item.TotalRulesExecuted != item.Successes.Count)
         {
@@ -55,26 +55,26 @@ namespace Remotion.Mixins.Validation
       return sb.ToString ();
     }
 
-    private readonly IValidationLog _validationLog;
+    private readonly ValidationLogData _validationLogData;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationException"/> class.
     /// </summary>
     /// <param name="message">The exception message.</param>
-    /// <param name="log">The validation log.</param>
-    public ValidationException (string message, IValidationLog log)
+    /// <param name="validationLogData">The validation log data.</param>
+    public ValidationException (string message, ValidationLogData validationLogData)
         : base (message)
     {
-      _validationLog = log;
+      _validationLogData = validationLogData;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationException"/> class and creates a descriptive message from the validation log.
     /// </summary>
-    /// <param name="log">The validation log log.</param>
+    /// <param name="validationLogData">The validation log data.</param>
     /// <exception cref="ArgumentNullException">The log is empty.</exception>
-    public ValidationException (IValidationLog log)
-      : this (BuildExceptionString (log), log)
+    public ValidationException (ValidationLogData validationLogData)
+      : this (BuildExceptionString (validationLogData), validationLogData)
     {
     }
 
@@ -87,19 +87,18 @@ namespace Remotion.Mixins.Validation
     protected ValidationException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
-      _validationLog = (IValidationLog) info.GetValue ("ValidationLog", typeof (IValidationLog));
+      _validationLogData = (ValidationLogData) info.GetValue ("ValidationLogData", typeof (ValidationLogData));
     }
 
-  // TODO 4010: Store validation results instead of log
-    public IValidationLog ValidationLog
+    public ValidationLogData ValidationLogData
     {
-      get { return _validationLog; }
+      get { return _validationLogData; }
     }
 
     public override void GetObjectData (SerializationInfo info, StreamingContext context)
     {
       base.GetObjectData (info, context);
-      info.AddValue ("ValidationLog", _validationLog);
+      info.AddValue ("ValidationLogData", _validationLogData);
     }
   }
 }

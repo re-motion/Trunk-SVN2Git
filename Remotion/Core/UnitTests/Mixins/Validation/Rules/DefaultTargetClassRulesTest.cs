@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfSealedTargetClass ()
     {
       TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DateTime));
-      DefaultValidationLog log = Validator.Validate (bc);
+      var log = Validator.Validate (bc);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustNotBeSealed", log));
       Assert.AreEqual (0, log.GetNumberOfWarnings ());
     }
@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfAbstractTargetClass ()
     {
       TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (MixinWithAbstractMembers));
-      DefaultValidationLog log = Validator.Validate (bc);
+      var log = Validator.Validate (bc);
       AssertSuccess (log);
     }
 
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfTargetClassDefinitionIsInterface ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (IBaseType2));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustNotBeAnInterface", log));
     }
@@ -57,39 +57,39 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassWithPrivateCtor),
           typeof (NullMixin));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustHavePublicOrProtectedCtor", log));
     }
 
-		[Test]
-		public void FailsIfTargetClassIsNotPublic ()
-		{
-			TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (InternalClass),
-					typeof (NullMixin));
-			DefaultValidationLog log = Validator.Validate (definition);
+    [Test]
+    public void FailsIfTargetClassIsNotPublic ()
+    {
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (InternalClass),
+          typeof (NullMixin));
+      var log = Validator.Validate (definition);
 
-			Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustBePublic", log));
-		}
+      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustBePublic", log));
+    }
 
-		[Test]
-		public void FailsIfNestedTargetClassIsNotPublic ()
-		{
-			TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (PublicNester.InternalNested),
-					typeof (NullMixin));
-			DefaultValidationLog log = Validator.Validate (definition);
+    [Test]
+    public void FailsIfNestedTargetClassIsNotPublic ()
+    {
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (PublicNester.InternalNested),
+          typeof (NullMixin));
+      var log = Validator.Validate (definition);
 
-			Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustBePublic", log));
-		}
+      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustBePublic", log));
+    }
 
-		[Test]
-		public void SucceedsIfNestedTargetClassIsPublic ()
-		{
-			TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (PublicNester.PublicNested),
-					typeof (NullMixin));
-			DefaultValidationLog log = Validator.Validate (definition);
+    [Test]
+    public void SucceedsIfNestedTargetClassIsPublic ()
+    {
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (PublicNester.PublicNested),
+          typeof (NullMixin));
+      var log = Validator.Validate (definition);
 
-			AssertSuccess (log);
-		}
+      AssertSuccess (log);
+    }
   }
 }

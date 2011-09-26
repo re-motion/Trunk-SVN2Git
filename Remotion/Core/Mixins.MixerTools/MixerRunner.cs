@@ -117,7 +117,7 @@ namespace Remotion.Mixins.MixerTools
 
     private void Mixer_ValidationErrorOccurred (object sender, ValidationErrorEventArgs e)
     {
-      ConsoleDumper.DumpValidationResults (e.ValidationException.ValidationLog.GetResults ());
+      ConsoleDumper.DumpValidationResults (e.ValidationException.ValidationLogData.GetResults ());
     }
 
     void Mixer_ErrorOccurred (object sender, ErrorEventArgs e)

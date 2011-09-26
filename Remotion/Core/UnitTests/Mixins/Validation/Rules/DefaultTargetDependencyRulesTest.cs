@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfEmptyTargetCallDependencyNotFulfilled ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithUnsatisfiedEmptyTargetCallDependency));
-      DefaultValidationLog log = Validator.Validate (
+      var log = Validator.Validate (
           definition.Mixins[typeof (MixinWithUnsatisfiedEmptyTargetCallDependency)].TargetCallDependencies[typeof (IEmptyInterface)]);
 
       AssertSuccess (log);
@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfCircularTargetCallDependency ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithCircularTargetCallDependency1), typeof (MixinWithCircularTargetCallDependency2));
-      DefaultValidationLog log = Validator.Validate (
+      var log = Validator.Validate (
           definition.Mixins[typeof (MixinWithCircularTargetCallDependency1)]);
 
       AssertSuccess (log);
@@ -50,7 +50,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassFulfillingAllMemberRequirementsDuck),
           typeof (MixinRequiringAllMembersTargetCall));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       AssertSuccess (log);
     }
@@ -59,7 +59,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfAggregateTargetCallDependencyIsFullyImplemented ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (Bt3Mixin7TargetCall));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       AssertSuccess (log);
     }
@@ -69,7 +69,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfEmptyAggregateTargetCallDependencyIsNotAvailable ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (NullTarget), typeof (MixinWithUnsatisfiedEmptyAggregateTargetCallDependency));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       AssertSuccess (log);
     }

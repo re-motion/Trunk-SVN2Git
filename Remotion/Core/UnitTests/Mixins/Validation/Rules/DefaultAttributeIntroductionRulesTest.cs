@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1),
           typeof (MixinAddingBT1Attribute));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       AssertSuccess (log);
     }
@@ -40,7 +40,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType2), typeof (MixinAddingBT1Attribute),
           typeof (MixinAddingBT1Attribute2));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure (
           "Remotion.Mixins.Validation.Rules.DefaultAttributeIntroductionRules.AllowMultipleRequiredIfAttributeIntroducedMultipleTimes", log));
@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassWithVirtualMethod),
           typeof (MixinAddingBT1AttributeToMember), typeof (MixinAddingBT1AttributeToMember2));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       Assert.IsTrue (
           HasFailure (
@@ -65,7 +65,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       TargetClassDefinition definition =
           DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseTypeWithAllowMultiple), typeof (MixinAddingAllowMultipleToClassAndMember));
-      DefaultValidationLog log = Validator.Validate (definition);
+      var log = Validator.Validate (definition);
 
       AssertSuccess (log);
     }

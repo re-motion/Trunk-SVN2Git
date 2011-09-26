@@ -312,6 +312,7 @@
     <Compile Include="Mixins\Validation\ValidatedDefinitionIDTest.cs" />
     <Compile Include="Mixins\Validation\ValidationExceptionResultItemTest.cs" />
     <Compile Include="Mixins\Validation\ValidationExceptionTest.cs" />
+    <Compile Include="Mixins\Validation\ValidationLogDataTest.cs" />
     <Compile Include="Mixins\Validation\ValidationResultItemTest.cs" />
     <Compile Include="Mixins\Validation\ValidationResultTest.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ArgumentChecks_MethodWrapperEmitterTest.cs" />

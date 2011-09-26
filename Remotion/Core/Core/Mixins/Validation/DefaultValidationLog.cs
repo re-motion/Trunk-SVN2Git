@@ -22,53 +22,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation
 {
-  // TODO 4010: Remove attribute
-  [Serializable]
   public class DefaultValidationLog : IValidationLog
   {
     private readonly Stack<ValidationResult> _currentData = new Stack<ValidationResult> ();
-    private readonly List<ValidationResult> _results = new List<ValidationResult> ();
-
-    private int failures = 0;
-    private int warnings = 0;
-    private int exceptions = 0;
-    private int successes = 0;
     private readonly SimpleDataStore<object, object> _contextStore = new SimpleDataStore<object, object> ();
 
-    public IEnumerable<ValidationResult> GetResults()
-    {
-      return _results;
-    }
-
-    public int ResultCount
-    {
-      get { return _results.Count; }
-    }
-
-    public int GetNumberOfFailures()
-    {
-      return failures;
-    }
-
-    public int GetNumberOfWarnings ()
-    {
-      return warnings;
-    }
-
-    public int GetNumberOfSuccesses ()
-    {
-      return successes;
-    }
-
-    public int GetNumberOfUnexpectedExceptions ()
-    {
-      return exceptions;
-    }
-
-    public int GetNumberOfRulesExecuted ()
-    {
-      return successes + warnings + failures + exceptions;
-    }
+    private readonly ValidationLogData _data = new ValidationLogData();
 
     public void ValidationStartsFor (IVisitableDefinition definition)
     {
@@ -100,7 +59,7 @@ namespace Remotion.Mixins.Validation
         }
 
         _currentData.Pop();
-        _results.Add (currentResult);
+        _data.Add (currentResult);
       }
     }
 
@@ -117,27 +76,23 @@ namespace Remotion.Mixins.Validation
     {
       ArgumentUtility.CheckNotNull ("rule", rule);
       GetCurrentResult().Successes.Add (new ValidationResultItem(rule.RuleName, rule.Message));
-      ++successes;
     }
 
     public void Warn (IValidationRule rule)
     {
       ArgumentUtility.CheckNotNull ("rule", rule);
       GetCurrentResult ().Warnings.Add (new ValidationResultItem(rule.RuleName, rule.Message));
-      ++warnings;
     }
 
     public void Fail (IValidationRule rule)
     {
       ArgumentUtility.CheckNotNull ("rule", rule);
       GetCurrentResult ().Failures.Add (new ValidationResultItem (rule.RuleName, rule.Message));
-      ++failures;
     }
 
     public void UnexpectedException (IValidationRule rule, Exception ex)
     {
       GetCurrentResult ().Exceptions.Add (new ValidationExceptionResultItem (rule.RuleName, ex));
-      ++exceptions;
     }
 
     public IDataStore<object, object> ContextStore
@@ -145,48 +100,14 @@ namespace Remotion.Mixins.Validation
       get { return _contextStore; }
     }
 
-    public void MergeIn (IValidationLog log)
+    public ValidationLogData GetData ()
     {
-      foreach (ValidationResult mergedResult in log.GetResults ())
-      {
-        ValidationResult? activeResult = FindMatchingResult (mergedResult.ValidatedDefinitionID);
-        if (activeResult == null)
-        {
-          activeResult = new ValidationResult (mergedResult.ValidatedDefinitionID);
-          _results.Add (activeResult.Value);
-        }
-
-        foreach (ValidationResultItem resultItem in mergedResult.Successes)
-        {
-          activeResult.Value.Successes.Add (resultItem);
-          ++successes;
-        }
-        foreach (ValidationResultItem resultItem in mergedResult.Failures)
-        {
-          activeResult.Value.Failures.Add (resultItem);
-          ++failures;
-        }
-        foreach (ValidationResultItem resultItem in mergedResult.Warnings)
-        {
-          activeResult.Value.Warnings.Add (resultItem);
-          ++warnings;
-        }
-        foreach (ValidationExceptionResultItem resultItem in mergedResult.Exceptions)
-        {
-          activeResult.Value.Exceptions.Add (resultItem);
-          ++exceptions;
-        }
-      }
+      return _data;
     }
 
-    private ValidationResult? FindMatchingResult (ValidatedDefinitionID validatedDefinitionID)
+    public void MergeIn (IValidationLog log)
     {
-      foreach (var result in GetResults ())
-      {
-        if (result.ValidatedDefinitionID == validatedDefinitionID)
-          return result;
-      }
-      return null;
+      _data.Add (log.GetData());
     }
   }
 }
