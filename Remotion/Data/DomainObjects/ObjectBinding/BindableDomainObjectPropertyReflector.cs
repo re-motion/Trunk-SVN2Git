@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
@@ -31,31 +30,26 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   /// </summary>
   public class BindableDomainObjectPropertyReflector : PropertyReflector
   {
-    public static BindableDomainObjectPropertyReflector Create (
-        Type concreteType,
-        IPropertyInformation propertyInfo,
+    public static BindableDomainObjectPropertyReflector Create (IPropertyInformation propertyInfo,
         BindableObjectProvider businessObjectProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
         IDefaultValueStrategy defaultValueStrategy)
     {
       return ObjectFactory.Create<BindableDomainObjectPropertyReflector> (
           true,
-          ParamList.Create (concreteType, propertyInfo, businessObjectProvider, domainModelConstraintProvider, defaultValueStrategy));
+          ParamList.Create (propertyInfo, businessObjectProvider, domainModelConstraintProvider, defaultValueStrategy));
     }
 
     private readonly IPropertyInformation _propertyInfo;
     private readonly IDefaultValueStrategy _defaultValueStrategy;
     private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
 
-    protected BindableDomainObjectPropertyReflector (
-        Type concreteType,
-        IPropertyInformation propertyInfo,
+    protected BindableDomainObjectPropertyReflector (IPropertyInformation propertyInfo,
         BindableObjectProvider businessObjectProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
         IDefaultValueStrategy defaultValueStrategy)
         : base (propertyInfo, businessObjectProvider)
     {
-      ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
       ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);

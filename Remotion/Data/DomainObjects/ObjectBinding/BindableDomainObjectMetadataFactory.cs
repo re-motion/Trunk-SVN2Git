@@ -60,8 +60,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
-      return BindableDomainObjectPropertyReflector.Create (
-          concreteType, propertyInfo, businessObjectProvider, new DomainModelConstraintProvider(), BindableDomainObjectDefaultValueStrategy.Instance);
+      return BindableDomainObjectPropertyReflector.Create (propertyInfo, businessObjectProvider, new DomainModelConstraintProvider(), BindableDomainObjectDefaultValueStrategy.Instance);
     }
   }
 }
