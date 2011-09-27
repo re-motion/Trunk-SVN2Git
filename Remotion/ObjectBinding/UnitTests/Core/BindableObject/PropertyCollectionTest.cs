@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               null,
               false,
               false,
-              BindableObjectDefaultValueStrategy.Instance));
+              new BindableObjectDefaultValueStrategy ()));
     }
   }
 }

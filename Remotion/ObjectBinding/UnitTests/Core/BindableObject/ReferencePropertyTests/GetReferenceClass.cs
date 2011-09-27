@@ -57,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
               null,
               false,
               false,
-              BindableObjectDefaultValueStrategy.Instance));
+              new BindableObjectDefaultValueStrategy ()));
 
       Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithIdentity))));
       Assert.That (
@@ -81,7 +81,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
               null,
               false,
               false,
-              BindableObjectDefaultValueStrategy.Instance));
+              new BindableObjectDefaultValueStrategy ()));
 
       Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase))));
       Assert.That (

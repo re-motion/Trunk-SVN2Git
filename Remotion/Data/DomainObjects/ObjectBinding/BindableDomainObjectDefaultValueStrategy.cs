@@ -28,9 +28,12 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   /// </summary>
   public class BindableDomainObjectDefaultValueStrategy : IDefaultValueStrategy
   {
-    public static readonly IDefaultValueStrategy Instance = new BindableDomainObjectDefaultValueStrategy ();
+    private readonly IDefaultValueStrategy _innerDefaultValueStrategy;
 
-    private BindableDomainObjectDefaultValueStrategy () { }
+    public BindableDomainObjectDefaultValueStrategy ()
+    {
+      _innerDefaultValueStrategy = new BindableObjectDefaultValueStrategy();
+    }
 
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)
     {
@@ -44,7 +47,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       if (propertyDefinition != null)
         return !domainObject.Properties[propertyDefinition.PropertyName].HasBeenTouched;
 
-      return BindableObjectDefaultValueStrategy.Instance.IsDefaultValue (obj, property);
+      return _innerDefaultValueStrategy.IsDefaultValue (obj, property);
     }
   }
 }

@@ -53,26 +53,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
 
       _nonSecurableObject = (IBusinessObject) ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
+      IDefaultValueStrategy instance = new BindableObjectDefaultValueStrategy ();
       _securableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (SecurableClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, BindableObjectDefaultValueStrategy.Instance));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance));
 
       _securableExplicitInterfaceProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
               "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, BindableObjectDefaultValueStrategy.Instance));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance));
       
       _nonSecurablePropertyReadOnly = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "ReadOnlyScalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true, BindableObjectDefaultValueStrategy.Instance));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true, instance));
       
       _nonSecurableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, BindableObjectDefaultValueStrategy.Instance));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, instance));
     }
 
     public override void TearDown ()

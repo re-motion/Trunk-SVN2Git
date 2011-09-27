@@ -178,7 +178,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     protected virtual IDefaultValueStrategy GetDefaultValueStrategy ()
     {
-      return BindableObjectDefaultValueStrategy.Instance;
+      return new BindableObjectDefaultValueStrategy ();
     }
 
     private PropertyBase.Parameters CreateParameters (Type underlyingType)

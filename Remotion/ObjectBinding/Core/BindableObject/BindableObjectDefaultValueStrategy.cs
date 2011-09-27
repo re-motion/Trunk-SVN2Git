@@ -26,9 +26,9 @@ namespace Remotion.ObjectBinding.BindableObject
   /// </summary>
   public class BindableObjectDefaultValueStrategy : IDefaultValueStrategy
   {
-    public static readonly IDefaultValueStrategy Instance = new BindableObjectDefaultValueStrategy ();
-
-    private BindableObjectDefaultValueStrategy () { }
+    public BindableObjectDefaultValueStrategy ()
+    {
+    }
 
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)
     {
