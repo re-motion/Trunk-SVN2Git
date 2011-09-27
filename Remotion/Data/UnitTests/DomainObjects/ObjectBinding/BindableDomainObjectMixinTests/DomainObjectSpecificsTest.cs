@@ -131,5 +131,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       Assert.AreEqual (4, ((IBusinessObjectStringProperty)
           _businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength4")).MaxLength);
     }
+
+    [Test]
+    public void NullabilityResolvedFromAboveInheritanceRoot ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (BindableDomainObjectAboveInheritanceRoot));
+      var businessObjectClass = provider.GetBindableObjectClass (typeof (BindableDomainObjectAboveInheritanceRoot));
+
+      var notNullableBooleanProperty = businessObjectClass.GetPropertyDefinition ("NotNullableBooleanProperty");
+      Assert.That (notNullableBooleanProperty.IsRequired, Is.True);
+
+      var notNullableStringProperty = businessObjectClass.GetPropertyDefinition ("NotNullableStringPropertyWithLengthConstraint");
+      Assert.That (notNullableStringProperty.IsRequired, Is.True);
+
+      var notNullableRelationProperty = businessObjectClass.GetPropertyDefinition ("MandatoryUnidirectionalRelation");
+      Assert.That (notNullableRelationProperty.IsRequired, Is.True);
+
+      var nullableBooleanProperty = businessObjectClass.GetPropertyDefinition ("NullableBooleanProperty");
+      Assert.That (nullableBooleanProperty.IsRequired, Is.False);
+
+      var nullableStringProperty = businessObjectClass.GetPropertyDefinition ("NullableStringPropertyWithoutLengthConstraint");
+      Assert.That (nullableStringProperty.IsRequired, Is.False);
+
+      var nullableRelationProperty = businessObjectClass.GetPropertyDefinition ("NotMandatoryUnidirectionalRelation");
+      Assert.That (nullableRelationProperty.IsRequired, Is.False);
+    }
+
+    [Test]
+    public void LengthConstraintResolvedFromAboveInheritanceRoot ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (BindableDomainObjectAboveInheritanceRoot));
+      var businessObjectClass = provider.GetBindableObjectClass (typeof (BindableDomainObjectAboveInheritanceRoot));
+
+      var stringPropertyWithLengthConstraint =
+          (IBusinessObjectStringProperty) businessObjectClass.GetPropertyDefinition ("NotNullableStringPropertyWithLengthConstraint");
+      Assert.That (stringPropertyWithLengthConstraint.MaxLength, Is.EqualTo (100));
+
+      var stringPropertyWithoutLengthConstraint =
+          (IBusinessObjectStringProperty) businessObjectClass.GetPropertyDefinition ("NullableStringPropertyWithoutLengthConstraint");
+      Assert.That (stringPropertyWithoutLengthConstraint.MaxLength, Is.Null);
+    }
   }
 }

@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Design;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using PropertyReflector = Remotion.ObjectBinding.BindableObject.PropertyReflector;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
@@ -31,61 +31,56 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   /// </summary>
   public class BindableDomainObjectPropertyReflector : PropertyReflector
   {
-    public static BindableDomainObjectPropertyReflector Create (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    public static BindableDomainObjectPropertyReflector Create (
+        Type concreteType,
+        IPropertyInformation propertyInfo,
+        BindableObjectProvider businessObjectProvider,
+        IDomainModelConstraintProvider domainModelConstraintProvider,
+        IDefaultValueStrategy defaultValueStrategy)
     {
-      return ObjectFactory.Create <BindableDomainObjectPropertyReflector> (true, ParamList.Create (concreteType, propertyInfo, businessObjectProvider));
+      return ObjectFactory.Create<BindableDomainObjectPropertyReflector> (
+          true,
+          ParamList.Create (concreteType, propertyInfo, businessObjectProvider, domainModelConstraintProvider, defaultValueStrategy));
     }
 
-    private PropertyDefinition _propertyDefinition;
-    private IRelationEndPointDefinition _relationEndPointDefinition;
+    private readonly IPropertyInformation _propertyInfo;
+    private readonly IDefaultValueStrategy _defaultValueStrategy;
+    private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
 
-    protected BindableDomainObjectPropertyReflector (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    protected BindableDomainObjectPropertyReflector (
+        Type concreteType,
+        IPropertyInformation propertyInfo,
+        BindableObjectProvider businessObjectProvider,
+        IDomainModelConstraintProvider domainModelConstraintProvider,
+        IDefaultValueStrategy defaultValueStrategy)
         : base (propertyInfo, businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
+      ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
+      ArgumentUtility.CheckNotNull ("defaultValueStrategy", defaultValueStrategy);
 
-      InitializeMappingDefinitions (concreteType, propertyInfo);
-    }
-
-    private void InitializeMappingDefinitions (Type concreteType, IPropertyInformation propertyInfo)
-    {
-      Type targetType = Mixins.MixinTypeUtility.GetUnderlyingTargetType (concreteType);
-
-      if (DesignerUtility.IsDesignMode)
-      {
-        DomainObjectsDesignModeHelper domainObjectsDesignModeHelper = new DomainObjectsDesignModeHelper (DesignerUtility.DesignModeHelper);
-        domainObjectsDesignModeHelper.InitializeConfiguration();
-      }
-
-      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (targetType);
-      string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
-      _propertyDefinition = classDefinition.GetPropertyDefinition (propertyName);
-      _relationEndPointDefinition = classDefinition.GetRelationEndPointDefinition (propertyName);
+      _propertyInfo = propertyInfo;
+      _domainModelConstraintProvider = domainModelConstraintProvider;
+      _defaultValueStrategy = defaultValueStrategy;
     }
 
     protected override bool GetIsRequired ()
     {
-      if (_relationEndPointDefinition != null)
-        return _relationEndPointDefinition.IsMandatory;
-      else if (_propertyDefinition != null && !_propertyDefinition.PropertyType.IsValueType)
-        return !_propertyDefinition.IsNullable;
-      else
-        return base.GetIsRequired();
+      if (base.GetIsRequired())
+        return true;
+      return !_domainModelConstraintProvider.IsNullable (_propertyInfo);
     }
 
     protected override int? GetMaxLength ()
     {
-      if (_propertyDefinition != null)
-        return _propertyDefinition.MaxLength;
-      else
-        return base.GetMaxLength();
+      return base.GetMaxLength() ?? _domainModelConstraintProvider.GetMaxLength (_propertyInfo);
     }
 
     protected override IDefaultValueStrategy GetDefaultValueStrategy ()
     {
-      return BindableDomainObjectDefaultValueStrategy.Instance;
+      return _defaultValueStrategy;
     }
   }
 }

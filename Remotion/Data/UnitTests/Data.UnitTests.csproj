@@ -394,6 +394,8 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\LookupCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\SaveCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Factories\SerializedObjectIDStoragePropertyDefinitionObjectMother.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectOnInheritanceRoot.cs" />
     <Compile Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithoutHierarchy.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />

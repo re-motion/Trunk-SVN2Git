@@ -15,11 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.ObjectBinding.BindableObject.Properties;
+using ClassReflector = Remotion.ObjectBinding.BindableObject.ClassReflector;
+using PropertyReflector = Remotion.ObjectBinding.BindableObject.PropertyReflector;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
@@ -51,13 +53,15 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       return new BindableDomainObjectPropertyFinder (concreteType);
     }
 
-    public virtual PropertyReflector CreatePropertyReflector (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    public virtual PropertyReflector CreatePropertyReflector (
+        Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
-      return BindableDomainObjectPropertyReflector.Create (concreteType, propertyInfo, businessObjectProvider);
+      return BindableDomainObjectPropertyReflector.Create (
+          concreteType, propertyInfo, businessObjectProvider, new DomainModelConstraintProvider(), BindableDomainObjectDefaultValueStrategy.Instance);
     }
   }
 }

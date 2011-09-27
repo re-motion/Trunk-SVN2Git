@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 
     public override void SetUp ()
     {
-      base.SetUp ();
-      _instance = SampleBindableDomainObject.NewObject ();
-      _instanceOverridingDisplayName = SampleBindableDomainObjectWithOverriddenDisplayName.NewObject ();
+      base.SetUp();
+      _instance = SampleBindableDomainObject.NewObject();
+      _instanceOverridingDisplayName = SampleBindableDomainObjectWithOverriddenDisplayName.NewObject();
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 
     [Test]
     public void UniqueIdentifier ()
-    { 
+    {
       Assert.That (_instance.UniqueIdentifier, Is.EqualTo (((SampleBindableDomainObject) _instance).ID.ToString()));
     }
 
@@ -87,9 +87,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void VerifyInterfaceImplementation ()
     {
-      IBusinessObjectWithIdentity businessObject = (SampleBindableDomainObjectWithOverriddenDisplayName) 
-          LifetimeService.NewObject (ClientTransactionMock, typeof (SampleBindableDomainObjectWithOverriddenDisplayName), ParamList.Empty);
-      var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (businessObject, typeof (BindableDomainObject), "_implementation");
+      IBusinessObjectWithIdentity businessObject = (SampleBindableDomainObjectWithOverriddenDisplayName)
+                                                   LifetimeService.NewObject (
+                                                       ClientTransactionMock,
+                                                       typeof (SampleBindableDomainObjectWithOverriddenDisplayName),
+                                                       ParamList.Empty);
+      var implementation =
+          (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (businessObject, typeof (BindableDomainObject), "_implementation");
 
       Assert.That (businessObject.BusinessObjectClass, Is.SameAs (implementation.BusinessObjectClass));
       Assert.That (businessObject.DisplayName, Is.EqualTo (implementation.DisplayName));
@@ -125,16 +129,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void DeserializationConstructor_CallsBase ()
     {
-      var serializable = SampleBindableDomainObject_ImplementingISerializable.NewObject ();
+      var serializable = SampleBindableDomainObject_ImplementingISerializable.NewObject();
 
-      var info = new SerializationInfo (typeof (SampleBindableDomainObject_ImplementingISerializable), new FormatterConverter ());
-      var context = new StreamingContext ();
+      var info = new SerializationInfo (typeof (SampleBindableDomainObject_ImplementingISerializable), new FormatterConverter());
+      var context = new StreamingContext();
 
       serializable.GetObjectData (info, context);
       Assert.That (info.MemberCount, Is.GreaterThan (0));
 
       var deserialized =
-          (SampleBindableDomainObject_ImplementingISerializable) Activator.CreateInstance (((object) serializable).GetType (), info, context);
+          (SampleBindableDomainObject_ImplementingISerializable) Activator.CreateInstance (((object) serializable).GetType(), info, context);
       Assert.That (deserialized.ID, Is.EqualTo (serializable.ID));
     }
 
@@ -143,19 +147,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       Assert.That (
           BindableDomainObjectProvider.GetProviderForBindableObjectType (typeof (SampleBindableDomainObject)),
-          Is.SameAs (BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ()));
+          Is.SameAs (BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()));
       Assert.That (
           BindableDomainObjectProvider.GetProviderForBindableObjectType (typeof (SampleBindableDomainObject)),
-          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute> ()));
+          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>()));
       Assert.That (
           BindableDomainObjectProvider.GetProviderForBindableObjectType (typeof (SampleBindableDomainObject)),
-          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute> ()));
+          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()));
     }
 
     [Test]
     public void NoPropertyFromDomainObject ()
     {
-      var properties = (PropertyBase[]) _instance.BusinessObjectClass.GetPropertyDefinitions ();
+      var properties = (PropertyBase[]) _instance.BusinessObjectClass.GetPropertyDefinitions();
 
       foreach (PropertyBase property in properties)
         Assert.That (property.PropertyInfo.DeclaringType, Is.Not.EqualTo (typeof (DomainObject)));
@@ -164,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void NoPropertyFromBindableDomainObject ()
     {
-      var properties = (PropertyBase[]) (_instance).BusinessObjectClass.GetPropertyDefinitions ();
+      var properties = (PropertyBase[]) (_instance).BusinessObjectClass.GetPropertyDefinitions();
 
       foreach (PropertyBase property in properties)
         Assert.That (property.PropertyInfo.DeclaringType, Is.Not.EqualTo (typeof (BindableDomainObject)));
@@ -173,11 +177,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void ClassDerivedFromBindableDomainObjectOverridingMixinMethod ()
     {
-      var instance = (IBusinessObject) TestDomain.ClassDerivedFromBindableDomainObjectOverridingMixinMethod.NewObject ();
+      var instance = (IBusinessObject) TestDomain.ClassDerivedFromBindableDomainObjectOverridingMixinMethod.NewObject();
       Assert.That (instance.BusinessObjectClass, Is.InstanceOf (typeof (BindableObjectClass)));
-      Assert.That (((BindableObjectClass) instance.BusinessObjectClass).TargetType, Is.SameAs (typeof (ClassDerivedFromBindableDomainObjectOverridingMixinMethod)));
-      Assert.That (((BindableObjectClass) instance.BusinessObjectClass).ConcreteType, Is.SameAs (TypeFactory.GetConcreteType (typeof (ClassDerivedFromBindableDomainObjectOverridingMixinMethod))));
+      Assert.That (
+          ((BindableObjectClass) instance.BusinessObjectClass).TargetType,
+          Is.SameAs (typeof (ClassDerivedFromBindableDomainObjectOverridingMixinMethod)));
+      Assert.That (
+          ((BindableObjectClass) instance.BusinessObjectClass).ConcreteType,
+          Is.SameAs (TypeFactory.GetConcreteType (typeof (ClassDerivedFromBindableDomainObjectOverridingMixinMethod))));
     }
-
   }
 }
