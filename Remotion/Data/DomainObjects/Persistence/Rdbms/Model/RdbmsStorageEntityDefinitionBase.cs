@@ -118,7 +118,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return _synonyms; }
     }
-
-    bool INullObject.IsNull { get { return false; } }
   }
 }

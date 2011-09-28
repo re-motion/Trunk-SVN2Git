@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.FunctionalProgramming;
@@ -185,7 +184,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       var derivedStorageEntityDefinitions =
           (from ClassDefinition derivedClass in classDefinition.DerivedClasses
            let entityDefinition = GetEntityDefinition (derivedClass)
-           where !(entityDefinition.IsNull)
+           where !(entityDefinition is EmptyViewDefinition)
            select entityDefinition).ToList();
 
       if (!derivedStorageEntityDefinitions.Any())

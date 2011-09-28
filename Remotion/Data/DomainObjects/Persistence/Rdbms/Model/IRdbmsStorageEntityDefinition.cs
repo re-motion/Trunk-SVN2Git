@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="IRdbmsStorageEntityDefinition"/> defines the API for an entity definition for a relational database.
   /// </summary>
-  public interface IRdbmsStorageEntityDefinition : IStorageEntityDefinition, INullObject
+  public interface IRdbmsStorageEntityDefinition : IStorageEntityDefinition
   {
     EntityNameDefinition ViewName { get; }
     ReadOnlyCollection<IIndexDefinition> Indexes { get; }

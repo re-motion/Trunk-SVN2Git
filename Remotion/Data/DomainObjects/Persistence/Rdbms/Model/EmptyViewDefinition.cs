@@ -92,10 +92,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       visitor.VisitEmptyViewDefinition (this);
     }
-
-    bool INullObject.IsNull
-    {
-      get { return true; }
-    }
   }
 }
