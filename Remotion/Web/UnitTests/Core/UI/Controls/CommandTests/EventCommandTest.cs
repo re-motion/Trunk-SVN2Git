@@ -17,7 +17,6 @@
 using System;
 using System.Web.UI;
 using NUnit.Framework;
-using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;

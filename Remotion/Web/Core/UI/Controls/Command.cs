@@ -332,6 +332,7 @@ namespace Remotion.Web.UI.Controls
     private WxeFunctionCommandInfo _wxeFunctionCommand = new WxeFunctionCommandInfo();
     //private ScriptCommandInfo _scriptCommand = null;
     private bool _hasClickFired;
+    private string _itemID;
 
     private IControl _ownerControl;
 
@@ -400,7 +401,15 @@ namespace Remotion.Web.UI.Controls
       var commandInfo = GetCommandInfo (postBackEvent, parameters, onClick, securableObject, additionalUrlParameters, includeNavigationUrlParameters);
       if (commandInfo != null)
         commandInfo.AddAttributesToRender (writer);
+
+      if (OwnerControl != null && !string.IsNullOrEmpty (OwnerControl.ClientID) && !string.IsNullOrEmpty ( ItemID))
+      {
+        var clientID = OwnerControl.ClientID + "_" + ItemID;
+        writer.AddAttribute (HtmlTextWriterAttribute.Id, clientID);
+      }
+      
       style.AddAttributesToRender (writer);
+      
       writer.RenderBeginTag (HtmlTextWriterTag.A);
     }
 
@@ -830,9 +839,13 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    string IControlItem.ItemID
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    [EditorBrowsable (EditorBrowsableState.Advanced)]
+    public string ItemID
     {
-      get { return null; }
+      get { return _itemID; }
+      set { _itemID = StringUtility.EmptyToNull (value); }
     }
 
     public virtual void LoadResources (IResourceManager resourceManager)

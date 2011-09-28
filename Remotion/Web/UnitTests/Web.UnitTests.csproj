@@ -214,6 +214,7 @@
     <Compile Include="Core\ExecutionEngine\WxeTransactionModeTest.cs" />
     <Compile Include="Core\ResourceUrlTest.cs" />
     <Compile Include="Core\UI\Controls\CommandInfoTest.cs" />
+    <Compile Include="Core\UI\Controls\CommandTests\CommonCommandTest.cs" />
     <Compile Include="Core\UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRendererTest.cs" />
     <Compile Include="Core\UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\IClientScriptBehaviorTest.cs" />

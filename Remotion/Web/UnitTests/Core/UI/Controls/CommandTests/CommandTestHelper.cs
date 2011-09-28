@@ -15,16 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using System.Web;
-using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Remotion.Web.Utilities;
-using TestFunction=Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions.TestFunction;
+using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
@@ -36,39 +37,41 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     // member fields
 
-    private MockRepository _mocks;
-    private IWebSecurityAdapter _mockWebSecurityAdapter;
-    private IWxeSecurityAdapter _mockWxeSecurityAdapter;
-    private ISecurableObject _mockSecurableObject;
+    private readonly MockRepository _mocks;
+    private readonly IWebSecurityAdapter _mockWebSecurityAdapter;
+    private readonly IWxeSecurityAdapter _mockWxeSecurityAdapter;
+    private readonly ISecurableObject _mockSecurableObject;
 
-    private HttpContext _httpContext;
-    private HtmlTextWriterSingleTagMock _htmlWriter;
+    private readonly HttpContext _httpContext;
+    private readonly HtmlTextWriterSingleTagMock _htmlWriter;
 
-    private Type _functionType;
-    private string _functionTypeName;
+    private readonly Type _functionType;
+    private readonly string _functionTypeName;
     private string _wxeFunctionParameters = "\"Value1\"";
     private string _toolTip = "This is a Tool Tip.";
     private string _href = "/test.html?Param1={0}&Param2={1}";
     private string _target = "_blank";
     private string _postBackEvent = "__doPostBack (\"Target\", \"Args\");";
     private string _onClick = "return false;";
+    private string _ownerControlClientID = "OwnerControlClientID";
+    private string _itemID = "CommandID";
 
     // construction and disposing
 
     public CommandTestHelper ()
     {
+      _httpContext = HttpContextHelper.CreateHttpContext ("GET", "default.html", null);
+      _httpContext.Response.ContentEncoding = Encoding.UTF8;
+
       _functionType = typeof (TestFunction);
       _functionTypeName = WebTypeUtility.GetQualifiedName (_functionType);
 
-      _mocks = new MockRepository ();
-      _mockWebSecurityAdapter = _mocks.StrictMock<IWebSecurityAdapter> ();
-      _mockWxeSecurityAdapter = _mocks.StrictMock<IWxeSecurityAdapter> ();
-      _mockSecurableObject = _mocks.StrictMock<ISecurableObject> ();
+      _mocks = new MockRepository();
+      _mockWebSecurityAdapter = _mocks.StrictMock<IWebSecurityAdapter>();
+      _mockWxeSecurityAdapter = _mocks.StrictMock<IWxeSecurityAdapter>();
+      _mockSecurableObject = _mocks.StrictMock<ISecurableObject>();
 
-      _httpContext = HttpContextHelper.CreateHttpContext ("GET", "default.html", null);
-      _httpContext.Response.ContentEncoding = System.Text.Encoding.UTF8;
-
-      _htmlWriter = new HtmlTextWriterSingleTagMock ();
+      _htmlWriter = new HtmlTextWriterSingleTagMock();
     }
 
     // methods and properties
@@ -100,22 +103,22 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     public void ReplayAll ()
     {
-      _mocks.ReplayAll ();
+      _mocks.ReplayAll();
     }
 
     public void VerifyAll ()
     {
-      _mocks.VerifyAll ();
+      _mocks.VerifyAll();
     }
 
     public void ExpectWebSecurityProviderHasAccess (ISecurableObject securableObject, Delegate handler, bool returnValue)
     {
-      Expect.Call (_mockWebSecurityAdapter.HasAccess (securableObject, handler)).Return (returnValue).Repeat.Once ();
+      Expect.Call (_mockWebSecurityAdapter.HasAccess (securableObject, handler)).Return (returnValue).Repeat.Once();
     }
 
     public void ExpectWxeSecurityProviderHasStatelessAccess (Type functionType, bool returnValue)
     {
-      Expect.Call (_mockWxeSecurityAdapter.HasStatelessAccess (functionType)).Return (returnValue).Repeat.Once ();
+      Expect.Call (_mockWxeSecurityAdapter.HasStatelessAccess (functionType)).Return (returnValue).Repeat.Once();
     }
 
 
@@ -149,9 +152,19 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       get { return _onClick; }
     }
 
+    public string OwnerControlClientID
+    {
+      get { return _ownerControlClientID; }
+    }
+
+    public string ItemID
+    {
+      get { return _itemID; }
+    }
+
     public Command CreateHrefCommand ()
     {
-      Command command = new Command ();
+      Command command = new Command();
       InitializeHrefCommand (command);
 
       return command;
@@ -159,7 +172,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     public Command CreateHrefCommandAsPartialMock ()
     {
-      Command command = _mocks.PartialMock<Command> ();
+      Command command = _mocks.PartialMock<Command>();
       SetupResult.For (command.HrefCommand).CallOriginalMethod (OriginalCallOptions.NoExpectation);
       InitializeHrefCommand (command);
 
@@ -168,6 +181,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     private void InitializeHrefCommand (Command command)
     {
+      command.ItemID = _itemID;
       command.Type = CommandType.Href;
       command.ToolTip = _toolTip;
       command.HrefCommand.Href = _href;
@@ -176,7 +190,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     public Command CreateEventCommand ()
     {
-      Command command = new Command ();
+      Command command = new Command();
+      command.OwnerControl = CreateOwnerControl();
       InitializeEventCommand (command);
 
       return command;
@@ -184,7 +199,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     public Command CreateEventCommandAsPartialMock ()
     {
-      Command command = _mocks.PartialMock<Command> ();
+      Command command = _mocks.PartialMock<Command>();
       InitializeEventCommand (command);
 
       return command;
@@ -192,13 +207,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     private void InitializeEventCommand (Command command)
     {
+      command.ItemID = _itemID;
       command.Type = CommandType.Event;
       command.ToolTip = _toolTip;
     }
 
     public Command CreateWxeFunctionCommand ()
     {
-      Command command = new Command ();
+      Command command = new Command();
+      command.OwnerControl = CreateOwnerControl();
       InitializeWxeFunctionCommand (command);
 
       return command;
@@ -206,8 +223,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     public Command CreateWxeFunctionCommandAsPartialMock ()
     {
-      Command command = _mocks.PartialMock<Command> ();
-      SetupResult.For (command.WxeFunctionCommand).CallOriginalMethod(OriginalCallOptions.NoExpectation);
+      Command command = _mocks.PartialMock<Command>();
+      SetupResult.For (command.WxeFunctionCommand).CallOriginalMethod (OriginalCallOptions.NoExpectation);
       InitializeWxeFunctionCommand (command);
 
       return command;
@@ -215,6 +232,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     private void InitializeWxeFunctionCommand (Command command)
     {
+      command.ItemID = _itemID;
       command.Type = CommandType.WxeFunction;
       command.ToolTip = _toolTip;
       command.WxeFunctionCommand.TypeName = _functionTypeName;
@@ -224,7 +242,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     public Command CreateNoneCommand ()
     {
-      Command command = new Command ();
+      Command command = new Command();
+      command.OwnerControl = CreateOwnerControl();
       InitializeNoneCommand (command);
 
       return command;
@@ -232,7 +251,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     public Command CreateNoneCommandAsPartialMock ()
     {
-      Command command = _mocks.PartialMock<Command> ();
+      Command command = _mocks.PartialMock<Command>();
       InitializeNoneCommand (command);
 
       return command;
@@ -240,12 +259,20 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
     private void InitializeNoneCommand (Command command)
     {
+      command.ItemID = _itemID;
       command.Type = CommandType.None;
     }
 
     public void ExpectOnceOnHasAccess (Command command, bool returnValue)
     {
       Expect.Call (command.HasAccess (_mockSecurableObject)).Return (returnValue);
+    }
+
+    private IControl CreateOwnerControl ()
+    {
+      var controlStub = MockRepository.GenerateStub<IControl>();
+      controlStub.Stub (stub => stub.ClientID).Return (_ownerControlClientID);
+      return controlStub;
     }
   }
 }

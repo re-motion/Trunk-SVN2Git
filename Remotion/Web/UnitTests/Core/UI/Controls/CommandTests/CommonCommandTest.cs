@@ -23,57 +23,66 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
-  public class NoneCommandTest : BaseTest
+  public class CommonCommandTest : BaseTest
   {
     private CommandTestHelper _testHelper;
 
     [SetUp]
     public virtual void SetUp ()
     {
-      _testHelper = new CommandTestHelper ();
+      _testHelper = new CommandTestHelper();
       HttpContextHelper.SetCurrent (_testHelper.HttpContext);
     }
 
     [Test]
-    public void HasAccess_WithoutSeucrityProvider ()
+    public void Render_WithItemIDAndOwnerControl ()
     {
-      Command command = _testHelper.CreateNoneCommand ();
-      _testHelper.ReplayAll ();
+      Command command = _testHelper.CreateNoneCommand();
+      Assert.That (command.OwnerControl, Is.Not.Null);
+      Assert.That (command.ItemID, Is.Not.Null);
 
-      bool hasAccess = command.HasAccess (null);
-
-      _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
-    }
-
-    [Test]
-    public void Render_WithAccessGranted ()
-    {
-      Command command = _testHelper.CreateNoneCommandAsPartialMock ();
-      _testHelper.ExpectOnceOnHasAccess (command, true);
-      _testHelper.ReplayAll ();
+      var expectedID = _testHelper.OwnerControlClientID + "_" + _testHelper.ItemID;
 
       command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
-      _testHelper.VerifyAll ();
+      Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
+      Assert.AreEqual (HtmlTextWriterTag.A, _testHelper.HtmlWriter.Tag, "Wrong Tag");
+
+      Assert.AreEqual (1, _testHelper.HtmlWriter.Attributes.Count, "Has wrong number of attributes");
+
+      Assert.IsNotNull (_testHelper.HtmlWriter.Attributes[HtmlTextWriterAttribute.Id], "Missing ID");
+      Assert.AreEqual (expectedID, _testHelper.HtmlWriter.Attributes[HtmlTextWriterAttribute.Id], "Wrong ID");
+    }
+
+    [Test]
+    public void Render_WithoutOwnerControl_DoesNotRenderID ()
+    {
+      Command command = _testHelper.CreateNoneCommand();
+      command.OwnerControl = null;
+      Assert.That (command.OwnerControl, Is.Null);
+      Assert.That (command.ItemID, Is.Not.Null);
+
+      command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
       Assert.AreEqual (HtmlTextWriterTag.A, _testHelper.HtmlWriter.Tag, "Wrong Tag");
+
       Assert.AreEqual (0, _testHelper.HtmlWriter.Attributes.Count, "Has wrong number of attributes");
     }
 
     [Test]
-    public void Render_WithAccessDenied ()
+    public void Render_WithoutItemID_DoesNotRenderID ()
     {
-      Command command = _testHelper.CreateNoneCommandAsPartialMock ();
-      _testHelper.ExpectOnceOnHasAccess (command, false);
-      _testHelper.ReplayAll ();
+      Command command = _testHelper.CreateNoneCommand ();
+      command.ItemID = null;
+      Assert.That (command.OwnerControl, Is.Not.Null);
+      Assert.That (command.ItemID, Is.Null);
 
       command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
-      _testHelper.VerifyAll ();
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
       Assert.AreEqual (HtmlTextWriterTag.A, _testHelper.HtmlWriter.Tag, "Wrong Tag");
+
       Assert.AreEqual (0, _testHelper.HtmlWriter.Attributes.Count, "Has wrong number of attributes");
     }
   }
