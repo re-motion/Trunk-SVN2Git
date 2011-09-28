@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private IIndexDefinition[] _indexes;
     private EntityNameDefinition[] _synonyms;
 
-    private TableDefinition _tableDefintion;
+    private TableDefinition _tableDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
-      _tableDefintion = new TableDefinition (
+      _tableDefinition = new TableDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition ("TableSchema", "TableTest"),
           new EntityNameDefinition ("Schema", "Test"),
@@ -70,15 +70,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization ()
     {
-      Assert.That (_tableDefintion.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
-      Assert.That (_tableDefintion.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
-      Assert.That (_tableDefintion.TableName, Is.EqualTo (new EntityNameDefinition ("TableSchema", "TableTest")));
+      Assert.That (_tableDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
+      Assert.That (_tableDefinition.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
+      Assert.That (_tableDefinition.TableName, Is.EqualTo (new EntityNameDefinition ("TableSchema", "TableTest")));
 
-      Assert.That (_tableDefintion.ObjectIDProperty, Is.SameAs (_objectIDProperty));
-      Assert.That (_tableDefintion.TimestampProperty, Is.SameAs (_timestampProperty));
-      Assert.That (_tableDefintion.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
+      Assert.That (_tableDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
+      Assert.That (_tableDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
+      Assert.That (_tableDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
 
-      Assert.That (_tableDefintion.Constraints, Is.EqualTo (_constraints));
+      Assert.That (_tableDefinition.Indexes, Is.EqualTo (_indexes));
+      Assert.That (_tableDefinition.Synonyms, Is.EqualTo (_synonyms));
+      Assert.That (_tableDefinition.Constraints, Is.EqualTo (_constraints));
     }
 
     [Test]
@@ -102,10 +104,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var visitorMock = MockRepository.GenerateStrictMock<IRdbmsStorageEntityDefinitionVisitor>();
 
-      visitorMock.Expect (mock => mock.VisitTableDefinition (_tableDefintion));
+      visitorMock.Expect (mock => mock.VisitTableDefinition (_tableDefinition));
       visitorMock.Replay();
 
-      _tableDefintion.Accept (visitorMock);
+      _tableDefinition.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations();
     }
@@ -121,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               ColumnDefinitionObjectMother.CreateColumn()
           };
       
-      var adjustedColumnList = _tableDefintion.CalculateAdjustedColumnList (fullColumnList);
+      var adjustedColumnList = _tableDefinition.CalculateAdjustedColumnList (fullColumnList);
 
       Assert.That (adjustedColumnList, Is.EqualTo (new[] { _property3.ColumnDefinition, _property1.ColumnDefinition, null }));
     }

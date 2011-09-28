@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
@@ -25,68 +25,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="EmptyViewDefinition"/> represents a non-existing entity.
   /// </summary>
-  public class EmptyViewDefinition : IRdbmsStorageEntityDefinition
+  public class EmptyViewDefinition : RdbmsStorageEntityDefinitionBase
   {
-    private readonly StorageProviderDefinition _storageProviderDefinition;
-
-    public EmptyViewDefinition (StorageProviderDefinition storageProviderDefinition)
+    public EmptyViewDefinition (
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition viewName,
+        ObjectIDStoragePropertyDefinition objectIDProperty,
+        IRdbmsStoragePropertyDefinition timestampProperty,
+        IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties,
+        IEnumerable<EntityNameDefinition> synonyms)
+        : base (
+            storageProviderDefinition,
+            viewName,
+            objectIDProperty,
+            timestampProperty,
+            dataProperties,
+            Enumerable.Empty<IIndexDefinition>(),
+            synonyms)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
-      _storageProviderDefinition = storageProviderDefinition;
     }
 
-    public string StorageProviderID
-    {
-      get { return _storageProviderDefinition.Name; }
-    }
-
-    public StorageProviderDefinition StorageProviderDefinition
-    {
-      get { return _storageProviderDefinition; }
-    }
-
-    public EntityNameDefinition ViewName
-    {
-      get { return null; }
-    }
-
-    public ObjectIDStoragePropertyDefinition ObjectIDProperty
-    {
-      get { return null; }
-    }
-
-    public IRdbmsStoragePropertyDefinition TimestampProperty
-    {
-      get { return null; }
-    }
-
-    public IEnumerable<IRdbmsStoragePropertyDefinition> DataProperties
-    {
-      get { return new IRdbmsStoragePropertyDefinition[0]; }
-    }
-
-    public IEnumerable<IRdbmsStoragePropertyDefinition> GetAllProperties ()
-    {
-      return new IRdbmsStoragePropertyDefinition[0];
-    }
-
-    public IEnumerable<ColumnDefinition> GetAllColumns ()
-    {
-      return new ColumnDefinition[0];
-    }
-
-    public ReadOnlyCollection<IIndexDefinition> Indexes
-    {
-      get { return Array.AsReadOnly(new IIndexDefinition[0]);  }
-    }
-
-    public ReadOnlyCollection<EntityNameDefinition> Synonyms
-    {
-      get { return Array.AsReadOnly(new EntityNameDefinition[0]); }
-    }
-
-    public void Accept (IRdbmsStorageEntityDefinitionVisitor visitor)
+    public override void Accept (IRdbmsStorageEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 

@@ -91,6 +91,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_unionViewDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
       Assert.That (_unionViewDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
       Assert.That (_unionViewDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
+
+      Assert.That (_unionViewDefinition.Indexes, Is.EqualTo (_indexes));
+      Assert.That (_unionViewDefinition.Synonyms, Is.EqualTo (_synonyms));
     }
 
     [Test]

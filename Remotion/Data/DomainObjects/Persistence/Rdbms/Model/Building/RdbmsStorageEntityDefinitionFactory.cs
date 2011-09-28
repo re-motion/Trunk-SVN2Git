@@ -122,13 +122,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       var dataProperties = _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition);
       return new EmptyViewDefinition (
-          _storageProviderDefinition /*,
+          _storageProviderDefinition,
           _storageNameProvider.GetViewName (classDefinition),
           _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition(),
           _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition(),
           dataProperties,
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0] */);
+          new EntityNameDefinition[0]);
     }
 
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)

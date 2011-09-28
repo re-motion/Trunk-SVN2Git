@@ -78,6 +78,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_filterViewDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
       Assert.That (_filterViewDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
       Assert.That (_filterViewDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
+
+      Assert.That (_filterViewDefinition.Indexes, Is.EqualTo (_indexes));
+      Assert.That (_filterViewDefinition.Synonyms, Is.EqualTo (_synonyms));
     }
 
     [Test]

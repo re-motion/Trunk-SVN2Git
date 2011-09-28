@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -24,72 +25,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class EmptyViewDefinitionTest
   {
-    private EmptyViewDefinition _emptyViewDefinition;
+    private SimpleStoragePropertyDefinition _timestampProperty;
+    private ObjectIDStoragePropertyDefinition _objectIDProperty;
+    private SimpleStoragePropertyDefinition _property1;
+    private SimpleStoragePropertyDefinition _property2;
+    private SimpleStoragePropertyDefinition _property3;
+    
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
+    private EntityNameDefinition[] _synonyms;
+
+    private EmptyViewDefinition _emptyViewDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _emptyViewDefinition = new EmptyViewDefinition (_storageProviderDefinition);
+      
+      _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
+      _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
+      _property1 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column1");
+      _property2 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column2");
+      _property3 = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column3");
+
+      _synonyms = new[] { new EntityNameDefinition ("Schema", "Test") };
+      _emptyViewDefinition = new EmptyViewDefinition (
+          _storageProviderDefinition,
+          new EntityNameDefinition ("Schema", "Test"),
+          _objectIDProperty,
+          _timestampProperty,
+          new[] { _property1, _property2, _property3 },
+          _synonyms);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_emptyViewDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
-      Assert.That (_emptyViewDefinition.StorageProviderID, Is.SameAs (_storageProviderDefinition.Name));
-      Assert.That (_emptyViewDefinition.ViewName, Is.Null);
+      Assert.That (_emptyViewDefinition.ViewName, Is.EqualTo (new EntityNameDefinition ("Schema", "Test")));
+
+      Assert.That (_emptyViewDefinition.ObjectIDProperty, Is.SameAs (_objectIDProperty));
+      Assert.That (_emptyViewDefinition.TimestampProperty, Is.SameAs (_timestampProperty));
+      Assert.That (_emptyViewDefinition.DataProperties, Is.EqualTo (new[] { _property1, _property2, _property3 }));
+
+      Assert.That (_emptyViewDefinition.Indexes, Is.Empty);
+      Assert.That (_emptyViewDefinition.Synonyms, Is.EqualTo (_synonyms));
     }
 
     [Test]
-    public void IDProperty ()
+    public void Initialization_ViewNameNull ()
     {
-      Assert.That (_emptyViewDefinition.ObjectIDProperty, Is.Null);
-    }
-
-    [Test]
-    public void TimestampProperty ()
-    {
-      Assert.That (_emptyViewDefinition.TimestampProperty, Is.Null);
-    }
-
-    [Test]
-    public void DataProperties ()
-    {
-      Assert.That (_emptyViewDefinition.DataProperties, Is.Empty);
-    }
-
-    [Test]
-    public void GetAllProperties ()
-    {
-      var result = _emptyViewDefinition.GetAllProperties ();
-
-      Assert.That (result, Is.Empty);
-    }
-
-    [Test]
-    public void GetAllColumns ()
-    {
-      var result = _emptyViewDefinition.GetAllColumns();
-
-      Assert.That (result, Is.Empty);
-    }
-
-    [Test]
-    public void Indexes ()
-    {
-      var result = _emptyViewDefinition.Indexes;
-
-      Assert.That (result, Is.Empty);
-    }
-
-    [Test]
-    public void Synonyms ()
-    {
-      var result = _emptyViewDefinition.Synonyms;
-
-      Assert.That (result, Is.Empty);
+      var emptyViewDefinition = new EmptyViewDefinition (
+          _storageProviderDefinition,
+          null,
+          _objectIDProperty,
+          _timestampProperty,
+          new SimpleStoragePropertyDefinition[0],
+          new EntityNameDefinition[0]);
+      Assert.That (emptyViewDefinition.ViewName, Is.Null);
     }
 
     [Test]

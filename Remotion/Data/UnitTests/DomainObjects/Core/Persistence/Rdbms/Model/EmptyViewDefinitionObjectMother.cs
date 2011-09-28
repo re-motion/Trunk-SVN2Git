@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -25,13 +26,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     public static EmptyViewDefinition Create (StorageProviderDefinition storageProviderDefinition)
     {
-      return new EmptyViewDefinition (storageProviderDefinition);
+      return new EmptyViewDefinition (
+          storageProviderDefinition,
+          new EntityNameDefinition (null, "EmptyView"),
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new IRdbmsStoragePropertyDefinition[0],
+          new EntityNameDefinition[0]);
     }
 
     public static EmptyViewDefinition CreateWithSynonyms (StorageProviderDefinition storageProviderDefinition, IEnumerable<EntityNameDefinition> synonyms)
     {
-      // TODO 4130
-      return new EmptyViewDefinition (storageProviderDefinition);
+      return new EmptyViewDefinition (
+          storageProviderDefinition,
+          new EntityNameDefinition (null, "EmptyView"),
+          ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
+          SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
+          new IRdbmsStoragePropertyDefinition[0],
+          synonyms);
     }
   }
 }

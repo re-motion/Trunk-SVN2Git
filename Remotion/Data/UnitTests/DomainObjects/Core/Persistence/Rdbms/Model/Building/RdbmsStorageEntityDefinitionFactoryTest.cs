@@ -295,7 +295,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    [Ignore ("TODO 4130")]
     public void CreateEmptyViewDefinition ()
     {
       _storagePropertyDefinitionResolverMock
