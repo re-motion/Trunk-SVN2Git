@@ -106,12 +106,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       get { return _cssClasses; }
     }
-
-    protected ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme> (); }
-    }
-
+    
     /// <summary> 
     /// Renders the navigation bar consisting of the move buttons and the <see cref="BocList.PageInfo"/>. 
     /// </summary>
@@ -160,14 +155,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       }
       else
       {
-        string imageUrl = GetResolvedImageUrl (renderingContext, s_activeIcons[command]);
+        var navigateCommandID = renderingContext.Control.ClientID + "_Navigation_" + command;
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, navigateCommandID);
 
         string argument = BocList.GoToCommandPrefix + command;
         string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument);
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
+
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
+        string imageUrl = GetResolvedImageUrl (renderingContext, s_activeIcons[command]);
         var icon = new IconInfo (imageUrl);
         icon.AlternateText = renderingContext.Control.GetResourceManager().GetString (s_alternateTexts[command]);
         icon.Render (renderingContext.Writer, renderingContext.Control);

@@ -201,6 +201,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void AssertActiveIcon (XmlNode link, string command)
     {
+      Html.AssertAttribute (link, "id", List.ClientID + "_Navigation_" + command);
       Html.AssertAttribute (link, "onclick", "postBackEventReference");
       Html.AssertAttribute (link, "href", "#");
 

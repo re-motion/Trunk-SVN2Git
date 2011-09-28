@@ -17,11 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
-using System.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
@@ -158,15 +155,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       }
       else
       {
-        var imageUrl = GetResolvedImageUrl (s_activeIcons[command]);
+        var navigateCommandID = renderingContext.Control.ClientID + "_Navigation_" + command;
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, navigateCommandID);
 
         string argument = BocList.GoToCommandPrefix + command;
         string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument);
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
+
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-        var icon = new IconInfo (imageUrl.GetUrl());
+        var imageUrl = GetResolvedImageUrl (s_activeIcons[command]);
+        var icon = new IconInfo (imageUrl.GetUrl ());
         icon.AlternateText = renderingContext.Control.GetResourceManager().GetString (s_alternateTexts[command]);
         icon.Render (renderingContext.Writer, renderingContext.Control);
 
