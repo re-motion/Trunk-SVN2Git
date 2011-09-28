@@ -302,6 +302,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\QueryDbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\ComparedColumnsSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\InsertedColumnsSpecificationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EmptyViewDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\DbCommandBuilders\Specifications\SqlXmlSetComparedColumnSpecificationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\Specifications\UpdatedColumnsSpecificationTest.cs" />
@@ -473,7 +474,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\RdbmsStorageEntityDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ForeignKeyConstraintDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\NullRdbmsStorageEntityDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EmptyViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ObjectIDStoragePropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\PrimaryKeyConstraintDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\RdbmsPersistenceModelLoaderIntegrationTest.cs" />

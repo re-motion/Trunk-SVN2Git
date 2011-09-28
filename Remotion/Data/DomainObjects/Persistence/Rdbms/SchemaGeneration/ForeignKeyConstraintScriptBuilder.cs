@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
           (table, continuation) => AddTableDefinition (table),
           (filterView, continuation) => { },
           (unionView, contination) => { },
-          (nullEntity, continuation) => { });
+          (emptyView, continuation) => { });
     }
 
     public IScriptElement GetCreateScript ()

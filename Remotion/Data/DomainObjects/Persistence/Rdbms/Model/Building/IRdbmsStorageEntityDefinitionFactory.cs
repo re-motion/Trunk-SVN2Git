@@ -27,6 +27,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     IRdbmsStorageEntityDefinition CreateTableDefinition (ClassDefinition classDefinition);
     IRdbmsStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IRdbmsStorageEntityDefinition baseEntity);
     IRdbmsStorageEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition, IEnumerable<IRdbmsStorageEntityDefinition> unionedEntities);
-    IRdbmsStorageEntityDefinition CreateNullViewDefinition (ClassDefinition classDefinition);
+    IRdbmsStorageEntityDefinition CreateEmptyViewDefinition (ClassDefinition classDefinition);
   }
 }

@@ -276,8 +276,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
             (table, continuation) => table.TableName.EntityName,
             (filterView, continuation) => continuation (filterView.BaseEntity),
             (unionView, continuation) => null,
-            (nullEntity, continuation) => { throw new NotSupportedException ("NullEntityDefinitions are not supported."); }
-            );
+            (emptyView, continuation) => null);
     }
 
     private string GetFirstColumnName (IStoragePropertyDefinition storagePropertyDefinition)

@@ -214,21 +214,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     }
 
     [Test]
-    public void ApplyPersistenceModelToHierarchy_CreatesNullView_ForAbstractClass_WithAbstractDerivedClass_WithoutConcreteDerivations ()
+    public void ApplyPersistenceModelToHierarchy_CreatesEmptyView_ForAbstractClass_WithAbstractDerivedClass_WithoutConcreteDerivations ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (AbstractClassWithoutDerivations),
           null);
       var derivedClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Distributor), classDefinition);
 
-      derivedClass.SetStorageEntity (new NullRdbmsStorageEntityDefinition (_storageProviderDefinition));
+      derivedClass.SetStorageEntity (EmptyViewDefinitionObjectMother.Create (_storageProviderDefinition));
       classDefinition.SetDerivedClasses (new[] { derivedClass });
       derivedClass.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       _entityDefinitionFactoryMock
-          .Expect (mock => mock.CreateNullViewDefinition (classDefinition))
+          .Expect (mock => mock.CreateEmptyViewDefinition (classDefinition))
           .Return (_fakeEntityDefinitionTable1);
       _entityDefinitionFactoryMock.Replay();
 

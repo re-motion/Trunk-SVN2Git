@@ -49,10 +49,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       RdbmsStorageInlineEntityDefinitionVisitor.Visit (
           entityDefinition,
-          (table, continuation) => AddTableDefinition (table),
-          (filterView, continuation) => AddFilterViewDefinition(filterView),
-          (unionView, contination) => AddUnionViewDefinition(unionView),
-          (nullEntity, continuation) => { });
+          (table, continuation) => AddIndexes (table.Indexes, table.TableName),
+          (filterView, continuation) => AddIndexes (filterView.Indexes, filterView.ViewName),
+          (unionView, contination) => AddIndexes (unionView.Indexes, unionView.ViewName),
+          (emptyView, continuation) => { });
     }
 
     public IScriptElement GetCreateScript ()
@@ -63,21 +63,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     public IScriptElement GetDropScript ()
     {
       return _dropScriptElements;
-    }
-
-    private void AddTableDefinition (TableDefinition tableDefinition)
-    {
-      AddIndexes (tableDefinition.Indexes, tableDefinition.TableName);
-    }
-
-    private void AddUnionViewDefinition (UnionViewDefinition unionViewDefinition)
-    {
-      AddIndexes (unionViewDefinition.Indexes, unionViewDefinition.ViewName);
-    }
-
-    private void AddFilterViewDefinition (FilterViewDefinition filterViewDefinition)
-    {
-      AddIndexes (filterViewDefinition.Indexes, filterViewDefinition.ViewName);
     }
 
     private void AddIndexes (IEnumerable<IIndexDefinition> indexes, EntityNameDefinition ownerName)

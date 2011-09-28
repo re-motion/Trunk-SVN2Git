@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "The Rdbms provider classes require a storage definition object of type 'IRdbmsStorageEntityDefinition' for class-definition 'Order', "
         + "but that class has no storage definition object.")]
-    public void GetEntityDefinition_NullEntityDefinition ()
+    public void GetEntityDefinition_EmptyViewDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);

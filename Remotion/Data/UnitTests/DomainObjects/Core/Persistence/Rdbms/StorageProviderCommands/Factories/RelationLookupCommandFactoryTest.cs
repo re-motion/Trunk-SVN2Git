@@ -280,10 +280,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
-    public void CreateForRelationLookup_NullEntityDefinition ()
+    public void CreateForRelationLookup_EmptyViewDefinition ()
     {
-      var nullEntityDefintion = new NullRdbmsStorageEntityDefinition (TestDomainStorageProviderDefinition);
-      var classDefinition = CreateClassDefinition (nullEntityDefintion);
+      var emptyViewDefintion = EmptyViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
+      var classDefinition = CreateClassDefinition (emptyViewDefintion);
       var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,

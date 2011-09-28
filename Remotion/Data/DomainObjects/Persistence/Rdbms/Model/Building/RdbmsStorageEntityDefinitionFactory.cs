@@ -118,10 +118,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           new EntityNameDefinition[0]);
     }
 
-    public IRdbmsStorageEntityDefinition CreateNullViewDefinition (ClassDefinition classDefinition)
+    public IRdbmsStorageEntityDefinition CreateEmptyViewDefinition (ClassDefinition classDefinition)
     {
       var dataProperties = _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition);
-      return new NullRdbmsStorageEntityDefinition (
+      return new EmptyViewDefinition (
           _storageProviderDefinition /*,
           _storageNameProvider.GetViewName (classDefinition),
           _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition(),

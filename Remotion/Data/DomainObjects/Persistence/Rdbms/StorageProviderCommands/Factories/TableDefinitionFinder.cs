@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           (table, continuation) => table,
           (filterView, continuation) => continuation (filterView.BaseEntity),
           (unionView, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a UnionViewDefinition."); },
-          (nullEntity, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a NullRdbmsStorageEntityDefinition."); });
+          (emptyView, continuation) => { throw new InvalidOperationException ("An ObjectID's EntityDefinition cannot be a EmptyViewDefinition."); });
     }
   }
 }

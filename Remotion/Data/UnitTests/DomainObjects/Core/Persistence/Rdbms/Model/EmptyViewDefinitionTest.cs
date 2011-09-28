@@ -22,48 +22,48 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class NullRdbmsStorageEntityDefinitionTest
+  public class EmptyViewDefinitionTest
   {
-    private NullRdbmsStorageEntityDefinition _nullEntityDefinition;
+    private EmptyViewDefinition _emptyViewDefinition;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID");
-      _nullEntityDefinition = new NullRdbmsStorageEntityDefinition(_storageProviderDefinition);
+      _emptyViewDefinition = new EmptyViewDefinition (_storageProviderDefinition);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_nullEntityDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
-      Assert.That (_nullEntityDefinition.StorageProviderID, Is.SameAs (_storageProviderDefinition.Name));
-      Assert.That (_nullEntityDefinition.ViewName, Is.Null);
+      Assert.That (_emptyViewDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
+      Assert.That (_emptyViewDefinition.StorageProviderID, Is.SameAs (_storageProviderDefinition.Name));
+      Assert.That (_emptyViewDefinition.ViewName, Is.Null);
     }
 
     [Test]
     public void IDProperty ()
     {
-      Assert.That (_nullEntityDefinition.ObjectIDProperty, Is.Null);
+      Assert.That (_emptyViewDefinition.ObjectIDProperty, Is.Null);
     }
 
     [Test]
     public void TimestampProperty ()
     {
-      Assert.That (_nullEntityDefinition.TimestampProperty, Is.Null);
+      Assert.That (_emptyViewDefinition.TimestampProperty, Is.Null);
     }
 
     [Test]
     public void DataProperties ()
     {
-      Assert.That (_nullEntityDefinition.DataProperties, Is.Empty);
+      Assert.That (_emptyViewDefinition.DataProperties, Is.Empty);
     }
 
     [Test]
     public void GetAllProperties ()
     {
-      var result = _nullEntityDefinition.GetAllProperties ();
+      var result = _emptyViewDefinition.GetAllProperties ();
 
       Assert.That (result, Is.Empty);
     }
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetAllColumns ()
     {
-      var result = _nullEntityDefinition.GetAllColumns();
+      var result = _emptyViewDefinition.GetAllColumns();
 
       Assert.That (result, Is.Empty);
     }
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Indexes ()
     {
-      var result = _nullEntityDefinition.Indexes;
+      var result = _emptyViewDefinition.Indexes;
 
       Assert.That (result, Is.Empty);
     }
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Synonyms ()
     {
-      var result = _nullEntityDefinition.Synonyms;
+      var result = _emptyViewDefinition.Synonyms;
 
       Assert.That (result, Is.Empty);
     }
@@ -97,10 +97,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var visitorMock = MockRepository.GenerateStrictMock<IRdbmsStorageEntityDefinitionVisitor> ();
 
-      visitorMock.Expect (mock => mock.VisitNullEntityDefinition(_nullEntityDefinition));
+      visitorMock.Expect (mock => mock.VisitEmptyViewDefinition(_emptyViewDefinition));
       visitorMock.Replay ();
 
-      _nullEntityDefinition.Accept (visitorMock);
+      _emptyViewDefinition.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations ();
     }
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void IsNull ()
     {
-      Assert.That (((INullObject) _nullEntityDefinition).IsNull, Is.True);
+      Assert.That (((INullObject) _emptyViewDefinition).IsNull, Is.True);
     }
   }
 }

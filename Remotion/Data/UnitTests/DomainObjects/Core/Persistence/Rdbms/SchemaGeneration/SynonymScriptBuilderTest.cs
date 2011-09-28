@@ -35,12 +35,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private UnionViewDefinition _unionViewDefinition2;
     private FilterViewDefinition _filterViewDefinition1;
     private FilterViewDefinition _filterViewDefinition2;
+    private EmptyViewDefinition _emptyViewDefinition1;
+    private EmptyViewDefinition _emptyViewDefinition2;
     private IScriptElement _fakeElement1;
     private IScriptElement _fakeElement2;
     private IScriptElement _fakeElement3;
     private ISynonymScriptElementFactory<TableDefinition> _tableViewElementFactoryStub;
     private ISynonymScriptElementFactory<UnionViewDefinition> _unionViewElementFactoryStub;
     private ISynonymScriptElementFactory<FilterViewDefinition> _filterViewElementFactoryStub;
+    private ISynonymScriptElementFactory<EmptyViewDefinition> _emptyViewElementFactoryStub;
     private EntityNameDefinition _synonym1;
     private EntityNameDefinition _synonym2;
     private EntityNameDefinition _synonym3;
@@ -52,6 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _tableViewElementFactoryStub = MockRepository.GenerateStub<ISynonymScriptElementFactory<TableDefinition>>();
       _unionViewElementFactoryStub = MockRepository.GenerateStub<ISynonymScriptElementFactory<UnionViewDefinition>>();
       _filterViewElementFactoryStub = MockRepository.GenerateStub<ISynonymScriptElementFactory<FilterViewDefinition>>();
+      _emptyViewElementFactoryStub = MockRepository.GenerateStub<ISynonymScriptElementFactory<EmptyViewDefinition>>();
 
       _builder = new SynonymScriptBuilder (
           _tableViewElementFactoryStub, _unionViewElementFactoryStub, _filterViewElementFactoryStub, new SqlCommentScriptElementFactory());
@@ -76,6 +80,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           SchemaGenerationFirstStorageProviderDefinition,
           new[] { _synonym1 });
       _filterViewDefinition2 = FilterViewDefinitionObjectMother.CreateWithSynonyms (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new[] { _synonym2, _synonym3 });
+      _emptyViewDefinition1 = EmptyViewDefinitionObjectMother.CreateWithSynonyms (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new[] { _synonym1 });
+      _emptyViewDefinition2 = EmptyViewDefinitionObjectMother.CreateWithSynonyms (
           SchemaGenerationFirstStorageProviderDefinition,
           new[] { _synonym2, _synonym3 });
 
@@ -276,18 +286,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void GetCreateScript_GetDropScript_NullEntityDefinitionAdded ()
+    [Ignore ("TODO 4130")]
+    public void GetCreateScript_GetDropScript_OneEmptyViewDefinitionAdded ()
     {
-      var entityDefinition = new NullRdbmsStorageEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
-      _builder.AddEntityDefinition (entityDefinition);
+      _emptyViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_emptyViewDefinition1, _synonym1)).Return (_fakeElement1);
+      _emptyViewElementFactoryStub.Stub (stub => stub.GetDropElement (_emptyViewDefinition1, _synonym1)).Return (_fakeElement2);
+
+      _builder.AddEntityDefinition (_emptyViewDefinition1);
 
       var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
       var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all synonyms"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
+    }
+
+    [Test]
+    [Ignore ("TODO 4130")]
+    public void GetCreateScript_GetDropScript_SeveralEmptyViewDefinitionsAdded ()
+    {
+      _emptyViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_emptyViewDefinition1, _synonym1)).Return (_fakeElement1);
+      _emptyViewElementFactoryStub.Stub (stub => stub.GetDropElement (_emptyViewDefinition1, _synonym1)).Return (_fakeElement3);
+      _emptyViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_emptyViewDefinition2, _synonym2)).Return (_fakeElement2);
+      _emptyViewElementFactoryStub.Stub (stub => stub.GetDropElement (_emptyViewDefinition2, _synonym2)).Return (_fakeElement2);
+      _emptyViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_emptyViewDefinition2, _synonym3)).Return (_fakeElement3);
+      _emptyViewElementFactoryStub.Stub (stub => stub.GetDropElement (_emptyViewDefinition2, _synonym3)).Return (_fakeElement1);
+
+      _builder.AddEntityDefinition (_emptyViewDefinition1);
+      _builder.AddEntityDefinition (_emptyViewDefinition2);
+
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+      Assert.That (createScriptResult.Elements[2], Is.SameAs (_fakeElement2));
+      Assert.That (createScriptResult.Elements[3], Is.SameAs (_fakeElement3));
+
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (4));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all synonyms"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement3));
+      Assert.That (dropScriptResult.Elements[2], Is.SameAs (_fakeElement2));
+      Assert.That (dropScriptResult.Elements[3], Is.SameAs (_fakeElement1));
     }
   }
 }

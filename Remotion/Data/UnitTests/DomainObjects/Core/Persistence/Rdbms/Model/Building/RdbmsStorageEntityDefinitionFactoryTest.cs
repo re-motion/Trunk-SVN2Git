@@ -296,7 +296,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
     [Test]
     [Ignore ("TODO 4130")]
-    public void CreateNullViewDefinition ()
+    public void CreateEmptyViewDefinition ()
     {
       _storagePropertyDefinitionResolverMock
           .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.BaseBaseClassDefinition))
@@ -312,12 +312,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _infrastructureStoragePropertyDefinitionProviderMock.Replay();
 
-      var result = _factory.CreateNullViewDefinition (_testModel.BaseBaseClassDefinition);
+      var result = _factory.CreateEmptyViewDefinition (_testModel.BaseBaseClassDefinition);
 
       _storagePropertyDefinitionResolverMock.VerifyAllExpectations();
       _infrastructureStoragePropertyDefinitionProviderMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
-      CheckNullViewDefinition (
+      CheckEmptyViewDefinition (
           result,
           _storageProviderID,
           "FakeViewName",
@@ -416,7 +416,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           expectedSynonyms);
     }
 
-    private void CheckNullViewDefinition (
+    private void CheckEmptyViewDefinition (
         IRdbmsStorageEntityDefinition actualEntityDefinition,
         string expectedStorageProviderID,
         string expectedViewName,
@@ -424,7 +424,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
         IIndexDefinition[] expectedIndexDefinitions,
         EntityNameDefinition[] expectedSynonyms)
     {
-      Assert.That (actualEntityDefinition, Is.TypeOf (typeof (NullRdbmsStorageEntityDefinition)));
+      Assert.That (actualEntityDefinition, Is.TypeOf (typeof (EmptyViewDefinition)));
 
       CheckEntityDefinition (
           actualEntityDefinition,

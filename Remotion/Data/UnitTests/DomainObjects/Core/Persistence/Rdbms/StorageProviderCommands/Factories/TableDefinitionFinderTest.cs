@@ -84,13 +84,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a NullRdbmsStorageEntityDefinition.")]
-    public void GetTableDefinition_NullEntityDefinition()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An ObjectID's EntityDefinition cannot be a EmptyViewDefinition.")]
+    public void GetTableDefinition_EmptyViewDefinition()
     {
-      var nullEntityDefinition = new NullRdbmsStorageEntityDefinition (TestDomainStorageProviderDefinition);
+      var emptyViewDefinition = EmptyViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
 
-      var objectID = CreateObjectID (nullEntityDefinition);
-      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (objectID.ClassDefinition)).Return (nullEntityDefinition);
+      var objectID = CreateObjectID (emptyViewDefinition);
+      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (objectID.ClassDefinition)).Return (emptyViewDefinition);
 
       _finder.GetTableDefinition (objectID);
     }

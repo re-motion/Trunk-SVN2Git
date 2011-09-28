@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     private ClassDefinition _abstractClassDefinition;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private NullRdbmsStorageEntityDefinition _nullEntityDefinition;
+    private EmptyViewDefinition _emptyViewDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition, new EntityNameDefinition (null, "TableName"));
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
-      _nullEntityDefinition = new NullRdbmsStorageEntityDefinition(storageProviderDefinition);
+      _emptyViewDefinition = EmptyViewDefinitionObjectMother.Create (storageProviderDefinition);
     }
 
     [Test]
@@ -96,9 +96,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     }
 
     [Test]
-    public void ClassTypeResolved_NullEntityDefinition_Abstract ()
+    public void ClassTypeResolved_EmptyViewDefinition_Abstract ()
     {
-      _abstractClassDefinition.SetStorageEntity (_nullEntityDefinition);
+      _abstractClassDefinition.SetStorageEntity (_emptyViewDefinition);
 
       var validationResult = _validationRule.Validate (_abstractClassDefinition);
 
@@ -120,9 +120,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     }
 
     [Test]
-    public void ClassTypeResolved_NullEntityDefinition_NotAbstract ()
+    public void ClassTypeResolved_EmptyViewDefinition_NotAbstract ()
     {
-      _concreteClassDefinition.SetStorageEntity (_nullEntityDefinition);
+      _concreteClassDefinition.SetStorageEntity (_emptyViewDefinition);
 
       var validationResult = _validationRule.Validate (_concreteClassDefinition);
 

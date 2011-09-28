@@ -189,7 +189,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
            select entityDefinition).ToList();
 
       if (!derivedStorageEntityDefinitions.Any())
-        return _entityDefinitionFactory.CreateNullViewDefinition (classDefinition);
+        return _entityDefinitionFactory.CreateEmptyViewDefinition (classDefinition);
       else
 
       return _entityDefinitionFactory.CreateUnionViewDefinition (classDefinition, derivedStorageEntityDefinitions);

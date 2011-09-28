@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       void HandleTableDefinition (TableDefinition table, Action<IRdbmsStorageEntityDefinition> continuation);
       void HandleFilterViewDefinition (FilterViewDefinition filterView, Action<IRdbmsStorageEntityDefinition> continuation);
       void HandleUnionViewDefinition (UnionViewDefinition unionView, Action<IRdbmsStorageEntityDefinition> continuation);
-      void HandleNullEntityDefinition (NullRdbmsStorageEntityDefinition nullEntity, Action<IRdbmsStorageEntityDefinition> continuation);
+      void HandleEmptyViewDefinition (EmptyViewDefinition emptyView, Action<IRdbmsStorageEntityDefinition> continuation);
     }
 
     public interface IVisitorCallReceiver<T>
@@ -39,15 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       T HandleTableDefinition (TableDefinition table, Func<IRdbmsStorageEntityDefinition, T> continuation);
       T HandleFilterViewDefinition (FilterViewDefinition filterView, Func<IRdbmsStorageEntityDefinition, T> continuation);
       T HandleUnionViewDefinition (UnionViewDefinition unionView, Func<IRdbmsStorageEntityDefinition, T> continuation);
-      T HandleNullEntityDefinition (NullRdbmsStorageEntityDefinition nullEntity, Func<IRdbmsStorageEntityDefinition, T> continuation);
+      T HandleEmptyViewDefinition (EmptyViewDefinition emptyView, Func<IRdbmsStorageEntityDefinition, T> continuation);
     }
 
     private TableDefinition _tableDefinition;
     private FilterViewDefinition _filterViewDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private NullRdbmsStorageEntityDefinition _nullEntityDefinition;
-
-    private object _fakeResult;
+    private EmptyViewDefinition _emptyViewDefinition;
 
     private MockRepository _mockRepository;
     private IVisitorCallReceiver _voidReceiverMock;
@@ -57,14 +55,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp();
 
-      _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table"));
+      _tableDefinition = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
       _filterViewDefinition = FilterViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "FilterView"), _tableDefinition);
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (
           TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "UnionView"), new[] { _tableDefinition });
-      _nullEntityDefinition = new NullRdbmsStorageEntityDefinition (TestDomainStorageProviderDefinition);
-
-      _fakeResult = new object();
+      _emptyViewDefinition = EmptyViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
 
       _mockRepository = new MockRepository();
       _voidReceiverMock = _mockRepository.StrictMock<IVisitorCallReceiver> ();
@@ -82,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
           _voidReceiverMock.HandleUnionViewDefinition,
-          _voidReceiverMock.HandleNullEntityDefinition);
+          _voidReceiverMock.HandleEmptyViewDefinition);
 
       _voidReceiverMock.VerifyAllExpectations();
     }
@@ -98,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
           _voidReceiverMock.HandleUnionViewDefinition,
-          _voidReceiverMock.HandleNullEntityDefinition);
+          _voidReceiverMock.HandleEmptyViewDefinition);
 
       _voidReceiverMock.VerifyAllExpectations ();
     }
@@ -114,23 +110,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
           _voidReceiverMock.HandleUnionViewDefinition,
-          _voidReceiverMock.HandleNullEntityDefinition);
+          _voidReceiverMock.HandleEmptyViewDefinition);
 
       _voidReceiverMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void Visit_WithoutResult_NullEntityDefinition ()
+    public void Visit_WithoutResult_EmptyViewDefinition ()
     {
-      _voidReceiverMock.Expect (mock => mock.HandleNullEntityDefinition (Arg.Is (_nullEntityDefinition), Arg<Action<IRdbmsStorageEntityDefinition>>.Is.Anything));
+      _voidReceiverMock.Expect (mock => mock.HandleEmptyViewDefinition (Arg.Is (_emptyViewDefinition), Arg<Action<IRdbmsStorageEntityDefinition>>.Is.Anything));
       _voidReceiverMock.Replay ();
 
       RdbmsStorageInlineEntityDefinitionVisitor.Visit (
-          _nullEntityDefinition,
+          _emptyViewDefinition,
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
           _voidReceiverMock.HandleUnionViewDefinition,
-          _voidReceiverMock.HandleNullEntityDefinition);
+          _voidReceiverMock.HandleEmptyViewDefinition);
 
       _voidReceiverMock.VerifyAllExpectations ();
     }
@@ -162,10 +158,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                 mi =>
                 {
                   var continuation = (Action<IRdbmsStorageEntityDefinition>) mi.Arguments[1];
-                  continuation (_nullEntityDefinition);
+                  continuation (_emptyViewDefinition);
                 });
         _voidReceiverMock
-            .Expect (mock => mock.HandleNullEntityDefinition (Arg.Is (_nullEntityDefinition), Arg<Action<IRdbmsStorageEntityDefinition>>.Is.Anything))
+            .Expect (mock => mock.HandleEmptyViewDefinition (Arg.Is (_emptyViewDefinition), Arg<Action<IRdbmsStorageEntityDefinition>>.Is.Anything))
             .WhenCalled (
                 mi =>
                 {
@@ -182,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
           _voidReceiverMock.HandleUnionViewDefinition,
-          _voidReceiverMock.HandleNullEntityDefinition);
+          _voidReceiverMock.HandleEmptyViewDefinition);
 
       _voidReceiverMock.VerifyAllExpectations ();
     }
@@ -200,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
           _nonVoidReceiverMock.HandleUnionViewDefinition,
-          _nonVoidReceiverMock.HandleNullEntityDefinition);
+          _nonVoidReceiverMock.HandleEmptyViewDefinition);
 
       _nonVoidReceiverMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo ("test"));
@@ -219,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
           _nonVoidReceiverMock.HandleUnionViewDefinition,
-          _nonVoidReceiverMock.HandleNullEntityDefinition);
+          _nonVoidReceiverMock.HandleEmptyViewDefinition);
 
       _nonVoidReceiverMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo ("test"));
@@ -238,26 +234,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
           _nonVoidReceiverMock.HandleUnionViewDefinition,
-          _nonVoidReceiverMock.HandleNullEntityDefinition);
+          _nonVoidReceiverMock.HandleEmptyViewDefinition);
 
       _nonVoidReceiverMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo ("test"));
     }
 
     [Test]
-    public void Visit_WithResult_NullEntityDefinition ()
+    public void Visit_WithResult_EmptyViewDefinition ()
     {
       _nonVoidReceiverMock
-        .Expect (mock => mock.HandleNullEntityDefinition (Arg.Is (_nullEntityDefinition), Arg<Func<IRdbmsStorageEntityDefinition, string>>.Is.Anything))
+        .Expect (mock => mock.HandleEmptyViewDefinition (Arg.Is (_emptyViewDefinition), Arg<Func<IRdbmsStorageEntityDefinition, string>>.Is.Anything))
         .Return ("test");
       _nonVoidReceiverMock.Replay ();
 
       var result = RdbmsStorageInlineEntityDefinitionVisitor.Visit<string> (
-          _nullEntityDefinition,
+          _emptyViewDefinition,
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
           _nonVoidReceiverMock.HandleUnionViewDefinition,
-          _nonVoidReceiverMock.HandleNullEntityDefinition);
+          _nonVoidReceiverMock.HandleEmptyViewDefinition);
 
       _nonVoidReceiverMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo ("test"));
@@ -294,12 +290,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                 mi =>
                 {
                   var continuation = (Func<IRdbmsStorageEntityDefinition, string>) mi.Arguments[1];
-                  var value = continuation (_nullEntityDefinition);
+                  var value = continuation (_emptyViewDefinition);
                   Assert.That (value, Is.EqualTo ("1"));
                 })
             .Return ("2");
         _nonVoidReceiverMock
-            .Expect (mock => mock.HandleNullEntityDefinition (Arg.Is (_nullEntityDefinition), Arg<Func<IRdbmsStorageEntityDefinition, string>>.Is.Anything))
+            .Expect (mock => mock.HandleEmptyViewDefinition (Arg.Is (_emptyViewDefinition), Arg<Func<IRdbmsStorageEntityDefinition, string>>.Is.Anything))
             .WhenCalled (
                 mi =>
                 {
@@ -320,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
           _nonVoidReceiverMock.HandleUnionViewDefinition,
-          _nonVoidReceiverMock.HandleNullEntityDefinition);
+          _nonVoidReceiverMock.HandleEmptyViewDefinition);
 
       _nonVoidReceiverMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo ("4"));

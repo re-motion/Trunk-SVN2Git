@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -147,9 +146,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void GetCreateScript_GetDropScript_NullEntityDefinitionAdded ()
+    public void GetCreateScript_GetDropScript_EmptyViewDefinitionAdded ()
     {
-      var entityDefinition = new NullRdbmsStorageEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
+      var entityDefinition = EmptyViewDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
       var createScriptResult = _builder.GetCreateScript();
