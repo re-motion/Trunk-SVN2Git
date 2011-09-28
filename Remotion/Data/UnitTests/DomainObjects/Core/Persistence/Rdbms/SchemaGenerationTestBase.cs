@@ -134,10 +134,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     protected virtual SynonymScriptBuilder CreateSynonymBuilder ()
     {
+      var sqlSynonymScriptElementFactory = new SqlSynonymScriptElementFactory();
       return new SynonymScriptBuilder (
-          new SqlSynonymScriptElementFactory(),
-          new SqlSynonymScriptElementFactory(),
-          new SqlSynonymScriptElementFactory(),
+          sqlSynonymScriptElementFactory,
+          sqlSynonymScriptElementFactory,
+          sqlSynonymScriptElementFactory,
+          sqlSynonymScriptElementFactory,
           new SqlCommentScriptElementFactory());
     }
   }

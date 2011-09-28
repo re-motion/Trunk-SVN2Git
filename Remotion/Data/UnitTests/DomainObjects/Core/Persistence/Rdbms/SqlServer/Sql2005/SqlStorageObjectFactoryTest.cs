@@ -126,6 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               MockRepository.GenerateStub<ISynonymScriptElementFactory<TableDefinition>>(),
               MockRepository.GenerateStub<ISynonymScriptElementFactory<UnionViewDefinition>>(),
               MockRepository.GenerateStub<ISynonymScriptElementFactory<FilterViewDefinition>>(),
+              MockRepository.GenerateStub<ISynonymScriptElementFactory<EmptyViewDefinition>>(),
               new SqlCommentScriptElementFactory());
 
       var sqlProviderFactory = new TestableSqlStorageObjectFactory (

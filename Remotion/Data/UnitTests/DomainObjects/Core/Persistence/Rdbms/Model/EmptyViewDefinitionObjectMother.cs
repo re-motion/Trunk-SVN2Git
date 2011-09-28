@@ -26,9 +26,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     public static EmptyViewDefinition Create (StorageProviderDefinition storageProviderDefinition)
     {
+      return Create (storageProviderDefinition, new EntityNameDefinition (null, "EmptyView"));
+    }
+
+    public static EmptyViewDefinition Create (StorageProviderDefinition storageProviderDefinition, EntityNameDefinition viewName)
+    {
       return new EmptyViewDefinition (
           storageProviderDefinition,
-          new EntityNameDefinition (null, "EmptyView"),
+          viewName,
           ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
           SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
           new IRdbmsStoragePropertyDefinition[0],

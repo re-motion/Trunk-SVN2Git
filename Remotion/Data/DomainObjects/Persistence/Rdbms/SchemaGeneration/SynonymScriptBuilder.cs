@@ -29,6 +29,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly ISynonymScriptElementFactory<TableDefinition> _tableViewElementFactory;
     private readonly ISynonymScriptElementFactory<UnionViewDefinition> _unionViewElementFactory;
     private readonly ISynonymScriptElementFactory<FilterViewDefinition> _filterViewElementFactory;
+    private readonly ISynonymScriptElementFactory<EmptyViewDefinition> _emptyViewElementFactory;
+
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
@@ -36,16 +38,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         ISynonymScriptElementFactory<TableDefinition> tableViewElementFactory,
         ISynonymScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
         ISynonymScriptElementFactory<FilterViewDefinition> filterViewElementFactory,
+        ISynonymScriptElementFactory<EmptyViewDefinition> emptyViewElementFactory,
         ICommentScriptElementFactory commentFactory)
     {
       ArgumentUtility.CheckNotNull ("tableViewElementFactory", tableViewElementFactory);
       ArgumentUtility.CheckNotNull ("unionViewElementFactory", unionViewElementFactory);
       ArgumentUtility.CheckNotNull ("filterViewElementFactory", filterViewElementFactory);
+      ArgumentUtility.CheckNotNull ("emptyViewElementFactory", emptyViewElementFactory);
       ArgumentUtility.CheckNotNull ("commentFactory", commentFactory);
 
       _tableViewElementFactory = tableViewElementFactory;
       _unionViewElementFactory = unionViewElementFactory;
       _filterViewElementFactory = filterViewElementFactory;
+      _emptyViewElementFactory = emptyViewElementFactory;
       _createScriptElements = new ScriptElementCollection();
       _createScriptElements.AddElement (commentFactory.GetCommentElement("Create synonyms for tables that were created above"));
       _dropScriptElements = new ScriptElementCollection();
@@ -59,9 +64,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       RdbmsStorageInlineEntityDefinitionVisitor.Visit (
           entityDefinition,
           (table, continuation) => AddTableDefinition (table),
-          (filterView, continuation) => AddFilterViewDefinition(filterView),
-          (unionView, contination) => AddUnionViewDefinition(unionView),
-          (emptyView, continuation) => { });
+          (filterView, continuation) => AddFilterViewDefinition (filterView),
+          (unionView, contination) => AddUnionViewDefinition (unionView),
+          (emptyView, continuation) => AddEmptyViewDefinition (emptyView));
     }
 
     public IScriptElement GetCreateScript ()
@@ -101,6 +106,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         AddElements (
             _filterViewElementFactory.GetCreateElement (filterViewDefinition, synonym),
             _filterViewElementFactory.GetDropElement (filterViewDefinition, synonym));
+      }
+    }
+
+    private void AddEmptyViewDefinition (EmptyViewDefinition emptyViewDefinition)
+    {
+      foreach (var synonym in emptyViewDefinition.Synonyms)
+      {
+        AddElements (
+            _emptyViewElementFactory.GetCreateElement (emptyViewDefinition, synonym),
+            _emptyViewElementFactory.GetDropElement (emptyViewDefinition, synonym));
       }
     }
 

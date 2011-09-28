@@ -58,7 +58,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _emptyViewElementFactoryStub = MockRepository.GenerateStub<ISynonymScriptElementFactory<EmptyViewDefinition>>();
 
       _builder = new SynonymScriptBuilder (
-          _tableViewElementFactoryStub, _unionViewElementFactoryStub, _filterViewElementFactoryStub, new SqlCommentScriptElementFactory());
+          _tableViewElementFactoryStub, 
+          _unionViewElementFactoryStub, 
+          _filterViewElementFactoryStub, 
+          _emptyViewElementFactoryStub,
+          new SqlCommentScriptElementFactory());
 
       _synonym1 = new EntityNameDefinition (null, "Synonym1");
       _synonym2 = new EntityNameDefinition (null, "Synonym2");
@@ -286,7 +290,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    [Ignore ("TODO 4130")]
     public void GetCreateScript_GetDropScript_OneEmptyViewDefinitionAdded ()
     {
       _emptyViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_emptyViewDefinition1, _synonym1)).Return (_fakeElement1);
@@ -307,7 +310,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    [Ignore ("TODO 4130")]
     public void GetCreateScript_GetDropScript_SeveralEmptyViewDefinitionsAdded ()
     {
       _emptyViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_emptyViewDefinition1, _synonym1)).Return (_fakeElement1);

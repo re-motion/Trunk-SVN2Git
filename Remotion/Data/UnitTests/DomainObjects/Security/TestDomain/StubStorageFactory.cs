@@ -159,10 +159,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     private SynonymScriptBuilder CreateSynonymBuilder ()
     {
+      var sqlSynonymScriptElementFactory = new SqlSynonymScriptElementFactory();
       return new SynonymScriptBuilder (
-          new SqlSynonymScriptElementFactory(),
-          new SqlSynonymScriptElementFactory(),
-          new SqlSynonymScriptElementFactory(),
+          sqlSynonymScriptElementFactory,
+          sqlSynonymScriptElementFactory,
+          sqlSynonymScriptElementFactory,
+          sqlSynonymScriptElementFactory,
           new SqlCommentScriptElementFactory());
     }
   }

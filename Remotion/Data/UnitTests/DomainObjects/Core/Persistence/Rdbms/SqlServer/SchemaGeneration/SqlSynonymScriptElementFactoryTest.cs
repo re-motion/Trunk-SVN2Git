@@ -27,12 +27,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   public class SqlSynonymScriptElementFactoryTest : SchemaGenerationTestBase
   {
     private SqlSynonymScriptElementFactory _factory;
+
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
     private UnionViewDefinition _unionViewDefinition1;
     private UnionViewDefinition _unionViewDefinition2;
     private FilterViewDefinition _filterViewDefinition1;
     private FilterViewDefinition _filterViewDefinition2;
+    private EmptyViewDefinition _emptyViewDefinition1;
+    private EmptyViewDefinition _emptyViewDefinition2;
+
     private EntityNameDefinition _synonymWithCustomSchema;
     private EntityNameDefinition _synonymWithDefaultSchema;
 
@@ -62,6 +66,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _filterViewDefinition2 = FilterViewDefinitionObjectMother.Create (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "FilterView2"));
+
+      _emptyViewDefinition1 = EmptyViewDefinitionObjectMother.Create (
+         SchemaGenerationFirstStorageProviderDefinition,
+         new EntityNameDefinition ("SchemaName", "EmptyView1"));
+      _emptyViewDefinition2 = EmptyViewDefinitionObjectMother.Create (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "EmptyView2"));
 
       _synonymWithCustomSchema = new EntityNameDefinition ("SynonymSchemaName", "Synonym1");
       _synonymWithDefaultSchema = new EntityNameDefinition (null, "Synonym2");
@@ -199,6 +210,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (((ScriptStatement) result).Statement, Is.EqualTo (expectedResult));
     }
 
+    [Test]
+    public void GetCreateElement_EmptyViewDefinition_And_CustomSchema ()
+    {
+      var result = _factory.GetCreateElement (_emptyViewDefinition1, _synonymWithCustomSchema);
+
+      var expectedResult = "CREATE SYNONYM [SynonymSchemaName].[Synonym1] FOR [SchemaName].[EmptyView1]";
+      Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
+      Assert.That (((ScriptStatement) result).Statement, Is.EqualTo (expectedResult));
+    }
+
+    [Test]
+    public void GetCreateElement_EmptyViewDefinition_And_DefaultSchema ()
+    {
+      var result = _factory.GetCreateElement (_emptyViewDefinition2, _synonymWithDefaultSchema);
+
+      var expectedResult = "CREATE SYNONYM [dbo].[Synonym2] FOR [dbo].[EmptyView2]";
+      Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
+      Assert.That (((ScriptStatement) result).Statement, Is.EqualTo (expectedResult));
+    }
+
+    [Test]
+    public void GetDropElement_EmptyViewDefinition_And_CustomSchema ()
+    {
+      var result = _factory.GetDropElement (_emptyViewDefinition1, _synonymWithCustomSchema);
+
+      var expectedResult =
+        "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'SynonymSchemaName' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
+       + "  DROP SYNONYM [SynonymSchemaName].[Synonym1]";
+      Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
+      Assert.That (((ScriptStatement) result).Statement, Is.EqualTo (expectedResult));
+    }
+
+    [Test]
+    public void GetDropElement_EmptyViewDefinition_And_DefaultSchema ()
+    {
+      var result = _factory.GetDropElement (_emptyViewDefinition2, _synonymWithDefaultSchema);
+
+      var expectedResult =
+        "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'dbo' AND SCHEMA_NAME(schema_id) = 'Synonym2')\r\n"
+       + "  DROP SYNONYM [dbo].[Synonym2]";
+      Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
+      Assert.That (((ScriptStatement) result).Statement, Is.EqualTo (expectedResult));
+    }
 
   }
 }
