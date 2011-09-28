@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -26,12 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     public static EmptyViewDefinition Create (StorageProviderDefinition storageProviderDefinition)
     {
-      return new EmptyViewDefinition (storageProviderDefinition);
-    }
-
-    public static EmptyViewDefinition CreateWithIndexes (StorageProviderDefinition storageProviderDefinition, IEnumerable<IIndexDefinition> indexDefinitions)
-    {
-      // TODO 4130
       return new EmptyViewDefinition (storageProviderDefinition);
     }
 

@@ -36,8 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private UnionViewDefinition _unionViewDefinition2;
     private FilterViewDefinition _filterViewDefinition1;
     private FilterViewDefinition _filterViewDefinition2;
-    private IRdbmsStorageEntityDefinition _emptyViewDefinition1;
-    private IRdbmsStorageEntityDefinition _emptyViewDefinition2;
     private IScriptElement _fakeElement1;
     private IScriptElement _fakeElement2;
     private IScriptElement _fakeElement3;
@@ -75,12 +73,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _filterViewDefinition2 = FilterViewDefinitionObjectMother.CreateWithIndexes (
           SchemaGenerationFirstStorageProviderDefinition,
           new[] { _indexDefinition2, _indexDefinition3 });
-      _emptyViewDefinition1 = EmptyViewDefinitionObjectMother.CreateWithIndexes (
-        SchemaGenerationFirstStorageProviderDefinition,
-          new[] { _indexDefinition1 });
-      _emptyViewDefinition2 = EmptyViewDefinitionObjectMother.CreateWithIndexes (
-        SchemaGenerationFirstStorageProviderDefinition,
-          new[] { _indexDefinition1, _indexDefinition2 });
 
       _fakeElement1 = MockRepository.GenerateStub<IScriptElement>();
       _fakeElement2 = MockRepository.GenerateStub<IScriptElement>();
@@ -247,54 +239,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    [Ignore ("TODO 4130")]
-    public void GetCreateScript_GetDropScript_OneEmptyViewDefinitionWithOneIndexDefinitionAdded ()
+    public void GetCreateScript_GetDropScript_NullEntityDefinitionAdded ()
     {
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1, _emptyViewDefinition1.ViewName)).Return (_fakeElement1);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1, _emptyViewDefinition1.ViewName)).Return (_fakeElement2);
-
-      _builder.AddEntityDefinition (_emptyViewDefinition1);
+      var entityDefinition = EmptyViewDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
+      _builder.AddEntityDefinition (entityDefinition);
 
       var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
       var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
-      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
-
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (2));
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
       Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all indexes"));
-      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
-    }
-
-    [Test]
-    [Ignore ("TODO 4130")]
-    public void GetCreateScript_GetDropScript_SeveralEmptyViewDefinitionsWithSeveralIndexesAdded ()
-    {
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition1, _emptyViewDefinition1.ViewName)).Return (_fakeElement1);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition1, _emptyViewDefinition1.ViewName)).Return (_fakeElement3);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition2, _emptyViewDefinition2.ViewName)).Return (_fakeElement2);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition2, _emptyViewDefinition2.ViewName)).Return (_fakeElement2);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetCreateElement (_indexDefinition3, _emptyViewDefinition2.ViewName)).Return (_fakeElement3);
-      _indexScriptElementFactoryStub.Stub (stub => stub.GetDropElement (_indexDefinition3, _emptyViewDefinition2.ViewName)).Return (_fakeElement1);
-
-      _builder.AddEntityDefinition (_emptyViewDefinition1);
-      _builder.AddEntityDefinition (_emptyViewDefinition2);
-
-      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript();
-      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript();
-
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
-      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create indexes for tables that were created above"));
-      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
-      Assert.That (createScriptResult.Elements[2], Is.SameAs (_fakeElement2));
-      Assert.That (createScriptResult.Elements[3], Is.SameAs (_fakeElement3));
-
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (4));
-      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all indexes"));
-      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement3));
-      Assert.That (dropScriptResult.Elements[2], Is.SameAs (_fakeElement2));
-      Assert.That (dropScriptResult.Elements[3], Is.SameAs (_fakeElement1));
     }
   }
 }
