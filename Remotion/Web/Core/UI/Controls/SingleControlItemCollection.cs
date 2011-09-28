@@ -27,6 +27,7 @@ public class SingleControlItemCollection
 {
   private readonly Type[] _supportedTypes;
   private IControlItem _controlItem;
+  private IControl _ownerControl;
 
   /// <summary> Creates a new instance. </summary>
   /// <param name="controlItem">The <see cref="IControlItem"/> to be stored in this instance.</param>
@@ -50,6 +51,19 @@ public class SingleControlItemCollection
       if (value != null && ! IsSupportedType (value)) 
         throw new ArgumentTypeException ("value", value.GetType());
       _controlItem = value;
+      if (_controlItem != null)
+        _controlItem.OwnerControl = _ownerControl;
+    }
+  }
+
+  public IControl OwnerControl
+  {
+    get { return _ownerControl; }
+    set
+    {
+      _ownerControl = value;
+      if (_controlItem != null)
+        _controlItem.OwnerControl = _ownerControl;
     }
   }
 

@@ -72,16 +72,8 @@ namespace Remotion.Web.UI.Controls
     [NotifyParentProperty (true)]
     public virtual NavigationCommand Command
     {
-      get
-      {
-        return (NavigationCommand) _command.ControlItem;
-      }
-      set
-      {
-        _command.ControlItem = value;
-        if (Command != null)
-          Command.OwnerControl = OwnerControl;
-      }
+      get { return (NavigationCommand) _command.ControlItem; }
+      set { _command.ControlItem = value; }
     }
 
     protected bool ShouldSerializeCommand ()
@@ -133,8 +125,7 @@ namespace Remotion.Web.UI.Controls
       if (OwnerControl != null && !(OwnerControl is TabbedMenu))
         throw new InvalidOperationException ("A SubMenuTab can only be added to a WebTabStrip that is part of a TabbedMenu.");
 
-      if (Command != null)
-        Command.OwnerControl = OwnerControl;
+        _command.OwnerControl = OwnerControl;
     }
 
     public override void LoadResources (IResourceManager resourceManager)

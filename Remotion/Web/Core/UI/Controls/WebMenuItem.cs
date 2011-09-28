@@ -308,10 +308,7 @@ namespace Remotion.Web.UI.Controls
           Command.Click -= _commandClick;
         _command.ControlItem = value;
         if (Command != null)
-        {
-          Command.OwnerControl = OwnerControl;
           Command.Click += _commandClick;
-        }
       }
     }
 
@@ -389,8 +386,7 @@ namespace Remotion.Web.UI.Controls
           _ownerControl = value;
           if (_ownerControl != null)
             _ownerControl.PreRender += OwnerControl_PreRender;
-          if (Command != null)
-            Command.OwnerControl = value;
+          _command.OwnerControl = value;
           OnOwnerControlChanged();
         }
       }
