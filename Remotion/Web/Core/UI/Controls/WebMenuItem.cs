@@ -99,6 +99,8 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Is called when the value of <see cref="OwnerControl"/> has changed. </summary>
     protected virtual void OnOwnerControlChanged ()
     {
+      if (Command != null)
+        Command.OwnerControl = OwnerControl;
     }
 
     private void OwnerControl_PreRender (object sender, EventArgs e)
@@ -306,7 +308,10 @@ namespace Remotion.Web.UI.Controls
           Command.Click -= _commandClick;
         _command.ControlItem = value;
         if (Command != null)
+        {
+          Command.OwnerControl = OwnerControl;
           Command.Click += _commandClick;
+        }
       }
     }
 

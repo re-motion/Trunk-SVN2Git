@@ -111,9 +111,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      var command = !menuItem.IsDisabled ? menuItem.Command : new Command (CommandType.None);
-      if (command.OwnerControl == null)
-        command.OwnerControl = renderingContext.Control;
+      var command = !menuItem.IsDisabled ? menuItem.Command : new Command (CommandType.None) { OwnerControl = menuItem.OwnerControl };
       if (string.IsNullOrEmpty (command.ItemID))
         command.ItemID = "MenuItem_" + index + "_Command";
 

@@ -18,14 +18,11 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
-using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
 namespace Remotion.Web.UI.Controls
@@ -82,6 +79,8 @@ namespace Remotion.Web.UI.Controls
       set
       {
         _command.ControlItem = value;
+        if (Command != null)
+          Command.OwnerControl = OwnerControl;
       }
     }
 

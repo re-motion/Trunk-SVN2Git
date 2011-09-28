@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Rhino.Mocks;
-using Remotion.Security;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -28,7 +27,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
   {
     private MockRepository _mocks;
     private IWebSecurityAdapter _mockWebSecurityAdapter;
-    private ISecurableObject _mockSecurableObject;
     private NavigationCommand _mockNavigationCommand;
 
     [SetUp]
@@ -36,7 +34,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
     {
       _mocks = new MockRepository ();
       _mockWebSecurityAdapter = _mocks.StrictMock<IWebSecurityAdapter> ();
-      _mockSecurableObject = _mocks.StrictMock<ISecurableObject> ();
       _mockNavigationCommand = _mocks.StrictMock<NavigationCommand> ();
 
       AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _mockWebSecurityAdapter);
@@ -140,6 +137,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
     {
       MainMenuTab mainMenuTab = CreateMainMenuTabWithoutCommand ();
       mainMenuTab.Command = _mockNavigationCommand;
+      _mocks.BackToRecordAll ();
 
       return mainMenuTab;
     }

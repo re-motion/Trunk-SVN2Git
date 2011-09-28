@@ -140,7 +140,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebMenuItemTests
     {
       WebMenuItem menuItem = CreateWebMenuItemWithoutCommand ();
       menuItem.Command = _mockCommand;
-      
+      _mocks.BackToRecordAll();
+
       return menuItem;
     }
 
