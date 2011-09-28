@@ -89,7 +89,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuRow");
           renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
         }
-        RenderListMenuItem (renderingContext, currentItem, renderingContext.Control.ClientID, renderingContext.Control.MenuItems.IndexOf (currentItem));
+        RenderListMenuItem (renderingContext, currentItem, renderingContext.Control.MenuItems.IndexOf (currentItem));
         if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isLastCategoryItem) || isLastItem)
         {
           renderingContext.Writer.RenderEndTag ();
@@ -102,21 +102,27 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
       renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderListMenuItem (ListMenuRenderingContext renderingContext, WebMenuItem menuItem, string menuID, int index)
+    private void RenderListMenuItem (ListMenuRenderingContext renderingContext, WebMenuItem menuItem, int index)
     {
       bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
       bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
 
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetMenuItemClientID (renderingContext, index));
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      if (!menuItem.IsDisabled)
-      {
-        menuItem.Command.RenderBegin (
-            renderingContext.Writer, renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (renderingContext.Control, index.ToString ()), new[] { index.ToString () }, "", null);
-      }
-      else
-        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
+
+      var command = !menuItem.IsDisabled ? menuItem.Command : new Command (CommandType.None);
+      if (command.OwnerControl == null)
+        command.OwnerControl = renderingContext.Control;
+      if (string.IsNullOrEmpty (command.ItemID))
+        command.ItemID = "MenuItem_" + index + "_Command";
+
+      command.RenderBegin (
+          renderingContext.Writer,
+          renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (renderingContext.Control, index.ToString()),
+          new[] { index.ToString() },
+          "",
+          null);
 
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
@@ -126,7 +132,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
       }
       if (showText)
         renderingContext.Writer.Write (menuItem.Text); // Do not HTML encode.
-      renderingContext.Writer.RenderEndTag ();
+      command.RenderEnd (renderingContext.Writer);
       renderingContext.Writer.RenderEndTag ();
     }
 
@@ -220,7 +226,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
                         || !isCommandEnabled;
       stringBuilder.AppendFormat (
           "\t\tnew ListMenuItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8})",
-          renderingContext.Control.ClientID + "_" + menuItemIndex,
+          GetMenuItemClientID (renderingContext, menuItemIndex),
           menuItem.Category,
           text,
           icon,
@@ -229,6 +235,11 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
           isDisabled ? "true" : "false",
           href,
           target);
+    }
+
+    private string GetMenuItemClientID (ListMenuRenderingContext renderingContext, int menuItemIndex)
+    {
+      return renderingContext.Control.ClientID + "_" + menuItemIndex;
     }
   }
 }
