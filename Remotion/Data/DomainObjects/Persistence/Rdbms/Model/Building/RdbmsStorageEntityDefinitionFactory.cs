@@ -120,7 +120,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 
     public IRdbmsStorageEntityDefinition CreateNullViewDefinition (ClassDefinition classDefinition)
     {
-      return new NullRdbmsStorageEntityDefinition (_storageProviderDefinition);
+      var dataProperties = _storagePropertyDefinitionResolver.GetStoragePropertiesForHierarchy (classDefinition);
+      return new NullRdbmsStorageEntityDefinition (
+          _storageProviderDefinition /*,
+          _storageNameProvider.GetViewName (classDefinition),
+          _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition(),
+          _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition(),
+          dataProperties,
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0] */);
     }
 
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)

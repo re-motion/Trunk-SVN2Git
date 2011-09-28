@@ -294,6 +294,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           new EntityNameDefinition[0]);
     }
 
+    [Test]
+    [Ignore ("TODO 4130")]
+    public void CreateNullViewDefinition ()
+    {
+      _storagePropertyDefinitionResolverMock
+          .Expect (mock => mock.GetStoragePropertiesForHierarchy (_testModel.BaseBaseClassDefinition))
+          .Return (new[] { _fakeStorageProperty1 });
+      _storagePropertyDefinitionResolverMock.Replay();
+
+      _storageNameProviderMock
+          .Expect (mock => mock.GetViewName (_testModel.BaseBaseClassDefinition))
+          .Return (new EntityNameDefinition(null, "FakeViewName"));
+      _storageNameProviderMock.Replay();
+
+      MockStandardProperties();
+
+      _infrastructureStoragePropertyDefinitionProviderMock.Replay();
+
+      var result = _factory.CreateNullViewDefinition (_testModel.BaseBaseClassDefinition);
+
+      _storagePropertyDefinitionResolverMock.VerifyAllExpectations();
+      _infrastructureStoragePropertyDefinitionProviderMock.VerifyAllExpectations();
+      _storageNameProviderMock.VerifyAllExpectations();
+      CheckNullViewDefinition (
+          result,
+          _storageProviderID,
+          "FakeViewName",
+          new IRdbmsStoragePropertyDefinition[]
+          {
+              _fakeObjectIDStorageProperty, 
+              _fakeTimestampStorageProperty, 
+              _fakeStorageProperty1
+          },
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+    }
+
     private void CheckTableDefinition (
         IRdbmsStorageEntityDefinition actualEntityDefinition,
         string expectedStorageProviderID,
@@ -369,6 +406,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       Assert.That (actualEntityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
       Assert.That (((UnionViewDefinition) actualEntityDefinition).UnionedEntities, Is.EqualTo (expectedStorageEntityDefinitions));
+
+      CheckEntityDefinition (
+          actualEntityDefinition,
+          expectedStorageProviderID,
+          expectedViewName,
+          expectedStoragePropertyDefinitions,
+          expectedIndexDefinitions,
+          expectedSynonyms);
+    }
+
+    private void CheckNullViewDefinition (
+        IRdbmsStorageEntityDefinition actualEntityDefinition,
+        string expectedStorageProviderID,
+        string expectedViewName,
+        IRdbmsStoragePropertyDefinition[] expectedStoragePropertyDefinitions,
+        IIndexDefinition[] expectedIndexDefinitions,
+        EntityNameDefinition[] expectedSynonyms)
+    {
+      Assert.That (actualEntityDefinition, Is.TypeOf (typeof (NullRdbmsStorageEntityDefinition)));
 
       CheckEntityDefinition (
           actualEntityDefinition,
