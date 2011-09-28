@@ -147,7 +147,7 @@ namespace Remotion.Web.UI.Controls
     [NotifyParentProperty (true)]
     [ParenthesizePropertyName (true)]
     [DefaultValue ("")]
-    public virtual string ItemID
+    public string ItemID
     {
       get { return _itemID; }
       set { _itemID = StringUtility.NullToEmpty (value); }
@@ -158,7 +158,7 @@ namespace Remotion.Web.UI.Controls
     [Description ("The category to which this menu item belongs. Items of the same category will be grouped in the UI.")]
     [NotifyParentProperty (true)]
     [DefaultValue ("")]
-    public virtual string Category
+    public string Category
     {
       get { return _category; }
       set { _category = StringUtility.NullToEmpty (value); }
@@ -169,7 +169,7 @@ namespace Remotion.Web.UI.Controls
     [Description ("The text displayed in this menu item. Use '-' for a separator menu item. The value will not be HTML encoded.")]
     [NotifyParentProperty (true)]
     [DefaultValue ("")]
-    public virtual string Text
+    public string Text
     {
       get { return _text; }
       set { _text = StringUtility.NullToEmpty (value); }

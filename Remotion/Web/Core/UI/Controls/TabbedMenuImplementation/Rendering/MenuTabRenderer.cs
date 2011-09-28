@@ -30,6 +30,8 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// </summary>
   public class MenuTabRenderer : WebTabRenderer, IMenuTabRenderer
   {
+    private Command _renderingCommand;
+
     public MenuTabRenderer ()
     {
     }
@@ -38,28 +40,30 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("style", style);
 
-      var menuTab = ((IMenuTab) tab).GetActiveTab ();
-      RenderingCommand = GetRenderingCommand(isEnabled, menuTab);
+      var menuTab = ((IMenuTab) tab).GetActiveTab();
+      _renderingCommand = GetRenderingCommand (isEnabled, menuTab);
 
-      if (RenderingCommand != null)
+      var additionalUrlParameters = menuTab.GetUrlParameters();
+      var backupID = _renderingCommand.ItemID;
+
+      try
       {
-        NameValueCollection additionalUrlParameters = menuTab.GetUrlParameters();
-        RenderingCommand.RenderBegin (
-            renderingContext.Writer, tab.GetPostBackClientEvent (), new string[0], string.Empty, null, additionalUrlParameters, false, style);
+        if (!string.IsNullOrEmpty (tab.ItemID) && string.IsNullOrEmpty (_renderingCommand.ItemID))
+          _renderingCommand.ItemID = tab.ItemID + "_Command";
+
+        _renderingCommand.RenderBegin (
+            renderingContext.Writer, tab.GetPostBackClientEvent(), new string[0], string.Empty, null, additionalUrlParameters, false, style);
       }
-      else
+      finally
       {
-        style.AddAttributesToRender (renderingContext.Writer);
-        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
+        _renderingCommand.ItemID = backupID;
       }
     }
 
-    protected Command RenderingCommand { get; set; }
-
     protected override void RenderEndTagForCommand (WebTabStripRenderingContext renderingContext)
     {
-      if (RenderingCommand != null)
-        RenderingCommand.RenderEnd (renderingContext.Writer);
+      if (_renderingCommand != null)
+        _renderingCommand.RenderEnd (renderingContext.Writer);
       else
         renderingContext.Writer.RenderEndTag ();
     }
@@ -69,7 +73,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
       if (isEnabled && activeTab.EvaluateEnabled ())
         return activeTab.Command;
 
-      return null;
+      return new Command (CommandType.None) { OwnerControl = activeTab.OwnerControl };
     }
   }
 }
