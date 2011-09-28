@@ -437,11 +437,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       span.AssertAttributeValueEquals ("class", "body");
       span.AssertChildElementCount (Control.HasOptionsMenu ? 2 : 1);
 
-      var commandSpan = span.GetAssertedChildElement ("a", 0);
-      commandSpan.AssertAttributeValueEquals ("class", "command");
-      commandSpan.AssertChildElementCount (1);
+      var commandLink = span.GetAssertedChildElement ("a", 0);
+      commandLink.AssertAttributeValueEquals ("id", Control.ClientID + "_Command");
+      commandLink.AssertAttributeValueEquals ("class", "command");
+      commandLink.AssertChildElementCount (1);
 
-      var innerSpan = commandSpan.GetAssertedChildElement ("span", 0);
+      var innerSpan = commandLink.GetAssertedChildElement ("span", 0);
       innerSpan.AssertAttributeValueEquals ("id", Control.LabelClientID);
       innerSpan.AssertChildElementCount (0);
       innerSpan.AssertTextNode ("MyText", 0);
@@ -535,6 +536,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       if (Control.IsCommandEnabled (Control.IsReadOnly))
       {
         var link = parent.GetAssertedChildElement ("a", 0);
+        link.AssertAttributeValueEquals ("id", Control.ClientID + "_Command");
         link.AssertAttributeValueEquals ("class", "command");
         link.AssertAttributeValueEquals ("href", "#");
         link.AssertAttributeValueEquals ("onclick", "");
@@ -549,10 +551,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         var iconParent = parent;
         if (wrapNonCommandIcon)
         {
-          var span = parent.GetAssertedChildElement ("a", 0);
-          span.AssertAttributeValueEquals ("class", "command");
+          var anchor = parent.GetAssertedChildElement ("a", 0);
+          anchor.AssertAttributeValueEquals ("id", Control.ClientID + "_Command");
+          anchor.AssertAttributeValueEquals ("class", "command");
 
-          iconParent = span;
+          iconParent = anchor;
         }
 
         var icon = iconParent.GetAssertedChildElement ("img", 0);
