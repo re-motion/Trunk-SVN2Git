@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private readonly SingleControlItemCollection _command;
 
     private string _requiredFieldErrorMessage;
-    private readonly ArrayList _validators;
+    private readonly ArrayList _validators = new ArrayList ();
     private string _optionsTitle;
     private bool _showOptionsMenu = true;
     private Unit _optionsMenuWidth = Unit.Empty;
@@ -67,9 +67,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected BocReferenceValueBase ()
     {
       _optionsMenu = new DropDownMenu (this);
-      _command = new SingleControlItemCollection (new BocCommand (), new[] { typeof (BocCommand) });
-      _validators = new ArrayList ();
-
+      _command = new SingleControlItemCollection (new BocCommand(), new[] { typeof (BocCommand) });
+      _command.OwnerControl = this;
     }
 
     /// <summary>
@@ -125,12 +124,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     public BocCommand Command
     {
       get { return (BocCommand) _command.ControlItem; }
-      set
-      {
-        _command.ControlItem = value;
-        if (value != null)
-          _command.ControlItem.OwnerControl = this;
-      }
+      set { _command.ControlItem = value; }
     }
 
     /// <summary> Gets or sets the current value. </summary>

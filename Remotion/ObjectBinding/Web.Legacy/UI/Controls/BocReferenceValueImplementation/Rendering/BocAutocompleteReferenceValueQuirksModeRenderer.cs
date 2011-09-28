@@ -444,12 +444,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
       {
+        renderingContext.Control.Command.ItemID = "Command";
         renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
         if (!string.IsNullOrEmpty (renderingContext.Control.Command.ToolTip))
           icon.ToolTip = renderingContext.Control.Command.ToolTip;
       }
       else
       {
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "_Command");
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       }
       icon.RenderControl (renderingContext.Writer);
@@ -469,9 +471,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
+      {
+        renderingContext.Control.Command.ItemID = "Command";
         renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+      }
       else
+      {
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      }
       if (icon.Visible)
       {
         icon.RenderControl (renderingContext.Writer);

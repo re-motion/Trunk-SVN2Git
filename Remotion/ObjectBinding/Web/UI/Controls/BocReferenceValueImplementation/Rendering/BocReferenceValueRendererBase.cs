@@ -295,7 +295,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private BocCommand GetCommand (BocRenderingContext<TControl> renderingContext, bool isCommandEnabled)
     {
-      return isCommandEnabled ? renderingContext.Control.Command : new BocCommand (CommandType.None) { OwnerControl = renderingContext.Control };
+      var command = isCommandEnabled
+                        ? renderingContext.Control.Command
+                        : new BocCommand (CommandType.None) { OwnerControl = renderingContext.Control };
+      command.ItemID = "Command";
+      return command;
     }
 
     private Image GetIcon (BocRenderingContext<TControl> renderingContext)
