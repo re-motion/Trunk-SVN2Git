@@ -158,12 +158,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void IsNull ()
-    {
-      Assert.That (((INullObject) _filterViewDefinition).IsNull, Is.False);
-    }
-
-    [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<IRdbmsStorageEntityDefinitionVisitor>();

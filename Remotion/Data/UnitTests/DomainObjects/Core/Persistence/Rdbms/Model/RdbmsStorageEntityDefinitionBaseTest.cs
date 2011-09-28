@@ -132,12 +132,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
                   _property3.ColumnDefinition
               }));
     }
-
-
-    [Test]
-    public void IsNull ()
-    {
-      Assert.That (((INullObject) _rdbmsStorageEntityDefinition).IsNull, Is.False);
-    }
   }
 }
