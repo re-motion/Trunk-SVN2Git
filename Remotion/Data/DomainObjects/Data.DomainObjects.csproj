@@ -243,6 +243,7 @@
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\ColumnValueReader.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnValueProvider.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlEmptyViewScriptElementFactory.cs" />
     <Compile Include="Persistence\StorageEntityBasedStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\ObjectLookupResult.cs" />
     <Compile Include="Persistence\FixedValueStorageProviderCommand.cs" />

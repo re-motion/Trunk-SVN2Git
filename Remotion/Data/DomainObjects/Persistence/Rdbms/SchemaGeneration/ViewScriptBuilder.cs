@@ -29,6 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly IViewScriptElementFactory<TableDefinition> _tableViewElementFactory;
     private readonly IViewScriptElementFactory<UnionViewDefinition> _unionViewElementFactory;
     private readonly IViewScriptElementFactory<FilterViewDefinition> _filterViewElementFactory;
+    private readonly IViewScriptElementFactory<EmptyViewDefinition> _emptyViewElementFactory;
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
@@ -36,20 +37,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         IViewScriptElementFactory<TableDefinition> tableViewElementFactory,
         IViewScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
         IViewScriptElementFactory<FilterViewDefinition> filterViewElementFactory,
+        IViewScriptElementFactory<EmptyViewDefinition> emptyViewElementFactory,
         ICommentScriptElementFactory commentFactory)
     {
       ArgumentUtility.CheckNotNull ("tableViewElementFactory", tableViewElementFactory);
       ArgumentUtility.CheckNotNull ("unionViewElementFactory", unionViewElementFactory);
       ArgumentUtility.CheckNotNull ("filterViewElementFactory", filterViewElementFactory);
+      ArgumentUtility.CheckNotNull ("emptyViewElementFactory", emptyViewElementFactory);
       ArgumentUtility.CheckNotNull ("commentFactory", commentFactory);
       
       _tableViewElementFactory = tableViewElementFactory;
       _unionViewElementFactory = unionViewElementFactory;
       _filterViewElementFactory = filterViewElementFactory;
+      _emptyViewElementFactory = emptyViewElementFactory;
+
       _createScriptElements = new ScriptElementCollection();
-      _createScriptElements.AddElement (commentFactory.GetCommentElement("Create a view for every class"));
+      _createScriptElements.AddElement (commentFactory.GetCommentElement ("Create a view for every class"));
       _dropScriptElements = new ScriptElementCollection();
-      _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all views"));
+      _dropScriptElements.AddElement (commentFactory.GetCommentElement ("Drop all views"));
     }
 
     public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
@@ -59,9 +64,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       RdbmsStorageInlineEntityDefinitionVisitor.Visit (
           entityDefinition,
           (table, continuation) => AddTableDefinition (table),
-          (filterView, continuation) => AddFilterViewDefinition(filterView),
-          (unionView, contination) => AddUnionViewDefinition(unionView),
-          (emptyView, continuation) => { });
+          (filterView, continuation) => AddFilterViewDefinition (filterView),
+          (unionView, contination) => AddUnionViewDefinition (unionView),
+          (emptyView, continuation) => AddEmptyViewDefinition (emptyView));
     }
 
     public IScriptElement GetCreateScript ()
@@ -87,6 +92,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private void AddFilterViewDefinition (FilterViewDefinition filterViewDefinition)
     {
       AddElements (_filterViewElementFactory.GetCreateElement (filterViewDefinition), _filterViewElementFactory.GetDropElement (filterViewDefinition));
+    }
+
+    private void AddEmptyViewDefinition (EmptyViewDefinition emptyViewDefinition)
+    {
+      AddElements (_emptyViewElementFactory.GetCreateElement (emptyViewDefinition), _emptyViewElementFactory.GetDropElement (emptyViewDefinition));
     }
 
     private void AddElements (IScriptElement createElement, IScriptElement dropElement)

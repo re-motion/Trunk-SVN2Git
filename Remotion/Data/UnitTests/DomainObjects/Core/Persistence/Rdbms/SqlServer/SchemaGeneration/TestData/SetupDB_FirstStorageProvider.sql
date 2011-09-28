@@ -236,6 +236,11 @@ CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNum
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], NULL, NULL, NULL, [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences]
     FROM [dbo].[DevelopmentPartner]
 GO
+CREATE VIEW [dbo].[AbstractWithoutConcreteClassView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID])
+  AS
+  SELECT NULL AS [ID], NULL AS [ClassID], NULL AS [Timestamp], NULL AS [Name], NULL AS [PhoneNumber], NULL AS [AddressID]
+    WHERE 1 = 0
+GO
 CREATE VIEW [dbo].[AddressView] ([ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country]

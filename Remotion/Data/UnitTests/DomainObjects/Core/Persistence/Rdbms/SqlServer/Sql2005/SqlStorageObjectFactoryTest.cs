@@ -112,6 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           MockRepository.GenerateStub<IViewScriptElementFactory<TableDefinition>>(),
           MockRepository.GenerateStub<IViewScriptElementFactory<UnionViewDefinition>>(),
           MockRepository.GenerateStub<IViewScriptElementFactory<FilterViewDefinition>>(),
+          MockRepository.GenerateStub<IViewScriptElementFactory<EmptyViewDefinition>>(),
           new SqlCommentScriptElementFactory());
       var constraintBuilderStub =
           MockRepository.GenerateStub<ForeignKeyConstraintScriptBuilder> (

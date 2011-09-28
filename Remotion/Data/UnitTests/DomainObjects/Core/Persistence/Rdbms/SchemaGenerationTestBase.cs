@@ -104,6 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new SqlTableViewScriptElementFactory(),
           new SqlUnionViewScriptElementFactory(),
           new SqlFilterViewScriptElementFactory(),
+          new SqlEmptyViewScriptElementFactory(),
           new SqlCommentScriptElementFactory());
     }
 
@@ -113,6 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new ExtendedSqlTableViewScriptElementFactory(),
           new ExtendedSqlUnionViewScriptElementFactory(),
           new ExtendedSqlFilterViewScriptElementFactory(),
+          new SqlEmptyViewScriptElementFactory(),
           new SqlCommentScriptElementFactory());
     }
 

@@ -138,6 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
           new SqlTableViewScriptElementFactory(),
           new SqlUnionViewScriptElementFactory(),
           new SqlFilterViewScriptElementFactory(),
+          new SqlEmptyViewScriptElementFactory(),
           new SqlCommentScriptElementFactory());
     }
 

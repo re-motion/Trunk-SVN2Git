@@ -55,7 +55,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _emptyViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<EmptyViewDefinition>>();
 
       _builder = new ViewScriptBuilder (
-          _tableViewElementFactoryStub, _unionViewElementFactoryStub, _filterViewElementFactoryStub, new SqlCommentScriptElementFactory());
+          _tableViewElementFactoryStub,
+          _unionViewElementFactoryStub,
+          _filterViewElementFactoryStub,
+          _emptyViewElementFactoryStub,
+          new SqlCommentScriptElementFactory());
 
       _tableDefinition1 = TableDefinitionObjectMother.Create(SchemaGenerationFirstStorageProviderDefinition);
       _tableDefinition2 = TableDefinitionObjectMother.Create (SchemaGenerationFirstStorageProviderDefinition);
@@ -249,7 +253,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    [Ignore ("TODO 4130")]
     public void GetCreateScript_GetDropScript_OneEmptyViewDefinitionAdded ()
     {
       _emptyViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_emptyViewDefinition1)).Return (_fakeElement1);
@@ -270,7 +273,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    [Ignore ("TODO 4130")]
     public void GetCreateScript_GetDropScript_SeveralEmptyViewDefinitionsAdded ()
     {
       _emptyViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_emptyViewDefinition1)).Return (_fakeElement1);

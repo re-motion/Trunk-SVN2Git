@@ -249,6 +249,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           new SqlTableViewScriptElementFactory(),
           new SqlUnionViewScriptElementFactory(),
           new SqlFilterViewScriptElementFactory(),
+          new SqlEmptyViewScriptElementFactory(),
           new SqlCommentScriptElementFactory());
     }
 

@@ -4,6 +4,8 @@ USE SchemaGenerationTestDomain1
 -- Drop all views
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CompanyView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[CompanyView]
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AbstractWithoutConcreteClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[AbstractWithoutConcreteClassView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AddressView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[AddressView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CeoView' AND TABLE_SCHEMA = 'dbo')

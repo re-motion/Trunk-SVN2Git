@@ -31,16 +31,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     public static EmptyViewDefinition Create (StorageProviderDefinition storageProviderDefinition, EntityNameDefinition viewName)
     {
-      return new EmptyViewDefinition (
+      return Create (
           storageProviderDefinition,
           viewName,
           ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty,
           SimpleStoragePropertyDefinitionObjectMother.TimestampProperty,
-          new IRdbmsStoragePropertyDefinition[0],
+          new IRdbmsStoragePropertyDefinition[0]);
+    }
+
+    public static EmptyViewDefinition Create (
+        StorageProviderDefinition storageProviderDefinition,
+        EntityNameDefinition viewName,
+        ObjectIDStoragePropertyDefinition objectIDProperty,
+        IRdbmsStoragePropertyDefinition timestampProperty,
+        IEnumerable<IRdbmsStoragePropertyDefinition> dataProperties)
+    {
+      return new EmptyViewDefinition (
+          storageProviderDefinition,
+          viewName,
+          objectIDProperty,
+          timestampProperty,
+          dataProperties,
           new EntityNameDefinition[0]);
     }
 
-    public static EmptyViewDefinition CreateWithSynonyms (StorageProviderDefinition storageProviderDefinition, IEnumerable<EntityNameDefinition> synonyms)
+    public static EmptyViewDefinition CreateWithSynonyms (
+        StorageProviderDefinition storageProviderDefinition, IEnumerable<EntityNameDefinition> synonyms)
     {
       return new EmptyViewDefinition (
           storageProviderDefinition,
