@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       BusinessObject.BusinessObjectClass.BusinessObjectProvider.AddService<IBusinessObjectWebUIService>
           (new ReflectionBusinessObjectWebUIService ());
 
-      EventArgs = new BocListDataRowRenderEventArgs (0, (IBusinessObject) businessObject.FirstValue, false, true);
+      EventArgs = new BocListDataRowRenderEventArgs (10, (IBusinessObject) businessObject.FirstValue, false, true);
       
       InitializeMockList();
     }

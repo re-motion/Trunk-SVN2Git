@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderEditing ()
     {
-      List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
+      List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (EventArgs.ListIndex);
 
       IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);

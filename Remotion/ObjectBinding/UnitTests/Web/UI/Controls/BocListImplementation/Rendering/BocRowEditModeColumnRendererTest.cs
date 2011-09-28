@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderEditing ()
     {
-      List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
+      List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (EventArgs.ListIndex);
 
       IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);

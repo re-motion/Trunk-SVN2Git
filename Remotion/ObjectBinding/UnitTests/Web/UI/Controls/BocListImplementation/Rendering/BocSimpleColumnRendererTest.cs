@@ -80,14 +80,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var renderer = new BocSimpleColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
 
-      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 5, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", _bocListCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
-      Html.AssertAttribute (a, "id", List.ClientID + "_Column_0_Command");
+      Html.AssertAttribute (a, "id", List.ClientID + "_Column_0_Row_10_Command");
       Html.AssertAttribute (a, "href", "url");
       Html.AssertAttribute (a, "onclick", "BocList_OnCommandClick();");
 
@@ -134,7 +134,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
               List.EditModeController.ShowEditModeValidationMarkers,
               List.EditModeController.DisableEditModeValidationMessages));
 
-      List.EditModeController.Stub (mock => mock.GetEditableRow (0)).Return (editableRow);
+      List.EditModeController.Stub (mock => mock.GetEditableRow (EventArgs.ListIndex)).Return (editableRow);
 
       List.Stub (mock => mock.Validators).Return (new ArrayList());
 
