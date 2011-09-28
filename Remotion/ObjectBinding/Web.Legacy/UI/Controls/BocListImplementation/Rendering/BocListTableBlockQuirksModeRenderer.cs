@@ -186,7 +186,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive &&
                                      renderingContext.Control.AreDataRowsClickSensitive();
 
-        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, $('#{5}')[0] );";
+        bool hasListMenu = renderingContext.Control.HasListMenu;
+
+        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, {5});";
         string script = string.Format (
             scriptTemplate,
             renderingContext.Control.ClientID,
@@ -194,7 +196,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
             count,
             (int) renderingContext.Control.Selection,
             hasClickSensitiveRows ? "true" : "false",
-            renderingContext.Control.ListMenu.ClientID);
+            hasListMenu ? string.Format ("$('#{0}')[0]", renderingContext.Control.ListMenu.ClientID) : "null");
 
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
             renderingContext.Control,

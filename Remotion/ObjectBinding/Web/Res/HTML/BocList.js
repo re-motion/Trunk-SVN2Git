@@ -171,7 +171,8 @@ function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMen
   $(row).click( function(evt)
   {
     BocList_OnRowClick(evt, bocList, row, selectorControl);
-    ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
+    if (listMenu != null)
+      ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
   });
 }
 
