@@ -332,7 +332,7 @@ namespace Remotion.Web.UI.Controls
     private WxeFunctionCommandInfo _wxeFunctionCommand = new WxeFunctionCommandInfo();
     //private ScriptCommandInfo _scriptCommand = null;
     private bool _hasClickFired;
-    private string _itemID;
+    private string _itemID = string.Empty;
 
     private IControl _ownerControl;
 
@@ -845,7 +845,7 @@ namespace Remotion.Web.UI.Controls
     public string ItemID
     {
       get { return _itemID; }
-      set { _itemID = StringUtility.EmptyToNull (value); }
+      set { _itemID = StringUtility.NullToEmpty (value); }
     }
 
     public virtual void LoadResources (IResourceManager resourceManager)
