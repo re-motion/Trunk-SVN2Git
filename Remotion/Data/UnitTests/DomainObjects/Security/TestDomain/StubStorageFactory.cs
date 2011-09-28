@@ -77,7 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
           storageProviderDefinition);
 
       return new RdbmsPersistenceModelLoader (
-          storageProviderDefinition,
           entityDefinitionFactory,
           dataStoragePropertyDefinitionFactory,
           storageNameProvider,

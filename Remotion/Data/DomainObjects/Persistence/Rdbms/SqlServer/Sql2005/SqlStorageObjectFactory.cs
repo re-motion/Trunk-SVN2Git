@@ -118,7 +118,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageProviderDefinition);
 
       return new RdbmsPersistenceModelLoader (
-          storageProviderDefinition,
           entityDefinitionFactory,
           dataStoragePropertyDefinitionFactory,
           storageNameProvider,

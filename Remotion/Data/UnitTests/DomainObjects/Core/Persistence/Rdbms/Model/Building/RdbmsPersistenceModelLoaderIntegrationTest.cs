@@ -82,7 +82,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           _storageNameProvider,
           _storageProviderDefinition);
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
-          _storageProviderDefinition,
           _entityDefinitionFactory,
           _dataStoragePropertyDefinitionFactory,
           _storageNameProvider,

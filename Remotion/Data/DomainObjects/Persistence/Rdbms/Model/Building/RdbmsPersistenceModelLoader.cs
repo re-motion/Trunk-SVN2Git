@@ -33,35 +33,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
   /// </summary>
   public class RdbmsPersistenceModelLoader : IPersistenceModelLoader
   {
-    private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IRdbmsStorageEntityDefinitionFactory _entityDefinitionFactory;
     private readonly IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
 
     public RdbmsPersistenceModelLoader (
-        StorageProviderDefinition storageProviderDefinition,
         IRdbmsStorageEntityDefinitionFactory entityDefinitionFactory,
         IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory,
         IStorageNameProvider storageNameProvider,
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("entityDefinitionFactory", entityDefinitionFactory);
       ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
 
-      _storageProviderDefinition = storageProviderDefinition;
       _entityDefinitionFactory = entityDefinitionFactory;
       _dataStoragePropertyDefinitionFactory = dataStoragePropertyDefinitionFactory;
       _storageNameProvider = storageNameProvider;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
-    }
-
-    public string StorageProviderID
-    {
-      get { return _storageProviderDefinition.Name; }
     }
 
     public IRdbmsStorageEntityDefinitionFactory EntityDefinitionFactory
@@ -77,11 +68,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     public IStorageNameProvider StorageNameProvider
     {
       get { return _storageNameProvider; }
-    }
-
-    public StorageProviderDefinition StorageProviderDefinition
-    {
-      get { return _storageProviderDefinition; }
     }
 
     public IRdbmsPersistenceModelProvider RdbmsPersistenceModelProvider
@@ -118,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       if (classDefinition.StorageEntityDefinition == null)
       {
-        var storageEntity = CreateStorageEntityDefinition (classDefinition);
+        var storageEntity = CreateEntityDefinition (classDefinition);
         classDefinition.SetStorageEntity (storageEntity);
       }
       else if (!(classDefinition.StorageEntityDefinition is IRdbmsStorageEntityDefinition))
@@ -172,21 +158,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       }
     }
 
-    private IStorageEntityDefinition CreateStorageEntityDefinition (ClassDefinition classDefinition)
+    private IStorageEntityDefinition CreateEntityDefinition (ClassDefinition classDefinition)
     {
-      if(_storageNameProvider.GetTableName(classDefinition)!=null)
+      if (_storageNameProvider.GetTableName (classDefinition) != null)
         return _entityDefinitionFactory.CreateTableDefinition (classDefinition);
 
-      var hasBaseClassWithDBTableAttribute = classDefinition
-          .CreateSequence (cd => cd.BaseClass)
-          .Where (cd =>_storageNameProvider.GetTableName(cd)!=null)
-          .Any();
-      return hasBaseClassWithDBTableAttribute ? CreateFilterViewDefinition (classDefinition) : CreateUnionViewDefinition (classDefinition);
+      var baseClasses = classDefinition.BaseClass.CreateSequence (cd => cd.BaseClass);
+      if (baseClasses.Any (cd => _storageNameProvider.GetTableName (cd) != null))
+        return CreateEntityDefinitionForClassBelowTable (classDefinition);
+      else
+        return CreateEntityDefinitionForClassAboveTable (classDefinition);
     }
 
-    private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
+    private IStorageEntityDefinition CreateEntityDefinitionForClassBelowTable (ClassDefinition classDefinition)
     {
-      // The following call is potentially recursive (GetEntityDefinition -> EnsureStorageEntitiesCreated -> CreateFilterViewDefinition), but this is
+      // The following call is potentially recursive (GetEntityDefinition -> EnsureStorageEntitiesCreated -> CreateEntityDefinitionForClassBelowTable), but this is
       // guaranteed to terminate because we know at this point that there is a class in the classDefinition's base hierarchy that will get a 
       // TableDefinition
       var baseStorageEntityDefinition = GetEntityDefinition (classDefinition.BaseClass);
@@ -194,16 +180,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       return _entityDefinitionFactory.CreateFilterViewDefinition (classDefinition, baseStorageEntityDefinition);
     }
 
-    private IStorageEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition)
+    private IStorageEntityDefinition CreateEntityDefinitionForClassAboveTable (ClassDefinition classDefinition)
     {
       var derivedStorageEntityDefinitions =
-          from ClassDefinition derivedClass in classDefinition.DerivedClasses
-          let entityDefinition = GetEntityDefinition (derivedClass)
-          where !(entityDefinition.IsNull)
-          select entityDefinition;
+          (from ClassDefinition derivedClass in classDefinition.DerivedClasses
+           let entityDefinition = GetEntityDefinition (derivedClass)
+           where !(entityDefinition.IsNull)
+           select entityDefinition).ToList();
 
       if (!derivedStorageEntityDefinitions.Any())
-        return new NullRdbmsStorageEntityDefinition (_storageProviderDefinition);
+        return _entityDefinitionFactory.CreateNullViewDefinition (classDefinition);
+      else
 
       return _entityDefinitionFactory.CreateUnionViewDefinition (classDefinition, derivedStorageEntityDefinitions);
     }

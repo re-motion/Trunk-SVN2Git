@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
@@ -58,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var tableName = _storageNameProvider.GetTableName (classDefinition);
-      if (tableName==null)
+      if (tableName == null)
         throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
       var objectIDProperty = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition ();
@@ -115,6 +116,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
           dataProperties, 
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
+    }
+
+    public IRdbmsStorageEntityDefinition CreateNullViewDefinition (ClassDefinition classDefinition)
+    {
+      return new NullRdbmsStorageEntityDefinition (_storageProviderDefinition);
     }
 
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)
