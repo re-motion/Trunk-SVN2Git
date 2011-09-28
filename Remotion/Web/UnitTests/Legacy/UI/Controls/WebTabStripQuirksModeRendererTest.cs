@@ -24,7 +24,6 @@ using NUnit.Framework;
 using Remotion.Utilities;
 using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -334,14 +333,16 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       var tab = wrapper.GetAssertedChildElement ("span", 1);
       tab.AssertAttributeValueEquals ("id", _webTabStrip.ClientID + "_" + webTab.ItemID);
       tab.AssertAttributeValueContains ("class", webTab.IsSelected ? _renderer.CssClassTabSelected : _renderer.CssClassTab);
-      if (webTab.IsDisabled)
+      if (!webTab.EvaluateEnabled())
         tab.AssertAttributeValueContains ("class", _renderer.CssClassDisabled);
       var link = tab.GetAssertedChildElement ("a", 0);
 
       bool isDisabledBySelection = webTab.IsSelected && !_webTabStrip.EnableSelectedTab;
-      if (!webTab.IsDisabled && !isDisabledBySelection)
-      {
+      if (webTab.EvaluateEnabled())
         link.AssertAttributeValueEquals ("href", "#");
+
+      if (webTab.EvaluateEnabled() && !isDisabledBySelection)
+      {
         string clickScript = _pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, webTab.ItemID);
         link.AssertAttributeValueEquals ("onclick", clickScript);
       }

@@ -108,10 +108,12 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("style", style);
 
-      if (isEnabled && !tab.IsDisabled)
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetTabClientID (renderingContext, tab) + "_Command");
+      if (tab.EvaluateEnabled())
       {
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, tab.GetPostBackClientEvent ());
+        if (isEnabled)
+          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, tab.GetPostBackClientEvent ());
       }
       style.AddAttributesToRender (renderingContext.Writer);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor

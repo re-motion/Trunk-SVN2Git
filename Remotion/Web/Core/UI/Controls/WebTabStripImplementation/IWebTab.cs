@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation
@@ -26,7 +25,6 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation
   public interface IWebTab : IControlItem
   {
     string GetPostBackClientEvent ();
-    bool IsDisabled { get; }
     IconInfo Icon { get; }
     string Text { get; }
     bool IsSelected { get; }
