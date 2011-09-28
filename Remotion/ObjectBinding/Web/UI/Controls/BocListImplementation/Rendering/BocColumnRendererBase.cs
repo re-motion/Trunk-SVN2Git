@@ -148,11 +148,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         if (!renderingContext.Control.EditModeController.IsRowEditModeActive && !renderingContext.Control.EditModeController.IsListEditModeActive
             && renderingContext.Control.HasClientScript)
         {
+          var sortCommandID = renderingContext.Control.ClientID + "_" + renderingContext.ColumnIndex + "_SortCommand";
+          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, sortCommandID);
+
           string argument = BocList.SortCommandPrefix + renderingContext.ColumnIndex;
           string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument);
           postBackEvent += "; return false;";
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
+          
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+
           renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
         }
         else

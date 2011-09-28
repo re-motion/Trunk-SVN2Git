@@ -105,6 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       Assert.Less (0, th.ChildNodes.Count);
       var sortCommandLink = Html.GetAssertedChildElement (th, "a", 0);
+      Html.AssertAttribute (sortCommandLink, "id", "MyList_0_SortCommand");
       Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue, 0);
 
       Html.AssertChildElementCount (sortCommandLink, 0);
@@ -127,6 +128,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       Assert.Less (0, th.ChildNodes.Count);
       var sortCommandLink = Html.GetAssertedChildElement (th, "a", 0);
+      Html.AssertAttribute (sortCommandLink, "id", "MyList_0_SortCommand");
       Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0);
 
       var sortOrderSpan = Html.GetAssertedChildElement (sortCommandLink, "span", 1);
