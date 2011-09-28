@@ -169,5 +169,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1);
     }
+
+    [Test]
+    [Ignore ("TODO 4130")]
+    public void AccessingEntity_WithoutAnyTables ()
+    {
+      var query1 = QueryFactory.CreateLinqQuery<AbstractClassWithoutDerivations>();
+      CheckQueryResult (query1);
+
+      var query2 = QueryFactory.CreateLinqQuery<AbstractClassWithoutDerivations>().Where (x => x.DomainBase != null);
+      CheckQueryResult (query2);
+
+      var countWithPropertyAccess = (from db in QueryFactory.CreateLinqQuery<TIDomainBase>()
+                                     where db.AbstractClassesWithoutDerivations.Count() == 0
+                                     select db).Count();
+      var countWithoutPropertyAccess = QueryFactory.CreateLinqQuery<TIDomainBase>().Count();
+      Assert.That (countWithPropertyAccess, Is.EqualTo (countWithoutPropertyAccess));
+
+    }
   }
 }
