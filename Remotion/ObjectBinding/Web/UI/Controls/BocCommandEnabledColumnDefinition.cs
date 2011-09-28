@@ -35,8 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override void OnOwnerControlChanged ()
     {
       base.OnOwnerControlChanged();
-      if (Command != null)
-        Command.OwnerControl = OwnerControl;
+      _command.OwnerControl = OwnerControl;
     }
 
     /// <summary> Gets or sets the <see cref="BocListItemCommand"/> rendered in this column. </summary>
@@ -48,12 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public BocListItemCommand Command
     {
       get { return (BocListItemCommand) _command.ControlItem; }
-      set
-      {
-        _command.ControlItem = value;
-        if (OwnerControl != null)
-          _command.ControlItem.OwnerControl = OwnerControl;
-      }
+      set { _command.ControlItem = value; }
     }
 
     private bool ShouldSerializeCommand ()

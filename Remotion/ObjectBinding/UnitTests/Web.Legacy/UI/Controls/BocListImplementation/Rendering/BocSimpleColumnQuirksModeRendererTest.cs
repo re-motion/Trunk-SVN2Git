@@ -46,6 +46,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.ColumnTitle = "FirstColumn";
       Column.PropertyPathIdentifier = "DisplayName";
       Column.FormatString = "{0}";
+      Column.OwnerControl = List;
 
       base.SetUp();
 
@@ -88,6 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
+      Html.AssertAttribute (a, "id", List.ClientID + "_Column_0_Command");
       Html.AssertAttribute (a, "href", "url");
       Html.AssertAttribute (a, "onclick", "BocList_OnCommandClick();");
 

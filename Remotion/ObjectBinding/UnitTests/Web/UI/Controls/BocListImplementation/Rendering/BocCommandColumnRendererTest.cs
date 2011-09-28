@@ -42,6 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Command.EventCommand.RequiresSynchronousPostBack = true;
       Column.Text = "TestCommand";
       Column.ColumnTitle = "FirstColumn";
+      Column.OwnerControl = List;
 
       _bocListCssClassDefinition = new BocListCssClassDefinition();
 
@@ -69,6 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (td, "class", _bocListCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
+      Html.AssertAttribute (a, "id", List.ClientID + "_Column_0_Command");
       Html.AssertAttribute (a, "href", "#");
       Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 

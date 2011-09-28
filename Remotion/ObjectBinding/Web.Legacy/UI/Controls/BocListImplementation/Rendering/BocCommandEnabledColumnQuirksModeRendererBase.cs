@@ -78,6 +78,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (command == null)
         return false;
 
+      if (string.IsNullOrEmpty (command.ItemID))
+        command.ItemID = "Column_" + renderingContext.ColumnIndex + "_Command";
+
       bool isReadOnly = renderingContext.Control.IsReadOnly;
       bool isActive = command.Show == CommandShow.Always
                       || isReadOnly && command.Show == CommandShow.ReadOnly
