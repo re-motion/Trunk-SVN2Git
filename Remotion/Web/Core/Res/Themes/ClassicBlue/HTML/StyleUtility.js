@@ -44,7 +44,7 @@ StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRig
 
   var hasScrollbarsOnOverflow = scrollDiv.css('overflow') == 'auto' || scrollDiv.css('overflow') == 'scroll';
 
-  if (scrolledDiv.length == 1 && scrolledDiv.attr('nodeName').toLowerCase() == 'div' && hasScrollbarsOnOverflow)
+  if (scrolledDiv.length == 1 && scrolledDiv.prop('nodeName').toLowerCase() == 'div' && hasScrollbarsOnOverflow)
   {
     var offset = 1;
     var hasVerticalScrollBar = scrolledDiv[0].scrollHeight > (scrolledDiv.height() + offset); //height includes the scrollbar, if it exists
