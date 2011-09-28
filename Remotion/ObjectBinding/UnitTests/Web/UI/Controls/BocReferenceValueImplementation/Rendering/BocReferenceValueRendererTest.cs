@@ -437,7 +437,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       span.AssertAttributeValueEquals ("class", "body");
       span.AssertChildElementCount (Control.HasOptionsMenu ? 2 : 1);
 
-      var commandSpan = span.GetAssertedChildElement ("span", 0);
+      var commandSpan = span.GetAssertedChildElement ("a", 0);
       commandSpan.AssertAttributeValueEquals ("class", "command");
       commandSpan.AssertChildElementCount (1);
 
@@ -549,7 +549,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         var iconParent = parent;
         if (wrapNonCommandIcon)
         {
-          var span = parent.GetAssertedChildElement ("span", 0);
+          var span = parent.GetAssertedChildElement ("a", 0);
           span.AssertAttributeValueEquals ("class", "command");
 
           iconParent = span;

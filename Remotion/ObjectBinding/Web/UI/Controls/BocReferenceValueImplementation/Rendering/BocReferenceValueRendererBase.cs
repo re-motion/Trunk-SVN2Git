@@ -261,22 +261,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private void RenderSeparateIcon (BocRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
-      if (isCommandEnabled)
-      {
-        renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
-        if (!string.IsNullOrEmpty (renderingContext.Control.Command.ToolTip))
-          icon.ToolTip = renderingContext.Control.Command.ToolTip;
-      }
-      else
-      {
-        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      }
+
+      var command = GetCommand (renderingContext, isCommandEnabled);
+      command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+      if (!string.IsNullOrEmpty (command.ToolTip))
+        icon.ToolTip = renderingContext.Control.Command.ToolTip;
+
       icon.RenderControl (renderingContext.Writer);
 
       if (isCommandEnabled)
         renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
       else
-        renderingContext.Writer.RenderEndTag ();
+        renderingContext.Writer.RenderEndTag();
     }
 
     private void RenderReadOnlyValue (BocRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
@@ -284,10 +280,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       Label label = GetLabel (renderingContext);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
-      if (isCommandEnabled)
-        renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
-      else
-        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      var command = GetCommand (renderingContext, isCommandEnabled);
+      command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
 
       if (icon.Visible)
         icon.RenderControl (renderingContext.Writer);
@@ -297,6 +291,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
       else
         renderingContext.Writer.RenderEndTag ();
+    }
+
+    private BocCommand GetCommand (BocRenderingContext<TControl> renderingContext, bool isCommandEnabled)
+    {
+      return isCommandEnabled ? renderingContext.Control.Command : new BocCommand (CommandType.None) { OwnerControl = renderingContext.Control };
     }
 
     private Image GetIcon (BocRenderingContext<TControl> renderingContext)

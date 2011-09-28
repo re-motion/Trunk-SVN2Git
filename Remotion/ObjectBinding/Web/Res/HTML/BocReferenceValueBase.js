@@ -74,11 +74,7 @@ BocReferenceValueBase.CreateCommand = function (oldCommand, commandInfo, busines
   ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
   ArgumentUtility.CheckTypeIsString('businessObject', businessObject);
 
-  var newCommand = null;
-  if (businessObject == null || commandInfo == null)
-    newCommand = $('<span/>');
-  else
-    newCommand = $('<a/>');
+  var newCommand = $('<a/>');
 
   var tempCommandInfo = null;
   if (commandInfo != null)
