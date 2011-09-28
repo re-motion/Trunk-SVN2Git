@@ -66,7 +66,7 @@ span.bocAutoCompleteReferenceValueButton img
   border: none;
 }
 
-span.bocAutoCompleteReferenceValue.disabled *.command img
+span.bocAutoCompleteReferenceValue.disabled a.command img
 {
   opacity: 0.4;
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
@@ -84,7 +84,7 @@ span.bocAutoCompleteReferenceValue a.command
   height: 1.3em; 
 }
 
-span.bocAutoCompleteReferenceValue a.command:hover
+span.bocAutoCompleteReferenceValue a[href].command:hover
 {
   display: inline-block;
   border: solid 1px #005588;
@@ -92,26 +92,19 @@ span.bocAutoCompleteReferenceValue a.command:hover
   padding: 0;
 }
 
-span.bocAutoCompleteReferenceValue a.command *
+span.bocAutoCompleteReferenceValue a[href].command *
 {
   cursor: pointer;
 }
 
-span.bocAutoCompleteReferenceValue .command span
+span.bocAutoCompleteReferenceValue a.command span
 {
   vertical-align: top;
 }
 
-span.bocAutoCompleteReferenceValue.readOnly .command img
+span.bocAutoCompleteReferenceValue.readOnly a.command img
 {
   margin-right: 4px;
-}
-
-span.bocAutoCompleteReferenceValue span.command
-{
-  display: inline-block;
-  margin-top: 3px;
-  margin-left: 3px;
 }
 
 /* withoutOptionsMenu */
