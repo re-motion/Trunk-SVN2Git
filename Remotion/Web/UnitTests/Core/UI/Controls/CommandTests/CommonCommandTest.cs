@@ -39,7 +39,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
     {
       Command command = _testHelper.CreateNoneCommand();
       Assert.That (command.OwnerControl, Is.Not.Null);
-      Assert.That (command.ItemID, Is.Not.Null);
+      Assert.That (command.ItemID, Is.Not.Empty);
 
       var expectedID = _testHelper.OwnerControlClientID + "_" + _testHelper.ItemID;
 
@@ -59,8 +59,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
     {
       Command command = _testHelper.CreateNoneCommand();
       command.OwnerControl = null;
-      Assert.That (command.OwnerControl, Is.Null);
-      Assert.That (command.ItemID, Is.Not.Null);
+      Assert.That (command.ItemID, Is.Not.Empty);
 
       command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
@@ -76,7 +75,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       Command command = _testHelper.CreateNoneCommand ();
       command.ItemID = null;
       Assert.That (command.OwnerControl, Is.Not.Null);
-      Assert.That (command.ItemID, Is.Null);
 
       command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
