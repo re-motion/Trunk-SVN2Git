@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   {
     public static DataManager GetDataManager (ClientTransaction clientTransaction)
     {
-      return (DataManager) PrivateInvoke.GetNonPublicProperty (clientTransaction, "DataManager");
+      return (DataManager) DataManagementService.GetDataManager (clientTransaction);
     }
 
     public static IEnlistedDomainObjectManager GetEnlistedDomainObjectManager (ClientTransaction clientTransaction)

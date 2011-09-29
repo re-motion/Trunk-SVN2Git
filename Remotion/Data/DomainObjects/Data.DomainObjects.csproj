@@ -184,6 +184,7 @@
     <Compile Include="DataManagement\Commands\UnloadVirtualEndPointsCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterDataContainerCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
+    <Compile Include="DataManagement\DataManagementService.cs" />
     <Compile Include="DataManagement\RelationEndPoints\DataContainerEndPointsRegistrationAgentBase.cs" />
     <Compile Include="DataManagement\RelationEndPoints\DelegatingDataContainerEndPointsRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\ExistingDataContainerEndPointsRegistrationAgent.cs" />

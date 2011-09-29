@@ -223,6 +223,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\ExceptionCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\NopCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnregisterDataContainerCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\DataManagementServiceTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\DataContainerEndPointsRegistrationAgentBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\NonExistingDataContainerEndPointsRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\ExistingDataContainerEndPointsRegistrationAgentTest.cs" />
