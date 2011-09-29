@@ -146,58 +146,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetDataContainersForCommit_ReturnsObjectsToBeCommitted ()
-    {
-      var changedInstance = (TestDomainBase) DomainObjectMother.GetChangedObject (ClientTransactionMock, DomainObjectIDs.OrderItem1);
-      var newInstance = (TestDomainBase) DomainObjectMother.GetNewObject ();
-      var deletedInstance = (TestDomainBase) DomainObjectMother.GetDeletedObject (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
-
-      DomainObjectMother.GetUnchangedObject (ClientTransactionMock, DomainObjectIDs.Order1);
-      DomainObjectMother.GetInvalidObject (ClientTransactionMock);
-      DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
-
-      var result = _dataManager.GetDataContainersForCommit ();
-
-      var expected = new[] { changedInstance.InternalDataContainer, newInstance.InternalDataContainer, deletedInstance.InternalDataContainer };
-      Assert.That (result.ToArray (), Is.EquivalentTo (expected));
-    }
-
-    [Test]
-    public void GetDataContainersForCommit_DoesNotReturnRelationChangedObjects ()
-    {
-      var orderWithChangedRelation = Order.GetObject (DomainObjectIDs.Order1);
-
-      orderWithChangedRelation.OrderItems.Add (OrderItem.NewObject ());
-      Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
-      Assert.That (orderWithChangedRelation.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
-
-      var result = _dataManager.GetDataContainersForCommit ();
-
-      Assert.That (result.ToArray (), Has.No.Member(orderWithChangedRelation.InternalDataContainer));
-    }
-
-    [Test]
-    [ExpectedException (typeof (MandatoryRelationNotSetException))]
-    public void GetDataContainersForCommit_ChecksMandatoryRelations ()
-    {
-      var invalidOrder = Order.GetObject (DomainObjectIDs.Order1);
-      invalidOrder.OrderTicket = null;
-
-      _dataManager.GetDataContainersForCommit().ToArray();
-    }
-
-    [Test]
-    public void GetDataContainersForCommit_WithDeletedObject ()
-    {
-      OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      orderItem1.Delete ();
-
-      _dataManager.GetDataContainersForCommit ().ToArray ();
-
-      // expectation: no exception
-    }
-
-    [Test]
     public void GetChangedRelationEndPoints ()
     {
       Order order1 = Order.GetObject (DomainObjectIDs.Order1);

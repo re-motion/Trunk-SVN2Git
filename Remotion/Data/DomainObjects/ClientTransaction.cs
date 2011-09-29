@@ -791,12 +791,28 @@ public class ClientTransaction
       BeginCommit();
       var changedButNotDeletedDomainObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New).Select (item => item.DomainObject).ToArray();
 
-      var changedDataContainers = _dataManager.GetDataContainersForCommit();
-      var changedEndPoints = _dataManager.GetChangedRelationEndPoints ();
+      var changedItems = GetDataForCommitAndValidate().ToList();
+      
+      // filter out those items whose state is only Changed due to relation changes
+      var changedDataContainers = changedItems.Select (item => item.DataContainer).Where (dc => dc.State != StateType.Unchanged);
+      var changedEndPoints = changedItems.SelectMany (item => item.GetAssociatedEndPoints()).Where (ep => ep.HasChanged);
       _persistenceStrategy.PersistData (changedDataContainers, changedEndPoints);
 
       _dataManager.Commit ();
       EndCommit (changedButNotDeletedDomainObjects);
+    }
+  }
+
+  private IEnumerable<PersistableData> GetDataForCommitAndValidate ()
+  {
+    foreach (var item in _dataManager.GetNewChangedDeletedData())
+    {
+      Assertion.IsTrue (item.DomainObjectState != StateType.NotLoadedYet);
+      
+      if (item.DomainObjectState != StateType.Deleted)
+        _dataManager.CheckMandatoryRelations (item.DataContainer);
+
+      yield return item;
     }
   }
 

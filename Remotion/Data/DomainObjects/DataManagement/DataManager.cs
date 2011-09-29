@@ -112,20 +112,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New);
     }
 
-    public IEnumerable<DataContainer> GetDataContainersForCommit ()
-    {
-      foreach (var item in GetNewChangedDeletedData())
-      {
-        Assertion.IsTrue (item.DomainObjectState != StateType.NotLoadedYet);
-
-        if (item.DomainObjectState != StateType.Deleted)
-          CheckMandatoryRelations (item.DataContainer);
-
-        if (item.DataContainer.State != StateType.Unchanged) // filter out those items whose state is only Changed due to relation changes
-          yield return item.DataContainer;
-      }
-    }
-
     public IEnumerable<IRelationEndPoint> GetChangedRelationEndPoints ()
     {
       return _relationEndPointManager.RelationEndPoints.Where (endPoint => endPoint.HasChanged);
