@@ -125,11 +125,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public virtual void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<IRelationEndPoint> endPoints)
+    public virtual void PersistData (IEnumerable<PersistableData> data)
     {
-      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-      ArgumentUtility.CheckNotNull ("endPoints", endPoints);
+      ArgumentUtility.CheckNotNull ("data", data);
 
+      // Filter out those items whose state is only Changed due to relation changes - we don't persist those
+      var dataContainers = data.Select (item => item.DataContainer).Where (dc => dc.State != StateType.Unchanged);
+      
       var collection = new DataContainerCollection (dataContainers, false);
       if (collection.Count > 0)
       {

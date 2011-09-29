@@ -188,15 +188,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     object LoadScalarForQuery (IQuery query);
 
     /// <summary>
-    /// Persists the changed data stored by the given <see cref="DataContainer"/> instances.
+    /// Persists the given data.
     /// </summary>
-    /// <param name="dataContainers">The data containers whose data should be persisted.</param>
-    /// <param name="endPoints">The end points whose data should be persisted.</param>
+    /// <param name="data">The <see cref="PersistableData"/> items describing the data to be persisted.</param>
     /// <remarks>
-    /// The caller must ensure that the data represented by <paramref name="dataContainers"/> and 
-    /// <paramref name="endPoints"/> is consistent and complete; otherwise an inconsistent state
+    /// The caller must ensure that the data represented by <paramref name="data"/> is consistent and complete; otherwise an inconsistent state
     /// might arise in the underlying data store.
     /// </remarks>
-    void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<IRelationEndPoint> endPoints);
+    void PersistData (IEnumerable<PersistableData> data);
   }
 }
