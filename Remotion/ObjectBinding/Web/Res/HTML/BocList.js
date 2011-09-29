@@ -129,42 +129,8 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
     BocList_FixUpScrolling(tableBlock);
   }
 
-  BocList_syncCheckboxes(bocList);
+  BocList_SyncCheckboxes(bocList);
 }
-
-function BocList_FixUpScrolling(tableBlock)
-{
-  //activateTableHeader only on first scroll
-  var scrollTimer = null;
-  var container = tableBlock.children().eq(0);
-  var horizontalScroll = 0;
-
-  container.bind('scroll', function (event)
-  {
-    // return if is horizontal scrolling
-    var currentHorizontalScroll = $(this).scrollLeft();
-    if (currentHorizontalScroll != horizontalScroll && currentHorizontalScroll > 0)
-    {
-      horizontalScroll = currentHorizontalScroll;
-      return;
-    }
-
-    var currentBocList = $(this);
-    BocList_activateTableHeader(currentBocList);
-    if (scrollTimer) clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(function () { BocList_fixHeaderPosition(currentBocList) }, 50);
-  });
-
-  //activateTableHeader on window resize
-  var resizeTimer = null;
-  $(window).bind('resize', function ()
-  {
-    if (resizeTimer) clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () { BocList_activateTableHeader(container); }, 50);
-  });
-}
-
-
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu)
 {
@@ -367,7 +333,39 @@ function BocList_GetSelectionCount (bocListID)
   return selectedRows.Length;
 }
 
-function BocList_activateTableHeader(container)
+function BocList_FixUpScrolling(tableBlock)
+{
+  //activateTableHeader only on first scroll
+  var scrollTimer = null;
+  var container = tableBlock.children().eq(0);
+  var horizontalScroll = 0;
+
+  container.bind('scroll', function (event)
+  {
+    // return if is horizontal scrolling
+    var currentHorizontalScroll = $(this).scrollLeft();
+    if (currentHorizontalScroll != horizontalScroll && currentHorizontalScroll > 0)
+    {
+      horizontalScroll = currentHorizontalScroll;
+      return;
+    }
+
+    var currentBocList = $(this);
+    BocList_ActivateTableHeader(currentBocList);
+    if (scrollTimer) clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function () { BocList_FixHeaderPosition(currentBocList) }, 50);
+  });
+
+  //activateTableHeader on window resize
+  var resizeTimer = null;
+  $(window).bind('resize', function ()
+  {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { BocList_ActivateTableHeader(container); }, 50);
+  });
+}
+
+function BocList_ActivateTableHeader(container)
 {
     var cointainerChildrens = container.children();
     var realThead = cointainerChildrens.eq(0).find('thead');
@@ -380,13 +378,13 @@ function BocList_activateTableHeader(container)
     var fakeTheadRowChildrens = fakeTheadRow.children();
 
     // hide bocListFakeTableHead if bocList is not scrollable
-    if (!checkScrollBarPresence(container))
+    if (!BocList_CheckScrollBarPresence(container))
     {
         fakeTableContainer.hide();
         return;
     }
     
-    BocList_syncCheckboxes(container);
+    BocList_SyncCheckboxes(container);
 
     // store cell widths in array
     var realTheadCellWidths = new Array();
@@ -405,7 +403,7 @@ function BocList_activateTableHeader(container)
     fakeTableContainer.width(realTheadRow.width());
 }
 
-function BocList_fixHeaderPosition(containerDiv)
+function BocList_FixHeaderPosition(containerDiv)
 {
     var bocListFakeTableHead = containerDiv.find('div.bocListFakeTableHead');
     var scrollPosition = containerDiv.scrollTop();
@@ -419,7 +417,7 @@ function BocList_fixHeaderPosition(containerDiv)
     bocListFakeTableHead.css({ 'top': scrollPosition, 'left':'0' });
 }
 
-function BocList_syncCheckboxes(container)
+function BocList_SyncCheckboxes(container)
 {
     // sync checkboxes
     var checkboxes = $(container).find("th input:checkbox");
@@ -432,7 +430,7 @@ function BocList_syncCheckboxes(container)
     });
 }
 
-function checkScrollBarPresence(element)
+function BocList_CheckScrollBarPresence(element)
 {
   return ((element.prop('scrollHeight') > element.innerHeight()) || (element.prop('scrollWidth') > element.innerWidth()));
 }
