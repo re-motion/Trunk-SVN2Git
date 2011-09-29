@@ -34,10 +34,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     void Discard (DataContainer dataContainer);
 
-    IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ();
-    IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedDataByObjectState (params StateType[] domainObjectStates);
-    IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetChangedDataByObjectState ();
-    IEnumerable<DataContainer> GetChangedDataContainersForCommit ();
+    IEnumerable<PersistableData> GetLoadedDataByObjectState (params StateType[] domainObjectStates);
+    IEnumerable<PersistableData> GetNewChangedDeletedData ();
+    IEnumerable<DataContainer> GetDataContainersForCommit ();
     IEnumerable<IRelationEndPoint> GetChangedRelationEndPoints ();
     IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer);
     

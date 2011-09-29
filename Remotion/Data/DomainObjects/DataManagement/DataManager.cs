@@ -91,44 +91,38 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _domainObjectStateCache; }
     }
 
-    public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
-    {
-      return DataContainers.Select (dc => Tuple.Create (dc.DomainObject, dc));
-    }
-
-    public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedDataByObjectState (params StateType[] domainObjectStates)
+    public IEnumerable<PersistableData> GetLoadedDataByObjectState (params StateType[] domainObjectStates)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("domainObjectStates", domainObjectStates);
 
       var stateSet = new StateValueSet (domainObjectStates);
 
-      var matchingObjects = from tuple in GetLoadedData()
-                            let domainObject = tuple.Item1
+      var matchingObjects = from dataContainer in DataContainers
+                            let domainObject = dataContainer.DomainObject
                             let state = domainObject.TransactionContext[_clientTransaction].State
                             where stateSet.Matches (state)
-                            select Tuple.Create (domainObject, tuple.Item2, state);
+                            let associatedEndPointSequence = 
+                                dataContainer.AssociatedRelationEndPointIDs.Select (GetRelationEndPointWithoutLoading).Where (ep => ep != null)
+                            select new PersistableData (domainObject, state, dataContainer, associatedEndPointSequence);
       return matchingObjects;
     }
 
-    public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetChangedDataByObjectState ()
+    public IEnumerable<PersistableData> GetNewChangedDeletedData ()
     {
       return GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New);
     }
 
-    public IEnumerable<DataContainer> GetChangedDataContainersForCommit ()
+    public IEnumerable<DataContainer> GetDataContainersForCommit ()
     {
-      foreach (var tuple in GetChangedDataByObjectState())
+      foreach (var item in GetNewChangedDeletedData())
       {
-        var dataContainer = tuple.Item2;
-        var state = tuple.Item3;
+        Assertion.IsTrue (item.DomainObjectState != StateType.NotLoadedYet);
 
-        Assertion.IsTrue (state != StateType.NotLoadedYet);
+        if (item.DomainObjectState != StateType.Deleted)
+          CheckMandatoryRelations (item.DataContainer);
 
-        if (state != StateType.Deleted)
-          CheckMandatoryRelations (dataContainer);
-
-        if (dataContainer.State != StateType.Unchanged) // filter out those items whose state is only Changed due to relation changes
-          yield return dataContainer;
+        if (item.DataContainer.State != StateType.Unchanged) // filter out those items whose state is only Changed due to relation changes
+          yield return item.DataContainer;
       }
     }
 

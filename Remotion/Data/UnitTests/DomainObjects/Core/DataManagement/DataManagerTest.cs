@@ -86,28 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetLoadedDomainObjects_Empty ()
-    {
-      var loadedDomainObjects = _dataManager.GetLoadedData ();
-      Assert.That (loadedDomainObjects.ToArray (), Is.Empty);
-    }
-
-    [Test]
-    public void GetLoadedDomainObjects_NonEmpty ()
-    {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-
-      var loadedDomainObjects = _dataManager.GetLoadedData ();
-
-      var expected = new[] { 
-          new Tuple<DomainObject, DataContainer> (order1, order1.InternalDataContainer), 
-          new Tuple<DomainObject, DataContainer> (orderItem1, orderItem1.InternalDataContainer) };
-      Assert.That (loadedDomainObjects.ToArray (), Is.EquivalentTo (expected));
-    }
-
-    [Test]
-    public void GetLoadedDomainObjects_WithStates ()
+    public void GetLoadedDataByObjectState ()
     {
       var unchangedInstance = DomainObjectMother.GetUnchangedObject(ClientTransactionMock, DomainObjectIDs.Order1);
       var changedInstance = DomainObjectMother.GetChangedObject(ClientTransactionMock, DomainObjectIDs.OrderItem1);
@@ -118,20 +97,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var changedOrNewObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New);
       var deletedOrUnchangedObjects = _dataManager.GetLoadedDataByObjectState (StateType.Deleted, StateType.Unchanged);
 
-      Assert.That (unchangedObjects.ToArray (), Is.EquivalentTo (new[] { CreateDataTuple (unchangedInstance) }));
-      Assert.That (changedOrNewObjects.ToArray (), Is.EquivalentTo (new[] { CreateDataTuple (changedInstance), CreateDataTuple (newInstance) }));
-      Assert.That (deletedOrUnchangedObjects.ToArray (), Is.EquivalentTo (new[] { CreateDataTuple (deletedInstance), CreateDataTuple (unchangedInstance) }));
+      CheckPersistableDataSequence (new[] { CreatePersistableData (unchangedInstance) }, unchangedObjects);
+      CheckPersistableDataSequence (new[] { CreatePersistableData (changedInstance), CreatePersistableData (newInstance) }, changedOrNewObjects);
+      CheckPersistableDataSequence (new[] { CreatePersistableData (deletedInstance), CreatePersistableData (unchangedInstance) }, deletedOrUnchangedObjects);
     }
 
     [Test]
-    public void GetChangedData_Empty ()
+    public void GetNewChangedDeletedData_Empty ()
     {
-      var changedDomainObjects = _dataManager.GetChangedDataByObjectState ();
+      var changedDomainObjects = _dataManager.GetNewChangedDeletedData ();
       Assert.That (changedDomainObjects.ToArray(), Is.Empty);
     }
 
     [Test]
-    public void GetChangedData ()
+    public void GetNewChangedDeletedData ()
     {
       var changedInstance = DomainObjectMother.GetChangedObject (ClientTransactionMock, DomainObjectIDs.OrderItem1);
       var newInstance = DomainObjectMother.GetNewObject ();
@@ -141,17 +120,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DomainObjectMother.GetInvalidObject (ClientTransactionMock);
       DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
 
-      var changedDomainObjects = _dataManager.GetChangedDataByObjectState ();
+      var changedDomainObjects = _dataManager.GetNewChangedDeletedData ();
       
       var expected = new[] { 
-          CreateDataTuple (changedInstance), 
-          CreateDataTuple (newInstance),
-          CreateDataTuple (deletedInstance) };
-      Assert.That (changedDomainObjects.ToArray (), Is.EquivalentTo (expected));
+          CreatePersistableData (changedInstance), 
+          CreatePersistableData (newInstance),
+          CreatePersistableData (deletedInstance) };
+
+      CheckPersistableDataSequence(expected, changedDomainObjects);
     }
 
     [Test]
-    public void GetChangedData_ReturnsObjectsChangedByRelation ()
+    public void GetNewChangedDeletedData_ReturnsObjectsChangedByRelation ()
     {
       var orderWithChangedRelation = Order.GetObject (DomainObjectIDs.Order1);
 
@@ -159,14 +139,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
       Assert.That (orderWithChangedRelation.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
-      var changedDomainObjects = _dataManager.GetChangedDataByObjectState ();
+      var data = _dataManager.GetNewChangedDeletedData ();
       
-      var expected = CreateDataTuple (orderWithChangedRelation);
-      Assert.That (changedDomainObjects.ToArray (), Has.Member(expected));
+      var expected = CreatePersistableData (orderWithChangedRelation);
+      CheckHasPersistableDataItem (expected, data.ToDictionary (item => item.DomainObject));
     }
 
     [Test]
-    public void GetChangedDataContainersForCommit_ReturnsObjectsToBeCommitted ()
+    public void GetDataContainersForCommit_ReturnsObjectsToBeCommitted ()
     {
       var changedInstance = (TestDomainBase) DomainObjectMother.GetChangedObject (ClientTransactionMock, DomainObjectIDs.OrderItem1);
       var newInstance = (TestDomainBase) DomainObjectMother.GetNewObject ();
@@ -176,14 +156,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DomainObjectMother.GetInvalidObject (ClientTransactionMock);
       DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
 
-      var result = _dataManager.GetChangedDataContainersForCommit ();
+      var result = _dataManager.GetDataContainersForCommit ();
 
       var expected = new[] { changedInstance.InternalDataContainer, newInstance.InternalDataContainer, deletedInstance.InternalDataContainer };
       Assert.That (result.ToArray (), Is.EquivalentTo (expected));
     }
 
     [Test]
-    public void GetChangedDataContainersForCommit_DoesNotReturnRelationChangedObjects ()
+    public void GetDataContainersForCommit_DoesNotReturnRelationChangedObjects ()
     {
       var orderWithChangedRelation = Order.GetObject (DomainObjectIDs.Order1);
 
@@ -191,28 +171,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
       Assert.That (orderWithChangedRelation.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
-      var result = _dataManager.GetChangedDataContainersForCommit ();
+      var result = _dataManager.GetDataContainersForCommit ();
 
       Assert.That (result.ToArray (), Has.No.Member(orderWithChangedRelation.InternalDataContainer));
     }
 
     [Test]
     [ExpectedException (typeof (MandatoryRelationNotSetException))]
-    public void GetChangedDataContainersForCommit_ChecksMandatoryRelations ()
+    public void GetDataContainersForCommit_ChecksMandatoryRelations ()
     {
       var invalidOrder = Order.GetObject (DomainObjectIDs.Order1);
       invalidOrder.OrderTicket = null;
 
-      _dataManager.GetChangedDataContainersForCommit().ToArray();
+      _dataManager.GetDataContainersForCommit().ToArray();
     }
 
     [Test]
-    public void GetChangedDataContainersForCommit_WithDeletedObject ()
+    public void GetDataContainersForCommit_WithDeletedObject ()
     {
       OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       orderItem1.Delete ();
 
-      _dataManager.GetChangedDataContainersForCommit ().ToArray ();
+      _dataManager.GetDataContainersForCommit ().ToArray ();
 
       // expectation: no exception
     }
@@ -1312,15 +1292,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (result, Is.SameAs (_dataManager.GetRelationEndPointWithoutLoading (endPointID)));
     }
 
-    private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)
+    private PersistableData CreatePersistableData (DomainObject domainObject)
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainers[domainObject.ID];
-      return Tuple.Create (domainObject, dataContainer, domainObject.State);
+      return new PersistableData (domainObject, domainObject.State, dataContainer, _dataManager.RelationEndPoints.Where (ep => ep.ObjectID == domainObject.ID));
     }
 
     private void SetDomainObject (DataContainer dc)
     {
       dc.SetDomainObject (DomainObjectMother.GetObjectReference<DomainObject> (_dataManager.ClientTransaction, dc.ID));
+    }
+
+    private void CheckPersistableDataSequence (IEnumerable<PersistableData> expected, IEnumerable<PersistableData> actual)
+    {
+      var expectedList = expected.ToList();
+      var actualDictionary = actual.ToDictionary (pd => pd.DomainObject);
+
+      Assert.That (actualDictionary.Count, Is.EqualTo (expectedList.Count));
+      foreach (var expectedPersistableData in expectedList)
+      {
+        CheckHasPersistableDataItem (expectedPersistableData, actualDictionary);
+      }
+    }
+
+    private void CheckHasPersistableDataItem (PersistableData expectedPersistableData, Dictionary<DomainObject, PersistableData> actualDictionary)
+    {
+      var actualPersistableData = actualDictionary.GetValueOrDefault (expectedPersistableData.DomainObject);
+      Assert.That (actualPersistableData, Is.Not.Null, "Expected persistable item: {0}", expectedPersistableData.DomainObject.ID);
+      Assert.That (actualPersistableData.DomainObjectState, Is.EqualTo (expectedPersistableData.DomainObjectState));
+      Assert.That (actualPersistableData.DataContainer, Is.SameAs (expectedPersistableData.DataContainer));
     }
   }
 }

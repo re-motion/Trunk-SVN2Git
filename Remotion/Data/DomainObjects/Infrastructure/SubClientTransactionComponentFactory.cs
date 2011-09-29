@@ -107,7 +107,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           _parentInvalidDomainObjectManager.InvalidObjectIDs.Select (id => _parentInvalidDomainObjectManager.GetInvalidObjectReference (id));
 
       var parentDataManager = _parentTransaction.DataManager;
-      var deletedObjects = parentDataManager.GetLoadedData().Where (tuple => tuple.Item2.State == StateType.Deleted).Select (tuple => tuple.Item1);
+      var deletedObjects = parentDataManager.DataContainers.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
 
       var invalidDomainObjectManager = new SubInvalidDomainObjectManager (_parentInvalidDomainObjectManager);
       foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
