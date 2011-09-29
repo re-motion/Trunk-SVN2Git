@@ -53,7 +53,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var input = Html.GetAssertedChildElement (th, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
-      Html.AssertAttribute (input, "name", List.GetSelectAllControlClientID());
+      Html.AssertAttribute (input, "id", List.GetSelectAllControlClientID ());
+      Html.AssertAttribute (input, "name", List.GetSelectAllControlClientID ());
       Html.AssertAttribute (input, "value", "-1");
       Html.AssertAttribute (input, "alt", "Select all rows.");
     }
@@ -72,6 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var input = Html.GetAssertedChildElement (td, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
+      Html.AssertAttribute (input, "id", "checkboxControl");
       Html.AssertAttribute (input, "name", "checkboxControl");
       Html.AssertAttribute (input, "value", "0");
       Html.AssertAttribute (input, "alt", "Select this row.");
@@ -106,6 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var input = Html.GetAssertedChildElement (td, "input", 0);
       Html.AssertAttribute (input, "type", "radio");
+      Html.AssertAttribute (input, "id", "radioControl");
       Html.AssertAttribute (input, "name", "radioControl");
       Html.AssertAttribute (input, "value", "0");
       Html.AssertAttribute (input, "alt", "Select this row.");

@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 
@@ -99,10 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       else
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Type, "checkbox");
       
-      //TODO: Remove the check for -1 when COMMONS-2544 is implemented
-      if (value != -1)
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
-
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Name, id);
 
       if (isChecked)

@@ -384,8 +384,7 @@ function BocList_CreateFakeTableHead(scrollableContainer)
   var fakeTableHeadContainer = $('<div/>').attr({ 'class': 'bocListFakeTableHead' });
   fakeTableHeadContainer.append(fakeTable);
 
-  table.children('thead').find('a').each(function () { $(this).removeAttr('id').attr({ tabIndex: -1 }); });
-  table.children('thead').find('input').each(function () { $(this).attr({ tabIndex: -1 }); });
+  table.children('thead').find('a, input').each(function () { $(this).removeAttr('id').attr({ tabIndex: -1 }).attr({ tabIndex: -1 }); });
 
   scrollableContainer.append(fakeTableHeadContainer);
 
