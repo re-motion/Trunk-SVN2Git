@@ -140,6 +140,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
       }
+      var commandID = renderingContext.Control.ClientID + "_Column_" + renderingContext.ColumnIndex + "_RowEditCommand_" + command + "_Row_" + originalRowIndex;
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, commandID);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       bool hasIcon = icon.HasRenderingInformation;
