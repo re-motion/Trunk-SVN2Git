@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedResult =
           "CREATE VIEW [SchemaName].[EmptyView1] ([ID], [ClassID], [Timestamp], [Column1])\r\n"
           +"  AS\r\n"
-         + "  SELECT NULL AS [ID], NULL AS [ClassID], NULL AS [Timestamp], NULL AS [Column1]\r\n"
+         + "  SELECT CONVERT(uniqueidentifier,NULL) AS [ID], CONVERT(varchar(100),NULL) AS [ClassID], CONVERT(datetime,NULL) AS [Timestamp], CONVERT(varchar(100),NULL) AS [Column1]\r\n"
          +"    WHERE 1 = 0";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo(expectedResult));
     }
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedResult =
           "CREATE VIEW [dbo].[EmptyView2] ([ID], [ClassID], [Timestamp], [Column1], [Column2])\r\n"
           +"  AS\r\n"
-         + "  SELECT NULL AS [ID], NULL AS [ClassID], NULL AS [Timestamp], NULL AS [Column1], NULL AS [Column2]\r\n"
+         + "  SELECT CONVERT(uniqueidentifier,NULL) AS [ID], CONVERT(varchar(100),NULL) AS [ClassID], CONVERT(datetime,NULL) AS [Timestamp], CONVERT(varchar(100),NULL) AS [Column1], CONVERT(varchar(100),NULL) AS [Column2]\r\n"
          +"    WHERE 1 = 0";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo(expectedResult));
     }

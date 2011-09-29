@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     private string GetNullColumnList (IEnumerable<ColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
-      return SeparatedStringBuilder.Build (", ", columns, cd => "NULL AS ["+ cd.Name + "]");
+      return SeparatedStringBuilder.Build (", ", columns, cd => "CONVERT(" + cd.StorageTypeInfo.StorageTypeName + ",NULL) AS ["+ cd.Name + "]");
     }
   }
 }

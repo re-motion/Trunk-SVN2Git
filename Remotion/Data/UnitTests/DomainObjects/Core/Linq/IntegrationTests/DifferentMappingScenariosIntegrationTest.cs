@@ -171,7 +171,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4130")]
     public void AccessingEntity_WithoutAnyTables ()
     {
       var query1 = QueryFactory.CreateLinqQuery<AbstractClassWithoutDerivations>();
@@ -184,8 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                                      where db.AbstractClassesWithoutDerivations.Count() == 0
                                      select db).Count();
       var countWithoutPropertyAccess = QueryFactory.CreateLinqQuery<TIDomainBase>().Count();
-      Assert.That (countWithPropertyAccess, Is.EqualTo (countWithoutPropertyAccess));
-
+      Assert.That (countWithPropertyAccess, Is.EqualTo (countWithoutPropertyAccess).And.GreaterThan (0));
     }
   }
 }

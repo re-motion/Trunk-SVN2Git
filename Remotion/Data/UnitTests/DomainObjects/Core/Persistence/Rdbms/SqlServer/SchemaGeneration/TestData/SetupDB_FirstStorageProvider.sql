@@ -238,7 +238,7 @@ CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNum
 GO
 CREATE VIEW [dbo].[AbstractWithoutConcreteClassView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID])
   AS
-  SELECT NULL AS [ID], NULL AS [ClassID], NULL AS [Timestamp], NULL AS [Name], NULL AS [PhoneNumber], NULL AS [AddressID]
+  SELECT CONVERT(uniqueidentifier,NULL) AS [ID], CONVERT(varchar (100),NULL) AS [ClassID], CONVERT(rowversion,NULL) AS [Timestamp], CONVERT(nvarchar (100),NULL) AS [Name], CONVERT(nvarchar (100),NULL) AS [PhoneNumber], CONVERT(uniqueidentifier,NULL) AS [AddressID]
     WHERE 1 = 0
 GO
 CREATE VIEW [dbo].[AddressView] ([ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country])

@@ -107,13 +107,7 @@ namespace Remotion.Data.DomainObjects.Linq
           (table, continuation) => GetFullyQualifiedEntityName(table.ViewName),
           (filterView, continuation) => GetFullyQualifiedEntityName(filterView.ViewName),
           (unionView, continuation) => GetFullyQualifiedEntityName(unionView.ViewName),
-          (emptyView, continuation) =>
-          {
-            var message = string.Format (
-                "Class '{0}' does not have an associated database table and can therefore not be queried.",
-                classDefinition.ID);
-            throw new NotSupportedException (message);
-          });
+          (emptyView, continuation) => GetFullyQualifiedEntityName (emptyView.ViewName));
 
       return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
     }

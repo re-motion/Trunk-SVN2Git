@@ -6,6 +6,9 @@ GO
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_ClassWithUnidirectionalRelationView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[TI_ClassWithUnidirectionalRelationView]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_AbstractClassWithoutDerivationsView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_AbstractClassWithoutDerivationsView]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_AddressView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[TI_AddressView]
 
@@ -1213,6 +1216,12 @@ CREATE VIEW [dbo].[TI_ClassWithUnidirectionalRelationView] ([ID], [ClassID], [Ti
   WITH CHECK OPTION
 GO
 
+CREATE VIEW [dbo].[TI_AbstractClassWithoutDerivationsView] ([ID], [ClassID], [Timestamp], [DomainBaseID], [DomainBaseIDClassID])
+  AS
+  SELECT CONVERT(uniqueidentifier,NULL) AS [ID], CONVERT(varchar (100),NULL) AS [ClassID], CONVERT(rowversion,NULL) AS [Timestamp], CONVERT(uniqueidentifier,NULL) AS [DomainBaseID], CONVERT(varchar (100),NULL) AS [DomainBaseIDClassID]
+    WHERE 1 = 0
+GO
+
 CREATE VIEW [dbo].[TI_AddressView] ([ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country], [PersonID], [PersonIDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country], [PersonID], [PersonIDClassID]
@@ -1528,7 +1537,7 @@ CREATE VIEW [dbo].[DerivedDerivedTargetClassForPersistentMixinView] ([ID], [Clas
 GO
 
 CREATE VIEW [dbo].[RelationTargetForPersistentMixinView] ([ID], [ClassID], [Timestamp], [RelationProperty2ID], [RelationProperty2IDClassID], 
-														  [RelationProperty3ID], [RelationProperty3IDClassID])
+                                                          [RelationProperty3ID], [RelationProperty3IDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [RelationProperty2ID], [RelationProperty2IDClassID], [RelationProperty3ID], [RelationProperty3IDClassID]
     FROM [dbo].[MixedDomains_RelationTarget]

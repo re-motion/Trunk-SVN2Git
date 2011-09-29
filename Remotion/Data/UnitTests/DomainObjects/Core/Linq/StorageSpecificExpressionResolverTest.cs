@@ -319,8 +319,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new[] { (IRdbmsStorageEntityDefinition) _classDefinition.StorageEntityDefinition });
       _classDefinition.SetStorageEntity (unionViewDefinition);
 
-      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (_classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -339,8 +340,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new[] { (IRdbmsStorageEntityDefinition) _classDefinition.StorageEntityDefinition });
       _classDefinition.SetStorageEntity (unionViewDefinition);
 
-      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (_classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
 
@@ -351,16 +353,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Class 'Order' does not have an associated database table and can therefore not be queried.")]
-    public void ResolveTable_EmptyViewDefinition ()
+    public void ResolveTable_EmptyViewDefinitionWithNoSchemaName ()
     {
-      _classDefinition.SetStorageEntity (EmptyViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition));
+      var emptyViewDefinition = EmptyViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition (null, "EmptyView"));
+      _classDefinition.SetStorageEntity (emptyViewDefinition);
 
-      _rdbmsPersistenceModelProviderStub.Stub (stub => stub.GetEntityDefinition (_classDefinition)).Return (
-          _classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (_classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
 
-      _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("EmptyView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    public void ResolveTable_EmptyViewDefinitionWithSchemaName ()
+    {
+      var emptyViewDefinition = EmptyViewDefinitionObjectMother.Create (
+          TestDomainStorageProviderDefinition,
+          new EntityNameDefinition ("schemaName", "EmptyView"));
+      _classDefinition.SetStorageEntity (emptyViewDefinition);
+
+      _rdbmsPersistenceModelProviderStub
+          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
+          .Return (_classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
+
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("schemaName.EmptyView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
     }
 
     [Test]
