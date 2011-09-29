@@ -29,14 +29,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
     }
 
-    public override void RenderTitleCell (
+    protected override void RenderTitleCell (
         BocColumnRenderingContext<StubColumnDefinition> renderingContext, SortingDirection sortingDirection, int orderIndex)
     {
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       renderingContext.Writer.RenderEndTag();
     }
 
-    public override void RenderDataCell (
+    protected override void RenderDataCell (
         BocColumnRenderingContext<StubColumnDefinition> renderingContext,
         int rowIndex,
         bool showIcon,

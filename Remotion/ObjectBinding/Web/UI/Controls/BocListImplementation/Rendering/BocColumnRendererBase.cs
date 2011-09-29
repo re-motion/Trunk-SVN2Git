@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           orderIndex);
     }
 
-    public virtual void RenderTitleCell (
+    protected virtual void RenderTitleCell (
         BocColumnRenderingContext<TBocColumnDefinition> renderingContext, SortingDirection sortingDirection, int orderIndex)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderDataColumnDeclaration (new BocColumnRenderingContext<TBocColumnDefinition>(renderingContext), isTextXml);
     }
 
-    public virtual void RenderDataColumnDeclaration (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, bool isTextXml)
+    protected virtual void RenderDataColumnDeclaration (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, bool isTextXml)
     {
       renderingContext.Writer.WriteBeginTag ("col");
       if (!renderingContext.ColumnDefinition.Width.IsEmpty)
@@ -255,7 +255,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This is a template method. Deriving classes must implement <see cref="RenderCellContents"/> to provide the contents of
     /// the table cell (&lt;td&gt;) element.
     /// </remarks>
-    public virtual void RenderDataCell (
+    protected virtual void RenderDataCell (
         BocColumnRenderingContext<TBocColumnDefinition> renderingContext,
         int rowIndex,
         bool showIcon,

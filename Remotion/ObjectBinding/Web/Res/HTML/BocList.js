@@ -103,7 +103,7 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
 
-  var tableBlock = $(bocList).children().filter('.bocListTableBlock');
+  var tableBlock = $(bocList).children('div.bocListTableBlock').first();
   var hasDimensions = false;
   var version = parseInt($.browser.version);
   if ($.browser.msie && version < 9)
@@ -116,7 +116,8 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   }
   else
   {
-    var isTableBlockBiggerThanBocList = $(bocList).css('height') < tableBlock.children().eq(0).children().eq(0).css('height');
+    var bocListTable = tableBlock.children('div.bocListTable').first().children().first(); // TODO: CSS class is virtual in renderer
+    var isTableBlockBiggerThanBocList = $(bocList).height() < bocListTable.height();
     if (isTableBlockBiggerThanBocList)
     {
       $(bocList).addClass('hasDimensions');
@@ -128,8 +129,6 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   {
     BocList_FixUpScrolling(tableBlock);
   }
-
-  BocList_SyncCheckboxes(bocList);
 }
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu)
@@ -335,25 +334,26 @@ function BocList_GetSelectionCount (bocListID)
 
 function BocList_FixUpScrolling(tableBlock)
 {
-  //activateTableHeader only on first scroll
   var scrollTimer = null;
-  var container = tableBlock.children().eq(0);
+  var scrollableContainer = tableBlock.children('div.bocListTable').first(); // TODO: CSS class is virtual in renderer
   var horizontalScroll = 0;
+  var verticalScroll = 0;
 
-  container.bind('scroll', function (event)
+  scrollableContainer.bind('scroll', function (event)
   {
-    // return if is horizontal scrolling
-    var currentHorizontalScroll = $(this).scrollLeft();
-    if (currentHorizontalScroll != horizontalScroll && currentHorizontalScroll > 0)
-    {
-      horizontalScroll = currentHorizontalScroll;
-      return;
-    }
+    var newHorizontalScroll = scrollableContainer.scrollLeft();
+    var newVerticalScroll = scrollableContainer.scrollTop();
+    var hasVerticalScrollUpdated = verticalScroll != newVerticalScroll;
 
-    var currentBocList = $(this);
-    BocList_ActivateTableHeader(currentBocList);
-    if (scrollTimer) clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(function () { BocList_FixHeaderPosition(currentBocList) }, 50);
+    horizontalScroll = newHorizontalScroll;
+    verticalScroll = newVerticalScroll;
+
+    if (hasVerticalScrollUpdated)
+    {
+      if (scrollTimer)
+        clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function () { BocList_FixHeaderPosition(scrollableContainer) }, 50);
+    }
   });
 
   //activateTableHeader on window resize
@@ -361,73 +361,81 @@ function BocList_FixUpScrolling(tableBlock)
   $(window).bind('resize', function ()
   {
     if (resizeTimer) clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () { BocList_ActivateTableHeader(container); }, 50);
+    resizeTimer = setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 50);
   });
+
+  BocList_CreateFakeTableHead(scrollableContainer);
 }
 
-function BocList_ActivateTableHeader(container)
+function BocList_CreateFakeTableHead(scrollableContainer)
 {
-    var cointainerChildrens = container.children();
-    var realThead = cointainerChildrens.eq(0).find('thead');
-    var realTheadRow = realThead.children().eq(0);
-    var realTheadRowChildrens = realTheadRow.children();
+  var table = scrollableContainer.children('table').first();
 
-    var fakeTableContainer = cointainerChildrens.eq(1);
-    var fakeThead = fakeTableContainer.find('thead');
-    var fakeTheadRow = fakeThead.children().eq(0);
-    var fakeTheadRowChildrens = fakeTheadRow.children();
-
-    // hide bocListFakeTableHead if bocList is not scrollable
-    if (!BocList_CheckScrollBarPresence(container))
-    {
-        fakeTableContainer.hide();
-        return;
-    }
-    
-    BocList_SyncCheckboxes(container);
-
-    // store cell widths in array
-    var realTheadCellWidths = new Array();
-
-    realTheadRowChildrens.each(function(index)
-    {
-        realTheadCellWidths[index] = $(this).width();
+  var fakeTable = $('<table/>');
+  fakeTable.attr({
+      'class' : table.attr('class'), 
+      cellPadding: 0,
+      cellSpacing: 0
     });
+  fakeTable.css({ width: '100%' });
 
-    // apply widths to fake header
-    $.each(realTheadCellWidths, function(index, item)
-    {
-        fakeTheadRowChildrens.eq(index).width(item);
-    });
+  var fakeTableHead = table.children('thead').first().clone(true, true);
+  fakeTable.append(fakeTableHead);
+  var fakeTableHeadContainer = $('<div/>').attr({ 'class': 'bocListFakeTableHead' });
+  fakeTableHeadContainer.append(fakeTable);
 
-    fakeTableContainer.width(realTheadRow.width());
+  table.children('thead').find('a').each(function () { $(this).removeAttr('id').attr({ tabIndex: -1 }); });
+  table.children('thead').find('input').each(function () { $(this).attr({ tabIndex: -1 }); });
+
+  scrollableContainer.append(fakeTableHeadContainer);
+
+  // sync checkboxes
+  var checkboxes = fakeTableHead.find("th input:checkbox");
+  checkboxes.click(function ()
+  {
+    var checkName = $(this).attr('name');
+    var realCheckName = checkName.replace('_fake', '');
+    var checkStatus = $(this).prop('checked');
+    $('input[name*=' + realCheckName + ']').prop('checked', checkStatus);
+  });
+
+  BocList_FixHeaderSize(scrollableContainer);
 }
 
-function BocList_FixHeaderPosition(containerDiv)
+function BocList_FixHeaderSize(scrollableContainer)
 {
-    var bocListFakeTableHead = containerDiv.find('div.bocListFakeTableHead');
-    var scrollPosition = containerDiv.scrollTop();
-    if (scrollPosition == 0)
-    {
-        bocListFakeTableHead.hide();
-    } else
-    {
-        bocListFakeTableHead.show();
-    }
-    bocListFakeTableHead.css({ 'top': scrollPosition, 'left':'0' });
+  var realTableCointainerChildren = scrollableContainer.children('table').first();
+  var realTableHead = realTableCointainerChildren.eq(0).find('thead');
+  var realTableHeadRow = realTableHead.children().eq(0);
+  var realTableHeadRowChildren = realTableHeadRow.children();
+
+  var fakeTableHeadContainer = scrollableContainer.children('div.bocListFakeTableHead').first();
+  var fakeTableHead = fakeTableHeadContainer.find('thead');
+  var fakeTableHeadRow = fakeTableHead.children().eq(0);
+  var fakeTableHeadRowChildren = fakeTableHeadRow.children();
+
+  // store cell widths in array
+  var realTableHeadCellWidths = new Array();
+
+  realTableHeadRowChildren.each(function (index)
+  {
+    realTableHeadCellWidths[index] = $(this).width();
+  });
+
+  // apply widths to fake header
+  $.each(realTableHeadCellWidths, function (index, item)
+  {
+    fakeTableHeadRowChildren.eq(index).width(item);
+  });
+
+  fakeTableHeadContainer.width(realTableHeadRow.width());
 }
 
-function BocList_SyncCheckboxes(container)
+function BocList_FixHeaderPosition(scrollableContainer)
 {
-    // sync checkboxes
-    var checkboxes = $(container).find("th input:checkbox");
-    checkboxes.click(function()
-    {
-        var checkName = $(this).attr('name');
-        var realCheckName = checkName.replace('_fake', '');
-        var checkStatus = $(this).prop('checked');
-        $('input[name*=' + realCheckName + ']').prop('checked', checkStatus);
-    });
+  var fakeTableHeadContainer = scrollableContainer.children('div.bocListFakeTableHead').first();
+  var scrollPosition = scrollableContainer.scrollTop();
+  fakeTableHeadContainer.css({ 'top': scrollPosition, 'left': '0' });
 }
 
 function BocList_CheckScrollBarPresence(element)

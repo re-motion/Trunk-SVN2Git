@@ -331,13 +331,18 @@ div.bocListEditModeValidationMessage
 /* Style applied to the fake table head used for scrolling */
 div.bocListFakeTableHead
 {
-  display: none;
   position: absolute;
   top: 0;
   left: -1px !important;
   right: 0;
   margin: 0;
   padding:0;
+}
+
+body.msie7 div.bocListFakeTableHead,
+body.msie div.bocListFakeTableHead
+{
+  margin: -0.5px;
 }
 
 body.mozilla  div.bocListFakeTableHead,
