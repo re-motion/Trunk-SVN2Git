@@ -17,7 +17,6 @@
 using System;
 using System.Text;
 using System.Web.UI;
-using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -65,7 +64,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      RenderTitle (renderingContext);
+      RenderHead (renderingContext);
 
       renderingContext.Writer.RenderEndTag ();
     }
@@ -79,7 +78,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       RegisterEventHandlerScripts (renderingContext);
     }
 
-    private void RenderTitle (DropDownMenuRenderingContext renderingContext)
+    private void RenderHead (DropDownMenuRenderingContext renderingContext)
     {
       string cssClass = CssClassHead;
       if (!renderingContext.Control.Enabled)
@@ -87,9 +86,9 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      if (renderingContext.Control.RenderHeadTitleMethod != null)
+      if (HasCustomTitle(renderingContext))
         renderingContext.Control.RenderHeadTitleMethod (renderingContext.Writer);
-      else
+      else if (HasDefaultTitle (renderingContext))
         RenderDefaultTitle (renderingContext);
 
       RenderDropdownButton (renderingContext);
@@ -99,14 +98,16 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 
     private void RenderDefaultTitle (DropDownMenuRenderingContext renderingContext)
     {
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownLabel);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "_DropDownMenuLabel");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-      if (renderingContext.Control.TitleIcon != null && !string.IsNullOrEmpty (renderingContext.Control.TitleIcon.Url))
+      if (HasTitleIcon(renderingContext))
         renderingContext.Control.TitleIcon.Render (renderingContext.Writer, renderingContext.Control);
 
-      if (!string.IsNullOrEmpty (renderingContext.Control.TitleText))
+      if (HasTitleText(renderingContext))
       {
         renderingContext.Writer.Write (renderingContext.Control.TitleText);
         renderingContext.Writer.Write (c_whiteSpace);
@@ -117,15 +118,46 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     private void RenderDropdownButton (DropDownMenuRenderingContext renderingContext)
     {
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
+      if (!HasDefaultTitle (renderingContext) || HasCustomTitle (renderingContext))
+      {
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "_DropDownMenuButton");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
+      }
       var imageUrl = ResourceUrlFactory.CreateThemedResourceUrl (
           typeof (DropDownMenuRenderer), ResourceType.Image, renderingContext.Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
 
-      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url({0})", imageUrl.GetUrl ()));
-      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url({0})", imageUrl.GetUrl()));
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       IconInfo.Spacer.Render (renderingContext.Writer, renderingContext.Control);
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
+    }
+
+    private bool HasCustomTitle (DropDownMenuRenderingContext renderingContext)
+    {
+      return renderingContext.Control.RenderHeadTitleMethod != null;
+    }
+
+    private bool HasDefaultTitle (DropDownMenuRenderingContext renderingContext)
+    {
+      return HasTitleIcon (renderingContext) || HasTitleText (renderingContext);
+    }
+
+    private bool HasTitleText (DropDownMenuRenderingContext renderingContext)
+    {
+      return !string.IsNullOrEmpty (renderingContext.Control.TitleText);
+    }
+
+    private bool HasTitleIcon (DropDownMenuRenderingContext renderingContext)
+    {
+      return renderingContext.Control.TitleIcon != null && !string.IsNullOrEmpty (renderingContext.Control.TitleIcon.Url);
+    }
+
+    protected string CssClassDropDownLabel
+    {
+      get { return "DropDownMenuLabel"; }
     }
 
     protected string CssClassDropDownButton

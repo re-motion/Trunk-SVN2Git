@@ -8,6 +8,7 @@ span.DropDownMenuContainer
   position: relative;
   font-family: sans-serif;
   width: 100%;
+  min-width: 16px;
 }
 
 tr.bocListDataRow span.DropDownMenuContainer,
@@ -38,6 +39,7 @@ td.buttonCell span.DropDownMenuSelect
 span.DropDownMenuSelect.disabled
 {
   cursor: default;
+  border-color: Gray;
 }
 
 span.DropDownMenuSelect span
@@ -46,7 +48,7 @@ span.DropDownMenuSelect span
   vertical-align: middle;
 }
 
-span.DropDownMenuSelect a
+span.DropDownMenuSelect a.DropDownMenuLabel
 {
   position: relative;
   left: 0.1em;
@@ -55,54 +57,49 @@ span.DropDownMenuSelect a
   border-style: none;
   background-color: Transparent;
   color: #083779;
-  outline: 0;
   height: 1.2em !important;
+  outline: 0;
 }
 
-body.msie7 span.DropDownMenuSelect a
+body.msie7 span.DropDownMenuSelect a.DropDownMenuLabel
 {
   top: 0.12em;
 }
 
-span.DropDownMenuSelect a:hover
-{
-  border-style: none;
-  background-color: Transparent;
-}
-
-span.DropDownMenuContainer span.disabled a
+span.DropDownMenuContainer span.disabled a.DropDownMenuLabel
 {
   color: Gray;
 }
 
-a.DropDownMenuSelectButton
-{
-  background-color: #083779;
-  display: inline-block;
-}
-
-span.DropDownMenuSelect span.DropDownMenuButton
+span.DropDownMenuSelect a.DropDownMenuButton
 {
   display: inline-block;
   position: absolute;
   left: auto;
-  top: 1px;
+  top: 0px;
   bottom: 0;
-  right: 1px;
+  right: 0px;
   width: 15px;
   background-color: #083779;
   margin-right: 0;
   background-position: center center;
   background-repeat: no-repeat;
+  outline: 0;
 }
 
-span.DropDownMenuSelect > span.DropDownMenuButton
+span.DropDownMenuSelect a.DropDownMenuButton:first-child
 {
-  top: 0;
-  right: 0;
+  left: 0px;
+  width: auto;
 }
 
-span.DropDownMenuSelect span.DropDownMenuButton img
+span.DropDownMenuSelect.disabled a.DropDownMenuButton
+{
+  cursor: default;
+  background-color: LightGray;
+}
+
+span.DropDownMenuSelect a.DropDownMenuButton img
 {
   height: 12px;
   width: 16px;

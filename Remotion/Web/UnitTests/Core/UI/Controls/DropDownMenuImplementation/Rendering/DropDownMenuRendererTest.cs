@@ -109,17 +109,18 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
 
     private void AssertTitleSpan (XmlNode containerDiv, bool withTitle, bool withIcon)
     {
+      var hasTitle = withTitle || withIcon;
       var titleDiv = containerDiv.GetAssertedChildElement ("span", 0);
       titleDiv.AssertAttributeValueEquals ("class", "DropDownMenuSelect");
-      titleDiv.AssertChildElementCount (2);
+      titleDiv.AssertChildElementCount (hasTitle ? 2 : 1);
 
       AssertTitleAnchor(titleDiv, withTitle, withIcon);
-      AssertDropDownButton(titleDiv);
+      AssertDropDownButton (titleDiv, hasTitle);
     }
 
-    private void AssertDropDownButton (XmlNode titleDiv)
+    private void AssertDropDownButton (XmlNode titleDiv, bool hasTitle)
     {
-      var span = titleDiv.GetAssertedChildElement ("span", 1);
+      var span = titleDiv.GetAssertedChildElement ("a", hasTitle ? 1 : 0);
       string imageFileName = _control.Enabled ? "DropDownMenuArrow.gif" : "DropDownMenuArrow_disabled.gif";
       string imageFilePath = "/res/Remotion.Web/Themes/ClassicBlue/Image/" + imageFileName;
       string styleValue = string.Format ("url({0})", imageFilePath);
@@ -133,6 +134,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
 
     private void AssertTitleAnchor (XmlNode titleDiv, bool withTitle, bool withIcon)
     {
+      if (!(withTitle || withIcon))
+        return;
+
       var titleAnchor = titleDiv.GetAssertedChildElement ("a", 0);
       titleAnchor.AssertAttributeValueEquals ("href", "#");
       titleAnchor.AssertAttributeValueEquals ("onclick", "return false;");

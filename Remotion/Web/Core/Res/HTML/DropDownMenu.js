@@ -179,6 +179,8 @@ function DropDownMenu_ClosePopUp()
   if (_dropDownMenu_currentMenu == null)
     return;
 
+  $(_dropDownMenu_currentMenu).find('a[href]').first().focus();
+
   var div = $(_dropDownMenu_currentPopup);
 
   $('body').unbind('click', DropDownMenu_ClosePopUp);

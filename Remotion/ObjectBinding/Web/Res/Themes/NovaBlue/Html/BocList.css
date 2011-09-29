@@ -266,27 +266,47 @@ tr.bocListDataRowSelected td.bocListDataCellEven span.CommandText
 
 
 /* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div span.DropDownMenuSelect a,
-td.bocListDataCellEven div span.DropDownMenuSelect a,
-td.bocListDataCellOdd div span.DropDownMenuSelect a:hover,
-td.bocListDataCellEven div span.DropDownMenuSelect a:hover
+td.bocListDataCellOdd div span.DropDownMenuSelect a.DropDownMenuLabel,
+td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuLabel,
+td.bocListDataCellOdd div span.DropDownMenuSelect a.DropDownMenuLabel:hover,
+td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuLabel:hover
 {
-  color: #083779;
   padding: 0;
   border: none;
+  color: #083779;
   background-color: Transparent;
 }
 
-
-td.bocListDataCellOdd span.DropDownMenuSelect.disabled a,
-td.bocListDataCellEven span.DropDownMenuSelect.disabled a,
-td.bocListDataCellOdd span.DropDownMenuSelect.disabled a:hover,
-td.bocListDataCellEven span.DropDownMenuSelect.disabled a:hover
+td.bocListDataCellOdd div span.DropDownMenuSelect a.DropDownMenuButton,
+td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuButton,
+td.bocListDataCellOdd div span.DropDownMenuSelect a.DropDownMenuButton:hover,
+td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuButton:hover
 {
-  color: Gray;
+  padding: 0;
+  border: none;
+  background-color: #083779;
+}
+
+
+td.bocListDataCellOdd span.DropDownMenuSelect.disabled a.DropDownMenuLabel,
+td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuLabel,
+td.bocListDataCellOdd span.DropDownMenuSelect.disabled a.DropDownMenuLabel:hover,
+td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuLabel:hover
+{
   padding: 0px;
   border: none;
+  color: Gray;
   background-color: Transparent;
+}
+
+td.bocListDataCellOdd span.DropDownMenuSelect.disabled a.DropDownMenuButton,
+td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuButton,
+td.bocListDataCellOdd span.DropDownMenuSelect.disabled a.DropDownMenuButton:hover,
+td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuButton:hover
+{
+  padding: 0px;
+  border: none;
+  background-color: LightGray;
 }
 
 td.bocListDataCellOdd span.bocDateValue a,
