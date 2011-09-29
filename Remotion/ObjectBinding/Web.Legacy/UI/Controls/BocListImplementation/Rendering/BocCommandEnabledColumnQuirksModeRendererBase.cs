@@ -78,6 +78,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (command == null)
         return false;
 
+      if (string.IsNullOrEmpty (command.ItemID))
+        command.ItemID = "Column_" + renderingContext.ColumnIndex + "_Command";
+
       bool isReadOnly = renderingContext.Control.IsReadOnly;
       bool isActive = command.Show == CommandShow.Always
                       || isReadOnly && command.Show == CommandShow.ReadOnly
@@ -94,15 +97,22 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         if (businessObjectWithIdentity != null)
           objectID = businessObjectWithIdentity.UniqueIdentifier;
 
-        command.ItemID = "Column_" + renderingContext.ColumnIndex + "_Row_" + originalRowIndex + "_Command";
-
         string argument = renderingContext.Control.GetListItemCommandArgument (renderingContext.ColumnIndex, originalRowIndex);
         string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
         string onClick = renderingContext.Control.HasClientScript ? c_onCommandClickScript : string.Empty;
         if (command.Type == CommandType.None)
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Disabled);
-        command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
 
+        var commandIDBackup = command.ItemID;
+        try
+        {
+          command.ItemID = command.ItemID + "_Row_" + originalRowIndex;
+          command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
+        }
+        finally
+        {
+          command.ItemID = commandIDBackup;
+        }
         return true;
       }
       return false;

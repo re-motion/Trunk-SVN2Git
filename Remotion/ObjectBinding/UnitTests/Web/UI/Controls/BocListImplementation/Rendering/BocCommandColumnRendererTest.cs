@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (td, "class", _bocListCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
-      Html.AssertAttribute (a, "id", List.ClientID + "_Column_0_Row_10_Command");
+      Html.AssertAttribute (a, "id", List.ClientID + "_Column_0_Command_Row_10");
       Html.AssertAttribute (a, "href", "#");
       Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 
