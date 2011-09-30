@@ -84,6 +84,8 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       if (!renderingContext.Control.Enabled)
         cssClass += " " + CssClassDisabled;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      if (HasCustomTitle (renderingContext) && HasTitleText (renderingContext))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Title, renderingContext.Control.TitleText);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       if (HasCustomTitle(renderingContext))
@@ -124,6 +126,10 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
       }
+
+      if (HasCustomTitle (renderingContext) && HasTitleText (renderingContext))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Title, renderingContext.Control.TitleText);
+
       var imageUrl = ResourceUrlFactory.CreateThemedResourceUrl (
           typeof (DropDownMenuRenderer), ResourceType.Image, renderingContext.Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
 
