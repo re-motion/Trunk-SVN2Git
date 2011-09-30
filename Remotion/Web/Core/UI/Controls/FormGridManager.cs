@@ -27,6 +27,7 @@ using Remotion.Logging;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.FormGridManagerImplementation;
 using Remotion.Web.UI.Design;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -2305,7 +2306,13 @@ namespace Remotion.Web.UI.Controls
       if (ShowHelpProviders)
       {
         if (dataRow.HelpProvider != null)
-          dataRow.MarkersCell.Controls.Add(dataRow.HelpProvider);
+        {
+          int formGridRowIndex = dataRow.FormGrid.Rows.IndexOf (dataRow);
+          var namingContainer = new FormGridCellNamingContainer();
+          namingContainer.ID = dataRow.FormGrid.Table.ID + "_HelpProvider_" + formGridRowIndex;
+          namingContainer.Controls.Add (dataRow.HelpProvider);
+          dataRow.MarkersCell.Controls.Add (namingContainer);
+        }
         else
           dataRow.MarkersCell.Controls.Add(GetBlankMarker());
       }
@@ -2900,7 +2907,7 @@ namespace Remotion.Web.UI.Controls
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/GetHelpProvider/*' />
     protected virtual Control GetHelpProvider (HelpInfo helpInfo)
     {
-      ArgumentUtility.CheckNotNull ("helpUrl", helpInfo);
+      ArgumentUtility.CheckNotNull ("helpInfo", helpInfo);
 
       Image helpIcon = new Image();
       helpIcon.ImageUrl = GetImageUrl (FormGridImage.Help);
@@ -2911,6 +2918,7 @@ namespace Remotion.Web.UI.Controls
       helpIcon.ToolTip = helpInfo.ToolTip ?? resourceManager.GetString (ResourceIdentifier.HelpTitle);
     
       HtmlAnchor helpAnchor = new HtmlAnchor();
+      helpAnchor.ID = "HelpLink";
       helpAnchor.Controls.Add (helpIcon);
       helpAnchor.HRef = ResolveClientUrl (helpInfo.NavigateUrl);
       helpAnchor.Target = helpInfo.Target;
