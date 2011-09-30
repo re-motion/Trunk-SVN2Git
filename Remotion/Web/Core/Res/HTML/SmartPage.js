@@ -92,7 +92,7 @@ function SmartPage_Context(
   var _trackedIDs = new Array();
   var _synchronousPostBackCommands = new Array();
 
-  var _isMsIE = window.navigator.appName.toLowerCase().indexOf("microsoft") > -1;
+  var _isMsIE = $.browser.msie;
   var _cacheStateHasSubmitted = 'hasSubmitted';
   var _cacheStateHasLoaded = 'hasLoaded';
 
@@ -187,8 +187,7 @@ function SmartPage_Context(
     if (_isDirtyStateTrackingEnabled)
       SetDataChangedEventHandlers(_theForm);
 
-    if (!_isMsIE)
-      SetFocusEventHandlers(window.document.body);
+    SetFocusEventHandlers(window.document.body);
 
     if (!TypeUtility.IsUndefined(window.WebForm_FireDefaultButton))
       WebForm_FireDefaultButton = _fireDefaultButtonHandler;
@@ -261,20 +260,23 @@ function SmartPage_Context(
   // Attaches the event handlers to the OnFocus and OnBlur events.
   function SetFocusEventHandlers(currentElement)
   {
-    if (currentElement != null)
-    {
-      if (!TypeUtility.IsUndefined(currentElement.id) && !StringUtility.IsNullOrEmpty(currentElement.id)
-          && IsFocusableTag(currentElement.tagName))
-      {
-        currentElement.onfocus = _elementFocusHandler;
-        currentElement.onblur = _elementBlurHandler;
-      }
+    if (!TypeUtility.IsUndefined(window.document.activeElement))
+      return;
 
-      for (var i = 0; i < currentElement.childNodes.length; i++)
-      {
-        var element = currentElement.childNodes[i];
-        SetFocusEventHandlers(element);
-      }
+    if (currentElement == null)
+      return;
+
+    if (!TypeUtility.IsUndefined(currentElement.id) && !StringUtility.IsNullOrEmpty(currentElement.id)
+        && IsFocusableTag(currentElement.tagName))
+    {
+      currentElement.onfocus = _elementFocusHandler;
+      currentElement.onblur = _elementBlurHandler;
+    }
+
+    for (var i = 0; i < currentElement.childNodes.length; i++)
+    {
+      var element = currentElement.childNodes[i];
+      SetFocusEventHandlers(element);
     }
   };
 
@@ -753,11 +755,10 @@ function SmartPage_Context(
     try
     {
       var xhttp;
-      // Create XHttpRequest
-      if (_isMsIE)
-        xhttp = new ActiveXObject('Microsoft.XMLHTTP');
-      else
+      if (!TypeUtility.IsUndefined (window.XMLHttpRequest))
         xhttp = new XMLHttpRequest();
+      else
+        xhttp = new ActiveXObject('Microsoft.XMLHTTP');
 
       var method = 'GET';
       var isSynchronousCall = false;
