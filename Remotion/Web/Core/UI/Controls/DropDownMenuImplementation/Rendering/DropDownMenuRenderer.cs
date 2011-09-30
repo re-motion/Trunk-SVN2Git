@@ -102,8 +102,11 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     {
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownLabel);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "_DropDownMenuLabel");
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
+      if (renderingContext.Control.Enabled)
+      {
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
+      }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       if (HasTitleIcon(renderingContext))
@@ -123,8 +126,11 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       if (!HasDefaultTitle (renderingContext) || HasCustomTitle (renderingContext))
       {
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "_DropDownMenuButton");
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
+        if (renderingContext.Control.Enabled)
+        {
+          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
+        }
       }
 
       if (HasCustomTitle (renderingContext) && HasTitleText (renderingContext))
