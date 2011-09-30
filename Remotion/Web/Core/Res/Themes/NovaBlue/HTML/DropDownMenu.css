@@ -8,7 +8,7 @@ span.DropDownMenuContainer
   position: relative;
   font-family: sans-serif;
   width: 100%;
-  min-width: 16px;
+  min-width: 17px;
 }
 
 tr.bocListDataRow span.DropDownMenuContainer,
@@ -53,12 +53,11 @@ span.DropDownMenuSelect a.DropDownMenuLabel
   position: relative;
   left: 0.1em;
   top: 0.1em;
-  margin-right: 15px;
+  margin-right: 16px;
   border-style: none;
   background-color: Transparent;
   color: #083779;
   height: 1.2em !important;
-  outline: 0;
 }
 
 body.msie7 span.DropDownMenuSelect a.DropDownMenuLabel
@@ -80,11 +79,11 @@ span.DropDownMenuSelect a.DropDownMenuButton
   bottom: 0;
   right: 0px;
   width: 15px;
+  border-left: solid 1px #083779;
   background-color: #083779;
   margin-right: 0;
   background-position: center center;
   background-repeat: no-repeat;
-  outline: 0;
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton:first-child
@@ -96,6 +95,7 @@ span.DropDownMenuSelect a.DropDownMenuButton:first-child
 span.DropDownMenuSelect.disabled a.DropDownMenuButton
 {
   cursor: default;
+  border-left: solid 1px Gray;
   background-color: LightGray;
 }
 

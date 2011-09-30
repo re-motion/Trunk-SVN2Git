@@ -64,7 +64,6 @@ span.DropDownMenuSelect a.DropDownMenuLabel
   margin-right: 15px;
   border-style: none;
   background-color: Transparent;
-  outline: 0;
 }
 
 body.mozilla span.DropDownMenuSelect a.DropDownMenuLabel
@@ -90,7 +89,6 @@ span.DropDownMenuSelect a.DropDownMenuButton
   margin-right: 0;
   background-position: center center;
   background-repeat: no-repeat;
-  outline: 0;
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton:first-child
