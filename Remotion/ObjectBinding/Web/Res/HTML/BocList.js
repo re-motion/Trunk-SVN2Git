@@ -127,6 +127,9 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
 
   if (hasDimensions)
   {
+    if ($.browser.msie && version < 8) //RM-4376 
+      return;
+
     BocList_FixUpScrolling(tableBlock);
   }
 }
