@@ -144,9 +144,38 @@ function SmartFocus_Restore (data)
   if (! StringUtility.IsNullOrEmpty (activeElementID))
   {
     var activeElement = $('#' + activeElementID);
-    if (activeElement && !activeElement.is(':disabled'))
+    if (activeElement)
     {
-      activeElement.focus();
+      var isEnabledFilter = function ()
+      {
+        var _this = $(this);
+        if ( _this.is('a') && _this.is('a[href]') )
+          return true;
+        if ( !_this.is('a') && _this.is(':enabled') && !_this.is('input[type=hidden]') )
+          return true;
+        return false;
+      }
+
+      if (activeElement.is(isEnabledFilter))
+      {
+        activeElement.focus();
+      }
+      else
+      {
+        var focusableElements = $('input, textarea, select, button, a');
+        var elementIndex = focusableElements.index(activeElement);
+        var fallBackElement = focusableElements.slice(elementIndex).filter(isEnabledFilter).first();
+        if (fallBackElement.length > 0)
+        {
+          fallBackElement.focus();
+        }
+        else
+        {
+          fallBackElement = focusableElements.slice(0, elementIndex).filter(isEnabledFilter).last();
+          if (fallBackElement)
+            fallBackElement.focus();
+        }
+      }
     }
   }
 }

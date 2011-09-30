@@ -317,7 +317,7 @@ function SmartPage_Context(
     if (_smartScrollingField != null)
       _smartScrollingField.value = SmartScrolling_Backup(this.GetActiveElement());
     if (_smartFocusField != null)
-      _smartFocusField.value = SmartFocus_Backup(this.GetActiveElement());
+      _smartFocusField.value = SmartFocus_Backup(GetFocusableElement (this.GetActiveElement()));
   };
 
   // Restores the smart scrolling and smart focusing data from the previous post back.
@@ -1007,7 +1007,7 @@ function SmartPage_Context(
   };
 
   // Event handler for the form-elements receiving the focus.
-  this.OnElementFocus = function(evt)
+  this.OnElementFocus = function (evt)
   {
     var eventSource = GetEventSource(evt);
     if (eventSource != null)
