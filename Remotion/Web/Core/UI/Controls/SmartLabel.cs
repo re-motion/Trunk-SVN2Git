@@ -45,7 +45,7 @@ public class SmartLabel: WebControl, IControl
   /// </summary>
   public static string FormatLabelText (string rawString, bool underlineAccessKey, out string accessKey)
   {
-    //  TODO: HTMLEncode
+    //  TODO: HTMLEncode -> likely not since it's a label and thus renders developer-defined text.
 
     const string highlighter = "<u>{0}</u>";
     accessKey = String.Empty;
