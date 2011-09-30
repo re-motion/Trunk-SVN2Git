@@ -134,7 +134,9 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
           renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
 
           if (renderingContext.Control.Enabled)
+          {
             renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin title tag
+          }
           else
           {
             renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Color, "GrayText");
@@ -184,6 +186,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHeadButton);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
 
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "_DropDownMenuButton");
       renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1em");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
