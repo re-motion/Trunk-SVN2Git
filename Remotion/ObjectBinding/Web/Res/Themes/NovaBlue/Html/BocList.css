@@ -358,6 +358,7 @@ div.bocListFakeTableHead
   right: 0;
   margin: 0;
   padding:0;
+  z-index: 1;
 }
 
 body.msie7 div.bocListFakeTableHead,

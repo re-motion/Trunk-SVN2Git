@@ -389,7 +389,7 @@ function BocList_CreateFakeTableHead(scrollableContainer)
 
   table.children('thead').find('a, input').each(function () { $(this).removeAttr('id').attr({ tabIndex: -1 }).attr({ tabIndex: -1 }); });
 
-  scrollableContainer.append(fakeTableHeadContainer);
+  scrollableContainer.prepend(fakeTableHeadContainer);
 
   // sync checkboxes
   var checkboxes = fakeTableHead.find("th input:checkbox");
