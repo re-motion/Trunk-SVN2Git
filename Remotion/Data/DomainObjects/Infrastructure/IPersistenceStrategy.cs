@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
   /// Provides a common interface for classes that can load <see cref="DataContainer"/> instances from a data source and persist them.
-  /// TODO 2246: Very similar to PersistenceManager.
   /// </summary>
   public interface IPersistenceStrategy
   {
