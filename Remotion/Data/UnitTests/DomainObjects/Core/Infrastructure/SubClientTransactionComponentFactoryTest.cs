@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -26,7 +28,10 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -54,13 +59,83 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateListeners_IncludesSubTransactionListener ()
+    public void CreateApplicationData ()
     {
-      var listeners = _factory.CreateListeners (new ClientTransactionMock ());
+      Assert.That (_factory.CreateApplicationData(), Is.SameAs (_parentTransaction.ApplicationData));
+    }
+
+    [Test]
+    public void CreateExtensions ()
+    {
+      Assert.That (_factory.CreateExtensions(), Is.SameAs (_parentTransaction.Extensions));
+    }
+
+    [Test]
+    public void CreateListeners ()
+    {
+      var clientTransaction = new ClientTransactionMock ();
+
+      var listenerFactoryMock1 = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
+      var listenerFactoryMock2 = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
+      var listenerStub1 = MockRepository.GenerateStub<IClientTransactionListener>();
+      var listenerStub2 = MockRepository.GenerateStub<IClientTransactionListener>();
+
+      listenerFactoryMock1
+          .Expect (mock => mock.CreateClientTransactionListener (clientTransaction))
+          .Return (listenerStub1);
+      listenerFactoryMock1.Replay();
+
+      listenerFactoryMock2
+          .Expect (mock => mock.CreateClientTransactionListener (clientTransaction))
+          .Return (listenerStub2);
+      listenerFactoryMock2.Replay();
+
+      var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator>();
+      serviceLocatorMock
+          .Expect (mock => mock.GetAllInstances<IClientTransactionListenerFactory>())
+          .Return (new[] { listenerFactoryMock1, listenerFactoryMock2 });
+      serviceLocatorMock.Replay();
+      
+      IEnumerable<IClientTransactionListener> listeners;
+      using (new ServiceLocatorScope (serviceLocatorMock))
+      {
+        listeners = _factory.CreateListeners (clientTransaction).ToArray();
+      }
+
+      serviceLocatorMock.VerifyAllExpectations();
+      listenerFactoryMock1.VerifyAllExpectations();
+      listenerFactoryMock2.VerifyAllExpectations();
+
+      Assert.That (listeners, Has.Member (listenerStub1));
+      Assert.That (listeners, Has.Member (listenerStub2));
 
       var listener = listeners.OfType<SubClientTransactionListener> ().SingleOrDefault ();
       Assert.That (listener, Is.Not.Null);
       Assert.That (listener.ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
+    }
+
+    [Test]
+    public void CreatePersistenceStrategy ()
+    {
+      _parentTransaction.IsReadOnly = true;
+
+      var result = _factory.CreatePersistenceStrategy (Guid.NewGuid());
+
+      Assert.That (result, Is.TypeOf<SubPersistenceStrategy>());
+      Assert.That (((SubPersistenceStrategy) result).ParentTransaction, Is.SameAs (_parentTransaction));
+      Assert.That (((SubPersistenceStrategy) result).ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
+    }
+
+    [Test]
+    public void CreatePersistenceStrategy_CanBeMixed ()
+    {
+      _parentTransaction.IsReadOnly = true;
+
+      using (MixinConfiguration.BuildNew ().ForClass<SubPersistenceStrategy> ().AddMixin<NullMixin> ().EnterScope())
+      {
+        var result = _factory.CreatePersistenceStrategy (Guid.NewGuid());
+        Assert.That (Mixin.Get<NullMixin> (result), Is.Not.Null);
+      }
     }
 
     [Test]

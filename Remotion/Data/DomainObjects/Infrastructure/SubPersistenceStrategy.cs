@@ -60,6 +60,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _parentTransaction; }
     }
 
+    public IInvalidDomainObjectManager ParentInvalidDomainObjectManager
+    {
+      get { return _parentInvalidDomainObjectManager; }
+    }
+
     public virtual ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
