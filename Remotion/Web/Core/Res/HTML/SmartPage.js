@@ -252,7 +252,7 @@ function SmartPage_Context(
   };
 
   // Event handler attached to the change event of tracked form elements
-  this.OnValueChanged = function()
+  this.OnValueChanged = function ()
   {
     _isDirty = true;
   };
@@ -260,23 +260,32 @@ function SmartPage_Context(
   // Attaches the event handlers to the OnFocus and OnBlur events.
   function SetFocusEventHandlers(currentElement)
   {
-    if (!TypeUtility.IsUndefined(window.document.activeElement))
-      return;
+    if (TypeUtility.IsUndefined(window.document.activeElement))
+    {
+      if (currentElement == null)
+        return;
 
-    if (currentElement == null)
-      return;
-
-    if (!TypeUtility.IsUndefined(currentElement.id) && !StringUtility.IsNullOrEmpty(currentElement.id)
+      if (!TypeUtility.IsUndefined(currentElement.id) && !StringUtility.IsNullOrEmpty(currentElement.id)
         && IsFocusableTag(currentElement.tagName))
-    {
-      currentElement.onfocus = _elementFocusHandler;
-      currentElement.onblur = _elementBlurHandler;
-    }
+      {
+        currentElement.onfocus = _elementFocusHandler;
+        currentElement.onblur = _elementBlurHandler;
+      }
 
-    for (var i = 0; i < currentElement.childNodes.length; i++)
+      for (var i = 0; i < currentElement.childNodes.length; i++)
+      {
+        var element = currentElement.childNodes[i];
+        SetFocusEventHandlers(element);
+      }
+    }
+    else if ($.browser.webkit)
     {
-      var element = currentElement.childNodes[i];
-      SetFocusEventHandlers(element);
+      // webkit does not set focus on hyperlink-clicks
+      $('a').each(function ()
+      {
+        RemoveEventHandler(this, 'mousedown', _elementFocusHandler);
+        AddEventHandler(this, 'mousedown', _elementFocusHandler);
+      });
     }
   };
 
@@ -953,9 +962,6 @@ function SmartPage_Context(
         return null;
 
       if (IsFocusableTag(element.tagName))
-        return element;
-
-      if (!TypeUtility.IsUndefined(element.id) && !StringUtility.IsNullOrEmpty(element.id))
         return element;
 
       element = element.parentNode;
