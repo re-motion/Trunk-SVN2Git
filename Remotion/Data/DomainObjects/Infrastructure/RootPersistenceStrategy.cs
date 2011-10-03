@@ -46,12 +46,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      ObjectID newObjectID;
       using (var persistenceManager = CreatePersistenceManager())
       {
-        newObjectID = persistenceManager.CreateNewObjectID (classDefinition);
+        return persistenceManager.CreateNewObjectID (classDefinition);
       }
-      return newObjectID;
     }
 
     public virtual DataContainer LoadDataContainer (ObjectID id)
