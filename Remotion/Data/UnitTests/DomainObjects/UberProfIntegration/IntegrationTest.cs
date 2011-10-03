@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.DomainObjects.UberProfIntegration;
+using Remotion.Development.UnitTesting;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
@@ -29,6 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
   [TestFixture]
   public class IntegrationTest : UberProfIntegrationTestBase
   {
+    private ServiceLocatorScope _serviceLocatorScope;
     private TracingLinqToSqlAppender _tracingLinqToSqlAppender;
 
     public override void SetUp ()
@@ -39,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
       var factory = new LinqToSqlListenerFactory();
       locator.Register (typeof (IClientTransactionListenerFactory), () => factory);
       locator.Register (typeof (IPersistenceListenerFactory), () => factory);
-      ServiceLocator.SetLocatorProvider (() => locator);
+      _serviceLocatorScope = new ServiceLocatorScope (locator);
 
       _tracingLinqToSqlAppender = new TracingLinqToSqlAppender();
       SetAppender (_tracingLinqToSqlAppender);
@@ -48,9 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
 
     public override void TearDown ()
     {
+      _serviceLocatorScope.Dispose();
       base.TearDown();
-
-      ServiceLocator.SetLocatorProvider (null);
     }
 
     [Test]

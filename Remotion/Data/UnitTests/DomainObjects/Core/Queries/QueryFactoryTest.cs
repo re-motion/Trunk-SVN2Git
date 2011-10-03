@@ -47,20 +47,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   [TestFixture]
   public class QueryFactoryTest : StandardMappingTest
   {
-    private ServiceLocatorProvider _serviceLocatorProviderBackup;
-
-    public override void SetUp ()
-    {
-      base.SetUp ();
-      _serviceLocatorProviderBackup = (ServiceLocatorProvider) PrivateInvoke.GetNonPublicStaticField (typeof (ServiceLocator), "currentProvider");
-    }
-
-    public override void TearDown ()
-    {
-      PrivateInvoke.SetNonPublicStaticField (typeof (ServiceLocator), "currentProvider", _serviceLocatorProviderBackup);
-      base.TearDown ();
-    }
-
     [Test]
     public void CreateQuery_FromDefinition ()
     {
@@ -288,12 +274,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           stub => stub.GetCustomNodeTypes (), 
           new[] { Tuple.Create<IEnumerable<MethodInfo>, Type> (new[] { customMethod2 }, typeof (WhereExpressionNode)) });
 
-      PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2);
+      using (PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2))
+      {
+        var queryParser = CallCreateQueryParser();
 
-      var queryParser = CallCreateQueryParser ();
-
-      Assert.That (queryParser.NodeTypeProvider.GetNodeType (customMethod1), Is.SameAs (typeof (SelectExpressionNode)));
-      Assert.That (queryParser.NodeTypeProvider.GetNodeType (customMethod2), Is.SameAs (typeof (WhereExpressionNode)));
+        Assert.That (queryParser.NodeTypeProvider.GetNodeType (customMethod1), Is.SameAs (typeof (SelectExpressionNode)));
+        Assert.That (queryParser.NodeTypeProvider.GetNodeType (customMethod2), Is.SameAs (typeof (WhereExpressionNode)));
+      }
     }
 
     [Test]
@@ -308,11 +295,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           stub => stub.GetCustomNodeTypes (),
           new[] { Tuple.Create<IEnumerable<MethodInfo>, Type> (new[] { exstingMethod }, typeof (WhereExpressionNode)) });
 
-      PrepareServiceLocatorWithParserCustomizers (customizer);
+      using (PrepareServiceLocatorWithParserCustomizers (customizer))
+      {
+        var queryParserWithOverrides = CallCreateQueryParser();
 
-      var queryParserWithOverrides = CallCreateQueryParser ();
-
-      Assert.That (queryParserWithOverrides.NodeTypeProvider.GetNodeType (exstingMethod), Is.SameAs (typeof (WhereExpressionNode)));
+        Assert.That (queryParserWithOverrides.NodeTypeProvider.GetNodeType (exstingMethod), Is.SameAs (typeof (WhereExpressionNode)));
+      }
     }
 
     [Test]
@@ -346,12 +334,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           stub => stub.GetCustomMethodCallTransformers (),
           new[] { Tuple.Create<IEnumerable<MethodInfo>, IMethodCallTransformer> (new[] { customMethod2 }, customTransformer2) });
 
-      PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2);
+      using (PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2))
+      {
+        var nodeTypeRegistry = CallCreateMethodCallTransformerProvider();
 
-      var nodeTypeRegistry = CallCreateMethodCallTransformerProvider ();
-
-      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Providers[0]).GetItem (customMethod1), Is.SameAs (customTransformer1));
-      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Providers[0]).GetItem (customMethod2), Is.SameAs (customTransformer2));
+        Assert.That (
+            ((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Providers[0]).GetItem (customMethod1), Is.SameAs (customTransformer1));
+        Assert.That (
+            ((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Providers[0]).GetItem (customMethod2), Is.SameAs (customTransformer2));
+      }
     }
 
     [Test]
@@ -367,11 +358,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           stub => stub.GetCustomMethodCallTransformers (),
           new[] { Tuple.Create<IEnumerable<MethodInfo>, IMethodCallTransformer> (new[] { existingMethod }, customTransformer) });
 
-      PrepareServiceLocatorWithParserCustomizers (customizer);
+      using (PrepareServiceLocatorWithParserCustomizers (customizer))
+      {
+        var registryWithOverrides = CallCreateMethodCallTransformerProvider();
 
-      var registryWithOverrides = CallCreateMethodCallTransformerProvider ();
-
-      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) registryWithOverrides.Providers[0]).GetItem(existingMethod), Is.SameAs (customTransformer));
+        Assert.That (
+            ((MethodInfoBasedMethodCallTransformerRegistry) registryWithOverrides.Providers[0]).GetItem (existingMethod),
+            Is.SameAs (customTransformer));
+      }
     }
 
     [Test]
@@ -406,12 +400,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           stub => stub.GetCustomResultOperatorHandlers (),
           new[] { Tuple.Create<IEnumerable<Type>, IResultOperatorHandler> (new[] { customType2 }, customTransformer2) });
 
-      PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2);
+      using (PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2))
+      {
+        var nodeTypeRegistry = CallCreateResultOperatorHandlerRegistry();
 
-      var nodeTypeRegistry = CallCreateResultOperatorHandlerRegistry ();
-
-      Assert.That (nodeTypeRegistry.GetItem (customType1), Is.SameAs (customTransformer1));
-      Assert.That (nodeTypeRegistry.GetItem (customType2), Is.SameAs (customTransformer2));
+        Assert.That (nodeTypeRegistry.GetItem (customType1), Is.SameAs (customTransformer1));
+        Assert.That (nodeTypeRegistry.GetItem (customType2), Is.SameAs (customTransformer2));
+      }
     }
 
     [Test]
@@ -427,11 +422,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           stub => stub.GetCustomResultOperatorHandlers(),
           new[] { Tuple.Create<IEnumerable<Type>, IResultOperatorHandler> (new[] { existingType }, customTransformer) });
 
-      PrepareServiceLocatorWithParserCustomizers (customizer);
+      using (PrepareServiceLocatorWithParserCustomizers (customizer))
+      {
+        var registryWithOverrides = CallCreateResultOperatorHandlerRegistry();
 
-      var registryWithOverrides = CallCreateResultOperatorHandlerRegistry ();
-
-      Assert.That (registryWithOverrides.GetItem (existingType), Is.SameAs (customTransformer));
+        Assert.That (registryWithOverrides.GetItem (existingType), Is.SameAs (customTransformer));
+      }
     }
 
     private QueryParser CallCreateQueryParser ()
@@ -457,12 +453,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       return customizerStub;
     }
 
-    private void PrepareServiceLocatorWithParserCustomizers (params ILinqParserCustomizer[] extensionFactories)
+    private IDisposable PrepareServiceLocatorWithParserCustomizers (params ILinqParserCustomizer[] extensionFactories)
     {
       var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator> ();
       serviceLocatorStub.Stub (stub => stub.GetAllInstances<ILinqParserCustomizer> ()).Return (extensionFactories);
       serviceLocatorStub.Replay ();
-      ServiceLocator.SetLocatorProvider (() => serviceLocatorStub);
+      return new ServiceLocatorScope (serviceLocatorStub);
     }
   }
 }

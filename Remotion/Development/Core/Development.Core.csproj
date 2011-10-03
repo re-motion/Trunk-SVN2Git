@@ -98,6 +98,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -167,6 +170,7 @@
     <Compile Include="UnitTesting\Sandboxing\TestResult.cs" />
     <Compile Include="UnitTesting\SerializationCallbackTester.cs" />
     <Compile Include="UnitTesting\Serializer.cs" />
+    <Compile Include="UnitTesting\ServiceLocatorScope.cs" />
     <Compile Include="UnitTesting\ThreadRunner.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\WindowsSdk6PEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\WindowsSdk70aPEVerifyPathSource.cs" />

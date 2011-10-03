@@ -98,6 +98,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\nunit 2.5\nunit.framework.dll</HintPath>
@@ -163,6 +166,7 @@
     <Compile Include="Core\UnitTesting\Sandboxing\SandboxTestRunnerTest.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\SandboxTest.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\TestResultTest.cs" />
+    <Compile Include="Core\UnitTesting\ServiceLocatorScopeTest.cs" />
     <Compile Include="Core\UnitTesting\ThreadRunnerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\Linq\ExpressionTreeComparerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\SetUpFixture.cs" />
