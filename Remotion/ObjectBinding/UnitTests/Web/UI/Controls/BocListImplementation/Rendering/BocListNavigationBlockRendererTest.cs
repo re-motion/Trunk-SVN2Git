@@ -58,22 +58,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 1, 1) + c_tripleBlank, 0);
 
-      var firstIcon = Html.GetAssertedChildElement (div, "img", 1);
+      var firstIcon = Html.GetAssertedChildElement (div, "a", 1);
       AssertInactiveIcon (firstIcon, "First");
 
       Html.AssertTextNode (div, c_tripleBlank, 2);
 
-      var previousIcon = Html.GetAssertedChildElement (div, "img", 3);
+      var previousIcon = Html.GetAssertedChildElement (div, "a", 3);
       AssertInactiveIcon (previousIcon, "Previous");
 
       Html.AssertTextNode (div, c_tripleBlank, 4);
 
-      var nextIcon = Html.GetAssertedChildElement (div, "img", 5);
+      var nextIcon = Html.GetAssertedChildElement (div, "a", 5);
       AssertInactiveIcon (nextIcon, "Next");
 
       Html.AssertTextNode (div, c_tripleBlank, 6);
 
-      var lastIcon = Html.GetAssertedChildElement (div, "img", 7);
+      var lastIcon = Html.GetAssertedChildElement (div, "a", 7);
       AssertInactiveIcon (lastIcon, "Last");
 
       Html.AssertTextNode (div, c_tripleBlank, 8);
@@ -95,12 +95,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 1, 2) + c_tripleBlank, 0);
 
-      var firstIcon = Html.GetAssertedChildElement (div, "img", 1);
+      var firstIcon = Html.GetAssertedChildElement (div, "a", 1);
       AssertInactiveIcon (firstIcon, "First");
 
       Html.AssertTextNode (div, c_tripleBlank, 2);
 
-      var previousIcon = Html.GetAssertedChildElement (div, "img", 3);
+      var previousIcon = Html.GetAssertedChildElement (div, "a", 3);
       AssertInactiveIcon (previousIcon, "Previous");
 
       Html.AssertTextNode (div, c_tripleBlank, 4);
@@ -142,12 +142,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       Html.AssertTextNode (div, c_tripleBlank, 4);
 
-      var nextIcon = Html.GetAssertedChildElement (div, "img", 5);
+      var nextIcon = Html.GetAssertedChildElement (div, "a", 5);
       AssertInactiveIcon (nextIcon, "Next");
 
       Html.AssertTextNode (div, c_tripleBlank, 6);
 
-      var lastIcon = Html.GetAssertedChildElement (div, "img", 7);
+      var lastIcon = Html.GetAssertedChildElement (div, "a", 7);
       AssertInactiveIcon (lastIcon, "Last");
 
       Html.AssertTextNode (div, c_tripleBlank, 8);
@@ -200,8 +200,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (icon, "src", string.Format ("/Move{0}.gif", command), HtmlHelper.AttributeValueCompareMode.Contains);
     }
 
-    private void AssertInactiveIcon (XmlNode icon, string command)
+    private void AssertInactiveIcon (XmlNode link, string command)
     {
+      Html.AssertAttribute (link, "id", List.ClientID + "_Navigation_" + command);
+      Html.AssertNoAttribute(link, "onclick");
+      Html.AssertNoAttribute (link, "href");
+
+      var icon = Html.GetAssertedChildElement (link, "img", 0);
       Html.AssertAttribute (icon, "src", string.Format ("/Move{0}Inactive.gif", command), HtmlHelper.AttributeValueCompareMode.Contains);
     }
   }

@@ -148,14 +148,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <summary>Renders the appropriate icon for the given <paramref name="command"/>, depending on <paramref name="isInactive"/>.</summary>
     private void RenderNavigationIcon (BocListRenderingContext renderingContext, bool isInactive, GoToOption command)
     {
+      var navigateCommandID = renderingContext.Control.ClientID + "_Navigation_" + command;
+
       if (isInactive || renderingContext.Control.EditModeController.IsRowEditModeActive)
       {
-        var imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, navigateCommandID);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
+
+        var imageUrl = GetResolvedImageUrl (s_inactiveIcons[command]);
         new IconInfo (imageUrl.GetUrl()).Render (renderingContext.Writer, renderingContext.Control);
+
+        renderingContext.Writer.RenderEndTag ();
       }
       else
       {
-        var navigateCommandID = renderingContext.Control.ClientID + "_Navigation_" + command;
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, navigateCommandID);
 
         string argument = BocList.GoToCommandPrefix + command;
