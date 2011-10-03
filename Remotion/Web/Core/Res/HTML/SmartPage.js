@@ -260,7 +260,13 @@ function SmartPage_Context(
   // Attaches the event handlers to the OnFocus and OnBlur events.
   function SetFocusEventHandlers(currentElement)
   {
-    if (TypeUtility.IsUndefined(window.document.activeElement))
+    if ($.browser.msie)
+    {
+      //  Special work-around for not accessing window.document.activeElement during page load in IE, 
+      //  since this throws an error if the page is inside an iframe
+      return;
+    }
+    else if (TypeUtility.IsUndefined(window.document.activeElement))
     {
       if (currentElement == null)
         return;
