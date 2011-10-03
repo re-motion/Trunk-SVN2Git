@@ -97,8 +97,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
+      Html.AssertAttribute (div, "class", _bocListCssClassDefinition.TableScrollContainer);
 
       var table = Html.GetAssertedChildElement (div, "table", 0);
+      Html.AssertAttribute (table, "class", _bocListCssClassDefinition.Table);
 
       var colgroup = Html.GetAssertedChildElement (table, "colgroup", 0);
 

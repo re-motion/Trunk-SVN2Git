@@ -44,14 +44,14 @@ div.bocListTableBlock.hasMenuBlock
 }
 
 /* Style applied to the div surrounding the BocList's table if there is a menu block. */
-div.bocListTableBlock.hasMenuBlock div.bocListTable
+div.bocListTableBlock.hasMenuBlock div.bocListTableScrollContainer
 {
 }
 
 /*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height.  */
 div.bocList.hasDimensions div.bocListTableBlock,
-div.bocList.hasDimensions div.bocListTableBlock div.bocListTable
+div.bocList.hasDimensions div.bocListTableBlock div.bocListTableScrollContainer
 {
   position: absolute;
   top: 0;
@@ -67,7 +67,7 @@ div.bocList.hasDimensions div.bocListTableBlock.hasMenuBlock
 }
 
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
-div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTable
+div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTableScrollContainer
 {
   bottom: 1.5em;
 }
@@ -79,7 +79,7 @@ div.bocList.hasDimensions div.bocListNavigator
 }
 
 /* Style applied to the div surrounding the BocList's table. */
-div.bocListTable
+div.bocListTableScrollContainer
 {
   display: block;
   width: auto;

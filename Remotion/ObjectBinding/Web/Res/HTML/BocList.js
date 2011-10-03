@@ -116,7 +116,7 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   }
   else
   {
-    var bocListTable = tableBlock.children('div.bocListTable').first().children().first(); // TODO: CSS class is virtual in renderer
+    var bocListTable = tableBlock.children('div.bocListTableScrollContainer').first().children('table').first();
     var isTableBlockBiggerThanBocList = $(bocList).height() < bocListTable.height();
     if (isTableBlockBiggerThanBocList)
     {
@@ -338,7 +338,7 @@ function BocList_GetSelectionCount (bocListID)
 function BocList_FixUpScrolling(tableBlock)
 {
   var scrollTimer = null;
-  var scrollableContainer = tableBlock.children('div.bocListTable').first(); // TODO: CSS class is virtual in renderer
+  var scrollableContainer = tableBlock.children('div.bocListTableScrollContainer').first();
   var horizontalScroll = 0;
   var verticalScroll = 0;
 

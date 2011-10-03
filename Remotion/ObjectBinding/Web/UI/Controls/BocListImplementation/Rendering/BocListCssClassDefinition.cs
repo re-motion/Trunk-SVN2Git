@@ -167,6 +167,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return "bocListTableBlock"; }
     }
 
+    public string TableScrollContainer
+    {
+      get { return "bocListTableScrollContainer"; }
+    }
+
     public string HasMenuBlock
     {
       get { return "hasMenuBlock"; }
