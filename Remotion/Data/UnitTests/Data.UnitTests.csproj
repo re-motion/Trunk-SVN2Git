@@ -400,6 +400,7 @@
     <Compile Include="DomainObjects\Factories\SerializedObjectIDStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectOnInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SubTransactionCreatedTest.cs" />
     <Compile Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithoutHierarchy.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
@@ -1272,7 +1273,7 @@
     <Compile Include="DomainObjects\ClientTransactionMock.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\CommonCollectionMock.cs">
+    <Compile Include="DomainObjects\Core\TestableCommonCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\CommonCollectionTest.cs">

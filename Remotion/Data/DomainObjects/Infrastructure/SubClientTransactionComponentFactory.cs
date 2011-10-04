@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual ClientTransactionExtensionCollection CreateExtensions ()
     {
-      return _parentTransaction.Extensions;
+      return new ClientTransactionExtensionCollection ("root");
     }
 
     public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)

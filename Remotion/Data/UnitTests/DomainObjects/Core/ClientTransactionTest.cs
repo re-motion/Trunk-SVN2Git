@@ -623,7 +623,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (_transaction.IsReadOnly, Is.True);
       Assert.That (_transaction.SubTransaction, Is.SameAs (subTransaction));
 
-      Assert.That (subTransaction.Extensions, Is.SameAs (_transaction.Extensions));
+      Assert.That (subTransaction.Extensions, Is.Empty);
       Assert.That (subTransaction.ApplicationData, Is.SameAs (_transaction.ApplicationData));
       
       var enlistedObjectManager = ClientTransactionTestHelper.GetEnlistedDomainObjectManager (subTransaction);

@@ -71,10 +71,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       ITransaction rootTransaction = factory.CreateRootTransaction();
       ITransaction childTransaction = rootTransaction.CreateChild();
-      
-      var clientTransaction = childTransaction.To<ClientTransaction>();
-      Assert.That (rootTransaction.To<ClientTransaction>().Extensions[0], Is.SameAs (extensionStub));
-      Assert.That (clientTransaction.Extensions, Is.EqualTo (rootTransaction.To<ClientTransaction>().Extensions));
+
+      Assert.That (rootTransaction.To<ClientTransaction>().Extensions, Has.Member (extensionStub));
+      Assert.That (childTransaction.To<ClientTransaction>().Extensions, Has.No.Member (extensionStub));
     }
   }
 }

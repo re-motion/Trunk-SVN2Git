@@ -202,6 +202,15 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }
 
+    public void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("parentClientTransaction", parentClientTransaction);
+      ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);
+
+      if (subTransaction.Extensions[Key] == null)
+        subTransaction.Extensions.Add (this);
+    }
+
     private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, IPropertyInformation propertyInfo)
     {
       if (_isActive)
@@ -237,10 +246,6 @@ namespace Remotion.Data.DomainObjects.Security
     #region IClientTransactionExtension Implementation
 
     void IClientTransactionExtension.SubTransactionCreating (ClientTransaction parentClientTransaction)
-    {
-    }
-
-    void IClientTransactionExtension.SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
     {
     }
 

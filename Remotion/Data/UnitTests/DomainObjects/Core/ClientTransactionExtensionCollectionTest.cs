@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "An extension with key 'Name1' is already part of the collection.\r\nParameter name: key")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An extension with key 'Name1' is already part of the collection.")]
     public void AddWithDuplicateKey ()
     {
       _collection.Add (_extension1);
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "An extension with key 'Name1' is already part of the collection.\r\nParameter name: key")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An extension with key 'Name1' is already part of the collection.")]
     public void InsertWithDuplicateName ()
     {
       _collection.Insert (0, _extension1);

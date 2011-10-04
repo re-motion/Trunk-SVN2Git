@@ -71,6 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _extensionMock.Stub (stub => stub.Key).Return ("TestExtension");
       _extensionMock.Replay();
+      ClientTransactionMock.Extensions.Add (_extensionMock);
       _subTransaction.Extensions.Add (_extensionMock);
       _extensionMock.BackToRecord();
 
@@ -85,13 +86,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _subTransactionScope.Leave();
 
       base.TearDown();
-    }
-
-    [Test]
-    public void ExtensionsAreSameAcrossHierarchy ()
-    {
-      Assert.IsNotNull (_subTransaction.Extensions);
-      Assert.AreSame (_subTransaction.Extensions, _subTransaction.ParentTransaction.Extensions);
     }
 
     [Test]

@@ -16,33 +16,24 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   [TestFixture]
   public class CommonCollectionTest
   {
-    // types
+    private TestableCommonCollection _collection;
 
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    public CommonCollectionTest ()
+    [SetUp]
+    public void SetUp ()
     {
+      _collection = new TestableCommonCollection ();
     }
-
-    // methods and properties
 
     [Test]
     public void ContainsNullForKeyNotInCollection ()
     {
-      CommonCollectionMock collection = new CommonCollectionMock ();
-
-      Assert.IsFalse (collection.Contains ("invalidKey", null));
+      Assert.IsFalse (_collection.BaseContains ("invalidKey", null));
     }
   }
 }

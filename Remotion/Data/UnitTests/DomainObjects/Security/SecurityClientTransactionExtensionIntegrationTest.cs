@@ -213,5 +213,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
       Dev.Null = ((ISecurableObjectMixin) securableObject).MixedPropertyWithCustomPermission;
     }
+
+    [Test]
+    [ExpectedException (typeof (PermissionDeniedException), ExpectedMessage =
+        "Access to method 'get_PropertyWithDefaultPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
+    [Ignore ("TODO 4391")]
+    public void AccessDenied_SubTransaction ()
+    {
+      Assert.That (_clientTransaction.Extensions[SecurityClientTransactionExtension.DefaultKey], Is.Not.Null);
+
+      var subTransaction = _clientTransaction.CreateSubTransaction();
+      Assert.That (subTransaction.Extensions[SecurityClientTransactionExtension.DefaultKey], Is.Not.Null);
+
+      using (subTransaction.EnterDiscardingScope ())
+      {
+        var securityContextStub = MockRepository.GenerateStub<ISecurityContext>();
+        var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
+
+        securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext()).Return (securityContextStub);
+
+        SecurableObject securableObject;
+        using (new SecurityFreeSection())
+        {
+          securableObject = SecurableObject.NewObject (subTransaction, new ObjectSecurityStrategy (securityContextFactoryStub));
+        }
+
+        Dev.Null = securableObject.PropertyWithDefaultPermission;
+      }
+    }
   }
 }

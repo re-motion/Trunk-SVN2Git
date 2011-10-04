@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -74,7 +75,7 @@ namespace Remotion.Data.DomainObjects
     /// Adds an <see cref="IClientTransactionExtension"/> to the collection.
     /// </summary>
     /// <param name="clientTransactionExtension">The extension to add. Must not be <see langword="null"/>.</param>
-    /// <exception cref="System.ArgumentException">An extension with the same <see cref="IClientTransactionExtension.Key"/> as the given 
+    /// <exception cref="InvalidOperationException">An extension with the same <see cref="IClientTransactionExtension.Key"/> as the given 
     /// <paramref name="clientTransactionExtension"/> is already part of the collection.</exception>
     /// <remarks>The order of the extensions in the collection is the order in which they are notified.</remarks>
     public void Add (IClientTransactionExtension clientTransactionExtension)
@@ -85,7 +86,7 @@ namespace Remotion.Data.DomainObjects
       Assertion.IsNotNull (key, "IClientTransactionExtension.Key must not return null");
 
       if (BaseContainsKey (key)) 
-        throw CreateArgumentException ("key", "An extension with key '{0}' is already part of the collection.", key);
+        throw new InvalidOperationException (string.Format ("An extension with key '{0}' is already part of the collection.", key));
       
       BaseAdd (key, clientTransactionExtension);
     }
@@ -129,14 +130,9 @@ namespace Remotion.Data.DomainObjects
       Assertion.IsNotNull (key, "IClientTransactionExtension.Key must not return null");
 
       if (BaseContainsKey (key))
-        throw CreateArgumentException ("key", "An extension with key '{0}' is already part of the collection.", key);
+        throw new InvalidOperationException (string.Format ("An extension with key '{0}' is already part of the collection.", key));
 
       BaseInsert (index, key, clientTransactionExtension);
-    }
-
-    private ArgumentException CreateArgumentException (string parameterName, string message, params object[] args)
-    {
-      return new ArgumentException (string.Format (message, args), parameterName);
     }
 
     #region Notification methods
@@ -317,9 +313,9 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("queryResult", queryResult);
 
-      foreach (IClientTransactionExtension extension in this)
-        queryResult = extension.FilterQueryResult (clientTransaction, queryResult);
-      return queryResult;
+      return this
+          .Cast<IClientTransactionExtension>()
+          .Aggregate (queryResult, (current, extension) => extension.FilterQueryResult (clientTransaction, current));
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

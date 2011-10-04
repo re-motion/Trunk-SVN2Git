@@ -163,10 +163,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void SubTransactionHasSameExtensions ()
+    public void SubTransactionHasDifferentExtensions ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.That (subTransaction.Extensions, Is.SameAs (ClientTransactionMock.Extensions));
+      Assert.That (subTransaction.Extensions, Is.Not.SameAs (ClientTransactionMock.Extensions));
+
+      var extensionStub1 = MockRepository.GenerateStub<IClientTransactionExtension>();
+      extensionStub1.Stub (stub => stub.Key).Return ("E1");
+      var extensionStub2 = MockRepository.GenerateStub<IClientTransactionExtension>();
+      extensionStub2.Stub (stub => stub.Key).Return ("E2");
+
+      ClientTransactionMock.Extensions.Add (extensionStub1);
+      Assert.That (ClientTransactionMock.Extensions, Has.Member (extensionStub1));
+      Assert.That (subTransaction.Extensions, Has.No.Member (extensionStub1));
+
+      subTransaction.Extensions.Add (extensionStub2);
+      Assert.That (subTransaction.Extensions, Has.Member (extensionStub2));
+      Assert.That (ClientTransactionMock.Extensions, Has.No.Member (extensionStub2));
     }
 
     [Test]

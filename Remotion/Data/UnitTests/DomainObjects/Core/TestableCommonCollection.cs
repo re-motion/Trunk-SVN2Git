@@ -19,26 +19,16 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  public class CommonCollectionMock : CommonCollection
+  public class TestableCommonCollection : CommonCollection
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    public CommonCollectionMock ()
+    public new bool BaseContains (object key, object value)
     {
+      return base.BaseContains (key, value);
     }
 
-    // methods and properties
-
-    public bool Contains (object key, object value)
+    public new int BaseAdd (object key, object value)
     {
-      return BaseContains (key, value);
+      return base.BaseAdd (key, value);
     }
-
   }
 }
