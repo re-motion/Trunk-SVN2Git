@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void Extensions ()
     {
       ClientTransactionExtensionWithQueryFiltering extension = new ClientTransactionExtensionWithQueryFiltering ();
-      ClientTransactionScope.CurrentTransaction.Extensions.Add ("Name", extension);
+      ClientTransactionScope.CurrentTransaction.Extensions.Add (extension);
 
       ClientTransaction deserializedClientTransaction = (ClientTransaction) SerializeAndDeserialize (ClientTransactionScope.CurrentTransaction);
 

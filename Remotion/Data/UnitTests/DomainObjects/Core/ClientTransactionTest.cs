@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _fakeApplicationData = new Dictionary<Enum, object>();
       _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
       _enlistedObjectManagerMock = _mockRepository.StrictMock<IEnlistedDomainObjectManager> ();
-      _fakeExtensions = new ClientTransactionExtensionCollection();
+      _fakeExtensions = new ClientTransactionExtensionCollection("test");
       _invalidDomainObjectManagerMock = _mockRepository.StrictMock<IInvalidDomainObjectManager> ();
       _fakeListeners = new CompoundClientTransactionListener();
       _objectLoaderMock = _mockRepository.StrictMock<IObjectLoader> ();

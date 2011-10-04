@@ -163,7 +163,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension> ();
 
         Order.GetObject (DomainObjectIDs.Order1);
-        ClientTransactionMock.Extensions.Add ("stub", extensionMock);
+        extensionMock.Stub (stub => stub.Key).Return ("stub");
+        extensionMock.Replay();
+        ClientTransactionMock.Extensions.Add (extensionMock);
+        extensionMock.BackToRecord();
 
         var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
         query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);

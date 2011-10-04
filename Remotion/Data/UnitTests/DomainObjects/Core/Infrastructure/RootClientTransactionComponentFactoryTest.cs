@@ -46,6 +46,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void CreateApplicationData ()
+    {
+      var applicationData = _factory.CreateApplicationData();
+
+      Assert.That (applicationData, Is.Not.Null);
+      Assert.That (applicationData.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void CreateExtensions ()
+    {
+      var extensionCollection = _factory.CreateExtensions();
+
+      Assert.That (extensionCollection, Is.Not.Null);
+      Assert.That (((IClientTransactionExtension) extensionCollection).Key, Is.EqualTo ("root"));
+      Assert.That (extensionCollection.Count, Is.EqualTo (0));
+    }
+
+    [Test]
     public void CreateInvalidDomainObjectManager ()
     {
       var manager = _factory.CreateInvalidDomainObjectManager ();

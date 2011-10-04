@@ -93,9 +93,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       mock.Committed (null, null);
       LastCall.Constraints (Mocks_Is.Same (transportedObjects.DataTransaction), Mocks_List.Equal (GetTransportedObjects (transportedObjects)));
 
+      mock.Stub (stub => stub.Key).Return ("mock");
+
       mockRepository.ReplayAll();
 
-      transportedObjects.DataTransaction.Extensions.Add ("mock", mock);
+      transportedObjects.DataTransaction.Extensions.Add (mock);
       transportedObjects.FinishTransport();
 
       mockRepository.VerifyAll();

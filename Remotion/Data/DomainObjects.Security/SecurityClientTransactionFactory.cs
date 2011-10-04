@@ -27,16 +27,12 @@ namespace Remotion.Data.DomainObjects.Security
   [Serializable]
   public class SecurityClientTransactionFactory : ClientTransactionFactory
   {
-    public SecurityClientTransactionFactory ()
-    {
-    }
-
     protected override void OnTransactionCreated (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-        transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension ());
+        transaction.Extensions.Add (new SecurityClientTransactionExtension ());
     }
   }
 }

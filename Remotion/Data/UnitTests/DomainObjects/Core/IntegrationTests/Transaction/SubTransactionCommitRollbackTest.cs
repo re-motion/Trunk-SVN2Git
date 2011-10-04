@@ -200,7 +200,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         MockRepository repository = new MockRepository();
 
         IClientTransactionExtension extensionMock = repository.StrictMock<IClientTransactionExtension>();
-        _subTransaction.Extensions.Add ("Mock", extensionMock);
+        extensionMock.Stub (stub => stub.Key).Return ("Mock");
+        extensionMock.Replay();
+        _subTransaction.Extensions.Add (extensionMock);
+        extensionMock.BackToRecord();
 
         extensionMock.ObjectDeleting (_subTransaction, domainObject);
         extensionMock.ObjectDeleted (_subTransaction, domainObject);
@@ -232,7 +235,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         MockRepository repository = new MockRepository ();
 
         IClientTransactionExtension extensionMock = repository.StrictMock<IClientTransactionExtension> ();
-        _subTransaction.Extensions.Add ("Mock", extensionMock);
+        extensionMock.Replay();
+        extensionMock.Stub (stub => stub.Key).Return ("Mock");
+        _subTransaction.Extensions.Add (extensionMock);
+        extensionMock.BackToRecord();
 
         using (repository.Ordered ())
         {

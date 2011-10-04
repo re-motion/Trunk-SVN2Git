@@ -26,12 +26,25 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Security
 {
+  /// <summary>
+  /// Adds security checks to the following re-store operations: object creation and deletion, queries, relation and property reads and writes.
+  /// </summary>
   [Serializable]
   public class SecurityClientTransactionExtension : IClientTransactionExtension
   {
+    public static string DefaultKey
+    {
+      get { return typeof (SecurityClientTransactionExtension).FullName; }
+    }
+
     private bool _isActive;
     [NonSerialized]
     private SecurityClient _securityClient;
+
+    public virtual string Key
+    {
+      get { return DefaultKey; }
+    }
 
     public virtual QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
     {

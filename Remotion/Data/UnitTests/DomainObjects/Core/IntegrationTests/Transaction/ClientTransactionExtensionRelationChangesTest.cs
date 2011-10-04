@@ -58,7 +58,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _location1EventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_location1);
       _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_client1); // no events must be signalled for _client1
 
-      ClientTransactionScope.CurrentTransaction.Extensions.Add ("Name", _extension);
+      _extension.Stub (stub => stub.Key).Return ("Name");
+      _extension.Replay();
+      ClientTransactionScope.CurrentTransaction.Extensions.Add ( _extension);
+      _extension.BackToRecord();
     }
 
     [Test]

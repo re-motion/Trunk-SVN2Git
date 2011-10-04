@@ -529,9 +529,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg<IRelationEndPointDefinition>.Matches (args => args.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
       }
 
-      ClientTransactionScope.CurrentTransaction.Extensions.Add ("Extension", extension);
+      extension.Stub (stub => stub.Key).Return ("Extension");
       mockRepository.ReplayAll();
 
+      ClientTransactionScope.CurrentTransaction.Extensions.Add (extension);
+      
       //1
       newCeo1.Company = newCustomer1;
       //2

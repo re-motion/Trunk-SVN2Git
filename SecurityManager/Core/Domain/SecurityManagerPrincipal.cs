@@ -145,7 +145,7 @@ namespace Remotion.SecurityManager.Domain
       _revision = GetRevision();
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-        _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension());
+        _transaction.Extensions.Add (new SecurityClientTransactionExtension());
     }
 
     bool INullObject.IsNull

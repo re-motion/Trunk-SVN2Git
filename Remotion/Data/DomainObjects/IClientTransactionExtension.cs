@@ -35,6 +35,19 @@ namespace Remotion.Data.DomainObjects
   public interface IClientTransactionExtension
   {
     /// <summary>
+    /// Gets the key that is to be used when registering this <see cref="IClientTransactionExtension"/> in a 
+    /// <see cref="ClientTransactionExtensionCollection"/>.
+    /// </summary>
+    /// <value>The key to be used when registering this <see cref="IClientTransactionExtension"/>.</value>
+    /// <remarks>
+    /// <note type="inotes">The value returned by this property must be stable (i.e., the same instance must always return the same key) and unique
+    /// within a single <see cref="ClientTransactionExtensionCollection"/>. Since usually only one instance of a given extension is registered with a
+    /// single <see cref="ClientTransactionExtensionCollection"/>, the full name of the type implementing this interface is often a good, unique key 
+    /// to use.</note>
+    /// </remarks>
+    string Key { get;  }
+
+    /// <summary>
     /// This method is invoked when a subtransaction of <paramref name="parentClientTransaction"/> is about to be created.
     /// </summary>
     /// <param name="parentClientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>

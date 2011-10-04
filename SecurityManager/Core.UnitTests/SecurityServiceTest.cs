@@ -248,7 +248,7 @@ namespace Remotion.SecurityManager.UnitTests
         }
       }
       SecurityConfiguration.Current.SecurityProvider = MockRepository.GenerateStub<ISecurityProvider> ();
-      _clientTransaction.Extensions.Add ("SecurityExtension", new SecurityClientTransactionExtension ());
+      _clientTransaction.Extensions.Add (new SecurityClientTransactionExtension ());
 
       _mocks.ReplayAll ();
 

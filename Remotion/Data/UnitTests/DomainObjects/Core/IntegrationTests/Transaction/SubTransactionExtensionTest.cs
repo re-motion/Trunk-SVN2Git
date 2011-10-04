@@ -69,7 +69,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
 
-      _subTransaction.Extensions.Add ("TestExtension", _extensionMock);
+      _extensionMock.Stub (stub => stub.Key).Return ("TestExtension");
+      _extensionMock.Replay();
+      _subTransaction.Extensions.Add (_extensionMock);
+      _extensionMock.BackToRecord();
 
       _mockRepository.BackToRecordAll();
 

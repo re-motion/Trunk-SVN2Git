@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       ArgumentUtility.CheckNotNullAndType<SecurityClientTransactionExtension> ("extension", extension);
 
-      _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, extension);
+      _transaction.Extensions.Add (extension);
     }
 
     public void ExpectObjectSecurityStrategyHasAccess (SecurableObject securableObject, Enum accessTypeEnum, HasAccessDelegate doDelegate)

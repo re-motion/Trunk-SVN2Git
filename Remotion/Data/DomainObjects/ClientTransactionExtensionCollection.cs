@@ -30,28 +30,28 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class ClientTransactionExtensionCollection : CommonCollection, IClientTransactionExtension
   {
-    // types
+    private readonly string _key;
 
-    // static members and constants
+    public ClientTransactionExtensionCollection (string key)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
 
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
+      _key = key;
+    }
 
     /// <summary>
     /// Gets an <see cref="IClientTransactionExtension"/> by the extension name.
     /// </summary>
-    /// <param name="extensionName">The name of the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
-    /// <returns>The <see cref="IClientTransactionExtension"/> of the given <paramref name="extensionName"/> or <see langword="null"/> if the name was not found.</returns>
-    public IClientTransactionExtension this[string extensionName]
+    /// <param name="key">The <see cref="IClientTransactionExtension.Key"/> of the extension. Must not be <see langword="null"/> or 
+    /// <see cref="System.String.Empty"/>.</param>
+    /// <returns>The <see cref="IClientTransactionExtension"/> of the given <paramref name="key"/> or <see langword="null"/> if the name was not found.</returns>
+    public IClientTransactionExtension this[string key]
     {
       get 
       {
-        ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
+        ArgumentUtility.CheckNotNullOrEmpty ("key", key);
 
-        return (IClientTransactionExtension) BaseGetObject (extensionName); 
+        return (IClientTransactionExtension) BaseGetObject (key); 
       }
     }
 
@@ -65,62 +65,73 @@ namespace Remotion.Data.DomainObjects
       get { return (IClientTransactionExtension) BaseGetObject (index); }
     }
 
+    string IClientTransactionExtension.Key
+    {
+      get { return _key; }
+    }
+
     /// <summary>
     /// Adds an <see cref="IClientTransactionExtension"/> to the collection.
     /// </summary>
-    /// <param name="extensionName">A name for the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
     /// <param name="clientTransactionExtension">The extension to add. Must not be <see langword="null"/>.</param>
-    /// <exception cref="System.ArgumentException">An extension with the given <paramref name="extensionName"/> is already part of the collection.</exception>
+    /// <exception cref="System.ArgumentException">An extension with the same <see cref="IClientTransactionExtension.Key"/> as the given 
+    /// <paramref name="clientTransactionExtension"/> is already part of the collection.</exception>
     /// <remarks>The order of the extensions in the collection is the order in which they are notified.</remarks>
-    public void Add (string extensionName, IClientTransactionExtension clientTransactionExtension)
+    public void Add (IClientTransactionExtension clientTransactionExtension)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
       ArgumentUtility.CheckNotNull ("clientTransactionExtension", clientTransactionExtension);
-      if (BaseContainsKey (extensionName)) 
-        throw CreateArgumentException ("extensionName", "An extension with name '{0}' is already part of the collection.", extensionName);
       
-      BaseAdd (extensionName, clientTransactionExtension);
+      var key = clientTransactionExtension.Key;
+      Assertion.IsNotNull (key, "IClientTransactionExtension.Key must not return null");
+
+      if (BaseContainsKey (key)) 
+        throw CreateArgumentException ("key", "An extension with key '{0}' is already part of the collection.", key);
+      
+      BaseAdd (key, clientTransactionExtension);
     }
 
     /// <summary>
     /// Removes an <see cref="IClientTransactionExtension"/> from the collection.
     /// </summary>
-    /// <param name="extensionName">The name of the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
-    public void Remove (string extensionName)
+    /// <param name="key">The name of the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
+    public void Remove (string key)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
 
-      BaseRemove (extensionName);
+      BaseRemove (key);
     }
 
     /// <summary>
-    /// Gets the index of an <see cref="IClientTransactionExtension"/> with a given <paramref name="extensionName"/>.
+    /// Gets the index of an <see cref="IClientTransactionExtension"/> with a given <paramref name="key"/>.
     /// </summary>
-    /// <param name="extensionName">The name of the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
-    /// <returns>The index of the extension, or -1 if <paramref name="extensionName"/> is not found.</returns>
-    public int IndexOf (string extensionName)
+    /// <param name="key">The name of the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
+    /// <returns>The index of the extension, or -1 if <paramref name="key"/> is not found.</returns>
+    public int IndexOf (string key)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
 
-      return BaseIndexOfKey (extensionName);
+      return BaseIndexOfKey (key);
     }
 
     /// <summary>
     /// Inserts an <see cref="IClientTransactionExtension"/> intto the collection at a specified index.
     /// </summary>
-    /// <param name="extensionName">A name for the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
     /// <param name="clientTransactionExtension">The extension to insert. Must not be <see langword="null"/>.</param>
     /// <param name="index">The index where the extension should be inserted.</param>
-    /// <exception cref="System.ArgumentException">An extension with the given <paramref name="extensionName"/> is already part of the collection.</exception>
+    /// <exception cref="System.ArgumentException">An extension with the same <see cref="IClientTransactionExtension.Key"/> as the given 
+    /// <paramref name="clientTransactionExtension"/> is already part of the collection.</exception>
     /// <remarks>The order of the extensions in the collection is the order in which they are notified.</remarks>
-    public void Insert (int index, string extensionName, IClientTransactionExtension clientTransactionExtension)
+    public void Insert (int index, IClientTransactionExtension clientTransactionExtension)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
       ArgumentUtility.CheckNotNull ("clientTransactionExtension", clientTransactionExtension);
-      if (BaseContainsKey (extensionName))
-        throw CreateArgumentException ("extensionName", "An extension with name '{0}' is already part of the collection.", extensionName);
+      
+      var key = clientTransactionExtension.Key;
+      Assertion.IsNotNull (key, "IClientTransactionExtension.Key must not return null");
 
-      BaseInsert (index, extensionName, clientTransactionExtension);
+      if (BaseContainsKey (key))
+        throw CreateArgumentException ("key", "An extension with key '{0}' is already part of the collection.", key);
+
+      BaseInsert (index, key, clientTransactionExtension);
     }
 
     private ArgumentException CreateArgumentException (string parameterName, string message, params object[] args)

@@ -1746,7 +1746,7 @@
     </Compile>
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\BindingClientTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionWrapperTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionExtensionCollectionTest.cs" />
+    <Compile Include="DomainObjects\Core\ClientTransactionExtensionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionExtensionRelationChangesTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionExtensionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionExtensionWithQueryFiltering.cs" />

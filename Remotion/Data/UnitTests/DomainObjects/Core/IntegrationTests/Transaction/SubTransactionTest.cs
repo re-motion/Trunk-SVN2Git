@@ -820,7 +820,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       LifetimeService.GetObject (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1, false); // preload ClassWithAllDataTypes
 
       var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
-      parent.Extensions.Add ("mock", extensionMock);
+      extensionMock.Stub (stub => stub.Key).Return ("mock");
+      parent.Extensions.Add (extensionMock);
 
       subTransaction.GetObjects<DomainObject> (
           DomainObjectIDs.Order1,
@@ -844,7 +845,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       LifetimeService.GetObject (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1, false); // preload ClassWithAllDataTypes
 
       var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
-      parent.Extensions.Add ("mock", extensionMock);
+      extensionMock.Stub (stub => stub.Key).Return ("mock");
+      parent.Extensions.Add (extensionMock);
 
       subTransaction.TryGetObjects<DomainObject> (
           DomainObjectIDs.Order1,

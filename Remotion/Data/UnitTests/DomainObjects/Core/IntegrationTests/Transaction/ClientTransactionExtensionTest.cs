@@ -35,7 +35,6 @@ using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
 using Rhino.Mocks.Interfaces;
 using Is = Rhino.Mocks.Constraints.Is;
-using List = NUnit.Framework.List;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
@@ -71,8 +70,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository = new MockRepository ();
       _extensionMock = _mockRepository.StrictMock<IClientTransactionExtension> ();
 
-      ClientTransactionMock.Extensions.Add ("TestExtension", _extensionMock);
-      _newTransaction.Extensions.Add ("TestExtension", _extensionMock);
+      _extensionMock.Stub (stub => stub.Key).Return ("TestExtension");
+      _extensionMock.Replay();
+      ClientTransactionMock.Extensions.Add (_extensionMock);
+      _newTransaction.Extensions.Add (_extensionMock);
+      _extensionMock.BackToRecord();
     }
 
     [Test]
@@ -1150,10 +1152,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
 
       var filteringExtension = _mockRepository.StrictMock<ClientTransactionExtensionWithQueryFiltering>();
-      _newTransaction.Extensions.Add ("FilteringExtension", filteringExtension);
+      _newTransaction.Extensions.Add (filteringExtension);
 
       var lastExtension = _mockRepository.StrictMock<IClientTransactionExtension>();
-      _newTransaction.Extensions.Add ("LastExtension", lastExtension);
+      lastExtension.Stub (stub => stub.Key).Return ("LastExtension");
+      lastExtension.Replay();
+      _newTransaction.Extensions.Add (lastExtension);
+      lastExtension.BackToRecord();
 
       QueryResult<DomainObject> newQueryResult1 = TestQueryFactory.CreateTestQueryResult<DomainObject> (query, new[] { _order1 });
       QueryResult<DomainObject> newQueryResult2 = TestQueryFactory.CreateTestQueryResult<DomainObject> (query);

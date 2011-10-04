@@ -30,12 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
   [TestFixture]
   public class RollbackEventsWithExistingObjectTest : ClientTransactionBaseTest
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private MockRepository _mockRepository;
 
     private ClientTransactionMockEventReceiver _clientTransactionMockEventReceiver;
@@ -47,14 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     private Customer _customer1;
     private DomainObjectMockEventReceiver _customer1MockEventReceiver;
     private string _orginalCustomerName;
-
-    // construction and disposing
-
-    public RollbackEventsWithExistingObjectTest ()
-    {
-    }
-
-    // methods and properties
 
     public override void SetUp ()
     {
@@ -68,7 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _clientTransactionMockEventReceiver = _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (ClientTransactionMock);
       _clientTransactionExtensionMock = _mockRepository.StrictMock<IClientTransactionExtension> ();
-      ClientTransactionMock.Extensions.Add ("MockExtension", _clientTransactionExtensionMock);
+      _clientTransactionExtensionMock.Stub (stub => stub.Key).Return ("MockExtension");
+      _clientTransactionExtensionMock.Replay();
+      ClientTransactionMock.Extensions.Add (_clientTransactionExtensionMock);
+      _clientTransactionExtensionMock.BackToRecord();
 
       _order1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
       _customer1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_customer1);

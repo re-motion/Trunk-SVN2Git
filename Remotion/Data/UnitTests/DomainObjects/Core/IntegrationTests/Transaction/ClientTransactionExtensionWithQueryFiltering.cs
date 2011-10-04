@@ -26,6 +26,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
   [Serializable]
   public class ClientTransactionExtensionWithQueryFiltering : IClientTransactionExtension
   {
+    public string Key
+    {
+      get { return typeof (ClientTransactionExtensionWithQueryFiltering).FullName; }
+    }
+
     public void SubTransactionCreating (ClientTransaction parentClientTransaction)
     {
     }

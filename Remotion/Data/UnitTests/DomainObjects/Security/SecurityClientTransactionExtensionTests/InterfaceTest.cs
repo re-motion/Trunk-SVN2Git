@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -26,6 +25,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   [TestFixture]
   public class InterfaceTest
   {
+    [Test]
+    public void Key ()
+    {
+      IClientTransactionExtension extension = new SecurityClientTransactionExtension ();
+      Assert.That (extension.Key, Is.EqualTo (typeof (SecurityClientTransactionExtension).FullName));
+      Assert.That (SecurityClientTransactionExtension.DefaultKey, Is.EqualTo (typeof (SecurityClientTransactionExtension).FullName));
+    }
 
     [Test]
     public void TestInterfaceMembers ()

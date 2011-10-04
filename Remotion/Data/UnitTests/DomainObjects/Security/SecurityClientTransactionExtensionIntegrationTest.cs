@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       _principalProviderStub.Stub (stub => stub.GetPrincipal()).Return (_securityPrincipalStub);
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
-      _clientTransaction.Extensions.Add ("SCE", new SecurityClientTransactionExtension());
+      _clientTransaction.Extensions.Add (new SecurityClientTransactionExtension());
 
       SecurityConfiguration.Current.SecurityProvider = _securityProviderStub;
       SecurityConfiguration.Current.PrincipalProvider = _principalProviderStub;
