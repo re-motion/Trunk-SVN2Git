@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
+  [Serializable]
   public class TestableClientTransactionExtensionBase : ClientTransactionExtensionBase
   {
     public TestableClientTransactionExtensionBase (string key)

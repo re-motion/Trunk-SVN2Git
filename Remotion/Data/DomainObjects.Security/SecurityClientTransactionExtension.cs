@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -30,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Security
   /// Adds security checks to the following re-store operations: object creation and deletion, queries, relation and property reads and writes.
   /// </summary>
   [Serializable]
-  public class SecurityClientTransactionExtension : IClientTransactionExtension
+  public class SecurityClientTransactionExtension : ClientTransactionExtensionBase
   {
     public static string DefaultKey
     {
@@ -41,12 +40,17 @@ namespace Remotion.Data.DomainObjects.Security
     [NonSerialized]
     private SecurityClient _securityClient;
 
-    public virtual string Key
+    public SecurityClientTransactionExtension ()
+        : this (DefaultKey)
     {
-      get { return DefaultKey; }
     }
 
-    public virtual QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
+    protected SecurityClientTransactionExtension (string key)
+      : base (key)
+    {
+    }
+
+    public override QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult)
     {
       ArgumentUtility.CheckNotNull ("queryResult", queryResult);
 
@@ -91,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Security
         return queryResult;
     }
 
-    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type)
+    public override void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -116,7 +120,7 @@ namespace Remotion.Data.DomainObjects.Security
       }
     }
 
-    public virtual void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
+    public override void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
@@ -145,7 +149,7 @@ namespace Remotion.Data.DomainObjects.Security
       }
     }
 
-    public virtual void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    public override void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
@@ -153,7 +157,7 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
-    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    public override void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
@@ -186,7 +190,7 @@ namespace Remotion.Data.DomainObjects.Security
       }
     }
 
-    public virtual void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public override void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
@@ -194,7 +198,7 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
-    public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public override void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
@@ -202,13 +206,12 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }
 
-    public void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    public override void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
     {
       ArgumentUtility.CheckNotNull ("parentClientTransaction", parentClientTransaction);
       ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);
 
-      if (subTransaction.Extensions[Key] == null)
-        subTransaction.Extensions.Add (this);
+      TryInstall (subTransaction);
     }
 
     private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, IPropertyInformation propertyInfo)
@@ -242,71 +245,5 @@ namespace Remotion.Data.DomainObjects.Security
         _securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
       return _securityClient;
     }
-
-    #region IClientTransactionExtension Implementation
-
-    void IClientTransactionExtension.SubTransactionCreating (ClientTransaction parentClientTransaction)
-    {
-    }
-
-    void IClientTransactionExtension.ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
-    {
-    }
-
-
-    void IClientTransactionExtension.ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> loadedDomainObjects)
-    {
-    }
-
-    void IClientTransactionExtension.ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-    }
-
-    void IClientTransactionExtension.ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-    }
-
-    void IClientTransactionExtension.ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
-    {
-    }
-
-    void IClientTransactionExtension.PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
-    {
-    }
-
-    void IClientTransactionExtension.PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
-    {
-    }
-
-    void IClientTransactionExtension.RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
-    {
-    }
-
-    void IClientTransactionExtension.RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
-    {
-    }
-
-    void IClientTransactionExtension.RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
-    {
-    }
-
-    void IClientTransactionExtension.Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
-    {
-    }
-
-    void IClientTransactionExtension.Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
-    {
-    }
-
-    void IClientTransactionExtension.RollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
-    {
-    }
-
-    void IClientTransactionExtension.RolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
-    {
-    }
-
-    #endregion
-
   }
 }

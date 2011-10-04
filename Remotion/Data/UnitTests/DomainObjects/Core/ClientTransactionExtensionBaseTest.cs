@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -102,6 +103,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       // expectation: no exception
       action (_extension);
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var deserializedInstance = Serializer.SerializeAndDeserialize (_extension);
+      Assert.That (deserializedInstance.Key, Is.EqualTo (_extension.Key));
     }
 
     private void CheckNopEvent<T> (Func<IClientTransactionExtension, T> func, T expectedResult)
