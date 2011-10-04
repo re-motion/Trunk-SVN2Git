@@ -71,6 +71,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       CheckNopEvent (e => e.RolledBack (null, null));
     }
 
+    [Test]
+    public void TryInstall_Success ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction();
+
+      var result = _extension.TryInstall (transaction);
+
+      Assert.That (result, Is.True);
+      Assert.That (transaction.Extensions, Has.Member (_extension));
+    }
+
+    [Test]
+    public void TryInstall_NoSuccess ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction();
+      var otherExtensionWithSameName = MockRepository.GenerateStub<IClientTransactionExtension>();
+      otherExtensionWithSameName.Stub (stub => stub.Key).Return (_extension.Key);
+
+      transaction.Extensions.Add (otherExtensionWithSameName);
+
+      var result = _extension.TryInstall (transaction);
+
+      Assert.That (result, Is.False);
+      Assert.That (transaction.Extensions, Has.Member (otherExtensionWithSameName));
+      Assert.That (transaction.Extensions, Has.No.Member (_extension));
+    }
+
     private void CheckNopEvent (Action<IClientTransactionExtension> action)
     {
       // expectation: no exception

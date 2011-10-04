@@ -25,5 +25,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         : base (key)
     {
     }
+
+    public new bool TryInstall (ClientTransaction clientTransaction)
+    {
+      return base.TryInstall (clientTransaction);
+    }
   }
 }

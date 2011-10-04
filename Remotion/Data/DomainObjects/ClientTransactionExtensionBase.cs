@@ -162,5 +162,24 @@ namespace Remotion.Data.DomainObjects
     public virtual void RolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
+
+    /// <summary>
+    /// Installs this extension with the specified <see cref="ClientTransaction"/>, returning a value indicating whether the operation succeeded.
+    /// </summary>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to register with.</param>
+    /// <returns><see langword="true" /> if the extension was added to the <see cref="ClientTransaction"/>; <see langword="false" /> if the extension
+    /// couldn't be added because another <see cref="IClientTransactionExtension"/> with the same key already exists in the transaction.</returns>
+    /// <remarks>
+    /// When a <see cref="IClientTransactionExtension"/> needs to be propagated from parent transactions to their subtransactions, override 
+    /// <see cref="SubTransactionCreated"/> and use <see cref="TryInstall"/> to install the extension with the newly created subtransaction.
+    /// </remarks>
+    protected bool TryInstall (ClientTransaction clientTransaction)
+    {
+      if (clientTransaction.Extensions[Key] != null)
+        return false;
+      
+      clientTransaction.Extensions.Add (this);
+      return true;
+    }
   }
 }
