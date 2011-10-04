@@ -1471,6 +1471,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository.ReplayAll();
 
       _subTransaction.CreateSubTransaction();
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -1502,6 +1504,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _subTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
       }
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]

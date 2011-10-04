@@ -807,7 +807,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void SubTransactionCreatingEvent ()
+    public void SubTransactionCreatedEvent ()
     {
       ClientTransaction subTransactionFromEvent = null;
 

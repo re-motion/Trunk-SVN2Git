@@ -1431,6 +1431,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         ClientTransactionScope.CurrentTransaction.CreateSubTransaction();
       }
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]

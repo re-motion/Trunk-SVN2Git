@@ -217,7 +217,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     [Test]
     [ExpectedException (typeof (PermissionDeniedException), ExpectedMessage =
         "Access to method 'get_PropertyWithDefaultPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
-    [Ignore ("TODO 4391")]
     public void AccessDenied_SubTransaction ()
     {
       Assert.That (_clientTransaction.Extensions[SecurityClientTransactionExtension.DefaultKey], Is.Not.Null);
