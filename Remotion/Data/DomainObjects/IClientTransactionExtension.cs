@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects
     string Key { get;  }
 
     /// <summary>
-    /// This method is invoked when a subtransaction of <paramref name="parentClientTransaction"/> is about to be created.
+    /// Invoked when a subtransaction of <paramref name="parentClientTransaction"/> is about to be created.
     /// </summary>
     /// <param name="parentClientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <remarks>
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects
     void SubTransactionCreating (ClientTransaction parentClientTransaction);
 
     /// <summary>
-    /// This method is invoked when a subtransaction of <paramref name="parentClientTransaction"/> has been created.
+    /// Invoked when a subtransaction of <paramref name="parentClientTransaction"/> has been created.
     /// </summary>
     /// <param name="parentClientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="subTransaction">The subtransaction created by <paramref name="parentClientTransaction"/>.</param>
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects
     void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction);
 
     /// <summary>
-    /// This method is invoked when a new <see cref="DomainObject"/> is created, but not registered yet. 
+    /// Invoked when a new <see cref="DomainObject"/> is created, but not registered yet. 
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects
     void NewObjectCreating (ClientTransaction clientTransaction, Type type);
 
     /// <summary>
-    /// This method is invoked when one or multiple <see cref="DomainObject"/> instances are about to be loaded, after their 
+    /// Invoked when one or multiple <see cref="DomainObject"/> instances are about to be loaded, after their 
     /// <see cref="DataContainer">DataContainers</see> have been created but before the <see cref="DataContainer">DataContainers</see> are 
     /// associated with the <see cref="ClientTransaction"/>.
     /// </summary>
@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects
     void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs);
 
     /// <summary>
-    /// This method is invoked when one or multiple <see cref="DomainObject"/>s were loaded. 
+    /// Invoked when one or multiple <see cref="DomainObject"/>s were loaded. 
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="loadedDomainObjects">A collection of all <see cref="DomainObject"/>s that were loaded.</param>
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects
     void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> loadedDomainObjects);
 
     /// <summary>
-    /// This method is invoked when the data of one or multiple <see cref="DomainObject"/> instances are about to be unloaded.
+    /// Invoked when the data of one or multiple <see cref="DomainObject"/> instances are about to be unloaded.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="unloadedDomainObjects">A collection of <see cref="DomainObject"/> references whose data is to be unloaded from 
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects
     void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects);
 
     /// <summary>
-    /// This method is invoked when the data of one or multiple <see cref="DomainObject"/> instances was unloaded. 
+    /// Invoked when the data of one or multiple <see cref="DomainObject"/> instances was unloaded. 
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="unloadedDomainObjects">A collection of <see cref="DomainObject"/> references whose data was unloaded from
@@ -123,7 +123,7 @@ namespace Remotion.Data.DomainObjects
     void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects);
 
     /// <summary>
-    /// This method is invoked, before a <see cref="DomainObject"/> is deleted. 
+    /// Invoked before a <see cref="DomainObject"/> is deleted. 
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
@@ -144,7 +144,7 @@ namespace Remotion.Data.DomainObjects
     void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject);
 
     /// <summary>
-    /// This method is invoked, after a <see cref="DomainObject"/> was deleted. 
+    /// Invoked after a <see cref="DomainObject"/> was deleted. 
     /// It indicates the success of the operation. 
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects
     void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject);
 
     /// <summary>
-    /// This method is invoked, before a value of <paramref name="dataContainer"/> is read. 
+    /// Invoked before a value of <paramref name="dataContainer"/> is read. 
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
@@ -182,7 +182,7 @@ namespace Remotion.Data.DomainObjects
     void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess);
 
     /// <summary>
-    /// This method is invoked when a value of <paramref name="dataContainer"/> was read. 
+    /// Invoked when a value of <paramref name="dataContainer"/> was read. 
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="dataContainer">
@@ -199,7 +199,7 @@ namespace Remotion.Data.DomainObjects
     void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess);
 
     /// <summary>
-    /// This method is invoked before a value of <paramref name="dataContainer"/> is changed.
+    /// Invoked before a value of <paramref name="dataContainer"/> is changed.
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
@@ -222,7 +222,7 @@ namespace Remotion.Data.DomainObjects
     void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
 
     /// <summary>
-    /// This method is invoked after a value of <paramref name="dataContainer"/> was changed.
+    /// Invoked after a value of <paramref name="dataContainer"/> was changed.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="dataContainer">
@@ -244,7 +244,7 @@ namespace Remotion.Data.DomainObjects
     void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
 
     /// <summary>
-    /// This method is invoked, before a relation property is being read. 
+    /// Invoked before a relation property is being read. 
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
@@ -258,7 +258,7 @@ namespace Remotion.Data.DomainObjects
     void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess);
     
     /// <summary>
-    /// This method is invoked when a relation property with cardinality <see cref="Mapping.CardinalityType.One"/> was read. 
+    /// Invoked when a relation property with cardinality <see cref="Mapping.CardinalityType.One"/> was read. 
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was read.</param>
@@ -277,7 +277,7 @@ namespace Remotion.Data.DomainObjects
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
 
     /// <summary>
-    /// This method is invoked when a relation property with cardinality <see cref="Mapping.CardinalityType.Many"/> was read. 
+    /// Invoked when a relation property with cardinality <see cref="Mapping.CardinalityType.Many"/> was read. 
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was read.</param>
@@ -300,11 +300,8 @@ namespace Remotion.Data.DomainObjects
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
 
     /// <summary>
-    /// This method is invoked before a relation is changed.
+    /// Invoked before a relation is changed.
     /// The operation may be cancelled at this point.
-    /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
-    /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
-    /// old collection.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property is being changed.</param>
@@ -315,6 +312,11 @@ namespace Remotion.Data.DomainObjects
     /// being replaced by a new one.</param>
     /// <remarks>
     ///   <para>Use this method to cancel the operation, whereas <see cref="RelationChanged"/> should be used to perform actions on its successful execution.</para>
+    ///   <para>
+    ///     This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
+    ///     replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
+    ///     old collection.
+    ///   </para>
     ///   <para>The following table lists the values of <paramref name="oldRelatedObject"/> and <paramref name="newRelatedObject"/> for operations on 1:n relations:
     ///     <list type="table">
     ///       <listheader>
@@ -352,10 +354,7 @@ namespace Remotion.Data.DomainObjects
     void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject);
 
     /// <summary>
-    /// This method is invoked after a relation was changed.
-    /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
-    /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
-    /// old collection.
+    /// Invoked after a relation was changed.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was changed.</param>
@@ -365,6 +364,11 @@ namespace Remotion.Data.DomainObjects
     ///     Use this method to perform actions on a successful execution, whereas <see cref="RelationChanging"/> should be used to cancel the operation.
     ///   </para>
     ///   <para>
+    ///     This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
+    ///     replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
+    ///     old collection.
+    ///   </para>
+    ///   <para>
     ///     The <see cref="DomainObject.RelationChanged"/> events are fired after this method is invoked.
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationChanging"/> instead.</note>
@@ -372,7 +376,7 @@ namespace Remotion.Data.DomainObjects
     void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition);
 
     /// <summary>
-    /// This method is invoked after a collection query was executed by <see cref="QueryManager.GetCollection"/>.
+    /// Invoked after a collection query was executed by <see cref="QueryManager.GetCollection"/>.
     /// The <see cref="IClientTransactionExtension"/> may change the result at this point.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="DomainObject"/>s in the result collection.</typeparam>
@@ -392,7 +396,7 @@ namespace Remotion.Data.DomainObjects
     QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject;
 
     /// <summary>
-    /// This method is invoked before a <see cref="ClientTransaction"/> is committed.
+    /// Invoked before a <see cref="ClientTransaction"/> is committed.
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
@@ -408,7 +412,7 @@ namespace Remotion.Data.DomainObjects
     void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects);
 
     /// <summary>
-    /// This method is invoked after a <see cref="ClientTransaction"/> was executed.
+    /// Invoked after a <see cref="ClientTransaction"/> was executed.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="changedDomainObjects">A <see cref="ReadOnlyCollection{T}"/> holding all changed <see cref="DomainObject"/>s that are being committed.</param>
@@ -424,7 +428,7 @@ namespace Remotion.Data.DomainObjects
     void Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects);
 
     /// <summary>
-    /// This method is invoked before a <see cref="ClientTransaction"/> is rolled back.
+    /// Invoked before a <see cref="ClientTransaction"/> is rolled back.
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
@@ -436,7 +440,7 @@ namespace Remotion.Data.DomainObjects
     void RollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects);
 
     /// <summary>
-    /// This method is invoked after a <see cref="ClientTransaction"/> was rolled back.
+    /// Invoked after a <see cref="ClientTransaction"/> was rolled back.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="changedDomainObjects">A <see cref="ReadOnlyCollection{T}"/> holding all changed <see cref="DomainObject"/>s that are being rolled back.</param>
