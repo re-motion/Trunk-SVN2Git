@@ -58,8 +58,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new Dictionary<Enum, object> ();
     }
 
-    public virtual ClientTransactionExtensionCollection CreateExtensions ()
+    public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction clientTransaction)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
       return new ClientTransactionExtensionCollection ("root");
     }
 

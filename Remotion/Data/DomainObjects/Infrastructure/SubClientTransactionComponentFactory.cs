@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return _parentTransaction.ApplicationData;
     }
 
-    public virtual ClientTransactionExtensionCollection CreateExtensions ()
+    public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction clientTransaction)
     {
       return new ClientTransactionExtensionCollection ("root");
     }

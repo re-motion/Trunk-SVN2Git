@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -85,6 +86,122 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _objectLoaderMock,
           _persistenceStrategyMock,
           _queryManagerMock);
+    }
+
+    [Test]
+    public void Initialization_OrderOfFactoryCalls ()
+    {
+      var fakeParentTransaction = ClientTransaction.CreateRootTransaction();
+      var componentFactoryMock = _mockRepository.StrictMock<IClientTransactionComponentFactory>();
+      var listenerMock = _mockRepository.StrictMock<IClientTransactionListener>();
+      
+      var extensionMock = _mockRepository.StrictMock<IClientTransactionExtension>();
+      extensionMock.Stub (stub => stub.Key).Return ("test");
+      extensionMock.Replay();
+      var fakeExtensionCollection = new ClientTransactionExtensionCollection ("test") { extensionMock };
+      extensionMock.BackToRecord();
+
+      ClientTransaction constructedTransaction = null;
+      CompoundClientTransactionListener transactionEventSink = null;
+
+      using (_mockRepository.Ordered ())
+      {
+        // We are only interested in the order of calls that can access the transaction being initialized
+        using (componentFactoryMock.GetMockRepository ().Unordered ())
+        {
+          componentFactoryMock.Expect (mock => mock.GetParentTransaction()).Return (fakeParentTransaction);
+          componentFactoryMock.Expect (mock => mock.CreateApplicationData()).Return (_fakeApplicationData);
+        }
+
+        componentFactoryMock
+            .Expect (mock => mock.CreateListeners (Arg<ClientTransaction>.Is.Anything))
+            .Return (new[] { listenerMock })
+            .WhenCalled (
+                mi =>
+                {
+                  constructedTransaction = (ClientTransaction) mi.Arguments[0];
+                  Assert.That (constructedTransaction.ParentTransaction, Is.SameAs (fakeParentTransaction));
+                  Assert.That (constructedTransaction.ApplicationData, Is.SameAs (_fakeApplicationData));
+                  Assert.That (constructedTransaction.ID, Is.Not.EqualTo (Guid.Empty));
+                  Assert.That (
+                      ClientTransactionTestHelper.GetTransactionEventSink (constructedTransaction).Listeners,
+                      Has.Some.TypeOf<LoggingClientTransactionListener>().And.Some.TypeOf<ReadOnlyClientTransactionListener>());
+                });
+
+        // We are only interested in the order of calls that can access the transaction being initialized
+        using (componentFactoryMock.GetMockRepository ().Unordered ())
+        {
+          componentFactoryMock.Expect (mock => mock.CreateEnlistedObjectManager()).Return (_enlistedObjectManagerMock);
+          componentFactoryMock.Expect (mock => mock.CreateInvalidDomainObjectManager()).Return (_invalidDomainObjectManagerMock);
+          componentFactoryMock
+              .Expect (mock => mock.CreatePersistenceStrategy (Arg<Guid>.Matches (id => id == constructedTransaction.ID)))
+              .Return (_persistenceStrategyMock);
+        }
+
+        componentFactoryMock
+            .Expect (
+                mock =>
+                mock.CreateObjectLoader (
+                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
+                    Arg.Is (_persistenceStrategyMock),
+                    Arg<IClientTransactionListener>.Is.Anything))
+            .Return (_objectLoaderMock)
+            .WhenCalled (mi =>
+            {
+              transactionEventSink = ClientTransactionTestHelper.GetTransactionEventSink (constructedTransaction);
+              Assert.That (mi.Arguments[2], Is.SameAs (transactionEventSink));
+              Assert.That (transactionEventSink.Listeners, Has.Member (listenerMock));
+              Assert.That (
+                  ClientTransactionTestHelper.GetEnlistedDomainObjectManager (constructedTransaction), Is.SameAs (_enlistedObjectManagerMock));
+              Assert.That (
+                  ClientTransactionTestHelper.GetInvalidDomainObjectManager (constructedTransaction), Is.SameAs (_invalidDomainObjectManagerMock));
+              Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (constructedTransaction), Is.SameAs (_persistenceStrategyMock));
+            });
+        componentFactoryMock
+            .Expect (
+                mock =>
+                mock.CreateDataManager (
+                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
+                    Arg.Is (_invalidDomainObjectManagerMock),
+                    Arg.Is (_objectLoaderMock)))
+            .Return (_dataManagerMock)
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetObjectLoader (constructedTransaction), Is.SameAs (_objectLoaderMock)));
+        componentFactoryMock
+            .Expect (
+                mock =>
+                mock.CreateQueryManager (
+                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
+                    Arg.Is (_persistenceStrategyMock),
+                    Arg.Is (_objectLoaderMock),
+                    Arg.Is (_dataManagerMock)))
+            .Return (_queryManagerMock)
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetIDataManager (constructedTransaction), Is.SameAs (_dataManagerMock)));
+        componentFactoryMock
+            .Expect (mock => mock.CreateExtensionCollection (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Return (fakeExtensionCollection)
+            .WhenCalled (mi =>
+            {
+              Assert.That (constructedTransaction.QueryManager, Is.SameAs (_queryManagerMock));
+              Assert.That (transactionEventSink.Listeners, Has.No.TypeOf<ExtensionClientTransactionListener>());
+            });
+
+        listenerMock.Expect (mock => mock.TransactionInitializing (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
+      }
+
+      _mockRepository.ReplayAll();
+
+      var result = Activator.CreateInstance (
+          typeof (ClientTransaction),
+          BindingFlags.NonPublic | BindingFlags.Instance,
+          null,
+          new[] { componentFactoryMock },
+          null);
+
+      _mockRepository.VerifyAll();
+
+      Assert.That (result, Is.SameAs (constructedTransaction));
+      Assert.That (constructedTransaction.Extensions, Has.Member (extensionMock));
+      Assert.That (transactionEventSink.Listeners, Has.Some.TypeOf<ExtensionClientTransactionListener>());
     }
 
     [Test]

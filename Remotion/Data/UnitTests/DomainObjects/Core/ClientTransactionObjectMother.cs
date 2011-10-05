@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IObjectLoader>.Is.Anything))
           .Return (dataManager);
       componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager ()).Return (enlistedDomainObjectManager);
-      componentFactoryStub.Stub (stub => stub.CreateExtensions ()).Return (extensions);
+      componentFactoryStub.Stub (stub => stub.CreateExtensionCollection (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
       componentFactoryStub.Stub (stub => stub.CreateInvalidDomainObjectManager ()).Return (invalidDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateListeners (Arg<ClientTransaction>.Is.Anything)).Return (listeners);
       componentFactoryStub

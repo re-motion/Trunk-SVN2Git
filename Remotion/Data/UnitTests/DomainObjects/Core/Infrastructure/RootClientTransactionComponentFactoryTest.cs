@@ -55,9 +55,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateExtensions ()
+    public void CreateExtensionCollection ()
     {
-      var extensionCollection = _factory.CreateExtensions();
+      var clientTransaction = new ClientTransactionMock ();
+
+      var extensionCollection = _factory.CreateExtensionCollection (clientTransaction);
 
       Assert.That (extensionCollection, Is.Not.Null);
       Assert.That (((IClientTransactionExtension) extensionCollection).Key, Is.EqualTo ("root"));

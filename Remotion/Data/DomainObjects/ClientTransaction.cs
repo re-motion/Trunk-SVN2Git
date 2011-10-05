@@ -156,7 +156,6 @@ public class ClientTransaction
 
   private bool _isDiscarded;
 
-
   private readonly Guid _id = Guid.NewGuid ();
   
   protected ClientTransaction (IClientTransactionComponentFactory componentFactory)
@@ -167,13 +166,11 @@ public class ClientTransaction
     _parentTransaction = componentFactory.GetParentTransaction();
 
     _applicationData = componentFactory.CreateApplicationData ();
-    _extensions = componentFactory.CreateExtensions ();
    
     _eventSink = new CompoundClientTransactionListener ();
 
     _eventSink.AddListener (new LoggingClientTransactionListener ());
     _eventSink.AddListener (new ReadOnlyClientTransactionListener ());
-    _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));
 
     foreach (var listener in componentFactory.CreateListeners (this))
       _eventSink.AddListener (listener);
@@ -184,6 +181,9 @@ public class ClientTransaction
     _objectLoader = componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
     _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager, _objectLoader);
     _queryManager = componentFactory.CreateQueryManager (this, _persistenceStrategy, _objectLoader, _dataManager);
+
+    _extensions = componentFactory.CreateExtensionCollection (this);
+    _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));
 
     TransactionEventSink.TransactionInitializing (this);
   }

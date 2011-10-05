@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -34,6 +35,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DataManager) DataManagementService.GetDataManager (clientTransaction);
     }
 
+    public static IDataManager GetIDataManager (ClientTransaction clientTransaction)
+    {
+      return DataManagementService.GetDataManager (clientTransaction);
+    }
+
     public static IEnlistedDomainObjectManager GetEnlistedDomainObjectManager (ClientTransaction clientTransaction)
     {
       return (IEnlistedDomainObjectManager) PrivateInvoke.GetNonPublicField (clientTransaction, "_enlistedObjectManager");
@@ -48,6 +54,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       return (IPersistenceStrategy) PrivateInvoke.GetNonPublicField (clientTransaction, "_persistenceStrategy");
     }
+
+    public static IObjectLoader GetObjectLoader (ClientTransaction clientTransaction)
+    {
+      return (IObjectLoader) PrivateInvoke.GetNonPublicField (clientTransaction, "_objectLoader");
+    }
+
 
     public static DomainObject CallNewObject (ClientTransaction clientTransaction, Type domainObjectType, ParamList constructorParameters)
     {

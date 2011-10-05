@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     ClientTransaction GetParentTransaction ();
 
     Dictionary<Enum, object> CreateApplicationData ();
-    ClientTransactionExtensionCollection CreateExtensions ();
+    ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction clientTransaction);
     IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction);
     IPersistenceStrategy CreatePersistenceStrategy (Guid id);
     IObjectLoader CreateObjectLoader (
