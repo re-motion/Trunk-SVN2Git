@@ -31,12 +31,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new InvalidOperationException ("The transaction can no longer be used because it has been discarded.");
     }
 
-    public void TransactionInitializing (ClientTransaction clientTransaction)
+    public void TransactionInitialize (ClientTransaction clientTransaction)
     {
       throw CreateException ();
     }
 
-    public void TransactionDiscarding (ClientTransaction clientTransaction)
+    public void TransactionDiscard (ClientTransaction clientTransaction)
     {
       throw CreateException ();
     }

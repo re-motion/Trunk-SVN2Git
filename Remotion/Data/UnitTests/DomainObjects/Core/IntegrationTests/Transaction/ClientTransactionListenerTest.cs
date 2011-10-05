@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.ObjectModel;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -55,18 +56,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO: COMMONS-1973")]
-    public void TransactionInitializing ()
+    public void TransactionInitialize ()
     {
-      
+      var factoryStub = MockRepository.GenerateStub<IClientTransactionListenerFactory> ();
+      factoryStub.Stub (stub => stub.CreateClientTransactionListener (Arg<ClientTransaction>.Is.Anything)).Return (_strictListenerMock);
+      var locatorStub = MockRepository.GenerateStub<IServiceLocator> ();
+      locatorStub.Stub (stub => stub.GetAllInstances<IClientTransactionListenerFactory> ()).Return (new[] { factoryStub });
+      locatorStub.Stub (stub => stub.GetAllInstances<IClientTransactionExtensionFactory> ()).Return (new IClientTransactionExtensionFactory[0]);
+
+      using (new ServiceLocatorScope (locatorStub))
+      {
+        ClientTransaction inititalizedTransaction = null;
+
+        _strictListenerMock
+            .Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Is.Anything))
+            .WhenCalled (mi => inititalizedTransaction = (ClientTransaction) mi.Arguments[0]);
+        _strictListenerMock.Replay ();
+
+        var result = ClientTransaction.CreateRootTransaction ();
+
+        _strictListenerMock.VerifyAllExpectations ();
+
+        Assert.That (result, Is.SameAs (inititalizedTransaction));
+      }
     }
 
     [Test]
-    public void TransactionDiscarding ()
+    public void TransactionDiscard ()
     {
       ClientTransactionMock.AddListener (_strictListenerMock);
 
-      _strictListenerMock.Expect (mock => mock.TransactionDiscarding (ClientTransactionMock));
+      _strictListenerMock.Expect (mock => mock.TransactionDiscard (ClientTransactionMock));
       
       _mockRepository.ReplayAll ();
 
@@ -76,11 +96,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void TransactionDiscarding_OnlyFiresIfTransactionIsNotYetDiscarded ()
+    public void TransactionDiscard_OnlyFiresIfTransactionIsNotYetDiscarded ()
     {
       ClientTransactionMock.AddListener (_strictListenerMock);
 
-      _strictListenerMock.Expect (mock => mock.TransactionDiscarding (ClientTransactionMock));
+      _strictListenerMock.Expect (mock => mock.TransactionDiscard (ClientTransactionMock));
 
       _mockRepository.ReplayAll ();
 

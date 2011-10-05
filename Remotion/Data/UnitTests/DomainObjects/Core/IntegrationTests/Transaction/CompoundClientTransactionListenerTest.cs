@@ -80,8 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       var realtionEndPointDefinitionMock = MockRepository.GenerateMock<IRelationEndPointDefinition>();
 
-      CheckNotification (listener => listener.TransactionInitializing (ClientTransactionMock));
-      CheckNotification (listener => listener.TransactionDiscarding (ClientTransactionMock));
+      CheckNotification (listener => listener.TransactionInitialize (ClientTransactionMock));
+      CheckNotification (listener => listener.TransactionDiscard (ClientTransactionMock));
 
       CheckNotification (listener => listener.SubTransactionCreating (ClientTransactionMock));
       CheckNotification (listener => listener.SubTransactionCreated (ClientTransactionMock, ClientTransactionMock));

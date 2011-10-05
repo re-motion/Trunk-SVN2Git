@@ -78,21 +78,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void TransactionInitializing ()
+    public void TransactionInitialize ()
     {
-      _listener.TransactionInitializing (_clientTransaction);
+      _listener.TransactionInitialize (_clientTransaction);
       var loggingEvents = GetLoggingEvents();
 
-      Assert.That (loggingEvents.Last().RenderedMessage, Is.EqualTo (string.Format ("{0} TransactionInitializing", _clientTransaction.ID)));
+      Assert.That (loggingEvents.Last().RenderedMessage, Is.EqualTo (string.Format ("{0} TransactionInitialize", _clientTransaction.ID)));
     }
 
     [Test]
-    public void TransactionDiscarding ()
+    public void TransactionDiscard ()
     {
-      _listener.TransactionDiscarding (_clientTransaction);
+      _listener.TransactionDiscard (_clientTransaction);
       var loggingEvents = GetLoggingEvents();
 
-      Assert.That (loggingEvents.Last().RenderedMessage, Is.EqualTo (string.Format ("{0} TransactionDiscarding", _clientTransaction.ID)));
+      Assert.That (loggingEvents.Last().RenderedMessage, Is.EqualTo (string.Format ("{0} TransactionDiscard", _clientTransaction.ID)));
     }
 
     [Test]

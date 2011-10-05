@@ -200,12 +200,12 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       get { return _clientTransactionID; }
     }
 
-    public void TransactionInitializing (ClientTransaction clientTransaction)
+    public void TransactionInitialize (ClientTransaction clientTransaction)
     {
       _appenderProxy.ConnectionStarted (_clientTransactionID);
     }
 
-    public void TransactionDiscarding (ClientTransaction clientTransaction)
+    public void TransactionDiscard (ClientTransaction clientTransaction)
     {
       _appenderProxy.ConnectionDisposed (_clientTransactionID);
     }

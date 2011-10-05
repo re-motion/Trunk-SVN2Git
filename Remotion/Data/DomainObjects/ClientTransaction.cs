@@ -185,7 +185,7 @@ public class ClientTransaction
     _extensions = componentFactory.CreateExtensionCollection (this);
     _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));
 
-    TransactionEventSink.TransactionInitializing (this);
+    TransactionEventSink.TransactionInitialize (this);
   }
 
   /// <summary>
@@ -357,7 +357,7 @@ public class ClientTransaction
   {
     if (!_isDiscarded)
     {
-      TransactionEventSink.TransactionDiscarding (this);
+      TransactionEventSink.TransactionDiscard (this);
 
       if (ParentTransaction != null)
       {

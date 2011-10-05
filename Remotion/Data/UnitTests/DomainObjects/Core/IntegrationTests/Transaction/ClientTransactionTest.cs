@@ -1082,7 +1082,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       var innerTransaction = new ClientTransactionMock ();
 
-      listenerMock.Stub (stub => stub.TransactionDiscarding (innerTransaction));
+      listenerMock.Stub (stub => stub.TransactionDiscard (innerTransaction));
 
       listenerMock.ObjectsLoading (
           Arg.Is (innerTransaction), 

@@ -32,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private ClientTransactionMock _clientTransaction;
 
     private readonly string[] _neverThrowingMethods = {
-        "TransactionInitializing",
-        "TransactionDiscarding",
+        "TransactionInitialize",
+        "TransactionDiscard",
         "DataContainerStateUpdated",
         "VirtualRelationEndPointStateUpdated",
         "RelationReading", 

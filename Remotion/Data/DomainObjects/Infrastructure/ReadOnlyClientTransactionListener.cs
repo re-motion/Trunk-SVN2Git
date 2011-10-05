@@ -31,12 +31,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class ReadOnlyClientTransactionListener : IClientTransactionListener
   {
-    public void TransactionInitializing (ClientTransaction clientTransaction)
+    public void TransactionInitialize (ClientTransaction clientTransaction)
     {
       // not handled by this listener
     }
 
-    public void TransactionDiscarding (ClientTransaction clientTransaction)
+    public void TransactionDiscard (ClientTransaction clientTransaction)
     {
       // not handled by this listener
     }

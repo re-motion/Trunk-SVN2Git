@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Assert.That (transactionEventSink.Listeners, Has.No.TypeOf<ExtensionClientTransactionListener>());
             });
 
-        listenerMock.Expect (mock => mock.TransactionInitializing (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
+        listenerMock.Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
       }
 
       _mockRepository.ReplayAll();
@@ -904,7 +904,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Discard ()
     {
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener>();
-      listenerMock.Expect (mock => mock.TransactionDiscarding (_transactionWithMocks));
+      listenerMock.Expect (mock => mock.TransactionDiscard (_transactionWithMocks));
 
       _mockRepository.ReplayAll();
       _fakeListeners.AddListener (listenerMock);
@@ -962,7 +962,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       subTransaction.Discard ();
 
-      listenerMock.AssertWasNotCalled (mock => mock.TransactionDiscarding (subTransaction));
+      listenerMock.AssertWasNotCalled (mock => mock.TransactionDiscard (subTransaction));
       Assert.That (parentTransaction.IsReadOnly, Is.True);
       Assert.That (parentTransaction.SubTransaction, Is.SameAs (otherSubTransaction));
     }
