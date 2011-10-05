@@ -18,11 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -34,7 +36,8 @@ using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
 using Rhino.Mocks.Interfaces;
-using Is = Rhino.Mocks.Constraints.Is;
+using Is = NUnit.Framework.Is;
+using Rhino_Is = Rhino.Mocks.Constraints.Is;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
@@ -81,6 +84,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void Extensions ()
     {
       Assert.That (ClientTransactionMock.Extensions, Has.Member(_extensionMock));
+    }
+
+    [Test]
+    [Ignore ("TODO 4346")]
+    public void TransactionInitialize ()
+    {
+      var factoryStub = MockRepository.GenerateStub<IClientTransactionExtensionFactory>();
+      factoryStub.Stub (stub => stub.CreateClientTransactionExtensions (Arg<ClientTransaction>.Is.Anything)).Return (new[] { _extensionMock });
+      var locatorStub = MockRepository.GenerateStub<IServiceLocator>();
+      locatorStub.Stub (stub => stub.GetAllInstances<IClientTransactionExtensionFactory> ()).Return (new[] { factoryStub });
+      locatorStub.Stub (stub => stub.GetAllInstances<IClientTransactionListenerFactory> ()).Return (new IClientTransactionListenerFactory[0]);
+
+      using (new ServiceLocatorScope (locatorStub))
+      {
+        ClientTransaction inititalizedTransaction = null;
+
+        _extensionMock.Stub (stub => stub.Key).Return ("test");
+        _extensionMock
+            .Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Is.Anything))
+            .WhenCalled (mi => inititalizedTransaction = (ClientTransaction) mi.Arguments[0]);
+        _extensionMock.Replay();
+
+        var result = ClientTransaction.CreateRootTransaction();
+
+        _extensionMock.VerifyAllExpectations();
+
+        Assert.That (result, Is.SameAs (inititalizedTransaction));
+      }
+    }
+
+    [Test]
+    [Ignore ("TODO 4346")]
+    public void TransactionDiscard ()
+    {
+      _extensionMock.Expect (mock => mock.TransactionDiscard (ClientTransactionMock));
+      _extensionMock.Replay ();
+
+      ClientTransactionMock.Discard();
+
+      _extensionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -302,7 +345,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         clientTransactionEventReceiver.Loaded (null, null);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
+            Rhino_Is.Same (_newTransaction),
             Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
       }
 
@@ -401,7 +444,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           orderItem2MockEventReceiver.RelationChanging (orderItem2, orderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
           officialMockEventReceiver.RelationChanging (official, official.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition, _order1, null);
           officialOrdersMockEventReceiver.Removing (officialOrders, _order1);
-          LastCall.IgnoreArguments().Constraints (Is.Same (officialOrders), Property.Value ("DomainObject", _order1));
+          LastCall.IgnoreArguments().Constraints (Rhino_Is.Same (officialOrders), Property.Value ("DomainObject", _order1));
         }
 
         using (_mockRepository.Unordered ())
@@ -905,11 +948,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             _newTransaction, _order1, _order1.Properties[typeof(Order),"OrderItems"].PropertyData.RelationEndPointDefinition, ValueAccess.Current);
         _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
-            Is.Same (_order1),
-            Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
+            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_order1),
+            Rhino_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (orderItems[0]) & Rhino.Mocks.Constraints.List.IsIn (orderItems[1]),
-            Is.Equal (ValueAccess.Current));
+            Rhino_Is.Equal (ValueAccess.Current));
       }
 
       _mockRepository.ReplayAll();
@@ -939,11 +982,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Original);
 
         LastCall.Constraints (
-            Is.Same (_newTransaction),
-            Is.Same (_order1),
-            Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
+            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_order1),
+            Rhino_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (originalOrderItems[0]) & Rhino.Mocks.Constraints.List.IsIn (originalOrderItems[1]),
-            Is.Equal (ValueAccess.Original));
+            Rhino_Is.Equal (ValueAccess.Original));
       }
 
       _mockRepository.ReplayAll();
@@ -969,15 +1012,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 1)));
         
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 1));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1));
 
         _extensionMock.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
-            Is.Same (_order1),
-            Is.Equal (_order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition),
-            Is.NotNull(),
-            Is.Equal (ValueAccess.Current));
+            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_order1),
+            Rhino_Is.Equal (_order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition),
+            Rhino_Is.NotNull(),
+            Rhino_Is.Equal (ValueAccess.Current));
       }
       _mockRepository.ReplayAll();
 
@@ -997,17 +1040,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             _newTransaction, _order1, _order1.Properties[typeof(Order),"OrderItems"].PropertyData.RelationEndPointDefinition, ValueAccess.Current);
 
         _extensionMock.ObjectsLoading (_newTransaction, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
         _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
-            Is.Same (_order1),
-            Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
-            Is.NotNull(),
-            Is.Equal (ValueAccess.Current));
+            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_order1),
+            Rhino_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
+            Rhino_Is.NotNull(),
+            Rhino_Is.Equal (ValueAccess.Current));
       }
       _mockRepository.ReplayAll();
 
@@ -1032,14 +1075,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 1)));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 1));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1));
         _extensionMock.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
-            Is.Same (_order1),
-            Is.Equal (_order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition),
-            Is.NotNull(),
-            Is.Equal (ValueAccess.Original));
+            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_order1),
+            Rhino_Is.Equal (_order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition),
+            Rhino_Is.NotNull(),
+            Rhino_Is.Equal (ValueAccess.Original));
       }
       _mockRepository.ReplayAll();
 
@@ -1064,14 +1107,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
         _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
-            Is.Same (_order1),
-            Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
-            Is.NotNull(),
-            Is.Equal (ValueAccess.Original));
+            Rhino_Is.Same (_newTransaction),
+            Rhino_Is.Same (_order1),
+            Rhino_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
+            Rhino_Is.NotNull(),
+            Rhino_Is.Equal (ValueAccess.Original));
       }
       _mockRepository.ReplayAll();
 
@@ -1127,7 +1170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
         _extensionMock
             .Expect (
             mock =>
@@ -1176,11 +1219,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
         filteringExtension.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
         lastExtension.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 2));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2));
 
         _extensionMock
             .Expect (
@@ -1223,9 +1266,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.Committing (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
         _extensionMock.Committed (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
       }
 
       _mockRepository.ReplayAll();
@@ -1255,10 +1298,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extensionMock.Committing (null, null);
         LastCall.Constraints (
-            Is.Same (_newTransaction), Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (computer) & Rhino.Mocks.Constraints.List.IsIn (employee));
+            Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (computer) & Rhino.Mocks.Constraints.List.IsIn (employee));
         _extensionMock.Committed (null, null);
         LastCall.Constraints (
-            Is.Same (_newTransaction), Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (computer) & Rhino.Mocks.Constraints.List.IsIn (employee));
+            Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (computer) & Rhino.Mocks.Constraints.List.IsIn (employee));
       }
 
       _mockRepository.ReplayAll();
@@ -1287,11 +1330,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extensionMock.Committing (null, null);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
+            Rhino_Is.Same (_newTransaction),
             Property.Value ("Count", 3) & Rhino.Mocks.Constraints.List.IsIn (_order1) & Rhino.Mocks.Constraints.List.IsIn (newCustomer) & Rhino.Mocks.Constraints.List.IsIn (oldCustomer));
         _extensionMock.Committed (null, null);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
+            Rhino_Is.Same (_newTransaction),
             Property.Value ("Count", 3) & Rhino.Mocks.Constraints.List.IsIn (_order1) & Rhino.Mocks.Constraints.List.IsIn (newCustomer) & Rhino.Mocks.Constraints.List.IsIn (oldCustomer));
       }
 
@@ -1327,22 +1370,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         computerEventReveiver.Committing (computer, EventArgs.Empty);
 
         _extensionMock.Committing (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
 
         clientTransactionMockEventReceiver.Committing (null, null);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
+            Rhino_Is.Same (_newTransaction),
             Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
 
         computerEventReveiver.Committed (computer, EventArgs.Empty);
 
         clientTransactionMockEventReceiver.Committed (null, null);
         LastCall.Constraints (
-            Is.Same (_newTransaction),
+            Rhino_Is.Same (_newTransaction),
             Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
 
         _extensionMock.Committed (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
       }
 
       _mockRepository.ReplayAll();
@@ -1399,10 +1442,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RollingBack (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.IsIn (computer));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.IsIn (computer));
 
         _extensionMock.RolledBack (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.IsIn (computer));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.IsIn (computer));
       }
 
       _mockRepository.ReplayAll();
@@ -1416,23 +1459,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Ignore ("TODO 4346")]
     public void SubTransactions ()
     {
+      ClientTransaction initializedTransaction = null;
+
       using (_mockRepository.Ordered())
       {
-        _extensionMock.SubTransactionCreating (_newTransaction);
-        _extensionMock.SubTransactionCreated (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Property.Value ("ParentTransaction", _newTransaction));
+        _extensionMock.Expect (mock => mock.SubTransactionCreating (_newTransaction));
+        _extensionMock
+            .Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Is.Anything))
+            .WhenCalled (mi => initializedTransaction = (ClientTransaction) mi.Arguments[0]);
+        _extensionMock.Expect (mock => mock.SubTransactionCreated (
+            Arg.Is (_newTransaction), 
+            Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
+        _extensionMock.Expect (mock => mock.TransactionDiscard (
+            Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
       }
 
       _mockRepository.ReplayAll();
 
+      ClientTransaction result;
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        ClientTransactionScope.CurrentTransaction.CreateSubTransaction();
+        result = ClientTransactionScope.CurrentTransaction.CreateSubTransaction();
       }
 
       _mockRepository.VerifyAll();
+      Assert.That (result, Is.SameAs (initializedTransaction));
     }
 
     [Test]
@@ -1445,7 +1499,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2, DomainObjectIDs.Order3 })));
 
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.Count (Is.Equal (2)));
+        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Rhino.Mocks.Constraints.List.Count (Rhino_Is.Equal (2)));
       }
 
       _mockRepository.ReplayAll();
@@ -1494,7 +1548,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         // loading of main object
         _extensionMock.ObjectsLoading (Arg.Is (transaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { expectedMainObjectID }));
         _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Is.Same (transaction), Is.NotNull ());
+        LastCall.Constraints (Rhino_Is.Same (transaction), Rhino_Is.NotNull ());
 
         // accessing relation property
 

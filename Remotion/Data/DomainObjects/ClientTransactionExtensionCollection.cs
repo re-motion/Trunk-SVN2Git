@@ -138,6 +138,24 @@ namespace Remotion.Data.DomainObjects
     #region Notification methods
 
     [EditorBrowsable (EditorBrowsableState.Never)]
+    public void TransactionInitialize (ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.TransactionInitialize (clientTransaction);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void TransactionDiscard (ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.TransactionDiscard (clientTransaction);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
     public void SubTransactionCreating (ClientTransaction parentClientTransaction)
     {
       ArgumentUtility.CheckNotNull ("parentClientTransaction", parentClientTransaction);

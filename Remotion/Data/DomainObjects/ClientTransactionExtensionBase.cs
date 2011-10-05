@@ -47,6 +47,14 @@ namespace Remotion.Data.DomainObjects
       get { return _key; }
     }
 
+    public virtual void TransactionInitialize (ClientTransaction clientTransaction)
+    {
+    }
+
+    public virtual void TransactionDiscard (ClientTransaction clientTransaction)
+    {
+    }
+
     public virtual void SubTransactionCreating (ClientTransaction parentClientTransaction)
     {
     }

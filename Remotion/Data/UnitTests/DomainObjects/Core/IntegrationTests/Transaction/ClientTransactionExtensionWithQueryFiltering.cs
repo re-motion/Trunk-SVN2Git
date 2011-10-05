@@ -31,6 +31,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       get { return typeof (ClientTransactionExtensionWithQueryFiltering).FullName; }
     }
 
+    public void TransactionInitialize (ClientTransaction clientTransaction)
+    {
+    }
+
+    public void TransactionDiscard (ClientTransaction clientTransaction)
+    {
+    }
+
     public void SubTransactionCreating (ClientTransaction parentClientTransaction)
     {
     }

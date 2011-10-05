@@ -48,6 +48,19 @@ namespace Remotion.Data.DomainObjects
     string Key { get;  }
 
     /// <summary>
+    /// Invoked while a transaction is being initialized. This method is called while the constructor of the <see cref="ClientTransaction"/> is 
+    /// running.
+    /// </summary>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
+    void TransactionInitialize (ClientTransaction clientTransaction);
+
+    /// <summary>
+    /// Invoked while a transaction is being discarded.
+    /// </summary>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
+    void TransactionDiscard (ClientTransaction clientTransaction);
+
+    /// <summary>
     /// Invoked when a subtransaction of <paramref name="parentClientTransaction"/> is about to be created.
     /// </summary>
     /// <param name="parentClientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
