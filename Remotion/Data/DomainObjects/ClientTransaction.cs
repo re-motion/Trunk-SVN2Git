@@ -180,7 +180,7 @@ public class ClientTransaction
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id);
     _objectLoader = componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
     _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager, _objectLoader);
-    _queryManager = componentFactory.CreateQueryManager (this, _persistenceStrategy, _objectLoader, _dataManager);
+    _queryManager = componentFactory.CreateQueryManager (this, _persistenceStrategy, _objectLoader, _dataManager, _eventSink);
 
     _extensions = componentFactory.CreateExtensionCollection (this);
     _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));

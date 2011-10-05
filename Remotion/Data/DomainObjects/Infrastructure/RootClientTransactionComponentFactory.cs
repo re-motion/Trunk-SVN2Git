@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -25,10 +24,8 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -55,22 +52,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual Dictionary<Enum, object> CreateApplicationData ()
     {
-      return new Dictionary<Enum, object> ();
+      return ClientTransactionComponentFactoryUtility.CreateApplicationData();
     }
 
     public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-      return new ClientTransactionExtensionCollection ("root");
+      return ClientTransactionComponentFactoryUtility.CreateExtensionCollectionFromServiceLocator (clientTransaction);
     }
 
     public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      var factories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory> ();
-      return factories.Select (factory => factory.CreateClientTransactionListener (clientTransaction));
+      return ClientTransactionComponentFactoryUtility.GetListenersFromServiceLocator (clientTransaction);
     }
 
     public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id)
@@ -87,13 +81,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
 
-      IFetchedRelationDataRegistrationAgent registrationAgent =
-          new DelegatingFetchedRelationDataRegistrationAgent (
-              new FetchedRealObjectRelationDataRegistrationAgent(),
-              new FetchedVirtualObjectRelationDataRegistrationAgent(),
-              new FetchedCollectionRelationDataRegistrationAgent());
-      var eagerFetcher = new EagerFetcher (registrationAgent);
-      return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
+      return ClientTransactionComponentFactoryUtility.CreateObjectLoader (clientTransaction, persistenceStrategy, eventSink);
     }
 
     public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
@@ -139,14 +127,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ClientTransaction clientTransaction,
         IPersistenceStrategy persistenceStrategy,
         IObjectLoader objectLoader,
-        IDataManager dataManager)
+        IDataManager dataManager,
+        IClientTransactionListener eventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
 
-      return new QueryManager (persistenceStrategy, objectLoader, clientTransaction, clientTransaction.TransactionEventSink, dataManager);
+      return ClientTransactionComponentFactoryUtility.CreateQueryManager (clientTransaction, persistenceStrategy, objectLoader, dataManager, eventSink);
     }
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

@@ -44,28 +44,43 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _eventSink;
-    private readonly IEagerFetcher _fetcher;
+    private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IEagerFetcher _eagerFetcher;
 
     public ObjectLoader (
         ClientTransaction clientTransaction,
         IPersistenceStrategy persistenceStrategy,
-        IClientTransactionListener eventSink,
-        IEagerFetcher fetcher)
+        IClientTransactionListener transactionEventSink,
+        IEagerFetcher eagerFetcher)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
       _persistenceStrategy = persistenceStrategy;
       _clientTransaction = clientTransaction;
-      _eventSink = eventSink;
-      _fetcher = fetcher;
+      _transactionEventSink = transactionEventSink;
+      _eagerFetcher = eagerFetcher;
     }
 
     public ClientTransaction ClientTransaction
     {
       get { return _clientTransaction; }
+    }
+
+    public IPersistenceStrategy PersistenceStrategy
+    {
+      get { return _persistenceStrategy; }
+    }
+
+    public IClientTransactionListener TransactionEventSink
+    {
+      get { return _transactionEventSink; }
+    }
+
+    public IEagerFetcher EagerFetcher
+    {
+      get { return _eagerFetcher; }
     }
 
     public DomainObject LoadObject (ObjectID id, IDataManager dataManager)
@@ -137,7 +152,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (resultArray.Length > 0)
       {
         foreach (var fetchQuery in query.EagerFetchQueries)
-          _fetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this, dataManager);
+          _eagerFetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this, dataManager);
       }
 
       return resultArray;
@@ -146,7 +161,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private void RaiseLoadingNotificiations (ReadOnlyCollection<ObjectID> objectIDs)
     {
       if (objectIDs.Count != 0)
-        _eventSink.ObjectsLoading (_clientTransaction, objectIDs);
+        _transactionEventSink.ObjectsLoading (_clientTransaction, objectIDs);
     }
 
     private void RaiseLoadedNotifications (ReadOnlyCollection<DomainObject> loadedObjects)
@@ -158,7 +173,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           foreach (var loadedDomainObject in loadedObjects)
             loadedDomainObject.OnLoaded();
 
-          _eventSink.ObjectsLoaded (_clientTransaction, loadedObjects);
+          _transactionEventSink.ObjectsLoaded (_clientTransaction, loadedObjects);
 
           _clientTransaction.OnLoaded (new ClientTransactionEventArgs (loadedObjects));
         }

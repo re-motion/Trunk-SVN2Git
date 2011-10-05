@@ -44,11 +44,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager, IObjectLoader objectLoader);
 
-    IQueryManager CreateQueryManager (
-        ClientTransaction clientTransaction,
-        IPersistenceStrategy persistenceStrategy,
-        IObjectLoader objectLoader,
-        IDataManager dataManager);
+    IQueryManager CreateQueryManager (ClientTransaction clientTransaction, IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IDataManager dataManager, IClientTransactionListener eventSink);
     
     // This member is likely to be removed in the future
     // TODO 2968: Remove this member

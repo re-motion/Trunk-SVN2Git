@@ -28,6 +28,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -36,203 +37,235 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
-  [TestFixture]
-  public class SubClientTransactionComponentFactoryTest : StandardMappingTest
-  {
-    private ClientTransactionMock _parentTransaction;
-    private IInvalidDomainObjectManager _parentInvalidDomainObjectManagerStub;
-    private SubClientTransactionComponentFactory _factory;
+	[TestFixture]
+	public class SubClientTransactionComponentFactoryTest : StandardMappingTest
+	{
+		private ClientTransactionMock _parentTransaction;
+		private IInvalidDomainObjectManager _parentInvalidDomainObjectManagerStub;
+		private SubClientTransactionComponentFactory _factory;
 
-    public override void SetUp ()
-    {
-      base.SetUp ();
+		public override void SetUp ()
+		{
+			base.SetUp ();
 
-      _parentTransaction = new ClientTransactionMock ();
-      _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      _factory = SubClientTransactionComponentFactory.Create (_parentTransaction, _parentInvalidDomainObjectManagerStub);
-    }
+			_parentTransaction = new ClientTransactionMock ();
+			_parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+			_factory = SubClientTransactionComponentFactory.Create (_parentTransaction, _parentInvalidDomainObjectManagerStub);
+		}
 
-    [Test]
-    public void GetParentTransaction ()
-    {
-      Assert.That (_factory.GetParentTransaction (), Is.SameAs (_parentTransaction));
-    }
+		[Test]
+		public void GetParentTransaction ()
+		{
+			Assert.That (_factory.GetParentTransaction (), Is.SameAs (_parentTransaction));
+		}
 
-    [Test]
-    public void CreateApplicationData ()
-    {
-      Assert.That (_factory.CreateApplicationData(), Is.SameAs (_parentTransaction.ApplicationData));
-    }
+		[Test]
+		public void CreateApplicationData ()
+		{
+			Assert.That (_factory.CreateApplicationData(), Is.SameAs (_parentTransaction.ApplicationData));
+		}
 
-    [Test]
-    public void CreateExtensionCollection ()
-    {
-      var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension>();
-      extensionStub.Stub (stub => stub.Key).Return ("test");
-      _parentTransaction.Extensions.Add (extensionStub);
+		[Test]
+		public void CreateListeners ()
+		{
+			var clientTransaction = new ClientTransactionMock ();
 
-      var clientTransaction = new ClientTransactionMock ();
+			var listenerFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
+			var listenerStub = MockRepository.GenerateStub<IClientTransactionListener>();
 
-      var extensionCollection = _factory.CreateExtensionCollection (clientTransaction);
+			listenerFactoryMock.Expect (mock => mock.CreateClientTransactionListener (clientTransaction)).Return (listenerStub);
+			listenerFactoryMock.Replay();
 
-      Assert.That (extensionCollection, Is.Not.SameAs (_parentTransaction.Extensions));
-      Assert.That (((IClientTransactionExtension) extensionCollection).Key, Is.EqualTo ("root"));
-      Assert.That (extensionCollection.Count, Is.EqualTo (0));
-    }
+			var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator>();
+			serviceLocatorMock
+					.Expect (mock => mock.GetAllInstances<IClientTransactionListenerFactory>())
+					.Return (new[] { listenerFactoryMock });
+			serviceLocatorMock.Replay();
+			
+			IEnumerable<IClientTransactionListener> listeners;
+			using (new ServiceLocatorScope (serviceLocatorMock))
+			{
+				listeners = _factory.CreateListeners (clientTransaction).ToArray();
+			}
 
-    [Test]
-    public void CreateListeners ()
-    {
-      var clientTransaction = new ClientTransactionMock ();
+			serviceLocatorMock.VerifyAllExpectations();
+			listenerFactoryMock.VerifyAllExpectations();
 
-      var listenerFactoryMock1 = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
-      var listenerFactoryMock2 = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
-      var listenerStub1 = MockRepository.GenerateStub<IClientTransactionListener>();
-      var listenerStub2 = MockRepository.GenerateStub<IClientTransactionListener>();
+			Assert.That (listeners, Has.Member (listenerStub));
 
-      listenerFactoryMock1
-          .Expect (mock => mock.CreateClientTransactionListener (clientTransaction))
-          .Return (listenerStub1);
-      listenerFactoryMock1.Replay();
+			var listener = listeners.OfType<SubClientTransactionListener> ().SingleOrDefault ();
+			Assert.That (listener, Is.Not.Null);
+			Assert.That (listener.ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
+		}
 
-      listenerFactoryMock2
-          .Expect (mock => mock.CreateClientTransactionListener (clientTransaction))
-          .Return (listenerStub2);
-      listenerFactoryMock2.Replay();
+		[Test]
+		public void CreateExtensionCollection ()
+		{
+			var clientTransaction = new ClientTransactionMock ();
 
-      var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator>();
-      serviceLocatorMock
-          .Expect (mock => mock.GetAllInstances<IClientTransactionListenerFactory>())
-          .Return (new[] { listenerFactoryMock1, listenerFactoryMock2 });
-      serviceLocatorMock.Replay();
-      
-      IEnumerable<IClientTransactionListener> listeners;
-      using (new ServiceLocatorScope (serviceLocatorMock))
-      {
-        listeners = _factory.CreateListeners (clientTransaction).ToArray();
-      }
+			var extensionFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionExtensionFactory>();
+			var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension>();
+			extensionStub.Stub (stub => stub.Key).Return ("stub1");
 
-      serviceLocatorMock.VerifyAllExpectations();
-      listenerFactoryMock1.VerifyAllExpectations();
-      listenerFactoryMock2.VerifyAllExpectations();
+			extensionFactoryMock.Expect (mock => mock.CreateClientTransactionExtensions (clientTransaction)).Return (new[] { extensionStub });
+			extensionFactoryMock.Replay();
 
-      Assert.That (listeners, Has.Member (listenerStub1));
-      Assert.That (listeners, Has.Member (listenerStub2));
+			var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator>();
+			serviceLocatorMock
+					.Expect (mock => mock.GetAllInstances<IClientTransactionExtensionFactory>())
+					.Return (new[] { extensionFactoryMock });
+			serviceLocatorMock.Replay();
+			
+			ClientTransactionExtensionCollection extensions;
+			using (new ServiceLocatorScope (serviceLocatorMock))
+			{
+				extensions = _factory.CreateExtensionCollection (clientTransaction);
+			}
 
-      var listener = listeners.OfType<SubClientTransactionListener> ().SingleOrDefault ();
-      Assert.That (listener, Is.Not.Null);
-      Assert.That (listener.ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
-    }
+			serviceLocatorMock.VerifyAllExpectations();
+			extensionFactoryMock.VerifyAllExpectations();
 
-    [Test]
-    public void CreatePersistenceStrategy ()
-    {
-      _parentTransaction.IsReadOnly = true;
+		 Assert.That (extensions, Is.EquivalentTo (new[] { extensionStub }));
+		}
 
-      var result = _factory.CreatePersistenceStrategy (Guid.NewGuid());
+		[Test]
+		public void CreatePersistenceStrategy ()
+		{
+			_parentTransaction.IsReadOnly = true;
 
-      Assert.That (result, Is.TypeOf<SubPersistenceStrategy>());
-      Assert.That (((SubPersistenceStrategy) result).ParentTransaction, Is.SameAs (_parentTransaction));
-      Assert.That (((SubPersistenceStrategy) result).ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
-    }
+			var result = _factory.CreatePersistenceStrategy (Guid.NewGuid());
 
-    [Test]
-    public void CreatePersistenceStrategy_CanBeMixed ()
-    {
-      _parentTransaction.IsReadOnly = true;
+			Assert.That (result, Is.TypeOf<SubPersistenceStrategy>());
+			Assert.That (((SubPersistenceStrategy) result).ParentTransaction, Is.SameAs (_parentTransaction));
+			Assert.That (((SubPersistenceStrategy) result).ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
+		}
 
-      using (MixinConfiguration.BuildNew ().ForClass<SubPersistenceStrategy> ().AddMixin<NullMixin> ().EnterScope())
-      {
-        var result = _factory.CreatePersistenceStrategy (Guid.NewGuid());
-        Assert.That (Mixin.Get<NullMixin> (result), Is.Not.Null);
-      }
-    }
+		[Test]
+		public void CreatePersistenceStrategy_CanBeMixed ()
+		{
+			_parentTransaction.IsReadOnly = true;
 
-    [Test]
-    public void CreateEnlistedObjectManager ()
-    {
-      var manager = _factory.CreateEnlistedObjectManager ();
-      Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
-      Assert.That (((DelegatingEnlistedDomainObjectManager) manager).TargetTransaction, Is.SameAs (_parentTransaction));
-    }
+			using (MixinConfiguration.BuildNew ().ForClass<SubPersistenceStrategy> ().AddMixin<NullMixin> ().EnterScope())
+			{
+				var result = _factory.CreatePersistenceStrategy (Guid.NewGuid());
+				Assert.That (Mixin.Get<NullMixin> (result), Is.Not.Null);
+			}
+		}
 
-    [Test]
-    public void CreateInvalidDomainObjectManager ()
-    {
-      _parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new ObjectID[0]);
+		[Test]
+		public void CreateEnlistedObjectManager ()
+		{
+			var manager = _factory.CreateEnlistedObjectManager ();
+			Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
+			Assert.That (((DelegatingEnlistedDomainObjectManager) manager).TargetTransaction, Is.SameAs (_parentTransaction));
+		}
 
-      var manager = _factory.CreateInvalidDomainObjectManager ();
-      Assert.That (manager, Is.TypeOf (typeof (SubInvalidDomainObjectManager)));
-      Assert.That (((SubInvalidDomainObjectManager) manager).ParentTransactionManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
-    }
+		[Test]
+		public void CreateInvalidDomainObjectManager ()
+		{
+			_parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new ObjectID[0]);
 
-    [Test]
-    public void CreateInvalidDomainObjectManager_AutomaticallyMarksInvalid_ObjectsInvalidOrDeletedInParentTransaction ()
-    {
-      var objectInvalidInParent = _parentTransaction.Execute (() => Order.NewObject ());
-      var objectDeletedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order2, false);
-      var objectLoadedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order3, false);
+			var manager = _factory.CreateInvalidDomainObjectManager ();
+			Assert.That (manager, Is.TypeOf (typeof (SubInvalidDomainObjectManager)));
+			Assert.That (((SubInvalidDomainObjectManager) manager).ParentTransactionManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
+		}
 
-      _parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new[] { objectInvalidInParent.ID });
-      _parentInvalidDomainObjectManagerStub.Stub (stub => stub.GetInvalidObjectReference (objectInvalidInParent.ID)).Return (objectInvalidInParent);
-      
-      _parentTransaction.Delete (objectDeletedInParent);
+		[Test]
+		public void CreateInvalidDomainObjectManager_AutomaticallyMarksInvalid_ObjectsInvalidOrDeletedInParentTransaction ()
+		{
+			var objectInvalidInParent = _parentTransaction.Execute (() => Order.NewObject ());
+			var objectDeletedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order2, false);
+			var objectLoadedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order3, false);
 
-      var invalidOjectManager = _factory.CreateInvalidDomainObjectManager();
+			_parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new[] { objectInvalidInParent.ID });
+			_parentInvalidDomainObjectManagerStub.Stub (stub => stub.GetInvalidObjectReference (objectInvalidInParent.ID)).Return (objectInvalidInParent);
+			
+			_parentTransaction.Delete (objectDeletedInParent);
 
-      Assert.That (invalidOjectManager.IsInvalid (objectInvalidInParent.ID), Is.True);
-      Assert.That (invalidOjectManager.IsInvalid (objectDeletedInParent.ID), Is.True);
-      Assert.That (invalidOjectManager.IsInvalid (objectLoadedInParent.ID), Is.False);
-    }
+			var invalidOjectManager = _factory.CreateInvalidDomainObjectManager();
 
-    [Test]
-    public void CreateDataManager ()
-    {
-      var clientTransaction = ClientTransaction.CreateRootTransaction ();
-      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+			Assert.That (invalidOjectManager.IsInvalid (objectInvalidInParent.ID), Is.True);
+			Assert.That (invalidOjectManager.IsInvalid (objectDeletedInParent.ID), Is.True);
+			Assert.That (invalidOjectManager.IsInvalid (objectLoadedInParent.ID), Is.False);
+		}
 
-      var dataManager = (DataManager) _factory.CreateDataManager (clientTransaction, invalidDomainObjectManager, objectLoader);
-      Assert.That (dataManager.ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (DataManagerTestHelper.GetInvalidDomainObjectManager (dataManager), Is.SameAs (invalidDomainObjectManager));
-      Assert.That (DataManagerTestHelper.GetObjectLoader (dataManager), Is.SameAs (objectLoader));
+		[Test]
+		public void CreateDataManager ()
+		{
+			var clientTransaction = ClientTransaction.CreateRootTransaction ();
+			var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+			var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
 
-      var manager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (dataManager);
-      Assert.That (manager.ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (manager.EndPointFactory, Is.TypeOf<RelationEndPointFactory> ());
-      Assert.That (manager.RegistrationAgent, Is.TypeOf<RelationEndPointRegistrationAgent> ());
+			var dataManager = (DataManager) _factory.CreateDataManager (clientTransaction, invalidDomainObjectManager, objectLoader);
+			Assert.That (dataManager.ClientTransaction, Is.SameAs (clientTransaction));
+			Assert.That (DataManagerTestHelper.GetInvalidDomainObjectManager (dataManager), Is.SameAs (invalidDomainObjectManager));
+			Assert.That (DataManagerTestHelper.GetObjectLoader (dataManager), Is.SameAs (objectLoader));
 
-      var endPointFactory = ((RelationEndPointFactory) manager.EndPointFactory);
-      Assert.That (endPointFactory.ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (endPointFactory.LazyLoader, Is.SameAs (dataManager));
-      Assert.That (endPointFactory.EndPointProvider, Is.SameAs (dataManager));
-      Assert.That (endPointFactory.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
+			var manager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (dataManager);
+			Assert.That (manager.ClientTransaction, Is.SameAs (clientTransaction));
+			Assert.That (manager.EndPointFactory, Is.TypeOf<RelationEndPointFactory> ());
+			Assert.That (manager.RegistrationAgent, Is.TypeOf<RelationEndPointRegistrationAgent> ());
 
-      var collectionEndPointDataKeeperFactory = ((CollectionEndPointDataKeeperFactory) endPointFactory.CollectionEndPointDataKeeperFactory);
-      Assert.That (collectionEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (collectionEndPointDataKeeperFactory.ChangeDetectionStrategy, Is.TypeOf<SubCollectionEndPointChangeDetectionStrategy> ());
-      Assert.That (endPointFactory.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf<VirtualObjectEndPointDataKeeperFactory> ());
+			var endPointFactory = ((RelationEndPointFactory) manager.EndPointFactory);
+			Assert.That (endPointFactory.ClientTransaction, Is.SameAs (clientTransaction));
+			Assert.That (endPointFactory.LazyLoader, Is.SameAs (dataManager));
+			Assert.That (endPointFactory.EndPointProvider, Is.SameAs (dataManager));
+			Assert.That (endPointFactory.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
 
-      var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
-      Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
-    }
+			var collectionEndPointDataKeeperFactory = ((CollectionEndPointDataKeeperFactory) endPointFactory.CollectionEndPointDataKeeperFactory);
+			Assert.That (collectionEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
+			Assert.That (collectionEndPointDataKeeperFactory.ChangeDetectionStrategy, Is.TypeOf<SubCollectionEndPointChangeDetectionStrategy> ());
+			Assert.That (endPointFactory.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf<VirtualObjectEndPointDataKeeperFactory> ());
 
-    [Test]
-    public void CreateQueryManager ()
-    {
-      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
-      var clientTransaction = ClientTransaction.CreateRootTransaction ();
-      var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
-      var dataManager = MockRepository.GenerateStub<IDataManager> ();
+			var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
+			Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
+		}
 
-      var result = _factory.CreateQueryManager (clientTransaction, persistenceStrategy, objectLoader, dataManager);
+		[Test]
+		public void CreateObjectLoader ()
+		{
+			var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+			var clientTransaction = ClientTransaction.CreateRootTransaction ();
+			var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
 
-      Assert.That (result, Is.TypeOf (typeof (QueryManager)));
-      Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
-      Assert.That (((QueryManager) result).ObjectLoader, Is.SameAs (objectLoader));
-      Assert.That (((QueryManager) result).DataManager, Is.SameAs (dataManager));
-      Assert.That (((QueryManager) result).ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (((QueryManager) result).TransactionEventSink, Is.SameAs (ClientTransactionTestHelper.GetTransactionEventSink (clientTransaction)));
-    }
-  }
+			var result = _factory.CreateObjectLoader (clientTransaction, persistenceStrategy, eventSink);
+
+			Assert.That (result, Is.TypeOf (typeof (ObjectLoader)));
+			Assert.That (((ObjectLoader) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
+			Assert.That (((ObjectLoader) result).ClientTransaction, Is.SameAs (clientTransaction));
+			Assert.That (((ObjectLoader) result).TransactionEventSink, Is.SameAs (eventSink));
+			Assert.That (((ObjectLoader) result).EagerFetcher, Is.TypeOf<EagerFetcher>());
+
+			var eagerFetcher = ((EagerFetcher) ((ObjectLoader) result).EagerFetcher);
+			Assert.That (eagerFetcher.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent>());
+			Assert.That (
+					((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).RealObjectDataRegistrationAgent,
+					Is.TypeOf<FetchedRealObjectRelationDataRegistrationAgent>());
+			Assert.That (
+					((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).VirtualObjectDataRegistrationAgent,
+					Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent>());
+			Assert.That (
+					((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).CollectionDataRegistrationAgent,
+					Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent>());
+		}
+
+		[Test]
+		public void CreateQueryManager ()
+		{
+			var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+			var clientTransaction = ClientTransaction.CreateRootTransaction ();
+			var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+			var dataManager = MockRepository.GenerateStub<IDataManager> ();
+			var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+
+			var result = _factory.CreateQueryManager (clientTransaction, persistenceStrategy, objectLoader, dataManager, eventSink);
+
+			Assert.That (result, Is.TypeOf (typeof (QueryManager)));
+			Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
+			Assert.That (((QueryManager) result).ObjectLoader, Is.SameAs (objectLoader));
+			Assert.That (((QueryManager) result).DataManager, Is.SameAs (dataManager));
+			Assert.That (((QueryManager) result).ClientTransaction, Is.SameAs (clientTransaction));
+			Assert.That (((QueryManager) result).TransactionEventSink, Is.SameAs (eventSink));
+		}
+	}
 }

@@ -173,7 +173,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                     Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
                     Arg.Is (_persistenceStrategyMock),
                     Arg.Is (_objectLoaderMock),
-                    Arg.Is (_dataManagerMock)))
+                    Arg.Is (_dataManagerMock), 
+                    Arg<IClientTransactionListener>.Matches (listener => listener == transactionEventSink)))
             .Return (_queryManagerMock)
             .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetIDataManager (constructedTransaction), Is.SameAs (_dataManagerMock)));
         componentFactoryMock

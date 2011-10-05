@@ -187,6 +187,7 @@
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
     <Compile Include="DataManagement\DataManagementService.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
+    <Compile Include="Infrastructure\ClientTransactionComponentFactoryUtility.cs" />
     <Compile Include="Infrastructure\PersistableData.cs" />
     <Compile Include="DataManagement\RelationEndPoints\DataContainerEndPointsRegistrationAgentBase.cs" />
     <Compile Include="DataManagement\RelationEndPoints\DelegatingDataContainerEndPointsRegistrationAgent.cs" />
