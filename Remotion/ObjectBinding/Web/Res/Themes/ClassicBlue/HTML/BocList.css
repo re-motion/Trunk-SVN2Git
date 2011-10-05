@@ -307,7 +307,7 @@ td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuButton:hov
 {
   padding: 0px;
   border: none;
-  background-color: LightGray;
+  background-color: #E8E8E8;
 }
 
 td.bocListDataCellOdd span.bocDateValue a,

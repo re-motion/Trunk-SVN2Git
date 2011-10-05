@@ -150,17 +150,18 @@ a.bocPicker12HoursWithSeconds img
   text-decoration: none;
 }
 
-span.disabled a
+span.bocDateTimeValue.disabled a,
+span.bocDateValue.disabled a
 {
   cursor: default;
 }
 
-span.disabled a img
+span.bocDateTimeValue.disabled a img,
+span.bocDateValue.disabled a img
 {
   opacity: 0.4;
-  filter: progid: DXImageTransform.Microsoft.BasicImage(opacity=0.40),
-          progid: DXImageTransform.Microsoft.BasicImage(grayscale=1);
-  -moz-opacity: 0.4;
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40), 
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
 
 

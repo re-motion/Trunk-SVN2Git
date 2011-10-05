@@ -100,7 +100,7 @@ span.DropDownMenuSelect a.DropDownMenuButton:first-child
 span.DropDownMenuSelect.disabled a.DropDownMenuButton
 {
   cursor: default;
-  background-color: LightGray;
+  background-color: #E8E8E8;
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton img
