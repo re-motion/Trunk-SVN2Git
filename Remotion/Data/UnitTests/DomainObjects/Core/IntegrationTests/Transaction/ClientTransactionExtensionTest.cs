@@ -80,6 +80,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _extensionMock.BackToRecord();
     }
 
+    public override void TearDown ()
+    {
+      ClientTransactionMock.Extensions.Remove ("TestExtension");
+      _newTransaction.Extensions.Remove ("TestExtension");
+      base.TearDown ();
+    }
+
     [Test]
     public void Extensions ()
     {
@@ -87,7 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4346")]
     public void TransactionInitialize ()
     {
       var factoryStub = MockRepository.GenerateStub<IClientTransactionExtensionFactory>();
@@ -115,7 +121,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4346")]
     public void TransactionDiscard ()
     {
       _extensionMock.Expect (mock => mock.TransactionDiscard (ClientTransactionMock));
@@ -1459,7 +1464,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4346")]
+    [Ignore ("TODO 4397")]
     public void SubTransactions ()
     {
       ClientTransaction initializedTransaction = null;

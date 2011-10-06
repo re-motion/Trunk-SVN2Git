@@ -203,24 +203,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         extensionMock.Stub (stub => stub.Key).Return ("Mock");
         extensionMock.Replay();
         _subTransaction.Extensions.Add (extensionMock);
-        extensionMock.BackToRecord();
+        try
+        {
+          extensionMock.BackToRecord ();
 
-        extensionMock.ObjectDeleting (_subTransaction, domainObject);
-        extensionMock.ObjectDeleted (_subTransaction, domainObject);
+          extensionMock.ObjectDeleting (_subTransaction, domainObject);
+          extensionMock.ObjectDeleted (_subTransaction, domainObject);
 
-        repository.ReplayAll();
-        domainObject.Delete();
-        repository.VerifyAll();
+          repository.ReplayAll ();
+          domainObject.Delete ();
+          repository.VerifyAll ();
 
-        repository.BackToRecordAll();
-        extensionMock.Committing (null, null);
-        LastCall.IgnoreArguments();
-        extensionMock.Committed (null, null);
-        LastCall.IgnoreArguments ();
-        repository.ReplayAll ();
-       
-        _subTransaction.Commit();
-        repository.VerifyAll ();
+          repository.BackToRecordAll ();
+          extensionMock.Committing (null, null);
+          LastCall.IgnoreArguments ();
+          extensionMock.Committed (null, null);
+          LastCall.IgnoreArguments ();
+          repository.ReplayAll ();
+
+          _subTransaction.Commit ();
+          repository.VerifyAll ();
+        }
+        finally
+        {
+          _subTransaction.Extensions.Remove ("Mock");
+        }
       }
     }
 
@@ -238,21 +245,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         extensionMock.Replay();
         extensionMock.Stub (stub => stub.Key).Return ("Mock");
         _subTransaction.Extensions.Add (extensionMock);
-        extensionMock.BackToRecord();
-
-        using (repository.Ordered ())
+        try
         {
-          extensionMock.Committing (null, null);
-          LastCall.IgnoreArguments ();
-          extensionMock.Committed (null, null);
-          LastCall.IgnoreArguments ();
+          extensionMock.BackToRecord ();
+
+          using (repository.Ordered ())
+          {
+            extensionMock.Committing (null, null);
+            LastCall.IgnoreArguments ();
+            extensionMock.Committed (null, null);
+            LastCall.IgnoreArguments ();
+          }
+
+          repository.ReplayAll ();
+
+          _subTransaction.Commit ();
+
+          repository.VerifyAll ();
         }
-
-        repository.ReplayAll ();
-
-        _subTransaction.Commit ();
-        
-        repository.VerifyAll ();
+        finally
+        {
+          _subTransaction.Extensions.Remove ("Mock");
+        }
       }
     }
   }

@@ -53,7 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
     }
 
     [Test]
-    [Ignore ("TODO 4346")]
     public void LoadSingleObject ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction ();

@@ -27,6 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   {
     private IClientTransactionExtension _extensionMock;
     private ExtensionClientTransactionListener _listener;
+    private ClientTransaction _clientTransaction;
 
     [SetUp]
     public void SetUp ()
@@ -36,13 +37,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void TransactionInitialize_Delegated ()
+    {
+      _clientTransaction = ClientTransaction.CreateRootTransaction ();
+
+      ExpectDelegation (l => l.TransactionInitialize (_clientTransaction), e => e.TransactionInitialize (_clientTransaction));
+    }
+
+    [Test]
+    public void TransactionDiscard_Delegated ()
+    {
+      _clientTransaction = ClientTransaction.CreateRootTransaction ();
+
+      ExpectDelegation (l => l.TransactionDiscard (_clientTransaction), e => e.TransactionDiscard (_clientTransaction));
+    }
+
+    [Test]
     public void SubTransactionEvents_Delegated ()
     {
-      var tx1 = ClientTransaction.CreateRootTransaction();
       var tx2 = ClientTransaction.CreateRootTransaction();
       
-      ExpectDelegation (l => l.SubTransactionCreating (tx1), e => e.SubTransactionCreating (tx1));
-      ExpectDelegation (l => l.SubTransactionCreated (tx1, tx2), e => e.SubTransactionCreated (tx1, tx2));
+      ExpectDelegation (l => l.SubTransactionCreating (_clientTransaction), e => e.SubTransactionCreating (_clientTransaction));
+      ExpectDelegation (l => l.SubTransactionCreated (_clientTransaction, tx2), e => e.SubTransactionCreated (_clientTransaction, tx2));
     }
 
     private void ExpectDelegation (Action<IClientTransactionListener> listenerAction, Action<IClientTransactionExtension> expectedExtensionAction)

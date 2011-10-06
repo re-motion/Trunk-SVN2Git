@@ -19,9 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MockConstraints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -533,384 +531,409 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       mockRepository.ReplayAll();
 
       ClientTransactionScope.CurrentTransaction.Extensions.Add (extension);
-      
-      //1
-      newCeo1.Company = newCustomer1;
-      //2
-      newCeo2.Company = newCustomer1;
-      //3
-      newCeo1.Company = newCustomer2;
-      //4
-      newCeo1.Company = null;
-      //5
-      newCustomer1.Orders.Add (newOrder1);
-      //6
-      newCustomer1.Orders.Add (newOrder2);
-      //7
-      newCustomer1.Orders.Remove (newOrder2);
-      //8
-      newOrderItem1.Order = newOrder1;
-      //9
-      newOrderItem2.Order = newOrder1;
-      //10
-      newOrderItem1.Order = null;
-      //11
-      newOrderItem1.Order = newOrder2;
-      //12
-      newOrder1.Official = official2;
-      //13
-      OrderTicket newOrderTicket1 = OrderTicket.NewObject (newOrder1);
-
-      mockRepository.VerifyAll();
-
-      BackToRecord (
-          mockRepository,
-          extension,
-          newCustomer1EventReceiver,
-          newCustomer2EventReceiver,
-          official2EventReceiver,
-          newCeo1EventReceiver,
-          newCeo2EventReceiver,
-          newOrder1EventReceiver,
-          newOrder2EventReceiver,
-          newOrderItem1EventReceiver,
-          newOrderItem2EventReceiver,
-          newCustomer1OrdersEventReceiver,
-          newCustomer2OrdersEventReceiver,
-          official2OrdersEventReceiver,
-          newOrder1OrderItemsEventReceiver,
-          newOrder2OrderItemsEventReceiver);
-
-      var newOrderTicket1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderTicket1);
-
-      using (mockRepository.Ordered())
+      try
       {
-        //14
-        //newOrderTicket1.Order = newOrder2;
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newOrderTicket1,
-            newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition,
-            newOrder1,
-            newOrder2);
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newOrder1,
-            newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
-            newOrderTicket1,
-            null);
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newOrder2,
-            newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
-            null,
-            newOrderTicket1);
+        //1
+        newCeo1.Company = newCustomer1;
+        //2
+        newCeo2.Company = newCustomer1;
+        //3
+        newCeo1.Company = newCustomer2;
+        //4
+        newCeo1.Company = null;
+        //5
+        newCustomer1.Orders.Add (newOrder1);
+        //6
+        newCustomer1.Orders.Add (newOrder2);
+        //7
+        newCustomer1.Orders.Remove (newOrder2);
+        //8
+        newOrderItem1.Order = newOrder1;
+        //9
+        newOrderItem2.Order = newOrder1;
+        //10
+        newOrderItem1.Order = null;
+        //11
+        newOrderItem1.Order = newOrder2;
+        //12
+        newOrder1.Official = official2;
+        //13
+        OrderTicket newOrderTicket1 = OrderTicket.NewObject (newOrder1);
 
-        newOrderTicket1EventReceiver.RelationChanging (
-            newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder1, newOrder2);
-        newOrder1EventReceiver.RelationChanging (
-            newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, newOrderTicket1, null);
-        newOrder2EventReceiver.RelationChanging (
-            newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
+        mockRepository.VerifyAll ();
 
-        newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
-        newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
-        newOrderTicket1EventReceiver.RelationChanged (newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+        BackToRecord (
+            mockRepository,
+            extension,
+            newCustomer1EventReceiver,
+            newCustomer2EventReceiver,
+            official2EventReceiver,
+            newCeo1EventReceiver,
+            newCeo2EventReceiver,
+            newOrder1EventReceiver,
+            newOrder2EventReceiver,
+            newOrderItem1EventReceiver,
+            newOrderItem2EventReceiver,
+            newCustomer1OrdersEventReceiver,
+            newCustomer2OrdersEventReceiver,
+            official2OrdersEventReceiver,
+            newOrder1OrderItemsEventReceiver,
+            newOrder2OrderItemsEventReceiver);
 
-        extension.RelationChanged (
-            ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (
-            ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (
-            ClientTransactionMock, newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+        var newOrderTicket1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderTicket1);
 
-
-        //15a
-        //newOrder2.Customer = newCustomer1;
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newOrder2,
-            newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition,
-            null,
-            newCustomer1);
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newCustomer1,
-            newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
-            null,
-            newOrder2);
-
-        newOrder2EventReceiver.RelationChanging (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
-        newCustomer1OrdersEventReceiver.Adding (newCustomer1Orders, newOrder2);
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
-
-        newCustomer1EventReceiver.RelationChanged (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-        newCustomer1OrdersEventReceiver.Added (newCustomer1Orders, newOrder2);
-        newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
-
-        extension.RelationChanged (
-            ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (
-            ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
-
-
-        //15b
-        //newOrder2.Customer = newCustomer2;
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newOrder2,
-            newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition,
-            newCustomer1,
-            newCustomer2);
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newCustomer2,
-            newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
-            null,
-            newOrder2);
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newCustomer1,
-            newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
-            newOrder2,
-            null);
-
-        newOrder2EventReceiver.RelationChanging (
-            newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, newCustomer1, newCustomer2);
-        newCustomer2OrdersEventReceiver.Adding (newCustomer2Orders, newOrder2);
-        newCustomer2EventReceiver.RelationChanging (newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
-        newCustomer1OrdersEventReceiver.Removing (newCustomer1Orders, newOrder2);
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
-
-        newCustomer1EventReceiver.RelationChanged (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-
-        newCustomer1OrdersEventReceiver.Removed (newCustomer1Orders, newOrder2);
-        newCustomer2EventReceiver.RelationChanged (newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-
-        newCustomer2OrdersEventReceiver.Added (newCustomer2Orders, newOrder2);
-        newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
-
-        extension.RelationChanged (
-            ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (
-            ClientTransactionMock, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (
-            ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
-
-
-        //16
-        //newOrder2.Delete ();
-        extension.ObjectDeleting (ClientTransactionMock, newOrder2);
-
-        using (mockRepository.Unordered())
+        using (mockRepository.Ordered ())
         {
-          extension.RelationChanging (
-              ClientTransactionMock,
-              newCustomer2,
-              newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
-              newOrder2,
-              null);
+          //14
+          //newOrderTicket1.Order = newOrder2;
           extension.RelationChanging (
               ClientTransactionMock,
               newOrderTicket1,
               newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition,
-              newOrder2,
+              newOrder1,
+              newOrder2);
+          extension.RelationChanging (
+              ClientTransactionMock,
+              newOrder1,
+              newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
+              newOrderTicket1,
               null);
           extension.RelationChanging (
               ClientTransactionMock,
-              newOrderItem1,
-              newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition,
               newOrder2,
-              null);
-        }
+              newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
+              null,
+              newOrderTicket1);
 
-        newOrder2EventReceiver.Deleting (null, null);
-        LastCall.Constraints (Mocks_Is.Same (newOrder2), Mocks_Is.NotNull());
-
-        using (mockRepository.Unordered())
-        {
-          newCustomer2OrdersEventReceiver.Removing (newCustomer2Orders, newOrder2);
-          newCustomer2EventReceiver.RelationChanging (
-              newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
           newOrderTicket1EventReceiver.RelationChanging (
-              newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
-          newOrderItem1EventReceiver.RelationChanging (
-              newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
-        }
+              newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder1, newOrder2);
+          newOrder1EventReceiver.RelationChanging (
+              newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, newOrderTicket1, null);
+          newOrder2EventReceiver.RelationChanging (
+              newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
 
-        using (mockRepository.Unordered())
-        {
-          newCustomer2OrdersEventReceiver.Removed (newCustomer2Orders, newOrder2);
-          newCustomer2EventReceiver.RelationChanged (newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-          newOrderTicket1EventReceiver.RelationChanged (newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
-          newOrderItem1EventReceiver.RelationChanged (newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
-        }
+          newOrder2EventReceiver.RelationChanged (
+              newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+          newOrder1EventReceiver.RelationChanged (
+              newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+          newOrderTicket1EventReceiver.RelationChanged (
+              newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
 
-        newOrder2EventReceiver.Deleted (null, null);
-        LastCall.Constraints (Mocks_Is.Same (newOrder2), Mocks_Is.NotNull());
-
-        using (mockRepository.Unordered())
-        {
           extension.RelationChanged (
-              ClientTransactionMock, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+              ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+          extension.RelationChanged (
+              ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
           extension.RelationChanged (
               ClientTransactionMock,
               newOrderTicket1,
               newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+
+
+          //15a
+          //newOrder2.Customer = newCustomer1;
+          extension.RelationChanging (
+              ClientTransactionMock,
+              newOrder2,
+              newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition,
+              null,
+              newCustomer1);
+          extension.RelationChanging (
+              ClientTransactionMock,
+              newCustomer1,
+              newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+              null,
+              newOrder2);
+
+          newOrder2EventReceiver.RelationChanging (
+              newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
+          newCustomer1OrdersEventReceiver.Adding (newCustomer1Orders, newOrder2);
+          newCustomer1EventReceiver.RelationChanging (
+              newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
+
+          newCustomer1EventReceiver.RelationChanged (
+              newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+          newCustomer1OrdersEventReceiver.Added (newCustomer1Orders, newOrder2);
+          newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+
           extension.RelationChanged (
-              ClientTransactionMock, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+              ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+          extension.RelationChanged (
+              ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+
+
+          //15b
+          //newOrder2.Customer = newCustomer2;
+          extension.RelationChanging (
+              ClientTransactionMock,
+              newOrder2,
+              newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition,
+              newCustomer1,
+              newCustomer2);
+          extension.RelationChanging (
+              ClientTransactionMock,
+              newCustomer2,
+              newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+              null,
+              newOrder2);
+          extension.RelationChanging (
+              ClientTransactionMock,
+              newCustomer1,
+              newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+              newOrder2,
+              null);
+
+          newOrder2EventReceiver.RelationChanging (
+              newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, newCustomer1, newCustomer2);
+          newCustomer2OrdersEventReceiver.Adding (newCustomer2Orders, newOrder2);
+          newCustomer2EventReceiver.RelationChanging (
+              newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
+          newCustomer1OrdersEventReceiver.Removing (newCustomer1Orders, newOrder2);
+          newCustomer1EventReceiver.RelationChanging (
+              newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
+
+          newCustomer1EventReceiver.RelationChanged (
+              newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+
+          newCustomer1OrdersEventReceiver.Removed (newCustomer1Orders, newOrder2);
+          newCustomer2EventReceiver.RelationChanged (
+              newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+
+          newCustomer2OrdersEventReceiver.Added (newCustomer2Orders, newOrder2);
+          newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+
+          extension.RelationChanged (
+              ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+          extension.RelationChanged (
+              ClientTransactionMock, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+          extension.RelationChanged (
+              ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+
+
+          //16
+          //newOrder2.Delete ();
+          extension.ObjectDeleting (ClientTransactionMock, newOrder2);
+
+          using (mockRepository.Unordered ())
+          {
+            extension.RelationChanging (
+                ClientTransactionMock,
+                newCustomer2,
+                newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+                newOrder2,
+                null);
+            extension.RelationChanging (
+                ClientTransactionMock,
+                newOrderTicket1,
+                newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition,
+                newOrder2,
+                null);
+            extension.RelationChanging (
+                ClientTransactionMock,
+                newOrderItem1,
+                newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition,
+                newOrder2,
+                null);
+          }
+
+          newOrder2EventReceiver.Deleting (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newOrder2), Mocks_Is.NotNull ());
+
+          using (mockRepository.Unordered ())
+          {
+            newCustomer2OrdersEventReceiver.Removing (newCustomer2Orders, newOrder2);
+            newCustomer2EventReceiver.RelationChanging (
+                newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
+            newOrderTicket1EventReceiver.RelationChanging (
+                newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
+            newOrderItem1EventReceiver.RelationChanging (
+                newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
+          }
+
+          using (mockRepository.Unordered ())
+          {
+            newCustomer2OrdersEventReceiver.Removed (newCustomer2Orders, newOrder2);
+            newCustomer2EventReceiver.RelationChanged (
+                newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+            newOrderTicket1EventReceiver.RelationChanged (
+                newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+            newOrderItem1EventReceiver.RelationChanged (
+                newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+          }
+
+          newOrder2EventReceiver.Deleted (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newOrder2), Mocks_Is.NotNull ());
+
+          using (mockRepository.Unordered ())
+          {
+            extension.RelationChanged (
+                ClientTransactionMock, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+            extension.RelationChanged (
+                ClientTransactionMock,
+                newOrderTicket1,
+                newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+            extension.RelationChanged (
+                ClientTransactionMock, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+          }
+
+          extension.ObjectDeleted (ClientTransactionMock, newOrder2);
+
+
+          //17
+          //newOrderTicket1.Order = newOrder1;
+          extension.RelationChanging (
+              ClientTransactionMock,
+              newOrderTicket1,
+              newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition,
+              null,
+              newOrder1);
+          extension.RelationChanging (
+              ClientTransactionMock,
+              newOrder1,
+              newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
+              null,
+              newOrderTicket1);
+
+          newOrderTicket1EventReceiver.RelationChanging (
+              newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
+          newOrder1EventReceiver.RelationChanging (
+              newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
+
+          newOrder1EventReceiver.RelationChanged (
+              newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+
+          newOrderTicket1EventReceiver.RelationChanged (
+              newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+
+          extension.RelationChanged (
+              ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+          extension.RelationChanged (
+              ClientTransactionMock,
+              newOrderTicket1,
+              newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+
+
+          //cleanup for commit
+          //18
+          //newCustomer2.Delete ();
+          extension.ObjectDeleting (ClientTransactionMock, newCustomer2);
+
+          newCustomer2EventReceiver.Deleting (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newCustomer2), Mocks_Is.NotNull ());
+
+          newCustomer2EventReceiver.Deleted (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newCustomer2), Mocks_Is.NotNull ());
+
+          extension.ObjectDeleted (ClientTransactionMock, newCustomer2);
+
+
+          //19
+          //newCeo1.Delete ();
+          extension.ObjectDeleting (ClientTransactionMock, newCeo1);
+
+          newCeo1EventReceiver.Deleting (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newCeo1), Mocks_Is.NotNull ());
+
+          newCeo1EventReceiver.Deleted (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newCeo1), Mocks_Is.NotNull ());
+
+          extension.ObjectDeleted (ClientTransactionMock, newCeo1);
+
+
+          //20
+          //newOrderItem1.Delete ();
+          extension.ObjectDeleting (ClientTransactionMock, newOrderItem1);
+
+          newOrderItem1EventReceiver.Deleting (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newOrderItem1), Mocks_Is.NotNull ());
+
+          newOrderItem1EventReceiver.Deleted (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newOrderItem1), Mocks_Is.NotNull ());
+
+          extension.ObjectDeleted (ClientTransactionMock, newOrderItem1);
+
+
+          //21
+          //ClientTransactionScope.CurrentTransaction.Commit ();
+          using (mockRepository.Unordered ())
+          {
+            newCustomer1EventReceiver.Committing (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newCustomer1), Mocks_Is.NotNull ());
+
+            official2EventReceiver.Committing (null, null);
+            LastCall.Constraints (Mocks_Is.Same (official2), Mocks_Is.NotNull ());
+
+            newCeo2EventReceiver.Committing (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newCeo2), Mocks_Is.NotNull ());
+
+            newOrder1EventReceiver.Committing (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newOrder1), Mocks_Is.NotNull ());
+
+            newOrderItem2EventReceiver.Committing (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newOrderItem2), Mocks_Is.NotNull ());
+
+            newOrderTicket1EventReceiver.Committing (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newOrderTicket1), Mocks_Is.NotNull ());
+          }
+          extension.Committing (null, null);
+          LastCall.Constraints (
+              Mocks_Is.Same (ClientTransactionScope.CurrentTransaction),
+              new ContainsConstraint (newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1));
+
+          using (mockRepository.Unordered ())
+          {
+            newCustomer1EventReceiver.Committed (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newCustomer1), Mocks_Is.Anything ());
+
+            official2EventReceiver.Committed (null, null);
+            LastCall.Constraints (Mocks_Is.Same (official2), Mocks_Is.NotNull ());
+
+            newCeo2EventReceiver.Committed (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newCeo2), Mocks_Is.NotNull ());
+
+            newOrder1EventReceiver.Committed (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newOrder1), Mocks_Is.NotNull ());
+
+            newOrderItem2EventReceiver.Committed (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newOrderItem2), Mocks_Is.NotNull ());
+
+            newOrderTicket1EventReceiver.Committed (null, null);
+            LastCall.Constraints (Mocks_Is.Same (newOrderTicket1), Mocks_Is.NotNull ());
+          }
+          extension.Committed (null, null);
+          LastCall.Constraints (
+              Mocks_Is.Same (ClientTransactionScope.CurrentTransaction),
+              Mocks_Property.Value ("Count", 6) & new ContainsConstraint (newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1));
         }
 
-        extension.ObjectDeleted (ClientTransactionMock, newOrder2);
+        mockRepository.ReplayAll ();
 
-
+        //14
+        newOrderTicket1.Order = newOrder2;
+        //15a
+        newOrder2.Customer = newCustomer1;
+        //15b
+        newOrder2.Customer = newCustomer2;
+        //16
+        newOrder2.Delete ();
         //17
-        //newOrderTicket1.Order = newOrder1;
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newOrderTicket1,
-            newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition,
-            null,
-            newOrder1);
-        extension.RelationChanging (
-            ClientTransactionMock,
-            newOrder1,
-            newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
-            null,
-            newOrderTicket1);
-
-        newOrderTicket1EventReceiver.RelationChanging (
-            newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
-        newOrder1EventReceiver.RelationChanging (
-            newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
-
-        newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
-
-        newOrderTicket1EventReceiver.RelationChanged (newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
-
-        extension.RelationChanged (
-            ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (
-            ClientTransactionMock, newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
-
-
+        newOrderTicket1.Order = newOrder1;
         //cleanup for commit
         //18
-        //newCustomer2.Delete ();
-        extension.ObjectDeleting (ClientTransactionMock, newCustomer2);
-
-        newCustomer2EventReceiver.Deleting (null, null);
-        LastCall.Constraints (Mocks_Is.Same (newCustomer2), Mocks_Is.NotNull());
-
-        newCustomer2EventReceiver.Deleted (null, null);
-        LastCall.Constraints (Mocks_Is.Same (newCustomer2), Mocks_Is.NotNull());
-
-        extension.ObjectDeleted (ClientTransactionMock, newCustomer2);
-
-
+        newCustomer2.Delete ();
         //19
-        //newCeo1.Delete ();
-        extension.ObjectDeleting (ClientTransactionMock, newCeo1);
-
-        newCeo1EventReceiver.Deleting (null, null);
-        LastCall.Constraints (Mocks_Is.Same (newCeo1), Mocks_Is.NotNull());
-
-        newCeo1EventReceiver.Deleted (null, null);
-        LastCall.Constraints (Mocks_Is.Same (newCeo1), Mocks_Is.NotNull());
-
-        extension.ObjectDeleted (ClientTransactionMock, newCeo1);
-
-
+        newCeo1.Delete ();
         //20
-        //newOrderItem1.Delete ();
-        extension.ObjectDeleting (ClientTransactionMock, newOrderItem1);
-
-        newOrderItem1EventReceiver.Deleting (null, null);
-        LastCall.Constraints (Mocks_Is.Same (newOrderItem1), Mocks_Is.NotNull());
-
-        newOrderItem1EventReceiver.Deleted (null, null);
-        LastCall.Constraints (Mocks_Is.Same (newOrderItem1), Mocks_Is.NotNull());
-
-        extension.ObjectDeleted (ClientTransactionMock, newOrderItem1);
-
+        newOrderItem1.Delete ();
 
         //21
-        //ClientTransactionScope.CurrentTransaction.Commit ();
-        using (mockRepository.Unordered())
-        {
-          newCustomer1EventReceiver.Committing (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newCustomer1), Mocks_Is.NotNull());
+        ClientTransactionScope.CurrentTransaction.Commit ();
 
-          official2EventReceiver.Committing (null, null);
-          LastCall.Constraints (Mocks_Is.Same (official2), Mocks_Is.NotNull());
-
-          newCeo2EventReceiver.Committing (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newCeo2), Mocks_Is.NotNull());
-
-          newOrder1EventReceiver.Committing (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newOrder1), Mocks_Is.NotNull());
-
-          newOrderItem2EventReceiver.Committing (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newOrderItem2), Mocks_Is.NotNull());
-
-          newOrderTicket1EventReceiver.Committing (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newOrderTicket1), Mocks_Is.NotNull());
-        }
-        extension.Committing (null, null);
-        LastCall.Constraints (
-            Mocks_Is.Same (ClientTransactionScope.CurrentTransaction),
-            new ContainsConstraint (newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1));
-
-        using (mockRepository.Unordered())
-        {
-          newCustomer1EventReceiver.Committed (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newCustomer1), Mocks_Is.Anything());
-
-          official2EventReceiver.Committed (null, null);
-          LastCall.Constraints (Mocks_Is.Same (official2), Mocks_Is.NotNull());
-
-          newCeo2EventReceiver.Committed (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newCeo2), Mocks_Is.NotNull());
-
-          newOrder1EventReceiver.Committed (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newOrder1), Mocks_Is.NotNull());
-
-          newOrderItem2EventReceiver.Committed (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newOrderItem2), Mocks_Is.NotNull());
-
-          newOrderTicket1EventReceiver.Committed (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newOrderTicket1), Mocks_Is.NotNull());
-        }
-        extension.Committed (null, null);
-        LastCall.Constraints (
-            Mocks_Is.Same (ClientTransactionScope.CurrentTransaction),
-            Mocks_Property.Value ("Count", 6) & new ContainsConstraint (newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1));
+        mockRepository.VerifyAll ();
       }
-
-      mockRepository.ReplayAll();
-
-      //14
-      newOrderTicket1.Order = newOrder2;
-      //15a
-      newOrder2.Customer = newCustomer1;
-      //15b
-      newOrder2.Customer = newCustomer2;
-      //16
-      newOrder2.Delete();
-      //17
-      newOrderTicket1.Order = newOrder1;
-      //cleanup for commit
-      //18
-      newCustomer2.Delete();
-      //19
-      newCeo1.Delete();
-      //20
-      newOrderItem1.Delete();
-
-      //21
-      ClientTransactionScope.CurrentTransaction.Commit();
-
-      mockRepository.VerifyAll();
+      finally
+      {
+        ClientTransactionScope.CurrentTransaction.Extensions.Remove ("Extension");
+      }
     }
 
     [Test]

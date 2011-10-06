@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -86,21 +87,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
           DomainObjectIDs.ClassWithAllDataTypes1,
           DomainObjectIDs.ClassWithAllDataTypes2);
       var mockRepository = new MockRepository();
-      var mock = mockRepository.StrictMock<IClientTransactionExtension>();
+      var extensionMock = mockRepository.StrictMock<IClientTransactionExtension>();
 
-      mock.Committing (null, null);
-      LastCall.Constraints (Mocks_Is.Same (transportedObjects.DataTransaction), Mocks_List.Equal (GetTransportedObjects (transportedObjects)));
-      mock.Committed (null, null);
-      LastCall.Constraints (Mocks_Is.Same (transportedObjects.DataTransaction), Mocks_List.Equal (GetTransportedObjects (transportedObjects)));
+      extensionMock.Expect (mock => mock.Committing (
+          Arg.Is (transportedObjects.DataTransaction), 
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equal (GetTransportedObjects (transportedObjects))));
+      extensionMock.Expect (mock => mock.Committed (
+          Arg.Is (transportedObjects.DataTransaction),
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equal (GetTransportedObjects (transportedObjects))));
+      extensionMock.Expect (mock => mock.TransactionDiscard (transportedObjects.DataTransaction));
 
-      mock.Stub (stub => stub.Key).Return ("mock");
+      extensionMock.Stub (stub => stub.Key).Return ("mock");
 
       mockRepository.ReplayAll();
 
-      transportedObjects.DataTransaction.Extensions.Add (mock);
-      transportedObjects.FinishTransport();
+      transportedObjects.DataTransaction.Extensions.Add (extensionMock);
+      transportedObjects.FinishTransport ();
 
-      mockRepository.VerifyAll();
+      mockRepository.VerifyAll ();
     }
 
     [Test]

@@ -166,21 +166,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         extensionMock.Stub (stub => stub.Key).Return ("stub");
         extensionMock.Replay();
         ClientTransactionMock.Extensions.Add (extensionMock);
-        extensionMock.BackToRecord();
+        try
+        {
+          extensionMock.BackToRecord ();
 
-        var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
-        query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
+          var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+          query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
 
-        var newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
+          var newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
 
-        extensionMock
-            .Expect (mock => mock.FilterQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<QueryResult<DomainObject>>.Is.Anything))
-            .WhenCalled (mi => Order.GetObject (DomainObjectIDs.Order1))
-            .Return (newQueryResult);
+          extensionMock
+              .Expect (mock => mock.FilterQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<QueryResult<DomainObject>>.Is.Anything))
+              .WhenCalled (mi => Order.GetObject (DomainObjectIDs.Order1))
+              .Return (newQueryResult);
 
-        extensionMock.Replay ();
-        ClientTransaction.Current.QueryManager.GetCollection (query);
-        extensionMock.VerifyAllExpectations ();
+          extensionMock.Replay ();
+          ClientTransaction.Current.QueryManager.GetCollection (query);
+          extensionMock.VerifyAllExpectations ();
+        }
+        finally
+        {
+          ClientTransactionMock.Extensions.Remove ("stub");
+        }
       }
     }
 

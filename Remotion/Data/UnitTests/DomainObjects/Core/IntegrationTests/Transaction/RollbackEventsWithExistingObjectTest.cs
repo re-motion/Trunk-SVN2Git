@@ -63,6 +63,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _customer1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_customer1);
     }
 
+    public override void TearDown ()
+    {
+      ClientTransactionMock.Extensions.Remove ("MockExtension");
+      base.TearDown ();
+    }
+
     [Test]
     public void RollbackWithoutChanges ()
     {

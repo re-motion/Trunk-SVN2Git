@@ -187,6 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             });
 
         listenerMock.Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
+        extensionMock.Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
       }
 
       _mockRepository.ReplayAll();

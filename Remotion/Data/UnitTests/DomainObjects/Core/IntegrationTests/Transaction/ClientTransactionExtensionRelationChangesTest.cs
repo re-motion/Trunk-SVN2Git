@@ -64,6 +64,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _extension.BackToRecord();
     }
 
+    public override void TearDown ()
+    {
+      ClientTransactionScope.CurrentTransaction.Extensions.Remove ("Name");
+
+      base.TearDown ();
+    }
+
     [Test]
     public void OneToOneRelationFromVirtualEndPointWithSameObject ()
     {

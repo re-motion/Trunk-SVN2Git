@@ -83,7 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     public override void TearDown ()
     {
-      _subTransactionScope.Leave();
+      ClientTransactionMock.Extensions.Remove ("TestExtension");
+      _subTransaction.Extensions.Remove ("TestExtension");
+      _subTransactionScope.Leave ();
 
       base.TearDown();
     }
@@ -795,13 +797,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
 
       _mockRepository.ReplayAll();
-      using (_subTransaction.EnterDiscardingScope())
-      {
-        _order1.OrderNumber = newOrderNumber;
-        Dev.Null = _order1.OrderNumber;
-        Dev.Null =
-            (int) _order1.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue;
-      }
+
+      _order1.OrderNumber = newOrderNumber;
+      Dev.Null = _order1.OrderNumber;
+      Dev.Null =
+          (int) _order1.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue;
 
       _mockRepository.VerifyAll();
     }
