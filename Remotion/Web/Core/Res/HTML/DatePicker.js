@@ -82,13 +82,9 @@ function DatePicker_CloseDatePicker(setFocusOnTarget)
     current.Target.focus();
   }
 
-  if (window.console)
-    console.log(new Date() + ": removed");
   current.DatePicker.remove();
   if (current.TargetDocument != null)
   {
-    if (window.console)
-      console.log(new Date() + ": unbound");
     $(current.TargetDocument).unbind('click', current.ClickHandler);
   }
 }
@@ -136,7 +132,8 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
   var datePickerTop;
   var datePickerWidth;
   var datePickerHeight;
-  $(window.document.body.children[0]).prepend(datePicker);
+  var body = $('body');
+  body.append(datePicker);
 
   //  Adjust position so the date picker is shown below 
   //  and aligned with the right border of the button.
@@ -148,8 +145,8 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
   datePickerHeight = datePicker.height();
 
   //  Re-adjust the button, in case available screen space is insufficient
-  var totalBodyHeight = $('body').height();
-  var visibleBodyTop = $('body').scrollTop();
+  var totalBodyHeight = body.height();
+  var visibleBodyTop = body.scrollTop();
   var visibleBodyHeight = $(window).height();
 
   var datePickerTopAdjusted = datePickerTop;
@@ -160,8 +157,8 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
       datePickerTopAdjusted = newTop;
   }
 
-  var totalBodyWidth = $('body').width();
-  var visibleBodyLeft = $('body').scrollLeft();
+  var totalBodyWidth = body.width();
+  var visibleBodyLeft = body.scrollLeft();
   var visibleBodyWidth = $(window).width();
 
   var datePickerLeftAdjusted = datePickerLeft;
@@ -174,7 +171,7 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
   if (visibleBodyTop > 0
       && datePickerTopAdjusted < visibleBodyTop)
   {
-    $('body').scrollTop(datePickerTopAdjusted);
+    body.scrollTop(datePickerTopAdjusted);
   }
 
   return datePicker;
@@ -182,5 +179,5 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
 
 function DatePickerFrame_Calendar_SelectionChanged(value)
 {
-  var parentWindow = window.parent.DatePicker_UpdateValue(value);
+  window.parent.DatePicker_UpdateValue(value);
 }
