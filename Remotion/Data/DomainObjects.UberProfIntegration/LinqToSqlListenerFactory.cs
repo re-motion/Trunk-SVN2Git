@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
@@ -25,21 +25,19 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// Implements <see cref="IPersistenceListenerFactory"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
   /// <seealso cref="LinqToSqlAppenderProxy"/>
   /// </summary>
-  public class LinqToSqlListenerFactory : IPersistenceListenerFactory, IClientTransactionListenerFactory
+  public class LinqToSqlListenerFactory : IPersistenceListenerFactory, IClientTransactionExtensionFactory
   {
     public IPersistenceListener CreatePersistenceListener (Guid clientTransactionID)
     {
       return new LinqToSqlListener (clientTransactionID, LinqToSqlAppenderProxy.Instance);
     }
 
-    public IClientTransactionListener CreateClientTransactionListener (ClientTransaction clientTransaction)
+    public IEnumerable<IClientTransactionExtension> CreateClientTransactionExtensions (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      if (clientTransaction.ParentTransaction != null) // parent transaction will listen
-        return NullClientTransactionListener.Instance;
-      else
-        return new LinqToSqlListener (clientTransaction.ID, LinqToSqlAppenderProxy.Instance);
+      if (clientTransaction.ParentTransaction == null)
+        yield return new LinqToSqlListener (clientTransaction.ID, LinqToSqlAppenderProxy.Instance);
     }
   }
 }

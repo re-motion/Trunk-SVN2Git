@@ -20,8 +20,6 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
@@ -35,9 +33,9 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// </summary>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
-  public class LinqToSqlListener : IPersistenceListener, IClientTransactionListener
+  public class LinqToSqlListener : IPersistenceListener, IClientTransactionExtension
   {
-    #region Implementation of IClientTransactionListener
+    #region Implementation of IClientTransactionExtension
 
     public void SubTransactionCreating (ClientTransaction clientTransaction)
     {
@@ -47,7 +45,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
     }
 
@@ -116,51 +114,19 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       return queryResult;
     }
 
-    public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 
-    public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 
-    public void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void RollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 
-    public void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
-    {
-    }
-
-    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
-    {
-    }
-
-    public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
-    {
-    }
-
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
-    {
-    }
-
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
-    {
-    }
-
-    public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
-    {
-    }
-
-    public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
-    {
-    }
-
-    void IClientTransactionListener.DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
-    {
-    }
-
-    void IClientTransactionListener.VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
+    public void RolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 
@@ -198,6 +164,11 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     public Guid ClientTransactionID
     {
       get { return _clientTransactionID; }
+    }
+
+    public string Key
+    {
+      get { return typeof (LinqToSqlListener).FullName; }
     }
 
     public void TransactionInitialize (ClientTransaction clientTransaction)

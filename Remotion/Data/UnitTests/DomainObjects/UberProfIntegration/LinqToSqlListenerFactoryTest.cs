@@ -17,8 +17,8 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.UberProfIntegration;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
 {
@@ -39,11 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction();
 
-      var result = _factory.CreateClientTransactionListener (clientTransaction);
+      var result = _factory.CreateClientTransactionExtensions (clientTransaction).ToArray();
 
-      Assert.That (result, Is.TypeOf<LinqToSqlListener> ());
-      Assert.That (((LinqToSqlListener) result).ClientTransactionID, Is.EqualTo (clientTransaction.ID));
-      Assert.That (((LinqToSqlListener) result).AppenderProxy, Is.SameAs (AppenderProxy));
+      Assert.That (result, Has.Length.EqualTo (1));
+      var clientTransactionExtension = result.Single();
+      Assert.That (clientTransactionExtension, Is.TypeOf<LinqToSqlListener> ());
+      Assert.That (((LinqToSqlListener) clientTransactionExtension).ClientTransactionID, Is.EqualTo (clientTransaction.ID));
+      Assert.That (((LinqToSqlListener) clientTransactionExtension).AppenderProxy, Is.SameAs (AppenderProxy));
     }
 
     [Test]
@@ -51,9 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction ().CreateSubTransaction();
 
-      var result = _factory.CreateClientTransactionListener (clientTransaction);
+      var result = _factory.CreateClientTransactionExtensions (clientTransaction);
 
-      Assert.That (result, Is.TypeOf<NullClientTransactionListener> ());
+      Assert.That (result, Is.Empty);
     }
   }
 }
