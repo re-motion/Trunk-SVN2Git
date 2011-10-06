@@ -134,25 +134,31 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
     {
       return templateTransaction => (ClientTransaction) TypesafeActivator
-        .CreateInstance (templateTransaction.GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-        .With (this);
+          .CreateInstance (templateTransaction.GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+          .With (this);
     }
 
     protected virtual ILazyLoader GetLazyLoader (DataManager dataManager)
     {
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       return dataManager;
     }
 
     protected virtual IRelationEndPointProvider GetEndPointProvider (DataManager dataManager)
     {
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       return dataManager;
     }
 
     protected virtual IRelationEndPointManager CreateRelationEndPointManager (
         ClientTransaction constructedTransaction,
-        IRelationEndPointProvider endPointProvider, 
+        IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader)
     {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+
       var endPointChangeDetectionStrategy = new RootCollectionEndPointChangeDetectionStrategy();
       var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (constructedTransaction, endPointChangeDetectionStrategy);
       var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (constructedTransaction);

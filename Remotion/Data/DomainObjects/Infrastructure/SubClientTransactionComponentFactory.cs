@@ -159,11 +159,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected virtual ILazyLoader GetLazyLoader (DataManager dataManager)
     {
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       return dataManager;
     }
 
     protected virtual IRelationEndPointProvider GetEndPointProvider (DataManager dataManager)
     {
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       return dataManager;
     }
 
@@ -172,6 +174,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+
       var endPointChangeDetectionStrategy = new SubCollectionEndPointChangeDetectionStrategy ();
       var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, endPointChangeDetectionStrategy);
       var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
