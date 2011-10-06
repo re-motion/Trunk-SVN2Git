@@ -68,8 +68,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new[] { new SubClientTransactionListener (_parentInvalidDomainObjectManager) }
-          .Concat (ClientTransactionComponentFactoryUtility.GetListenersFromServiceLocator (constructedTransaction));
+      yield return new LoggingClientTransactionListener();
+      yield return new SubClientTransactionListener (_parentInvalidDomainObjectManager);
     }
 
     public virtual IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)

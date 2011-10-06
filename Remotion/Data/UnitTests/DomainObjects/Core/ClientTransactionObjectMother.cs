@@ -142,5 +142,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Return (queryManager);
       return componentFactoryStub;
     }
+
+    public static ClientTransaction CreateWithCustomListeners (params IClientTransactionListener[] listeners)
+    {
+      var componentFactoryPartialMock = MockRepository.GeneratePartialMock<RootClientTransactionComponentFactory>();
+      componentFactoryPartialMock.Stub (stub => stub.CreateListeners (Arg<ClientTransaction>.Is.Anything)).Return (listeners);
+      componentFactoryPartialMock.Replay ();
+
+      return Create<ClientTransaction> (componentFactoryPartialMock);
+    }
   }
 }

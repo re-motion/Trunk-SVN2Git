@@ -100,7 +100,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       factoryStub.Stub (stub => stub.CreateClientTransactionExtensions (Arg<ClientTransaction>.Is.Anything)).Return (new[] { _extensionMock });
       var locatorStub = MockRepository.GenerateStub<IServiceLocator>();
       locatorStub.Stub (stub => stub.GetAllInstances<IClientTransactionExtensionFactory> ()).Return (new[] { factoryStub });
-      locatorStub.Stub (stub => stub.GetAllInstances<IClientTransactionListenerFactory> ()).Return (new IClientTransactionListenerFactory[0]);
 
       using (new ServiceLocatorScope (locatorStub))
       {

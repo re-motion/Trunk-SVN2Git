@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
@@ -28,6 +29,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoint
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -58,27 +60,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void TransactionInitialize ()
     {
-      var factoryStub = MockRepository.GenerateStub<IClientTransactionListenerFactory> ();
-      factoryStub.Stub (stub => stub.CreateClientTransactionListener (Arg<ClientTransaction>.Is.Anything)).Return (_strictListenerMock);
-      var locatorStub = MockRepository.GenerateStub<IServiceLocator> ();
-      locatorStub.Stub (stub => stub.GetAllInstances<IClientTransactionListenerFactory> ()).Return (new[] { factoryStub });
-      locatorStub.Stub (stub => stub.GetAllInstances<IClientTransactionExtensionFactory> ()).Return (new IClientTransactionExtensionFactory[0]);
+      ClientTransaction inititalizedTransaction = null;
 
-      using (new ServiceLocatorScope (locatorStub))
-      {
-        ClientTransaction inititalizedTransaction = null;
+      _strictListenerMock
+          .Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Is.Anything))
+          .WhenCalled (mi => inititalizedTransaction = (ClientTransaction) mi.Arguments[0]);
+      _strictListenerMock.Replay ();
 
-        _strictListenerMock
-            .Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Is.Anything))
-            .WhenCalled (mi => inititalizedTransaction = (ClientTransaction) mi.Arguments[0]);
-        _strictListenerMock.Replay ();
+      var result = ClientTransactionObjectMother.CreateWithCustomListeners (_strictListenerMock);
 
-        var result = ClientTransaction.CreateRootTransaction ();
+      _strictListenerMock.VerifyAllExpectations ();
 
-        _strictListenerMock.VerifyAllExpectations ();
-
-        Assert.That (result, Is.SameAs (inititalizedTransaction));
-      }
+      Assert.That (result, Is.SameAs (inititalizedTransaction));
     }
 
     [Test]

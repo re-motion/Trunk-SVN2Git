@@ -168,8 +168,6 @@ public class ClientTransaction
     _applicationData = componentFactory.CreateApplicationData (this);
    
     _eventSink = new CompoundClientTransactionListener ();
-
-    _eventSink.AddListener (new LoggingClientTransactionListener ());
     _eventSink.AddListener (new ReadOnlyClientTransactionListener ());
 
     foreach (var listener in componentFactory.CreateListeners (this))

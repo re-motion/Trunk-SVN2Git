@@ -63,31 +63,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (applicationData.Count, Is.EqualTo (0));
     }
 
-   [Test]
+    [Test]
     public void CreateListeners ()
     {
-      var listenerFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
-      var listenerStub = MockRepository.GenerateStub<IClientTransactionListener>();
-
-      listenerFactoryMock.Expect (mock => mock.CreateClientTransactionListener (_fakeConstructedTransaction)).Return (listenerStub);
-      listenerFactoryMock.Replay();
-
-      var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator>();
-      serviceLocatorMock
-          .Expect (mock => mock.GetAllInstances<IClientTransactionListenerFactory>())
-          .Return (new[] { listenerFactoryMock });
-      serviceLocatorMock.Replay();
-      
-      IEnumerable<IClientTransactionListener> listeners;
-      using (new ServiceLocatorScope (serviceLocatorMock))
-      {
-        listeners = _factory.CreateListeners (_fakeConstructedTransaction).ToArray();
-      }
-
-      serviceLocatorMock.VerifyAllExpectations();
-      listenerFactoryMock.VerifyAllExpectations();
-
-     Assert.That (listeners, Is.EquivalentTo (new[] { listenerStub }));
+     IEnumerable<IClientTransactionListener> listeners = _factory.CreateListeners (_fakeConstructedTransaction).ToArray();
+     Assert.That (listeners, Has.Length.EqualTo (1).And.Some.TypeOf<LoggingClientTransactionListener>());
     }
     
     [Test]

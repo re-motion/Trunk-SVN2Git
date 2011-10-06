@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return ClientTransactionComponentFactoryUtility.GetListenersFromServiceLocator (constructedTransaction);
+      yield return new LoggingClientTransactionListener();
     }
 
     public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)

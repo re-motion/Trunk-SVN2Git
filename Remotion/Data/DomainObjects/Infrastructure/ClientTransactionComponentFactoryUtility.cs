@@ -49,14 +49,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return extensionCollection;
     }
 
-    public static IEnumerable<IClientTransactionListener> GetListenersFromServiceLocator (ClientTransaction clientTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-      var factories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory> ();
-      return factories.Select (factory => factory.CreateClientTransactionListener (clientTransaction));
-    }
-
     public static IObjectLoader CreateObjectLoader (
         ClientTransaction clientTransaction, 
         IPersistenceStrategy persistenceStrategy, 

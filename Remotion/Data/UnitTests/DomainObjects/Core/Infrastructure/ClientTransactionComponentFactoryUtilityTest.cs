@@ -45,41 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (applicationData.Count, Is.EqualTo (0));
     }
 
-   [Test]
-    public void GetListenersFromServiceLocator ()
-    {
-      var clientTransaction = new ClientTransactionMock ();
-
-      var listenerFactoryMock1 = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
-      var listenerFactoryMock2 = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
-      var listenerStub1 = MockRepository.GenerateStub<IClientTransactionListener>();
-      var listenerStub2 = MockRepository.GenerateStub<IClientTransactionListener>();
-
-      listenerFactoryMock1.Expect (mock => mock.CreateClientTransactionListener (clientTransaction)).Return (listenerStub1);
-      listenerFactoryMock1.Replay();
-
-      listenerFactoryMock2.Expect (mock => mock.CreateClientTransactionListener (clientTransaction)).Return (listenerStub2);
-      listenerFactoryMock2.Replay();
-
-      var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator>();
-      serviceLocatorMock
-          .Expect (mock => mock.GetAllInstances<IClientTransactionListenerFactory>())
-          .Return (new[] { listenerFactoryMock1, listenerFactoryMock2 });
-      serviceLocatorMock.Replay();
-      
-      IEnumerable<IClientTransactionListener> listeners;
-      using (new ServiceLocatorScope (serviceLocatorMock))
-      {
-        listeners = ClientTransactionComponentFactoryUtility.GetListenersFromServiceLocator (clientTransaction).ToArray();
-      }
-
-      serviceLocatorMock.VerifyAllExpectations();
-      listenerFactoryMock1.VerifyAllExpectations();
-      listenerFactoryMock2.VerifyAllExpectations();
-
-     Assert.That (listeners, Is.EquivalentTo (new[] { listenerStub1, listenerStub2 }));
-    }
-
     [Test]
     public void CreateExtensionCollectionFromServiceLocator ()
     {

@@ -70,31 +70,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateListeners ()
     {
-      var listenerFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionListenerFactory>();
-      var listenerStub = MockRepository.GenerateStub<IClientTransactionListener>();
+      IEnumerable<IClientTransactionListener> listeners = _factory.CreateListeners (_fakeConstructedTransaction).ToArray();
+      Assert.That (
+          listeners,
+          Has
+              .Length.EqualTo (2)
+              .And.Some.TypeOf<LoggingClientTransactionListener>()
+              .And.Some.TypeOf<SubClientTransactionListener>());
 
-      listenerFactoryMock.Expect (mock => mock.CreateClientTransactionListener (_fakeConstructedTransaction)).Return (listenerStub);
-      listenerFactoryMock.Replay();
-
-      var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator>();
-      serviceLocatorMock
-          .Expect (mock => mock.GetAllInstances<IClientTransactionListenerFactory>())
-          .Return (new[] { listenerFactoryMock });
-      serviceLocatorMock.Replay();
-      
-      IEnumerable<IClientTransactionListener> listeners;
-      using (new ServiceLocatorScope (serviceLocatorMock))
-      {
-        listeners = _factory.CreateListeners (_fakeConstructedTransaction).ToArray();
-      }
-
-      serviceLocatorMock.VerifyAllExpectations();
-      listenerFactoryMock.VerifyAllExpectations();
-
-      Assert.That (listeners, Has.Member (listenerStub));
-
-      var listener = listeners.OfType<SubClientTransactionListener> ().SingleOrDefault ();
-      Assert.That (listener, Is.Not.Null);
+      var listener = listeners.OfType<SubClientTransactionListener>().Single();
       Assert.That (listener.ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
     }
 

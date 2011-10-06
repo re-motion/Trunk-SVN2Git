@@ -127,9 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 {
                   Assert.That (constructedTransaction.ApplicationData, Is.SameAs (_fakeApplicationData));
                   transactionEventSink = ClientTransactionTestHelper.GetTransactionEventSink (constructedTransaction);
-                  Assert.That (
-                      transactionEventSink.Listeners,
-                      Has.Some.TypeOf<LoggingClientTransactionListener>().And.Some.TypeOf<ReadOnlyClientTransactionListener>());
+                  Assert.That (transactionEventSink.Listeners, Has.Some.TypeOf<ReadOnlyClientTransactionListener>());
                 });
         componentFactoryMock
             .Expect (mock => mock.CreateEnlistedObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))

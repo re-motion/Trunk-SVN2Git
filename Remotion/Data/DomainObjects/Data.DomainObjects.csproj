@@ -445,7 +445,6 @@
     <Compile Include="Infrastructure\ClientTransactionListenerBase.cs" />
     <Compile Include="Infrastructure\IClientTransactionComponentFactory.cs" />
     <Compile Include="Infrastructure\InitializedEventDomainObjectTransactionContextDecorator.cs" />
-    <Compile Include="Infrastructure\IClientTransactionListenerFactory.cs" />
     <Compile Include="Infrastructure\IPersistenceStrategy.cs" />
     <Compile Include="Infrastructure\IObjectLoader.cs" />
     <Compile Include="Infrastructure\NullClientTransactionListener.cs" />
