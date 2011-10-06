@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
@@ -62,36 +63,71 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table);
-      WebMenuItem[] groupedListMenuItems = renderingContext.Control.MenuItems.GroupMenuItems (false).Where (mi=>mi.EvaluateVisible()).ToArray();
-      bool isFirstItem = true;
-      for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
+
+      var groupedMenuItems = GetVisibleMenuItemsInGroups (renderingContext);
+      foreach (var menuItemsInGroup in groupedMenuItems)
       {
-        WebMenuItem currentItem = groupedListMenuItems[idxItems];
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuRow");
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
-        bool isLastItem = (idxItems == (groupedListMenuItems.Length - 1));
-        bool isFirstCategoryItem = (isFirstItem || (groupedListMenuItems[idxItems - 1].Category != currentItem.Category));
-        bool isLastCategoryItem = (isLastItem || (groupedListMenuItems[idxItems + 1].Category != currentItem.Category));
-        bool hasAlwaysLineBreaks = (renderingContext.Control.LineBreaks == ListMenuLineBreaks.All);
-        bool hasCategoryLineBreaks = (renderingContext.Control.LineBreaks == ListMenuLineBreaks.BetweenGroups);
+        foreach (var menuItem in menuItemsInGroup)
+          RenderListMenuItem (renderingContext, menuItem, renderingContext.Control.MenuItems.IndexOf (menuItem));
 
-        if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isFirstCategoryItem) || isFirstItem)
-        {
-          renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuRow");
-          renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        }
-        RenderListMenuItem (renderingContext, currentItem, renderingContext.Control.MenuItems.IndexOf (currentItem));
-        if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isLastCategoryItem) || isLastItem)
-        {
-          renderingContext.Writer.RenderEndTag ();
-          renderingContext.Writer.RenderEndTag ();
-        }
-
-        if (isFirstItem)
-          isFirstItem = false;
+        renderingContext.Writer.RenderEndTag();
+        renderingContext.Writer.RenderEndTag();
       }
+      //WebMenuItem[] groupedListMenuItems = renderingContext.Control.MenuItems.GroupMenuItems (false).Where (mi=>mi.EvaluateVisible()).ToArray();
+      //bool isFirstItem = true;
+      //for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
+      //{
+      //  WebMenuItem currentItem = groupedListMenuItems[idxItems];
+
+      //  bool isLastItem = (idxItems == (groupedListMenuItems.Length - 1));
+      //  bool isFirstCategoryItem = (isFirstItem || (groupedListMenuItems[idxItems - 1].Category != currentItem.Category));
+      //  bool isLastCategoryItem = (isLastItem || (groupedListMenuItems[idxItems + 1].Category != currentItem.Category));
+      //  bool hasAlwaysLineBreaks = (renderingContext.Control.LineBreaks == ListMenuLineBreaks.All);
+      //  bool hasCategoryLineBreaks = (renderingContext.Control.LineBreaks == ListMenuLineBreaks.BetweenGroups);
+
+      //  if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isFirstCategoryItem) || isFirstItem)
+      //  {
+      //    renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      //    renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      //    renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuRow");
+      //    renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      //  }
+      //  RenderListMenuItem (renderingContext, currentItem, renderingContext.Control.MenuItems.IndexOf (currentItem));
+      //  if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isLastCategoryItem) || isLastItem)
+      //  {
+      //    renderingContext.Writer.RenderEndTag ();
+      //    renderingContext.Writer.RenderEndTag ();
+      //  }
+
+      //  if (isFirstItem)
+      //    isFirstItem = false;
+      //}
       renderingContext.Writer.RenderEndTag ();
+    }
+
+    private IEnumerable<IEnumerable<WebMenuItem>> GetVisibleMenuItemsInGroups (ListMenuRenderingContext renderingContext)
+    {
+      var menuItems = renderingContext.Control.MenuItems.GroupMenuItems (false).Where (mi => mi.EvaluateVisible());
+      var lineBreaks = renderingContext.Control.LineBreaks;
+      switch (lineBreaks)
+      {
+        case ListMenuLineBreaks.All:
+          return menuItems.Select (mi => new[] { mi }.AsEnumerable());
+
+        case ListMenuLineBreaks.BetweenGroups:
+          return menuItems.GroupBy (mi => mi.Category).Select (g => g.AsEnumerable());
+
+        case ListMenuLineBreaks.None:
+          return new[] { menuItems };
+
+        default:
+          throw new InvalidOperationException (string.Format ("'{0}' is not a valid option for ListMenuLineBreaks enum.", lineBreaks));
+      }
     }
 
     private void RenderListMenuItem (ListMenuRenderingContext renderingContext, WebMenuItem menuItem, int index)
