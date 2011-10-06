@@ -206,6 +206,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mockRepository.VerifyAll ();
     }
 
+    [Test]
+    public void SubTransactionInitialize ()
+    {
+      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+
+      using (_mockRepository.Ordered ())
+      {
+        _extension1.Expect (mock => mock.SubTransactionInitialize (ClientTransactionMock, subTransaction));
+        _extension2.Expect (mock => mock.SubTransactionInitialize (ClientTransactionMock, subTransaction));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      _collectionWithExtensions.SubTransactionInitialize (ClientTransactionMock, subTransaction);
+
+      _mockRepository.VerifyAll ();
+    }
 
     [Test]
     public void SubTransactionCreated ()
@@ -224,7 +241,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _mockRepository.VerifyAll ();
     }
-
 
     [Test]
     public void PropertyChanging ()

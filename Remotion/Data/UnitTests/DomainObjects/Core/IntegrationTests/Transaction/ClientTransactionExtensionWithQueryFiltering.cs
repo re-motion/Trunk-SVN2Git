@@ -43,6 +43,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
     }
 
+    public void SubTransactionInitialize (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    {
+    }
+
     public void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
     {
     }
@@ -52,10 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     public virtual void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
-    {
-    }
-
-    public virtual void NewObjectCreated (DomainObject newDomainObject)
     {
     }
 

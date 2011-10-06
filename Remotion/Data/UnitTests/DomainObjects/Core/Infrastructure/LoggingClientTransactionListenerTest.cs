@@ -29,7 +29,6 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
@@ -102,6 +101,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var loggingEvents = GetLoggingEvents();
 
       Assert.That (loggingEvents.Last().RenderedMessage, Is.EqualTo (string.Format ("{0} SubTransactionCreating", _clientTransaction.ID)));
+    }
+
+    [Test]
+    public void SubTransactionInitialize ()
+    {
+      _listener.SubTransactionInitialize (_clientTransaction, _clientTransaction);
+      var loggingEvents = GetLoggingEvents ();
+
+      Assert.That (
+          loggingEvents.Last ().RenderedMessage,
+          Is.EqualTo (string.Format ("{0} SubTransactionInitialize: {1}", _clientTransaction.ID, _clientTransaction.ID)));
     }
 
     [Test]

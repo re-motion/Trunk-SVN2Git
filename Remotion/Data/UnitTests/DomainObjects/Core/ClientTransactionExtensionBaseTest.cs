@@ -45,6 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void EventMethods_Empty ()
     {
       CheckNopEvent (e => e.SubTransactionCreating (null));
+      CheckNopEvent (e => e.SubTransactionInitialize (null, null));
       CheckNopEvent (e => e.SubTransactionCreated (null, null));
       CheckNopEvent (e => e.NewObjectCreating (null, null));
       CheckNopEvent (e => e.ObjectsLoading (null, null));

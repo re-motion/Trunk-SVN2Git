@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -77,6 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var order2 = Order.NewObject();
       var domainObjects = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       var relatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection ());
+      var clientTransaction2 = ClientTransaction.CreateRootTransaction();
 
       var realtionEndPointDefinitionMock = MockRepository.GenerateMock<IRelationEndPointDefinition>();
 
@@ -84,7 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckNotification (listener => listener.TransactionDiscard (ClientTransactionMock));
 
       CheckNotification (listener => listener.SubTransactionCreating (ClientTransactionMock));
-      CheckNotification (listener => listener.SubTransactionCreated (ClientTransactionMock, ClientTransactionMock));
+      CheckNotification (listener => listener.SubTransactionInitialize (ClientTransactionMock, clientTransaction2));
+      CheckNotification (listener => listener.SubTransactionCreated (ClientTransactionMock, clientTransaction2));
 
       CheckNotification (listener => listener.NewObjectCreating (ClientTransactionMock, typeof (string), null));
 

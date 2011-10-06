@@ -53,6 +53,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} SubTransactionCreating", clientTransaction.ID);
     }
 
+    public void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.DebugFormat ("{0} SubTransactionInitialize: {1}", clientTransaction.ID, subTransaction.ID);
+    }
+
     public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       if (s_log.IsDebugEnabled)

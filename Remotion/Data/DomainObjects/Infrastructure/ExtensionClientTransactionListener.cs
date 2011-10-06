@@ -60,6 +60,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _extension.SubTransactionCreating (clientTransaction);
     }
 
+    public void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    {
+      _extension.SubTransactionInitialize (clientTransaction, subTransaction);
+    }
+
     public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       _extension.SubTransactionCreated (clientTransaction, subTransaction);

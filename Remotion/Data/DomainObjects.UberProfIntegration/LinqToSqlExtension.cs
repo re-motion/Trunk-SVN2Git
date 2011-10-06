@@ -41,6 +41,10 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
+    public void SubTransactionInitialize (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    {
+    }
+
     public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
     }

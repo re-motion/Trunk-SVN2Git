@@ -70,6 +70,19 @@ namespace Remotion.Data.DomainObjects
     void SubTransactionCreating (ClientTransaction parentClientTransaction);
 
     /// <summary>
+    /// Invoked while a subtransaction of <paramref name="parentClientTransaction"/> is being initialized.
+    /// </summary>
+    /// <param name="parentClientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
+    /// <param name="subTransaction">The subtransaction created by <paramref name="parentClientTransaction"/>.</param>
+    /// <remarks>
+    /// This method is invoked after <see cref="SubTransactionCreating"/> and before <see cref="SubTransactionCreated"/> for the 
+    /// <paramref name="parentClientTransaction"/> creating the subtransaction. It is also raised before <see cref="TransactionInitialize"/> is 
+    /// invoked for the <paramref name="subTransaction"/>. Use this event to install <see cref="IClientTransactionExtension"/> instances for the
+    /// <paramref name="subTransaction"/> if those extensions need to receive the <see cref="TransactionInitialize"/> event.
+    /// </remarks>
+    void SubTransactionInitialize (ClientTransaction parentClientTransaction, ClientTransaction subTransaction);
+
+    /// <summary>
     /// Invoked when a subtransaction of <paramref name="parentClientTransaction"/> has been created.
     /// </summary>
     /// <param name="parentClientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>

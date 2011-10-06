@@ -46,6 +46,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
+    public void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    {
+      throw CreateException ();
+    }
+
     public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       throw CreateException();

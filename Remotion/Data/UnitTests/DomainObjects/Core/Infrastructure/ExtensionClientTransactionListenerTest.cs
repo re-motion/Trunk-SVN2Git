@@ -56,8 +56,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void SubTransactionEvents_Delegated ()
     {
       var tx2 = ClientTransaction.CreateRootTransaction();
-      
+
       ExpectDelegation (l => l.SubTransactionCreating (_clientTransaction), e => e.SubTransactionCreating (_clientTransaction));
+      ExpectDelegation (l => l.SubTransactionInitialize (_clientTransaction, tx2), e => e.SubTransactionInitialize (_clientTransaction, tx2));
       ExpectDelegation (l => l.SubTransactionCreated (_clientTransaction, tx2), e => e.SubTransactionCreated (_clientTransaction, tx2));
     }
 

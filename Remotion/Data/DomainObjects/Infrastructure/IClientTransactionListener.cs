@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -43,9 +44,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void TransactionDiscard (ClientTransaction clientTransaction);
 
     void SubTransactionCreating (ClientTransaction clientTransaction);
+    void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction);
     void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction);
-
-
+    
     /// <summary>
     /// Indicates a new <see cref="DomainObject"/> instance is being created. This event is called while the <see cref="DomainObject"/> base 
     /// constructor is executing before the subclass constructors have run and before the object has got its <see cref="ObjectID"/> or 

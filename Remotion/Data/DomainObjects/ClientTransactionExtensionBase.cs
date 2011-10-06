@@ -59,6 +59,10 @@ namespace Remotion.Data.DomainObjects
     {
     }
 
+    public virtual void SubTransactionInitialize (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    {
+    }
+
     public virtual void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
     {
     }

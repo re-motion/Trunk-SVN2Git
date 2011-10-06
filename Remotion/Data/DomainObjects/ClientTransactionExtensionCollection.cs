@@ -165,6 +165,16 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
+    public void SubTransactionInitialize (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("parentClientTransaction", parentClientTransaction);
+      ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.SubTransactionInitialize (parentClientTransaction, subTransaction);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
     public void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
     {
       ArgumentUtility.CheckNotNull ("parentClientTransaction", parentClientTransaction);

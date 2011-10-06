@@ -46,6 +46,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "SubTransactionCreating");
     }
 
+    public void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    {
+      Assertion.IsTrue (clientTransaction.IsReadOnly); // while a subtransaction is being created, the parent must be read-only
+    }
+
     public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       Assertion.IsTrue (clientTransaction.IsReadOnly); // after a subtransaction has been created, the parent must be read-only

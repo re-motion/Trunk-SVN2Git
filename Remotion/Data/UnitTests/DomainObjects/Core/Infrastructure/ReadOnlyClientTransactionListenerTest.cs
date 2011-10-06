@@ -21,7 +21,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using System.Linq;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -43,7 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         "VirtualRelationEndPointStateUpdated",
         "FilterQueryResult"};
 
-    private readonly string[] _methodsExpectingReadOnly = { "SubTransactionCreated" };
+    private readonly string[] _methodsExpectingReadOnly = {
+          "SubTransactionCreated", 
+          "SubTransactionInitialize"
+    };
 
     [SetUp]
     public void SetUp ()
@@ -60,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           typeof (ReadOnlyClientTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
       IEnumerable<MethodInfo> result = methods
         .Where (n => !_neverThrowingMethods.Contains (n.Name))
-        .Where (n => !_methodsExpectingReadOnly.Contains (n.Name));;
+        .Where (n => !_methodsExpectingReadOnly.Contains (n.Name));
       
       foreach (var method in result)
       {
@@ -77,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           typeof (ReadOnlyClientTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
       IEnumerable<MethodInfo> result = methods.Where (n => _methodsExpectingReadOnly.Contains (n.Name));
 
-      Assert.That (result.Count (), Is.EqualTo (1));
+      Assert.That (result.Count (), Is.EqualTo (2));
 
       foreach (var method in result)
       {
