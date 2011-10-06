@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Text;
 using System.Web.UI;
 using Remotion.Utilities;
@@ -56,19 +57,16 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 
       RegisterMenuItems (renderingContext);
 
-      WebMenuItem[] groupedListMenuItems = renderingContext.Control.MenuItems.GroupMenuItems (false);
-
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      WebMenuItem[] groupedListMenuItems = renderingContext.Control.MenuItems.GroupMenuItems (false).Where (mi=>mi.EvaluateVisible()).ToArray();
       bool isFirstItem = true;
       for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
       {
         WebMenuItem currentItem = groupedListMenuItems[idxItems];
-        if (!currentItem.EvaluateVisible ())
-          continue;
 
         bool isLastItem = (idxItems == (groupedListMenuItems.Length - 1));
         bool isFirstCategoryItem = (isFirstItem || (groupedListMenuItems[idxItems - 1].Category != currentItem.Category));

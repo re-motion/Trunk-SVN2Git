@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq;
 using System.Text;
 using System.Web.UI;
 using Remotion.Utilities;
@@ -62,7 +63,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
 
       RegisterMenuItems (renderingContext);
 
-      WebMenuItem[] groupedListMenuItems = renderingContext.Control.MenuItems.GroupMenuItems (false);
+      WebMenuItem[] groupedListMenuItems = renderingContext.Control.MenuItems.GroupMenuItems (false).Where (mi => mi.EvaluateVisible()).ToArray();
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
