@@ -22,13 +22,13 @@ var _bocList_TrClassNameSelected = '';
 //  Associative array: <BocList ID>, <BocList_SelectedRows>
 var _bocList_selectedRows = new Object();
 
-//  A flag that indicates that the OnClick event for a selection selectorControl has been raised
-//  prior to the row's OnClick event.
-var _bocList_isSelectorControlClick = false;
-  
 //  A flag that indicates that the OnClick event for an anchor tag (command) has been raised
 //  prior to the row's OnClick event.
 var _bocList_isCommandClick = false;
+
+//  A flag that indicates that the OnClick event for a selection selectorControl has been raised
+//  prior to the row's OnClick event.
+var _bocList_isSelectorControlClick = false;
 
 //  A flag that indicates that the OnClick event for a selectorControl label has been raised
 //  prior to the row's OnClick event.
@@ -74,6 +74,10 @@ function BocList_InitializeGlobals (trClassName, trClassNameSelected)
 {
   _bocList_TrClassName = trClassName;
   _bocList_TrClassNameSelected = trClassNameSelected;
+
+  _bocList_isCommandClick = false;
+  _bocList_isSelectorControlClick = false;
+  _bocList_isSelectorControlLabelClick = false;
 }
 
 //  Initalizes an individual BocList's List. The initialization synchronizes the selection state 
