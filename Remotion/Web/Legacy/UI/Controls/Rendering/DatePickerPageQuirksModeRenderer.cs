@@ -34,7 +34,6 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string key = typeof (DatePickerPageQuirksModeRenderer).FullName + "_Script";
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerPageQuirksModeRenderer), ResourceType.Html, "DatePicker.js");
