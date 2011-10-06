@@ -124,7 +124,7 @@ function DatePicker_Create(datePickerID, button, target, src, width, height)
 
   var frame = window.document.createElement("iframe");
   datePicker.append($(frame));
-  frame.src = src + '?TargetIDField=' + target.id + '&DatePickerIDField=' + datePickerID + '&DateValueField=' + target.value;
+  frame.src = src + '?DateValueField=' + target.value;
   frame.frameBorder = 'no';
   frame.scrolling = 'no';
   frame.style.width = '100%';
