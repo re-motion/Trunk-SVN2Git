@@ -42,6 +42,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _transactionID = transactionID;
     }
 
+    public Guid TransactionID
+    {
+      get { return _transactionID; }
+    }
+
     public virtual ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

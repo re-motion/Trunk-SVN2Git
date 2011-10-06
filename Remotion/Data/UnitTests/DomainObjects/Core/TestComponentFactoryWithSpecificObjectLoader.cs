@@ -29,9 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _factory = factory;
     }
 
-    public override IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
+    public override IObjectLoader CreateObjectLoader (ClientTransaction constructedTransaction, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
     {
-      return _factory (clientTransaction, persistenceStrategy, eventSink);
+      return _factory (constructedTransaction, persistenceStrategy, eventSink);
     }
   }
 }

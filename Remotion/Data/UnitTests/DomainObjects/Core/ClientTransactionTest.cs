@@ -106,57 +106,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       using (_mockRepository.Ordered ())
       {
-        // We are only interested in the order of calls that can access the transaction being initialized
-        using (componentFactoryMock.GetMockRepository ().Unordered ())
-        {
-          componentFactoryMock.Expect (mock => mock.GetParentTransaction()).Return (fakeParentTransaction);
-          componentFactoryMock.Expect (mock => mock.CreateApplicationData()).Return (_fakeApplicationData);
-        }
-
         componentFactoryMock
-            .Expect (mock => mock.CreateListeners (Arg<ClientTransaction>.Is.Anything))
-            .Return (new[] { listenerMock })
+            .Expect (mock => mock.GetParentTransaction (Arg<ClientTransaction>.Is.Anything))
+            .Return (fakeParentTransaction)
             .WhenCalled (
                 mi =>
                 {
                   constructedTransaction = (ClientTransaction) mi.Arguments[0];
-                  Assert.That (constructedTransaction.ParentTransaction, Is.SameAs (fakeParentTransaction));
-                  Assert.That (constructedTransaction.ApplicationData, Is.SameAs (_fakeApplicationData));
                   Assert.That (constructedTransaction.ID, Is.Not.EqualTo (Guid.Empty));
+                });
+        componentFactoryMock
+            .Expect (mock => mock.CreateApplicationData(Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Return (_fakeApplicationData)
+            .WhenCalled (mi => Assert.That (constructedTransaction.ParentTransaction == fakeParentTransaction));
+        componentFactoryMock
+            .Expect (mock => mock.CreateListeners (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Return (new[] { listenerMock })
+            .WhenCalled (
+                mi =>
+                {
+                  Assert.That (constructedTransaction.ApplicationData, Is.SameAs (_fakeApplicationData));
+                  transactionEventSink = ClientTransactionTestHelper.GetTransactionEventSink (constructedTransaction);
                   Assert.That (
-                      ClientTransactionTestHelper.GetTransactionEventSink (constructedTransaction).Listeners,
+                      transactionEventSink.Listeners,
                       Has.Some.TypeOf<LoggingClientTransactionListener>().And.Some.TypeOf<ReadOnlyClientTransactionListener>());
                 });
-
-        // We are only interested in the order of calls that can access the transaction being initialized
-        using (componentFactoryMock.GetMockRepository ().Unordered ())
-        {
-          componentFactoryMock.Expect (mock => mock.CreateEnlistedObjectManager()).Return (_enlistedObjectManagerMock);
-          componentFactoryMock.Expect (mock => mock.CreateInvalidDomainObjectManager()).Return (_invalidDomainObjectManagerMock);
-          componentFactoryMock
-              .Expect (mock => mock.CreatePersistenceStrategy (Arg<Guid>.Matches (id => id == constructedTransaction.ID)))
-              .Return (_persistenceStrategyMock);
-        }
-
+        componentFactoryMock
+            .Expect (mock => mock.CreateEnlistedObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Return (_enlistedObjectManagerMock)
+            .WhenCalled (mi => Assert.That (transactionEventSink.Listeners, Has.Member (listenerMock)));
+        componentFactoryMock
+            .Expect (mock => mock.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Return (_invalidDomainObjectManagerMock)
+            .WhenCalled (
+                mi => Assert.That (
+                    ClientTransactionTestHelper.GetEnlistedDomainObjectManager (constructedTransaction), Is.SameAs (_enlistedObjectManagerMock)));
+        componentFactoryMock
+            .Expect (mock => mock.CreatePersistenceStrategy (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Return (_persistenceStrategyMock)
+            .WhenCalled (
+                mi => Assert.That (
+                    ClientTransactionTestHelper.GetInvalidDomainObjectManager (constructedTransaction), Is.SameAs (_invalidDomainObjectManagerMock)));
         componentFactoryMock
             .Expect (
                 mock =>
                 mock.CreateObjectLoader (
                     Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
                     Arg.Is (_persistenceStrategyMock),
-                    Arg<IClientTransactionListener>.Is.Anything))
+                    Arg<IClientTransactionListener>.Matches (listener => listener == transactionEventSink)))
             .Return (_objectLoaderMock)
-            .WhenCalled (mi =>
-            {
-              transactionEventSink = ClientTransactionTestHelper.GetTransactionEventSink (constructedTransaction);
-              Assert.That (mi.Arguments[2], Is.SameAs (transactionEventSink));
-              Assert.That (transactionEventSink.Listeners, Has.Member (listenerMock));
-              Assert.That (
-                  ClientTransactionTestHelper.GetEnlistedDomainObjectManager (constructedTransaction), Is.SameAs (_enlistedObjectManagerMock));
-              Assert.That (
-                  ClientTransactionTestHelper.GetInvalidDomainObjectManager (constructedTransaction), Is.SameAs (_invalidDomainObjectManagerMock));
-              Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (constructedTransaction), Is.SameAs (_persistenceStrategyMock));
-            });
+            .WhenCalled (mi => Assert.That (
+                ClientTransactionTestHelper.GetPersistenceStrategy (constructedTransaction), Is.SameAs (_persistenceStrategyMock)));
         componentFactoryMock
             .Expect (
                 mock =>
@@ -793,7 +793,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Expect (mock => mock.SubTransactionCreating (_transaction))
             .WhenCalled (mi => Assert.That (_transaction.IsReadOnly, Is.False));
         componentFactoryPartialMock
-            .Expect (mock => mock.GetParentTransaction())
+            .Expect (mock => mock.GetParentTransaction (Arg<ClientTransaction>.Is.Anything))
             .Return (_transaction);
         eventReceiverMock
             .Expect (mock => mock.SubTransactionCreated (

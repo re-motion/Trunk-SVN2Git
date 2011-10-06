@@ -112,8 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IQueryManager queryManager)
     {
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
-      componentFactoryStub.Stub (stub => stub.GetParentTransaction()).Return (parentTransaction);
-      componentFactoryStub.Stub (stub => stub.CreateApplicationData ()).Return (applicationData);
+      componentFactoryStub.Stub (stub => stub.GetParentTransaction (Arg<ClientTransaction>.Is.Anything)).Return (parentTransaction);
+      componentFactoryStub.Stub (stub => stub.CreateApplicationData (Arg<ClientTransaction>.Is.Anything)).Return (applicationData);
       componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (cloneFactory);
       componentFactoryStub
           .Stub (stub => stub.CreateDataManager(
@@ -121,9 +121,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IInvalidDomainObjectManager>.Is.Anything, 
               Arg<IObjectLoader>.Is.Anything))
           .Return (dataManager);
-      componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager ()).Return (enlistedDomainObjectManager);
+      componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (enlistedDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateExtensionCollection (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
-      componentFactoryStub.Stub (stub => stub.CreateInvalidDomainObjectManager ()).Return (invalidDomainObjectManager);
+      componentFactoryStub.Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (invalidDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateListeners (Arg<ClientTransaction>.Is.Anything)).Return (listeners);
       componentFactoryStub
           .Stub (stub => stub.CreateObjectLoader(
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IPersistenceStrategy>.Is.Anything, 
               Arg<IClientTransactionListener>.Is.Anything))
           .Return (objectLoader);
-      componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<Guid>.Is.Anything)).Return (persistenceStrategy);
+      componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<ClientTransaction>.Is.Anything)).Return (persistenceStrategy);
       componentFactoryStub
           .Stub (stub => stub.CreateQueryManager (
               Arg<ClientTransaction>.Is.Anything,

@@ -26,25 +26,34 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// Defines an interface for factories building <see cref="ClientTransaction"/> instances.
   /// </summary>
+  /// <remarks>
+  /// The methods defined by this interface are executed while a <see cref="ClientTransaction"/> is constructed; they provide the components
+  /// making up the <see cref="ClientTransaction"/>. When accessing the constructed <see cref="ClientTransaction"/> passed to the methods as an 
+  /// argument, keep in mind that the transaction is not yet complete and may not be used. Once a method has returned a component, it is safe for
+  /// subsequent methods to access that component of the constructed <see cref="ClientTransaction"/>. It is safe for all methods to access the 
+  /// <see cref="ClientTransaction.ID"/> property.
+  /// </remarks>
   public interface IClientTransactionComponentFactory
   {
-    ClientTransaction GetParentTransaction ();
-
-    Dictionary<Enum, object> CreateApplicationData ();
-    ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction clientTransaction);
-    IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction);
-    IPersistenceStrategy CreatePersistenceStrategy (Guid id);
+    ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction);
+    Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
+    IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction);
+    IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
+    IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction);
+    IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
     IObjectLoader CreateObjectLoader (
-        ClientTransaction clientTransaction, 
+        ClientTransaction constructedTransaction, 
         IPersistenceStrategy persistenceStrategy, 
         IClientTransactionListener eventSink);
-    
-    IEnlistedDomainObjectManager CreateEnlistedObjectManager ();
-    IInvalidDomainObjectManager CreateInvalidDomainObjectManager ();
-
-    IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager, IObjectLoader objectLoader);
-
-    IQueryManager CreateQueryManager (ClientTransaction clientTransaction, IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IDataManager dataManager, IClientTransactionListener eventSink);
+    IDataManager CreateDataManager (
+        ClientTransaction constructedTransaction, IInvalidDomainObjectManager invalidDomainObjectManager, IObjectLoader objectLoader);
+    IQueryManager CreateQueryManager (
+        ClientTransaction constructedTransaction,
+        IPersistenceStrategy persistenceStrategy,
+        IObjectLoader objectLoader,
+        IDataManager dataManager,
+        IClientTransactionListener eventSink);
+    ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction);
     
     // This member is likely to be removed in the future
     // TODO 2968: Remove this member

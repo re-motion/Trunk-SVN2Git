@@ -163,9 +163,9 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
     
     _componentFactory = componentFactory;
-    _parentTransaction = componentFactory.GetParentTransaction();
+    _parentTransaction = componentFactory.GetParentTransaction (this);
 
-    _applicationData = componentFactory.CreateApplicationData ();
+    _applicationData = componentFactory.CreateApplicationData (this);
    
     _eventSink = new CompoundClientTransactionListener ();
 
@@ -175,9 +175,9 @@ public class ClientTransaction
     foreach (var listener in componentFactory.CreateListeners (this))
       _eventSink.AddListener (listener);
 
-    _enlistedObjectManager = componentFactory.CreateEnlistedObjectManager ();
-    _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager ();
-    _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id);
+    _enlistedObjectManager = componentFactory.CreateEnlistedObjectManager (this);
+    _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this);
+    _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
     _objectLoader = componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
     _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager, _objectLoader);
     _queryManager = componentFactory.CreateQueryManager (this, _persistenceStrategy, _objectLoader, _dataManager, _eventSink);

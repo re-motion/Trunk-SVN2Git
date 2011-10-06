@@ -53,53 +53,41 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
     }
 
-    public virtual ClientTransaction GetParentTransaction ()
+    public virtual ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction)
     {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       return _parentTransaction;
     }
 
-    public virtual Dictionary<Enum, object> CreateApplicationData ()
+    public virtual Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction)
     {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       return _parentTransaction.ApplicationData;
     }
 
-    public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction clientTransaction)
+    public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      return ClientTransactionComponentFactoryUtility.CreateExtensionCollectionFromServiceLocator (clientTransaction);
-    }
-
-    public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       return new[] { new SubClientTransactionListener (_parentInvalidDomainObjectManager) }
-          .Concat (ClientTransactionComponentFactoryUtility.GetListenersFromServiceLocator (clientTransaction));
+          .Concat (ClientTransactionComponentFactoryUtility.GetListenersFromServiceLocator (constructedTransaction));
     }
 
-    public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id)
+    public virtual IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)
     {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (_parentTransaction, _parentInvalidDomainObjectManager));
     }
 
-    public virtual IObjectLoader CreateObjectLoader (
-        ClientTransaction clientTransaction,
-        IPersistenceStrategy persistenceStrategy,
-        IClientTransactionListener eventSink)
+    public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
-
-      return ClientTransactionComponentFactoryUtility.CreateObjectLoader (clientTransaction, persistenceStrategy, eventSink);
-    }
-
-    public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
-    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       return new DelegatingEnlistedDomainObjectManager (_parentTransaction);
     }
 
-    public IInvalidDomainObjectManager CreateInvalidDomainObjectManager ()
+    public IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction)
     {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+
       var invalidObjects =
           _parentInvalidDomainObjectManager.InvalidObjectIDs.Select (id => _parentInvalidDomainObjectManager.GetInvalidObjectReference (id));
 
@@ -113,37 +101,55 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return invalidDomainObjectManager;
     }
 
+    public virtual IObjectLoader CreateObjectLoader (
+        ClientTransaction constructedTransaction,
+        IPersistenceStrategy persistenceStrategy,
+        IClientTransactionListener eventSink)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+
+      return ClientTransactionComponentFactoryUtility.CreateObjectLoader (constructedTransaction, persistenceStrategy, eventSink);
+    }
+
     public virtual IDataManager CreateDataManager (
-        ClientTransaction clientTransaction,
+        ClientTransaction constructedTransaction,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IObjectLoader objectLoader)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
 
       Func<DataManager, IRelationEndPointManager> endPointManagerFactory = dataManager => CreateRelationEndPointManager (
-          clientTransaction, 
+          constructedTransaction, 
           GetEndPointProvider (dataManager), 
           GetLazyLoader (dataManager));
       
-      return new DataManager (clientTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
+      return new DataManager (constructedTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
     }
 
     public IQueryManager CreateQueryManager (
-        ClientTransaction clientTransaction,
+        ClientTransaction constructedTransaction,
         IPersistenceStrategy persistenceStrategy,
         IObjectLoader objectLoader,
         IDataManager dataManager,
         IClientTransactionListener eventSink)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
 
-      return ClientTransactionComponentFactoryUtility.CreateQueryManager (clientTransaction, persistenceStrategy, objectLoader, dataManager, eventSink);
+      return ClientTransactionComponentFactoryUtility.CreateQueryManager (constructedTransaction, persistenceStrategy, objectLoader, dataManager, eventSink);
+    }
+
+    public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      return ClientTransactionComponentFactoryUtility.CreateExtensionCollectionFromServiceLocator (constructedTransaction);
     }
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
