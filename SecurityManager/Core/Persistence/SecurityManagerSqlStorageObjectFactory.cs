@@ -34,12 +34,12 @@ namespace Remotion.SecurityManager.Persistence
   public class SecurityManagerSqlStorageObjectFactory : SqlStorageObjectFactory
   {
     protected override StorageProvider CreateStorageProvider (
-        IPersistenceListener persistenceListener,
+        IPersistenceExtension persistenceExtension,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         IStorageNameProvider storageNameProvider,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.Persistence
               ParamList.Create (
                   rdbmsProviderDefinition,
                   storageNameProvider,
-                  persistenceListener,
+                  persistenceExtension,
                   commandFactory,
                   (Func<IDbConnection>) (() => new SqlConnection())));
     }

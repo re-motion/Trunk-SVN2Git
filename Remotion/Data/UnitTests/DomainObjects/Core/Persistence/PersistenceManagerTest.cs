@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public override void SetUp ()
     {
       base.SetUp();
-      _persistenceManager = new PersistenceManager (NullPersistenceListener.Instance);
+      _persistenceManager = new PersistenceManager (NullPersistenceExtension.Instance);
     }
 
     public override void TearDown ()
@@ -52,14 +52,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void Initialize ()
     {
-      var persistenceTracer = MockRepository.GenerateStub<IPersistenceListener>();
+      var persistenceTracer = MockRepository.GenerateStub<IPersistenceExtension>();
       using (var persistenceManager = new PersistenceManager (persistenceTracer))
       {
         Assert.That (persistenceManager.StorageProviderManager, Is.Not.Null);
 
         using (var storageProvider = persistenceManager.StorageProviderManager.GetMandatory (c_testDomainProviderID))
         {
-          Assert.That (storageProvider.PersistenceListener, Is.SameAs (persistenceTracer));
+          Assert.That (storageProvider.PersistenceExtension, Is.SameAs (persistenceTracer));
         }
       }
     }
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       var mockRepository = new MockRepository();
       var mockProvider = mockRepository.StrictMock<StorageProvider> (
-          officialStorageProvider.StorageProviderDefinition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance);
+          officialStorageProvider.StorageProviderDefinition, storageNameProvider, SqlDialect.Instance, NullPersistenceExtension.Instance);
 
       var officialDC1 = DataContainer.CreateNew (DomainObjectIDs.Official1);
       var officialDC2 = DataContainer.CreateNew (DomainObjectIDs.Official2);

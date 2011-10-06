@@ -5,13 +5,13 @@ using System.Data;
 namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
-  /// <see cref="INullObject"/> implementation of <see cref="IPersistenceListener"/>.
+  /// <see cref="INullObject"/> implementation of <see cref="IPersistenceExtension"/>.
   /// </summary>
-  public sealed class NullPersistenceListener : IPersistenceListener
+  public sealed class NullPersistenceExtension : IPersistenceExtension
   {
-    public static readonly IPersistenceListener Instance = new NullPersistenceListener ();
+    public static readonly IPersistenceExtension Instance = new NullPersistenceExtension ();
 
-    private NullPersistenceListener ()
+    private NullPersistenceExtension ()
     {      
     }
 

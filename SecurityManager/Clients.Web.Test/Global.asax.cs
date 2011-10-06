@@ -16,10 +16,6 @@
 // 
 using System;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Data.DomainObjects.UberProfIntegration;
-using Remotion.Implementation;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.ServiceLocation;
@@ -27,7 +23,6 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Security.ExecutionEngine;
 using Remotion.Web.Security.UI;
 using Remotion.Web.UI;
-using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
 namespace Remotion.SecurityManager.Clients.Web.Test
 {
@@ -38,8 +33,8 @@ namespace Remotion.SecurityManager.Clients.Web.Test
 
       var defaultServiceLocator = new DefaultServiceLocator();
 
-      //defaultServiceLocator.Register (typeof (IClientTransactionListenerFactory), typeof (LinqToSqlListenerFactory), LifetimeKind.Singleton);
-      //defaultServiceLocator.Register (typeof (IPersistenceListenerFactory), typeof (LinqToSqlListenerFactory), LifetimeKind.Singleton);
+      //defaultServiceLocator.Register (typeof (IClientTransactionListenerFactory), typeof (LinqToSqlExtensionFactory), LifetimeKind.Singleton);
+      //defaultServiceLocator.Register (typeof (IPersistenceExtensionFactory), typeof (LinqToSqlExtensionFactory), LifetimeKind.Singleton);
 
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 

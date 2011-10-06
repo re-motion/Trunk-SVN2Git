@@ -22,22 +22,22 @@ namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
   /// Provides a wrapper for implementations of <see cref="IDbTransaction"/>. The lifetime of the transaction is traced using the
-  /// <see cref="IPersistenceListener"/> passed during the instantiation.
+  /// <see cref="IPersistenceExtension"/> passed during the instantiation.
   /// </summary>
   public class TracingDbTransaction : IDbTransaction
   {
     private readonly IDbTransaction _transaction;
-    private readonly IPersistenceListener _persistenceListener;
+    private readonly IPersistenceExtension _persistenceExtension;
     private readonly Guid _connectionID;
     private readonly Guid _transactionID;
     private bool _isTransactionDisposed;
 
-    public TracingDbTransaction (IDbTransaction transaction, IPersistenceListener persistenceListener, Guid connectionID)
+    public TracingDbTransaction (IDbTransaction transaction, IPersistenceExtension persistenceExtension, Guid connectionID)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       _transaction = transaction;
-      _persistenceListener = persistenceListener;
+      _persistenceExtension = persistenceExtension;
       _connectionID = connectionID;
       _transactionID = Guid.NewGuid();
     }
@@ -57,9 +57,9 @@ namespace Remotion.Data.DomainObjects.Tracing
       get { return _transactionID; }
     }
 
-    public IPersistenceListener PersistenceListener
+    public IPersistenceExtension PersistenceExtension
     {
-      get { return _persistenceListener; }
+      get { return _persistenceExtension; }
     }
 
     public void Dispose ()
@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Tracing
 
       if (!_isTransactionDisposed)
       {
-        PersistenceListener.TransactionDisposed (_connectionID);
+        PersistenceExtension.TransactionDisposed (_connectionID);
         _isTransactionDisposed = true;
       }
     }
@@ -77,14 +77,14 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       _transaction.Commit();
       if (!_isTransactionDisposed)
-        PersistenceListener.TransactionCommitted (_connectionID);
+        PersistenceExtension.TransactionCommitted (_connectionID);
     }
 
     public void Rollback ()
     {
       _transaction.Rollback();
       if (!_isTransactionDisposed)
-        PersistenceListener.TransactionRolledBack (_connectionID);
+        PersistenceExtension.TransactionRolledBack (_connectionID);
     }
 
     IDbConnection IDbTransaction.Connection

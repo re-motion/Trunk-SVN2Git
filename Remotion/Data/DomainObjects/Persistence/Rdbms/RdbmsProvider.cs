@@ -42,10 +42,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         RdbmsProviderDefinition definition,
         IStorageNameProvider storageNameProvider,
         ISqlDialect sqlDialect,
-        IPersistenceListener persistenceListener,
+        IPersistenceExtension persistenceExtension,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
         Func<IDbConnection> connectionFactory)
-        : base (definition, storageNameProvider, sqlDialect, persistenceListener)
+        : base (definition, storageNameProvider, sqlDialect, persistenceExtension)
     {
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
       ArgumentUtility.CheckNotNull ("connectionFactory", connectionFactory);
@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (!IsConnected)
       {
-        _connection = new TracingDbConnection (CreateConnection(), PersistenceListener);
+        _connection = new TracingDbConnection (CreateConnection(), PersistenceExtension);
         if (string.IsNullOrEmpty (_connection.ConnectionString))
           _connection.ConnectionString = StorageProviderDefinition.ConnectionString;
 

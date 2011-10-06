@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString"),
           _storageNameProviderStub,
           SqlDialect.Instance,
-          NullPersistenceListener.Instance,
+          NullPersistenceExtension.Instance,
           _storageProviderCommandFactoryStub,
           () => new SqlConnection());
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           (RdbmsProviderDefinition) _provider.StorageProviderDefinition,
           _storageNameProviderStub,
           SqlDialect.Instance,
-          NullPersistenceListener.Instance,
+          NullPersistenceExtension.Instance,
           _storageProviderCommandFactoryStub,
           () => new SqlConnection());
       Assert.That (_collection.Contains (copy), Is.False);

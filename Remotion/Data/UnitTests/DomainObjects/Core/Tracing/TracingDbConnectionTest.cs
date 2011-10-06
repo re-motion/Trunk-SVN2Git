@@ -28,16 +28,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     private MockRepository _mockRepository;
     private IDbConnection _connection;
     private IDbConnection _innerConnectionMock;
-    private IPersistenceListener _listenerMock;
+    private IPersistenceExtension _extensionMock;
     
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
       _innerConnectionMock = _mockRepository.StrictMock<IDbConnection>();
-      _listenerMock = _mockRepository.StrictMock<IPersistenceListener> ();
+      _extensionMock = _mockRepository.StrictMock<IPersistenceExtension> ();
       
-      _connection = new TracingDbConnection (_innerConnectionMock, _listenerMock);
+      _connection = new TracingDbConnection (_innerConnectionMock, _extensionMock);
     }
 
     [Test]
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerConnectionMock.Expect (mock => mock.Open());
-        _listenerMock.Expect (mock => mock.ConnectionOpened (((TracingDbConnection) _connection).ConnectionID));
+        _extensionMock.Expect (mock => mock.ConnectionOpened (((TracingDbConnection) _connection).ConnectionID));
       }
       _mockRepository.ReplayAll();
 
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerConnectionMock.Expect (mock => mock.Dispose());
-        _listenerMock.Expect (mock => mock.ConnectionClosed (((TracingDbConnection) _connection).ConnectionID));
+        _extensionMock.Expect (mock => mock.ConnectionClosed (((TracingDbConnection) _connection).ConnectionID));
       }
       _mockRepository.ReplayAll();
 
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerConnectionMock.Expect (mock => mock.Close ());
-        _listenerMock.Expect (mock => mock.ConnectionClosed (((TracingDbConnection) _connection).ConnectionID));
+        _extensionMock.Expect (mock => mock.ConnectionClosed (((TracingDbConnection) _connection).ConnectionID));
       }
       _mockRepository.ReplayAll ();
 
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       dbTransactionMock.Expect (mock => mock.IsolationLevel).Return (isolationLevel);
 
       _innerConnectionMock.Expect (mock => mock.BeginTransaction()).Return(dbTransactionMock);
-      _listenerMock.Expect (mock => mock.TransactionBegan (((TracingDbConnection) _connection).ConnectionID, isolationLevel));
+      _extensionMock.Expect (mock => mock.TransactionBegan (((TracingDbConnection) _connection).ConnectionID, isolationLevel));
       
       _mockRepository.ReplayAll();
 
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 
       _mockRepository.VerifyAll();
       Assert.That (tracingDbTransaction.WrappedInstance, Is.EqualTo (dbTransactionMock));
-      Assert.That (tracingDbTransaction.PersistenceListener, Is.EqualTo (_listenerMock));
+      Assert.That (tracingDbTransaction.PersistenceExtension, Is.EqualTo (_extensionMock));
       Assert.That (tracingDbTransaction.ConnectionID, Is.EqualTo (((TracingDbConnection)_connection).ConnectionID));
     }
 
@@ -194,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       var dbTransactionMock = _mockRepository.StrictMock<IDbTransaction> ();
       
       _innerConnectionMock.Expect (mock => mock.BeginTransaction (isolationLevel)).Return (dbTransactionMock);
-      _listenerMock.Expect (mock => mock.TransactionBegan (((TracingDbConnection)_connection).ConnectionID, isolationLevel));
+      _extensionMock.Expect (mock => mock.TransactionBegan (((TracingDbConnection)_connection).ConnectionID, isolationLevel));
 
       _mockRepository.ReplayAll ();
 
@@ -203,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _mockRepository.VerifyAll ();
 
       Assert.That (tracingDbTransaction.WrappedInstance, Is.EqualTo (dbTransactionMock));
-      Assert.That (tracingDbTransaction.PersistenceListener, Is.EqualTo (_listenerMock));
+      Assert.That (tracingDbTransaction.PersistenceExtension, Is.EqualTo (_extensionMock));
       Assert.That (tracingDbTransaction.ConnectionID, Is.EqualTo (((TracingDbConnection)_connection).ConnectionID));
     }
 
@@ -220,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _mockRepository.VerifyAll();
 
       Assert.That (tracingDbCommand.WrappedInstance, Is.EqualTo (commandMock));
-      Assert.That (tracingDbCommand.PersistenceListener, Is.EqualTo (_listenerMock));
+      Assert.That (tracingDbCommand.PersistenceExtension, Is.EqualTo (_extensionMock));
       Assert.That (tracingDbCommand.ConnectionID, Is.EqualTo (((TracingDbConnection)_connection).ConnectionID));
     }
 
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       dbTransactionMock.Expect (mock => mock.IsolationLevel).Return (isolationLevel);
 
       _innerConnectionMock.Expect (mock => mock.BeginTransaction ()).Return (dbTransactionMock);
-      _listenerMock.Expect (mock => mock.TransactionBegan (((TracingDbConnection) _connection).ConnectionID, isolationLevel));
+      _extensionMock.Expect (mock => mock.TransactionBegan (((TracingDbConnection) _connection).ConnectionID, isolationLevel));
 
       _mockRepository.ReplayAll ();
 
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       var dbTransactionMock = _mockRepository.StrictMock<IDbTransaction> ();
 
       _innerConnectionMock.Expect (mock => mock.BeginTransaction (isolationLevel)).Return (dbTransactionMock);
-      _listenerMock.Expect (mock => mock.TransactionBegan (((TracingDbConnection) _connection).ConnectionID, isolationLevel));
+      _extensionMock.Expect (mock => mock.TransactionBegan (((TracingDbConnection) _connection).ConnectionID, isolationLevel));
 
       _mockRepository.ReplayAll ();
 

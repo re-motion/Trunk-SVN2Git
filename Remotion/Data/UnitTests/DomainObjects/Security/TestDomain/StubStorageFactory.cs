@@ -38,14 +38,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
   public class StubStorageFactory : IRdbmsStorageObjectFactory
   {
-    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
+    public StorageProvider CreateStorageProvider (IPersistenceExtension persistenceExtension, StorageProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
 
-      return new StubStorageProvider (storageProviderDefinition, storageNameProvider, persistenceListener);
+      return new StubStorageProvider (storageProviderDefinition, storageNameProvider, persistenceExtension);
     }
 
     public IPersistenceModelLoader CreatePersistenceModelLoader (

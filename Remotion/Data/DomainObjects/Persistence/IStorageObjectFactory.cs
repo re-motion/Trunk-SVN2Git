@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// </summary>
   public interface IStorageObjectFactory
   {
-    StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition);
+    StorageProvider CreateStorageProvider (IPersistenceExtension persistenceExtension, StorageProviderDefinition storageProviderDefinition);
 
     IPersistenceModelLoader CreatePersistenceModelLoader (StorageProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder);
 

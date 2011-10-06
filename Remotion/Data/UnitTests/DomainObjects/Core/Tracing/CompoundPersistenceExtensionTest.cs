@@ -24,23 +24,23 @@ using System.Collections.Generic;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 {
   [TestFixture]
-  public class CompoundPersistenceListenerTest
+  public class CompoundPersistenceExtensionTest
   {
     private MockRepository _mockRepository;
-    private IPersistenceListener _innerPersistenceListener1;
-    private IPersistenceListener _innerPersistenceListener2;
-    private IPersistenceListener _listener;
-    private List<IPersistenceListener> _listeners;
+    private IPersistenceExtension _innerPersistenceListener1;
+    private IPersistenceExtension _innerPersistenceListener2;
+    private IPersistenceExtension _extension;
+    private List<IPersistenceExtension> _listeners;
 
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _innerPersistenceListener1 = _mockRepository.StrictMock<IPersistenceListener>(); //add second listener
-      _innerPersistenceListener2 = _mockRepository.StrictMock<IPersistenceListener>();
-      _listeners = new List<IPersistenceListener> { _innerPersistenceListener1, _innerPersistenceListener2 };
+      _innerPersistenceListener1 = _mockRepository.StrictMock<IPersistenceExtension>(); //add second listener
+      _innerPersistenceListener2 = _mockRepository.StrictMock<IPersistenceExtension>();
+      _listeners = new List<IPersistenceExtension> { _innerPersistenceListener1, _innerPersistenceListener2 };
 
-      _listener = new CompoundPersistenceListener (_listeners);
+      _extension = new CompoundPersistenceExtension (_listeners);
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.ConnectionOpened (connectionID));
       _mockRepository.ReplayAll ();
 
-      _listener.ConnectionOpened (connectionID);
+      _extension.ConnectionOpened (connectionID);
 
       _mockRepository.VerifyAll ();
     }
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.ConnectionClosed (connectionID));
       _mockRepository.ReplayAll ();
 
-      _listener.ConnectionClosed (connectionID);
+      _extension.ConnectionClosed (connectionID);
 
       _mockRepository.VerifyAll ();
     }
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.TransactionBegan (connectionID, isolationLevel));
       _mockRepository.ReplayAll ();
 
-      _listener.TransactionBegan (connectionID, isolationLevel);
+      _extension.TransactionBegan (connectionID, isolationLevel);
 
       _mockRepository.VerifyAll ();
     }
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.TransactionCommitted (connectionID));
       _mockRepository.ReplayAll ();
 
-      _listener.TransactionCommitted (connectionID);
+      _extension.TransactionCommitted (connectionID);
 
       _mockRepository.VerifyAll ();
     }
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.TransactionRolledBack (connectionID));
       _mockRepository.ReplayAll ();
 
-      _listener.TransactionRolledBack (connectionID);
+      _extension.TransactionRolledBack (connectionID);
 
       _mockRepository.VerifyAll ();
     }
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.TransactionDisposed (connectionID));
       _mockRepository.ReplayAll ();
 
-      _listener.TransactionDisposed (connectionID);
+      _extension.TransactionDisposed (connectionID);
 
       _mockRepository.VerifyAll ();
     }
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.QueryExecuting (connectionID, queryID, commandText, parameters));
       _mockRepository.ReplayAll ();
 
-      _listener.QueryExecuting (connectionID, queryID, commandText, parameters);
+      _extension.QueryExecuting (connectionID, queryID, commandText, parameters);
 
       _mockRepository.VerifyAll ();
     }
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.QueryExecuted (connectionID, queryID, durationOfQueryExecution));
       _mockRepository.ReplayAll ();
 
-      _listener.QueryExecuted (connectionID, queryID, durationOfQueryExecution);
+      _extension.QueryExecuted (connectionID, queryID, durationOfQueryExecution);
 
       _mockRepository.VerifyAll ();
     }
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.QueryCompleted (connectionID, queryID, durationOfDataRead, rowCount));
       _mockRepository.ReplayAll ();
 
-      _listener.QueryCompleted (connectionID, queryID, durationOfDataRead, rowCount);
+      _extension.QueryCompleted (connectionID, queryID, durationOfDataRead, rowCount);
 
       _mockRepository.VerifyAll ();
     }
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerPersistenceListener2.Expect (mock => mock.QueryError (connectionID, queryID, ex));
       _mockRepository.ReplayAll ();
 
-      _listener.QueryError (connectionID, queryID, ex);
+      _extension.QueryError (connectionID, queryID, ex);
 
       _mockRepository.VerifyAll ();
     }
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     [Test]
     public void IsNull ()
     {
-      var result = _listener.IsNull;
+      var result = _extension.IsNull;
       Assert.That (result, Is.False);
     }
   }

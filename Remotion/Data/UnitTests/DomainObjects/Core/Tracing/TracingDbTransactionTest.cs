@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
   {
     private MockRepository _mockRepository;
     private IDbTransaction _innerTransactionMock;
-    private IPersistenceListener _listenerMock;
+    private IPersistenceExtension _extensionMock;
     private Guid _connectionID;
     private IDbTransaction _transaction;
 
@@ -36,10 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       _mockRepository = new MockRepository ();
       _innerTransactionMock = _mockRepository.StrictMock<IDbTransaction>();
-      _listenerMock = _mockRepository.StrictMock<IPersistenceListener> ();
+      _extensionMock = _mockRepository.StrictMock<IPersistenceExtension> ();
       _connectionID = Guid.NewGuid ();
 
-      _transaction = new TracingDbTransaction (_innerTransactionMock, _listenerMock, _connectionID);
+      _transaction = new TracingDbTransaction (_innerTransactionMock, _extensionMock, _connectionID);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerTransactionMock.Expect (mock => mock.Dispose());
-        _listenerMock.Expect (mock => mock.TransactionDisposed (_connectionID));
+        _extensionMock.Expect (mock => mock.TransactionDisposed (_connectionID));
       }
       _mockRepository.ReplayAll();
 
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerTransactionMock.Expect (mock => mock.Dispose ());
-        _listenerMock.Expect (mock => mock.TransactionDisposed (_connectionID));
+        _extensionMock.Expect (mock => mock.TransactionDisposed (_connectionID));
         _innerTransactionMock.Expect (mock => mock.Dispose ());
       }
       _mockRepository.ReplayAll ();
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerTransactionMock.Expect (mock => mock.Commit ());
-        _listenerMock.Expect (mock => mock.TransactionCommitted (_connectionID));
+        _extensionMock.Expect (mock => mock.TransactionCommitted (_connectionID));
       }
       _mockRepository.ReplayAll();
 
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerTransactionMock.Expect (mock => mock.Dispose());
-        _listenerMock.Expect (mock => mock.TransactionDisposed (_connectionID));
+        _extensionMock.Expect (mock => mock.TransactionDisposed (_connectionID));
         _innerTransactionMock.Expect (mock => mock.Commit ());
         
       }
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerTransactionMock.Expect (mock => mock.Rollback ());
-        _listenerMock.Expect (mock => mock.TransactionRolledBack (_connectionID));
+        _extensionMock.Expect (mock => mock.TransactionRolledBack (_connectionID));
       }
       _mockRepository.ReplayAll ();
 
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       using (_mockRepository.Ordered ())
       {
         _innerTransactionMock.Expect (mock => mock.Dispose ());
-        _listenerMock.Expect (mock => mock.TransactionDisposed (_connectionID));
+        _extensionMock.Expect (mock => mock.TransactionDisposed (_connectionID));
         _innerTransactionMock.Expect (mock => mock.Rollback ());
 
       }

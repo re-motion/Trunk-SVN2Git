@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         IDbCommandBuilderFactory dbCommandBuilderFactory,
         SqlDialect dialect,
         Func
-            <RdbmsProviderDefinition, IStorageNameProvider, ISqlDialect, IPersistenceListener,
+            <RdbmsProviderDefinition, IStorageNameProvider, ISqlDialect, IPersistenceExtension,
             IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>, RdbmsProvider> ctorCall)
     {
       var storageNameProvider = new ReflectionBasedStorageNameProvider ();
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new TableDefinitionFinder (rdbmsPersistenceModelProvider),
           dataStoragePropertyDefinitionFactory);
 
-      return ctorCall (storageProviderDefinition, storageNameProvider, dialect, NullPersistenceListener.Instance, commandFactory);
+      return ctorCall (storageProviderDefinition, storageNameProvider, dialect, NullPersistenceExtension.Instance, commandFactory);
     }
   }
 }

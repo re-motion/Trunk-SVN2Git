@@ -22,13 +22,13 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
-  /// Implements a collection of <see cref="IPersistenceListener"/> objects.
+  /// Implements a collection of <see cref="IPersistenceExtension"/> objects.
   /// </summary>
-  public class CompoundPersistenceListener : IPersistenceListener
+  public class CompoundPersistenceExtension : IPersistenceExtension
   {
-    private readonly List<IPersistenceListener> _listeners = new List<IPersistenceListener>();
+    private readonly List<IPersistenceExtension> _listeners = new List<IPersistenceExtension>();
 
-    public CompoundPersistenceListener (IEnumerable<IPersistenceListener> listeners)
+    public CompoundPersistenceExtension (IEnumerable<IPersistenceExtension> listeners)
     {
       ArgumentUtility.CheckNotNull ("listeners", listeners);
 

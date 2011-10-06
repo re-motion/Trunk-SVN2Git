@@ -851,7 +851,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll();
 
-      using (var persistanceManager = new PersistenceManager(NullPersistenceListener.Instance))
+      using (var persistanceManager = new PersistenceManager(NullPersistenceExtension.Instance))
       {
         ClassDefinition orderTicketDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket));
         IRelationEndPointDefinition orderEndPointDefinition =
@@ -869,7 +869,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       //Note: no reading notification must be performed
       _mockRepository.ReplayAll();
 
-      using (var persistenceManager = new PersistenceManager(NullPersistenceListener.Instance))
+      using (var persistenceManager = new PersistenceManager(NullPersistenceExtension.Instance))
       {
         ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
         IRelationEndPointDefinition orderTicketEndPointDefinition =
@@ -1410,7 +1410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.BackToRecord (_extensionMock);
 
-      using (var storageProviderManager = new StorageProviderManager(NullPersistenceListener.Instance))
+      using (var storageProviderManager = new StorageProviderManager(NullPersistenceExtension.Instance))
       {
         using (var storageProvider =
             (UnitTestStorageProviderStub) storageProviderManager.GetMandatory (c_unitTestStorageProviderStubID))

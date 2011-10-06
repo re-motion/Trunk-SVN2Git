@@ -78,8 +78,8 @@
     </Compile>
     <Compile Include="LinqToSqlAppenderProxy.cs" />
     <Compile Include="LateBoundDelegateFactory.cs" />
-    <Compile Include="LinqToSqlListenerFactory.cs" />
-    <Compile Include="LinqToSqlListener.cs" />
+    <Compile Include="LinqToSqlExtensionFactory.cs" />
+    <Compile Include="LinqToSqlExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

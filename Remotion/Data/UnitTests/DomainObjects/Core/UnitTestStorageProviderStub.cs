@@ -83,12 +83,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           storageProviderDefinition,
           storageNameProvider,
           Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance,
-          NullPersistenceListener.Instance);
+          NullPersistenceExtension.Instance);
     }
 
     public UnitTestStorageProviderStub (
-        UnitTestStorageProviderStubDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceListener persistenceListener)
-        : base (definition, storageNameProvider, Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance, persistenceListener)
+        UnitTestStorageProviderStubDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceExtension persistenceExtension)
+        : base (definition, storageNameProvider, Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance, persistenceExtension)
     {
     }
 

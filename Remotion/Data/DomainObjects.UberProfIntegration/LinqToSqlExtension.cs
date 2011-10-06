@@ -28,12 +28,12 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
   /// <summary>
-  /// Implements <see cref="IPersistenceListener"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
+  /// Implements <see cref="IPersistenceExtension"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
   /// <seealso cref="LinqToSqlAppenderProxy"/>
   /// </summary>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
-  public class LinqToSqlListener : IPersistenceListener, IClientTransactionExtension
+  public class LinqToSqlExtension : IPersistenceExtension, IClientTransactionExtension
   {
     #region Implementation of IClientTransactionExtension
 
@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
 
     #endregion
 
-    #region Implementation of IPersistenceListener
+    #region Implementation of IPersistenceExtension
 
     public void ConnectionOpened (Guid connectionID)
     {
@@ -148,7 +148,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     private readonly LinqToSqlAppenderProxy _appenderProxy;
     private readonly Guid _clientTransactionID;
 
-    public LinqToSqlListener (Guid clientTransactionID, LinqToSqlAppenderProxy appenderProxy)
+    public LinqToSqlExtension (Guid clientTransactionID, LinqToSqlAppenderProxy appenderProxy)
     {
       ArgumentUtility.CheckNotNull ("appenderProxy", appenderProxy);
 
@@ -168,7 +168,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
 
     public string Key
     {
-      get { return typeof (LinqToSqlListener).FullName; }
+      get { return typeof (LinqToSqlExtension).FullName; }
     }
 
     public void TransactionInitialize (ClientTransaction clientTransaction)

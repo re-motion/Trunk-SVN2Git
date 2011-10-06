@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   {
     private StorageProviderDefinition _storageProviderDefinition;
     private bool _disposed;
-    private readonly IPersistenceListener _persistenceListener;
+    private readonly IPersistenceExtension _persistenceExtension;
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly ISqlDialect _sqlDialect;
 
@@ -53,17 +53,17 @@ namespace Remotion.Data.DomainObjects.Persistence
         StorageProviderDefinition storageProviderDefinition,
         IStorageNameProvider storageNameProvider,
         ISqlDialect sqlDialect,
-        IPersistenceListener persistenceListener)
+        IPersistenceExtension persistenceExtension)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
 
       _storageProviderDefinition = storageProviderDefinition;
       _storageNameProvider = storageNameProvider;
       _sqlDialect = sqlDialect;
-      _persistenceListener = persistenceListener;
+      _persistenceExtension = persistenceExtension;
     }
 
     ~StorageProvider ()
@@ -153,9 +153,9 @@ namespace Remotion.Data.DomainObjects.Persistence
       get { return _disposed; }
     }
 
-    public IPersistenceListener PersistenceListener
+    public IPersistenceExtension PersistenceExtension
     {
-      get { return _persistenceListener; }
+      get { return _persistenceExtension; }
     }
 
     protected void CheckDisposed ()

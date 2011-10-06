@@ -31,8 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
   public class StubStorageProvider : StorageProvider
   {
-    public StubStorageProvider (StorageProviderDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceListener persistenceListener)
-      : base (definition, storageNameProvider, Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance, persistenceListener)
+    public StubStorageProvider (StorageProviderDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceExtension persistenceExtension)
+      : base (definition, storageNameProvider, Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance, persistenceExtension)
     {
     }
 

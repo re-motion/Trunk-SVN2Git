@@ -147,18 +147,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private PersistenceManager CreatePersistenceManager ()
     {
-      return new PersistenceManager (CreatePersistenceListener());
+      return new PersistenceManager (CreatePersistenceExtension());
     }
 
     private StorageProviderManager CreateStorageProviderManager ()
     {
-      return new StorageProviderManager (CreatePersistenceListener ());
+      return new StorageProviderManager (CreatePersistenceExtension ());
     }
 
-    private IPersistenceListener CreatePersistenceListener ()
+    private IPersistenceExtension CreatePersistenceExtension ()
     {
-      var listenerFactories = SafeServiceLocator.Current.GetAllInstances<IPersistenceListenerFactory>();
-      return new CompoundPersistenceListener (listenerFactories.SelectMany (f => f.CreatePersistenceListeners (_transactionID)));
+      var listenerFactories = SafeServiceLocator.Current.GetAllInstances<IPersistenceExtensionFactory>();
+      return new CompoundPersistenceExtension (listenerFactories.SelectMany (f => f.CreatePersistenceExtensions (_transactionID)));
     }
   }
 }

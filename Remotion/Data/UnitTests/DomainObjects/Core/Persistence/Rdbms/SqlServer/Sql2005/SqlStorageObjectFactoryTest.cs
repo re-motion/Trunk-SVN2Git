@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   {
     private SqlStorageObjectFactory _sqlProviderFactory;
     private RdbmsProviderDefinition _rdbmsProviderDefinition;
-    private IPersistenceListener _persistenceListenerStub;
+    private IPersistenceExtension _persistenceExtensionStub;
     private StorageGroupBasedStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     [SetUp]
@@ -53,17 +53,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString");
       _sqlProviderFactory = new SqlStorageObjectFactory();
-      _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener>();
+      _persistenceExtensionStub = MockRepository.GenerateStub<IPersistenceExtension>();
       _storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
     }
 
     [Test]
     public void CreateStorageProvider ()
     {
-      var result = _sqlProviderFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
+      var result = _sqlProviderFactory.CreateStorageProvider (_persistenceExtensionStub, _rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (RdbmsProvider)));
-      Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
+      Assert.That (result.PersistenceExtension, Is.SameAs (_persistenceExtensionStub));
       Assert.That (result.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
 
       var commandFactory = (RdbmsProviderCommandFactory) PrivateInvoke.GetNonPublicProperty (result, "StorageProviderCommandFactory");
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (RdbmsProvider)).Clear ().AddMixins (typeof (SqlProviderTestMixin)).EnterScope ())
       {
-        var result = _sqlProviderFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
+        var result = _sqlProviderFactory.CreateStorageProvider (_persistenceExtensionStub, _rdbmsProviderDefinition);
 
         Assert.That (Mixin.Get<SqlProviderTestMixin> (result), Is.Not.Null);
       }

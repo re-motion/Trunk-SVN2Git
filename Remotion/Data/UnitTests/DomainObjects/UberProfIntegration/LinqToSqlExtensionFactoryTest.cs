@@ -23,19 +23,19 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
 {
   [TestFixture]
-  public class LinqToSqlListenerFactoryTest : UberProfIntegrationTestBase
+  public class LinqToSqlExtensionFactoryTest : UberProfIntegrationTestBase
   {
-    private LinqToSqlListenerFactory _factory;
+    private LinqToSqlExtensionFactory _factory;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _factory = new LinqToSqlListenerFactory();
+      _factory = new LinqToSqlExtensionFactory();
     }
 
     [Test]
-    public void CreateClientTransactionListener_RootTransaction ()
+    public void CreateClientTransactionExtensions_RootTransaction ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction();
 
@@ -43,13 +43,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.UberProfIntegration
 
       Assert.That (result, Has.Length.EqualTo (1));
       var clientTransactionExtension = result.Single();
-      Assert.That (clientTransactionExtension, Is.TypeOf<LinqToSqlListener> ());
-      Assert.That (((LinqToSqlListener) clientTransactionExtension).ClientTransactionID, Is.EqualTo (clientTransaction.ID));
-      Assert.That (((LinqToSqlListener) clientTransactionExtension).AppenderProxy, Is.SameAs (AppenderProxy));
+      Assert.That (clientTransactionExtension, Is.TypeOf<LinqToSqlExtension> ());
+      Assert.That (((LinqToSqlExtension) clientTransactionExtension).ClientTransactionID, Is.EqualTo (clientTransaction.ID));
+      Assert.That (((LinqToSqlExtension) clientTransactionExtension).AppenderProxy, Is.SameAs (AppenderProxy));
     }
 
     [Test]
-    public void CreateClientTransactionListener_SubTransaction ()
+    public void CreateClientTransactionExtensions_SubTransaction ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction ().CreateSubTransaction();
 

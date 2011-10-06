@@ -22,14 +22,14 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
   /// <summary>
-  /// Implements <see cref="IPersistenceListenerFactory"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
+  /// Implements <see cref="IPersistenceExtensionFactory"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
   /// <seealso cref="LinqToSqlAppenderProxy"/>
   /// </summary>
-  public class LinqToSqlListenerFactory : IPersistenceListenerFactory, IClientTransactionExtensionFactory
+  public class LinqToSqlExtensionFactory : IPersistenceExtensionFactory, IClientTransactionExtensionFactory
   {
-    public IEnumerable<IPersistenceListener> CreatePersistenceListeners (Guid clientTransactionID)
+    public IEnumerable<IPersistenceExtension> CreatePersistenceExtensions (Guid clientTransactionID)
     {
-      yield return new LinqToSqlListener (clientTransactionID, LinqToSqlAppenderProxy.Instance);
+      yield return new LinqToSqlExtension (clientTransactionID, LinqToSqlAppenderProxy.Instance);
     }
 
     public IEnumerable<IClientTransactionExtension> CreateClientTransactionExtensions (ClientTransaction clientTransaction)
@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       if (clientTransaction.ParentTransaction == null)
-        yield return new LinqToSqlListener (clientTransaction.ID, LinqToSqlAppenderProxy.Instance);
+        yield return new LinqToSqlExtension (clientTransaction.ID, LinqToSqlAppenderProxy.Instance);
     }
   }
 }

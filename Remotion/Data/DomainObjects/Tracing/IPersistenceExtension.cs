@@ -21,9 +21,9 @@ using System.Data;
 namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
-  /// The <see cref="IPersistenceListener"/> defines the API for tracing database access.
+  /// The <see cref="IPersistenceExtension"/> defines the API for tracing database access.
   /// </summary>
-  public interface IPersistenceListener : INullObject
+  public interface IPersistenceExtension : INullObject
   {
     /// <summary>
     /// Invoking this method signals that a database connection has been established.

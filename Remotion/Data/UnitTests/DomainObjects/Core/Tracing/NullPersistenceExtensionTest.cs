@@ -24,59 +24,59 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 {
   [TestFixture]
-  public class NullPersistenceListenerTest
+  public class NullPersistenceExtensionTest
   {
-    private IPersistenceListener _listener;
+    private IPersistenceExtension _extension;
     private Guid _connectionID;
 
     [SetUp]
     public void SetUp ()
     {
-      _listener = NullPersistenceListener.Instance;
+      _extension = NullPersistenceExtension.Instance;
       _connectionID = Guid.NewGuid();
     }
 
     [Test]
     public void IsNull ()
     {
-      var result = _listener.IsNull;
+      var result = _extension.IsNull;
       Assert.That (result, Is.True);
     }
 
     [Test]
     public void ConnectionOpened ()
     {
-      _listener.ConnectionOpened (_connectionID);
+      _extension.ConnectionOpened (_connectionID);
     }
 
     [Test]
     public void ConnectionClosed ()
     {
-      _listener.ConnectionClosed (_connectionID);
+      _extension.ConnectionClosed (_connectionID);
     }
 
     [Test]
     public void TransactionBegan ()
     {
-      _listener.TransactionBegan (_connectionID, IsolationLevel.Chaos);      
+      _extension.TransactionBegan (_connectionID, IsolationLevel.Chaos);      
     }
 
     [Test]
     public void TransactionCommitted ()
     {
-      _listener.TransactionCommitted (_connectionID);      
+      _extension.TransactionCommitted (_connectionID);      
     }
 
     [Test]
     public void TransactionRolledBack ()
     {
-      _listener.TransactionRolledBack (_connectionID);
+      _extension.TransactionRolledBack (_connectionID);
     }
 
     [Test]
     public void TransactionDisposed ()
     {
-      _listener.TransactionDisposed (_connectionID);
+      _extension.TransactionDisposed (_connectionID);
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       var queryID = Guid.NewGuid();
       var commandText = "commandText";
       var parameters = MockRepository.GenerateMock<IDictionary<string, object>>();
-      _listener.QueryExecuting (_connectionID, queryID, commandText, parameters);
+      _extension.QueryExecuting (_connectionID, queryID, commandText, parameters);
     }
 
     [Test]
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       var queryID = Guid.NewGuid();
       var durationOfQueryExecution = new TimeSpan();
-      _listener.QueryExecuted (_connectionID, queryID, durationOfQueryExecution);
+      _extension.QueryExecuted (_connectionID, queryID, durationOfQueryExecution);
     }
 
     [Test]
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       var queryID = Guid.NewGuid();
       var durationOfDataRead = new TimeSpan();
       var rowCount = 6;
-      _listener.QueryCompleted (_connectionID, queryID, durationOfDataRead, rowCount);
+      _extension.QueryCompleted (_connectionID, queryID, durationOfDataRead, rowCount);
     }
 
     [Test]
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       var queryID = Guid.NewGuid();
       var ex = new Exception();
-      _listener.QueryError (_connectionID, queryID, ex);
+      _extension.QueryError (_connectionID, queryID, ex);
     }
   }
 }

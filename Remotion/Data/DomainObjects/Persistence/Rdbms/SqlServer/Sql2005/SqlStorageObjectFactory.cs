@@ -46,9 +46,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   [ConcreteImplementation (typeof (SqlStorageObjectFactory))]
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
-    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
+    public StorageProvider CreateStorageProvider (IPersistenceExtension persistenceExtension, StorageProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       var rdbmsProviderDefinition =
           ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition", storageProviderDefinition);
 
@@ -68,16 +68,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageNameProvider,
           infrastructureStoragePropertyDefinitionFactory, 
           dataStoragePropertyDefinitionFactory, storageTypeInformationProvider);
-      return CreateStorageProvider (persistenceListener, rdbmsProviderDefinition, storageNameProvider, commandFactory);
+      return CreateStorageProvider (persistenceExtension, rdbmsProviderDefinition, storageNameProvider, commandFactory);
     }
 
     protected virtual StorageProvider CreateStorageProvider (
-        IPersistenceListener persistenceListener,
+        IPersistenceExtension persistenceExtension,
         RdbmsProviderDefinition rdbmsProviderDefinition,
         IStorageNameProvider storageNameProvider,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
                   rdbmsProviderDefinition,
                   storageNameProvider,
                   SqlDialect.Instance,
-                  persistenceListener,
+                  persistenceExtension,
                   commandFactory,
                   (Func<IDbConnection>) (() => new SqlConnection())));
     }

@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
   {
     private MockRepository _mockRepository;
     private IDataReader _innerDataReader;
-    private IPersistenceListener _listenerMock;
+    private IPersistenceExtension _extensionMock;
     private Guid _connectionID;
     private Guid _queryID;
     private TracingDataReader _dataReader;
@@ -37,11 +37,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       _mockRepository = new MockRepository();
       _innerDataReader = _mockRepository.StrictMock<IDataReader>();
-      _listenerMock = _mockRepository.StrictMock<IPersistenceListener>();
+      _extensionMock = _mockRepository.StrictMock<IPersistenceExtension>();
       _connectionID = Guid.NewGuid();
       _queryID = Guid.NewGuid();
 
-      _dataReader = new TracingDataReader (_innerDataReader, _listenerMock, _connectionID, _queryID);
+      _dataReader = new TracingDataReader (_innerDataReader, _extensionMock, _connectionID, _queryID);
     }
 
     [Test]
@@ -231,9 +231,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     [Test]
     public void GetPersistenceListener ()
     {
-      var persistenceListener = _dataReader.PersistenceListener;
+      var persistenceListener = _dataReader.PersistenceExtension;
 
-      Assert.That (persistenceListener, Is.EqualTo (_listenerMock));
+      Assert.That (persistenceListener, Is.EqualTo (_extensionMock));
     }
 
     [Test]
@@ -516,7 +516,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       using (_mockRepository.Ordered())
       {
-        _listenerMock.Expect (
+        _extensionMock.Expect (
             mock =>
             mock.QueryCompleted (
                 Arg<Guid>.Matches (p => p == _connectionID),
@@ -536,7 +536,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       using (_mockRepository.Ordered())
       {
-        _listenerMock.Expect (
+        _extensionMock.Expect (
             mock =>
             mock.QueryCompleted (
                 Arg<Guid>.Matches (p => p == _connectionID),
@@ -556,7 +556,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       using (_mockRepository.Ordered())
       {
-        _listenerMock.Expect (
+        _extensionMock.Expect (
             mock =>
             mock.QueryCompleted (
                 Arg<Guid>.Matches (p => p == _connectionID),
@@ -601,7 +601,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     public void ReadAndClose ()
     {
       _innerDataReader.Expect (mock => mock.Read ()).Return (true);
-      _listenerMock.Expect (
+      _extensionMock.Expect (
             mock =>
             mock.QueryCompleted (
                 Arg<Guid>.Is.Equal (_connectionID),

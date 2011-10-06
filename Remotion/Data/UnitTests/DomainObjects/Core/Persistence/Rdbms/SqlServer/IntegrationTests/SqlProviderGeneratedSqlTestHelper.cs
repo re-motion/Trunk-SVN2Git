@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               providerDefinition,
               nameProvider,
               dialect,
-              NullPersistenceListener.Instance,
+              NullPersistenceExtension.Instance,
               commandFactory,
               () => new SqlConnection(),
               _executionListenerStrictMock));
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               providerDefinition,
               nameProvider,
               dialect,
-              NullPersistenceListener.Instance,
+              NullPersistenceExtension.Instance,
               commandFactory,
               () => new SqlConnection ())))
       {

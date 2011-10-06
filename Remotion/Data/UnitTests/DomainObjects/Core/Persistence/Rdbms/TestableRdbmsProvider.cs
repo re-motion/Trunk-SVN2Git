@@ -29,10 +29,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         RdbmsProviderDefinition definition,
         IStorageNameProvider storageNameProvider,
         ISqlDialect dialect,
-        IPersistenceListener persistenceListener,
+        IPersistenceExtension persistenceExtension,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
         Func<IDbConnection> connectionFactory)
-      : base (definition, storageNameProvider, dialect, persistenceListener, commandFactory, connectionFactory)
+      : base (definition, storageNameProvider, dialect, persistenceExtension, commandFactory, connectionFactory)
     {
 
     }

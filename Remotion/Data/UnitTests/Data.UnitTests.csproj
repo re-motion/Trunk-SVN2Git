@@ -1049,8 +1049,8 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificPersistenceStrategy.cs" />
-    <Compile Include="DomainObjects\Core\Tracing\CompoundPersistenceListenerTest.cs" />
-    <Compile Include="DomainObjects\Core\Tracing\NullPersistenceListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\Tracing\CompoundPersistenceExtensionTest.cs" />
+    <Compile Include="DomainObjects\Core\Tracing\NullPersistenceExtensionTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDataReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbConnectionTest.cs" />
@@ -1264,7 +1264,7 @@
     <Compile Include="DomainObjects\UberProfIntegration\TracingLinqToSqlAppender.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\UberProfIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\MockableLinqToSqlAppender.cs" />
-    <Compile Include="DomainObjects\UberProfIntegration\LinqToSqlListenerFactoryTest.cs" />
+    <Compile Include="DomainObjects\UberProfIntegration\LinqToSqlExtensionFactoryTest.cs" />
     <Compile Include="MethodOptionsExtensions.cs" />
     <Compile Include="OrderedExpectationCounter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

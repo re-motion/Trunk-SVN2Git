@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           TestDomainStorageProviderDefinition,
           _storageNameProviderStub,
           _dialectStub,
-          NullPersistenceListener.Instance,
+          NullPersistenceExtension.Instance,
           _commandFactoryMock,
           () => _connectionCreatorMock.CreateConnection());
     }
@@ -480,7 +480,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new RdbmsProviderDefinition ("Test", new SqlStorageObjectFactory(), TestDomainConnectionString),
           _storageNameProviderStub,
           SqlDialect.Instance,
-          NullPersistenceListener.Instance,
+          NullPersistenceExtension.Instance,
           _commandFactoryMock,
           () => new SqlConnection());
       var objectID = DomainObjectIDs.Order1;

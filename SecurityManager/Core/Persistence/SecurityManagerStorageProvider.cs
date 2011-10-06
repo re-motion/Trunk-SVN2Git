@@ -43,14 +43,14 @@ namespace Remotion.SecurityManager.Persistence
     public SecurityManagerRdbmsProvider (
         RdbmsProviderDefinition definition,
         IStorageNameProvider storageNameProvider,
-        IPersistenceListener persistenceListener,
+        IPersistenceExtension persistenceExtension,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
         Func<IDbConnection> connectionFactory)
         : base (
             definition,
             storageNameProvider,
             Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance,
-            persistenceListener,
+            persistenceExtension,
             commandFactory,
             connectionFactory)
     {

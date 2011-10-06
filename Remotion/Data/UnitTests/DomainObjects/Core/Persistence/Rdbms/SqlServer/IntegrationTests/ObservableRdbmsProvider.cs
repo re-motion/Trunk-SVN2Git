@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private readonly ICommandExecutionListener _listener;
 
-    public ObservableRdbmsProvider (RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IPersistenceListener persistenceListener, IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory, Func<IDbConnection> connectionFactory, ICommandExecutionListener listener)
-        : base(definition, storageNameProvider, sqlDialect, persistenceListener, storageProviderCommandFactory, connectionFactory)
+    public ObservableRdbmsProvider (RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IPersistenceExtension persistenceExtension, IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory, Func<IDbConnection> connectionFactory, ICommandExecutionListener listener)
+        : base(definition, storageNameProvider, sqlDialect, persistenceExtension, storageProviderCommandFactory, connectionFactory)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);
       _listener = listener;

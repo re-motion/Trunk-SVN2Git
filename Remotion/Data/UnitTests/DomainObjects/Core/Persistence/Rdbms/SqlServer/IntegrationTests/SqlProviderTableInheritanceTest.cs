@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           TableInheritanceTestDomainStorageProviderDefinition,
           storageNameProvider,
           SqlDialect.Instance,
-          NullPersistenceListener.Instance,
+          NullPersistenceExtension.Instance,
           commandFactory,
           () => new SqlConnection ());
     }

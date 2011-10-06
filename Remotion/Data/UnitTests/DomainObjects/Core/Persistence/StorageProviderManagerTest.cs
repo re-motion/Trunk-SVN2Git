@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       base.SetUp ();
 
-      _storageProviderManager = new StorageProviderManager (NullPersistenceListener.Instance);
+      _storageProviderManager = new StorageProviderManager (NullPersistenceExtension.Instance);
     }
 
     public override void TearDown ()

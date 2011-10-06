@@ -31,11 +31,11 @@ namespace Remotion.Data.DomainObjects.Persistence
     private bool _disposed;
     private StorageProviderManager _storageProviderManager;
 
-    public PersistenceManager (IPersistenceListener persistenceListener)
+    public PersistenceManager (IPersistenceExtension persistenceExtension)
     {
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
 
-      _storageProviderManager = new StorageProviderManager (persistenceListener);
+      _storageProviderManager = new StorageProviderManager (persistenceExtension);
     }
 
     #region IDisposable Members

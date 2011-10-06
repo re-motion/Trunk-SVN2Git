@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
   /// Provides a wrapper for implementations of <see cref="IDbCommand"/>. Execution of the query is traced using the 
-  /// <see cref="IPersistenceListener"/> passed during the instantiation.
+  /// <see cref="IPersistenceExtension"/> passed during the instantiation.
   /// </summary>
   public class TracingDbCommand : IDbCommand
   {
@@ -95,17 +95,17 @@ namespace Remotion.Data.DomainObjects.Tracing
     #endregion
 
     private readonly IDbCommand _command;
-    private readonly IPersistenceListener _persistenceListener;
+    private readonly IPersistenceExtension _persistenceExtension;
     private readonly Guid _connectionID;
     private readonly Guid _queryID;
 
-    public TracingDbCommand (IDbCommand command, IPersistenceListener persistenceListener, Guid connectionID)
+    public TracingDbCommand (IDbCommand command, IPersistenceExtension persistenceExtension, Guid connectionID)
     {
       ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
 
       _command = command;
-      _persistenceListener = persistenceListener;
+      _persistenceExtension = persistenceExtension;
       _connectionID = connectionID;
       _queryID = Guid.NewGuid();
     }
@@ -125,15 +125,15 @@ namespace Remotion.Data.DomainObjects.Tracing
       get { return _queryID; }
     }
 
-    public IPersistenceListener PersistenceListener
+    public IPersistenceExtension PersistenceExtension
     {
-      get { return _persistenceListener; }
+      get { return _persistenceExtension; }
     }
 
     public int ExecuteNonQuery ()
     {
       int numberOfRowsAffected = ExecuteWithProfiler (() => _command.ExecuteNonQuery());
-      _persistenceListener.QueryCompleted (_connectionID, _queryID, TimeSpan.Zero, numberOfRowsAffected);
+      _persistenceExtension.QueryCompleted (_connectionID, _queryID, TimeSpan.Zero, numberOfRowsAffected);
 
       return numberOfRowsAffected;
     }
@@ -142,20 +142,20 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       IDataReader dataReader = ExecuteWithProfiler (() => _command.ExecuteReader());
 
-      return new TracingDataReader (dataReader, _persistenceListener, _connectionID, _queryID);
+      return new TracingDataReader (dataReader, _persistenceExtension, _connectionID, _queryID);
     }
 
     public IDataReader ExecuteReader (CommandBehavior behavior)
     {
       IDataReader dataReader = ExecuteWithProfiler (() => _command.ExecuteReader (behavior));
 
-      return new TracingDataReader (dataReader, _persistenceListener, _connectionID, _queryID);
+      return new TracingDataReader (dataReader, _persistenceExtension, _connectionID, _queryID);
     }
 
     public object ExecuteScalar ()
     {
       object result = ExecuteWithProfiler (() => _command.ExecuteScalar());
-      _persistenceListener.QueryCompleted (_connectionID, _queryID, TimeSpan.Zero, 1);
+      _persistenceExtension.QueryCompleted (_connectionID, _queryID, TimeSpan.Zero, 1);
       return result;
     }
 
@@ -173,15 +173,15 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       try
       {
-        _persistenceListener.QueryExecuting (_connectionID, _queryID, _command.CommandText, ConvertToDictionary (_command.Parameters));
+        _persistenceExtension.QueryExecuting (_connectionID, _queryID, _command.CommandText, ConvertToDictionary (_command.Parameters));
         var stopWatch = Stopwatch.StartNew();
         T result = operation();
-        _persistenceListener.QueryExecuted (_connectionID, _queryID, stopWatch.Elapsed);
+        _persistenceExtension.QueryExecuted (_connectionID, _queryID, stopWatch.Elapsed);
         return result;
       }
       catch (Exception ex)
       {
-        _persistenceListener.QueryError (_connectionID, _queryID, ex);
+        _persistenceExtension.QueryError (_connectionID, _queryID, ex);
         throw;
       }
     }

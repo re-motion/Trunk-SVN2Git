@@ -27,14 +27,14 @@ public class StorageProviderManager : IDisposable
 {
   private bool _disposed;
   private StorageProviderCollection _storageProviders;
-  private readonly IPersistenceListener _persistenceListener;
+  private readonly IPersistenceExtension _persistenceExtension;
 
-  public StorageProviderManager (IPersistenceListener persistenceListener)
+  public StorageProviderManager (IPersistenceExtension persistenceExtension)
   {
-    ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+    ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
 
     _storageProviders = new StorageProviderCollection ();
-    _persistenceListener = persistenceListener;
+    _persistenceExtension = persistenceExtension;
   }
 
   #region IDisposable Members
@@ -81,7 +81,7 @@ public class StorageProviderManager : IDisposable
         return _storageProviders[storageProviderID];
 
       var providerDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      var provider = providerDefinition.Factory.CreateStorageProvider (_persistenceListener, providerDefinition);
+      var provider = providerDefinition.Factory.CreateStorageProvider (_persistenceExtension, providerDefinition);
 
       _storageProviders.Add (provider);
 

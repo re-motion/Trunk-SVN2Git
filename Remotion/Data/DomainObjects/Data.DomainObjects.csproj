@@ -608,10 +608,10 @@
     <Compile Include="RelationChangedEventArgs.cs" />
     <Compile Include="RelationChangingEventArgs.cs" />
     <Compile Include="SubTransactionCreatedEventArgs.cs" />
-    <Compile Include="Tracing\IPersistenceListener.cs" />
-    <Compile Include="Tracing\IPersistenceListenerFactory.cs" />
-    <Compile Include="Tracing\NullPersistenceListener.cs" />
-    <Compile Include="Tracing\CompoundPersistenceListener.cs">
+    <Compile Include="Tracing\IPersistenceExtension.cs" />
+    <Compile Include="Tracing\IPersistenceExtensionFactory.cs" />
+    <Compile Include="Tracing\NullPersistenceExtension.cs" />
+    <Compile Include="Tracing\CompoundPersistenceExtension.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tracing\TracingDataReader.cs" />

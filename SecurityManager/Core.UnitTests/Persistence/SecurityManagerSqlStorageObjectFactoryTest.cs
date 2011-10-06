@@ -29,23 +29,23 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
   {
     private RdbmsProviderDefinition _rdbmsProviderDefinition;
     private SecurityManagerSqlStorageObjectFactory _securityManagerSqlStorageObjectFactory;
-    private IPersistenceListener _persistenceListenerStub;
+    private IPersistenceExtension _persistenceExtensionStub;
 
     [SetUp]
     public void SetUp ()
     {
       _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", new SecurityManagerSqlStorageObjectFactory(), "ConnectionString");
       _securityManagerSqlStorageObjectFactory = new SecurityManagerSqlStorageObjectFactory ();
-      _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener>();
+      _persistenceExtensionStub = MockRepository.GenerateStub<IPersistenceExtension>();
     }
 
     [Test]
     public void CreateStorageProvider ()
     {
-      var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
+      var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceExtensionStub, _rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (SecurityManagerRdbmsProvider)));
-      Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
+      Assert.That (result.PersistenceExtension, Is.SameAs (_persistenceExtensionStub));
       Assert.That (result.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
     }
 
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
           MixinConfiguration.BuildFromActive().ForClass (typeof (RdbmsProvider)).Clear().AddMixins (typeof (SecurityManagerRdbmsProviderTestMixin)).
               EnterScope())
       {
-        var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
+        var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceExtensionStub, _rdbmsProviderDefinition);
 
         Assert.That (Mixin.Get<SecurityManagerRdbmsProviderTestMixin> (result), Is.Not.Null);
       }

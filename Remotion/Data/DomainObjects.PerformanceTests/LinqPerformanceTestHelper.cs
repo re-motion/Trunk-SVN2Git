@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var query = _queryGenerator();
       var restoreQuery = QueryFactory.CreateQuery ("perftest", query);
 
-      using (var manager = new StorageProviderManager (NullPersistenceListener.Instance))
+      using (var manager = new StorageProviderManager (NullPersistenceExtension.Instance))
       {
         return manager.GetMandatory ("PerformanceTestDomain").ExecuteCollectionQuery (restoreQuery).ToArray().Length > 100;
       }

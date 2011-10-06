@@ -36,16 +36,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public class UnitTestStorageObjectFactoryStub : IStorageObjectFactory
   {
-    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
+    public StorageProvider CreateStorageProvider (IPersistenceExtension persistenceExtension, StorageProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       var providerDefiniton = ArgumentUtility.CheckNotNullAndType<UnitTestStorageProviderStubDefinition> (
           "storageProviderDefinition", storageProviderDefinition);
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
 
-      return new UnitTestStorageProviderStub (providerDefiniton, storageNameProvider, persistenceListener);
+      return new UnitTestStorageProviderStub (providerDefiniton, storageNameProvider, persistenceExtension);
     }
 
     public IPersistenceModelLoader CreatePersistenceModelLoader (

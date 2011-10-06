@@ -22,8 +22,8 @@ namespace Remotion.Data.DomainObjects.Tracing
   /// <summary>
   /// Defines the API for creating the listeners used by the <see cref="ClientTransaction"/> and the peristence layer.
   /// </summary>
-  public interface IPersistenceListenerFactory
+  public interface IPersistenceExtensionFactory
   {
-    IEnumerable<IPersistenceListener> CreatePersistenceListeners (Guid clientTransactionID);
+    IEnumerable<IPersistenceExtension> CreatePersistenceExtensions (Guid clientTransactionID);
   }
 }
