@@ -40,6 +40,16 @@ span.bocReferenceValue a.command
   height: 1.3em; 
 }
 
+span.bocReferenceValue span.DropDownMenuContainer a.command
+{
+  margin-right: 17px;
+}
+
+span.bocReferenceValue span.body a.command
+{
+  margin-right: 1px;
+}
+
 span.bocReferenceValue a[href].command:hover
 {
   display: inline-block;
@@ -55,7 +65,7 @@ span.bocReferenceValue a[href].command *
   cursor: pointer;
 }
 
-span.bocReferenceValue a.command span
+span.bocReferenceValue span.DropDownMenuContainer a.command span
 {
   vertical-align: top;
 }
@@ -152,4 +162,9 @@ body.msie7 span.bocReferenceValue span.optionsMenu
 span.bocReferenceValue span.content.separateOptionsMenu
 {
   right: 6.25em; /* width of span.optionsMenu + desired space between */
+}
+
+span.bocReferenceValue.readOnly span.body a.command
+{
+  margin-right: 6.25em;
 }

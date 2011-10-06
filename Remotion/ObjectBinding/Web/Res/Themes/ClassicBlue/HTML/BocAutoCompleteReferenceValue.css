@@ -83,6 +83,16 @@ span.bocAutoCompleteReferenceValue a.command
   height: 1.3em; 
 }
 
+span.bocAutoCompleteReferenceValue span.DropDownMenuContainer a.command
+{
+  margin-right: 17px;
+}
+
+span.bocAutoCompleteReferenceValue span.body a.command
+{
+  margin-right: 1px;
+}
+
 span.bocAutoCompleteReferenceValue a[href].command:hover
 {
   display: inline-block;
@@ -96,7 +106,7 @@ span.bocAutoCompleteReferenceValue a[href].command *
   cursor: pointer;
 }
 
-span.bocAutoCompleteReferenceValue a.command span
+span.bocAutoCompleteReferenceValue span.DropDownMenuContainer a.command span
 {
   vertical-align: top;
 }
@@ -189,6 +199,11 @@ span.bocAutoCompleteReferenceValue span.optionsMenu
 span.bocAutoCompleteReferenceValue span.content.separateOptionsMenu
 {
   right: 6.25em; /* width of span.optionsMenu + desired space between */
+}
+
+span.bocAutoCompleteReferenceValue.readOnly span.body a.command
+{
+  margin-right: 6.25em;
 }
 
 span.content.separateOptionsMenu span.bocAutoCompleteReferenceValueInput,

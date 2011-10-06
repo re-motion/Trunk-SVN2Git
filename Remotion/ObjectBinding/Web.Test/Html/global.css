@@ -3,6 +3,7 @@
 .bocDateTimeValue.readOnly,
 .bocEnumValue.readOnly,
 .bocMultilineTextValue.readOnly,
+.bocAutoCompleteReferenceValue.readOnly,
 .bocReferenceValue.readOnly,
 .bocTextValue.readOnly
 {
