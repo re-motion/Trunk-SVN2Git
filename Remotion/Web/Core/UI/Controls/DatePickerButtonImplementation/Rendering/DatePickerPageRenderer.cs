@@ -34,8 +34,6 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
-
       string key = typeof (DatePickerPageRenderer).FullName + "_Script";
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerPageRenderer), ResourceType.Html, "DatePicker.js");
       htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);

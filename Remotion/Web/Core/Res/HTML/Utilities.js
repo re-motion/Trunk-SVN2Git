@@ -41,8 +41,13 @@ TypeUtility.IsUndefined = function(value) {
     return typeof (value) == 'undefined';
 };
 
+TypeUtility.IsDefined = function (value)
+{
+  return !TypeUtility.IsUndefined(value);
+};
+
 TypeUtility.IsNull = function(value) {
-    return !TypeUtility.IsUndefined(value) && value == null;
+  return TypeUtility.IsDefined(value) && value == null;
 };
 
 

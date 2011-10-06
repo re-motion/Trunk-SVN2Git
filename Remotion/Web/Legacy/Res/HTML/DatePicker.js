@@ -154,7 +154,7 @@ function DatePicker_CloseVisibleDatePickerFrame (newDatePickerID)
   {
     var currentDatePicker = window.document.getElementById (_datePicker_currentDatePicker.id);
     var frameContent = currentDatePicker.children[0].contentWindow;
-    frameContent.DatePicker_CloseDatePicker();
+    frameContent.DatePickerFrame_CloseDatePicker();
     _datePicker_currentDatePicker = null;
   }
   return false;
@@ -162,11 +162,11 @@ function DatePicker_CloseVisibleDatePickerFrame (newDatePickerID)
 
 //  Called by the date picker when a new date is selected in the calendar. 
 //  Belongs to the date picker frame.
-function DatePicker_Calendar_SelectionChanged (value)
+function DatePickerFrame_Calendar_SelectionChanged(value)
 {
   var target = window.parent.document.getElementById (document.getElementById ('TargetIDField').value);
   var isValueChanged = target.value != value;
-  DatePicker_CloseDatePicker();
+  DatePickerFrame_CloseDatePicker();
   target.value = value;
   if (isValueChanged)
   {
@@ -181,7 +181,7 @@ function DatePicker_Calendar_SelectionChanged (value)
 
 //  Closes the date picker frame
 //  Belongs to the date picker frame.
-function DatePicker_CloseDatePicker() 
+function DatePickerFrame_CloseDatePicker() 
 {
   var target = window.parent.document.getElementById (document.getElementById ('TargetIDField').value);
   target.document.onclick = null;
@@ -211,7 +211,7 @@ function DatePicker_OnDocumentClick()
   {
     var currentDatePicker = window.document.getElementById (_datePicker_currentDatePicker.id);
     var frameContent = currentDatePicker.children[0].contentWindow;
-    frameContent.DatePicker_CloseDatePicker();
+    frameContent.DatePickerFrame_CloseDatePicker();
     _datePicker_currentDatePicker = null;
   }  
 }
