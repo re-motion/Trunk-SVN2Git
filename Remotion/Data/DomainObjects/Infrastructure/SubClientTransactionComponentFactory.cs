@@ -122,22 +122,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
 
-      Func<DataManager, IRelationEndPointManager> endPointManagerFactory = dataManager =>
-      {
-        var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (
-            clientTransaction,
-            new SubCollectionEndPointChangeDetectionStrategy ());
-        var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
-
-        var relationEndPointFactory = new RelationEndPointFactory (
-            clientTransaction,
-            dataManager,
-            dataManager,
-            virtualObjectEndPointDataKeeperFactory,
-            collectionEndPointDataKeeperFactory);
-        var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (dataManager);
-        return new RelationEndPointManager (clientTransaction, dataManager, relationEndPointFactory, relationEndPointRegistrationAgent);
-      };
+      Func<DataManager, IRelationEndPointManager> endPointManagerFactory = dataManager => CreateRelationEndPointManager (
+          clientTransaction, 
+          GetEndPointProvider (dataManager), 
+          GetLazyLoader (dataManager));
       
       return new DataManager (clientTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
     }
@@ -161,6 +149,35 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
     {
       return templateTransaction => _parentTransaction.CreateSubTransaction();
+    }
+
+    protected virtual ILazyLoader GetLazyLoader (DataManager dataManager)
+    {
+      return dataManager;
+    }
+
+    protected virtual IRelationEndPointProvider GetEndPointProvider (DataManager dataManager)
+    {
+      return dataManager;
+    }
+
+    protected virtual IRelationEndPointManager CreateRelationEndPointManager (
+        ClientTransaction clientTransaction,
+        IRelationEndPointProvider endPointProvider,
+        ILazyLoader lazyLoader)
+    {
+      var endPointChangeDetectionStrategy = new SubCollectionEndPointChangeDetectionStrategy ();
+      var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, endPointChangeDetectionStrategy);
+      var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
+
+      var relationEndPointFactory = new RelationEndPointFactory (
+          clientTransaction,
+          endPointProvider,
+          lazyLoader,
+          virtualObjectEndPointDataKeeperFactory,
+          collectionEndPointDataKeeperFactory);
+      var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (endPointProvider);
+      return new RelationEndPointManager (clientTransaction, lazyLoader, relationEndPointFactory, relationEndPointRegistrationAgent);
     }
   }
 }
