@@ -27,9 +27,9 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// </summary>
   public class LinqToSqlListenerFactory : IPersistenceListenerFactory, IClientTransactionExtensionFactory
   {
-    public IPersistenceListener CreatePersistenceListener (Guid clientTransactionID)
+    public IEnumerable<IPersistenceListener> CreatePersistenceListeners (Guid clientTransactionID)
     {
-      return new LinqToSqlListener (clientTransactionID, LinqToSqlAppenderProxy.Instance);
+      yield return new LinqToSqlListener (clientTransactionID, LinqToSqlAppenderProxy.Instance);
     }
 
     public IEnumerable<IClientTransactionExtension> CreateClientTransactionExtensions (ClientTransaction clientTransaction)

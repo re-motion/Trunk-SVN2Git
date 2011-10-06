@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
@@ -23,6 +24,6 @@ namespace Remotion.Data.DomainObjects.Tracing
   /// </summary>
   public interface IPersistenceListenerFactory
   {
-    IPersistenceListener CreatePersistenceListener (Guid clientTransactionID);
+    IEnumerable<IPersistenceListener> CreatePersistenceListeners (Guid clientTransactionID);
   }
 }

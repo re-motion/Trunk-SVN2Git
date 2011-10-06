@@ -158,7 +158,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private IPersistenceListener CreatePersistenceListener ()
     {
       var listenerFactories = SafeServiceLocator.Current.GetAllInstances<IPersistenceListenerFactory>();
-      return new CompoundPersistenceListener (listenerFactories.Select (f => f.CreatePersistenceListener (_transactionID)));
+      return new CompoundPersistenceListener (listenerFactories.SelectMany (f => f.CreatePersistenceListeners (_transactionID)));
     }
   }
 }
