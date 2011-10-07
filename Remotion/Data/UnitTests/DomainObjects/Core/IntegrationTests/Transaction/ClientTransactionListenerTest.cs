@@ -14,9 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -29,7 +27,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoint
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -506,25 +503,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void SubTransactionCreatingSubTransactionCreated ()
+    public void SubTransactionCreating_AndSubTransactionCreated ()
     {
       ClientTransactionMock.AddListener (_strictListenerMock);
+
+      ClientTransaction initializedTransaction = null;
 
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.SubTransactionCreating (ClientTransactionMock));
-        _strictListenerMock.Expect (
-            mock =>
-            mock.SubTransactionCreated (
-              Arg.Is (ClientTransactionMock), 
-              Arg<ClientTransaction>.Matches (tx => tx != null && tx != ClientTransactionMock && tx.ParentTransaction == ClientTransactionMock)));
+        _strictListenerMock
+            .Expect (mock => mock.SubTransactionInitialize (
+                Arg.Is (ClientTransactionMock),
+                Arg<ClientTransaction>.Matches (tx => tx != null && tx != ClientTransactionMock && tx.ParentTransaction == ClientTransactionMock)))
+            .WhenCalled (mi => initializedTransaction = (ClientTransaction) mi.Arguments[1]);
+        _strictListenerMock.Expect (mock => mock.SubTransactionCreated (
+            Arg.Is (ClientTransactionMock), 
+            Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
       }
 
       _mockRepository.ReplayAll ();
 
-      ClientTransactionMock.CreateSubTransaction();
+      var result = ClientTransactionMock.CreateSubTransaction();
 
       _mockRepository.VerifyAll ();
+      Assert.That (result, Is.SameAs (initializedTransaction));
+    }
+
+    [Test]
+    public void SubTransactionInitialize_AndTransactionInitialize_AndSubTransactionCreated ()
+    {
+      ClientTransactionMock.AddListener (_strictListenerMock);
+
+      ClientTransaction initializedTransaction = null;
+
+      using (_mockRepository.Ordered ())
+      {
+        _strictListenerMock.Expect (mock => mock.SubTransactionCreating (ClientTransactionMock));
+        _strictListenerMock
+            .Expect (mock => mock.SubTransactionInitialize (
+                Arg.Is (ClientTransactionMock),
+                Arg<ClientTransaction>.Matches (tx => tx != null && tx != ClientTransactionMock && tx.ParentTransaction == ClientTransactionMock)))
+            .WhenCalled (mi =>
+            {
+              initializedTransaction = (ClientTransaction) mi.Arguments[1];
+              ClientTransactionTestHelper.AddListener (initializedTransaction, _strictListenerMock);
+            });
+        _strictListenerMock.Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
+        _strictListenerMock.Expect (mock => mock.SubTransactionCreated (
+            Arg.Is (ClientTransactionMock),
+            Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var result = ClientTransactionMock.CreateSubTransaction ();
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.SameAs (initializedTransaction));
     }
 
     [Test]

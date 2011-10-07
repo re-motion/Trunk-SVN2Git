@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -1463,34 +1462,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4397")]
     public void SubTransactions ()
     {
       ClientTransaction initializedTransaction = null;
+
+      var subExtenstionMock = _mockRepository.StrictMock<IClientTransactionExtension>();
 
       using (_mockRepository.Ordered())
       {
         _extensionMock.Expect (mock => mock.SubTransactionCreating (_newTransaction));
         _extensionMock
-            .Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Is.Anything))
-            .WhenCalled (mi => initializedTransaction = (ClientTransaction) mi.Arguments[0]);
+            .Expect (mock => mock.SubTransactionInitialize (Arg.Is (_newTransaction), Arg<ClientTransaction>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  initializedTransaction = (ClientTransaction) mi.Arguments[1];
+                  initializedTransaction.Extensions.Add (subExtenstionMock);
+            });
+        subExtenstionMock.Stub (stub => stub.Key).Return ("inner");
+        subExtenstionMock.Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
         _extensionMock.Expect (mock => mock.SubTransactionCreated (
             Arg.Is (_newTransaction), 
             Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
-        _extensionMock.Expect (mock => mock.TransactionDiscard (
-            Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
+        subExtenstionMock.Expect (mock => mock.TransactionDiscard (Arg<ClientTransaction>.Matches (tx => tx == initializedTransaction)));
       }
 
       _mockRepository.ReplayAll();
 
-      ClientTransaction result;
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        result = ClientTransactionScope.CurrentTransaction.CreateSubTransaction();
-      }
+      var subTransaction = _newTransaction.CreateSubTransaction ();
+      subTransaction.Discard();
 
       _mockRepository.VerifyAll();
-      Assert.That (result, Is.SameAs (initializedTransaction));
+      Assert.That (subTransaction, Is.SameAs (initializedTransaction));
     }
 
     [Test]

@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }
 
-    public override void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    public override void SubTransactionInitialize (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
     {
       ArgumentUtility.CheckNotNull ("parentClientTransaction", parentClientTransaction);
       ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);

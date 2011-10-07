@@ -183,6 +183,8 @@ public class ClientTransaction
     _extensions = componentFactory.CreateExtensionCollection (this);
     _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));
 
+    if (_parentTransaction != null)
+      _parentTransaction.TransactionEventSink.SubTransactionInitialize (_parentTransaction, this);
     TransactionEventSink.TransactionInitialize (this);
   }
 

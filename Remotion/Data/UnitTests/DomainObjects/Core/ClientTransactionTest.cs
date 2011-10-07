@@ -92,6 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Initialization_OrderOfFactoryCalls ()
     {
       var fakeParentTransaction = ClientTransaction.CreateRootTransaction();
+      ClientTransactionTestHelper.SetIsReadOnly (fakeParentTransaction, true);
+
       var componentFactoryMock = _mockRepository.StrictMock<IClientTransactionComponentFactory>();
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener>();
       
@@ -100,6 +102,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       extensionMock.Replay();
       var fakeExtensionCollection = new ClientTransactionExtensionCollection ("test") { extensionMock };
       extensionMock.BackToRecord();
+
+      var parentListenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
+      extensionMock.Stub (stub => stub.Key).Return ("parent");
+      extensionMock.Replay ();
+      ClientTransactionTestHelper.AddListener (fakeParentTransaction, parentListenerMock);
+      extensionMock.BackToRecord ();
 
       ClientTransaction constructedTransaction = null;
       CompoundClientTransactionListener transactionEventSink = null;
@@ -184,6 +192,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Assert.That (transactionEventSink.Listeners, Has.No.TypeOf<ExtensionClientTransactionListener>());
             });
 
+        parentListenerMock.Expect (
+            mock => mock.SubTransactionInitialize (
+                Arg.Is (fakeParentTransaction), 
+                Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
         listenerMock.Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
         extensionMock.Expect (mock => mock.TransactionInitialize (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
       }
@@ -759,19 +771,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void CreateSubTransaction_WithCustomFactory ()
     {
-      Assert.That (_transaction.IsReadOnly, Is.False);
-
-      var fakeSubTransaction = CreateTransactionInHierarchy (_transaction);
-
+      ClientTransaction fakeSubTransaction = null;
       Func<ClientTransaction, IInvalidDomainObjectManager, ClientTransaction> factoryMock = (tx, invalidDomainObjectManager) =>
       {
+        fakeSubTransaction = CreateTransactionInHierarchy (_transaction);
         Assert.That (tx, Is.SameAs (_transaction));
         Assert.That (invalidDomainObjectManager, Is.SameAs (ClientTransactionTestHelper.GetInvalidDomainObjectManager (_transaction)));
         return fakeSubTransaction;
       };
 
+      Assert.That (_transaction.IsReadOnly, Is.False);
+
       var subTransaction = _transaction.CreateSubTransaction (factoryMock);
 
+      Assert.That (_transaction.IsReadOnly, Is.True);
       Assert.That (subTransaction, Is.SameAs (fakeSubTransaction));
       Assert.That (_transaction.SubTransaction, Is.SameAs (subTransaction));
     }
@@ -951,8 +964,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       subTransaction.Discard();
 
-      var otherSubTransaction = CreateTransactionInHierarchy (parentTransaction);
       ClientTransactionTestHelper.SetIsReadOnly (parentTransaction, true);
+      var otherSubTransaction = CreateTransactionInHierarchy (parentTransaction);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, otherSubTransaction);
 
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();

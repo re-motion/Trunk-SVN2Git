@@ -1459,23 +1459,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void SubTransactions ()
-    {
-      using (_mockRepository.Ordered())
-      {
-        _extensionMock.SubTransactionCreating (_subTransaction);
-        _extensionMock.SubTransactionCreated (null, null);
-        LastCall.Constraints (Is.Same (_subTransaction), Property.Value ("ParentTransaction", _subTransaction));
-      }
-
-      _mockRepository.ReplayAll();
-
-      _subTransaction.CreateSubTransaction();
-
-      _mockRepository.VerifyAll();
-    }
-
-    [Test]
     public void GetObjects ()
     {
       using (_mockRepository.Ordered())

@@ -22,7 +22,7 @@ using Remotion.Data.DomainObjects.Security;
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
-  public class SubTransactionCreatedTest
+  public class SubTransactionInitializeTest
   {
     private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
@@ -35,26 +35,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
-    public void SubTransactionCreated_AddsExtensionToSubTransaction ()
+    public void SubTransactionInitialize_AddsExtensionToSubTransaction ()
     {
       var subTransaction = ClientTransaction.CreateRootTransaction();
       _testHelper.AddExtension (_extension);
       
-      _extension.SubTransactionCreated (_testHelper.Transaction, subTransaction);
+      _extension.SubTransactionInitialize (_testHelper.Transaction, subTransaction);
       
       Assert.That (subTransaction.Extensions[_extension.Key], Is.SameAs (_extension));
     }
 
     [Test]
-    public void SubTransactionCreated_IgnoresExtensionIfAlreadyExists ()
+    public void SubTransactionInitialize_IgnoresExtensionIfAlreadyExists ()
     {
       var subTransaction = ClientTransaction.CreateRootTransaction();
       _testHelper.AddExtension (_extension);
 
       var existingExtension = new SecurityClientTransactionExtension();
       subTransaction.Extensions.Add (existingExtension);
-      
-      _extension.SubTransactionCreated (_testHelper.Transaction, subTransaction);
+
+      _extension.SubTransactionInitialize (_testHelper.Transaction, subTransaction);
       
       Assert.That (subTransaction.Extensions[_extension.Key], Is.SameAs (existingExtension));
     }
