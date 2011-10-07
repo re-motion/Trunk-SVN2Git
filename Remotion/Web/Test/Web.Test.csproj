@@ -223,6 +223,13 @@
     <Compile Include="MultiplePostBackCatching\UpdatePanelTestSuiteForm.aspx.designer.cs">
       <DependentUpon>UpdatePanelTestSuiteForm.aspx</DependentUpon>
     </Compile>
+    <Compile Include="OnLoadEventTest.aspx.cs">
+      <DependentUpon>OnLoadEventTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="OnLoadEventTest.aspx.designer.cs">
+      <DependentUpon>OnLoadEventTest.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PostBackFocus.aspx.cs">
       <DependentUpon>PostBackFocus.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -370,6 +377,7 @@
     <Content Include="ExecutionEngine\SessionForm.aspx">
       <SubType>Form</SubType>
     </Content>
+    <Content Include="OnLoadEventTest.aspx" />
     <Content Include="PostBackFocus.aspx" />
     <Content Include="Start.aspx">
       <SubType>Form</SubType>

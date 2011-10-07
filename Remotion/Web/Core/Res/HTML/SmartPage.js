@@ -149,7 +149,7 @@ function SmartPage_Context(
   }
 
   // Attaches the event handlers to the page's events.
-  this.SetEventHandlers = function()
+  this.SetEventHandlers = function ()
   {
     RemoveEventHandler(window, 'load', _loadHandler);
     AddEventHandler(window, 'load', _loadHandler);
@@ -345,33 +345,38 @@ function SmartPage_Context(
   };
 
   // Event handler for window.OnLoad
-  this.OnLoad = function()
-  {
-    this.CheckIfCached();
-    this.RegisterPageLoaded();
-  };
-
-  this.RegisterPageLoaded = function ()
+  this.OnLoad = function ()
   {
     if (!TypeUtility.IsUndefined(window.Sys) && !TypeUtility.IsUndefined(Sys.WebForms) && !TypeUtility.IsUndefined(Sys.WebForms.PageRequestManager))
     {
+      Sys.WebForms.PageRequestManager.getInstance().remove_pageLoaded(SmartPage_PageRequestManager_pageLoaded);
       Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SmartPage_PageRequestManager_pageLoaded);
     }
-    else
-    {
-      SmartPage_PageRequestManager_pageLoaded(null, null);
-    }
-  }
+
+    var isAsynchronous = false;
+    this.PageLoaded(isAsynchronous);
+  };
 
   this.PageRequestManager_pageLoaded = function (sender, args)
   {
+    var isAsynchronous = sender && sender.get_isInAsyncPostBack();
+    if (isAsynchronous)
+    {
+      this.PageLoaded(isAsynchronous); 
+    }
+  }
+
+  this.PageLoaded = function (isAsynchronous)
+  {
+    if (!isAsynchronous)
+      this.CheckIfCached();
+
     this.Restore();
 
     _isSubmitting = false;
     _isSubmittingBeforeUnload = false;
     this.HideStatusMessage();
 
-    var isAsynchronous = sender && sender.get_isInAsyncPostBack();
     ExecuteEventHandlers(_eventHandlers['onload'], _hasSubmitted, _isCached, isAsynchronous);
   }
 
