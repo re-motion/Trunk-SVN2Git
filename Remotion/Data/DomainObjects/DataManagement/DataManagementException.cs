@@ -20,6 +20,7 @@ using System.Runtime.Serialization;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
 [Serializable]
+  [Obsolete ("This class has been removed. Use the classes that used to be derived from this class instead. (1.13.124)", true)]
 public class DataManagementException : DomainObjectException
 {
   // types

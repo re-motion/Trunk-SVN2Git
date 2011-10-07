@@ -20,7 +20,7 @@ using System.Runtime.Serialization;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
 [Serializable]
-public class ClientTransactionsDifferException : DataManagementException
+public class ClientTransactionsDifferException : DomainObjectException
 {
   // types
 
