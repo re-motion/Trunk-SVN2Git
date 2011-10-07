@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -789,12 +791,20 @@ public class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       BeginCommit();
-      var changedButNotDeletedDomainObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New).Select (item => item.DomainObject).ToArray();
 
-      var persistableDataItems = GetAndValidateDataForCommit();
+      var persistableDataItems = GetAndValidateDataForCommit().ToList();
+      var domainObjects = ListAdapter.Adapt (persistableDataItems, item => item.DomainObject, domainObject => { throw new NotSupportedException(); });
+      TransactionEventSink.TransactionCommitValidate (this, new ReadOnlyCollection<DomainObject> (domainObjects));
+      
       _persistenceStrategy.PersistData (persistableDataItems);
 
       _dataManager.Commit ();
+      
+      var changedButNotDeletedDomainObjects = persistableDataItems
+          .Where (item => item.DomainObjectState != StateType.Deleted)
+          .Select (item => item.DomainObject)
+          .ToList()
+          .AsReadOnly();
       EndCommit (changedButNotDeletedDomainObjects);
     }
   }
@@ -1308,12 +1318,12 @@ public class ClientTransaction
     } while (clientTransactionCommittingEventNotRaised.Any());
   }
 
-  private void EndCommit (DomainObject[] changedDomainObjects)
+  private void EndCommit (ReadOnlyCollection<DomainObject> changedDomainObjects)
   {
     foreach (DomainObject changedDomainObject in changedDomainObjects)
       changedDomainObject.OnCommitted (EventArgs.Empty);
 
-    OnCommitted (new ClientTransactionEventArgs (Array.AsReadOnly (changedDomainObjects)));
+    OnCommitted (new ClientTransactionEventArgs (changedDomainObjects));
   }
 
   private void BeginRollback ()

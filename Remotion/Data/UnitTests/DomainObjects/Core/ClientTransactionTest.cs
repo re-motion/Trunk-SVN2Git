@@ -56,6 +56,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     private ClientTransaction _transactionWithMocks;
 
+    private Order _fakeDomainObject1;
+    private Order _fakeDomainObject2;
+    private Order _fakeDomainObject3;
+
+    private DataContainer _fakeDataContainer1;
+    private DataContainer _fakeDataContainer2;
+    private DataContainer _fakeDataContainer3;
+
     public override void SetUp ()
     {
       base.SetUp ();
@@ -86,6 +94,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _objectLoaderMock,
           _persistenceStrategyMock,
           _queryManagerMock);
+
+      _fakeDomainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
+      _fakeDomainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
+      _fakeDomainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
+
+      _fakeDataContainer1 = DataContainer.CreateNew (_fakeDomainObject1.ID);
+      _fakeDataContainer2 = DataContainer.CreateNew (_fakeDomainObject2.ID);
+      _fakeDataContainer3 = DataContainer.CreateNew (_fakeDomainObject3.ID);
     }
 
     [Test]
@@ -265,6 +281,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var subTransaction2 = subTransaction1.CreateSubTransaction ();
 
       Assert.That (_transaction.LeafTransaction, Is.SameAs (subTransaction2));
+    }
+
+    [Test]
+    public void Commit ()
+    {
+      var item1 = new PersistableData (_fakeDomainObject1, StateType.New, _fakeDataContainer1, new IRelationEndPoint[0]);
+      var item2 = new PersistableData (_fakeDomainObject2, StateType.Changed, _fakeDataContainer2, new IRelationEndPoint[0]);
+      var item3 = new PersistableData (_fakeDomainObject3, StateType.Deleted, _fakeDataContainer3, new IRelationEndPoint[0]);
+      _dataManagerMock.Stub (stub => stub.GetNewChangedDeletedData()).Return (new[] { item1, item2, item3 });
+      
+      var expectationCounter = new OrderedExpectationCounter();
+      var listenerMock = _mockRepository.StrictMock<IClientTransactionListener>();
+      _fakeListeners.AddListener (listenerMock);
+
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject1)).Return (true);
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject2)).Return (true);
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject3)).Return (true);
+
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_fakeDomainObject1.ID)).Return (false);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_fakeDomainObject2.ID)).Return (false);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_fakeDomainObject3.ID)).Return (false);
+
+      listenerMock
+          .Expect (mock => mock.TransactionCommitting (
+              Arg.Is (_transactionWithMocks),
+              Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { _fakeDomainObject1, _fakeDomainObject2, _fakeDomainObject3 })))
+          .Ordered (expectationCounter)
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
+      _dataManagerMock.Expect (mock => mock.ValidateMandatoryRelations (_fakeDataContainer1)).Ordered (expectationCounter);
+      _dataManagerMock.Expect (mock => mock.ValidateMandatoryRelations (_fakeDataContainer2)).Ordered (expectationCounter);
+      listenerMock
+          .Expect (
+              mock => mock.TransactionCommitValidate (
+                  Arg.Is (_transactionWithMocks),
+                  Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { _fakeDomainObject1, _fakeDomainObject2, _fakeDomainObject3 })))
+          .Ordered (expectationCounter)
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
+      _persistenceStrategyMock
+          .Expect (mock => mock.PersistData (Arg<IEnumerable<PersistableData>>.List.Equivalent (new[] { item1, item2, item3 })))
+          .Ordered (expectationCounter);
+      _dataManagerMock
+          .Expect (mock => mock.Commit())
+          .Ordered (expectationCounter);
+      listenerMock
+          .Expect (
+              mock => mock.TransactionCommitted (
+                  Arg.Is (_transactionWithMocks),
+                  Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { _fakeDomainObject1, _fakeDomainObject2 })))
+          .Ordered (expectationCounter)
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
+
+      _mockRepository.ReplayAll();
+
+      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transactionWithMocks));
+      _transactionWithMocks.Commit();
+      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transactionWithMocks));
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]

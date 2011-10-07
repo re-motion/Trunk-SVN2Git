@@ -368,11 +368,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _strictListenerMock.Expect (mock => mock.TransactionCommitting (
             Arg.Is (ClientTransactionMock), 
-            Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+            Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { order })));
+        _strictListenerMock.Expect (mock => mock.TransactionCommitValidate (
+            Arg.Is (ClientTransactionMock),
+            Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { order })));
         _strictListenerMock.Expect (mock => mock.DataContainerStateUpdated (ClientTransactionMock, order.InternalDataContainer, StateType.Unchanged));
         _strictListenerMock.Expect (mock => mock.TransactionCommitted (
             Arg.Is (ClientTransactionMock), 
-            Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+            Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { order })));
       }
 
       _mockRepository.ReplayAll ();

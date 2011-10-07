@@ -90,11 +90,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       var extensionMock = mockRepository.StrictMock<IClientTransactionExtension>();
 
       extensionMock.Expect (mock => mock.Committing (
-          Arg.Is (transportedObjects.DataTransaction), 
-          Arg<ReadOnlyCollection<DomainObject>>.List.Equal (GetTransportedObjects (transportedObjects))));
+          Arg.Is (transportedObjects.DataTransaction),
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (GetTransportedObjects (transportedObjects))));
+      extensionMock.Expect (mock => mock.CommitValidate (
+          Arg.Is (transportedObjects.DataTransaction),
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (GetTransportedObjects (transportedObjects))));
       extensionMock.Expect (mock => mock.Committed (
           Arg.Is (transportedObjects.DataTransaction),
-          Arg<ReadOnlyCollection<DomainObject>>.List.Equal (GetTransportedObjects (transportedObjects))));
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (GetTransportedObjects (transportedObjects))));
       extensionMock.Expect (mock => mock.TransactionDiscard (transportedObjects.DataTransaction));
 
       extensionMock.Stub (stub => stub.Key).Return ("mock");

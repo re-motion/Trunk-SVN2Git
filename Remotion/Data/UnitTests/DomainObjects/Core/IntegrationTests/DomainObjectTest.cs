@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -878,6 +879,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           LastCall.Constraints (
               Mocks_Is.Same (ClientTransactionScope.CurrentTransaction),
               new ContainsConstraint (newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1));
+
+          extension.CommitValidate (
+              Arg.Is (ClientTransactionScope.CurrentTransaction),
+              Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (
+                  new DomainObject[] { newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1 }));
 
           using (mockRepository.Unordered ())
           {

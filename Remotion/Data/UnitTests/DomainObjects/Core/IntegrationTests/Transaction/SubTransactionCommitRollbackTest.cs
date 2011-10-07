@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
@@ -90,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         Order order = Order.NewObject();
         _subTransaction.Rollback();
-        int i = order.OrderNumber;
+        Dev.Null = order.OrderNumber;
       }
     }
 
@@ -217,6 +218,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           repository.BackToRecordAll ();
           extensionMock.Committing (null, null);
           LastCall.IgnoreArguments ();
+          extensionMock.CommitValidate (null, null);
+          LastCall.IgnoreArguments ();
           extensionMock.Committed (null, null);
           LastCall.IgnoreArguments ();
           repository.ReplayAll ();
@@ -252,6 +255,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           using (repository.Ordered ())
           {
             extensionMock.Committing (null, null);
+            LastCall.IgnoreArguments ();
+            extensionMock.CommitValidate (null, null);
             LastCall.IgnoreArguments ();
             extensionMock.Committed (null, null);
             LastCall.IgnoreArguments ();

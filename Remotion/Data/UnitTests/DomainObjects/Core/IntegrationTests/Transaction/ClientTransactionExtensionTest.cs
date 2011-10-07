@@ -1268,18 +1268,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.Committing (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
-        _extensionMock.Committed (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
+        _extensionMock.Expect (mock => mock.Committing (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
+        _extensionMock.Expect (mock => mock.CommitValidate(Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
+        _extensionMock.Expect (mock => mock.Committed (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        ClientTransactionScope.CurrentTransaction.Commit();
-      }
+      _newTransaction.Commit();
 
       _mockRepository.VerifyAll();
     }
@@ -1299,20 +1295,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.Committing (null, null);
-        LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (computer) & Rhino.Mocks.Constraints.List.IsIn (employee));
-        _extensionMock.Committed (null, null);
-        LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction), Property.Value ("Count", 2) & Rhino.Mocks.Constraints.List.IsIn (computer) & Rhino.Mocks.Constraints.List.IsIn (employee));
+        _extensionMock.Expect (
+            mock =>
+            mock.Committing (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { computer, employee })));
+        _extensionMock.Expect (
+            mock =>
+            mock.CommitValidate (
+                Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { computer, employee })));
+        _extensionMock.Expect (
+            mock =>
+            mock.Committed (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { computer, employee })));
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        ClientTransactionScope.CurrentTransaction.Commit();
-      }
+      _newTransaction.Commit();
+
       _mockRepository.VerifyAll();
     }
 
@@ -1331,22 +1329,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.Committing (null, null);
-        LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
-            Property.Value ("Count", 3) & Rhino.Mocks.Constraints.List.IsIn (_order1) & Rhino.Mocks.Constraints.List.IsIn (newCustomer) & Rhino.Mocks.Constraints.List.IsIn (oldCustomer));
-        _extensionMock.Committed (null, null);
-        LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
-            Property.Value ("Count", 3) & Rhino.Mocks.Constraints.List.IsIn (_order1) & Rhino.Mocks.Constraints.List.IsIn (newCustomer) & Rhino.Mocks.Constraints.List.IsIn (oldCustomer));
+        _extensionMock.Expect (
+            mock =>
+            mock.Committing (
+                Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { _order1, newCustomer, oldCustomer })));
+        _extensionMock.Expect (
+            mock =>
+            mock.CommitValidate (
+                Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { _order1, newCustomer, oldCustomer })));
+        _extensionMock.Expect (
+            mock =>
+            mock.Committed (
+                Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { _order1, newCustomer, oldCustomer })));
       }
 
       _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope())
-      {
-        ClientTransactionScope.CurrentTransaction.Commit();
-      }
+      _newTransaction.Commit();
+
       _mockRepository.VerifyAll();
     }
 
@@ -1365,37 +1365,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       var clientTransactionMockEventReceiver =
           _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_newTransaction);
-
       var computerEventReveiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (computer);
 
       using (_mockRepository.Ordered())
       {
-        computerEventReveiver.Committing (computer, EventArgs.Empty);
+        computerEventReveiver.Expect (mock => mock.Committing (computer, EventArgs.Empty));
+        _extensionMock.Expect (mock => mock.Committing (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
+        clientTransactionMockEventReceiver.Expect (
+            mock =>
+            mock.Committing (
+                Arg.Is (_newTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SequenceEqual (new[] { computer }))));
 
-        _extensionMock.Committing (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
+        _extensionMock.Expect (mock => mock.CommitValidate (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
 
-        clientTransactionMockEventReceiver.Committing (null, null);
-        LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
-            Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
-
-        computerEventReveiver.Committed (computer, EventArgs.Empty);
-
-        clientTransactionMockEventReceiver.Committed (null, null);
-        LastCall.Constraints (
-            Rhino_Is.Same (_newTransaction),
-            Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
-
-        _extensionMock.Committed (null, null);
-        LastCall.Constraints (Rhino_Is.Same (_newTransaction), Property.Value ("Count", 1) & Rhino.Mocks.Constraints.List.IsIn (computer));
+        computerEventReveiver.Expect (mock => mock.Committed (computer, EventArgs.Empty));
+        clientTransactionMockEventReceiver.Expect (
+            mock =>
+            mock.Committed (
+                Arg.Is (_newTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SequenceEqual (new[] { computer }))));
+        _extensionMock.Expect (mock => mock.Committed (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
       }
 
       _mockRepository.ReplayAll();
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        ClientTransactionScope.CurrentTransaction.Commit();
+        _newTransaction.Commit();
       }
 
       _mockRepository.VerifyAll();
