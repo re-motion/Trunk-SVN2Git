@@ -114,7 +114,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
   function UpdateCommand(selectedValue)
   {
-    if (command == null)
+    if (command == null || command.length == 0)
       return;
 
     if (isAutoPostBackEnabled)

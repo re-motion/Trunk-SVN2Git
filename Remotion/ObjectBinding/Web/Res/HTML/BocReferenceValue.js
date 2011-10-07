@@ -37,7 +37,7 @@ BocReferenceValue.Initialize = function (
 
   dropDownList.change(function ()
   {
-    if (command == null)
+    if (command == null || command.length == 0)
       return;
 
     if (isAutoPostBackEnabled)
