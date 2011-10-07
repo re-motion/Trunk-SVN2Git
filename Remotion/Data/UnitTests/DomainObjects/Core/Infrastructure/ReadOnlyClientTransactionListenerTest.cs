@@ -60,9 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _clientTransaction.IsReadOnly = true;
       MethodInfo[] methods =
           typeof (ReadOnlyClientTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-      IEnumerable<MethodInfo> result = methods
+      var result = methods
         .Where (n => !_neverThrowingMethods.Contains (n.Name))
-        .Where (n => !_methodsExpectingReadOnly.Contains (n.Name));
+        .Where (n => !_methodsExpectingReadOnly.Contains (n.Name)).ToList();
+
+      Assert.That (result.Count (), Is.EqualTo (24));
       
       foreach (var method in result)
       {
@@ -109,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         .Where (n => !_neverThrowingMethods.Contains (n.Name))
         .Where (n => !_methodsExpectingReadOnly.Contains (n.Name));
       
-      Assert.That (result.Count (), Is.EqualTo (23));
+      Assert.That (result.Count (), Is.EqualTo (24));
 
       foreach (var method in result)
       {

@@ -68,6 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       CheckNopEvent (e => e.FilterQueryResult (null, fakeResult), fakeResult);
 
       CheckNopEvent (e => e.Committing (null, null));
+      CheckNopEvent (e => e.CommitValidate (null, null));
       CheckNopEvent (e => e.Committed (null, null));
       CheckNopEvent (e => e.RollingBack (null, null));
       CheckNopEvent (e => e.RolledBack (null, null));

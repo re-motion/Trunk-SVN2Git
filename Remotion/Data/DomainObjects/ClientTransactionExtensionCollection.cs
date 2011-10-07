@@ -356,6 +356,15 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
+    public void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.CommitValidate (clientTransaction, changedDomainObjects);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
     public void Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);

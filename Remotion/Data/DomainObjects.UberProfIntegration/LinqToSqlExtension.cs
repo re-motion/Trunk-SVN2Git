@@ -122,6 +122,10 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
+    public void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
+    {
+    }
+
     public void Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }

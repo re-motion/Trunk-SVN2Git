@@ -131,6 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckNotification (listener => listener.RelationChanged (ClientTransactionMock, order, realtionEndPointDefinitionMock));
 
       CheckNotification (listener => listener.TransactionCommitting (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.TransactionCommitValidate (ClientTransactionMock, domainObjects));
       CheckNotification (listener => listener.TransactionCommitted (ClientTransactionMock, domainObjects));
       CheckNotification (listener => listener.TransactionRollingBack (ClientTransactionMock, domainObjects));
       CheckNotification (listener => listener.TransactionRolledBack (ClientTransactionMock, domainObjects));

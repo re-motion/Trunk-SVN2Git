@@ -425,6 +425,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void CommitValidate ()
+    {
+      var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
+      using (_mockRepository.Ordered ())
+      {
+        _extension1.Expect (mock => mock.CommitValidate (ClientTransactionMock, data));
+        _extension2.Expect (mock => mock.CommitValidate (ClientTransactionMock, data));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      _collectionWithExtensions.CommitValidate (ClientTransactionMock, data);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void Committed ()
     {
       var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);

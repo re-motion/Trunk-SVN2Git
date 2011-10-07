@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -60,6 +61,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       ExpectDelegation (l => l.SubTransactionCreating (_clientTransaction), e => e.SubTransactionCreating (_clientTransaction));
       ExpectDelegation (l => l.SubTransactionInitialize (_clientTransaction, tx2), e => e.SubTransactionInitialize (_clientTransaction, tx2));
       ExpectDelegation (l => l.SubTransactionCreated (_clientTransaction, tx2), e => e.SubTransactionCreated (_clientTransaction, tx2));
+    }
+
+    [Test]
+    public void TrahsactionCommitEvents_Delegated ()
+    {
+      var domainObjects = Array.AsReadOnly (new DomainObject[0]);
+
+      ExpectDelegation (l => l.TransactionCommitting (_clientTransaction, domainObjects), e => e.Committing (_clientTransaction, domainObjects));
+      ExpectDelegation (l => l.TransactionCommitValidate (_clientTransaction, domainObjects), e => e.CommitValidate (_clientTransaction, domainObjects));
+      ExpectDelegation (l => l.TransactionCommitted (_clientTransaction, domainObjects), e => e.Committed (_clientTransaction, domainObjects));
     }
 
     private void ExpectDelegation (Action<IClientTransactionListener> listenerAction, Action<IClientTransactionExtension> expectedExtensionAction)

@@ -146,6 +146,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
+    public void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    {
+      throw CreateException ();
+    }
+
     public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();

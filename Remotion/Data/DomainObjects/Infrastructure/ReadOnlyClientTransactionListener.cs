@@ -175,6 +175,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "TransactionCommitting");
     }
 
+    public void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    {
+      EnsureWriteable (clientTransaction, "TransactionCommitValidate");
+    }
+
     public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable (clientTransaction, "TransactionCommitted");

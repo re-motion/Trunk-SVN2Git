@@ -183,6 +183,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.TransactionCommitting (clientTransaction, domainObjects);
     }
 
+    public void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    {
+      foreach (var listener in _listeners)
+        listener.TransactionCommitValidate (clientTransaction, domainObjects);
+    }
+
     public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (var listener in _listeners)

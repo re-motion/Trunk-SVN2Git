@@ -439,6 +439,22 @@ namespace Remotion.Data.DomainObjects
     void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects);
 
     /// <summary>
+    /// Invoked just before a set of <see cref="DomainObject"/> instances is to be committed.
+    /// Implementations can check whether the set of objects is valid and, if not, throw an <see cref="DomainObjectValidationException"/>.
+    /// </summary>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
+    /// <param name="changedDomainObjects">A <see cref="ReadOnlyCollection{T}"/> holding all <see cref="DomainObject"/> instances
+    /// that are about to be committed.</param>
+    /// <remarks>
+    /// <note type="inotes">The implementation of this method should throw a <see cref="DomainObjectValidationException"/> if the operation must be 
+    /// cancelled.</note>
+    /// <note type="inotes">The implementation of this method must not modify, create, or delete any <see cref="DomainObjects"/> in the 
+    /// <paramref name="clientTransaction"/>. To modify objects during commit, use the <see cref="Committing"/> method.</note>
+    /// </remarks>
+    /// <exception cref="DomainObjectValidationException">The set of <paramref name="changedDomainObjects"/> was not valid.</exception>
+    void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects);
+    
+    /// <summary>
     /// Invoked after a <see cref="ClientTransaction"/> was executed.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>

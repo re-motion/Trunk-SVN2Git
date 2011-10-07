@@ -130,6 +130,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
     }
 
+    public void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
+    {
+    }
+
     public virtual void Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }

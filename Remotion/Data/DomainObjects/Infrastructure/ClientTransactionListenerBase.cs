@@ -119,6 +119,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
+    public virtual void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    {
+    }
+
     public virtual void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
