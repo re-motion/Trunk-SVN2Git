@@ -1265,6 +1265,7 @@
     <Compile Include="DomainObjects\UberProfIntegration\UberProfIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\MockableLinqToSqlAppender.cs" />
     <Compile Include="DomainObjects\UberProfIntegration\LinqToSqlExtensionFactoryTest.cs" />
+    <Compile Include="ListArgExtensions.cs" />
     <Compile Include="MethodOptionsExtensions.cs" />
     <Compile Include="OrderedExpectationCounter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
