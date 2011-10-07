@@ -570,7 +570,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return emptyItem;
     }
 
-    protected override IBusinessObjectWithIdentity GetValue ()
+    protected override sealed IBusinessObjectWithIdentity GetValue ()
     {
       if (InternalValue == null)
         _value = null;
@@ -585,7 +585,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return _value;
     }
 
-    protected override void SetValue (IBusinessObjectWithIdentity value)
+    protected override sealed void SetValue (IBusinessObjectWithIdentity value)
     {
       _value = value;
 
