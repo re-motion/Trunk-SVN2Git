@@ -18,7 +18,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupTests
@@ -38,17 +37,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       grandParent.Parent = child;
 
-      try
-      {
-        ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.Fail();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("Group '" + grandParent.ID + "' cannot be committed because it would result in a cirucular parent hierarchy."));
-      }
+      Assert.That (
+          () => ClientTransactionScope.CurrentTransaction.Commit (),
+          Throws.InvalidOperationException
+              .And.Message.EqualTo ("Group '" + grandParent.ID + "' cannot be committed because it would result in a cirucular parent hierarchy."));
     }
 
     [Test]
@@ -61,17 +53,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       root.Parent = root;
 
-      try
-      {
-        ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.Fail();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("Group '" + root.ID + "' cannot be committed because it would result in a cirucular parent hierarchy."));
-      }
+      Assert.That (
+          () => ClientTransactionScope.CurrentTransaction.Commit (),
+          Throws.InvalidOperationException
+              .And.Message.EqualTo ("Group '" + root.ID + "' cannot be committed because it would result in a cirucular parent hierarchy."));
     }
 
     [Test]
@@ -88,24 +73,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       parent.Name = "NewName";
       child.Parent = parent;
 
-      try
-      {
-        // Order of DomainObjects is stable and equal to order in which the objects have been added to DataManager
-        // Should this ever change, call OnCommitting manually in order to ensure that the parent check is skipped and the child causes the exception
-        ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.Fail();
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message,
-            Is.EqualTo ("Group '" + child.ID + "' cannot be committed because it would result in a cirucular parent hierarchy."));
-      }
+      // Order of DomainObjects is stable and equal to order in which the objects have been added to DataManager
+      // Should this ever change, call OnCommitting manually in order to ensure that the parent check is skipped and the child causes the exception
+      Assert.That (
+          () => ClientTransactionScope.CurrentTransaction.Commit(),
+          Throws.InvalidOperationException
+              .And.Message.EqualTo ("Group '" + child.ID + "' cannot be committed because it would result in a cirucular parent hierarchy."));
     }
 
     [Test]
-    [ExpectedException (typeof (ConcurrencyViolationException))]
-    public void OnCommitting_WithCircularParentHierarchy_ChangesHappensInDifferentTransactions_ThrowsConcurrencyViolationException ()
+    public void OnCommitting_WithCircularParentHierarchy_ChangesHappensInDifferentTransactions_ThrowsInvalidOperationException ()
     {
       Tenant tenant = TestHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "Tenant", Guid.NewGuid().ToString());
       Group grandParent = TestHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "GrandParent", Guid.NewGuid().ToString(), null, tenant);
@@ -123,7 +100,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group child = TestHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "Child", Guid.NewGuid().ToString(), parent, tenant);
       grandParent.Parent = child;
 
-      ClientTransactionScope.CurrentTransaction.Commit();
+      Assert.That (
+          () => ClientTransactionScope.CurrentTransaction.Commit (),
+          Throws.InvalidOperationException
+              .And.Message.EqualTo ("Group '" + grandParent.ID + "' cannot be committed because it would result in a cirucular parent hierarchy."));
     }
 
     [Test]
@@ -149,8 +129,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     }
 
     [Test]
-    [ExpectedException (typeof (ConcurrencyViolationException))]
-    public void OnCommitting_SimultanousChangesToParentInDifferentTransactions_ThrowsConcurrencyExceptions ()
+    public void OnCommitting_ReloadsParentGroupsHavingAChangedVirtualEndPointDuringOnCommittingToPreventConcurrencyExceptions ()
     {
       Tenant tenant = TestHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "Tenant", Guid.NewGuid().ToString());
       Group grandParent = TestHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "GrandParent", Guid.NewGuid().ToString(), null, tenant);
