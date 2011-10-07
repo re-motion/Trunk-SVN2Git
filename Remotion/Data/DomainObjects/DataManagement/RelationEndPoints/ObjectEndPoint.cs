@@ -55,12 +55,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       if (OppositeObjectID == null)
       {
-        throw CreateMandatoryRelationNotSetException (
-            GetDomainObjectReference(),
-            PropertyName,
-            "Mandatory relation property '{0}' of domain object '{1}' cannot be null.",
-            PropertyName,
-            ObjectID);
+        throw new MandatoryRelationNotSetException (
+            GetDomainObjectReference(), 
+            PropertyName, 
+            string.Format ("Mandatory relation property '{0}' of domain object '{1}' cannot be null.", PropertyName, ObjectID));
       }
     }
 

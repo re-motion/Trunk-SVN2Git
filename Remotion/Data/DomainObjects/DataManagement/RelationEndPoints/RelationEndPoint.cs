@@ -126,15 +126,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return GetType().Name + ": " + ID;
     }
 
-    protected MandatoryRelationNotSetException CreateMandatoryRelationNotSetException (
-        DomainObject domainObject,
-        string propertyName,
-        string formatString,
-        params object[] args)
-    {
-      return new MandatoryRelationNotSetException (domainObject, propertyName, string.Format (formatString, args));
-    }
-
     #region Serialization
 
     protected RelationEndPoint (FlattenedDeserializationInfo info)
