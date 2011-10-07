@@ -167,7 +167,7 @@ function SmartPage_Context(
     _aspnetFormOnSubmit = _theForm.onsubmit;
     _theForm.onsubmit = _formSubmitHandler;
     _theForm.onclick = _formClickHandler;
-    if (!TypeUtility.IsUndefined(window.__doPostBack))
+    if (TypeUtility.IsDefined(window.__doPostBack))
     {
       _aspnetDoPostBack = window.__doPostBack;
       window.__doPostBack = _doPostBackHandler;
@@ -189,10 +189,10 @@ function SmartPage_Context(
 
     SetFocusEventHandlers(window.document.body);
 
-    if (!TypeUtility.IsUndefined(window.WebForm_FireDefaultButton))
+    if (TypeUtility.IsDefined(window.WebForm_FireDefaultButton))
       WebForm_FireDefaultButton = _fireDefaultButtonHandler;
 
-    if (!TypeUtility.IsUndefined(window.Sys) && !TypeUtility.IsUndefined(Sys.WebForms) && !TypeUtility.IsUndefined(Sys.WebForms.PageRequestManager))
+    if (TypeUtility.IsDefined(window.Sys) && TypeUtility.IsDefined(Sys.WebForms) && TypeUtility.IsDefined(Sys.WebForms.PageRequestManager))
     {
       Sys.WebForms.PageRequestManager.prototype._updatePanel = Sys$WebForms$PageRequestManager$_updatePanel;
     }
@@ -271,7 +271,7 @@ function SmartPage_Context(
       if (currentElement == null)
         return;
 
-      if (!TypeUtility.IsUndefined(currentElement.id) && !StringUtility.IsNullOrEmpty(currentElement.id)
+      if (TypeUtility.IsDefined(currentElement.id) && !StringUtility.IsNullOrEmpty(currentElement.id)
         && IsFocusableTag(currentElement.tagName))
       {
         currentElement.onfocus = _elementFocusHandler;
@@ -300,9 +300,9 @@ function SmartPage_Context(
   {
     try
     {
-      if (!TypeUtility.IsUndefined(window.document.activeElement) && window.document.activeElement != null
+      if (TypeUtility.IsDefined(window.document.activeElement) && window.document.activeElement != null
           && window.document.body != window.document.activeElement && (jQuery('body').find(window.document.activeElement).length == 1)
-          && !TypeUtility.IsUndefined(window.document.activeElement.tagName) && IsFocusableTag(window.document.activeElement.tagName))
+          && TypeUtility.IsDefined(window.document.activeElement.tagName) && IsFocusableTag(window.document.activeElement.tagName))
       {
         _activeElement = window.document.activeElement;
       }
@@ -347,7 +347,7 @@ function SmartPage_Context(
   // Event handler for window.OnLoad
   this.OnLoad = function ()
   {
-    if (!TypeUtility.IsUndefined(window.Sys) && !TypeUtility.IsUndefined(Sys.WebForms) && !TypeUtility.IsUndefined(Sys.WebForms.PageRequestManager))
+    if (TypeUtility.IsDefined(window.Sys) && TypeUtility.IsDefined(Sys.WebForms) && TypeUtility.IsDefined(Sys.WebForms.PageRequestManager))
     {
       Sys.WebForms.PageRequestManager.getInstance().remove_pageLoaded(SmartPage_PageRequestManager_pageLoaded);
       Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SmartPage_PageRequestManager_pageLoaded);
@@ -738,13 +738,13 @@ function SmartPage_Context(
     {
       var defaultButton = document.getElementById(defaultButtonID);
 
-      if (defaultButton != null && !TypeUtility.IsUndefined(defaultButton.click))
+      if (defaultButton != null && TypeUtility.IsDefined(defaultButton.click))
       {
         _defaultButtonFired = true;
         defaultButton.focus();
         defaultButton.click();
         e.cancelBubble = true;
-        if (!TypeUtility.IsUndefined(e.stopPropagation))
+        if (TypeUtility.IsDefined(e.stopPropagation))
           e.stopPropagation();
         return false;
       }
@@ -775,7 +775,7 @@ function SmartPage_Context(
     try
     {
       var xhttp;
-      if (!TypeUtility.IsUndefined (window.XMLHttpRequest))
+      if (TypeUtility.IsDefined (window.XMLHttpRequest))
         xhttp = new XMLHttpRequest();
       else
         xhttp = new ActiveXObject('Microsoft.XMLHTTP');
@@ -996,7 +996,7 @@ function SmartPage_Context(
 
     var tagName = element.tagName.toLowerCase();
     if (tagName == 'a'
-        && !TypeUtility.IsUndefined(element.href) && element.href != null
+        && TypeUtility.IsDefined(element.href) && element.href != null
         && element.href.substring(0, 11).toLowerCase() == 'javascript:')
     {
       return true;
@@ -1039,9 +1039,9 @@ function SmartPage_Context(
     if (e == null)
       return null;
 
-    if (!TypeUtility.IsUndefined(e.target) && e.target != null)
+    if (TypeUtility.IsDefined(e.target) && e.target != null)
       return e.target;
-    else if (!TypeUtility.IsUndefined(e.srcElement) && e.srcElement != null)
+    else if (TypeUtility.IsDefined(e.srcElement) && e.srcElement != null)
       return e.srcElement;
     else
       return null;
