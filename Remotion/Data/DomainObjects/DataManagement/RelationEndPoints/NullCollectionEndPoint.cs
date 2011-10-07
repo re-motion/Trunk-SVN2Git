@@ -110,9 +110,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return true; }
     }
 
-    public void CheckMandatory ()
+    public void ValidateMandatory ()
     {
-      throw new InvalidOperationException ("CheckMandatory cannot be called on a NullCollectionEndPoint.");
+      throw new InvalidOperationException ("ValidateMandatory cannot be called on a NullCollectionEndPoint.");
     }
 
     public IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()

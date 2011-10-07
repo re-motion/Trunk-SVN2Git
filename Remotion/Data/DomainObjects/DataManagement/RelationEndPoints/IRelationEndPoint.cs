@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     void Rollback ();
     IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
     IDataManagementCommand CreateDeleteCommand ();
-    void CheckMandatory ();
+    void ValidateMandatory ();
 
     IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ();
     void SetDataFromSubTransaction (IRelationEndPoint source);

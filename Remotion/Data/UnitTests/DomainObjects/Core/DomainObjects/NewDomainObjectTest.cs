@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     [Test]
     [ExpectedException (typeof (MandatoryRelationNotSetException))]
-    public void CheckMandatoryRelation ()
+    public void ValidateMandatoryRelation ()
     {
       OrderItem orderItem = OrderItem.NewObject ();
       ClientTransactionMock.Commit ();

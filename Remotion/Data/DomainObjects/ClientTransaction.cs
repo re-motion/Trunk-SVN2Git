@@ -806,7 +806,7 @@ public class ClientTransaction
       Assertion.IsTrue (item.DomainObjectState != StateType.NotLoadedYet);
       
       if (item.DomainObjectState != StateType.Deleted)
-        _dataManager.CheckMandatoryRelations (item.DataContainer);
+        _dataManager.ValidateMandatoryRelations (item.DataContainer);
 
       yield return item;
     }

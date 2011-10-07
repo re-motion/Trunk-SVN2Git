@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           .Any (endPoint => endPoint != null && endPoint.HasChanged);
     }
 
-    public void CheckMandatoryRelations (DataContainer dataContainer)
+    public void ValidateMandatoryRelations (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         {
           IRelationEndPoint endPoint = GetRelationEndPointWithoutLoading (endPointID);
           if (endPoint != null && endPoint.IsDataComplete)
-            endPoint.CheckMandatory();
+            endPoint.ValidateMandatory();
         }
       }
     }

@@ -814,7 +814,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     
 
     [Test]
-    public void CheckMandatory_WithItems_Succeeds ()
+    public void ValidateMandatory_WithItems_Succeeds ()
     {
       var domainObjectCollectionData = new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> () });
       _loadStateMock
@@ -822,14 +822,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (new ReadOnlyCollectionDataDecorator (domainObjectCollectionData, false));
       _loadStateMock.Replay();
 
-      _endPoint.CheckMandatory ();
+      _endPoint.ValidateMandatory ();
     }
 
     [Test]
     [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage =
         "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' of domain object "
         + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' contains no items.")]
-    public void CheckMandatory_WithNoItems_Throws ()
+    public void ValidateMandatory_WithNoItems_Throws ()
     {
       var domainObjectCollectionData = new DomainObjectCollectionData ();
       _loadStateMock
@@ -837,7 +837,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (new ReadOnlyCollectionDataDecorator (domainObjectCollectionData, false));
       _loadStateMock.Replay ();
 
-      _endPoint.CheckMandatory ();
+      _endPoint.ValidateMandatory ();
     }
 
     private ILazyLoader GetEndPointLazyLoader (CollectionEndPoint endPoint)

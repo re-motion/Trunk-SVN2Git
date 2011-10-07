@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public abstract IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
     
-    public override void CheckMandatory ()
+    public override void ValidateMandatory ()
     {
       if (OppositeObjectID == null)
       {

@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       throw new NotImplementedException();
     }
 
-    public override void CheckMandatory ()
+    public override void ValidateMandatory ()
     {
       throw new NotImplementedException();
     }

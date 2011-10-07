@@ -164,9 +164,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return new NullEndPointModificationCommand (this);
     }
 
-    public void CheckMandatory ()
+    public void ValidateMandatory ()
     {
-      throw new InvalidOperationException ("CheckMandatory cannot be called on a NullObjectEndPoint.");
+      throw new InvalidOperationException ("ValidateMandatory cannot be called on a NullObjectEndPoint.");
     }
 
     public RelationEndPointID GetOppositeRelationEndPointID ()

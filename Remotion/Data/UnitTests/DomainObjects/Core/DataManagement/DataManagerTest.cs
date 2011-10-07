@@ -793,27 +793,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CheckMandatoryRelations_AllRelationsOk ()
+    public void ValidateMandatoryRelations_AllRelationsOk ()
     {
       var dataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
 
-      _dataManager.CheckMandatoryRelations (dataContainer);
+      _dataManager.ValidateMandatoryRelations (dataContainer);
     }
 
     [Test]
     [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage =
         "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object "
         + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' cannot be null.")]
-    public void CheckMandatoryRelations_RelationsNotOk ()
+    public void ValidateMandatoryRelations_RelationsNotOk ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
-      _dataManager.CheckMandatoryRelations (dataContainer);
+      _dataManager.ValidateMandatoryRelations (dataContainer);
     }
 
     [Test]
-    public void CheckMandatoryRelations_UnregisteredRelations_Ignored ()
+    public void ValidateMandatoryRelations_UnregisteredRelations_Ignored ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
@@ -821,11 +821,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
         DataManagerTestHelper.RemoveEndPoint (_dataManager, endPointID);
 
-      _dataManager.CheckMandatoryRelations (dataContainer);
+      _dataManager.ValidateMandatoryRelations (dataContainer);
     }
 
     [Test]
-    public void CheckMandatoryRelations_IncompleteRelations_Ignored ()
+    public void ValidateMandatoryRelations_IncompleteRelations_Ignored ()
     {
       var dataContainer = DataContainer.CreateNew (new ObjectID (DomainObjectIDs.Order1.ClassDefinition, Guid.NewGuid()));
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
@@ -845,7 +845,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       orderItemEndPoint.MarkDataIncomplete ();
       Assert.That (orderItemEndPoint.IsDataComplete, Is.False);
 
-      _dataManager.CheckMandatoryRelations (dataContainer); // does not throw
+      _dataManager.ValidateMandatoryRelations (dataContainer); // does not throw
 
       Assert.That (orderItemEndPoint.IsDataComplete, Is.False);
     }

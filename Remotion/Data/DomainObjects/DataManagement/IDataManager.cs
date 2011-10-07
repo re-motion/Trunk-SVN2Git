@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer);
     
     bool HasRelationChanged (DataContainer dataContainer);
-    void CheckMandatoryRelations (DataContainer dataContainer);
+    void ValidateMandatoryRelations (DataContainer dataContainer);
     
     void RegisterDataContainer (DataContainer dataContainer);
 

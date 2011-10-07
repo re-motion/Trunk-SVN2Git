@@ -167,9 +167,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void CheckMandatory ()
+    public void ValidateMandatory ()
     {
-      _nullEndPoint.CheckMandatory();
+      _nullEndPoint.ValidateMandatory();
     }
 
     [Test]
