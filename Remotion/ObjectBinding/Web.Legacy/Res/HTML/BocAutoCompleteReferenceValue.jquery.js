@@ -29,7 +29,7 @@
 */
 
 // ************************************************
-// Changes have been commented with "// re-motion:"
+// Significantly modified for re-motion
 // ************************************************
 
 ; (function($) {
@@ -107,7 +107,7 @@
         // re-motion: holds the last valid value of the input element
         var previousValidValue = $input.val();
         var cache = $.Autocompleter.Cache(options);
-        var hasFocus = 0;
+        var hasFocus = TypeUtility.IsDefined (window.document.activeElement) && window.document.activeElement == input;
         var lastKeyPressCode = -1;
         var config = {
             mouseDownOnSelect: false
@@ -263,9 +263,9 @@
         }).focus(function() {
             // track whether the field has focus, we shouldn't process any
             // results if the field no longer has focus
-            hasFocus++;
+            hasFocus = true;
         }).blur(function() {
-            hasFocus = 0;
+            hasFocus = false;
             if (select.visible() && !config.mouseDownOnSelect) {
                 var value = $input.val();
                 clearTimeout(timeout);
