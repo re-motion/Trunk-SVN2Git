@@ -20,7 +20,7 @@ using System.Runtime.Serialization;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   [Serializable]
-  public class MandatoryRelationNotSetException : DomainObjectException
+  public class MandatoryRelationNotSetException : DomainObjectValidationException
   {
     private readonly DomainObject _domainObject;
     private readonly string _propertyName;
@@ -59,6 +59,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public string PropertyName
     {
       get { return _propertyName; }
+    }
+
+    public override DomainObject[] AffectedObjects
+    {
+      get { return new[] { DomainObject }; }
     }
   }
 }
