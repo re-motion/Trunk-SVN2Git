@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -441,7 +442,8 @@ namespace Remotion.Data.DomainObjects
     /// Invoked after a <see cref="ClientTransaction"/> was executed.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="changedDomainObjects">A <see cref="ReadOnlyCollection{T}"/> holding all changed <see cref="DomainObject"/>s that are being committed.</param>
+    /// <param name="changedDomainObjects">A <see cref="ReadOnlyCollection{T}"/> holding all <see cref="DomainObject"/>s that were committed, apart
+    /// from <see cref="DomainObject"/> instances that were deleted.</param>
     /// <remarks>
     ///   <para>
     ///     Use this method to perform actions on a successful execution, whereas <see cref="Committing"/> should be used to cancel the operation.
