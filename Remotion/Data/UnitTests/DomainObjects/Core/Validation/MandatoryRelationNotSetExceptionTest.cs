@@ -16,11 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
 {
   [TestFixture]
   public class MandatoryRelationNotSetExceptionTest : ClientTransactionBaseTest

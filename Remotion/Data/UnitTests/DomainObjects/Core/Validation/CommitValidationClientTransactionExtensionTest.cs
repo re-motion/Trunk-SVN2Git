@@ -17,13 +17,10 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
 {
   [TestFixture]
   public class CommitValidationClientTransactionExtensionTest : ClientTransactionBaseTest

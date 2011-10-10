@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Remotion.Data.DomainObjects
+namespace Remotion.Data.DomainObjects.Validation
 {
   /// <summary>
   /// Subclasses of <see cref="DomainObjectValidationException"/> are thrown when a single <see cref="DomainObject"/> or a set of 

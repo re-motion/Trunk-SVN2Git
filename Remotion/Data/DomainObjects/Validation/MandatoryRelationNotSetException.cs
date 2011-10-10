@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.Validation
 {
   [Serializable]
   public class MandatoryRelationNotSetException : DomainObjectValidationException

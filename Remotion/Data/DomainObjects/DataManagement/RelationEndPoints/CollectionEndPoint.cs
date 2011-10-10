@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints

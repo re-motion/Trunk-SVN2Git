@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints

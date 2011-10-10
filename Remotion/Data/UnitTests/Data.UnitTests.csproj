@@ -261,7 +261,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\CollectionEndPointTestHelper.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\MandatoryRelationNotSetExceptionTest.cs" />
+    <Compile Include="DomainObjects\Core\Validation\MandatoryRelationNotSetExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\NullVirtualObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RealObjectEndPoints\SynchronizedRealObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RealObjectEndPoints\UnknownRealObjectEndPointSyncStateTest.cs" />
@@ -276,7 +276,7 @@
     <Compile Include="DomainObjects\Core\EventReceiver\IUnloadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionComponentFactoryUtilityTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ExtensionClientTransactionListenerTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\CommitValidationClientTransactionExtensionTest.cs" />
+    <Compile Include="DomainObjects\Core\Validation\CommitValidationClientTransactionExtensionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionReplaceDataEventTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionEndPointOppositeTrackingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\ObjectRelationInconsistenciesInSubtransactionsTest.cs" />
