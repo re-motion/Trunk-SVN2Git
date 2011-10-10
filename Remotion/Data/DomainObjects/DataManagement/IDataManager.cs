@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void Rollback ();
     
     DataContainer GetDataContainerWithLazyLoad (ObjectID objectID);
-    DataContainer GetDataContainerWithoutLoading (ObjectID id);
+    DataContainer GetDataContainerWithoutLoading (ObjectID objectID);
     IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject);
     IDataManagementCommand CreateUnloadCommand (params ObjectID[] objectIDs);
     IDataManagementCommand CreateUnloadVirtualEndPointsCommand (params RelationEndPointID[] endPointIDs);

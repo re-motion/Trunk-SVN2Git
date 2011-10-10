@@ -240,14 +240,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return dataContainer ?? LoadLazyDataContainer (objectID);
     }
 
-    public DataContainer GetDataContainerWithoutLoading (ObjectID id)
+    public DataContainer GetDataContainerWithoutLoading (ObjectID objectID)
     {
-      ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      if (_invalidDomainObjectManager.IsInvalid (id))
-        throw new ObjectInvalidException (id);
+      if (_invalidDomainObjectManager.IsInvalid (objectID))
+        throw new ObjectInvalidException (objectID);
 
-      return DataContainers[id];
+      return DataContainers[objectID];
     }
 
     public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
