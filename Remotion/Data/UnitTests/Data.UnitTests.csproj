@@ -276,6 +276,7 @@
     <Compile Include="DomainObjects\Core\EventReceiver\IUnloadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionComponentFactoryUtilityTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ExtensionClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\CommitValidationClientTransactionExtensionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionReplaceDataEventTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionEndPointOppositeTrackingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\ObjectRelationInconsistenciesInSubtransactionsTest.cs" />
