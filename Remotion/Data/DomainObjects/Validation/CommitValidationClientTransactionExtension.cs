@@ -43,12 +43,9 @@ namespace Remotion.Data.DomainObjects.Validation
 
     public override void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
+      var validator = new MandatoryRelationValidator (clientTransaction.DataManager);
       foreach (var domainObject in changedDomainObjects)
-      {
-        var dataContainer = clientTransaction.DataManager.GetDataContainerWithoutLoading (domainObject.ID);
-        if (dataContainer != null)
-          clientTransaction.DataManager.ValidateMandatoryRelations (dataContainer);
-      }
+        validator.Validate (domainObject);
     }
   }
 }

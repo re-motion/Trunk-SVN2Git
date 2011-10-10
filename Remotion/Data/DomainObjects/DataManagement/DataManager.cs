@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -135,19 +136,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
           .Any (endPoint => endPoint != null && endPoint.HasChanged);
     }
 
+    // TODO 4352: Remove
     public void ValidateMandatoryRelations (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      foreach (RelationEndPointID endPointID in dataContainer.AssociatedRelationEndPointIDs)
-      {
-        if (endPointID.Definition.IsMandatory)
-        {
-          IRelationEndPoint endPoint = GetRelationEndPointWithoutLoading (endPointID);
-          if (endPoint != null && endPoint.IsDataComplete)
-            endPoint.ValidateMandatory();
-        }
-      }
+      new MandatoryRelationValidator (this).Validate (dataContainer.DomainObject);
     }
 
     public void RegisterDataContainer (DataContainer dataContainer)

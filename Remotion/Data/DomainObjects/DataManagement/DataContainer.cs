@@ -390,7 +390,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get
       {
         if (_associatedRelationEndPointIDs == null)
-          _associatedRelationEndPointIDs = RelationEndPointID.GetAllRelationEndPointIDs (ID);
+          _associatedRelationEndPointIDs = RelationEndPointID.GetAllRelationEndPointIDs (ID).ToArray();
 
         return _associatedRelationEndPointIDs;
       }

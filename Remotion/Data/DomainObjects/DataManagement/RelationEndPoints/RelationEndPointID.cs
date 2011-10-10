@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
@@ -114,12 +115,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return new RelationEndPointID (objectID, data.RelationEndPointDefinition);
     }
 
-    public static RelationEndPointID[] GetAllRelationEndPointIDs (ObjectID objectID)
+    public static IEnumerable<RelationEndPointID> GetAllRelationEndPointIDs (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       
       var endPointDefinitions = objectID.ClassDefinition.GetRelationEndPointDefinitions ();
-      return endPointDefinitions.Select (endPointDefinition => Create(objectID, endPointDefinition)).ToArray();
+      return endPointDefinitions.Select (endPointDefinition => Create(objectID, endPointDefinition));
     }
 
     public static bool operator == (RelationEndPointID endPointID1, RelationEndPointID endPointID2)

@@ -401,6 +401,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\LookupCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\Factories\SaveCommandFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\TestableClientTransactionExtensionBase.cs" />
+    <Compile Include="DomainObjects\Core\Validation\MandatoryRelationValidatorTest.cs" />
     <Compile Include="DomainObjects\Database\ScriptDumper.cs" />
     <Compile Include="DomainObjects\Factories\SerializedObjectIDStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectAboveInheritanceRoot.cs" />

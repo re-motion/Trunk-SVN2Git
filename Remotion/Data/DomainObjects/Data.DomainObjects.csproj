@@ -947,6 +947,7 @@
     <Compile Include="Transport\XmlExportStrategy.cs" />
     <Compile Include="Transport\XmlImportStrategy.cs" />
     <Compile Include="DataManagement\ValueAccess.cs" />
+    <Compile Include="Validation\MandatoryRelationValidator.cs" />
     <Compile Include="ValueChangeEventArgs.cs" />
     <Compile Include="ValueTooLongException.cs">
       <SubType>Code</SubType>
