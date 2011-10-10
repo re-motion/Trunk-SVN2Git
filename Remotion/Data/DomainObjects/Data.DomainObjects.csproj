@@ -754,6 +754,7 @@
     <Compile Include="DataManagement\RelationEndPoints\IRelationEndPoint.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Validation\IDomainObjectValidator.cs" />
     <Compile Include="Validation\MandatoryRelationNotSetException.cs">
       <SubType>Code</SubType>
     </Compile>

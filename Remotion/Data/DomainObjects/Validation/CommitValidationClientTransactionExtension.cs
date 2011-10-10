@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.ObjectModel;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
@@ -26,24 +28,30 @@ namespace Remotion.Data.DomainObjects.Validation
   /// </remarks>
   public class CommitValidationClientTransactionExtension : ClientTransactionExtensionBase
   {
+    private readonly Func<ClientTransaction, IDomainObjectValidator> _validatorFactory;
+
     public static string DefaultKey
     {
       get { return typeof (CommitValidationClientTransactionExtension).FullName; }
     }
 
-    public CommitValidationClientTransactionExtension ()
-        : this (DefaultKey)
+    public CommitValidationClientTransactionExtension (Func<ClientTransaction, IDomainObjectValidator> validatorFactory)
+      : this (validatorFactory, DefaultKey)
     {
     }
 
-    protected CommitValidationClientTransactionExtension (string key)
+    protected CommitValidationClientTransactionExtension (Func<ClientTransaction, IDomainObjectValidator> validatorFactory, string key)
         : base (key)
     {
+      ArgumentUtility.CheckNotNull ("validatorFactory", validatorFactory);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+
+      _validatorFactory = validatorFactory;
     }
 
     public override void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
-      var validator = new MandatoryRelationValidator (clientTransaction.DataManager);
+      var validator = _validatorFactory (clientTransaction);
       foreach (var domainObject in changedDomainObjects)
         validator.Validate (domainObject);
     }

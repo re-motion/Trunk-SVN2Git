@@ -19,21 +19,13 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
 {
   [TestFixture]
   public class CommitValidationClientTransactionExtensionTest : ClientTransactionBaseTest
   {
-    private CommitValidationClientTransactionExtension _extension;
-
-    public override void SetUp ()
-    {
-      base.SetUp ();
-
-      _extension = new CommitValidationClientTransactionExtension ();
-    }
-
     [Test]
     public void DefaultKey ()
     {
@@ -43,76 +35,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
     [Test]
     public void Key ()
     {
-      Assert.That (_extension.Key, Is.EqualTo (CommitValidationClientTransactionExtension.DefaultKey));
+      var extension = new CommitValidationClientTransactionExtension (tx => { throw new NotImplementedException(); });
+      Assert.That (extension.Key, Is.EqualTo (CommitValidationClientTransactionExtension.DefaultKey));
     }
 
     [Test]
-    public void CommitValidate_MandatoryRelation_NotSet ()
+    public void CommitValidate ()
     {
-      var objectWithMandatoryRelations = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      objectWithMandatoryRelations.Order = null;
+      var domainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
+      var domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      Assert.That (
-          () => _extension.CommitValidate (ClientTransactionMock, Array.AsReadOnly<DomainObject> (new[] { objectWithMandatoryRelations })),
-          Throws.TypeOf<MandatoryRelationNotSetException> ().With.Message.EqualTo (
-            "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' of domain object "
-            + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be null."));
-    }
+      var transaction = ClientTransaction.CreateRootTransaction();
 
-    [Test]
-    public void CommitValidate_MandatoryRelation_Set ()
-    {
-      var objectWithMandatoryRelations = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      Assert.That (objectWithMandatoryRelations.Order, Is.Not.Null);
+      var validatorMock = MockRepository.GenerateStrictMock<IDomainObjectValidator>();
+      var extension = new CommitValidationClientTransactionExtension (
+          tx =>
+          {
+            Assert.That (tx, Is.SameAs (transaction));
+            return validatorMock;
+          });
 
-      Assert.That (
-          () => _extension.CommitValidate (ClientTransactionMock, Array.AsReadOnly<DomainObject> (new[] { objectWithMandatoryRelations })),
-          Throws.Nothing);
-    }
+      validatorMock.Expect (mock => mock.Validate (domainObject1));
+      validatorMock.Expect (mock => mock.Validate (domainObject2));
+      validatorMock.Replay();
 
-    [Test]
-    public void CommitValidate_NonMandatoryRelation_NotSet ()
-    {
-      var objectWithoutMandatoryRelations = Computer.GetObject (DomainObjectIDs.Computer1);
-      objectWithoutMandatoryRelations.Employee = null;
+      extension.CommitValidate (transaction, Array.AsReadOnly<DomainObject> (new[] { domainObject1, domainObject2 }));
 
-      Assert.That (
-          () => _extension.CommitValidate (ClientTransactionMock, Array.AsReadOnly<DomainObject> (new[] { objectWithoutMandatoryRelations })),
-          Throws.Nothing);
-    }
-
-    [Test]
-    public void CommitValidate_NonMandatoryRelation_Set ()
-    {
-      var objectWithoutMandatoryRelations = Computer.GetObject (DomainObjectIDs.Computer1);
-      Assert.That (objectWithoutMandatoryRelations.Employee, Is.Not.Null);
-
-      Assert.That (
-          () => _extension.CommitValidate (ClientTransactionMock, Array.AsReadOnly<DomainObject> (new[] { objectWithoutMandatoryRelations })),
-          Throws.Nothing);
-    }
-
-    [Test]
-    public void CommitValidate_NonLoadedObject ()
-    {
-      var objectWithMandatoryRelations = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      objectWithMandatoryRelations.Order = null;
-
-      var subTransaction = ClientTransactionMock.CreateSubTransaction ();
-      using (subTransaction.EnterDiscardingScope ())
-      {
-        Assert.That (
-            () => _extension.CommitValidate (subTransaction, Array.AsReadOnly<DomainObject> (new[] { objectWithMandatoryRelations })),
-            Throws.Nothing);
-
-        objectWithMandatoryRelations.EnsureDataAvailable();
-
-        Assert.That (
-            () => _extension.CommitValidate (subTransaction, Array.AsReadOnly<DomainObject> (new[] { objectWithMandatoryRelations })),
-            Throws.TypeOf<MandatoryRelationNotSetException>().With.Message.EqualTo (
-                "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' of domain object "
-                + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be null."));
-      }
+      validatorMock.VerifyAllExpectations();
     }
   }
 }

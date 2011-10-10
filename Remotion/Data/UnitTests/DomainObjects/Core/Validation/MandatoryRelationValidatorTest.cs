@@ -48,6 +48,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
     }
 
     [Test]
+    public void CreateForClientTransaction ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction();
+
+      var validator = MandatoryRelationValidator.CreateForClientTransaction (transaction);
+
+      Assert.That (validator.DataManager, Is.SameAs (ClientTransactionTestHelper.GetDataManager (transaction)));
+    }
+
+    [Test]
     public void Validate_CompleteRelationEndPoint ()
     {
       _dataManagerMock
@@ -138,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
       {
         var orderTicket = OrderTicket.NewObject ();
         orderTicket.Order = Order.NewObject();
-        var validator = new MandatoryRelationValidator (ClientTransactionTestHelper.GetIDataManager (ClientTransaction.Current));
+        var validator = MandatoryRelationValidator.CreateForClientTransaction (ClientTransaction.Current);
 
         Assert.That (() => validator.Validate (orderTicket), Throws.Nothing);
       }
@@ -150,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope())
       {
         var orderTicket = OrderTicket.NewObject();
-        var validator = new MandatoryRelationValidator (ClientTransactionTestHelper.GetIDataManager (ClientTransaction.Current));
+        var validator = MandatoryRelationValidator.CreateForClientTransaction (ClientTransaction.Current);
 
         Assert.That (
             () => validator.Validate (orderTicket),

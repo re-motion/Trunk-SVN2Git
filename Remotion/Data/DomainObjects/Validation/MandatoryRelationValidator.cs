@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Utilities;
@@ -24,8 +25,14 @@ namespace Remotion.Data.DomainObjects.Validation
   /// Validates the mandatory relations of a <see cref="DomainObject"/>, throwing a <see cref="MandatoryRelationNotSetException"/> when a mandatory
   /// relation is not set. Only complete relations are validated, no data is loaded by the validation.
   /// </summary>
-  public class MandatoryRelationValidator
+  public class MandatoryRelationValidator : IDomainObjectValidator
   {
+    public static MandatoryRelationValidator CreateForClientTransaction (ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      return new MandatoryRelationValidator (clientTransaction.DataManager);
+    }
+
     private readonly IDataManager _dataManager;
 
     public MandatoryRelationValidator (IDataManager dataManager)
@@ -33,6 +40,11 @@ namespace Remotion.Data.DomainObjects.Validation
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       _dataManager = dataManager;
+    }
+
+    public IDataManager DataManager
+    {
+      get { return _dataManager; }
     }
 
     public void Validate (DomainObject domainObject)
