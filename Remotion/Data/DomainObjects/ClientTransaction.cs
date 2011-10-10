@@ -303,20 +303,19 @@ public class ClientTransaction
     get { return _extensions; }
   }
 
-  /// <summary>Initializes a new instance of this transaction.</summary>
-  public ClientTransaction CreateEmptyTransactionOfSameType ()
-  {
-    var transactionFactory = _componentFactory.CreateCloneFactory ();
-    return transactionFactory (this);
-  }
-
-
   /// <summary>
   /// Gets the <see cref="IQueryManager"/> of the <see cref="ClientTransaction"/>.
   /// </summary>
   public IQueryManager QueryManager
   {
     get { return _queryManager; }
+  }
+
+  /// <summary>Initializes a new instance of this transaction.</summary>
+  public ClientTransaction CreateEmptyTransactionOfSameType ()
+  {
+    var transactionFactory = _componentFactory.CreateCloneFactory ();
+    return transactionFactory (this);
   }
 
   /// <summary>
@@ -971,7 +970,7 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets a number of objects that are already loaded or attempts to load them from the data source. If an object is not be found, the result array
+  /// Gets a number of objects that are already loaded or attempts to load them from the data source. If an object is not found, the result array
   /// will contain a <see langword="null" /> reference in its place.
   /// </summary>
   /// <typeparam name="T">The type of objects expected to be returned. Specify <see cref="DomainObject"/> if no specific type is expected.</typeparam>
