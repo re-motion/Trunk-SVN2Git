@@ -971,7 +971,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (MandatoryRelationNotSetException))]
     public void NewCustomerAndCEOTest ()
     {
       IndustrialSector industrialSector = IndustrialSector.NewObject();
@@ -991,17 +990,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       order1.Official = Official.GetObject (DomainObjectIDs.Official2);
       customer.Orders.Add (order1);
 
-      try
-      {
-        ClientTransactionMock.Commit();
-      }
-      catch (MandatoryRelationNotSetException)
-      {
-        Assert.Fail ("MandatoryRelationNotSetException was thrown when none was expected.");
-      }
+      Assert.That (() => ClientTransactionMock.Commit (), Throws.Nothing);
 
       customer.Delete();
-      ClientTransactionScope.CurrentTransaction.Commit();
+
+      Assert.That (() => ClientTransactionMock.Commit (), Throws.TypeOf<MandatoryRelationNotSetException> ());
     }
 
     [Test]

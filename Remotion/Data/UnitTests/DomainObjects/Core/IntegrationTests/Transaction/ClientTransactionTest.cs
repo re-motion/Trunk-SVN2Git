@@ -24,9 +24,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
-using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -544,43 +542,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (MandatoryRelationNotSetException),
-       ExpectedMessage = "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object"
-        + " 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' cannot be null.")]
-    public void CommitWithMandatoryOneToOneRelationNotSet ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      OrderTicket newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
-
-      order.OrderTicket = newOrderTicket;
-
-      ClientTransactionMock.Commit ();
-    }
-
-    [Test]
-    public void CommitWithOptionalOneToOneRelationNotSet ()
-    {
-      Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
-      employee.Computer = null;
-
-      ClientTransactionMock.Commit ();
-
-      // expectation: no exception
-    }
-
-    [Test]
-    [ExpectedException (typeof (MandatoryRelationNotSetException),
-      ExpectedMessage = "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies' of domain object"
-       + " 'IndustrialSector|8565a077-ea01-4b5d-beaa-293dc484bddc|System.Guid' contains no items.")]
-    public void CommitWithMandatoryOneToManyRelationNotSet ()
-    {
-      IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
-      industrialSector.Companies.Clear ();
-
-      ClientTransactionMock.Commit ();
-    }
-
-    [Test]
     public void CommitTwice ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -665,25 +626,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
     public void CommitDeletedObject ()
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Delete ();
       ClientTransactionMock.Commit ();
 
-      Computer.GetObject (DomainObjectIDs.Computer1);
+      Assert.That (() => Computer.GetObject (DomainObjectIDs.Computer1), Throws.TypeOf<ObjectInvalidException>());
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
     public void AccessDeletedObjectAfterCommit ()
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Delete ();
       ClientTransactionMock.Commit ();
 
-      Dev.Null = computer.SerialNumber;
+      Assert.That (() => Dev.Null = computer.SerialNumber, Throws.TypeOf<ObjectInvalidException> ());
     }
 
     [Test]
@@ -825,44 +784,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (ClientTransactionScope.EnterNullScope ())
       {
         Assert.That (ClientTransaction.Current, Is.Null);
-      }
-    }
-
-    [Test]
-    public void MandatoryRelationNotSetExceptionForOneToOneRelation ()
-    {
-      OrderTicket newOrderTicket = OrderTicket.NewObject ();
-
-      try
-      {
-        ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.Fail ("MandatoryRelationNotSetException was expected");
-      }
-      catch (MandatoryRelationNotSetException ex)
-      {
-        string expectedMessage = string.Format ("Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object '{0}' cannot be null.", newOrderTicket.ID);
-        Assert.That (ex.Message, Is.EqualTo (expectedMessage));
-        Assert.That (ex.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
-        Assert.That (ex.DomainObject, Is.SameAs (newOrderTicket));
-      }
-    }
-
-    [Test]
-    public void MandatoryRelationNotSetExceptionForOneToManyRelation ()
-    {
-      IndustrialSector newIndustrialSector = IndustrialSector.NewObject ();
-
-      try
-      {
-        ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.Fail ("MandatoryRelationNotSetException was expected");
-      }
-      catch (MandatoryRelationNotSetException ex)
-      {
-        string expectedMessage = string.Format ("Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies' of domain object '{0}' contains no items.", newIndustrialSector.ID);
-        Assert.That (ex.Message, Is.EqualTo (expectedMessage));
-        Assert.That (ex.PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"));
-        Assert.That (ex.DomainObject, Is.SameAs (newIndustrialSector));
       }
     }
 
