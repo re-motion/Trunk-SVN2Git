@@ -29,6 +29,7 @@ using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -220,6 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    [Ignore ("TODO 4352")]
     public void CreateExtensionCollection ()
     {
       var extensionFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionExtensionFactory> ();
@@ -244,7 +246,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       serviceLocatorMock.VerifyAllExpectations ();
       extensionFactoryMock.VerifyAllExpectations ();
 
-      Assert.That (extensions, Is.EquivalentTo (new[] { extensionStub }));
+      Assert.That (extensions.Count, Is.EqualTo (2));
+      Assert.That (extensions[1], Is.SameAs (extensionStub));
+      Assert.That (extensions[0], Is.TypeOf<CommitValidationClientTransactionExtension> ());
+
+      var validationExtension = (CommitValidationClientTransactionExtension) extensions[0];
+      var validator = validationExtension.ValidatorFactory (_fakeConstructedTransaction);
+      Assert.That (validator, Is.TypeOf<MandatoryRelationValidator> ());
+      Assert.That (((MandatoryRelationValidator) validator).DataManager, Is.SameAs (_fakeConstructedTransaction.DataManager));
     }
   }
 }

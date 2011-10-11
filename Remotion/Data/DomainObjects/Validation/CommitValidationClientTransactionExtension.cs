@@ -35,6 +35,11 @@ namespace Remotion.Data.DomainObjects.Validation
       get { return typeof (CommitValidationClientTransactionExtension).FullName; }
     }
 
+    public Func<ClientTransaction, IDomainObjectValidator> ValidatorFactory
+    {
+      get { return _validatorFactory; }
+    }
+
     public CommitValidationClientTransactionExtension (Func<ClientTransaction, IDomainObjectValidator> validatorFactory)
       : this (validatorFactory, DefaultKey)
     {

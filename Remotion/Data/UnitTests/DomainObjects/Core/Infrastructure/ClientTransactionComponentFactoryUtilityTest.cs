@@ -15,17 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Development.UnitTesting;
@@ -57,6 +51,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var extensionStub2 = MockRepository.GenerateStub<IClientTransactionExtension>();
       extensionStub2.Stub (stub => stub.Key).Return ("stub2");
 
+      var fixedExtensionStub1 = MockRepository.GenerateStub<IClientTransactionExtension> ();
+      fixedExtensionStub1.Stub (stub => stub.Key).Return ("fixed1");
+      var fixedExtensionStub2 = MockRepository.GenerateStub<IClientTransactionExtension> ();
+      fixedExtensionStub2.Stub (stub => stub.Key).Return ("fixed2");
+
       extensionFactoryMock1.Expect (mock => mock.CreateClientTransactionExtensions (clientTransaction)).Return (new[] { extensionStub1 });
       extensionFactoryMock1.Replay();
 
@@ -72,14 +71,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       ClientTransactionExtensionCollection extensions;
       using (new ServiceLocatorScope (serviceLocatorMock))
       {
-        extensions = ClientTransactionComponentFactoryUtility.CreateExtensionCollectionFromServiceLocator (clientTransaction);
+        extensions = ClientTransactionComponentFactoryUtility.CreateExtensionCollectionFromServiceLocator (
+            clientTransaction, 
+            fixedExtensionStub1, 
+            fixedExtensionStub2);
       }
 
       serviceLocatorMock.VerifyAllExpectations();
       extensionFactoryMock1.VerifyAllExpectations();
       extensionFactoryMock2.VerifyAllExpectations();
 
-     Assert.That (extensions, Is.EquivalentTo (new[] { extensionStub1, extensionStub2 }));
+     Assert.That (extensions, Is.EquivalentTo (new[] { fixedExtensionStub1, fixedExtensionStub2, extensionStub1, extensionStub2 }));
     }
 
     [Test]

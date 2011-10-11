@@ -35,12 +35,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new Dictionary<Enum, object> ();
     }
 
-    public static ClientTransactionExtensionCollection CreateExtensionCollectionFromServiceLocator (ClientTransaction clientTransaction)
+    public static ClientTransactionExtensionCollection CreateExtensionCollectionFromServiceLocator (
+        ClientTransaction clientTransaction, 
+        params IClientTransactionExtension[] fixedExtensions)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       var extensionFactories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionExtensionFactory> ();
-      var extensions = extensionFactories.SelectMany (f => f.CreateClientTransactionExtensions (clientTransaction));
+      var extensions = fixedExtensions.Concat (extensionFactories.SelectMany (f => f.CreateClientTransactionExtensions (clientTransaction)));
 
       var extensionCollection = new ClientTransactionExtensionCollection ("root");
       foreach (var factory in extensions)
