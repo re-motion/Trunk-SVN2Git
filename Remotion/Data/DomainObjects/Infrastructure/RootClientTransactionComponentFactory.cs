@@ -130,8 +130,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       return ClientTransactionComponentFactoryUtility.CreateExtensionCollectionFromServiceLocator (
-          constructedTransaction /*, 
-          new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator (tx.DataManager)) */);
+          constructedTransaction, 
+          new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator()));
     }
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

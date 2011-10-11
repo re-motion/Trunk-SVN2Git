@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Validation
   /// <remarks>
   /// Currently, this extension only checks that all mandatory relations are set.
   /// </remarks>
+  [Serializable]
   public class CommitValidationClientTransactionExtension : ClientTransactionExtensionBase
   {
     private readonly Func<ClientTransaction, IPersistableDataValidator> _validatorFactory;

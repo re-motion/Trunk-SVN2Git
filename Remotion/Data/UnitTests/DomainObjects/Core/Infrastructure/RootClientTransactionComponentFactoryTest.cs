@@ -175,7 +175,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [Ignore ("TODO 4352")]
     public void CreateExtensionCollection ()
     {
       var extensionFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionExtensionFactory> ();

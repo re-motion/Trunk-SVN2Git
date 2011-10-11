@@ -791,7 +791,7 @@ public class ClientTransaction
     {
       BeginCommit();
 
-      var persistableDataItems = GetAndValidateDataForCommit().ToList();
+      var persistableDataItems = _dataManager.GetNewChangedDeletedData().ToList();
       TransactionEventSink.TransactionCommitValidate (this, persistableDataItems.AsReadOnly());
       
       _persistenceStrategy.PersistData (persistableDataItems);
@@ -804,19 +804,6 @@ public class ClientTransaction
           .ToList()
           .AsReadOnly();
       EndCommit (changedButNotDeletedDomainObjects);
-    }
-  }
-
-  private IEnumerable<PersistableData> GetAndValidateDataForCommit ()
-  {
-    foreach (var item in _dataManager.GetNewChangedDeletedData())
-    {
-      Assertion.IsTrue (item.DomainObjectState != StateType.NotLoadedYet);
-      
-      if (item.DomainObjectState != StateType.Deleted)
-        _dataManager.ValidateMandatoryRelations (item.DataContainer);
-
-      yield return item;
     }
   }
 

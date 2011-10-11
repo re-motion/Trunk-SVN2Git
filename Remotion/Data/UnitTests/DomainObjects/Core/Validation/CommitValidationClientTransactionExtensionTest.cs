@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
@@ -62,6 +63,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
       extension.CommitValidate (transaction, Array.AsReadOnly (new[] { data1, data2 }));
 
       validatorMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var extension = new CommitValidationClientTransactionExtension (tx => { throw new NotImplementedException(); });
+      var deserializedInstance = Serializer.SerializeAndDeserialize (extension);
+      Assert.That (deserializedInstance.ValidatorFactory, Is.Not.Null);
     }
   }
 }

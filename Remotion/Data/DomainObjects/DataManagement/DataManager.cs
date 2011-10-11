@@ -135,19 +135,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
           .Any (endPoint => endPoint != null && endPoint.HasChanged);
     }
 
-    // TODO 4352: Remove
-    public void ValidateMandatoryRelations (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      new MandatoryRelationValidator ().Validate (
-          new PersistableData (
-              dataContainer.DomainObject,
-              dataContainer.DomainObject.TransactionContext[_clientTransaction].State,
-              dataContainer,
-              dataContainer.AssociatedRelationEndPointIDs.Select (GetRelationEndPointWithoutLoading).Where (ep => ep != null)));
-    }
-
     public void RegisterDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);

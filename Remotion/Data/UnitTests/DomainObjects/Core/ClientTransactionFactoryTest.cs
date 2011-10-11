@@ -53,8 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ITransaction transaction = factory.CreateRootTransaction();
 
       var clientTransaction = transaction.To<ClientTransaction>();
-      Assert.That (clientTransaction.Extensions.Count, Is.EqualTo (1));
-      Assert.That (clientTransaction.Extensions[0], Is.SameAs (extensionStub));
+      Assert.That (clientTransaction.Extensions, Has.Member (extensionStub));
     }
 
     [Test]

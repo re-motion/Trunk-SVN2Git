@@ -310,8 +310,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { _fakeDomainObject1, _fakeDomainObject2, _fakeDomainObject3 })))
           .Ordered (expectationCounter)
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
-      _dataManagerMock.Expect (mock => mock.ValidateMandatoryRelations (_fakeDataContainer1)).Ordered (expectationCounter);
-      _dataManagerMock.Expect (mock => mock.ValidateMandatoryRelations (_fakeDataContainer2)).Ordered (expectationCounter);
       listenerMock
           .Expect (
               mock => mock.TransactionCommitValidate (
@@ -817,6 +815,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [Ignore ("TODO 4353")]
     public void CreateSubTransaction_WithDefaultComponentFactory ()
     {
       Assert.That (_transaction.IsReadOnly, Is.False);

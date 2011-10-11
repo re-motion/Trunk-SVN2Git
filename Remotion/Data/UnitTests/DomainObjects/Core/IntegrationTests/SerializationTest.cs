@@ -45,9 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (deserializedClientTransaction, Is.Not.Null);
       Assert.That (deserializedClientTransaction.Extensions, Is.Not.Null);
       Assert.That (deserializedClientTransaction.Extensions.Count, Is.EqualTo (ClientTransactionScope.CurrentTransaction.Extensions.Count));
-      Assert.IsInstanceOf (typeof (ClientTransactionExtensionWithQueryFiltering), deserializedClientTransaction.Extensions[0]);
+      Assert.That (deserializedClientTransaction.Extensions, Has.Some.TypeOf<ClientTransactionExtensionWithQueryFiltering>());
     }
-
 
     [Test]
     public void EventsAfterDeserializationWithRegisteredEvents ()
