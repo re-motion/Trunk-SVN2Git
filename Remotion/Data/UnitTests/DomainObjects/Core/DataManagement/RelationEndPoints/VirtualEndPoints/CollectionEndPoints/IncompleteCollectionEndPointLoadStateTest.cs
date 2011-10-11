@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints

@@ -31,6 +31,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;

@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.MockConstraints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;

@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;

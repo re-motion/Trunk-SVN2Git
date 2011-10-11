@@ -17,7 +17,7 @@
 using NUnit.Framework;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests
+namespace Remotion.Data.UnitTests.UnitTesting
 {
   /// <summary>
   /// Provides support for ordered Rhino.Mocks expectations without dedicated <see cref="MockRepository"/> instance. 

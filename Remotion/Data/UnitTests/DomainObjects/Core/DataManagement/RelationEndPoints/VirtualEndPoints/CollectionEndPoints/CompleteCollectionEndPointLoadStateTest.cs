@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 

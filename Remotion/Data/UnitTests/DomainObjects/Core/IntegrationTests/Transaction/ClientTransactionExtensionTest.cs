@@ -31,6 +31,7 @@ using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;

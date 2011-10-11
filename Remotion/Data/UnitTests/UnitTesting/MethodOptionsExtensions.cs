@@ -17,7 +17,7 @@
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
-namespace Remotion.Data.UnitTests
+namespace Remotion.Data.UnitTests.UnitTesting
 {
   public static class MethodOptionsExtensions
   {

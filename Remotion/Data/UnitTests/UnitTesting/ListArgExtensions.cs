@@ -22,7 +22,7 @@ using Rhino.Mocks.Constraints;
 using Remotion.FunctionalProgramming;
 using System.Linq;
 
-namespace Remotion.Data.UnitTests
+namespace Remotion.Data.UnitTests.UnitTesting
 {
   public static class ListArgExtensions
   {
