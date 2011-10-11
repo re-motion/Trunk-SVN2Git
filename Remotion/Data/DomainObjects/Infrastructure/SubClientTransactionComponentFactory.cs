@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Validation;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -150,9 +149,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return ClientTransactionComponentFactoryUtility.CreateExtensionCollectionFromServiceLocator (
-          constructedTransaction, 
-          new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator()));
+      return ClientTransactionComponentFactoryUtility.CreateExtensionCollectionFromServiceLocator (constructedTransaction);
     }
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

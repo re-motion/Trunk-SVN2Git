@@ -291,8 +291,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
 
       var bindingTransaction = principal.User.GetBindingTransaction();
-      Assert.That (bindingTransaction.Extensions.Count, Is.EqualTo (1));
-      Assert.That (bindingTransaction.Extensions[0], Is.InstanceOf (typeof (SecurityClientTransactionExtension)));
+      Assert.That (bindingTransaction.Extensions, Has.Some.InstanceOf<SecurityClientTransactionExtension>());
     }
 
     [Test]
@@ -309,7 +308,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
 
       var bindingTransaction = principal.User.GetBindingTransaction();
-      Assert.That (bindingTransaction.Extensions, Is.Empty);
+      Assert.That (bindingTransaction.Extensions, Has.No.InstanceOf<SecurityClientTransactionExtension>());
     }
   }
 }

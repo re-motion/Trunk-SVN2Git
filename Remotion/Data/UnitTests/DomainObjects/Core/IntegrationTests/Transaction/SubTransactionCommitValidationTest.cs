@@ -23,7 +23,6 @@ using Remotion.Data.UnitTests.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
   [TestFixture]
-  [Ignore ("TODO 4353")]
   public class SubTransactionCommitValidationTest : ClientTransactionBaseTest
   {
     [Test]

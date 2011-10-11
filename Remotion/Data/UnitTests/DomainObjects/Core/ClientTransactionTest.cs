@@ -815,7 +815,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [Ignore ("TODO 4353")]
     public void CreateSubTransaction_WithDefaultComponentFactory ()
     {
       Assert.That (_transaction.IsReadOnly, Is.False);
