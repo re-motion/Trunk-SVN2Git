@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -196,17 +197,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return thisDataContainer;
     }
 
-    public virtual void PersistData (IEnumerable<PersistableData> data)
+    public virtual void PersistData (ReadOnlyCollection<PersistableData> data)
     {
       ArgumentUtility.CheckNotNull ("data", data);
 
-      var dataList = data.ToList(); // calculate only once
-      
       // filter out those items whose state is only Changed due to relation changes
-      var dataContainers = dataList.Select (item => item.DataContainer).Where (dc => dc.State != StateType.Unchanged);
+      var dataContainers = data.Select (item => item.DataContainer).Where (dc => dc.State != StateType.Unchanged);
 
       // only handle changed end-points; end-points of new and deleted objects will implicitly be handled by PersistDataContainers
-      var endPoints = dataList.SelectMany (item => item.GetAssociatedEndPoints()).Where (ep => ep.HasChanged);
+      var endPoints = data.SelectMany (item => item.GetAssociatedEndPoints()).Where (ep => ep.HasChanged);
       
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {

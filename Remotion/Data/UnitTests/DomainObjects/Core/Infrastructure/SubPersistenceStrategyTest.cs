@@ -83,7 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var dataContainer = DataContainer.CreateNew (instance.ID);
       dataContainer.SetDomainObject (instance);
 
-      _persistenceStrategy.PersistData (new[] { new PersistableData (instance, StateType.New, dataContainer, new IRelationEndPoint[0]) });
+      _persistenceStrategy.PersistData (
+          Array.AsReadOnly (new[] { new PersistableData (instance, StateType.New, dataContainer, new IRelationEndPoint[0]) }));
 
       Assert.That (_parentInvalidDomainObjectManager.IsInvalid (instance.ID), Is.False);
     }

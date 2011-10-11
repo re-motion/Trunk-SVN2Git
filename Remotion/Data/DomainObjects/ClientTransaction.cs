@@ -791,8 +791,8 @@ public class ClientTransaction
     {
       BeginCommit();
 
-      var persistableDataItems = _dataManager.GetNewChangedDeletedData().ToList();
-      TransactionEventSink.TransactionCommitValidate (this, persistableDataItems.AsReadOnly());
+      var persistableDataItems = _dataManager.GetNewChangedDeletedData().ToList().AsReadOnly();
+      TransactionEventSink.TransactionCommitValidate (this, persistableDataItems);
       
       _persistenceStrategy.PersistData (persistableDataItems);
 

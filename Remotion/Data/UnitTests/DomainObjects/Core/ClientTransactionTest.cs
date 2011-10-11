@@ -318,7 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Ordered (expectationCounter)
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
       _persistenceStrategyMock
-          .Expect (mock => mock.PersistData (Arg<IEnumerable<PersistableData>>.List.Equivalent (new[] { item1, item2, item3 })))
+          .Expect (mock => mock.PersistData (Arg<ReadOnlyCollection<PersistableData>>.List.Equivalent (new[] { item1, item2, item3 })))
           .Ordered (expectationCounter);
       _dataManagerMock
           .Expect (mock => mock.Commit())

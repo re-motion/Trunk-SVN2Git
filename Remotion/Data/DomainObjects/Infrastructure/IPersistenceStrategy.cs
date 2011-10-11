@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -194,6 +195,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// The caller must ensure that the data represented by <paramref name="data"/> is consistent and complete; otherwise an inconsistent state
     /// might arise in the underlying data store.
     /// </remarks>
-    void PersistData (IEnumerable<PersistableData> data);
+    void PersistData (ReadOnlyCollection<PersistableData> data);
   }
 }

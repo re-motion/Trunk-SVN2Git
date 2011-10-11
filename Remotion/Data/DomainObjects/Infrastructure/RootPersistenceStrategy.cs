@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -128,14 +129,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public virtual void PersistData (IEnumerable<PersistableData> data)
+    public virtual void PersistData (ReadOnlyCollection<PersistableData> data)
     {
       ArgumentUtility.CheckNotNull ("data", data);
 
       // Filter out those items whose state is only Changed due to relation changes - we don't persist those
       var dataContainers = data.Select (item => item.DataContainer).Where (dc => dc.State != StateType.Unchanged);
-      
       var collection = new DataContainerCollection (dataContainers, false);
+
       if (collection.Count > 0)
       {
         using (var persistenceManager = CreatePersistenceManager ())
