@@ -15,8 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation
@@ -25,40 +24,23 @@ namespace Remotion.Data.DomainObjects.Validation
   /// Validates the mandatory relations of a <see cref="DomainObject"/>, throwing a <see cref="MandatoryRelationNotSetException"/> when a mandatory
   /// relation is not set. Only complete relations are validated, no data is loaded by the validation.
   /// </summary>
-  public class MandatoryRelationValidator : IDomainObjectValidator
+  public class MandatoryRelationValidator : IPersistableDataValidator
   {
-    public static MandatoryRelationValidator CreateForClientTransaction (ClientTransaction clientTransaction)
+    public void Validate (PersistableData data)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      return new MandatoryRelationValidator (clientTransaction.DataManager);
-    }
+      ArgumentUtility.CheckNotNull ("data", data);
 
-    private readonly IDataManager _dataManager;
+      if (data.DomainObjectState == StateType.Deleted)
+        return;
 
-    public MandatoryRelationValidator (IDataManager dataManager)
-    {
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      Assertion.IsTrue (
+          data.DomainObjectState != StateType.NotLoadedYet && data.DomainObjectState != StateType.Invalid, 
+          "No unloaded or invalid objects get this far.");
 
-      _dataManager = dataManager;
-    }
-
-    public IDataManager DataManager
-    {
-      get { return _dataManager; }
-    }
-
-    public void Validate (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      foreach (RelationEndPointID endPointID in RelationEndPointID.GetAllRelationEndPointIDs (domainObject.ID))
+      foreach (var endPoint in data.GetAssociatedEndPoints())
       {
-        if (endPointID.Definition.IsMandatory)
-        {
-          var endPoint = _dataManager.GetRelationEndPointWithoutLoading (endPointID);
-          if (endPoint != null && endPoint.IsDataComplete)
+        if (endPoint.Definition.IsMandatory && endPoint.IsDataComplete)
             endPoint.ValidateMandatory ();
-        }
       }
     }
   }

@@ -792,8 +792,7 @@ public class ClientTransaction
       BeginCommit();
 
       var persistableDataItems = GetAndValidateDataForCommit().ToList();
-      var domainObjects = ListAdapter.Adapt (persistableDataItems, item => item.DomainObject, domainObject => { throw new NotSupportedException(); });
-      TransactionEventSink.TransactionCommitValidate (this, new ReadOnlyCollection<DomainObject> (domainObjects));
+      TransactionEventSink.TransactionCommitValidate (this, persistableDataItems.AsReadOnly());
       
       _persistenceStrategy.PersistData (persistableDataItems);
 

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation
@@ -28,24 +29,24 @@ namespace Remotion.Data.DomainObjects.Validation
   /// </remarks>
   public class CommitValidationClientTransactionExtension : ClientTransactionExtensionBase
   {
-    private readonly Func<ClientTransaction, IDomainObjectValidator> _validatorFactory;
+    private readonly Func<ClientTransaction, IPersistableDataValidator> _validatorFactory;
 
     public static string DefaultKey
     {
       get { return typeof (CommitValidationClientTransactionExtension).FullName; }
     }
 
-    public Func<ClientTransaction, IDomainObjectValidator> ValidatorFactory
+    public Func<ClientTransaction, IPersistableDataValidator> ValidatorFactory
     {
       get { return _validatorFactory; }
     }
 
-    public CommitValidationClientTransactionExtension (Func<ClientTransaction, IDomainObjectValidator> validatorFactory)
+    public CommitValidationClientTransactionExtension (Func<ClientTransaction, IPersistableDataValidator> validatorFactory)
       : this (validatorFactory, DefaultKey)
     {
     }
 
-    protected CommitValidationClientTransactionExtension (Func<ClientTransaction, IDomainObjectValidator> validatorFactory, string key)
+    protected CommitValidationClientTransactionExtension (Func<ClientTransaction, IPersistableDataValidator> validatorFactory, string key)
         : base (key)
     {
       ArgumentUtility.CheckNotNull ("validatorFactory", validatorFactory);
@@ -54,11 +55,11 @@ namespace Remotion.Data.DomainObjects.Validation
       _validatorFactory = validatorFactory;
     }
 
-    public override void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
+    public override void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
       var validator = _validatorFactory (clientTransaction);
-      foreach (var domainObject in changedDomainObjects)
-        validator.Validate (domainObject);
+      foreach (var item in committedData)
+        validator.Validate (item);
     }
   }
 }

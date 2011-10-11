@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -356,12 +357,12 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
+    public void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
-      ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
+      ArgumentUtility.CheckNotNull ("committedData", committedData);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.CommitValidate (clientTransaction, changedDomainObjects);
+        extension.CommitValidate (clientTransaction, committedData);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

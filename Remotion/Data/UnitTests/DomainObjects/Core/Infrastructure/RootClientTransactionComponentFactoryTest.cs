@@ -205,9 +205,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (extensions[0], Is.TypeOf<CommitValidationClientTransactionExtension> ());
       
       var validationExtension = (CommitValidationClientTransactionExtension) extensions[0];
-      var validator = validationExtension.ValidatorFactory(_fakeConstructedTransaction);
+      var validator = validationExtension.ValidatorFactory (_fakeConstructedTransaction);
       Assert.That (validator, Is.TypeOf<MandatoryRelationValidator>());
-      Assert.That (((MandatoryRelationValidator) validator).DataManager, Is.SameAs (_fakeConstructedTransaction.DataManager));
     }
   }
 }

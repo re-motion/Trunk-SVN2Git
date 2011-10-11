@@ -15,14 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
   /// <summary>
-  /// Provides an interface for validation of <see cref="DomainObject"/> instances.
+  /// Provides an interface for validation of <see cref="PersistableData"/> instances.
   /// </summary>
-  public interface IDomainObjectValidator
+  public interface IPersistableDataValidator
   {
-    void Validate (DomainObject domainObject);
+    void Validate (PersistableData data);
   }
 }

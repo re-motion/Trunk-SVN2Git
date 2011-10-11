@@ -289,10 +289,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} TransactionCommitting: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
     }
 
-    public void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} TransactionCommitValidate: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
+        s_log.DebugFormat ("{0} TransactionCommitValidate: {1}", clientTransaction.ID, GetDomainObjectsString (committedData.Select (pd => pd.DomainObject)));
     }
 
     public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Validation;
@@ -444,16 +445,16 @@ namespace Remotion.Data.DomainObjects
     /// Implementations can check whether the set of objects is valid and, if not, throw an <see cref="DomainObjectValidationException"/>.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="changedDomainObjects">A <see cref="ReadOnlyCollection{T}"/> holding all <see cref="DomainObject"/> instances
-    /// that are about to be committed.</param>
+    /// <param name="committedData">The data just about to be committed.</param>
     /// <remarks>
     /// <note type="inotes">The implementation of this method should throw a <see cref="DomainObjectValidationException"/> if the operation must be 
     /// cancelled.</note>
     /// <note type="inotes">The implementation of this method must not modify, create, or delete any <see cref="DomainObjects"/> in the 
     /// <paramref name="clientTransaction"/>. To modify objects during commit, use the <see cref="Committing"/> method.</note>
     /// </remarks>
-    /// <exception cref="DomainObjectValidationException">The set of <paramref name="changedDomainObjects"/> was not valid.</exception>
-    void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects);
+    /// <exception cref="DomainObjectValidationException">The set of <paramref name="committedData"/> was not valid. 
+    /// (Subclasses of this exception may be thrown.)</exception>
+    void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData);
     
     /// <summary>
     /// Invoked after a <see cref="ClientTransaction"/> was executed.

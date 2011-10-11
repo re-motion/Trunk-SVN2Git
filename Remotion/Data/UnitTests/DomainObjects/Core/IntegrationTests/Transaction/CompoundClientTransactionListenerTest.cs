@@ -75,6 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var order = Order.NewObject();
       var order2 = Order.NewObject();
       var domainObjects = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
+      var persistableData = new ReadOnlyCollection<PersistableData> (new PersistableData[0]);
       var relatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection ());
       var clientTransaction2 = ClientTransaction.CreateRootTransaction();
 
@@ -131,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckNotification (listener => listener.RelationChanged (ClientTransactionMock, order, realtionEndPointDefinitionMock));
 
       CheckNotification (listener => listener.TransactionCommitting (ClientTransactionMock, domainObjects));
-      CheckNotification (listener => listener.TransactionCommitValidate (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.TransactionCommitValidate (ClientTransactionMock, persistableData));
       CheckNotification (listener => listener.TransactionCommitted (ClientTransactionMock, domainObjects));
       CheckNotification (listener => listener.TransactionRollingBack (ClientTransactionMock, domainObjects));
       CheckNotification (listener => listener.TransactionRolledBack (ClientTransactionMock, domainObjects));

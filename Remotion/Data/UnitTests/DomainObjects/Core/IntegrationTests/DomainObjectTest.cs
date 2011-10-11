@@ -16,18 +16,20 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.MockConstraints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.UnitTesting;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -884,8 +886,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
           extension.CommitValidate (
               Arg.Is (ClientTransactionScope.CurrentTransaction),
-              Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (
-                  new DomainObject[] { newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1 }));
+              Arg<ReadOnlyCollection<PersistableData>>.Matches (
+                  collection => collection.Select (c => c.DomainObject)
+                      .SetEquals (new DomainObject[] { newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1 })));
 
           using (mockRepository.Unordered ())
           {

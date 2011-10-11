@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
@@ -141,7 +140,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      new MandatoryRelationValidator (this).Validate (dataContainer.DomainObject);
+      new MandatoryRelationValidator ().Validate (
+          new PersistableData (
+              dataContainer.DomainObject,
+              dataContainer.DomainObject.TransactionContext[_clientTransaction].State,
+              dataContainer,
+              dataContainer.AssociatedRelationEndPointIDs.Select (GetRelationEndPointWithoutLoading).Where (ep => ep != null)));
     }
 
     public void RegisterDataContainer (DataContainer dataContainer)

@@ -162,9 +162,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _extension.Committing (clientTransaction, domainObjects);
     }
 
-    public void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
-      _extension.CommitValidate (clientTransaction, domainObjects);
+      _extension.CommitValidate (clientTransaction, committedData);
     }
 
     public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)

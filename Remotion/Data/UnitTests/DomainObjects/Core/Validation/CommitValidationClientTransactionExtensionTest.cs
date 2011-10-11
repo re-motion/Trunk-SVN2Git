@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Validation;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
@@ -42,12 +42,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
     [Test]
     public void CommitValidate ()
     {
-      var domainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
-      var domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
+      var data1 = PersistableDataObjectMother.Create ();
+      var data2 = PersistableDataObjectMother.Create ();
 
       var transaction = ClientTransaction.CreateRootTransaction();
 
-      var validatorMock = MockRepository.GenerateStrictMock<IDomainObjectValidator>();
+      var validatorMock = MockRepository.GenerateStrictMock<IPersistableDataValidator>();
       var extension = new CommitValidationClientTransactionExtension (
           tx =>
           {
@@ -55,11 +55,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Validation
             return validatorMock;
           });
 
-      validatorMock.Expect (mock => mock.Validate (domainObject1));
-      validatorMock.Expect (mock => mock.Validate (domainObject2));
+      validatorMock.Expect (mock => mock.Validate (data1));
+      validatorMock.Expect (mock => mock.Validate (data2));
       validatorMock.Replay();
 
-      extension.CommitValidate (transaction, Array.AsReadOnly<DomainObject> (new[] { domainObject1, domainObject2 }));
+      extension.CommitValidate (transaction, Array.AsReadOnly (new[] { data1, data2 }));
 
       validatorMock.VerifyAllExpectations();
     }

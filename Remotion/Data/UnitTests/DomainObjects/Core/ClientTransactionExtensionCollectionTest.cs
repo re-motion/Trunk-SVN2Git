@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -427,7 +428,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void CommitValidate ()
     {
-      var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
+      var data = new ReadOnlyCollection<PersistableData> (new PersistableData[0]);
       using (_mockRepository.Ordered ())
       {
         _extension1.Expect (mock => mock.CommitValidate (ClientTransactionMock, data));

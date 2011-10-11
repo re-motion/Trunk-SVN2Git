@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -26,6 +27,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
+using Remotion.FunctionalProgramming;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
@@ -95,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
           Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (GetTransportedObjects (transportedObjects))));
       extensionMock.Expect (mock => mock.CommitValidate (
           Arg.Is (transportedObjects.DataTransaction),
-          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (GetTransportedObjects (transportedObjects))));
+          Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (GetTransportedObjects (transportedObjects)))));
       extensionMock.Expect (mock => mock.Committed (
           Arg.Is (transportedObjects.DataTransaction),
           Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (GetTransportedObjects (transportedObjects))));

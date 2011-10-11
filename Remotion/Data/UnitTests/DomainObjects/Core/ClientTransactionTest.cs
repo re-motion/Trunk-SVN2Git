@@ -316,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Expect (
               mock => mock.TransactionCommitValidate (
                   Arg.Is (_transactionWithMocks),
-                  Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { _fakeDomainObject1, _fakeDomainObject2, _fakeDomainObject3 })))
+                  Arg<ReadOnlyCollection<PersistableData>>.List.Equivalent (new[] { item1, item2, item3 })))
           .Ordered (expectationCounter)
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
       _persistenceStrategyMock

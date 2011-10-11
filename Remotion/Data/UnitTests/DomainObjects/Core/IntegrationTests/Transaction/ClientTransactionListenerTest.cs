@@ -30,6 +30,7 @@ using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
@@ -372,7 +373,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { order })));
         _strictListenerMock.Expect (mock => mock.TransactionCommitValidate (
             Arg.Is (ClientTransactionMock),
-            Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { order })));
+            Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (new[] { order }))));
         _strictListenerMock.Expect (mock => mock.DataContainerStateUpdated (ClientTransactionMock, order.InternalDataContainer, StateType.Unchanged));
         _strictListenerMock.Expect (mock => mock.TransactionCommitted (
             Arg.Is (ClientTransactionMock), 

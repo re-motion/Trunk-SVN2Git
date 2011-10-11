@@ -67,9 +67,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void TrahsactionCommitEvents_Delegated ()
     {
       var domainObjects = Array.AsReadOnly (new DomainObject[0]);
+      var persistableData = Array.AsReadOnly (new PersistableData[0]);
 
       ExpectDelegation (l => l.TransactionCommitting (_clientTransaction, domainObjects), e => e.Committing (_clientTransaction, domainObjects));
-      ExpectDelegation (l => l.TransactionCommitValidate (_clientTransaction, domainObjects), e => e.CommitValidate (_clientTransaction, domainObjects));
+      ExpectDelegation (l => l.TransactionCommitValidate (_clientTransaction, persistableData), e => e.CommitValidate (_clientTransaction, persistableData));
       ExpectDelegation (l => l.TransactionCommitted (_clientTransaction, domainObjects), e => e.Committed (_clientTransaction, domainObjects));
     }
 
