@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 
@@ -33,98 +31,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ClassDefinition baseClass,
         params Type[] persistentMixins)
     {
-      var classDefinition = new ClassDefinition (
-          id,
-          classType,
-          isAbstract,
-          baseClass,
-          null,
-          new PersistentMixinFinderMock (classType, persistentMixins));
-      return classDefinition;
+      return new ClassDefinition (id, classType, isAbstract, baseClass, null, new PersistentMixinFinderMock (classType, persistentMixins));
     }
 
     public static ClassDefinition CreateClassDefinition (
         string id,
-        string entityName,
-        StorageProviderDefinition storageProviderDefinition,
         Type classType,
         bool isAbstract,
         ClassDefinition baseClass,
         Type storageGroupType,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      var classDefinition = new ClassDefinition (
-          id,
-          classType,
-          isAbstract,
-          baseClass,
-          storageGroupType,
-          persistentMixinFinder);
-      SetFakeStorageEntity (classDefinition, storageProviderDefinition, entityName);
-      return classDefinition;
+      return new ClassDefinition (id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder);
     }
 
-    public static ClassDefinition CreateClassDefinitionWithoutStorageEntity (
+    public static ClassDefinition CreateClassDefinition (
         string id,
-        string entityName,
         Type classType,
         bool isAbstract,
         ClassDefinition baseClass,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      var classDefinition = new ClassDefinition (
-          id,
-          classType,
-          isAbstract,
-          baseClass,
-          null,
-          persistentMixinFinder);
-      return classDefinition;
+      return new ClassDefinition (id, classType, isAbstract, baseClass, null, persistentMixinFinder);
     }
 
-    public static ClassDefinition CreateClassDefinition (
-        string id,
-        string entityName,
-        StorageProviderDefinition storageProviderDefinition,
-        Type classType,
-        bool isAbstract,
-        params Type[] persistentMixins)
+    public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, params Type[] persistentMixins)
     {
       return CreateClassDefinition (
-          id, entityName, storageProviderDefinition, classType, isAbstract, null, null, new PersistentMixinFinderMock (classType, persistentMixins));
+          id, classType, isAbstract, null, null, new PersistentMixinFinderMock (classType, persistentMixins));
     }
 
-    public static ClassDefinition CreateClassDefinition (
-        string id,
-        string entityName,
-        StorageProviderDefinition storageProviderDefinition,
-        Type classType,
-        bool isAbstract,
-        IPersistentMixinFinder persistentMixinFinder)
+    public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
     {
-      return CreateClassDefinition (
-          id, entityName, storageProviderDefinition, classType, isAbstract, null, null, persistentMixinFinder);
+      return CreateClassDefinition (id, classType, isAbstract, null, null, persistentMixinFinder);
     }
 
     public static ClassDefinition CreateClassDefinition (Type type, params Type[] mixins)
     {
-      return CreateClassDefinition (type.Name, type.Name, null, type, false, mixins);
+      return CreateClassDefinition (type.Name, type, false, mixins);
     }
 
-    public static ClassDefinition CreateClassDefinition (
-        Type type, StorageProviderDefinition storageProviderDefinition, params Type[] mixins)
-    {
-      return CreateClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, mixins);
-    }
-
-    public static ClassDefinition CreateClassDefinition (
-        Type type, ClassDefinition baseClass, params Type[] mixins)
-    {
-      return CreateClassDefinition (type.Name, type, false, baseClass, mixins);
-    }
-
-    public static ClassDefinition CreateClassDefinition (
-        Type type, StorageProviderDefinition storageProviderDefinition, ClassDefinition baseClass, params Type[] mixins)
+    public static ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass, params Type[] mixins)
     {
       return CreateClassDefinition (type.Name, type, false, baseClass, mixins);
     }
@@ -132,11 +79,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static ClassDefinition CreateClassDefinitionWithoutStorageEntity (
         Type type, ClassDefinition baseClass)
     {
-      return CreateClassDefinitionWithoutStorageEntity (
-          type.Name, type.Name, type, false, baseClass, new PersistentMixinFinder (type));
+      return CreateClassDefinition (
+          type.Name, type, false, baseClass, new PersistentMixinFinder (type));
     }
 
-    public static ClassDefinition CreateFinishedClassDefinition (Type classType, ClassDefinition baseClass)
+    public static ClassDefinition CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (Type classType, ClassDefinition baseClass)
     {
       var classDefinition = CreateClassDefinition (classType, baseClass);
 
@@ -147,47 +94,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    public static ClassDefinition CreateFinishedClassDefinition (Type classType)
+    public static ClassDefinition CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (Type classType)
     {
-      return CreateFinishedClassDefinition (classType, null);
+      return CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (classType, null);
     }
 
-    public static ClassDefinition CreateFinishedOrderDefinition ()
+    public static ClassDefinition CreateOrderDefinition_WithEmptyMembers_AndDerivedClasses ()
     {
-      return CreateFinishedClassDefinition (typeof (Order));
+      return CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (typeof (Order));
     }
 
-    public static ClassDefinition CreateFinishedFileSystemItemDefinitionWithDerivedClasses ()
+    public static ClassDefinition CreateFileSystemItemDefinition_WithEmptyMembers_AndWithDerivedClasses ()
     {
-      var fileSystemItemClassDefinition = CreateClassDefinition (
-          typeof (FileSystemItem), (ClassDefinition) null, Type.EmptyTypes);
-      var fileClassDefinition = CreateFinishedClassDefinition (typeof (File), fileSystemItemClassDefinition);
-      var folderClassDefinition = CreateFinishedClassDefinition (typeof (Folder), fileSystemItemClassDefinition);
+      var fileSystemItemClassDefinition = CreateClassDefinition (typeof (FileSystemItem), null, Type.EmptyTypes);
+      var fileClassDefinition = CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (typeof (File), fileSystemItemClassDefinition);
+      var folderClassDefinition = CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (typeof (Folder), fileSystemItemClassDefinition);
 
       fileSystemItemClassDefinition.SetDerivedClasses (new [] { fileClassDefinition, folderClassDefinition });
       fileSystemItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
       return fileSystemItemClassDefinition;
-    }
-
-    public static void SetFakeStorageEntity (ClassDefinition classDefinition, StorageProviderDefinition storageProviderDefinition, string entityName)
-    {
-      //if (storageProviderDefinition == null)
-      //  storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
-      //if (entityName != null)
-      //{
-      //  var tableDefinition = TableDefinitionObjectMother.Create (
-      //      storageProviderDefinition, 
-      //      new EntityNameDefinition (null, entityName),
-      //      new EntityNameDefinition(null, classDefinition.ID + "View"));
-      //  classDefinition.SetStorageEntity (tableDefinition);
-      //}
-      //else
-      //{
-      //  var fakeEntity = new FakeStorageEntityDefinition (storageProviderDefinition, entityName);
-      //  classDefinition.SetStorageEntity (fakeEntity);
-      //}
     }
 
     public static ClassDefinition CreateClassDefinitionWithTable (Type type, StorageProviderDefinition storageProviderDefinition)

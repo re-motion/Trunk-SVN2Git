@@ -46,14 +46,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
 
       _baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
-          null,
-          StorageProviderDefinition,
           typeof (BaseValidationDomainObjectClass),
           true);
       _classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
-          "EntityName",
-          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false,
           _baseClassDefinition,
@@ -66,8 +62,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
-          "EntityName",
-          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false);
 
@@ -118,14 +112,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var baseOfBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
-          "BaseEntityName",
-          StorageProviderDefinition,
           typeof (BaseOfBaseValidationDomainObjectClass),
           true);
       var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
-          "BaseEntityName",
-          StorageProviderDefinition,
           typeof (BaseValidationDomainObjectClass),
           true,
           baseOfBaseClassDefinition,
@@ -133,8 +123,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
       var classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
-          "EntityName",
-          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,

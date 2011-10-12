@@ -37,8 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _customerClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "Customer",
-          "Customer",
-          UnitTestDomainStorageProviderDefinition,
           typeof (Customer),
           false);
       _customerOrdersEndPoint = VirtualRelationEndPointDefinitionFactory.Create (
@@ -49,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (OrderCollection),
           "OrderNumber desc");
 
-      _orderClassDefinition = ClassDefinitionObjectMother.CreateFinishedOrderDefinition ();
+      _orderClassDefinition = ClassDefinitionObjectMother.CreateOrderDefinition_WithEmptyMembers_AndDerivedClasses ();
     }
 
     [Test]

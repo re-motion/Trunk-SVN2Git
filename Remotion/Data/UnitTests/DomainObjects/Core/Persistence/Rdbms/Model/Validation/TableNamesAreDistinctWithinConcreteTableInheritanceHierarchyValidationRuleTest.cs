@@ -43,8 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
 
       _baseOfBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
           "BaseOfBase",
-          null,
-          StorageProviderDefinition,
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       _derivedBaseClass1 = ClassDefinitionObjectMother.CreateClassDefinition (

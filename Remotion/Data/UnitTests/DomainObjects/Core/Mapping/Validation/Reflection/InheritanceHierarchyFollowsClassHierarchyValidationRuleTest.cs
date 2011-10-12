@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ClassDefinitionWithoutBaseClass ()
     {
       var type = typeof (BaseOfBaseValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type.Name, StorageProviderDefinition, type, false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type, false);
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ClassDefinitionWithBaseClass_ClassTypeIsDerivedFromBaseClassType ()
     {
       var baseType = typeof (BaseOfBaseValidationDomainObjectClass);
-      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (baseType.Name, baseType.Name, StorageProviderDefinition, baseType, false);
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (baseType.Name, baseType, false);
       var derivedType = typeof (BaseValidationDomainObjectClass);
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (derivedType.Name, derivedType, false, baseClassDefinition, new Type[0]);
 
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ClassDefinitionWithBaseClass_ClassTypeIsNotDerivedFromBaseClassType ()
     {
       var baseType = typeof (BaseOfBaseValidationDomainObjectClass);
-      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (baseType.Name, baseType.Name, StorageProviderDefinition, baseType, false);
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (baseType.Name, baseType, false);
       var derivedType = typeof (BaseValidationDomainObjectClass);
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (derivedType.Name, derivedType, false, baseClassDefinition, new Type[0]);
       PrivateInvoke.SetNonPublicField (classDefinition, "_classType", typeof (ClassOutOfInheritanceHierarchy));

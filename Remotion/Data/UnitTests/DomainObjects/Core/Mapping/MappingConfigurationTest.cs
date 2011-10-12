@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var type = typeof (DerivedValidationDomainObjectClass);
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          type.Name, type.Name, TestDomainStorageProviderDefinition, type, false);
+          type.Name, type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = PropertyDefinitionFactory.Create(classDefinition, StorageClass.None, propertyInfo);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -353,8 +353,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
-          null,
-          UnitTestDomainStorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false);
       classDefinition.SetStorageEntity (unionViewDefinition);
@@ -382,8 +380,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var validatorMock1 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
       var validatorMock2 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
 
-      var rootClass1 = ClassDefinitionObjectMother.CreateFinishedClassDefinition (typeof (Order));
-      var rootClass2 = ClassDefinitionObjectMother.CreateFinishedClassDefinition (typeof (OrderTicket));
+      var rootClass1 = ClassDefinitionObjectMother.CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (typeof (Order));
+      var rootClass2 = ClassDefinitionObjectMother.CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (typeof (OrderTicket));
 
       persistenceModelLoaderMock
           .Expect (mock => mock.ApplyPersistenceModelToHierarchy (rootClass1))
@@ -421,7 +419,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var persistenceModelLoaderMock = MockRepository.GenerateStrictMock<IPersistenceModelLoader>();
       var validatorMock = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
 
-      var rootClass = ClassDefinitionObjectMother.CreateFinishedFileSystemItemDefinitionWithDerivedClasses();
+      var rootClass = ClassDefinitionObjectMother.CreateFileSystemItemDefinition_WithEmptyMembers_AndWithDerivedClasses();
       var derivedClass1 = rootClass.DerivedClasses[0];
       var derivedClass2 = rootClass.DerivedClasses[1];
 

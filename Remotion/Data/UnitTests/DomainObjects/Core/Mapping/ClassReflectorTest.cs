@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Configuration.NameResolver,
           ClassIDProviderStub,
           DomainModelConstraintProviderStub);
-      var baseClassDefinition = ClassDefinitionObjectMother.CreateFinishedOrderDefinition();
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateOrderDefinition_WithEmptyMembers_AndDerivedClasses();
 
       var actual = classReflector.GetMetadata (baseClassDefinition);
 
@@ -295,8 +295,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "ClassWithDifferentProperties",
-          "ClassWithDifferentProperties",
-          UnitTestDomainStorageProviderDefinition,
           typeof (ClassWithDifferentProperties),
           false);
 
@@ -323,8 +321,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "ClassWithVirtualRelationEndPoints",
-          "ClassWithVirtualRelationEndPoints",
-          UnitTestDomainStorageProviderDefinition,
           typeof (ClassWithVirtualRelationEndPoints),
           false);
 

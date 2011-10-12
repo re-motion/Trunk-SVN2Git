@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       base.SetUp();
 
       _orderClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", "Order", TestDomainStorageProviderDefinition, typeof (Order), false);
+          "Order", typeof (Order), false);
       _orderNumberPropertyDefinition = CreatePropertyDefinition ("OrderNumber", typeof (int), false);
     }
 

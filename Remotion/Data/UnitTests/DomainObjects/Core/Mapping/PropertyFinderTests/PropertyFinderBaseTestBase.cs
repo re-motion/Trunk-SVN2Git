@@ -38,8 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       return ClassDefinitionObjectMother.CreateClassDefinition (
           type.Name,
-          null,
-          null,
           type,
           false,
           new PersistentMixinFinder (type));

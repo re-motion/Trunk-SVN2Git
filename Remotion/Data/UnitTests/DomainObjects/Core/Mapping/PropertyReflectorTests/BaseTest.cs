@@ -35,9 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
       ClassDefinition classDefinition;
       if (ReflectionUtility.IsDomainObject (type))
-        classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type.Name, TestDomainStorageProviderDefinition, type, true);
+        classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type, true);
       else
-        classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order", "Order", TestDomainStorageProviderDefinition, typeof (Order), false);
+        classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order", typeof (Order), false);
 
       return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver, domainModelConstraintProvider);
     }

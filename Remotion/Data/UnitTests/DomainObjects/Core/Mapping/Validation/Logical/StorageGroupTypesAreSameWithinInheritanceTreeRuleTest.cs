@@ -84,8 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       return ClassDefinitionObjectMother.CreateClassDefinition (
           classType.Name,
-          classType.Name,
-          StorageProviderDefinition,
           classType,
           true,
           baseClass,

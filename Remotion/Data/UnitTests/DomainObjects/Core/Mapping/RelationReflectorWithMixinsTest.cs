@@ -59,8 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _inheritanceRootInheritingMixinClassDefinition =
           ClassDefinitionObjectMother.CreateClassDefinition (
               "InheritanceRootInheritingPersistentMixin",
-              "InheritanceRootInheritingPersistentMixin",
-              UnitTestDomainStorageProviderDefinition,
               typeof (InheritanceRootInheritingPersistentMixin),
               false,
               new PersistentMixinFinder (typeof (InheritanceRootInheritingPersistentMixin), true));
