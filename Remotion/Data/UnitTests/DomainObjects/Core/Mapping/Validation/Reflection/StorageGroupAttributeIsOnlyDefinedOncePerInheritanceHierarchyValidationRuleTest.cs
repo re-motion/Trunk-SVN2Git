@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void NotInheritanceRoot ()
     {
       var type = typeof (DerivedClassWithoutStorageGroupAttribute);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition(type);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins(type);
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void InheritanceRoot_WithoutStorageGroupAttribute ()
     {
       var type = typeof (BaseClassWithoutStorageGroupAttribute);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (type);
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void InheritanceRoot_WithStorageGroupAttribute_And_WithoutStorageGroupAttributeOnBaseClass ()
     {
       var type = typeof (BaseClassWithStorageGroupAttribute);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (type);
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void InheritanceRoot_WithStorageGroupAttribute_And_WithStorageGroupAttributeOnBaseClass ()
     {
       var type = typeof (DerivedClassWithStorageGroupAttribute);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition(type);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins(type);
 
       var validationResult = _validationRule.Validate (classDefinition);
 

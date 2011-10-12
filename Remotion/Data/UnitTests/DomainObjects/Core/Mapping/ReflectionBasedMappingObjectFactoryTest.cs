@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateClassDefinition_WithBaseClass ()
     {
-      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company));
+      var companyClass = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Company));
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       companyClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var result = _factory.CreateClassDefinition (typeof (Customer), companyClass);
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderItem));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (OrderItem));
       var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition, typeof (OrderItem), "Order", "OrderID", true);
       var endPoint = new RelationEndPointDefinition (propertyDefinition, false);

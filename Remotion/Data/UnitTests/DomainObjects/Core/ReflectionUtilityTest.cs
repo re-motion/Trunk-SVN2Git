@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public override void SetUp ()
     {
       base.SetUp();
-      _classDefinitionWithMixedproperty = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithMixedProperty), typeof (MixinAddingProperty));
+      _classDefinitionWithMixedproperty = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithMixedProperty), typeof (MixinAddingProperty));
     }
 
     [Test]

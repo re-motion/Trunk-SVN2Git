@@ -434,7 +434,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set for class 'Order'.")]
     public void GetPropertyDefinition_NoPropertyDefinitionsHaveBeenSet_ThrowsException ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
       classDefinition.GetPropertyDefinition ("dummy");
     }
 
@@ -750,7 +750,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set for class 'Order'.")]
     public void MyPropertyDefinitions_NoPropertiesSet_ThrowsException ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
 
       classDefinition.MyPropertyDefinitions.ToArray();
     }
@@ -772,7 +772,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No relation end point definitions have been set for class 'Order'.")]
     public void MyRelationEndPointDefinitions_NoRelationEndPointDefinitionsSet_ThrowsException ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
 
       classDefinition.MyRelationEndPointDefinitions.ToArray();
     }
@@ -1107,8 +1107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistentMixins_Empty ()
     {
       var mixins = new Type[0];
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x", typeof (Order), false, mixins);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), mixins);
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
     }
 
@@ -1116,8 +1115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistentMixins_NonEmpty ()
     {
       var mixins = new[] { typeof (MixinA), typeof (MixinB) };
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x", typeof (Order), false, mixins);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), mixins);
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
     }
 
@@ -1248,8 +1246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ValidateCurrentMixinConfiguration_OkWhenNoChanges ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x", typeof (Order), false, typeof (MixinA));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), typeof (MixinA));
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinA)).EnterScope())
       {
         classDefinition.ValidateCurrentMixinConfiguration(); // ok, no changes
@@ -1259,10 +1256,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ValidateCurrentMixinConfiguration_OkOnInheritanceRootInheritingMixin ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x",
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
           typeof (InheritanceRootInheritingPersistentMixin),
-          false,
           typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot));
 
       using (MixinConfiguration
@@ -1287,12 +1282,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.MixinA")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenAnyChanges_EvenToNonPersistentMixins ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x", typeof (Order), false, typeof (MixinA));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), typeof (MixinA));
 
-      using (
-          MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA)).EnterScope
-              ())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass (typeof (Order))
+              .Clear()
+              .AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA))
+          .EnterScope())
       {
         classDefinition.ValidateCurrentMixinConfiguration();
       }
@@ -1305,8 +1301,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         MatchType = MessageMatch.Contains)]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinMissing ()
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x", typeof (Order), false, typeof (MixinA));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), typeof (MixinA));
       using (MixinConfiguration.BuildFromActive().ForClass<Order>().Clear().EnterScope())
       {
         classDefinition.ValidateCurrentMixinConfiguration();
@@ -1320,8 +1315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         MatchType = MessageMatch.Contains)]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsAdded ()
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x", typeof (Order), false, typeof (MixinA));
+      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), typeof (MixinA));
       using (
           MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (
               typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope())
@@ -1337,9 +1331,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         MatchType = MessageMatch.Contains)]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsChangeOnParentClass ()
     {
-      ClassDefinition baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "xbase", typeof (Company), false, typeof (MixinA));
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("x", typeof (Customer), false, baseClassDefinition);
+      ClassDefinition baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Company), typeof (MixinA));
+      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Customer), baseClassDefinition);
       using (
           MixinConfiguration.BuildFromActive().ForClass (typeof (Company)).Clear().AddMixins (
               typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope())

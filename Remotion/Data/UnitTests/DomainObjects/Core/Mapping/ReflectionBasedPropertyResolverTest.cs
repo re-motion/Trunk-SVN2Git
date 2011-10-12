@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateDefinitionForClassWithInterface ()
     {
-      var classWithInterface = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithInterface));
+      var classWithInterface = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithInterface));
       var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()
     {
       var classWithInterfaceWithMissingAccessors =
-          ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithInterfaceWithMissingAccessors));
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithInterfaceWithMissingAccessors));
       var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
@@ -322,7 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateDefinitionForClassWithMixinAddingInterface ()
     {
       var classWithMixinAddingInterface =
-          ClassDefinitionObjectMother.CreateClassDefinition (typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
       var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
@@ -347,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface ()
     {
       var classWithMixinAddingInterface =
-          ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
       classWithMixinAddingInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           PropertyDefinitionFactory.Create (
               classWithMixinAddingInterface,

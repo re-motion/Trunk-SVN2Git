@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var baseType = typeof (BaseOfBaseValidationDomainObjectClass);
       var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (baseType.Name, baseType, false);
       var derivedType = typeof (BaseValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (derivedType.Name, derivedType, false, baseClassDefinition, new Type[0]);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (derivedType.Name, derivedType, false, baseClassDefinition);
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var baseType = typeof (BaseOfBaseValidationDomainObjectClass);
       var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (baseType.Name, baseType, false);
       var derivedType = typeof (BaseValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (derivedType.Name, derivedType, false, baseClassDefinition, new Type[0]);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (derivedType.Name, derivedType, false, baseClassDefinition);
       PrivateInvoke.SetNonPublicField (classDefinition, "_classType", typeof (ClassOutOfInheritanceHierarchy));
 
       var validationResult = _validationRule.Validate (classDefinition);

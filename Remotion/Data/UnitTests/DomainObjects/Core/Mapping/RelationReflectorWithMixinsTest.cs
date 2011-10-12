@@ -44,17 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
 
       _mixinTargetClassDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
               typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _multiMixinTargetClassDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
               typeof (TargetClassReceivingTwoReferencesToDerivedClass),
               typeof (MixinAddingTwoReferencesToDerivedClass1),
               typeof (MixinAddingTwoReferencesToDerivedClass2));
       _multiMixinRelatedClassDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedClassWithTwoBaseReferencesViaMixins));
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (DerivedClassWithTwoBaseReferencesViaMixins));
       _relatedClassDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
               typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _inheritanceRootInheritingMixinClassDefinition =
           ClassDefinitionObjectMother.CreateClassDefinition (
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_Mixed_PropertyAboveInheritanceRoot ()
     {
-      var classAboveInheritanceRoot = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationTargetForPersistentMixinAboveInheritanceRoot));
+      var classAboveInheritanceRoot = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationTargetForPersistentMixinAboveInheritanceRoot));
       CreateRelationReflectorForProperty (
           classAboveInheritanceRoot, typeof (RelationTargetForPersistentMixinAboveInheritanceRoot), "RelationProperty1");
       var relationReflector = CreateRelationReflectorForProperty (

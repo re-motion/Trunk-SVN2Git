@@ -34,8 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new RelationEndPointNamesAreConsistentValidationRule();
-      _classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass1));
-      _classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass2));
+      _classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass1));
+      _classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass2));
     }
 
     [Test]

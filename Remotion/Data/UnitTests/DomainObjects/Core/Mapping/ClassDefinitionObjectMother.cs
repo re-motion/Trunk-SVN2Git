@@ -24,14 +24,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public static class ClassDefinitionObjectMother
   {
-    public static ClassDefinition CreateClassDefinition (
-        string id,
-        Type classType,
-        bool isAbstract,
-        ClassDefinition baseClass,
-        params Type[] persistentMixins)
+    public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, ClassDefinition baseClass)
     {
-      return new ClassDefinition (id, classType, isAbstract, baseClass, null, new PersistentMixinFinderMock (classType, persistentMixins));
+      return new ClassDefinition (id, classType, isAbstract, baseClass, null, new PersistentMixinFinderMock (classType));
     }
 
     public static ClassDefinition CreateClassDefinition (
@@ -55,10 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return new ClassDefinition (id, classType, isAbstract, baseClass, null, persistentMixinFinder);
     }
 
-    public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, params Type[] persistentMixins)
+    public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract)
     {
-      return CreateClassDefinition (
-          id, classType, isAbstract, null, null, new PersistentMixinFinderMock (classType, persistentMixins));
+      return CreateClassDefinition (id, classType, isAbstract, (ClassDefinition) null);
     }
 
     public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
@@ -66,18 +60,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateClassDefinition (id, classType, isAbstract, null, null, persistentMixinFinder);
     }
 
-    public static ClassDefinition CreateClassDefinition (Type type, params Type[] mixins)
+    public static ClassDefinition CreateClassDefinitionWithMixins (Type type, params Type[] mixins)
     {
-      return CreateClassDefinition (type.Name, type, false, mixins);
+      return CreateClassDefinition (type.Name, type, false, new PersistentMixinFinderMock (type, mixins));
     }
 
-    public static ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass, params Type[] mixins)
+    public static ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass)
     {
-      return CreateClassDefinition (type.Name, type, false, baseClass, mixins);
+      return CreateClassDefinition (type.Name, type, false, baseClass);
     }
 
-    public static ClassDefinition CreateClassDefinitionWithoutStorageEntity (
-        Type type, ClassDefinition baseClass)
+    public static ClassDefinition CreateClassDefinitionWithoutStorageEntity (Type type, ClassDefinition baseClass)
     {
       return CreateClassDefinition (
           type.Name, type, false, baseClass, new PersistentMixinFinder (type));
@@ -106,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateFileSystemItemDefinition_WithEmptyMembers_AndWithDerivedClasses ()
     {
-      var fileSystemItemClassDefinition = CreateClassDefinition (typeof (FileSystemItem), null, Type.EmptyTypes);
+      var fileSystemItemClassDefinition = CreateClassDefinitionWithMixins (typeof (FileSystemItem));
       var fileClassDefinition = CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (typeof (File), fileSystemItemClassDefinition);
       var folderClassDefinition = CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (typeof (Folder), fileSystemItemClassDefinition);
 
@@ -119,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateClassDefinitionWithTable (Type type, StorageProviderDefinition storageProviderDefinition)
     {
-      var classDefinition = CreateClassDefinition (type);
+      var classDefinition = CreateClassDefinitionWithMixins (type);
       classDefinition.SetStorageEntity (TableDefinitionObjectMother.Create (storageProviderDefinition));
       return classDefinition;
     }

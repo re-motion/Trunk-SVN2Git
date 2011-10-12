@@ -132,11 +132,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetTypeDefinitions ()
     {
-      var classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass));
       classDefinition1.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition1.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
 
-      var classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass1));
+      var classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass1));
       classDefinition2.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition2.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ContainsTypeDefinition_ValueFound ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
       StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetTypeDefinition_ValueFound ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition.SetDerivedClasses(Enumerable.Empty<ClassDefinition>());
       StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ContainsClassDefinition_ValueFound ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
       StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ValueFound ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
       StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
@@ -290,7 +290,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ClassDefinitionsAreValidated ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (type);
 
       StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
@@ -328,7 +328,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Property: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders")]
     public void RelationDefinitionsAreValidated ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[

@@ -67,11 +67,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
 
-      _classWithAllDataTypesDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithAllDataTypes));
+      _classWithAllDataTypesDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithAllDataTypes));
       _classWithAllDataTypesDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _fileSystemItemClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (FileSystemItem));
+      _fileSystemItemClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (FileSystemItem));
       _fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classAboveDbTableAttribute = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassNotInMapping));
+      _classAboveDbTableAttribute = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassNotInMapping));
       _classAboveDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       _classWithDbTableAttribute = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company), _classAboveDbTableAttribute);
       _classWithDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());

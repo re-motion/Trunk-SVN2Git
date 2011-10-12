@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_rdbmsPersistenceModelProviderStub, _storageNameProviderStub);
       
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order));
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
       _classDefinition.SetStorageEntity (
           TableDefinitionObjectMother.Create (
               TestDomainStorageProviderDefinition,

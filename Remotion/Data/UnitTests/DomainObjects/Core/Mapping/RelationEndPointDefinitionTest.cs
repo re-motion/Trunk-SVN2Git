@@ -58,8 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          typeof (Order), (ClassDefinition) null, Type.EmptyTypes);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), (ClassDefinition) null);
       var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
           typeof (Order),

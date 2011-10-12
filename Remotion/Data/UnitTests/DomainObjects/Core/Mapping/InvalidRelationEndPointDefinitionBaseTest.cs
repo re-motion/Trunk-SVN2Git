@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [SetUp]
     public void SetUp ()
     {
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassDerivedFromSimpleDomainObject));
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassDerivedFromSimpleDomainObject));
       _invalidEndPointDefinition = new InvalidRelationEndPointDefinitionBase (_classDefinition, "TestProperty", typeof(string));
     }
 

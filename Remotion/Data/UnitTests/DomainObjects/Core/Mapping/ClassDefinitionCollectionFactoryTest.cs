@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _classDefinitions = new Dictionary<Type, ClassDefinition>();
       _mappingObjectFactoryMock = MockRepository.GenerateStrictMock<IMappingObjectFactory>();
       _classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (_mappingObjectFactoryMock);
-      _fakeClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order));
+      _fakeClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateClassDefinitionCollection_DerivedClassAreSet ()
     {
-      var fakeClassDefinitionCompany = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company));
+      var fakeClassDefinitionCompany = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Company));
       var fakeClassDefinitionPartner = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), fakeClassDefinitionCompany);
       var fakeClassDefinitionCustomer = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Customer), fakeClassDefinitionCompany);
 
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClass ()
     {
-      var fakeBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithDifferentProperties));
+      var fakeBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithDifferentProperties));
       _mappingObjectFactoryMock
           .Expect (mock => mock.CreateClassDefinition (typeof (ClassWithDifferentProperties), null))
           .Return (fakeBaseClassDefinition);
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClass_WithBaseClassAlreadyInClassDefinitionCollection ()
     {
-      var expectedBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithDifferentProperties));
+      var expectedBaseClass = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithDifferentProperties));
       _classDefinitions.Add (expectedBaseClass.ClassType, expectedBaseClass);
 
       _mappingObjectFactoryMock
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClass_WithDerivedClassAlreadyInClassDefinitionCollection ()
     {
-      var existing = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order));
+      var existing = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
       _classDefinitions.Add (existing.ClassType, existing);
 
       _mappingObjectFactoryMock.Replay();

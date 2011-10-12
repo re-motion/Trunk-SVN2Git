@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule();
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ForeignKeyIsSupportedClass));
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ForeignKeyIsSupportedClass));
     }
 
     [Test]

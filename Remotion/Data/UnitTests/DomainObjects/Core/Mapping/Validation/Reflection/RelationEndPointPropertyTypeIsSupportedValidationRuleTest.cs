@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new RelationEndPointPropertyTypeIsSupportedValidationRule();
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (RelationEndPointPropertyClass));
     }
 
     [Test]
