@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -97,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       classDefinition.SetStorageEntity (entityDefinition);
 
       return new ObjectID (classDefinition, Guid.NewGuid ());

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -47,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void GetStorageProviderDefinition_NoStorageEntity ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
 
       Assert.That (
           () => _finder.GetStorageProviderDefinition (classDefinition, null),

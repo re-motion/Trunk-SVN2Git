@@ -451,7 +451,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void PersistenceModelIsLoaded ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var propertyDefinition1 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition,
@@ -502,7 +502,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ExpectedMessage = "The persistence model loader did not assign a storage entity to class 'Order'.")]
     public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToTheRootClass ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
@@ -521,7 +521,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void VerifyPersistenceModelApplied_NoStoragePropertyIsAppliedToTheRootClassProperty ()
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
       PrivateInvoke.SetNonPublicField (propertyDefinition, "_storagePropertyDefinition", null);
 
@@ -548,8 +548,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToDerivedClass ()
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
-      var companyClass = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Company), null);
-      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Partner), companyClass);
+      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company), null);
+      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), companyClass);
 
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());

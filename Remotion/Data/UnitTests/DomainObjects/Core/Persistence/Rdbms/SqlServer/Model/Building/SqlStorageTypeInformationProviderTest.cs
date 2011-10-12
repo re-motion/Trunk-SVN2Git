@@ -632,7 +632,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private PropertyDefinition CreatePropertyDefinition (Type propertyType, bool isNullable, int? maxLength = null)
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       return PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition,
           "Name",

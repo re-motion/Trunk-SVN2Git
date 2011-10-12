@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
@@ -35,8 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _storageProviderDefinitionStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder> ();
       _persistenceModelLoader = new PersistenceModelLoader (_storageProviderDefinitionStub);
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
     }
 
     [Test]

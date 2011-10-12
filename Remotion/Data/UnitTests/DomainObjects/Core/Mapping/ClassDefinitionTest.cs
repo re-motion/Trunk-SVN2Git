@@ -90,30 +90,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void InitializeWithNullStorageGroupType ()
     {
-      Assert.That (_domainBaseClass.StorageGroupType, Is.Null);
-
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "DomainBase",
-          typeof (TIDomainBase),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (TIDomainBase)));
+      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (TIDomainBase), null);
+      
       Assert.That (classDefinition.StorageGroupType, Is.Null);
     }
 
     [Test]
     public void InitializeWithStorageGroupType ()
     {
-      Assert.That (_domainBaseClass.StorageGroupType, Is.Null);
+      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (TIDomainBase), typeof (DBStorageGroupAttribute));
 
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "DomainBase",
-          typeof (TIDomainBase),
-          false,
-          null,
-          typeof (DBStorageGroupAttribute),
-          new PersistentMixinFinder (typeof (TIDomainBase)));
       Assert.That (classDefinition.StorageGroupType, Is.Not.Null);
       Assert.That (classDefinition.StorageGroupType, Is.SameAs (typeof (DBStorageGroupAttribute)));
     }

@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -156,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor ()
     {
-      var classDefintion = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (TIOrder), null);
+      var classDefintion = ClassDefinitionObjectMother.CreateClassDefinition (typeof (TIOrder), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
       var result = _sqlProviderFactory.CreateLinqQueryExecutor (
@@ -168,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor_CanBeMixed ()
     {
-      var classDefintion = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (TIOrder), null);
+      var classDefintion = ClassDefinitionObjectMother.CreateClassDefinition (typeof (TIOrder), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
@@ -182,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor_WithMixedStages ()
     {
-      var classDefintion = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (TIOrder), null);
+      var classDefintion = ClassDefinitionObjectMother.CreateClassDefinition (typeof (TIOrder), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
       using (MixinConfiguration.BuildNew()

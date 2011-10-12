@@ -16,14 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -44,17 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition);
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
 
-      _baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "EntityNameMatchesParentEntityNameBaseDomainObject",
-          typeof (BaseValidationDomainObjectClass),
-          true);
-      _classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "EntityNameMatchesParentEntityNameDomainObject",
-          typeof (DerivedValidationDomainObjectClass),
-          false,
-          _baseClassDefinition,
-          null,
-          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
+      _baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseValidationDomainObjectClass));
+      _classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass), _baseClassDefinition);
     }
 
     [Test]
@@ -110,24 +99,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void HasBaseClassesAndHasTableDefinition_BaseOfBaseClassHasTableDefinition ()
     {
-      var baseOfBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "EntityNameMatchesParentEntityNameBaseDomainObject",
-          typeof (BaseOfBaseValidationDomainObjectClass),
-          true);
-      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "EntityNameMatchesParentEntityNameBaseDomainObject",
-          typeof (BaseValidationDomainObjectClass),
-          true,
-          baseOfBaseClassDefinition,
-          null,
-          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
-      var classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "EntityNameMatchesParentEntityNameDomainObject",
-          typeof (DerivedValidationDomainObjectClass),
-          false,
-          baseClassDefinition,
-          null,
-          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
+      var baseOfBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass));
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseValidationDomainObjectClass), baseOfBaseClassDefinition);
+      var classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass), baseClassDefinition);
 
       classDefinitionWithBaseClass.SetStorageEntity (_tableDefinition);
       baseClassDefinition.SetStorageEntity (_unionViewDefinition);

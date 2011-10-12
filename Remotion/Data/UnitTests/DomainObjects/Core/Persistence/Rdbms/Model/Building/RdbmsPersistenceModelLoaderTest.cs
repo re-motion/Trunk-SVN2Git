@@ -216,10 +216,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void ApplyPersistenceModelToHierarchy_CreatesEmptyView_ForAbstractClass_WithAbstractDerivedClass_WithoutConcreteDerivations ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (
-          typeof (AbstractClassWithoutDerivations),
-          null);
-      var derivedClass = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Distributor), classDefinition);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (AbstractClassWithoutDerivations), null);
+      var derivedClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Distributor), classDefinition);
 
       derivedClass.SetStorageEntity (EmptyViewDefinitionObjectMother.Create (_storageProviderDefinition));
       classDefinition.SetDerivedClasses (new[] { derivedClass });
@@ -265,9 +263,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void ApplyPersistenceModelToHierarchy_ReusesStoragePropertiesWithinHierarchy_WhenTwoPropertiesHaveTheSamePropertyInfo ()
     {
-      var baseClass = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (BaseClass), null);
-      var derivedClass1 = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Table1Class), baseClass);
-      var derivedClass2 = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Table2Class), baseClass);
+      var baseClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseClass), null);
+      var derivedClass1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Table1Class), baseClass);
+      var derivedClass2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Table2Class), baseClass);
       baseClass.SetDerivedClasses (new[] { derivedClass1, derivedClass2 });
       derivedClass1.SetDerivedClasses (new ClassDefinition[0]);
       derivedClass2.SetDerivedClasses (new ClassDefinition[0]);

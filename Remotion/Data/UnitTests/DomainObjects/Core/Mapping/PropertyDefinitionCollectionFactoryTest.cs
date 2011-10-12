@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinitions ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       var propertyInfo1 = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("OrderNumber"));
       var propertyInfo2 = PropertyInfoAdapter.Create(typeof (Order).GetProperty ("DeliveryDate"));
       var fakePropertyDefinition1 = PropertyDefinitionFactory.Create(classDefinition, StorageClass.Persistent, propertyInfo1.PropertyInfo);

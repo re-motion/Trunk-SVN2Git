@@ -60,20 +60,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateClassDefinition (id, classType, isAbstract, null, null, persistentMixinFinder);
     }
 
-    public static ClassDefinition CreateClassDefinitionWithMixins (Type type, params Type[] mixins)
+    public static ClassDefinition CreateClassDefinition (Type classType)
     {
-      return CreateClassDefinition (type.Name, type, false, new PersistentMixinFinderMock (type, mixins));
+      return CreateClassDefinition (classType, null);
     }
 
     public static ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass)
     {
       return CreateClassDefinition (type.Name, type, false, baseClass);
-    }
-
-    public static ClassDefinition CreateClassDefinitionWithoutStorageEntity (Type type, ClassDefinition baseClass)
-    {
-      return CreateClassDefinition (
-          type.Name, type, false, baseClass, new PersistentMixinFinder (type));
     }
 
     public static ClassDefinition CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (Type classType, ClassDefinition baseClass)
@@ -112,9 +106,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateClassDefinitionWithTable (Type type, StorageProviderDefinition storageProviderDefinition)
     {
-      var classDefinition = CreateClassDefinitionWithMixins (type);
+      var classDefinition = CreateClassDefinition (type);
       classDefinition.SetStorageEntity (TableDefinitionObjectMother.Create (storageProviderDefinition));
       return classDefinition;
     }
+
+    public static ClassDefinition CreateClassDefinitionWithStorageGroup (Type type, Type storageGroupType)
+    {
+      return CreateClassDefinitionWithStorageGroup (type, storageGroupType, null);
+    }
+
+    public static ClassDefinition CreateClassDefinitionWithStorageGroup (Type type, Type storageGroupType, ClassDefinition baseClassDefinition)
+    {
+      return new ClassDefinition (type.Name, type, false, baseClassDefinition, storageGroupType, new PersistentMixinFinderMock (type));
+    }
+
+    public static ClassDefinition CreateClassDefinitionWithMixins (Type type, params Type[] mixins)
+    {
+      return CreateClassDefinition (type.Name, type, false, new PersistentMixinFinderMock (type, mixins));
+    }
+
   }
 }

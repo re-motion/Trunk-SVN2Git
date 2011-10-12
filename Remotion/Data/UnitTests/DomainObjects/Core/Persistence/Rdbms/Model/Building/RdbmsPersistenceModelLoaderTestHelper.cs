@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -57,21 +58,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
     public RdbmsPersistenceModelLoaderTestHelper ()
     {
-      _baseBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (BaseBaseClass), null);
-      _baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (
-          typeof (BaseClass), _baseBaseClassDefinition);
-      _tableClassDefinition1 = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (
-          typeof (Table1Class), _baseClassDefinition);
-      _tableClassDefinition2 = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (
-          typeof (Table2Class), _baseClassDefinition);
-      _derivedClassDefinition1 = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (
-          typeof (Derived1Class), _tableClassDefinition2);
-      _derivedClassDefinition2 = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (
-          typeof (Derived2Class), _tableClassDefinition2);
-      _derivedDerivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (
-          typeof (DerivedDerivedClass), _derivedClassDefinition2);
-      _derivedDerivedDerivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (
-          typeof (DerivedDerivedDerivedClass), _derivedDerivedClassDefinition);
+      _baseBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseBaseClass), null);
+      _baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseClass), _baseBaseClassDefinition);
+      _tableClassDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Table1Class), _baseClassDefinition);
+      _tableClassDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Table2Class), _baseClassDefinition);
+      _derivedClassDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Derived1Class), _tableClassDefinition2);
+      _derivedClassDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Derived2Class), _tableClassDefinition2);
+      _derivedDerivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedDerivedClass), _derivedClassDefinition2);
+      _derivedDerivedDerivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedDerivedDerivedClass), _derivedDerivedClassDefinition);
 
       _baseBaseClassDefinition.SetDerivedClasses (new[] { _baseClassDefinition });
       _baseClassDefinition.SetDerivedClasses (new[] { _tableClassDefinition1, _tableClassDefinition2 });

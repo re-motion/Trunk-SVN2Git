@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void ClassWithoutBaseClass ()
     {
-      var classDefinition = CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass), null, typeof (DBStorageGroupAttribute));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (BaseOfBaseValidationDomainObjectClass), typeof (DBStorageGroupAttribute), null);
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -47,8 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void ClassWithBaseClass_ClassesWithoutStorageGroupAttribute ()
     {
-      var baseClassDefinition = CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass), null, null);
-      var derivedClassDefinition = CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass), baseClassDefinition, null);
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (BaseOfBaseValidationDomainObjectClass), null, null);
+      var derivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (BaseOfBaseValidationDomainObjectClass), null, baseClassDefinition);
 
       var validationResult = _validationRule.Validate (derivedClassDefinition);
 
@@ -58,8 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void ClassWithBaseClass_ClassesWithSameStorageGroupAttribute ()
     {
-      var baseClassDefinition = CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass), null, typeof(DBStorageGroupAttribute));
-      var derivedClassDefinition = CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass), baseClassDefinition, typeof(DBStorageGroupAttribute));
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (BaseOfBaseValidationDomainObjectClass), typeof(DBStorageGroupAttribute), null);
+      var derivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (BaseOfBaseValidationDomainObjectClass), typeof(DBStorageGroupAttribute), baseClassDefinition);
 
       var validationResult = _validationRule.Validate (derivedClassDefinition);
 
@@ -69,8 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void ClassWithBaseClass_ClassesWithDifferentStorageGroupAttribute ()
     {
-      var baseClassDefinition = CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass), null, typeof (DBStorageGroupAttribute));
-      var derivedClassDefinition = CreateClassDefinition (typeof (BaseValidationDomainObjectClass), baseClassDefinition, typeof (StubStorageGroup1Attribute));
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (BaseOfBaseValidationDomainObjectClass), typeof (DBStorageGroupAttribute), null);
+      var derivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (BaseValidationDomainObjectClass), typeof (StubStorageGroup1Attribute), baseClassDefinition);
 
       var validationResult = _validationRule.Validate (derivedClassDefinition);
 
@@ -78,17 +78,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
         +"'BaseOfBaseValidationDomainObjectClass'.\r\n\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
-    }
-
-    private ClassDefinition CreateClassDefinition (Type classType, ClassDefinition baseClass, Type storageType)
-    {
-      return ClassDefinitionObjectMother.CreateClassDefinition (
-          classType.Name,
-          classType,
-          true,
-          baseClass,
-          storageType,
-          new PersistentMixinFinder (classType));
     }
   }
 }

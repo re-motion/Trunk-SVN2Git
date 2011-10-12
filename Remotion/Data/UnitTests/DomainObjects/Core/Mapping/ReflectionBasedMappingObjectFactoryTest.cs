@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       var propertyInfo = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       var propertyInfo = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       var propertyInfo1 = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderNumber"));
       var propertyInfo2 = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("DeliveryDate"));
 
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (OrderTicket), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderTicket), null);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, typeof (OrderTicket), "Order", "OrderID");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
