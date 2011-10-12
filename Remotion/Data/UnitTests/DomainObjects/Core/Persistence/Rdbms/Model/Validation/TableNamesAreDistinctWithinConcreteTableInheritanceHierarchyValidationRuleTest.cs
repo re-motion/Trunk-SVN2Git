@@ -49,15 +49,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           false);
       _derivedBaseClass1 = ClassDefinitionObjectMother.CreateClassDefinition (
           "DerivedBase1",
-          null,
-          StorageProviderDefinition,
           typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClass);
       _derivedClass = ClassDefinitionObjectMother.CreateClassDefinition (
           "Derived",
-          "Derived",
-          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false,
           _derivedBaseClass1);

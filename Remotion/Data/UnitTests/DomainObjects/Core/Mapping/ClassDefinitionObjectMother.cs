@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -29,8 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     public static ClassDefinition CreateClassDefinition (
         string id,
-        string entityName,
-        StorageProviderDefinition storageProviderDefinition,
         Type classType,
         bool isAbstract,
         ClassDefinition baseClass,
@@ -43,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           baseClass,
           null,
           new PersistentMixinFinderMock (classType, persistentMixins));
-      SetStorageEntityName (entityName, storageProviderDefinition, classDefinition);
       return classDefinition;
     }
 
@@ -64,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           baseClass,
           storageGroupType,
           persistentMixinFinder);
-      SetStorageEntityName (entityName, storageProviderDefinition, classDefinition);
+      SetFakeStorageEntity (classDefinition, storageProviderDefinition, entityName);
       return classDefinition;
     }
 
@@ -124,13 +120,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static ClassDefinition CreateClassDefinition (
         Type type, ClassDefinition baseClass, params Type[] mixins)
     {
-      return CreateClassDefinition (type.Name, type.Name, null, type, false, baseClass, mixins);
+      return CreateClassDefinition (type.Name, type, false, baseClass, mixins);
     }
 
     public static ClassDefinition CreateClassDefinition (
         Type type, StorageProviderDefinition storageProviderDefinition, ClassDefinition baseClass, params Type[] mixins)
     {
-      return CreateClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, baseClass, mixins);
+      return CreateClassDefinition (type.Name, type, false, baseClass, mixins);
     }
 
     public static ClassDefinition CreateClassDefinitionWithoutStorageEntity (
@@ -175,8 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return fileSystemItemClassDefinition;
     }
 
-    private static void SetStorageEntityName (
-        string entityName, StorageProviderDefinition storageProviderDefinition, ClassDefinition classDefinition)
+    public static void SetFakeStorageEntity (ClassDefinition classDefinition, StorageProviderDefinition storageProviderDefinition, string entityName)
     {
       if (storageProviderDefinition == null)
         storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;

@@ -291,7 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateDefinitionForClassDerivedFromClassWithInterface(ClassDefinition baseClassDefinition)
     {
       Type type = typeof (ClassDerivedFromClassWithInterface);
-      return ClassDefinitionObjectMother.CreateClassDefinition(type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false, baseClassDefinition);
+      return ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type, false, baseClassDefinition);
     }
 
     private ClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()

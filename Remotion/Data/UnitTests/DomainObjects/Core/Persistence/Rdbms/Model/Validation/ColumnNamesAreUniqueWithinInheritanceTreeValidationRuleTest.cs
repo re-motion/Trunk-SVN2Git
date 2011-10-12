@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -49,22 +48,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           false);
       _derivedBaseClass1 = ClassDefinitionObjectMother.CreateClassDefinition (
           "StorageSpecificPropertyNamesDerivedBase1DomainObject",
-          "StorageSpecificPropertyNamesDerivedBase1DomainObject",
-          StorageProviderDefinition,
           typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClass);
       _derivedBaseClass2 = ClassDefinitionObjectMother.CreateClassDefinition (
           "StorageSpecificPropertyNamesDerivedBase2DomainObject",
-          "StorageSpecificPropertyNamesDerivedBase2DomainObject",
-          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false,
           _derivedBaseClass1);
       _derivedClass = ClassDefinitionObjectMother.CreateClassDefinition (
           "StorageSpecificPropertyNamesDerivedDomainObject",
-          "StorageSpecificPropertyNamesDerivedDomainObject",
-          StorageProviderDefinition,
           typeof (OtherDerivedValidationHierarchyClass),
           false,
           _baseOfBaseClass);

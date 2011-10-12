@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private Dictionary<Type, ClassDefinition> CreateClassDefinitions ()
     {
-      var classDefinitions = new List<ClassDefinition> ();
+      var classDefinitions = new List<ClassDefinition>();
 
       ClassDefinition company = CreateCompanyDefinition (null);
       classDefinitions.Add (company);
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       {
         IEnumerable<ClassDefinition> derivedClasses;
         if (!classesByBaseClass.TryGetValue (classDefinition, out derivedClasses))
-          derivedClasses = Enumerable.Empty<ClassDefinition> ();
+          derivedClasses = Enumerable.Empty<ClassDefinition>();
 
         classDefinition.SetDerivedClasses (derivedClasses);
       }
@@ -168,10 +168,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateCompanyDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition company = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Company", "Company", _storageProviderDefinition, typeof (Company), false, baseClass);
+      ClassDefinition company = CreateClassDefinition (
+          "Company", "Company", typeof (Company), false, baseClass);
       
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               company, typeof (Company), "Name", "Name", false, 100));
@@ -185,10 +185,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateCustomerDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition customer = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Customer", "Company", _storageProviderDefinition, typeof (Customer), false, baseClass);
+      ClassDefinition customer = CreateClassDefinition (
+          "Customer", "Company", typeof (Customer), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               customer, typeof (Customer), "CustomerSince", "CustomerSince"));
@@ -202,10 +202,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreatePartnerDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition partner = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Partner", "Company", _storageProviderDefinition, typeof (Partner), false, baseClass);
+      ClassDefinition partner = CreateClassDefinition (
+          "Partner", "Company", typeof (Partner), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               partner, typeof (Partner), "ContactPerson", "ContactPersonID", true));
@@ -216,10 +216,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateSupplierDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition supplier = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Supplier", "Company", _storageProviderDefinition, typeof (Supplier), false, baseClass);
+      ClassDefinition supplier = CreateClassDefinition (
+          "Supplier", "Company", typeof (Supplier), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               supplier, typeof (Supplier), "SupplierQuality", "SupplierQuality"));
@@ -230,10 +230,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateDistributorDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition distributor = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Distributor", "Company", _storageProviderDefinition, typeof (Distributor), false, baseClass);
+      ClassDefinition distributor = CreateClassDefinition (
+          "Distributor", "Company", typeof (Distributor), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               distributor, typeof (Distributor), "NumberOfShops", "NumberOfShops"));
@@ -244,10 +244,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateOrderDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition order = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", "Order", _storageProviderDefinition, typeof (Order), false, baseClass);
+      ClassDefinition order = CreateClassDefinition (
+          "Order", "Order", typeof (Order), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               order, typeof (Order), "OrderNumber", "OrderNo"));
@@ -267,10 +267,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateOfficialDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition official = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Official", "Official", _storageProviderDefinition, typeof (Official), false, baseClass);
+      ClassDefinition official = CreateClassDefinition (
+          "Official", "Official", typeof (Official), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               official, typeof (Official), "Name", "Name", false, 100));
@@ -281,8 +281,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateSpecialOfficialDefinition (ClassDefinition officialDefinition)
     {
-      var specialOfficial = ClassDefinitionObjectMother.CreateClassDefinition (
-          "SpecialOfficial", "Official", _storageProviderDefinition, typeof (SpecialOfficial), false, officialDefinition);
+      var specialOfficial = CreateClassDefinition (
+          "SpecialOfficial", "Official", typeof (SpecialOfficial), false, officialDefinition);
       specialOfficial.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return specialOfficial;
@@ -290,10 +290,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateOrderTicketDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition orderTicket = ClassDefinitionObjectMother.CreateClassDefinition (
-          "OrderTicket", "OrderTicket", _storageProviderDefinition, typeof (OrderTicket), false, baseClass);
+      ClassDefinition orderTicket = CreateClassDefinition (
+          "OrderTicket", "OrderTicket", typeof (OrderTicket), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               orderTicket, typeof (OrderTicket), "FileName", "FileName", false, 255));
@@ -315,10 +315,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateOrderItemDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition orderItem = ClassDefinitionObjectMother.CreateClassDefinition (
-          "OrderItem", "OrderItem", _storageProviderDefinition, typeof (OrderItem), false, baseClass);
+      ClassDefinition orderItem = CreateClassDefinition (
+          "OrderItem", "OrderItem", typeof (OrderItem), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               orderItem, typeof (OrderItem), "Order", "OrderID", true));
@@ -335,10 +335,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateCeoDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition ceo = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Ceo", "Ceo", _storageProviderDefinition, typeof (Ceo), false, baseClass);
+      ClassDefinition ceo = CreateClassDefinition (
+          "Ceo", "Ceo", typeof (Ceo), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               ceo, typeof (Ceo), "Name", "Name", false, 100));
@@ -352,10 +352,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreatePersonDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition person = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Person", "Person", _storageProviderDefinition, typeof (Person), false, baseClass);
+      ClassDefinition person = CreateClassDefinition (
+          "Person", "Person", typeof (Person), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               person, typeof (Person), "Name", "Name", false, 100));
@@ -366,10 +366,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClientDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition client = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Client", "Client", _storageProviderDefinition, typeof (Client), false, baseClass);
+      ClassDefinition client = CreateClassDefinition (
+          "Client", "Client", typeof (Client), false, baseClass);
        
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               client, typeof (Client), "ParentClient", "ParentClientID", true));
@@ -380,10 +380,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateLocationDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition location = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Location", "Location", _storageProviderDefinition, typeof (Location), false, baseClass);
+      ClassDefinition location = CreateClassDefinition (
+          "Location", "Location", typeof (Location), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               location, typeof (Location), "Client", "ClientID", true));
@@ -394,10 +394,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateFileSystemItemDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition fileSystemItem = ClassDefinitionObjectMother.CreateClassDefinition (
-          "FileSystemItem", "FileSystemItem", _storageProviderDefinition, typeof (FileSystemItem), false, baseClass);
+      ClassDefinition fileSystemItem = CreateClassDefinition (
+          "FileSystemItem", "FileSystemItem", typeof (FileSystemItem), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               fileSystemItem,
@@ -411,8 +411,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateFolderDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition folder = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Folder", "FileSystemItem", _storageProviderDefinition, typeof (Folder), false, baseClass);
+      ClassDefinition folder = CreateClassDefinition (
+          "Folder", "FileSystemItem", typeof (Folder), false, baseClass);
       folder.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return folder;
@@ -420,8 +420,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateFileDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition file = ClassDefinitionObjectMother.CreateClassDefinition (
-          "File", "FileSystemItem", _storageProviderDefinition, typeof (File), false, baseClass);
+      ClassDefinition file = CreateClassDefinition (
+          "File", "FileSystemItem", typeof (File), false, baseClass);
       file.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return file;
@@ -430,10 +430,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     //TODO: remove Date and NaDate properties
     private ClassDefinition CreateClassWithAllDataTypesDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition classWithAllDataTypes = ClassDefinitionObjectMother.CreateClassDefinition (
-          "ClassWithAllDataTypes", "TableWithAllDataTypes", _storageProviderDefinition, typeof (ClassWithAllDataTypes), false, baseClass);
+      ClassDefinition classWithAllDataTypes = CreateClassDefinition (
+          "ClassWithAllDataTypes", "TableWithAllDataTypes", typeof (ClassWithAllDataTypes), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               classWithAllDataTypes,
@@ -664,10 +664,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithGuidKeyDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition classDefinition = CreateClassDefinition (
           "ClassWithGuidKey",
           "TableWithGuidKey",
-          _storageProviderDefinition,
           typeof (ClassWithGuidKey),
           false,
           baseClass);
@@ -678,10 +677,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithInvalidKeyTypeDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition classDefinition = CreateClassDefinition (
           "ClassWithKeyOfInvalidType",
           "TableWithKeyOfInvalidType",
-          _storageProviderDefinition,
           typeof (ClassWithKeyOfInvalidType),
           false,
           baseClass);
@@ -692,10 +690,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithoutIDColumnDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition classDefinition = CreateClassDefinition (
           "ClassWithoutIDColumn",
           "TableWithoutIDColumn",
-          _storageProviderDefinition,
           typeof (ClassWithoutIDColumn),
           false,
           baseClass);
@@ -706,10 +703,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithoutClassIDColumnDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition classDefinition = CreateClassDefinition (
           "ClassWithoutClassIDColumn",
           "TableWithoutClassIDColumn",
-          _storageProviderDefinition,
           typeof (ClassWithoutClassIDColumn),
           false,
           baseClass);
@@ -721,10 +717,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateClassWithoutTimestampColumnDefinition (ClassDefinition baseClass)
     {
       ClassDefinition classDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (
+          CreateClassDefinition (
               "ClassWithoutTimestampColumn",
               "TableWithoutTimestampColumn",
-              _storageProviderDefinition,
               typeof (ClassWithoutTimestampColumn),
               false,
               baseClass);
@@ -735,15 +730,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithValidRelationsDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition classDefinition = CreateClassDefinition (
           "ClassWithValidRelations",
           "TableWithValidRelations",
-          _storageProviderDefinition,
           typeof (ClassWithValidRelations),
           false,
           baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               classDefinition,
@@ -764,15 +758,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithInvalidRelationDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition classDefinition = CreateClassDefinition (
           "ClassWithInvalidRelation",
           "TableWithInvalidRelation",
-          _storageProviderDefinition,
           typeof (ClassWithInvalidRelation),
           false,
           baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               classDefinition,
@@ -787,15 +780,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateClassWithOptionalOneToOneRelationAndOppositeDerivedClassDefinition (ClassDefinition baseClass)
     {
       ClassDefinition classDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (
+          CreateClassDefinition (
               "ClassWithOptionalOneToOneRelationAndOppositeDerivedClass",
               "TableWithOptionalOneToOneRelationAndOppositeDerivedClass",
-              _storageProviderDefinition,
               typeof (ClassWithOptionalOneToOneRelationAndOppositeDerivedClass),
               false,
               baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               classDefinition,
@@ -809,10 +801,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateIndustrialSectorDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition industrialSector = ClassDefinitionObjectMother.CreateClassDefinition (
-          "IndustrialSector", "IndustrialSector", _storageProviderDefinition, typeof (IndustrialSector), false, baseClass);
+      ClassDefinition industrialSector = CreateClassDefinition (
+          "IndustrialSector", "IndustrialSector", typeof (IndustrialSector), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               industrialSector, typeof (IndustrialSector), "Name", "Name", false, 100));
@@ -823,10 +815,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateEmployeeDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition employee = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Employee", "Employee", _storageProviderDefinition, typeof (Employee), false, baseClass);
+      ClassDefinition employee = CreateClassDefinition (
+          "Employee", "Employee", typeof (Employee), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               employee, typeof (Employee), "Name", "Name", false, 100));
@@ -840,16 +832,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateTargetClassForPersistentMixinDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition targetClassForPersistentMixin = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition targetClassForPersistentMixin = CreateClassDefinition (
           "TargetClassForPersistentMixin",
           "MixedDomains_Target",
-          _storageProviderDefinition,
           typeof (TargetClassForPersistentMixin),
           false,
           baseClass,
           typeof (MixinAddingPersistentProperties));
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
@@ -891,10 +882,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateDerivedTargetClassForPersistentMixinDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition derivedTargetClassForPersistentMixin = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition derivedTargetClassForPersistentMixin = CreateClassDefinition (
           "DerivedTargetClassForPersistentMixin",
           "MixedDomains_Target",
-          _storageProviderDefinition,
           typeof (DerivedTargetClassForPersistentMixin),
           false,
           baseClass);
@@ -905,10 +895,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateDerivedDerivedTargetClassForPersistentMixinDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition derivedDerivedTargetClassForPersistentMixin = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition derivedDerivedTargetClassForPersistentMixin = CreateClassDefinition (
           "DerivedDerivedTargetClassForPersistentMixin",
           "MixedDomains_Target",
-          _storageProviderDefinition,
           typeof (DerivedDerivedTargetClassForPersistentMixin),
           false,
           baseClass);
@@ -919,10 +908,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateComputerDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition computer = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Computer", "Computer", _storageProviderDefinition, typeof (Computer), false, baseClass);
+      ClassDefinition computer = CreateClassDefinition (
+          "Computer", "Computer", typeof (Computer), false, baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               computer, typeof (Computer), "SerialNumber", "SerialNumber", false, 20));
@@ -961,15 +950,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateClassWithRelatedClassIDColumnAndNoInheritanceDefinition (ClassDefinition baseClass)
     {
       ClassDefinition classDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (
+          CreateClassDefinition (
               "ClassWithRelatedClassIDColumnAndNoInheritance",
               "TableWithRelatedClassIDColumnAndNoInheritance",
-              _storageProviderDefinition,
               typeof (ClassWithRelatedClassIDColumnAndNoInheritance),
               false,
               baseClass);
 
-      var properties = new List<PropertyDefinition> ();
+      var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
               classDefinition,
@@ -983,10 +971,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateRelationTargetForPersistentMixinDefinition (ClassDefinition baseClass)
     {
-      ClassDefinition relationTargetForPersistentMixinDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      ClassDefinition relationTargetForPersistentMixinDefinition = CreateClassDefinition (
           "RelationTargetForPersistentMixin",
           "MixedDomains_RelationTarget",
-          _storageProviderDefinition,
           typeof (RelationTargetForPersistentMixin),
           false,
           baseClass);
@@ -1007,6 +994,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationTargetForPersistentMixinDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return relationTargetForPersistentMixinDefinition;
+    }
+
+    private ClassDefinition CreateClassDefinition (
+        string id,
+        string entityName,
+        Type classType,
+        bool isAbstract,
+        ClassDefinition baseClass,
+        params Type[] persistentMixins)
+    {
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (id, classType, isAbstract, baseClass, persistentMixins);
+      ClassDefinitionObjectMother.SetFakeStorageEntity (classDefinition, _storageProviderDefinition, entityName);
+      return classDefinition;
     }
 
     #endregion

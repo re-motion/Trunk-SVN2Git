@@ -85,8 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "Company", "Company", UnitTestDomainStorageProviderDefinition, typeof (Company), false);
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Partner", "Partner", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, baseClassDefinition, new Type[0]);
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Partner", typeof (Partner), false, baseClassDefinition, new Type[0]);
 
       var propertyDefinitionInBaseClass = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           baseClassDefinition, "Property1", "Property1", StorageClass.Persistent);

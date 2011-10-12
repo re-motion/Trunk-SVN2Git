@@ -57,17 +57,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _domainBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
           "TIDomainBase", null, UnitTestDomainStorageProviderDefinition, typeof (TIDomainBase), false);
-      _personClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "TIPerson", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (TIPerson), false, _domainBaseClass);
-      _customerClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "TICustomer", null, UnitTestDomainStorageProviderDefinition, typeof (TICustomer), false, _personClass);
+      _personClass = ClassDefinitionObjectMother.CreateClassDefinition ("TIPerson", typeof (TIPerson), false, _domainBaseClass);
+      _customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("TICustomer", typeof (TICustomer), false, _personClass);
       _organizationalUnitClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "TIOrganizationalUnit",
-          "TableInheritance_OrganizationalUnit",
-          UnitTestDomainStorageProviderDefinition,
-          typeof (TIOrganizationalUnit),
-          false,
-          _domainBaseClass);
+          "TIOrganizationalUnit", typeof (TIOrganizationalUnit), false, _domainBaseClass);
 
       _domainBaseClass.SetDerivedClasses (new[] { _personClass, _organizationalUnitClass });
 
@@ -546,8 +539,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var companyPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
-      var customerClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Customer", "Company", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, companyClass);
+      var customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Customer", typeof (Customer), false, companyClass);
       var customerPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (customerClass, "Name", "Name");
       customerClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { customerPropertyDefinition }, true));
     }
@@ -562,12 +554,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var companyPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
-      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Partner", "Company", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, companyClass);
+      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Partner", typeof (Partner), false, companyClass);
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
-      var supplierClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Supplier", "Company", UnitTestDomainStorageProviderDefinition, typeof (Supplier), false, partnerClass);
+      var supplierClass = ClassDefinitionObjectMother.CreateClassDefinition ("Supplier", typeof (Supplier), false, partnerClass);
       var supplierPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (supplierClass, "Name", "Name");
       supplierClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { supplierPropertyDefinition }, true));
     }
@@ -1357,8 +1347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "xbase", "xx", UnitTestDomainStorageProviderDefinition, typeof (Company), false, typeof (MixinA));
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, baseClassDefinition);
+      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("x", typeof (Customer), false, baseClassDefinition);
       using (
           MixinConfiguration.BuildFromActive().ForClass (typeof (Company)).Clear().AddMixins (
               typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope())

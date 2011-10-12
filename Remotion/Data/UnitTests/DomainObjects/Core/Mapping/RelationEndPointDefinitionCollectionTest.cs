@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           baseClassDefinition, "Property1", "Property1", typeof (DomainObject), StorageClass.Persistent);
      baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { basedPropertyDefinition }, true));
       var derivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Partner", "Partner", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, baseClassDefinition, new Type[0]);
+          "Partner", typeof (Partner), false, baseClassDefinition, new Type[0]);
      var derivedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           derivedClassDefinition, "Property2", "Property2", typeof (DomainObject),  StorageClass.Persistent);
       derivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { derivedPropertyDefinition }, true));

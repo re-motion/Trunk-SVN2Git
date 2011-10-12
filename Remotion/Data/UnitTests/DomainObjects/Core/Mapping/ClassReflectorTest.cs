@@ -310,8 +310,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "DerivedClassWithDifferentProperties",
-          "DerivedClassWithDifferentProperties",
-          UnitTestDomainStorageProviderDefinition,
           typeof (DerivedClassWithDifferentProperties),
           false,
           CreateClassWithDifferentPropertiesClassDefinition());
