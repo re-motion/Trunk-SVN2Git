@@ -19,11 +19,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -1005,8 +1006,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         params Type[] persistentMixins)
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (id, classType, isAbstract, baseClass, persistentMixins);
-      ClassDefinitionObjectMother.SetFakeStorageEntity (classDefinition, _storageProviderDefinition, entityName);
+      SetFakeStorageEntity (classDefinition, entityName);
       return classDefinition;
+    }
+
+    public void SetFakeStorageEntity (ClassDefinition classDefinition, string entityName)
+    {
+      var tableDefinition = TableDefinitionObjectMother.Create (
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, entityName),
+          new EntityNameDefinition (null, classDefinition.ID + "View"));
+      classDefinition.SetStorageEntity (tableDefinition);
     }
 
     #endregion

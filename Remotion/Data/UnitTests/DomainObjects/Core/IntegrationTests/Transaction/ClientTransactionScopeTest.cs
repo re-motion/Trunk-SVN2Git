@@ -26,25 +26,26 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
   [TestFixture]
-  public class ClientTransactionScopeTest
+  public class ClientTransactionScopeTest : StandardMappingTest
   {
     private ClientTransactionScope _outermostScope;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       ClientTransactionScope.ResetActiveScope();
       _outermostScope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
     }
 
-    [TearDown]
-    public void TearDown ()
+    public override void TearDown ()
     {
       if (ClientTransactionScope.ActiveScope != null)
       {
         Assert.AreSame (_outermostScope, ClientTransactionScope.ActiveScope);
         _outermostScope.Leave();
       }
+      base.TearDown();
     }
 
     [Test]

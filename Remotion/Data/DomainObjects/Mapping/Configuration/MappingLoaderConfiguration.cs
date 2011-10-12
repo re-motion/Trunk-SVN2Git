@@ -19,7 +19,6 @@ using System.Configuration;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration
 {

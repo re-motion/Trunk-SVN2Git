@@ -26,7 +26,7 @@ using Remotion.Mixins;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
   [TestFixture]
-  public class MixedStorageProviderTest
+  public class MixedStorageProviderTest : StandardMappingTest
   {
     [Test]
     public void StorageProvidersCanBeMixed ()

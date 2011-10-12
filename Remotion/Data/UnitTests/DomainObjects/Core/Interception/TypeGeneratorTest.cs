@@ -32,6 +32,7 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
@@ -750,7 +751,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     private IPersistenceModelLoader CreatePersistenceModelLoaderStub ()
     {
       var persistenceModelLoaderStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
-      persistenceModelLoaderStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (Arg<ClassDefinition>.Is.Anything));
+      persistenceModelLoaderStub
+          .Stub (stub => stub.ApplyPersistenceModelToHierarchy (Arg<ClassDefinition>.Is.Anything))
+          .WhenCalled (
+              mi => ((ClassDefinition) mi.Arguments[0]).SetStorageEntity (TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition)));
       persistenceModelLoaderStub
           .Stub (stub => stub.CreatePersistenceMappingValidator (Arg<ClassDefinition>.Is.Anything))
           .Return (new PersistenceMappingValidator());

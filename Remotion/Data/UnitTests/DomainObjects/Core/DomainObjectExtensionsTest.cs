@@ -22,7 +22,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   [TestFixture]
-  public class DomainObjectExtensionsTest
+  public class DomainObjectExtensionsTest : StandardMappingTest
   {
     [Test]
     public void GetIDOrNull ()

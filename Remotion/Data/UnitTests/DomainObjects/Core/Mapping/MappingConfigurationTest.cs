@@ -644,7 +644,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var persistenceModelLoaderStub = _mockRepository.Stub<IPersistenceModelLoader>();
       persistenceModelLoaderStub
-          .Stub (stub => stub.ApplyPersistenceModelToHierarchy (Arg<ClassDefinition>.Is.Anything));
+          .Stub (stub => stub.ApplyPersistenceModelToHierarchy (Arg<ClassDefinition>.Is.Anything))
+          .WhenCalled (
+              mi => ((ClassDefinition) mi.Arguments[0]).SetStorageEntity (TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition)));
       persistenceModelLoaderStub
           .Stub (stub => stub.CreatePersistenceMappingValidator (Arg<ClassDefinition>.Is.Anything))
           .Return (new PersistenceMappingValidator());

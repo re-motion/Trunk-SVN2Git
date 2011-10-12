@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
@@ -32,8 +31,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -43,13 +40,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class RdbmsProviderCommandFactoryTest : StandardMappingTest
   {
     private RdbmsProviderCommandFactory _factory;
-    private TableDefinition _tableDefinition1;
-    private TableDefinition _tableDefinition2;
+
     private ObjectID _objectID1;
     private ObjectID _objectID2;
     private ObjectID _objectID3;
-    private ObjectID _foreignKeyValue;
-    private ObjectIDStoragePropertyDefinition _foreignKeyColumnDefinition;
 
     public override void SetUp ()
     {
@@ -75,16 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                                                   new TableDefinitionFinder (rdbmsPersistenceModelProvider),
                                                   dataStoragePropertyDefinitionFactory);
 
-      _tableDefinition1 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table1"));
-      _tableDefinition2 = TableDefinitionObjectMother.Create (TestDomainStorageProviderDefinition, new EntityNameDefinition (null, "Table2"));
-
-      _foreignKeyValue = CreateObjectID (_tableDefinition1);
-      _foreignKeyColumnDefinition = new ObjectIDStoragePropertyDefinition (
-          SimpleStoragePropertyDefinitionObjectMother.IDProperty, SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
-
-      _objectID1 = CreateObjectID (_tableDefinition1);
-      _objectID2 = CreateObjectID (_tableDefinition1);
-      _objectID3 = CreateObjectID (_tableDefinition2);
+      _objectID1 = DomainObjectIDs.Order1;
+      _objectID2 = DomainObjectIDs.Order2;
+      _objectID3 = DomainObjectIDs.Order3;
     }
 
     [Test]
@@ -106,10 +93,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateForRelationLookup ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
-      var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
+      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (OrderItem), "Order");
 
-      var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
+      var result = _factory.CreateForRelationLookup (relationEndPointDefinition, DomainObjectIDs.Order1, null);
 
       Assert.That (result, Is.Not.Null);
     }
@@ -162,17 +148,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       classDefinition.SetStorageEntity (entityDefinition);
 
       return new ObjectID (classDefinition, Guid.NewGuid());
-    }
-
-    private RelationEndPointDefinition CreateForeignKeyEndPointDefinition (ClassDefinition classDefinition)
-    {
-      var idPropertyDefinition = PropertyDefinitionFactory.Create (
-          classDefinition,
-          StorageClass.Persistent,
-          typeof (Order).GetProperty ("OrderTicket"),
-          _foreignKeyColumnDefinition);
-
-      return new RelationEndPointDefinition (idPropertyDefinition, false);
     }
   }
 }

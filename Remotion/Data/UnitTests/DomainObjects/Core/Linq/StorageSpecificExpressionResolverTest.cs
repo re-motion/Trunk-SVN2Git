@@ -53,7 +53,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _rdbmsStoragePropertyDefinitionStub = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
 
       _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver (_rdbmsPersistenceModelProviderStub, _storageNameProviderStub);
+      
       _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order));
+      _classDefinition.SetStorageEntity (
+          TableDefinitionObjectMother.Create (
+              TestDomainStorageProviderDefinition,
+              new EntityNameDefinition (null, "Order"),
+              new EntityNameDefinition (null, "OrderView")));
     }
 
     [Test]

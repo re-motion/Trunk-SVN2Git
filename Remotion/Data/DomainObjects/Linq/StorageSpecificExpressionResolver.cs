@@ -146,6 +146,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private string GetFullyQualifiedEntityName (EntityNameDefinition entityNameDefinition)
     {
+      ArgumentUtility.CheckNotNull ("entityNameDefinition", entityNameDefinition);
+
       return entityNameDefinition.SchemaName != null
                  ? entityNameDefinition.SchemaName + "." + entityNameDefinition.EntityName
                  : entityNameDefinition.EntityName;

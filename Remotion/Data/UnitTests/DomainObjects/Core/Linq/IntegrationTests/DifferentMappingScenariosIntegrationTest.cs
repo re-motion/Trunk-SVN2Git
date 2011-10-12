@@ -33,10 +33,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [SetUp]
     public override void SetUp ()
     {
+      base.SetUp ();
+      
 // ReSharper disable RedundantNameQualifier
       _concreteObjectIDs = new TableInheritanceDomainObjectIDs (Configuration);
 // ReSharper restore RedundantNameQualifier
-      base.SetUp();
     }
 
     [Test]

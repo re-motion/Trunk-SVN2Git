@@ -47,14 +47,9 @@ namespace Remotion.Data.DomainObjects.Configuration
 
     public DomainObjectsConfiguration()
     {
-      _mappingLoaderConfiguration =
-          new DoubleCheckedLockingContainer<MappingLoaderConfiguration> (delegate { return GetMappingLoaderConfiguration(); });
-
-      _persistenceConfiguration =
-          new DoubleCheckedLockingContainer<StorageConfiguration> (delegate { return GetPersistenceConfiguration(); });
-
-      _queryConfiguration =
-          new DoubleCheckedLockingContainer<QueryConfiguration> (delegate { return GetQueryConfiguration (); });
+      _mappingLoaderConfiguration =new DoubleCheckedLockingContainer<MappingLoaderConfiguration> (GetMappingLoaderConfiguration);
+      _persistenceConfiguration = new DoubleCheckedLockingContainer<StorageConfiguration> (GetPersistenceConfiguration);
+      _queryConfiguration = new DoubleCheckedLockingContainer<QueryConfiguration> (GetQueryConfiguration);
     }
 
     private readonly DoubleCheckedLockingContainer<MappingLoaderConfiguration> _mappingLoaderConfiguration;

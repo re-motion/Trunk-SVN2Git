@@ -38,7 +38,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class LoggingClientTransactionListenerTest
+  public class LoggingClientTransactionListenerTest : StandardMappingTest
   {
     private MemoryAppender _memoryAppender;
     private ClientTransactionMock _clientTransaction;
@@ -49,9 +49,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private DataContainer _dataContainer;
     private PropertyValue _propertyValue;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _memoryAppender = new MemoryAppender();
       BasicConfigurator.Configure (_memoryAppender);
 
@@ -67,13 +68,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _domainObject3 = DomainObjectMother.CreateObjectInTransaction<Client> (_clientTransaction);
     }
 
-    [TearDown]
-    public virtual void TearDown ()
+    public override void TearDown ()
     {
       _memoryAppender.Clear();
       LogManager.ResetConfiguration ();
       
       Assert.That (LogManager.GetLogger (typeof (LoggingClientTransactionListener)).IsDebugEnabled, Is.False);
+
+      base.TearDown();
     }
 
     [Test]

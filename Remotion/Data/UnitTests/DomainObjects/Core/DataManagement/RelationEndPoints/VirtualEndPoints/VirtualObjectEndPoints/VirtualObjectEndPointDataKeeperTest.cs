@@ -43,6 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public override void SetUp ()
     {
+      base.SetUp();
+
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
       _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener>();

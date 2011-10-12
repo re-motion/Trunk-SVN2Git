@@ -173,21 +173,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static void SetFakeStorageEntity (ClassDefinition classDefinition, StorageProviderDefinition storageProviderDefinition, string entityName)
     {
-      if (storageProviderDefinition == null)
-        storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
-      if (entityName != null)
-      {
-        var tableDefinition = TableDefinitionObjectMother.Create (
-            storageProviderDefinition, 
-            new EntityNameDefinition (null, entityName),
-            new EntityNameDefinition(null, classDefinition.ID + "View"));
-        classDefinition.SetStorageEntity (tableDefinition);
-      }
-      else
-      {
-        var fakeEntity = new FakeStorageEntityDefinition (storageProviderDefinition, entityName);
-        classDefinition.SetStorageEntity (fakeEntity);
-      }
+      //if (storageProviderDefinition == null)
+      //  storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
+      //if (entityName != null)
+      //{
+      //  var tableDefinition = TableDefinitionObjectMother.Create (
+      //      storageProviderDefinition, 
+      //      new EntityNameDefinition (null, entityName),
+      //      new EntityNameDefinition(null, classDefinition.ID + "View"));
+      //  classDefinition.SetStorageEntity (tableDefinition);
+      //}
+      //else
+      //{
+      //  var fakeEntity = new FakeStorageEntityDefinition (storageProviderDefinition, entityName);
+      //  classDefinition.SetStorageEntity (fakeEntity);
+      //}
+    }
+
+    public static ClassDefinition CreateClassDefinitionWithTable (Type type, StorageProviderDefinition storageProviderDefinition)
+    {
+      var classDefinition = CreateClassDefinition (type);
+      classDefinition.SetStorageEntity (TableDefinitionObjectMother.Create (storageProviderDefinition));
+      return classDefinition;
     }
   }
 }

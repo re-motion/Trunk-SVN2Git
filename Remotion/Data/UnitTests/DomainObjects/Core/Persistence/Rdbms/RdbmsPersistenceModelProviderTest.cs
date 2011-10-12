@@ -33,8 +33,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     public override void SetUp ()
     {
-      _provider = new RdbmsPersistenceModelProvider();
+      base.SetUp();
 
+      _provider = new RdbmsPersistenceModelProvider();
       _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
     }
 

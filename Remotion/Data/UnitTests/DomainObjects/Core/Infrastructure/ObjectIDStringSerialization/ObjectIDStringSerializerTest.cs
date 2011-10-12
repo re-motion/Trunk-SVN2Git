@@ -22,7 +22,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectIDStringSerialization
 {
   [TestFixture]
-  public class ObjectIDStringSerializerTest
+  public class ObjectIDStringSerializerTest : StandardMappingTest
   {
     [Test]
     public void CheckSerializableStringValue ()

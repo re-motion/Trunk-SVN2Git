@@ -39,20 +39,40 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     public override void TestFixtureSetUp ()
     {
-      base.TestFixtureSetUp();
-      DomainObjectsConfiguration.SetCurrent (StandardConfiguration.Instance.GetDomainObjectsConfiguration());
-      MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
+      base.TestFixtureSetUp ();
+
+      DomainObjectsConfiguration.SetCurrent (StandardConfiguration.Instance.GetDomainObjectsConfiguration ());
+      MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration ());
       ConfigurationWrapper.SetCurrent (null);
     }
 
     public override void SetUp ()
     {
       base.SetUp();
+
       DomainObjectsConfiguration.SetCurrent (StandardConfiguration.Instance.GetDomainObjectsConfiguration());
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
     }
 
+    public override void TearDown ()
+    {
+      DomainObjectsConfiguration.SetCurrent (null);
+      MappingConfiguration.SetCurrent (null);
+      ConfigurationWrapper.SetCurrent (null);
+
+      base.TearDown ();
+    }
+
+    public override void TestFixtureTearDown ()
+    {
+      DomainObjectsConfiguration.SetCurrent (null);
+      MappingConfiguration.SetCurrent (null);
+      ConfigurationWrapper.SetCurrent (null);
+
+      base.TestFixtureTearDown ();
+    }
+   
     protected DomainObjectIDs DomainObjectIDs
     {
       get { return StandardConfiguration.Instance.GetDomainObjectIDs(); }
