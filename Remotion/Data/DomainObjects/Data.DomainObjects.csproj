@@ -559,9 +559,6 @@
     <Compile Include="DataManagement\Commands\EndPointModifications\ObjectEndPointSetCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\RelationEndPointModificationCommand.cs" />
     <Compile Include="DBStorageGroupAttribute.cs" />
-    <Compile Include="Design\DomainObjectsDesignModeHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjectGraphTraverser.cs" />
     <Compile Include="DomainObjectMixin.cs" />
     <Compile Include="Infrastructure\DomainObjectTransactionContext.cs" />

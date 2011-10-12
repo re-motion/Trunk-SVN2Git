@@ -1130,7 +1130,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StubStorageGroup2Attribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageConfigurationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StubStorageGroup1Attribute.cs" />
-    <Compile Include="DomainObjects\Core\Design\DomainObjectsDesignModeHelperTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ConstructionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\MixedDomainTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\QueryTest.cs" />
