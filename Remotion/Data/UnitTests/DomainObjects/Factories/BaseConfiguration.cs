@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     protected BaseConfiguration ()
     {
-      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create();
+      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionObjectMother.CreateTestDomainStorageProviders();
       
       _storageConfiguration = new StorageConfiguration (
           storageProviderDefinitionCollection, 
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       var typeDiscoveryService = GetTypeDiscoveryService (GetType().Assembly);
 
       _mappingConfiguration = new MappingConfiguration (
-          MappingReflectorFactory.CreateMappingReflector (typeDiscoveryService), 
+          MappingReflectorObjectMother.CreateMappingReflector (typeDiscoveryService), 
           new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (_storageConfiguration)));
     }
 

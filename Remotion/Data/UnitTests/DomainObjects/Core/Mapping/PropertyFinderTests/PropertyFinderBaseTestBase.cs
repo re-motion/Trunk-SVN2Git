@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     protected ClassDefinition CreateClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateClassDefinition (
+      return ClassDefinitionObjectMother.CreateClassDefinition (
           type.Name,
           type.Name,
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,

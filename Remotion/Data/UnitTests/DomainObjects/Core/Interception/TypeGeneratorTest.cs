@@ -711,7 +711,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     public void InterceptedPropertyCollectorIgnoresPropertyInformationObjectsWhichCannotBeConvertedToPropertyInfo ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (DOWithVirtualProperties));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DOWithVirtualProperties));
       var propertyDefinitionCollection = new PropertyDefinitionCollection();
       propertyDefinitionCollection.Add (
           new PropertyDefinition (

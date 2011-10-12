@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _storageProviderDefinitionStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder> ();
       _persistenceModelLoader = new PersistenceModelLoader (_storageProviderDefinitionStub);
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       
     }
 

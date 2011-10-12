@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void GetStorageProviderDefinition_NoStorageEntity ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
 
       Assert.That (
           () => _finder.GetStorageProviderDefinition (classDefinition, null),

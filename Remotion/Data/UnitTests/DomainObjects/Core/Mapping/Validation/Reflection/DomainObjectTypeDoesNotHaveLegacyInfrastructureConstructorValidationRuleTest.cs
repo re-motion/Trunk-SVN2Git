@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NonAbstractType_WithoutLegacyConstructor ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (NonAbstractClassWithoutLegacyConstructor));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (NonAbstractClassWithoutLegacyConstructor));
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NonAbstractType_WithLegacyConstructor()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (NonAbstractClassWithLegacyConstructor));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (NonAbstractClassWithLegacyConstructor));
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void AbstractType_WithoutInstantiableAttribute_And_WithoutLegacyConstructor ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (AbstractClassWithoutAttributeAndLegacyCtor));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (AbstractClassWithoutAttributeAndLegacyCtor));
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void AbstractType_WithoutInstantiableAttribute_And_WithLegacyConstructor ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (AbstractClassWithoutAttributeAndWithLegacyCtor));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (AbstractClassWithoutAttributeAndWithLegacyCtor));
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void AbstractType_WithInstantiableAttribute_And_WithoutLegacyConstructor ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (AbstractClassWithAttributeAndWithoutLegacyCtor));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (AbstractClassWithAttributeAndWithoutLegacyCtor));
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void AbstractType_WithInstantiableAttribute_And_WithLegacyConstructor ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (AbstractClassWithAttributeAndWithLegacyCtor));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (AbstractClassWithAttributeAndWithLegacyCtor));
       
       var validationResult = _validationRule.Validate (classDefinition);
 

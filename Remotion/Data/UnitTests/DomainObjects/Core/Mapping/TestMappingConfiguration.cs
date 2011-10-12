@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     protected TestMappingConfiguration ()
     {
-      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create();
+      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionObjectMother.CreateTestDomainStorageProviders();
       _storageConfiguration = new StorageConfiguration (
           storageProviderDefinitionCollection, storageProviderDefinitionCollection[MappingReflectionTestBase.DefaultStorageProviderID]);
       _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TestDomainAttribute(), MappingReflectionTestBase.c_testDomainProviderID));
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var typeDiscoveryService = GetTypeDiscoveryService();
 
       _mappingConfiguration = new MappingConfiguration (
-          MappingReflectorFactory.CreateMappingReflector (typeDiscoveryService),
+          MappingReflectorObjectMother.CreateMappingReflector (typeDiscoveryService),
           new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       MappingConfiguration.SetCurrent (_mappingConfiguration);
 

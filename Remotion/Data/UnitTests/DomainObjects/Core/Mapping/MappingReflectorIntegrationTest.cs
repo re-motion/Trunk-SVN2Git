@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinitions ()
     {
-      MappingReflector mappingReflector = MappingReflectorFactory.CreateMappingReflector(TestMappingConfiguration.GetTypeDiscoveryService());
+      MappingReflector mappingReflector = MappingReflectorObjectMother.CreateMappingReflector(TestMappingConfiguration.GetTypeDiscoveryService());
 
       var actualClassDefinitions = mappingReflector.GetClassDefinitions().ToDictionary (cd => cd.ClassType);
       mappingReflector.GetRelationDefinitions (actualClassDefinitions);
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
           .Return (new[] { typeof (Base), typeof (Shadower) });
 
-      var mappingReflector = MappingReflectorFactory.CreateMappingReflector(typeDiscoveryServiceStub);
+      var mappingReflector = MappingReflectorObjectMother.CreateMappingReflector(typeDiscoveryServiceStub);
       var classDefinition1 = mappingReflector.GetClassDefinitions().Single (cd => cd.ClassType == typeof (Shadower));
       var classDefinition2 = classDefinition1.BaseClass;
 
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                   typeof (UnidirectionalRelationClass), typeof (AboveInheritanceRootClassWithRelation), typeof (DerivedInheritanceRootClass1),
                   typeof (DerivedInheritanceRootClass2)
               });
-      var reflector = MappingReflectorFactory.CreateMappingReflector(typeDiscoveryServiceStub);
+      var reflector = MappingReflectorObjectMother.CreateMappingReflector(typeDiscoveryServiceStub);
       var mappingConfiguration = new MappingConfiguration (
           reflector, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 

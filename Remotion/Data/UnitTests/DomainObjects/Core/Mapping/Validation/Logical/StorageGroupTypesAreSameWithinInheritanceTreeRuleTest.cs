@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
     private ClassDefinition CreateClassDefinition (Type classType, ClassDefinition baseClass, Type storageType)
     {
-      return ClassDefinitionFactory.CreateClassDefinition (
+      return ClassDefinitionObjectMother.CreateClassDefinition (
           classType.Name,
           classType.Name,
           StorageProviderDefinition,

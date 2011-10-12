@@ -44,20 +44,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
 
       _mixinTargetClassDefinition =
-          ClassDefinitionFactory.CreateClassDefinition (
+          ClassDefinitionObjectMother.CreateClassDefinition (
               typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _multiMixinTargetClassDefinition =
-          ClassDefinitionFactory.CreateClassDefinition (
+          ClassDefinitionObjectMother.CreateClassDefinition (
               typeof (TargetClassReceivingTwoReferencesToDerivedClass),
               typeof (MixinAddingTwoReferencesToDerivedClass1),
               typeof (MixinAddingTwoReferencesToDerivedClass2));
       _multiMixinRelatedClassDefinition =
-          ClassDefinitionFactory.CreateClassDefinition (typeof (DerivedClassWithTwoBaseReferencesViaMixins));
+          ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedClassWithTwoBaseReferencesViaMixins));
       _relatedClassDefinition =
-          ClassDefinitionFactory.CreateClassDefinition (
+          ClassDefinitionObjectMother.CreateClassDefinition (
               typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _inheritanceRootInheritingMixinClassDefinition =
-          ClassDefinitionFactory.CreateClassDefinition (
+          ClassDefinitionObjectMother.CreateClassDefinition (
               "InheritanceRootInheritingPersistentMixin",
               "InheritanceRootInheritingPersistentMixin",
               UnitTestDomainStorageProviderDefinition,
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_Mixed_PropertyAboveInheritanceRoot ()
     {
-      var classAboveInheritanceRoot = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationTargetForPersistentMixinAboveInheritanceRoot));
+      var classAboveInheritanceRoot = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationTargetForPersistentMixinAboveInheritanceRoot));
       CreateRelationReflectorForProperty (
           classAboveInheritanceRoot, typeof (RelationTargetForPersistentMixinAboveInheritanceRoot), "RelationProperty1");
       var relationReflector = CreateRelationReflectorForProperty (

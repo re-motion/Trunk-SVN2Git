@@ -467,7 +467,7 @@
     <Compile Include="DomainObjects\Core\Mapping\AnonymousRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionChecker.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionCollectionFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionFactory.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionWithNullEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectorIntegrationTest.cs" />
@@ -910,7 +910,7 @@
     <Compile Include="DomainObjects\Factories\ObjectIDStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\SimpleStoragePropertyDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\DomainObjectIDs.cs" />
-    <Compile Include="DomainObjects\Factories\MappingReflectorFactory.cs" />
+    <Compile Include="DomainObjects\Factories\MappingReflectorObjectMother.cs" />
     <Compile Include="DomainObjects\Factories\StorageTypeInformationObjectMother.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\BaseClassWithMixinWithInterface.cs" />
@@ -1449,7 +1449,7 @@
     <Compile Include="DomainObjects\Factories\TestQueryFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Factories\StorageProviderDefinitionFactory.cs">
+    <Compile Include="DomainObjects\Factories\StorageProviderDefinitionObjectMother.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Factories\TestDataContainerFactory.cs">

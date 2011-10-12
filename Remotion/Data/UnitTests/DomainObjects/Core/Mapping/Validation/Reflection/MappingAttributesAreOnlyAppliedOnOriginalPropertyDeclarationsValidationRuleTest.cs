@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void OriginalPropertyDeclaration ()
     {
       var type = typeof (BaseMappingAttributesClass);
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, StorageProviderDefinition, type, false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type.Name, StorageProviderDefinition, type, false);
 
       var validationResult = _validationRule.Validate (classDefinition).First();
 
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void NonOriginalPropertiesDeclarationWithMappingAttribute_NoInheritanceRoot ()
     {
       var type = typeof (DerivedClassWithMappingAttribute);
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, StorageProviderDefinition, type, false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type.Name, StorageProviderDefinition, type, false);
       
       var validationResult = _validationRule.Validate (classDefinition).Where(r=>!r.IsValid).ToArray();
 
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void NonOriginalPropertiesDeclarationWithMappingAttribute_InheritanceRoot ()
     {
       var type = typeof (InheritanceRootDerivedMappingAttributesClass);
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, StorageProviderDefinition, type, false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type.Name, StorageProviderDefinition, type, false);
 
       var validationResult = _validationRule.Validate (classDefinition).Where (r => !r.IsValid).ToArray ();
 
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Ignore ("TODO 3424: Utilities.ReflectionUtility.IsOriginalDeclaration does not work for Mixins")]
     public void NonOriginalPropertiesDeclarationWithMappingAttributeOnMixin_NoInheritanceRoot ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassUsingMixinPropertiesNoInheritanceRoot));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassUsingMixinPropertiesNoInheritanceRoot));
       
       var validationResult = _validationRule.Validate (classDefinition).ToArray();
 

@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
     private ClassDefinition CreateClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false);
+      return ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false);
     }
   }
 }

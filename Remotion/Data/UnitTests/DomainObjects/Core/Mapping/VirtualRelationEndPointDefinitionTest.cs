@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp ();
 
-      _customerClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      _customerClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "Customer",
           "Customer",
           UnitTestDomainStorageProviderDefinition,
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (OrderCollection),
           "OrderNumber desc");
 
-      _orderClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition ();
+      _orderClassDefinition = ClassDefinitionObjectMother.CreateFinishedOrderDefinition ();
     }
 
     [Test]
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           CardinalityType.Many,
           typeof (ObjectList<OrderItem>),
           sortExpressionString);
-      var orderItemClassDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
+      var orderItemClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderItem));
       var oppositeProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Order");
       var productProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Product");
       orderItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{oppositeProperty, productProperty}, true));

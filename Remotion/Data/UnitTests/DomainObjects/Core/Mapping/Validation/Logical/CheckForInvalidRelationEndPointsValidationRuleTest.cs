@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void SetUp ()
     {
       _validationRule = new CheckForInvalidRelationEndPointsValidationRule();
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
     }
 
     [Test]

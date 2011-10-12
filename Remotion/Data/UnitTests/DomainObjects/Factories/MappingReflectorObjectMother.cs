@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
-  public class MappingReflectorFactory
+  public class MappingReflectorObjectMother
   {
     public static MappingReflector CreateMappingReflector (ITypeDiscoveryService typeDiscoveryService)
     {

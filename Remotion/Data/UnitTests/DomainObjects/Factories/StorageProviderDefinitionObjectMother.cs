@@ -23,9 +23,9 @@ using Remotion.Data.UnitTests.DomainObjects.Core;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
-  public static class StorageProviderDefinitionFactory
+  public static class StorageProviderDefinitionObjectMother
   {
-    public static ProviderCollection<StorageProviderDefinition> Create ()
+    public static ProviderCollection<StorageProviderDefinition> CreateTestDomainStorageProviders ()
     {
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
       var sqlStorageObjectFactory = new SqlStorageObjectFactory();

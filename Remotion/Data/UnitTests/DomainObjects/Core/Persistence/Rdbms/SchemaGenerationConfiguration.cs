@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var typeDiscoveryService = GetTypeDiscoveryService (GetType ().Assembly);
 
       _mappingConfiguration = new MappingConfiguration (
-          MappingReflectorFactory.CreateMappingReflector (typeDiscoveryService), 
+          MappingReflectorObjectMother.CreateMappingReflector (typeDiscoveryService), 
           new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (_storageConfiguration)));
       _domainObjectsConfiguration = new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration);
     }

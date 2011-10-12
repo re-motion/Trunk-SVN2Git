@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition ("Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       _propertyDefinition1 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Name", "Name", StorageClass.Persistent);
       _propertyDefinition2 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition_MakeCollectionReadOnlyIsFalse ()
     {
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "Customer", "Customer", UnitTestDomainStorageProviderDefinition, typeof (Customer), false);
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Test", "Test", StorageClass.Persistent);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition_MakeCollectionReadOnlyIsTrue ()
     {
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "Customer", "Customer", UnitTestDomainStorageProviderDefinition, typeof (Customer), false);
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Test", "Test", StorageClass.Persistent);
@@ -83,9 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithBaseClassDefinition ()
     {
-      var baseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "Company", "Company", UnitTestDomainStorageProviderDefinition, typeof (Company), false);
-      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "Partner", "Partner", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, baseClassDefinition, new Type[0]);
 
       var propertyDefinitionInBaseClass = PropertyDefinitionFactory.CreateForFakePropertyInfo (

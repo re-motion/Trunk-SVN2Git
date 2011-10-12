@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Configuration.NameResolver,
           ClassIDProviderStub,
           DomainModelConstraintProviderStub);
-      var baseClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition();
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateFinishedOrderDefinition();
 
       var actual = classReflector.GetMetadata (baseClassDefinition);
 
@@ -293,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithDifferentPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "ClassWithDifferentProperties",
           "ClassWithDifferentProperties",
           UnitTestDomainStorageProviderDefinition,
@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateDerivedClassWithDifferentPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "DerivedClassWithDifferentProperties",
           "DerivedClassWithDifferentProperties",
           UnitTestDomainStorageProviderDefinition,
@@ -323,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithVirtualRelationEndPointsClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "ClassWithVirtualRelationEndPoints",
           "ClassWithVirtualRelationEndPoints",
           UnitTestDomainStorageProviderDefinition,

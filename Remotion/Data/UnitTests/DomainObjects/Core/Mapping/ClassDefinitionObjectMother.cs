@@ -25,7 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
-  public static class ClassDefinitionFactory
+  public static class ClassDefinitionObjectMother
   {
     public static ClassDefinition CreateClassDefinition (
         string id,

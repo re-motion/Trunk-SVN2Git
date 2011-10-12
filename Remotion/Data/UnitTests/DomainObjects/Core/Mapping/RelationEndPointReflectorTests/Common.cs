@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void GetMetadata_NonVirtualEndPoint_PropertyTypeIsNotObjectID ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithRealRelationEndPoints));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithRealRelationEndPoints));
       var propertyDefinition = 
           PropertyDefinitionFactory.CreateForFakePropertyInfo(classDefinition, "Unidirectional", "Column", typeof (string), StorageClass.Persistent);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
     private ClassDefinition CreateClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false);
+      return ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false);
     }
   }
 }

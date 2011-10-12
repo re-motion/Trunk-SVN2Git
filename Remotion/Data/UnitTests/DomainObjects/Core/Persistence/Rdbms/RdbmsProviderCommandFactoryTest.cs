@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateForRelationLookup ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), TestDomainStorageProviderDefinition);
       var relationEndPointDefinition = CreateForeignKeyEndPointDefinition (classDefinition);
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       classDefinition.SetStorageEntity (entityDefinition);
 
       return new ObjectID (classDefinition, Guid.NewGuid());

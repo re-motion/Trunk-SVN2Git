@@ -132,11 +132,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetTypeDefinitions ()
     {
-      var classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition1.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition1.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
 
-      var classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass1));
+      var classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass1));
       classDefinition2.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition2.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ContainsTypeDefinition_ValueFound ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
       StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetTypeDefinition_ValueFound ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition.SetDerivedClasses(Enumerable.Empty<ClassDefinition>());
       StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ContainsClassDefinition_ValueFound ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
       StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ValueFound ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
       StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
@@ -290,7 +290,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ClassDefinitionsAreValidated ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type);
 
       StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyDefinitionsAreValidated ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           type.Name, type.Name, TestDomainStorageProviderDefinition, type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = PropertyDefinitionFactory.Create(classDefinition, StorageClass.None, propertyInfo);
@@ -328,7 +328,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Property: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders")]
     public void RelationDefinitionsAreValidated ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
@@ -351,7 +351,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistenceModelIsValidated ()
     {
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
           UnitTestDomainStorageProviderDefinition,
@@ -382,8 +382,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var validatorMock1 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
       var validatorMock2 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
 
-      var rootClass1 = ClassDefinitionFactory.CreateFinishedClassDefinition (typeof (Order));
-      var rootClass2 = ClassDefinitionFactory.CreateFinishedClassDefinition (typeof (OrderTicket));
+      var rootClass1 = ClassDefinitionObjectMother.CreateFinishedClassDefinition (typeof (Order));
+      var rootClass2 = ClassDefinitionObjectMother.CreateFinishedClassDefinition (typeof (OrderTicket));
 
       persistenceModelLoaderMock
           .Expect (mock => mock.ApplyPersistenceModelToHierarchy (rootClass1))
@@ -421,7 +421,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var persistenceModelLoaderMock = MockRepository.GenerateStrictMock<IPersistenceModelLoader>();
       var validatorMock = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
 
-      var rootClass = ClassDefinitionFactory.CreateFinishedFileSystemItemDefinitionWithDerivedClasses();
+      var rootClass = ClassDefinitionObjectMother.CreateFinishedFileSystemItemDefinitionWithDerivedClasses();
       var derivedClass1 = rootClass.DerivedClasses[0];
       var derivedClass2 = rootClass.DerivedClasses[1];
 
@@ -453,7 +453,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void PersistenceModelIsLoaded ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var propertyDefinition1 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition,
@@ -504,7 +504,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ExpectedMessage = "The persistence model loader did not assign a storage entity to class 'Order'.")]
     public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToTheRootClass ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
@@ -523,7 +523,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void VerifyPersistenceModelApplied_NoStoragePropertyIsAppliedToTheRootClassProperty ()
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
       PrivateInvoke.SetNonPublicField (propertyDefinition, "_storagePropertyDefinition", null);
 
@@ -550,8 +550,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToDerivedClass ()
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
-      var companyClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Company), null);
-      var partnerClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Partner), companyClass);
+      var companyClass = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Company), null);
+      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Partner), companyClass);
 
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());

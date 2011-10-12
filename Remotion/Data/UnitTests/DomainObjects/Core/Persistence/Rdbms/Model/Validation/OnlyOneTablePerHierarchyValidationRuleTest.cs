@@ -44,13 +44,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition);
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
 
-      _baseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      _baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           null,
           StorageProviderDefinition,
           typeof (BaseValidationDomainObjectClass),
           true);
-      _classDefinitionWithBaseClass = ClassDefinitionFactory.CreateClassDefinition (
+      _classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
           StorageProviderDefinition,
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void HasNoBaseClassAndHasNoTableDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
           StorageProviderDefinition,
@@ -116,13 +116,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void HasBaseClassesAndHasTableDefinition_BaseOfBaseClassHasTableDefinition ()
     {
-      var baseOfBaseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var baseOfBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           "BaseEntityName",
           StorageProviderDefinition,
           typeof (BaseOfBaseValidationDomainObjectClass),
           true);
-      var baseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           "BaseEntityName",
           StorageProviderDefinition,
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           baseOfBaseClassDefinition,
           null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
-      var classDefinitionWithBaseClass = ClassDefinitionFactory.CreateClassDefinition (
+      var classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
           StorageProviderDefinition,

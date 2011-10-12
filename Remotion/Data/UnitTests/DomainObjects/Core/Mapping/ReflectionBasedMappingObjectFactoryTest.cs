@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateClassDefinition_WithBaseClass ()
     {
-      var companyClass = ClassDefinitionFactory.CreateClassDefinition (typeof (Company));
+      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company));
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       companyClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var result = _factory.CreateClassDefinition (typeof (Customer), companyClass);
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyInfo = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyInfo = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyInfo1 = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderNumber"));
       var propertyInfo2 = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("DeliveryDate"));
 
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderItem));
       var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition, typeof (OrderItem), "Order", "OrderID", true);
       var endPoint = new RelationEndPointDefinition (propertyDefinition, false);
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (OrderTicket), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithoutStorageEntity (typeof (OrderTicket), null);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, typeof (OrderTicket), "Order", "OrderID");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
