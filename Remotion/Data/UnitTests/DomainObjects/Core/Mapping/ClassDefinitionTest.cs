@@ -1041,8 +1041,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistentMixinFinder ()
     {
       var mixinFinder = new PersistentMixinFinderStub (typeof (Order));
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "x", typeof (Order), false, mixinFinder);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixinFinder (mixinFinder);
       Assert.That (classDefinition.PersistentMixinFinder, Is.SameAs (mixinFinder));
     }
 
@@ -1061,8 +1060,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), mixins);
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
     }
-
-
+    
     [Test]
     public void ResolveProperty ()
     {

@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 
@@ -36,11 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     protected ClassDefinition CreateClassDefinition (Type type)
     {
-      return ClassDefinitionObjectMother.CreateClassDefinition (
-          type.Name,
-          type,
-          false,
-          new PersistentMixinFinder (type));
+      return ClassDefinitionObjectMother.CreateClassDefinitionWithMixinFinder (type, new PersistentMixinFinder (type));
     }
   }
 }

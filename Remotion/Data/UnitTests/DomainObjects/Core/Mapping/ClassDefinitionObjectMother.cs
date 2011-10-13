@@ -51,15 +51,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateClassDefinition (string id, Type classType)
     {
-      return CreateClassDefinition (id, classType, false);
+      return CreateClassDefinition (id, classType, false, null, null, new PersistentMixinFinderStub (classType));
     }
 
     public static ClassDefinition CreateClassDefinition (string id, Type classType, ClassDefinition baseClass)
     {
       return CreateClassDefinition (id, classType, false, baseClass, null, new PersistentMixinFinderStub (classType));
     }
-
-
+    
     public static ClassDefinition CreateClassDefinition (
         string id,
         Type classType,
@@ -71,14 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return new ClassDefinition (id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder);
     }
 
-    public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract)
+    public static ClassDefinition CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (Type classType)
     {
-      return CreateClassDefinition (id, classType, isAbstract, null, null, new PersistentMixinFinderStub (classType));
-    }
-
-    public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
-    {
-      return CreateClassDefinition (id, classType, isAbstract, null, null, persistentMixinFinder);
+      return CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (classType, null);
     }
 
     public static ClassDefinition CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (Type classType, ClassDefinition baseClass)
@@ -90,11 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
       return classDefinition;
-    }
-
-    public static ClassDefinition CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (Type classType)
-    {
-      return CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (classType, null);
     }
 
     public static ClassDefinition CreateOrderDefinition_WithEmptyMembers_AndDerivedClasses ()
@@ -134,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateClassDefinitionWithMixins (Type type, params Type[] mixins)
     {
-      return CreateClassDefinition (type.Name, type, false, new PersistentMixinFinderStub (type, mixins));
+      return CreateClassDefinition (type.Name, type, false, null, null, new PersistentMixinFinderStub (type, mixins));
     }
 
     public static ClassDefinition CreateClassDefinitionWithAbstractFlag (bool isAbstract)
@@ -144,7 +133,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateClassDefinitionWithAbstractFlag (bool isAbstract, Type classType)
     {
-      return CreateClassDefinition ("Test", classType, isAbstract);
+      return CreateClassDefinition ("Test", classType, isAbstract, null, null, new PersistentMixinFinderStub (classType));
     }
+
+    public static ClassDefinition CreateClassDefinitionWithMixinFinder (IPersistentMixinFinder persistentMixinFinder)
+    {
+      return CreateClassDefinition ("Test", typeof (Order), false, null, null, persistentMixinFinder);
+    }
+
+    public static ClassDefinition CreateClassDefinitionWithMixinFinder (Type classType, IPersistentMixinFinder persistentMixinFinder)
+    {
+      return CreateClassDefinition ("Test", classType, false, null, null, persistentMixinFinder);
+    }
+
+
   }
 }

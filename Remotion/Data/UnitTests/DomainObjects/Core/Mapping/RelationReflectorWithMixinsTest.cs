@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -56,11 +55,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _relatedClassDefinition =
           ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
               typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
-      _inheritanceRootInheritingMixinClassDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (
-              "InheritanceRootInheritingPersistentMixin",
+      _inheritanceRootInheritingMixinClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixinFinder (
               typeof (InheritanceRootInheritingPersistentMixin),
-              false,
               new PersistentMixinFinder (typeof (InheritanceRootInheritingPersistentMixin), true));
 
       _classDefinitions = new[] { _mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition }
