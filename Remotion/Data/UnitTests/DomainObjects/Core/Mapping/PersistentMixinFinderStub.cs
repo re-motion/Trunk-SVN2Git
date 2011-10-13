@@ -21,18 +21,18 @@ using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
-  public class PersistentMixinFinderMock : IPersistentMixinFinder
+  public class PersistentMixinFinderStub : IPersistentMixinFinder
   {
     private readonly Type _classType;
     private readonly Type[] _persistentMixins;
 
     private readonly ClassContext _mixinConfiguration;
 
-    public PersistentMixinFinderMock (Type classType, params Type[] persistentMixins) : this (classType, new ClassContext (classType, persistentMixins))
+    public PersistentMixinFinderStub (Type classType, params Type[] persistentMixins) : this (classType, new ClassContext (classType, persistentMixins))
     {
     }
 
-    public PersistentMixinFinderMock (Type classType, ClassContext mixinConfiguration)
+    public PersistentMixinFinderStub (Type classType, ClassContext mixinConfiguration)
     {
       _classType = classType;
       _persistentMixins = mixinConfiguration.Mixins.Select (m => m.MixinType).ToArray();

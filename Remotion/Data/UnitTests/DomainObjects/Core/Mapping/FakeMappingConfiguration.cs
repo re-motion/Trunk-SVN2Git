@@ -1006,7 +1006,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         params Type[] persistentMixins)
     {
       var classDefinition = new ClassDefinition (
-          id, classType, isAbstract, baseClass, null, new PersistentMixinFinderMock (classType, persistentMixins));
+          id, classType, isAbstract, baseClass, null, new PersistentMixinFinderStub (classType, persistentMixins));
       SetFakeStorageEntity (classDefinition, entityName);
       return classDefinition;
     }

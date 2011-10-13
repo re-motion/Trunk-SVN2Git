@@ -49,10 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void HasNoBaseClassAndHasNoTableDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "EntityNameMatchesParentEntityNameDomainObject",
-          typeof (DerivedValidationDomainObjectClass),
-          false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
 
       classDefinition.SetStorageEntity (_unionViewDefinition);
 

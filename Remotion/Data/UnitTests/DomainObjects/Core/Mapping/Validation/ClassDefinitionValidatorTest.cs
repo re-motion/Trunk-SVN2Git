@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
@@ -38,11 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     [SetUp]
     public void SetUp ()
     {
-      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
-      var type = typeof (DerivedValidationDomainObjectClass);
-      _classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type, false);
-      _classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type, false);
-      _classDefinition3 = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type, false);
+      _classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
+      _classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
+      _classDefinition3 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
 
       _validationRuleMock1 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();
       _validationRuleMock2 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();

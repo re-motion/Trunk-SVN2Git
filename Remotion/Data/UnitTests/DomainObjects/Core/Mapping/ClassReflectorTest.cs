@@ -293,10 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithDifferentPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "ClassWithDifferentProperties",
-          typeof (ClassWithDifferentProperties),
-          false);
+      var classDefinition = CreateClassDefinition ("ClassWithDifferentProperties", typeof (ClassWithDifferentProperties), false);
 
       CreatePropertyDefinitionsForClassWithDifferentProperties (classDefinition);
       CreateEndPointDefinitionsForClassWithDifferentProperties (classDefinition);
@@ -306,7 +303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateDerivedClassWithDifferentPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      var classDefinition = CreateClassDefinition (
           "DerivedClassWithDifferentProperties",
           typeof (DerivedClassWithDifferentProperties),
           false,
@@ -319,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithVirtualRelationEndPointsClassDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
+      var classDefinition = CreateClassDefinition (
           "ClassWithVirtualRelationEndPoints",
           typeof (ClassWithVirtualRelationEndPoints),
           false);
@@ -331,56 +328,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition,
-              typeof (ClassWithDifferentPropertiesNotInMapping),
-              "BaseString",
-              "BaseString",
-              true,
-              null,
-              StorageClass.Persistent));
+          CreatePersistentPropertyDefinition (
+              classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BaseString", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classDefinition,
               typeof (ClassWithDifferentPropertiesNotInMapping),
               "BaseUnidirectionalOneToOne",
-              "BaseUnidirectionalOneToOneID",
               true,
-              null,
-              StorageClass.Persistent));
+              null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classDefinition,
               typeof (ClassWithDifferentPropertiesNotInMapping),
               "BasePrivateUnidirectionalOneToOne",
-              "BasePrivateUnidirectionalOneToOneID",
               true,
-              null,
-              StorageClass.Persistent));
+              null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition, typeof (ClassWithDifferentProperties), "Int32", "Int32", false, null, StorageClass.Persistent));
+          CreatePersistentPropertyDefinition (
+              classDefinition, typeof (ClassWithDifferentProperties), "Int32", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition, typeof (ClassWithDifferentProperties), "String", "String", true, null, StorageClass.Persistent));
+          CreatePersistentPropertyDefinition (
+              classDefinition, typeof (ClassWithDifferentProperties), "String", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classDefinition,
               typeof (ClassWithDifferentProperties),
               "PrivateString",
-              "PrivateString",
               true,
-              null,
-              StorageClass.Persistent));
+              null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classDefinition,
               typeof (ClassWithDifferentProperties),
               "UnidirectionalOneToOne",
-              "UnidirectionalOneToOneID",
               true,
-              null,
-              StorageClass.Persistent));
+              null));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
@@ -400,32 +383,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classDefinition,
               typeof (DerivedClassWithDifferentProperties),
               "String",
-              "NewString",
               true,
-              null,
-              StorageClass.Persistent));
+              null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classDefinition,
               typeof (DerivedClassWithDifferentProperties),
               "PrivateString",
-              "DerivedPrivateString",
               true,
-              null,
-              StorageClass.Persistent));
+              null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classDefinition,
               typeof (DerivedClassWithDifferentProperties),
               "OtherString",
-              "OtherString",
               true,
-              null,
-              StorageClass.Persistent));
+              null));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
@@ -519,6 +496,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
       Assert.IsNotNull (propertyInfo, "Property '" + shortPropertyName + "' not found on type '" + declaringType + "'.");
       return PropertyInfoAdapter.Create (propertyInfo);
+    }
+
+    private ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, ClassDefinition baseClass = null)
+    {
+      return new ClassDefinition (id, classType, isAbstract, baseClass, null, new PersistentMixinFinderStub (classType));
+    }
+
+    private PropertyDefinition CreatePersistentPropertyDefinition (
+        ClassDefinition classDefinition,
+        Type declaringClassType,
+        string propertyName,
+        bool isNullable,
+        int? maxLength)
+    {
+      var propertyInfoAdapter = PropertyInfoAdapter.Create (declaringClassType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
+      var fullName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfoAdapter);
+      return new PropertyDefinition (
+          classDefinition,
+          propertyInfoAdapter,
+          fullName,
+          ReflectionUtility.IsDomainObject (propertyInfoAdapter.PropertyType),
+          isNullable,
+          maxLength,
+          StorageClass.Persistent);
     }
   }
 }

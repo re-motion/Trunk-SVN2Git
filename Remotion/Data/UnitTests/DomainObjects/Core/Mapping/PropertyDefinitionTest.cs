@@ -35,8 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       _propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       _propertyInformationStub.Stub (stub => stub.Name).Return ("Test");
       _propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (typeof (Order)));

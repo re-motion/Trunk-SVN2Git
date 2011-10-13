@@ -34,8 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class DataContainerTest : ClientTransactionBaseTest
   {
-    private PropertyDefinition _nameDefinition;
-    private PropertyValue _nameProperty;
+    private PropertyValue _additionalPropertyValue;
 
     private DataContainer _newDataContainer;
     private DataContainer _existingDataContainer;
@@ -48,27 +47,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       base.SetUp();
 
       var idValue = Guid.NewGuid();
-      var orderClass =
-          ClassDefinitionObjectMother.CreateClassDefinition ("Order", typeof (Order), false);
 
-      _newDataContainer = DataContainer.CreateNew (new ObjectID ("Order", idValue));
+      _newDataContainer = DataContainer.CreateNew (new ObjectID (typeof (Order), idValue));
       _existingDataContainer = DataContainer.CreateForExisting (
-          new ObjectID ("Order", idValue),
+          new ObjectID (typeof (Order), idValue),
           null,
           propertyDefinition => propertyDefinition.DefaultValue);
 
       _deletedDataContainer = DataContainer.CreateForExisting (
-          new ObjectID ("Order", idValue),
+          new ObjectID (typeof (Order), idValue),
           null,
           propertyDefinition => propertyDefinition.DefaultValue);
       _deletedDataContainer.Delete();
 
-      _invalidObjectID = new ObjectID ("Order", idValue);
+      _invalidObjectID = new ObjectID (typeof (Order), idValue);
       _discardedDataContainer = DataContainer.CreateNew (_invalidObjectID);
       _discardedDataContainer.Discard();
 
-      _nameDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (orderClass, "Name", "Name");
-      _nameProperty = new PropertyValue (_nameDefinition, "Arthur Dent");
+      var orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
+      var additionalPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (orderClass, "Name", "Name");
+      _additionalPropertyValue = new PropertyValue (additionalPropertyDefinition, "Arthur Dent");
     }
 
     [Test]
@@ -89,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void NewDataContainerStates ()
     {
-      _newDataContainer.PropertyValues.Add (_nameProperty);
+      _newDataContainer.PropertyValues.Add (_additionalPropertyValue);
 
       Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
       Assert.That (_newDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
@@ -103,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void ExistingDataContainerStates ()
     {
-      _existingDataContainer.PropertyValues.Add (_nameProperty);
+      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
@@ -119,13 +117,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var transaction = ClientTransaction.CreateRootTransaction ();
 
-      _existingDataContainer.PropertyValues.Add (_nameProperty);
+      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
       ClientTransactionTestHelper.RegisterDataContainer (transaction, _existingDataContainer);
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (transaction);
       listenerMock
           .Expect (
-              mock => mock.PropertyValueChanging (transaction, _existingDataContainer, _nameProperty, "Arthur Dent", "Zaphod Beeblebrox"))
+              mock => mock.PropertyValueChanging (transaction, _existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
           .WhenCalled (
               mi =>
               {
@@ -133,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
                 Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
               });
       listenerMock
-          .Expect (mock => mock.PropertyValueChanged (transaction, _existingDataContainer, _nameProperty, "Arthur Dent", "Zaphod Beeblebrox"))
+          .Expect (mock => mock.PropertyValueChanged (transaction, _existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
           .WhenCalled (mi =>
           {
             Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
@@ -153,12 +151,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var transaction = ClientTransaction.CreateRootTransaction ();
 
-      _existingDataContainer.PropertyValues.Add (_nameProperty);
+      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
       ClientTransactionTestHelper.RegisterDataContainer (transaction, _existingDataContainer);
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (transaction);
       listenerMock
-          .Expect (mock => mock.PropertyValueChanging (transaction, _existingDataContainer, _nameProperty, "Arthur Dent", "Zaphod Beeblebrox"))
+          .Expect (mock => mock.PropertyValueChanging (transaction, _existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
           .Throw (new EventReceiverCancelException());
       listenerMock.Replay ();
 
@@ -225,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetValue ()
     {
-      _existingDataContainer.PropertyValues.Add (_nameProperty);
+      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
       _existingDataContainer.SetValue ("Name", "Zaphod Beeblebrox");
 
       Assert.That (_existingDataContainer.GetValue ("Name"), Is.EqualTo ("Zaphod Beeblebrox"));

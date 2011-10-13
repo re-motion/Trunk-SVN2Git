@@ -237,13 +237,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return propertyDefinition;
     }
 
-    private static bool IsObjectID (Type propertyType)
+    public static bool IsObjectID (Type propertyType)
     {
       Assert.IsFalse (propertyType == typeof (ObjectID));
       return ReflectionUtility.IsDomainObject (propertyType);
     }
 
-    private static bool IsNullable (Type propertyType)
+    public static bool IsNullable (Type propertyType)
     {
       if (propertyType.IsValueType)
         return Nullable.GetUnderlyingType (propertyType) != null;

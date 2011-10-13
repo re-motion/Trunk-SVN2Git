@@ -41,14 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     public void SetUp ()
     {
       _validationRule = new ClassAboveTableIsAbstractValidationRule();
-      _abstractClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "NonAbstractClassHasEntityNameDomainObject",
-          typeof (DerivedValidationDomainObjectClass),
-          true);
-      _concreteClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "NonAbstractClassHasEntityNameDomainObject",
-          typeof (DerivedValidationDomainObjectClass),
-          false);
+      _abstractClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (true, typeof (DerivedValidationDomainObjectClass));
+      _concreteClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (
+          false, typeof (DerivedValidationDomainObjectClass));
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition, new EntityNameDefinition (null, "TableName"));
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
@@ -64,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           typeof (DerivedValidationDomainObjectClass),
           false,
           null,
-          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
+          new PersistentMixinFinderStub (typeof (DomainObject), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 

@@ -39,8 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       _propertyDefinition1 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Property1", "Property1", typeof (DomainObject), StorageClass.Persistent);
       _propertyDefinition2 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
@@ -85,14 +84,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateForAllRelationEndPoints_ClassDefinitionWithBaseClassDefinition ()
     {
-      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Company", typeof (Company), false);
-     var basedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company));
+      var basedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           baseClassDefinition, "Property1", "Property1", typeof (DomainObject), StorageClass.Persistent);
-     baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { basedPropertyDefinition }, true));
-      var derivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Partner", typeof (Partner), false, baseClassDefinition);
-     var derivedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
-          derivedClassDefinition, "Property2", "Property2", typeof (DomainObject),  StorageClass.Persistent);
+      baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { basedPropertyDefinition }, true));
+      var derivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), baseClassDefinition);
+      var derivedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
+          derivedClassDefinition, "Property2", "Property2", typeof (DomainObject), StorageClass.Persistent);
       derivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { derivedPropertyDefinition }, true));
 
       var endPoint1 = new RelationEndPointDefinition (basedPropertyDefinition, false);

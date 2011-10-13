@@ -55,12 +55,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
 
-      _domainBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "TIDomainBase", typeof (TIDomainBase), false);
-      _personClass = ClassDefinitionObjectMother.CreateClassDefinition ("TIPerson", typeof (TIPerson), false, _domainBaseClass);
-      _customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("TICustomer", typeof (TICustomer), false, _personClass);
-      _organizationalUnitClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "TIOrganizationalUnit", typeof (TIOrganizationalUnit), false, _domainBaseClass);
+      _domainBaseClass = ClassDefinitionObjectMother.CreateClassDefinition ("DomainBase");
+      _personClass = ClassDefinitionObjectMother.CreateClassDefinition ("Person", _domainBaseClass);
+      _customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Customer", _personClass);
+      _organizationalUnitClass = ClassDefinitionObjectMother.CreateClassDefinition ("OrganizationalUnit", _domainBaseClass);
 
       _domainBaseClass.SetDerivedClasses (new[] { _personClass, _organizationalUnitClass });
 
@@ -115,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'TIDomainBase' is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
     public void SetStorageEntityDefinition_ClassIsReadOnly ()
     {
       var tableDefinition = TableDefinitionObjectMother.Create (_storageProviderDefinition, new EntityNameDefinition (null, "Tablename"));
@@ -139,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The property-definitions for class 'TIDomainBase' have already been set."
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The property-definitions for class 'DomainBase' have already been set."
         )]
     public void SetPropertyDefinitions_Twice_ThrowsException ()
     {
@@ -150,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'TIDomainBase' is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
     public void SetPropertyDefinitions_ClassIsReadOnly ()
     {
       _domainBaseClass.SetReadOnly();
@@ -173,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Relation end point for property 'Test' cannot be added to class 'TIDomainBase', because it was initialized for class 'Distributor'.")]
+        "Relation end point for property 'Test' cannot be added to class 'DomainBase', because it was initialized for class 'Distributor'.")]
     public void SetRelationEndPointDefinitions_DifferentClassDefinition_ThrowsException ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
@@ -184,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Relation end point for property 'Test' cannot be added to class 'TIPerson', because base class 'TIDomainBase' already defines a relation end point "
+        "Relation end point for property 'Test' cannot be added to class 'Person', because base class 'DomainBase' already defines a relation end point "
         + "with the same property name.")]
     public void SetRelationEndPointDefinitions_EndPointWithSamePropertyNameWasAlreadyAdded_ThrowsException ()
     {
@@ -199,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The relation end point definitions for class 'TIDomainBase' have already been set.")]
+        "The relation end point definitions for class 'DomainBase' have already been set.")]
     public void SetRelationEndPointDefinitions_Twice_ThrowsException ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
@@ -210,7 +208,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'TIDomainBase' is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
     public void SetRelationEndPointDefinitions_ClassIsReadonly ()
     {
       _domainBaseClass.SetReadOnly();
@@ -228,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The derived-classes for class 'TIPerson' have already been set.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The derived-classes for class 'Person' have already been set.")]
     public void SetDerivedClasses_Twice_ThrowsException ()
     {
       _personClass.SetDerivedClasses (new[] { _customerClass });
@@ -236,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'TIPerson' is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'Person' is read-only.")]
     public void SetDerivedClasses_ClasssIsReadOnly ()
     {
       _personClass.SetReadOnly();
@@ -245,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Derived class 'Order' cannot be added to class 'TIPerson', because it has no base class definition defined.")]
+        "Derived class 'Order' cannot be added to class 'Person', because it has no base class definition defined.")]
     public void SetDerivedClasses_DerivedClassHasNoBaseClassDefined ()
     {
       _personClass.SetDerivedClasses (new[] { _orderClass });
@@ -253,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Derived class 'TIPerson' cannot be added to class 'TICustomer', because it has class 'TIDomainBase' as its base class definition defined.")]
+        "Derived class 'Person' cannot be added to class 'Customer', because it has class 'DomainBase' as its base class definition defined.")]
     public void SetDerivedClasses_DerivedClassHasWrongBaseClassDefined ()
     {
       _customerClass.SetDerivedClasses (new[] { _personClass });
@@ -262,8 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetReadOnly ()
     {
-      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition ();
       actual.SetDerivedClasses (new ClassDefinition[0]);
       Assert.That (actual.IsReadOnly, Is.False);
 
@@ -276,47 +273,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetToString ()
     {
-      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition (
-          "OrderID", typeof (Order), false);
+      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition ("OrderID", typeof (Order));
 
       Assert.That (actual.ToString(), Is.EqualTo (typeof (ClassDefinition).FullName + ": OrderID"));
     }
 
     [Test]
-    public void GetIsAbstract_FromNonAbstractType ()
+    public void GetIsAbstract_True ()
     {
-      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
-
-      Assert.IsFalse (actual.IsAbstract);
-    }
-
-    [Test]
-    public void GetIsAbstract_FromAbstractType ()
-    {
-      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (AbstractClass), true);
+      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (true);
 
       Assert.IsTrue (actual.IsAbstract);
     }
 
     [Test]
-    public void GetIsAbstract_FromArgumentFalse ()
+    public void GetIsAbstract_False ()
     {
-      ClassDefinition actual =
-          ClassDefinitionObjectMother.CreateClassDefinition (
-              "ClassID", typeof (AbstractClass), false);
+      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (false);
 
       Assert.IsFalse (actual.IsAbstract);
-    }
-
-    [Test]
-    public void GetIsAbstract_FromArgumentTrue ()
-    {
-      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition (
-          "ClassID", typeof (Order), true);
-
-      Assert.IsTrue (actual.IsAbstract);
     }
 
     [Test]
@@ -442,8 +417,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetAllPropertyDefinitions_SucceedsWhenReadOnly ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetReadOnly();
@@ -454,22 +428,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "No property definitions have been set for class 'Order'.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set for class 'Order'.")]
     public void GetAllPropertyDefinitions_ThrowsWhenPropertiesNotSet ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order",
-          typeof (Order),
-          false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order");
       classDefinition.GetPropertyDefinitions();
     }
 
     [Test]
     public void GetAllPropertyDefinitions_Cached ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -484,8 +453,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetAllPropertyDefinitions_ReadOnly ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetReadOnly();
@@ -500,10 +468,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Property 'Name' cannot be added to class 'Order', because it was initialized for class 'Company'.")]
     public void AddPropertyToOtherClass ()
     {
-      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Company", typeof (Company), false);
-      var orderClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition ("Company");
+      var orderClass = ClassDefinitionObjectMother.CreateClassDefinition ("Order");
 
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       orderClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -514,12 +480,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Property 'Name' cannot be added to class 'Customer', because base class 'Company' already defines a property with the same name.")]
     public void AddDuplicatePropertyBaseClass ()
     {
-      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Company", typeof (Company), false);
+      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition ("Company");
       var companyPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
-      var customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Customer", typeof (Customer), false, companyClass);
+      var customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Customer", companyClass);
       var customerPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (customerClass, "Name", "Name");
       customerClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { customerPropertyDefinition }, true));
     }
@@ -529,15 +494,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Property 'Name' cannot be added to class 'Supplier', because base class 'Company' already defines a property with the same name.")]
     public void AddDuplicatePropertyBaseOfBaseClass ()
     {
-      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Company", typeof (Company), false);
+      var companyClass = ClassDefinitionObjectMother.CreateClassDefinition ("Company");
       var companyPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
-      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Partner", typeof (Partner), false, companyClass);
+      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Partner", companyClass);
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
-      var supplierClass = ClassDefinitionObjectMother.CreateClassDefinition ("Supplier", typeof (Supplier), false, partnerClass);
+      var supplierClass = ClassDefinitionObjectMother.CreateClassDefinition ("Supplier", partnerClass);
       var supplierPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (supplierClass, "Name", "Name");
       supplierClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { supplierPropertyDefinition }, true));
     }
@@ -545,15 +509,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ConstructorWithoutBaseClass ()
     {
-      ClassDefinitionObjectMother.CreateClassDefinition (
-          "Company", typeof (Company), false);
+      Assert.That (
+          () => new ClassDefinition ("id", typeof (Company), false, null, null, new PersistentMixinFinderStub (typeof (Company))), 
+          Throws.Nothing);
 
       // Expectation: no exception
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "No relation found for class 'Order' and property 'UndefinedProperty'.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'Order' and property 'UndefinedProperty'.")]
     public void GetMandatoryRelationEndPointDefinitionForUndefinedProperty ()
     {
       _orderClass.GetMandatoryRelationEndPointDefinition ("UndefinedProperty");
@@ -574,8 +538,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetAllRelationEndPointDefinitions_SucceedsWhenReadOnly ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       var endPointDefinition = new VirtualRelationEndPointDefinition (
           classDefinition, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
@@ -588,20 +551,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "No relation end point definitions have been set for class 'Order'.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No relation end point definitions have been set for class 'Order'.")]
     public void GetAllRelationEndPointDefinitions_ThrowsWhenRelationsNotSet ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order");
       classDefinition.GetRelationEndPointDefinitions();
     }
 
     [Test]
     public void GetAllRelationEndPointDefinitions_Cached ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       var endPointDefinition = new VirtualRelationEndPointDefinition (
           classDefinition, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
@@ -617,8 +577,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetAllRelationEndPointDefinitionss_ReadOnly ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       var endPointDefinition = new VirtualRelationEndPointDefinition (
           classDefinition, "Test", false, CardinalityType.One, null, MockRepository.GenerateStub<IPropertyInformation>());
@@ -997,11 +956,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       // Note: Never use a ClassDefinition of TestMappingConfiguration or MappingConfiguration here, to ensure
       // this test does not affect other tests through modifying the singleton instances.
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "Order", typeof (Order), false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
 
-      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
-          classDefinition, "Test", "Test");
+      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
       Assert.AreSame (classDefinition, propertyDefinition.ClassDefinition);
 
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -1083,7 +1040,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void PersistentMixinFinder ()
     {
-      var mixinFinder = new PersistentMixinFinderMock (typeof (Order));
+      var mixinFinder = new PersistentMixinFinderStub (typeof (Order));
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
           "x", typeof (Order), false, mixinFinder);
       Assert.That (classDefinition.PersistentMixinFinder, Is.SameAs (mixinFinder));

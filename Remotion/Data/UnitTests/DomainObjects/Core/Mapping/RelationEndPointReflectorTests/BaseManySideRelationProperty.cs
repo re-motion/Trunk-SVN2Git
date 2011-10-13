@@ -34,10 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "ClassWithManySideRelationProperties",
-          typeof (ClassWithRealRelationEndPoints),
-          false);
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithRealRelationEndPoints));
     }
 
     [Test]

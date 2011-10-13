@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
@@ -35,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
       ClassDefinition classDefinition;
       if (ReflectionUtility.IsDomainObject (type))
-        classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type.Name, type, true);
+        classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (true, type);
       else
-        classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order", typeof (Order), false);
+        classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (false, type);
 
       return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver, domainModelConstraintProvider);
     }

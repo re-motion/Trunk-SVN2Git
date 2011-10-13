@@ -24,10 +24,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public static class ClassDefinitionObjectMother
   {
-    public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, ClassDefinition baseClass)
+    public static ClassDefinition CreateClassDefinition ()
     {
-      return new ClassDefinition (id, classType, isAbstract, baseClass, null, new PersistentMixinFinderMock (classType));
+      return CreateClassDefinition (typeof (Order));
     }
+
+    public static ClassDefinition CreateClassDefinition (Type classType)
+    {
+      return CreateClassDefinition ("Test", classType);
+    }
+
+    public static ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass)
+    {
+      return CreateClassDefinition (type.Name, type, false, baseClass, null, new PersistentMixinFinderStub (type));
+    }
+
+    public static ClassDefinition CreateClassDefinition (string id)
+    {
+      return CreateClassDefinition (id, typeof (Order));
+    }
+
+    public static ClassDefinition CreateClassDefinition (string id, ClassDefinition baseClass)
+    {
+      return CreateClassDefinition (id, typeof (Order), false, baseClass, null, new PersistentMixinFinderStub (typeof (Order)));
+    }
+
+    public static ClassDefinition CreateClassDefinition (string id, Type classType)
+    {
+      return CreateClassDefinition (id, classType, false);
+    }
+
+    public static ClassDefinition CreateClassDefinition (string id, Type classType, ClassDefinition baseClass)
+    {
+      return CreateClassDefinition (id, classType, false, baseClass, null, new PersistentMixinFinderStub (classType));
+    }
+
 
     public static ClassDefinition CreateClassDefinition (
         string id,
@@ -40,34 +71,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return new ClassDefinition (id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder);
     }
 
-    public static ClassDefinition CreateClassDefinition (
-        string id,
-        Type classType,
-        bool isAbstract,
-        ClassDefinition baseClass,
-        IPersistentMixinFinder persistentMixinFinder)
-    {
-      return new ClassDefinition (id, classType, isAbstract, baseClass, null, persistentMixinFinder);
-    }
-
     public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract)
     {
-      return CreateClassDefinition (id, classType, isAbstract, (ClassDefinition) null);
+      return CreateClassDefinition (id, classType, isAbstract, null, null, new PersistentMixinFinderStub (classType));
     }
 
     public static ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
     {
       return CreateClassDefinition (id, classType, isAbstract, null, null, persistentMixinFinder);
-    }
-
-    public static ClassDefinition CreateClassDefinition (Type classType)
-    {
-      return CreateClassDefinition (classType, null);
-    }
-
-    public static ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass)
-    {
-      return CreateClassDefinition (type.Name, type, false, baseClass);
     }
 
     public static ClassDefinition CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (Type classType, ClassDefinition baseClass)
@@ -118,13 +129,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateClassDefinitionWithStorageGroup (Type type, Type storageGroupType, ClassDefinition baseClassDefinition)
     {
-      return new ClassDefinition (type.Name, type, false, baseClassDefinition, storageGroupType, new PersistentMixinFinderMock (type));
+      return new ClassDefinition (type.Name, type, false, baseClassDefinition, storageGroupType, new PersistentMixinFinderStub (type));
     }
 
     public static ClassDefinition CreateClassDefinitionWithMixins (Type type, params Type[] mixins)
     {
-      return CreateClassDefinition (type.Name, type, false, new PersistentMixinFinderMock (type, mixins));
+      return CreateClassDefinition (type.Name, type, false, new PersistentMixinFinderStub (type, mixins));
     }
 
+    public static ClassDefinition CreateClassDefinitionWithAbstractFlag (bool isAbstract)
+    {
+      return CreateClassDefinitionWithAbstractFlag (isAbstract, typeof (Order));
+    }
+
+    public static ClassDefinition CreateClassDefinitionWithAbstractFlag (bool isAbstract, Type classType)
+    {
+      return CreateClassDefinition ("Test", classType, isAbstract);
+    }
   }
 }

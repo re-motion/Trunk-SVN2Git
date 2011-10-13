@@ -532,7 +532,7 @@
     <Compile Include="DomainObjects\Core\Mapping\MixinTestDomain\TargetClassC.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MixinTestDomain\TargetClassD.cs" />
     <Compile Include="DomainObjects\Core\Mapping\NullablePropertyAttributeTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\PersistentMixinFinderMock.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\PersistentMixinFinderStub.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PersistentMixinFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyAccessorDataCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionTest.cs" />

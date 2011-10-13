@@ -308,8 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyDefinitionsAreValidated ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          type.Name, type, false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = PropertyDefinitionFactory.Create(classDefinition, StorageClass.None, propertyInfo);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -351,10 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistenceModelIsValidated ()
     {
       var unionViewDefinition = UnionViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (
-          "NonAbstractClassHasEntityNameDomainObject",
-          typeof (DerivedValidationDomainObjectClass),
-          false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
       classDefinition.SetStorageEntity (unionViewDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
