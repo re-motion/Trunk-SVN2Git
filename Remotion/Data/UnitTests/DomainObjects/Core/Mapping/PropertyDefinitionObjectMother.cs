@@ -41,14 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return Create (classDefinition, declaringClassType, propertyName, null, null, null, StorageClass.Persistent);
     }
 
-    public static PropertyDefinition Create (
-        ClassDefinition classDefinition,
-        Type declaringClassType,
-        string propertyName,
-        string columnName,
-        bool isNullable)
+    public static PropertyDefinition Create (ClassDefinition classDefinition, Type declaringClassType, string propertyName, bool isNullable)
     {
-      return Create (classDefinition, declaringClassType, propertyName, columnName, isNullable, null, StorageClass.Persistent);
+      return Create (classDefinition, declaringClassType, propertyName, null, isNullable, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (

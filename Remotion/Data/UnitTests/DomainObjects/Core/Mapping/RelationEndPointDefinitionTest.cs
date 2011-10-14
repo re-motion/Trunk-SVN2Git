@@ -63,7 +63,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition,
           typeof (Order),
           "Customer",
-          "CustomerID",
           false);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection { propertyDefinition });
       var endPoint = new RelationEndPointDefinition (propertyDefinition, true);
