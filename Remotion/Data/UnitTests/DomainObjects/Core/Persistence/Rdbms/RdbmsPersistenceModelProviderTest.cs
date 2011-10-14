@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -78,8 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetStoragePropertyDefinition ()
     {
       var storagePropertyDefinition = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      var propertyDefinition = PropertyDefinitionObjectMother.Create (
-          _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), storagePropertyDefinition);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classDefinition, "OrderNumber");
+      propertyDefinition.SetStorageProperty (storagePropertyDefinition);
 
       var result = _provider.GetStoragePropertyDefinition (propertyDefinition);
 
@@ -92,8 +94,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + "class-definition 'Order', but that property has no storage definition object.")]
     public void GetStoragePropertyDefinition_NoDefinition ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.Create (
-          _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), null);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (
+          _classDefinition,
+          StorageClass.Persistent,
+          typeof (Order).GetProperty ("OrderNumber"));
       Assert.That (propertyDefinition.StoragePropertyDefinition, Is.Null);
 
       _provider.GetStoragePropertyDefinition (propertyDefinition);
@@ -106,8 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetStoragePropertyDefinition_NoRdbmsDefinition ()
     {
       var storagePropertyDefinition = new FakeStoragePropertyDefinition ("Test");
-      var propertyDefinition = PropertyDefinitionObjectMother.Create (
-          _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), storagePropertyDefinition);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classDefinition, "OrderNumber");
+      propertyDefinition.SetStorageProperty (storagePropertyDefinition);
 
       _provider.GetStoragePropertyDefinition (propertyDefinition);
     }

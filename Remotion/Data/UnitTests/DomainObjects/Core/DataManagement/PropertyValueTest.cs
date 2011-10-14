@@ -267,7 +267,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MaxLengthCheck ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), true, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (string), true, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, "12345");
       propertyValue.Value = "12345678901";
     }
@@ -277,7 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MaxLengthCheckInConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), true, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (string), true, 10, StorageClass.Persistent);
       new PropertyValue (definition, "12345678901");
     }
 
@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void TypeCheckInConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), true, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (string), true, 10, StorageClass.Persistent);
       new PropertyValue (definition, 123);
     }
 
@@ -295,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void TypeCheck ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), true, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (string), true, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, "123");
       propertyValue.Value = 123;
     }
@@ -305,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableStringToNull ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (string), false, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, string.Empty);
 
       propertyValue.Value = null;
@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNullableBinary ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (byte[]), true, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (byte[]), true, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, null);
       Assert.IsNull (propertyValue.Value);
     }
@@ -324,7 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableBinary ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (byte[]), false, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (byte[]), false, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, new byte[0]);
       ResourceManager.IsEmptyImage ((byte[]) propertyValue.Value);
@@ -338,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetBinaryWithInvalidType ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (byte[]), false, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (byte[]), false, StorageClass.Persistent);
       new PropertyValue (definition, new int[0]);
     }
 
@@ -347,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableBinaryToNullViaConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (byte[]), false, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (byte[]), false, StorageClass.Persistent);
       new PropertyValue (definition, null);
     }
 
@@ -356,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableBinaryToNullViaProperty ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (byte[]), false, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (byte[]), false, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, ResourceManager.GetImage1());
       propertyValue.Value = null;
     }
@@ -365,7 +365,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNullableExtensibleEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (Color), true, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (Color), true, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, null);
       Assert.IsNull (propertyValue.Value);
@@ -375,7 +375,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableExtensibleEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (Color), false, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (Color), false, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, ExtensibleEnum<Color>.Values.Red());
       Assert.AreEqual (ExtensibleEnum<Color>.Values.Red(), propertyValue.Value);
@@ -387,7 +387,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           _orderClassDefinition,
-          "test",
           "test",
           typeof (Color),
           false,
@@ -401,7 +400,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableExtensibleEnumToNullViaConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (Color), false, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (Color), false, StorageClass.Persistent);
       new PropertyValue (definition, null);
     }
 
@@ -410,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableExtensibleEnumToNullViaProperty ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (Color), false, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (Color), false, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, ExtensibleEnum<Color>.Values.Red());
       propertyValue.Value = null;
@@ -421,7 +420,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetBinaryLargerThanMaxLength ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (byte[]), true, 1000000, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (byte[]), true, 1000000, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, new byte[0]);
       propertyValue.Value = ResourceManager.GetImageLarger1MB();
     }
@@ -430,7 +429,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_ValidNonFlagsEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek), StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (DayOfWeek), StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = DayOfWeek.Monday;
@@ -443,7 +442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_InvalidNonFlagsEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek), StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (DayOfWeek), StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = (DayOfWeek) 17420;
@@ -453,7 +452,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_ValidFlagsEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (AttributeTargets), StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (AttributeTargets), StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, AttributeTargets.Method);
       propertyValue.Value = AttributeTargets.Field | AttributeTargets.Method;
@@ -466,7 +465,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_InvalidFlagsEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (AttributeTargets), StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (AttributeTargets), StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, AttributeTargets.Method);
       propertyValue.Value = (AttributeTargets) (-1);
@@ -476,7 +475,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_ValidNullEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek?), true, null, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (DayOfWeek?), true, null, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = DayOfWeek.Monday;
@@ -491,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_InvalidNullEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek?), true, null, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (DayOfWeek?), true, null, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = (DayOfWeek) 17420;
@@ -502,7 +501,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_InvalidNonNullEnum_Null ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek), false, null, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (DayOfWeek), false, null, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = null;
@@ -514,7 +513,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheckInConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek), StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (DayOfWeek), StorageClass.Persistent);
 
       new PropertyValue (definition, (DayOfWeek) 17420);
     }
@@ -523,7 +522,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetRelationPropertyDirectly ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DomainObject), true, StorageClass.Persistent);
+          _orderClassDefinition, "test", typeof (DomainObject), true, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, null);
 
       propertyValue.Value = DomainObjectIDs.Customer1;
@@ -756,7 +755,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private PropertyDefinition CreatePropertyDefinition (string name, Type propertyType, bool isNullable)
     {
       return PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, name, name, propertyType, isNullable, StorageClass.Persistent);
+          _orderClassDefinition, name, propertyType, isNullable, StorageClass.Persistent);
     }
 
     private PropertyValue CreatePropertyValue (string name, Type propertyType, bool isNullable, object value)

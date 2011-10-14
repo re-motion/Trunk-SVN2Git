@@ -636,7 +636,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       return PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           classDefinition,
           "Name",
-          "ColumnName",
           propertyType,
           isNullable,
           maxLength,

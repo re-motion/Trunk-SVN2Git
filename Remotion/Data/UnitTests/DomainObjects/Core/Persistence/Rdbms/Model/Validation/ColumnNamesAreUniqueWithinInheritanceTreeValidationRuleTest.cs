@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -24,6 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
 using System.Linq;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -62,16 +64,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_NonPersistentPropertiesWithSameStorageSpecificPropertyName ()
     {
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
-          _derivedBaseClass2,
-          StorageClass.None,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
-          _derivedBaseClass2,
-          StorageClass.None,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
+      var propertyDefinition1 = CreateNonPersistentPropertyDefinition (
+          _derivedBaseClass2, "Test1", SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column"));
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
+          _derivedBaseClass2, "Test2", SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Column"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -87,16 +83,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInSameClass ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (DerivedValidationDomainObjectClass));
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
-          classDefinition, 
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition1 = CreatePersistentPropertyDefinition (
           classDefinition,
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
+          "Property",
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Property"));
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
+          classDefinition,
+          "PropertyWithStorageClassPersistent",
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("Property"));
 
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
@@ -118,23 +112,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (DerivedValidationDomainObjectClass));
          
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition1 = CreatePersistentPropertyDefinition (
           classDefinition,
-          "FirstName1", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          "FirstName1",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
           classDefinition,
           "FirstName2",
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property2"));
 
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
@@ -149,23 +133,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_TwoPersistentPropertiesWithSameStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
     {
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition1 = CreatePersistentPropertyDefinition (
           _derivedBaseClass1, 
-          "FirstName1", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
+          "FirstName1",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
           _derivedBaseClass2,
-          "FirstName2", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          "FirstName2",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -178,42 +152,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
-          + "'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseProperty' with the same storage specific name.\r\n\r\n"
+          "Property 'FirstName2' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
+          + "'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FirstName1' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseValidationDomainObjectClass\r\n"
-          + "Property: BaseProperty";
+          + "Property: FirstName1";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
     public void InheritanceRoot_ThreePersistentPropertiesWithSameStorageSpecificPropertyName ()
     {
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition1 = CreatePersistentPropertyDefinition (
           _baseOfBaseClass, 
-          "FirstName1", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (BaseOfBaseValidationDomainObjectClass).GetProperty ("BaseOfBaseProperty"),
+          "FirstName1",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
           _derivedBaseClass1,
-          "FirstName2", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
+          "FirstName2",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition3 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition3 = CreatePersistentPropertyDefinition (
           _derivedClass,
-          "FirstName3", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          "FirstName3",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
@@ -227,16 +186,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       Assert.That (validationResults.Length, Is.EqualTo (2));
 
       var expectedMessage1 =
-          "Property 'BaseProperty' of class 'BaseValidationDomainObjectClass' must not define storage specific name 'Property', because class "
-          + "'BaseOfBaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseOfBaseProperty' with the same storage specific name.\r\n\r\n"
+          "Property 'FirstName2' of class 'BaseValidationDomainObjectClass' must not define storage specific name 'Property', because class "
+          + "'BaseOfBaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FirstName1' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass\r\n"
-          + "Property: BaseOfBaseProperty";
+          + "Property: FirstName1";
       var expectedMessage2 =
-          "Property 'Property' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
-          +"'BaseOfBaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseOfBaseProperty' with the same storage "
+          "Property 'FirstName3' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
+          +"'BaseOfBaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FirstName1' with the same storage "
           + "specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass\r\n"
-          + "Property: BaseOfBaseProperty";
+          + "Property: FirstName1";
       AssertMappingValidationResult (validationResults[0], false, expectedMessage1);
       AssertMappingValidationResult (validationResults[1], false, expectedMessage2);
     }
@@ -244,23 +203,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
     {
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition1 = CreatePersistentPropertyDefinition (
           _derivedBaseClass1,
-          "FirstName1", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
+          "FirstName1",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
           _derivedBaseClass2,
-          "FirstName2", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          "FirstName2",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property2"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -278,23 +227,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInDifferentLeavesOfInheritanceTree ()
     {
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition1 = CreatePersistentPropertyDefinition (
           _derivedClass,
-          "FirstName1", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
+          "FirstName1",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
           _derivedBaseClass2,
-          "FirstName2", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          "FirstName2",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -307,33 +246,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'OtherProperty' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
-          + "'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage specific name.\r\n\r\n"
+          "Property 'FirstName1' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
+          + "'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FirstName2' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
-          + "Property: Property";
+          + "Property: FirstName2";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInDifferentLeavesOfInheritanceTree ()
     {
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition1 = CreatePersistentPropertyDefinition (
           _derivedClass,
-          "FirstName1", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
+          "FirstName1",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
           _derivedBaseClass2,
-          "FirstName2", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          "FirstName2",
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property2"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -349,26 +278,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     }
 
     [Test]
-    public void InheritanceRoot_PersistentPropertiesFromSameMixinInDifferentLeavesOfInheritanceTree ()
+    public void InheritanceRoot_PersistentPropertiesFromSamePropertyInformation_InDifferentLeavesOfInheritanceTree ()
     {
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
+      var propertyInformation = new NullPropertyInformation();
+      var propertyDefinition1 = CreatePersistentPropertyDefinition (
           _derivedClass,
-          "Length", 
-          false,
-          false,
-          null,
-          StorageClass.Persistent,
-          typeof (string).GetProperty ("Length"),
-          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Length"));
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Length"),
+          propertyInformation);
+      var propertyDefinition2 = CreatePersistentPropertyDefinition (
           _derivedBaseClass2,
-          "Length", 
-          false,
-          false,
-          null,
-          StorageClass.Persistent,
-          typeof (string).GetProperty ("Length"),
-          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Length"));
+          SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Length"),
+          propertyInformation);
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection ());
@@ -380,6 +300,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    private PropertyDefinition CreatePersistentPropertyDefinition (ClassDefinition classDefinition, string propertyName, IStoragePropertyDefinition storagePropertyDefinition)
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, propertyName, StorageClass.Persistent);
+      propertyDefinition.SetStorageProperty (storagePropertyDefinition);
+      return propertyDefinition;
+    }
+
+    private PropertyDefinition CreatePersistentPropertyDefinition (
+        ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition, IPropertyInformation propertyInformation)
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInformation (classDefinition, StorageClass.Persistent, propertyInformation);
+      propertyDefinition.SetStorageProperty (storagePropertyDefinition);
+      return propertyDefinition;
+    }
+
+    private PropertyDefinition CreateNonPersistentPropertyDefinition (ClassDefinition classDefinition, string propertyName, IStoragePropertyDefinition storagePropertyDefinition)
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, propertyName, StorageClass.None);
+      propertyDefinition.SetStorageProperty (storagePropertyDefinition);
+      return propertyDefinition;
     }
   }
 }

@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       var definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          classDefinition, name, name, propertyType, StorageClass.Persistent);
+          classDefinition, name, propertyType, StorageClass.Persistent);
       return new PropertyValue (definition, value);
     }
   }

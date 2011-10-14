@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var type = typeof (DerivedValidationDomainObjectClass);
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
-      var propertyDefinition = PropertyDefinitionObjectMother.Create(classDefinition, StorageClass.None, propertyInfo);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo(classDefinition, StorageClass.None, propertyInfo);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);
@@ -452,7 +452,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           classDefinition,
           "OrderNumber",
-          "FakeColumn1",
           typeof (int),
           false,
           null,
@@ -461,7 +460,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           classDefinition,
           "DeliveryDate",
-          "FakeColumn2",
           typeof (DateTime),
           false,
           null,
@@ -518,7 +516,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Fake");
       PrivateInvoke.SetNonPublicField (propertyDefinition, "_storagePropertyDefinition", null);
 
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));

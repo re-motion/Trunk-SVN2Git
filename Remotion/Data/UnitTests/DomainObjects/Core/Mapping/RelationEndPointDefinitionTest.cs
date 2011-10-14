@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void Initialize ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), (ClassDefinition) null);
-      var propertyDefinition = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
           classDefinition,
           typeof (Order),
           "Customer",

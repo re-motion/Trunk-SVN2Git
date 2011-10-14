@@ -41,13 +41,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
       _propertyDefinition1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Property1", "Property1", typeof (DomainObject), StorageClass.Persistent);
+          _classDefinition, "Property1", typeof (DomainObject), StorageClass.Persistent);
       _propertyDefinition2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Property2", "Property2", typeof (DomainObject), StorageClass.Persistent);
+          _classDefinition, "Property2", typeof (DomainObject), StorageClass.Persistent);
       _propertyDefinition3 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Property3", "Property3", typeof (DomainObject), StorageClass.Persistent);
+          _classDefinition, "Property3", typeof (DomainObject), StorageClass.Persistent);
       _propertyDefinition4 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Property4", "Property4", typeof (DomainObject), StorageClass.Persistent);
+          _classDefinition, "Property4", typeof (DomainObject), StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (
           new PropertyDefinitionCollection (new[] { _propertyDefinition1, _propertyDefinition2, _propertyDefinition3, _propertyDefinition4 }, true));
       _endPoint1 = new RelationEndPointDefinition (_propertyDefinition1, false);
@@ -86,11 +86,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company));
       var basedPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          baseClassDefinition, "Property1", "Property1", typeof (DomainObject), StorageClass.Persistent);
+          baseClassDefinition, "Property1", typeof (DomainObject), StorageClass.Persistent);
       baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { basedPropertyDefinition }, true));
       var derivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), baseClassDefinition);
       var derivedPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          derivedClassDefinition, "Property2", "Property2", typeof (DomainObject), StorageClass.Persistent);
+          derivedClassDefinition, "Property2", typeof (DomainObject), StorageClass.Persistent);
       derivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { derivedPropertyDefinition }, true));
 
       var endPoint1 = new RelationEndPointDefinition (basedPropertyDefinition, false);

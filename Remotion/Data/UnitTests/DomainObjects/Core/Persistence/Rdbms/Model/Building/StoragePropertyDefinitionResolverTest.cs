@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       var nonPersistentProperty = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
+          classDefinition, "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 
@@ -137,24 +137,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
       var propertyInfo1 = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("NoAttribute");
       var propertyInfo2 = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
-      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           classDefinition,
           "Test1", 
           false,
           true,
           null,
           StorageClass.Persistent,
-          propertyInfo1,
-          null);
-      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
+          propertyInfo1);
+      var propertyDefinition2 = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           classDefinition,
           "Test2", 
           false,
           true,
           null,
           StorageClass.Persistent,
-          propertyInfo2,
-          null);
+          propertyInfo2);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       propertyDefinition1.SetStorageProperty (_fakeStorageProperyDefinition1);

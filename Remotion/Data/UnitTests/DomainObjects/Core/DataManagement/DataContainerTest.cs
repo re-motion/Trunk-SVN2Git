@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _discardedDataContainer.Discard();
 
       var orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
-      var additionalPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (orderClass, "Name", "Name");
+      var additionalPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (orderClass, "Name");
       _additionalPropertyValue = new PropertyValue (additionalPropertyDefinition, "Arthur Dent");
     }
 
@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       PropertyDefinition reportsToDefinition =
           PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-              container.ClassDefinition, "ReportsTo", "ReportsTo", typeof(string), true, StorageClass.Persistent);
+              container.ClassDefinition, "ReportsTo", typeof(string), true, StorageClass.Persistent);
 
       container.PropertyValues.Add (new PropertyValue (reportsToDefinition, null));
 

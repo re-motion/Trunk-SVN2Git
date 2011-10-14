@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_NotSupportedType ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.Create (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType (Arg.Is (propertyDefinition), Arg<bool>.Is.Anything))
           .Throw (new NotSupportedException ("Msg."));
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.Create (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType (propertyDefinition, false))
           .Return (_fakeStorageTypeInformation1);
@@ -130,9 +130,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty_RespectsNullability_ForClassAboveDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.Create (
+      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.Create (
+      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
       Assert.That (_classAboveDbTableAttribute.BaseClass, Is.Null);
 
@@ -165,9 +165,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty_RespectsNullability_ForClassWithDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.Create (
+      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.Create (
+      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
 
       _storageTypeInformationProviderStrictMock
@@ -199,9 +199,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty_OverridesNullability_ForClassBelowDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.Create (
+      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.Create (
+      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
 
       _storageTypeInformationProviderStrictMock
@@ -236,12 +236,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty_OverridesNullability_ForClassBelowBelowDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.Create (
+      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           _classBelowBelowDbTableAttribute,
           StorageClass.Persistent,
           _propertyInfoStub,
           false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.Create (
+      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           _classBelowBelowDbTableAttribute,
           StorageClass.Persistent,
           _propertyInfoStub,

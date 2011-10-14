@@ -284,11 +284,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       var emptyViewDefintion = EmptyViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
       var classDefinition = CreateClassDefinition (emptyViewDefintion);
-      var propertyDefinition = PropertyDefinitionObjectMother.Create (
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (
           classDefinition,
           StorageClass.Persistent,
-          typeof (Order).GetProperty ("OrderTicket"),
-          _foreignKeyStoragePropertyDefinitionStrictMock);
+          typeof (Order).GetProperty ("OrderTicket"));
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
@@ -349,18 +348,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
     private PropertyDefinition CreateForeignKeyPropertyDefinition (ClassDefinition classDefinition)
     {
-      return PropertyDefinitionObjectMother.Create (
-          classDefinition,
-          StorageClass.Persistent,
-          typeof (Order).GetProperty ("OrderTicket"),
-          _foreignKeyStoragePropertyDefinitionStrictMock);
+      var propertyDefinition = PropertyDefinitionObjectMother.Create_WithObjectIDFlag (classDefinition, "OrderTicket", true);
+      propertyDefinition.SetStorageProperty (_foreignKeyStoragePropertyDefinitionStrictMock);
+      return propertyDefinition;
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (
         ClassDefinition classDefinition, PropertyInfo propertyInfo, IStoragePropertyDefinition columnDefinition, SortOrder sortOrder)
     {
-      var sortedPropertyDefinition = PropertyDefinitionObjectMother.Create (
-          classDefinition, StorageClass.Persistent, propertyInfo, columnDefinition);
+      var sortedPropertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (
+          classDefinition,
+          StorageClass.Persistent,
+          propertyInfo);
+      sortedPropertyDefinition.SetStorageProperty (columnDefinition);
       return new SortedPropertySpecification (sortedPropertyDefinition, sortOrder);
     }
 

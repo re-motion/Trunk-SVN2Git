@@ -271,14 +271,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classWithInterface = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithInterface));
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionObjectMother.Create (
+          PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
               classWithInterface,
               typeof (ClassWithInterface),
               "ImplicitProperty",
               false,
               100));
       properties.Add (
-          PropertyDefinitionObjectMother.Create (
+          PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
               classWithInterface,
               typeof (ClassWithInterface),
               typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty",
@@ -300,14 +300,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithInterfaceWithMissingAccessors));
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionObjectMother.Create (
+          PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
               classWithInterfaceWithMissingAccessors,
               typeof (ClassWithInterfaceWithMissingAccessors),
               "PropertyWithGetAccessor",
               false,
               100));
       properties.Add (
-          PropertyDefinitionObjectMother.Create (
+          PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
               classWithInterfaceWithMissingAccessors,
               typeof (ClassWithInterfaceWithMissingAccessors),
               "PropertyWithSetAccessor",
@@ -324,14 +324,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionObjectMother.Create (
+          PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
               classWithMixinAddingInterface,
               typeof (MixinAddingInterfaceWithProperties),
               "ImplicitProperty",
               false,
               100));
       properties.Add (
-          PropertyDefinitionObjectMother.Create (
+          PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
               classWithMixinAddingInterface,
               typeof (MixinAddingInterfaceWithProperties),
               typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty",
@@ -350,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PropertyDefinitionCollection (
               new[]
               {
-                  PropertyDefinitionObjectMother.Create (
+                  PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
                       classWithMixinAddingInterface,
                       typeof (MixinAddingPropertyBase),
                       "Property",
