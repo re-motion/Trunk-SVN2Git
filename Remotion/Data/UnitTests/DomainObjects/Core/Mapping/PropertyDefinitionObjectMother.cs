@@ -33,17 +33,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     public static PropertyDefinition Create (ClassDefinition classDefinition, string propertyName)
     {
-      return Create (classDefinition, classDefinition.ClassType, propertyName, null, null, null, StorageClass.Persistent);
+      return Create (classDefinition, classDefinition.ClassType, propertyName, null, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (ClassDefinition classDefinition, Type declaringClassType, string propertyName)
     {
-      return Create (classDefinition, declaringClassType, propertyName, null, null, null, StorageClass.Persistent);
+      return Create (classDefinition, declaringClassType, propertyName, null, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (ClassDefinition classDefinition, Type declaringClassType, string propertyName, bool isNullable)
     {
-      return Create (classDefinition, declaringClassType, propertyName, null, isNullable, null, StorageClass.Persistent);
+      return Create (classDefinition, declaringClassType, propertyName, isNullable, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (
@@ -53,14 +53,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         bool isNullable,
         int maxLength)
     {
-      return Create (classDefinition, declaringClassType, propertyName, null, isNullable, maxLength, StorageClass.Persistent);
+      return Create (classDefinition, declaringClassType, propertyName, isNullable, maxLength, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
-        string columnName,
         bool? isNullable,
         int? maxLength,
         StorageClass storageClass)
@@ -82,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           maxLength,
           storageClass,
           propertyInfo,
-          storageClass == StorageClass.Persistent ? GetFakeStorageProperty (columnName) : null);
+          null);
     }
 
     public static PropertyDefinition Create (
