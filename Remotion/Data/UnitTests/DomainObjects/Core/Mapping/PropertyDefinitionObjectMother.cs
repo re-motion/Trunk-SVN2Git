@@ -65,13 +65,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         StorageClass storageClass)
     {
       var propertyInfo = declaringClassType.GetProperty (
-          propertyName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
+          propertyName, 
+          BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
       Assert.IsNotNull (propertyInfo);
 
-      Type originalDeclaringType = declaringClassType;
-      if (originalDeclaringType.IsGenericType && !originalDeclaringType.IsGenericTypeDefinition)
-        originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition();
-      var fullPropertyName = originalDeclaringType.FullName + "." + propertyName;
+      var fullPropertyName = declaringClassType.FullName + "." + propertyName;
 
       return Create (
           classDefinition,
