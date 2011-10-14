@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     public static PropertyDefinition Create (ClassDefinition classDefinition, string propertyName)
     {
-      return Create (classDefinition, classDefinition.ClassType, propertyName, propertyName, null, null, StorageClass.Persistent);
+      return Create (classDefinition, classDefinition.ClassType, propertyName, null, null, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (ClassDefinition classDefinition, Type declaringClassType, string propertyName)
@@ -50,11 +50,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
-        string columnName,
         bool isNullable,
         int maxLength)
     {
-      return Create (classDefinition, declaringClassType, propertyName, columnName, isNullable, maxLength, StorageClass.Persistent);
+      return Create (classDefinition, declaringClassType, propertyName, null, isNullable, maxLength, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (
