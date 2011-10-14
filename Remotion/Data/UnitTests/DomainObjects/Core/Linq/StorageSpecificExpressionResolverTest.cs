@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveColumn_NoPrimaryKeyColumn ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition = PropertyDefinitionFactory.Create (_classDefinition, StorageClass.Persistent, property);
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (_classDefinition, StorageClass.Persistent, property);
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveColumn_PrimaryKeyColumn ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition = PropertyDefinitionFactory.Create (_classDefinition, StorageClass.Persistent, property);
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (_classDefinition, StorageClass.Persistent, property);
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveColumn_CompoundColumn ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition = PropertyDefinitionFactory.Create (_classDefinition, StorageClass.Persistent, property);
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (_classDefinition, StorageClass.Persistent, property);
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 

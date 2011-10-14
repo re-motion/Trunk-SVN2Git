@@ -498,7 +498,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainersByRelatedID_StorageClassTransaction ()
     {
       var objectID = DomainObjectIDs.Order1;
-      var propertyDefinition = PropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (
           objectID.ClassDefinition, StorageClass.Transaction, typeof (Order).GetProperty ("Official"));
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 

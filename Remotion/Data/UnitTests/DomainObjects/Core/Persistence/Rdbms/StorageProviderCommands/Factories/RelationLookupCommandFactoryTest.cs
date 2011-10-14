@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       var emptyViewDefintion = EmptyViewDefinitionObjectMother.Create (TestDomainStorageProviderDefinition);
       var classDefinition = CreateClassDefinition (emptyViewDefintion);
-      var propertyDefinition = PropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
@@ -349,7 +349,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
     private PropertyDefinition CreateForeignKeyPropertyDefinition (ClassDefinition classDefinition)
     {
-      return PropertyDefinitionFactory.Create (
+      return PropertyDefinitionObjectMother.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderTicket"),
@@ -359,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private SortedPropertySpecification CreateSortedPropertySpecification (
         ClassDefinition classDefinition, PropertyInfo propertyInfo, IStoragePropertyDefinition columnDefinition, SortOrder sortOrder)
     {
-      var sortedPropertyDefinition = PropertyDefinitionFactory.Create (
+      var sortedPropertyDefinition = PropertyDefinitionObjectMother.Create (
           classDefinition, StorageClass.Persistent, propertyInfo, columnDefinition);
       return new SortedPropertySpecification (sortedPropertyDefinition, sortOrder);
     }

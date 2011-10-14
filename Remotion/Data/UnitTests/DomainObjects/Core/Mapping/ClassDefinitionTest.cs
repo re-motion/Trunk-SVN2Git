@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetPropertyDefinitions ()
     {
-      var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (_domainBaseClass, "Test", "Test");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_domainBaseClass, "Test", "Test");
 
       _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
 
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         )]
     public void SetPropertyDefinitions_Twice_ThrowsException ()
     {
-      var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (_domainBaseClass, "Test", "Test");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_domainBaseClass, "Test", "Test");
 
       _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
       _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
@@ -439,7 +439,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetAllPropertyDefinitions_Cached ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
-      var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetReadOnly();
@@ -471,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var companyClass = ClassDefinitionObjectMother.CreateClassDefinition ("Company");
       var orderClass = ClassDefinitionObjectMother.CreateClassDefinition ("Order");
 
-      var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       orderClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
     }
 
@@ -481,11 +481,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void AddDuplicatePropertyBaseClass ()
     {
       var companyClass = ClassDefinitionObjectMother.CreateClassDefinition ("Company");
-      var companyPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
+      var companyPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
       var customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Customer", companyClass);
-      var customerPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (customerClass, "Name", "Name");
+      var customerPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (customerClass, "Name", "Name");
       customerClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { customerPropertyDefinition }, true));
     }
 
@@ -495,14 +495,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void AddDuplicatePropertyBaseOfBaseClass ()
     {
       var companyClass = ClassDefinitionObjectMother.CreateClassDefinition ("Company");
-      var companyPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
+      var companyPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
       var partnerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Partner", companyClass);
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       var supplierClass = ClassDefinitionObjectMother.CreateClassDefinition ("Supplier", partnerClass);
-      var supplierPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (supplierClass, "Name", "Name");
+      var supplierPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (supplierClass, "Name", "Name");
       supplierClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { supplierPropertyDefinition }, true));
     }
 
@@ -958,7 +958,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       // this test does not affect other tests through modifying the singleton instances.
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
 
-      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
+      PropertyDefinition propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
       Assert.AreSame (classDefinition, propertyDefinition.ClassDefinition);
 
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -970,7 +970,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.IsFalse (
           _orderClass.Contains (
-              PropertyDefinitionFactory.CreateForFakePropertyInfo (
+              PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
                   _orderClass, "PropertyName", "ColumnName")));
       Assert.IsTrue (
           _orderClass.Contains (

@@ -149,8 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (ObjectList<OrderItem>),
           sortExpressionString);
       var orderItemClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (OrderItem));
-      var oppositeProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Order");
-      var productProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Product");
+      var oppositeProperty = PropertyDefinitionObjectMother.Create (orderItemClassDefinition, "Order");
+      var productProperty = PropertyDefinitionObjectMother.Create (orderItemClassDefinition, "Product");
       orderItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{oppositeProperty, productProperty}, true));
       orderItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var oppositeEndPoint = new RelationEndPointDefinition (oppositeProperty, false);

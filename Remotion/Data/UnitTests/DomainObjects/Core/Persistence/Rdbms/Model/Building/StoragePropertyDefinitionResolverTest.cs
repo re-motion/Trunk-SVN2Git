@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void GetStoragePropertiesForHierarchy_NonPersistentPropertiesAreFiltered ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
-      var nonPersistentProperty = PropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var nonPersistentProperty = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
       var propertyInfo1 = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("NoAttribute");
       var propertyInfo2 = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           classDefinition,
           "Test1", 
           false,
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           StorageClass.Persistent,
           propertyInfo1,
           null);
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           classDefinition,
           "Test2", 
           false,

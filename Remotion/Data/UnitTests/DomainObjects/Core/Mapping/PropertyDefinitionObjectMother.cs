@@ -27,22 +27,18 @@ using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   /// <summary>
-  /// Provides simple factory methods to manually create <see cref="PropertyDefinition"/> objects for testing. The definition objects will have
-  /// dummy (invalid) PropertyInfo properties.
+  /// Provides simple factory methods to manually create <see cref="PropertyDefinition"/> objects for testing.
   /// </summary>
-  public static class PropertyDefinitionFactory
+  public static class PropertyDefinitionObjectMother
   {
     public static PropertyDefinition Create (ClassDefinition classDefinition, string propertyName)
     {
-      return Create (
-          classDefinition, classDefinition.ClassType, propertyName, propertyName, null, null, StorageClass.Persistent);
+      return Create (classDefinition, classDefinition.ClassType, propertyName, propertyName, null, null, StorageClass.Persistent);
     }
 
-    public static PropertyDefinition Create (
-        ClassDefinition classDefinition, Type declaringClassType, string propertyName, string columnName)
+    public static PropertyDefinition Create (ClassDefinition classDefinition, Type declaringClassType, string propertyName)
     {
-      return Create (
-          classDefinition, declaringClassType, propertyName, columnName, null, null, StorageClass.Persistent);
+      return Create (classDefinition, declaringClassType, propertyName, null, null, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition Create (

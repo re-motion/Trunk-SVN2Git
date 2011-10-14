@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetStoragePropertyDefinition ()
     {
       var storagePropertyDefinition = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
-      var propertyDefinition = PropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (
           _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), storagePropertyDefinition);
 
       var result = _provider.GetStoragePropertyDefinition (propertyDefinition);
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + "class-definition 'Order', but that property has no storage definition object.")]
     public void GetStoragePropertyDefinition_NoDefinition ()
     {
-      var propertyDefinition = PropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (
           _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), null);
       Assert.That (propertyDefinition.StoragePropertyDefinition, Is.Null);
 
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetStoragePropertyDefinition_NoRdbmsDefinition ()
     {
       var storagePropertyDefinition = new FakeStoragePropertyDefinition ("Test");
-      var propertyDefinition = PropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (
           _classDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), storagePropertyDefinition);
 
       _provider.GetStoragePropertyDefinition (propertyDefinition);

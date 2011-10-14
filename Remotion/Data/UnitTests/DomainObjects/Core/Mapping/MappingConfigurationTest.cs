@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var type = typeof (DerivedValidationDomainObjectClass);
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
-      var propertyDefinition = PropertyDefinitionFactory.Create(classDefinition, StorageClass.None, propertyInfo);
+      var propertyDefinition = PropertyDefinitionObjectMother.Create(classDefinition, StorageClass.None, propertyInfo);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);
@@ -449,7 +449,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var propertyDefinition1 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           classDefinition,
           "OrderNumber",
           "FakeColumn1",
@@ -458,7 +458,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null,
           StorageClass.Persistent);
       propertyDefinition1.SetStorageProperty (SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("FakeColumn1"));
-      var propertyDefinition2 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           classDefinition,
           "DeliveryDate",
           "FakeColumn2",
@@ -518,7 +518,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
-      var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
       PrivateInvoke.SetNonPublicField (propertyDefinition, "_storagePropertyDefinition", null);
 
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));

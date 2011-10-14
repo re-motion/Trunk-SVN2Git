@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -25,6 +26,9 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Remotion.Reflection;
+using Remotion.Utilities;
+using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -174,11 +178,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               company, typeof (Company), "Name", "Name", false, 100));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              company, typeof (Company), "IndustrialSector", "IndustrialSectorID", true));
+          CreatePersistentPropertyDefinition (company, typeof (Company), "IndustrialSector", "IndustrialSectorID", true, null));
       company.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return company;
@@ -191,11 +194,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              customer, typeof (Customer), "CustomerSince", "CustomerSince"));
+          CreatePersistentPropertyDefinition (customer, typeof (Customer), "CustomerSince", "CustomerSince", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              customer, typeof (Customer), "Type", "CustomerType"));
+          CreatePersistentPropertyDefinition (customer, typeof (Customer), "Type", "CustomerType", false, null));
       customer.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return customer;
@@ -208,8 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              partner, typeof (Partner), "ContactPerson", "ContactPersonID", true));
+          CreatePersistentPropertyDefinition (partner, typeof (Partner), "ContactPerson", "ContactPersonID", true, null));
       partner.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return partner;
@@ -222,8 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              supplier, typeof (Supplier), "SupplierQuality", "SupplierQuality"));
+          CreatePersistentPropertyDefinition (supplier, typeof (Supplier), "SupplierQuality", "SupplierQuality", false, null));
       supplier.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return supplier;
@@ -236,8 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              distributor, typeof (Distributor), "NumberOfShops", "NumberOfShops"));
+          CreatePersistentPropertyDefinition (distributor, typeof (Distributor), "NumberOfShops", "NumberOfShops", false, null));
       distributor.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return distributor;
@@ -250,17 +248,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              order, typeof (Order), "OrderNumber", "OrderNo"));
+          CreatePersistentPropertyDefinition (order, typeof (Order), "OrderNumber", "OrderNo", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              order, typeof (Order), "DeliveryDate", "DeliveryDate"));
+          CreatePersistentPropertyDefinition (order, typeof (Order), "DeliveryDate", "DeliveryDate", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              order, typeof (Order), "Customer", "CustomerID", true));
+          CreatePersistentPropertyDefinition (order, typeof (Order), "Customer", "CustomerID", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              order, typeof (Order), "Official", "OfficialID", true));
+          CreatePersistentPropertyDefinition (order, typeof (Order), "Official", "OfficialID", true, null));
       order.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return order;
@@ -273,7 +267,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               official, typeof (Official), "Name", "Name", false, 100));
       official.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
@@ -296,16 +290,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               orderTicket, typeof (OrderTicket), "FileName", "FileName", false, 255));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              orderTicket, typeof (OrderTicket), "Order", "OrderID", true));
+          CreatePersistentPropertyDefinition (orderTicket, typeof (OrderTicket), "Order", "OrderID", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreateTransactionPropertyDefinition (
               orderTicket,
               typeof (OrderTicket), "Int32TransactionProperty",
-              null,
               false,
               null,
               StorageClass.Transaction));
@@ -321,13 +313,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              orderItem, typeof (OrderItem), "Order", "OrderID", true));
+          CreatePersistentPropertyDefinition (orderItem, typeof (OrderItem), "Order", "OrderID", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              orderItem, typeof (OrderItem), "Position", "Position"));
+          CreatePersistentPropertyDefinition (orderItem, typeof (OrderItem), "Position", "Position", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               orderItem, typeof (OrderItem), "Product", "Product", false, 100));
       orderItem.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
@@ -341,11 +331,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               ceo, typeof (Ceo), "Name", "Name", false, 100));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              ceo, typeof (Ceo), "Company", "CompanyID", true));
+          CreatePersistentPropertyDefinition (ceo, typeof (Ceo), "Company", "CompanyID", true, null));
       ceo.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return ceo;
@@ -358,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               person, typeof (Person), "Name", "Name", false, 100));
       person.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
@@ -372,8 +361,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
        
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              client, typeof (Client), "ParentClient", "ParentClientID", true));
+          CreatePersistentPropertyDefinition (client, typeof (Client), "ParentClient", "ParentClientID", true, null));
       client.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return client;
@@ -386,8 +374,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              location, typeof (Location), "Client", "ClientID", true));
+          CreatePersistentPropertyDefinition (location, typeof (Location), "Client", "ClientID", true, null));
       location.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return location;
@@ -400,11 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              fileSystemItem,
-              typeof (FileSystemItem), "ParentFolder",
-              "ParentFolderID",
-              true));
+          CreatePersistentPropertyDefinition (fileSystemItem, typeof (FileSystemItem), "ParentFolder", "ParentFolderID", true, null));
       fileSystemItem.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return fileSystemItem;
@@ -436,223 +419,108 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "BooleanProperty",
-              "Boolean"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "BooleanProperty", "Boolean", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty", "Byte"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty", "Byte", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty", "Date"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty", "Date", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "DateTimeProperty",
-              "DateTime"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateTimeProperty", "DateTime", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "DecimalProperty",
-              "Decimal"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "DecimalProperty", "Decimal", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "DoubleProperty",
-              "Double"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "DoubleProperty", "Double", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "EnumProperty",
-              "Enum"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "EnumProperty", "Enum", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "ExtensibleEnumProperty",
-              "ExtensibleEnum",
-              false));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumProperty", "ExtensibleEnum", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "FlagsProperty",
-              "Flags"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "FlagsProperty", "Flags", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty", "Guid"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty", "Guid", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property", "Int16"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property", "Int16", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property", "Int32"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property", "Int32", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property", "Int64"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property", "Int64", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty", "Single"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty", "Single", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "StringProperty",
               "String",
               false,
               100));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength",
-              "StringWithoutMaxLength",
-              false));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength", "StringWithoutMaxLength", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "BinaryProperty",
-              "Binary",
-              false));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "BinaryProperty", "Binary", false, null));
 
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaBooleanProperty",
-              "NaBoolean"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanProperty", "NaBoolean", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty", "NaByte"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty", "NaByte", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaDateProperty",
-              "NaDate"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateProperty", "NaDate", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaDateTimeProperty",
-              "NaDateTime"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeProperty", "NaDateTime", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaDecimalProperty",
-              "NaDecimal"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalProperty", "NaDecimal", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaDoubleProperty",
-              "NaDouble"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleProperty", "NaDouble", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaEnumProperty",
-              "NaEnum"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumProperty", "NaEnum", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaFlagsProperty",
-              "NaFlags"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaFlagsProperty", "NaFlags", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty", "NaGuid"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty", "NaGuid", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaInt16Property",
-              "NaInt16"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16Property", "NaInt16", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaInt32Property",
-              "NaInt32"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32Property", "NaInt32", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaInt64Property",
-              "NaInt64"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64Property", "NaInt64", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaSingleProperty",
-              "NaSingle"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleProperty", "NaSingle", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "StringWithNullValueProperty",
               "StringWithNullValue",
               true,
               100));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "ExtensibleEnumWithNullValueProperty",
-              "ExtensibleEnumWithNullValue",
-              true));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "ExtensibleEnumWithNullValueProperty", "ExtensibleEnumWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty",
-              "NaBooleanWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty", "NaBooleanWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty",
-              "NaByteWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty", "NaByteWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty",
-              "NaDateWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty", "NaDateWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty",
-              "NaDateTimeWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty", "NaDateTimeWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty",
-              "NaDecimalWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty", "NaDecimalWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty",
-              "NaDoubleWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty", "NaDoubleWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty",
-              "NaEnumWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty", "NaEnumWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaFlagsWithNullValueProperty",
-              "NaFlagsWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaFlagsWithNullValueProperty", "NaFlagsWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty",
-              "NaGuidWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty", "NaGuidWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty",
-              "NaInt16WithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty", "NaInt16WithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty",
-              "NaInt32WithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty", "NaInt32WithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty",
-              "NaInt64WithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty", "NaInt64WithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classWithAllDataTypes,
-              typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty",
-              "NaSingleWithNullValue"));
+          CreatePersistentPropertyDefinition (classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty", "NaSingleWithNullValue", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NullableBinaryProperty",
               "NullableBinary",
@@ -740,18 +608,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition,
-              typeof (ClassWithValidRelations), "ClassWithGuidKeyOptional",
-              "TableWithGuidKeyOptionalID",
-              true));
+          CreatePersistentPropertyDefinition (classDefinition, typeof (ClassWithValidRelations), "ClassWithGuidKeyOptional", "TableWithGuidKeyOptionalID", true, null));
 
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition,
-              typeof (ClassWithValidRelations), "ClassWithGuidKeyNonOptional",
-              "TableWithGuidKeyNonOptionalID",
-              true));
+          CreatePersistentPropertyDefinition (classDefinition, typeof (ClassWithValidRelations), "ClassWithGuidKeyNonOptional", "TableWithGuidKeyNonOptionalID", true, null));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
@@ -768,11 +628,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition,
-              typeof (ClassWithInvalidRelation), "ClassWithGuidKey",
-              "TableWithGuidKeyID",
-              true));
+          CreatePersistentPropertyDefinition (classDefinition, typeof (ClassWithInvalidRelation), "ClassWithGuidKey", "TableWithGuidKeyID", true, null));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
@@ -790,11 +646,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition,
-              typeof (ClassWithOptionalOneToOneRelationAndOppositeDerivedClass), "Company",
-              "CompanyID",
-              true));
+          CreatePersistentPropertyDefinition (classDefinition, typeof (ClassWithOptionalOneToOneRelationAndOppositeDerivedClass), "Company", "CompanyID", true, null));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
@@ -807,7 +659,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               industrialSector, typeof (IndustrialSector), "Name", "Name", false, 100));
       industrialSector.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
@@ -821,11 +673,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               employee, typeof (Employee), "Name", "Name", false, 100));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              employee, typeof (Employee), "Supervisor", "SupervisorID", true));
+          CreatePersistentPropertyDefinition (employee, typeof (Employee), "Supervisor", "SupervisorID", true, null));
       employee.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return employee;
@@ -843,39 +694,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              targetClassForPersistentMixin,
-              typeof (MixinAddingPersistentProperties), "PersistentProperty",
-              "PersistentProperty"));
+          CreatePersistentPropertyDefinition (targetClassForPersistentMixin, typeof (MixinAddingPersistentProperties), "PersistentProperty", "PersistentProperty", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              targetClassForPersistentMixin,
-              typeof (MixinAddingPersistentProperties), "ExtraPersistentProperty",
-              "ExtraPersistentProperty"));
+          CreatePersistentPropertyDefinition (targetClassForPersistentMixin, typeof (MixinAddingPersistentProperties), "ExtraPersistentProperty", "ExtraPersistentProperty", false, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              targetClassForPersistentMixin,
-              typeof (MixinAddingPersistentProperties), "UnidirectionalRelationProperty",
-              "UnidirectionalRelationPropertyID", 
-              true));
+          CreatePersistentPropertyDefinition (targetClassForPersistentMixin, typeof (MixinAddingPersistentProperties), "UnidirectionalRelationProperty", "UnidirectionalRelationPropertyID", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              targetClassForPersistentMixin,
-              typeof (MixinAddingPersistentProperties), "RelationProperty",
-              "RelationPropertyID", 
-              true));
+          CreatePersistentPropertyDefinition (targetClassForPersistentMixin, typeof (MixinAddingPersistentProperties), "RelationProperty", "RelationPropertyID", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              targetClassForPersistentMixin,
-              typeof (MixinAddingPersistentProperties), "CollectionPropertyNSide",
-              "CollectionPropertyNSideID", 
-              true));
+          CreatePersistentPropertyDefinition (targetClassForPersistentMixin, typeof (MixinAddingPersistentProperties), "CollectionPropertyNSide", "CollectionPropertyNSideID", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              targetClassForPersistentMixin,
-              typeof (BaseForMixinAddingPersistentProperties), "PrivateBaseRelationProperty",
-              "PrivateBaseRelationPropertyID",
-              true));
+          CreatePersistentPropertyDefinition (targetClassForPersistentMixin, typeof (BaseForMixinAddingPersistentProperties), "PrivateBaseRelationProperty", "PrivateBaseRelationPropertyID", true, null));
       targetClassForPersistentMixin.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return targetClassForPersistentMixin;
@@ -914,32 +743,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreatePersistentPropertyDefinition (
               computer, typeof (Computer), "SerialNumber", "SerialNumber", false, 20));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              computer, typeof (Computer), "Employee", "EmployeeID", true));
+          CreatePersistentPropertyDefinition (computer, typeof (Computer), "Employee", "EmployeeID", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreateTransactionPropertyDefinition (
               computer,
               typeof (Computer), "Int32TransactionProperty",
-              null,
               false,
               null,
               StorageClass.Transaction));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreateTransactionPropertyDefinition (
               computer,
               typeof (Computer), "DateTimeTransactionProperty",
-              null,
               false,
               null,
               StorageClass.Transaction));
       properties.Add (
-          PropertyDefinitionFactory.Create (
+          CreateTransactionPropertyDefinition (
               computer,
               typeof (Computer), "EmployeeTransactionProperty",
-              null,
               true,
               null,
               StorageClass.Transaction));
@@ -960,11 +785,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              classDefinition,
-              typeof (ClassWithRelatedClassIDColumnAndNoInheritance), "ClassWithGuidKey",
-              "TableWithGuidKeyID",
-              true));
+          CreatePersistentPropertyDefinition (classDefinition, typeof (ClassWithRelatedClassIDColumnAndNoInheritance), "ClassWithGuidKey", "TableWithGuidKeyID", true, null));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
@@ -981,17 +802,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              relationTargetForPersistentMixinDefinition,
-              typeof (RelationTargetForPersistentMixin), "RelationProperty2",
-              "RelationProperty2ID",
-              true));
+          CreatePersistentPropertyDefinition (relationTargetForPersistentMixinDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty2", "RelationProperty2ID", true, null));
       properties.Add (
-          PropertyDefinitionFactory.Create (
-              relationTargetForPersistentMixinDefinition,
-              typeof (RelationTargetForPersistentMixin), "RelationProperty3",
-              "RelationProperty3ID",
-              true));
+          CreatePersistentPropertyDefinition (relationTargetForPersistentMixinDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty3", "RelationProperty3ID", true, null));
       relationTargetForPersistentMixinDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return relationTargetForPersistentMixinDefinition;
@@ -1005,13 +818,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ClassDefinition baseClass,
         params Type[] persistentMixins)
     {
+      // Don't use ClassDefinitionObjectMother: since this configuration is compared with the actual configuration, we must exactly define 
+      // the mapping objects
       var classDefinition = new ClassDefinition (
           id, classType, isAbstract, baseClass, null, new PersistentMixinFinderStub (classType, persistentMixins));
       SetFakeStorageEntity (classDefinition, entityName);
       return classDefinition;
     }
 
-    public void SetFakeStorageEntity (ClassDefinition classDefinition, string entityName)
+    private void SetFakeStorageEntity (ClassDefinition classDefinition, string entityName)
     {
       var tableDefinition = TableDefinitionObjectMother.Create (
           _storageProviderDefinition,
@@ -1020,6 +835,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetStorageEntity (tableDefinition);
     }
 
+    private PropertyDefinition CreatePersistentPropertyDefinition (ClassDefinition classDefinition, Type declaringType, string propertyName, string columnName, bool isNullable, int? maxLength)
+    {
+      var propertyDefinition = CreatePropertyDefinition (classDefinition, declaringType, propertyName, isNullable, maxLength, StorageClass.Persistent);
+      propertyDefinition.SetStorageProperty (new FakeStoragePropertyDefinition (columnName));
+      return propertyDefinition;
+    }
+
+    private PropertyDefinition CreateTransactionPropertyDefinition (ClassDefinition classDefinition, Type declaringType, string propertyName, bool isNullable, int? maxLength, StorageClass storageClass)
+    {
+      return CreatePropertyDefinition (classDefinition, declaringType, propertyName, isNullable, maxLength, StorageClass.Transaction);
+    }
+
+    private PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, Type declaringType, string propertyName, bool isNullable, int? maxLength, StorageClass storageClass)
+    {
+      var propertyInfo = declaringType.GetProperty (
+          propertyName,
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+      Assertion.IsNotNull (propertyInfo);
+      var propertyInformation = PropertyInfoAdapter.Create (propertyInfo);
+      var fullName = declaringType.FullName + "." + propertyName;
+ 
+      // Don't use PropertyDefinitionObjectMother: since this configuration is compared with the actual configuration, we must exactly define 
+      // the mapping objects
+      return new PropertyDefinition (
+          classDefinition,
+          propertyInformation,
+          fullName,
+          ReflectionUtility.IsDomainObject (propertyInformation.PropertyType),
+          isNullable,
+          maxLength,
+          storageClass);
+    }
+    
     #endregion
 
     #region Methods for creating relation definitions

@@ -62,12 +62,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_NonPersistentPropertiesWithSameStorageSpecificPropertyName ()
     {
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass2,
           StorageClass.None,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass2,
           StorageClass.None,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
@@ -87,12 +87,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInSameClass ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (DerivedValidationDomainObjectClass));
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           classDefinition, 
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (DerivedValidationDomainObjectClass));
          
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           classDefinition,
           "FirstName1", 
           false,
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           classDefinition,
           "FirstName2",
           false,
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_TwoPersistentPropertiesWithSameStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
     {
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass1, 
           "FirstName1", 
           false,
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass2,
           "FirstName2", 
           false,
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_ThreePersistentPropertiesWithSameStorageSpecificPropertyName ()
     {
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           _baseOfBaseClass, 
           "FirstName1", 
           false,
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageClass.Persistent,
           typeof (BaseOfBaseValidationDomainObjectClass).GetProperty ("BaseOfBaseProperty"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass1,
           "FirstName2", 
           false,
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition3 = PropertyDefinitionFactory.Create (
+      var propertyDefinition3 = PropertyDefinitionObjectMother.Create (
           _derivedClass,
           "FirstName3", 
           false,
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
     {
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass1,
           "FirstName1", 
           false,
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass2,
           "FirstName2", 
           false,
@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInDifferentLeavesOfInheritanceTree ()
     {
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           _derivedClass,
           "FirstName1", 
           false,
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass2,
           "FirstName2", 
           false,
@@ -317,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInDifferentLeavesOfInheritanceTree ()
     {
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           _derivedClass,
           "FirstName1", 
           false,
@@ -326,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Property1"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass2,
           "FirstName2", 
           false,
@@ -351,7 +351,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void InheritanceRoot_PersistentPropertiesFromSameMixinInDifferentLeavesOfInheritanceTree ()
     {
-      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionObjectMother.Create (
           _derivedClass,
           "Length", 
           false,
@@ -360,7 +360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           StorageClass.Persistent,
           typeof (string).GetProperty ("Length"),
           SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Length"));
-      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionObjectMother.Create (
           _derivedBaseClass2,
           "Length", 
           false,

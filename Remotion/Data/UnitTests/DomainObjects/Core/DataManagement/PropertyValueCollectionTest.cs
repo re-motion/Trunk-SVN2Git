@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private PropertyValue CreatePropertyValue (string name, Type propertyType, object value)
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
-      var definition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           classDefinition, name, name, propertyType, StorageClass.Persistent);
       return new PropertyValue (definition, value);
     }

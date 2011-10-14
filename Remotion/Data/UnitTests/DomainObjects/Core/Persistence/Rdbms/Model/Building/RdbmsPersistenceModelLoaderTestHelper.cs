@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public static PropertyDefinition CreateAndAddPropertyDefinition (
         ClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
     {
-      var propertyDefinition = PropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionObjectMother.Create (
           classDefinition,
           propertyName, 
           false,
