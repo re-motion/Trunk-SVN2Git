@@ -112,11 +112,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New);
     }
 
-    public IEnumerable<IRelationEndPoint> GetChangedRelationEndPoints ()
-    {
-      return _relationEndPointManager.RelationEndPoints.Where (endPoint => endPoint.HasChanged);
-    }
-
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
     {
       return from endPointID in dataContainer.AssociatedRelationEndPointIDs

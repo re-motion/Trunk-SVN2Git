@@ -146,53 +146,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetChangedRelationEndPoints ()
-    {
-      Order order1 = Order.GetObject (DomainObjectIDs.Order1);
-      Dev.Null = Order.GetObject (DomainObjectIDs.Order2);
-
-      OrderItem orderItem1 = order1.OrderItems[0];
-      OrderTicket orderTicket = order1.OrderTicket;
-
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
-      Employee employee = computer.Employee;
-
-      Location location = Location.GetObject (DomainObjectIDs.Location1);
-      Dev.Null = location.Client;
-
-      Assert.IsEmpty (new List<IRelationEndPoint> (_dataManager.GetChangedRelationEndPoints ()));
-
-      orderItem1.Order = null; // 2 endpoints
-      orderTicket.Order = null; // 2 endpoints
-
-      computer.Employee = Employee.NewObject (); // 3 endpoints
-      employee.Computer = null; // (1 endpoint)
-
-      location.Client = Client.NewObject (); // 1 endpoint
-
-      var changedEndPoints = new List<IRelationEndPoint> (_dataManager.GetChangedRelationEndPoints ());
-
-      Assert.That (changedEndPoints.Count, Is.EqualTo (8));
-
-      Assert.Contains (_dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create(order1.ID, typeof (Order) + ".OrderItems")),
-          changedEndPoints);
-      Assert.Contains (_dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create(orderItem1.ID, typeof (OrderItem) + ".Order")),
-          changedEndPoints);
-      Assert.Contains (_dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create(orderTicket.ID, typeof (OrderTicket) + ".Order")),
-          changedEndPoints);
-      Assert.Contains (_dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create(order1.ID, typeof (Order) + ".OrderTicket")),
-          changedEndPoints);
-      Assert.Contains (_dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create(computer.ID, typeof (Computer) + ".Employee")),
-          changedEndPoints);
-      Assert.Contains (_dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create(computer.Employee.ID, typeof (Employee) + ".Computer")),
-          changedEndPoints);
-      Assert.Contains (_dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create(employee.ID, typeof (Employee) + ".Computer")),
-          changedEndPoints);
-      Assert.Contains (_dataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create(location.ID, typeof (Location) + ".Client")),
-          changedEndPoints);
-    }
-
-    [Test]
     public void RegisterDataContainer_RegistersDataContainerInMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
