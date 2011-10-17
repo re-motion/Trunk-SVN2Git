@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ValidPropertyWithStringPropertyAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _validType, "StringProperty");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _validType, "StringProperty");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly();
 
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void InvalidPropertyWithStringPropertyAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _invalidType, "IntPropertyWithStringPropertyAttribute");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _invalidType, "IntPropertyWithStringPropertyAttribute");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ValidPropertyWithBinaryPropertyAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _validType, "BinaryProperty");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _validType, "BinaryProperty");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void InvalidPropertyWithBinaryPropertyAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _invalidType, "BoolPropertyWithBinaryPropertyAttribute");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _invalidType, "BoolPropertyWithBinaryPropertyAttribute");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ValidPropertyWithExtensibleEnumPropertyAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _validType, "ExtensibleEnumProperty");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _validType, "ExtensibleEnumProperty");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       _classDefinition.SetReadOnly ();
 
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void InvalidPropertyWithExtensibleEnumPropertyAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithExtensibleEnumPropertyAttribute");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithExtensibleEnumPropertyAttribute");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ValidPropertyWithMandatoryPropertyAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _validType, "MandatoryProperty");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _validType, "MandatoryProperty");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void InvalidPropertyWithMandatoryPropertyAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithMandatoryPropertyAttribute");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithMandatoryPropertyAttribute");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void InvalidPropertyWithBidirectionalRelationAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (
           _classDefinition, 
           _invalidType, 
           "StringPropertyWithMandatoryPropertyAttribute");
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ValidValidPropertyWithBidirectionalRelationAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (
           _classDefinition,
           _validType,
           "BidirectionalRelationProperty");
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void InvalidValidPropertyWithBidirectionalRelationAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithBidirectionalRelationAttribute");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithBidirectionalRelationAttribute");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -204,9 +204,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void SeveralInvalidProperties ()
     {
-      var propertyDefinition1 = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithMandatoryPropertyAttribute");
-      var propertyDefinition2 = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithExtensibleEnumPropertyAttribute");
-      var propertyDefinition3 = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _invalidType, "BoolPropertyWithBinaryPropertyAttribute");
+      var propertyDefinition1 = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithMandatoryPropertyAttribute");
+      var propertyDefinition2 = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _invalidType, "StringPropertyWithExtensibleEnumPropertyAttribute");
+      var propertyDefinition3 = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _invalidType, "BoolPropertyWithBinaryPropertyAttribute");
 
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2, propertyDefinition3}, true));
       _classDefinition.SetReadOnly ();

@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyDefinitionsAreValidated ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (
           classDefinition, typeof (DerivedValidationDomainObjectClass), "PropertyWithStorageClassNone");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 

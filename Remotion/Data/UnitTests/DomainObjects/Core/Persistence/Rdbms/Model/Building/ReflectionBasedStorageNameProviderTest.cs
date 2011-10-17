@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classWithAllDataTypesDefinition =
           ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithAllDataTypes), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (
           classWithAllDataTypesDefinition, typeof (ClassWithAllDataTypes), "BooleanProperty");
 
       var result = _provider.GetColumnName (propertyDefinition);
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Distributor), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (Distributor), "NumberOfShops");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (classDefinition, typeof (Distributor), "NumberOfShops");
 
       var result = _provider.GetColumnName (propertyDefinition);
 
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void GetRelationColumnName ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (FileSystemItem), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder");
       var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
       var result = _provider.GetRelationColumnName (relationDefinition);
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classDefinition =
           ClassDefinitionObjectMother.CreateClassDefinition (typeof (FileSystemItem), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder2");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder2");
       var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
       var result = _provider.GetRelationColumnName (relationDefinition);
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void GetRelationClassIDColumnName ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (FileSystemItem), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder");
       var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
       var result = _provider.GetRelationClassIDColumnName (relationDefinition);

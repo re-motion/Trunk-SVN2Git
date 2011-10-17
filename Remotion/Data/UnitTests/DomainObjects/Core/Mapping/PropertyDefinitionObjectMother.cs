@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateForFakePropertyInfo (classDefinition, propertyName, true, typeof (ObjectID), true, null, storageClass);
     }
 
-    public static PropertyDefinition CreateAndFindPropertyInfo (ClassDefinition classDefinition, Type declaringClassType, string propertyName)
+    public static PropertyDefinition CreateForRealPropertyInfo (ClassDefinition classDefinition, Type declaringClassType, string propertyName)
     {
       var propertyInfo = declaringClassType.GetProperty (
           propertyName, 

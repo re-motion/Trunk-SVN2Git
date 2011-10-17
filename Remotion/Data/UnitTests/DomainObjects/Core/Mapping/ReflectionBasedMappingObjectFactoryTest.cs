@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateRelationDefinitionCollection ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (OrderItem));
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (OrderItem), "Order");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (classDefinition, typeof (OrderItem), "Order");
       var endPoint = new RelationEndPointDefinition (propertyDefinition, false);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint }, true));
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateRelationEndPointDefinitionCollection ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderTicket), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (OrderTicket), "Order");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (classDefinition, typeof (OrderTicket), "Order");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var result = _factory.CreateRelationEndPointDefinitionCollection (classDefinition);

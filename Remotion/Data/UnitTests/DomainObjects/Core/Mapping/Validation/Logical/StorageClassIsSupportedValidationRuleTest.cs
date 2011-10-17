@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void PropertyWithoutStorageClassAttribute ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _type, "Property");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _type, "Property");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void PropertyWithStorageClassPersistent ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _type, "PropertyWithStorageClassPersistent");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _type, "PropertyWithStorageClassPersistent");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void PropertyWithStorageClassTransaction ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _type, "PropertyWithStorageClassTransaction");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _type, "PropertyWithStorageClassTransaction");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void PropertyWithStorageClassNone ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (_classDefinition, _type, "PropertyWithStorageClassNone");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (_classDefinition, _type, "PropertyWithStorageClassNone");
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
