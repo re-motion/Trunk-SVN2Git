@@ -133,14 +133,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var fullPropertyName = declaringClassType.FullName + "." + propertyName;
 
-      return CreateForPropertyInfo (
+      return CreateForPropertyInformation (
           classDefinition,
           fullPropertyName,
           IsObjectID (propertyInfo.PropertyType),
           IsNullable (propertyInfo.PropertyType),
           null,
           StorageClass.Persistent,
-          propertyInfo);
+          PropertyInfoAdapter.Create (propertyInfo));
+    }
+
+    public static PropertyDefinition CreateForPropertyInformation (
+        ClassDefinition classDefinition,
+        string propertyName,
+        IPropertyInformation propertyInformation)
+    {
+      return CreateForPropertyInformation (
+          classDefinition,
+          propertyName,
+          false,
+          false,
+          null,
+          StorageClass.Persistent,
+          propertyInformation);
     }
 
     public static PropertyDefinition CreateForPropertyInformation (
@@ -156,25 +171,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null,
           storageClass,
           propertyInformation);
-    }
-
-    public static PropertyDefinition CreateForPropertyInfo (
-        ClassDefinition classDefinition, 
-        string propertyName, 
-        bool isObjectID, 
-        bool isNullable, 
-        int? maxLength,
-        StorageClass storageClass, 
-        PropertyInfo propertyInfo)
-    {
-      return CreateForPropertyInformation (
-          classDefinition,
-          propertyName,
-          isObjectID,
-          isNullable,
-          maxLength,
-          storageClass,
-          PropertyInfoAdapter.Create (propertyInfo));
     }
 
     private static PropertyDefinition CreateForPropertyInformation (
@@ -197,13 +193,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return propertyDefinition;
     }
 
-    public static bool IsObjectID (Type propertyType)
+    private static bool IsObjectID (Type propertyType)
     {
       Assert.IsFalse (propertyType == typeof (ObjectID));
       return ReflectionUtility.IsDomainObject (propertyType);
     }
 
-    public static bool IsNullable (Type propertyType)
+    private static bool IsNullable (Type propertyType)
     {
       if (propertyType.IsValueType)
         return Nullable.GetUnderlyingType (propertyType) != null;

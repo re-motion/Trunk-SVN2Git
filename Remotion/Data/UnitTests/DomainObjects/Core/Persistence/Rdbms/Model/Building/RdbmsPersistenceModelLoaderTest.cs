@@ -30,6 +30,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.RdbmsPe
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
@@ -275,10 +276,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _storageNameProviderStub.Stub (stub => stub.GetTableName (derivedClass2)).Return (new EntityNameDefinition(null, "Table2"));
 
       // In reality, this would be the PropertyInfo of some mixin that's applied to both subclasses
-      var propertyInfo = typeof (BaseClass).GetProperty ("BaseProperty");
       baseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      var propertyInClass1 = RdbmsPersistenceModelLoaderTestHelper.CreateAndAddPropertyDefinition (derivedClass1, "PropertyInClass1", propertyInfo);
-      var propertyInClass2 = RdbmsPersistenceModelLoaderTestHelper.CreateAndAddPropertyDefinition (derivedClass2, "PropertyInClass2", propertyInfo);
+      var propertyInformation = MockRepository.GenerateStub<IPropertyInformation>();
+      var propertyInClass1 = RdbmsPersistenceModelLoaderTestHelper.CreateAndAddPropertyDefinition (derivedClass1, "PropertyInClass1", propertyInformation);
+      var propertyInClass2 = RdbmsPersistenceModelLoaderTestHelper.CreateAndAddPropertyDefinition (derivedClass2, "PropertyInClass2", propertyInformation);
 
       _dataStoragePropertyDefinitionFactoryMock
           .Expect (mock => mock.CreateStoragePropertyDefinition (propertyInClass1))

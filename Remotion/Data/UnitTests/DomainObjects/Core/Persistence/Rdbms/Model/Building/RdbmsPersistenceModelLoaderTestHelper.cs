@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.RdbmsPersistenceModelLoaderTestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
 {
@@ -85,19 +85,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _derivedDerivedClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
       _derivedDerivedDerivedClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
       
-      _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (
-          _baseBaseClassDefinition, "BaseBaseProperty", typeof (BaseBaseClass).GetProperty ("BaseBaseProperty"));
-      _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty", typeof (BaseClass).GetProperty ("BaseProperty"));
-      _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (
-          _tableClassDefinition1, "TableProperty1", typeof (Table1Class).GetProperty ("TableProperty1"));
-      _tablePropertyDefinition2 = CreateAndAddPropertyDefinition (
-          _tableClassDefinition2, "TableProperty2", typeof (Table2Class).GetProperty ("TableProperty2"));
-      _derivedPropertyDefinition1 = CreateAndAddPropertyDefinition (
-          _derivedClassDefinition1, "DerivedProperty1", typeof (Derived1Class).GetProperty ("DerivedProperty1"));
-      _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (
-          _derivedClassDefinition2, "DerivedProperty2", typeof (Derived2Class).GetProperty ("DerivedProperty2"));
-      _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (
-          _derivedDerivedClassDefinition, "DerivedDerivedProperty", typeof (DerivedDerivedClass).GetProperty ("DerivedDerivedProperty"));
+      _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (_baseBaseClassDefinition, "BaseBaseProperty");
+      _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty");
+      _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (_tableClassDefinition1, "TableProperty1");
+      _tablePropertyDefinition2 = CreateAndAddPropertyDefinition (_tableClassDefinition2, "TableProperty2");
+      _derivedPropertyDefinition1 = CreateAndAddPropertyDefinition (_derivedClassDefinition1, "DerivedProperty1");
+      _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (_derivedClassDefinition2, "DerivedProperty2");
+      _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (_derivedDerivedClassDefinition, "DerivedDerivedProperty");
       _derivedDerivedDerivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
     }
 
@@ -176,17 +170,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       get { return _derivedDerivedPropertyDefinition; }
     }
 
-    public static PropertyDefinition CreateAndAddPropertyDefinition (
-        ClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
+    public static PropertyDefinition CreateAndAddPropertyDefinition (ClassDefinition classDefinition, string propertyName)
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          classDefinition,
-          propertyName, 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          propertyInfo);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, propertyName);
+
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      return propertyDefinition;
+    }
+
+    public static PropertyDefinition CreateAndAddPropertyDefinition (ClassDefinition classDefinition, string propertyName, IPropertyInformation propertyInformation)
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInformation (classDefinition, propertyName, propertyInformation);
 
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       return propertyDefinition;

@@ -135,24 +135,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classDefinition =
           ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
-      var propertyInfo1 = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("NoAttribute");
-      var propertyInfo2 = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
-      var propertyDefinition1 = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          classDefinition,
-          "Test1", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          propertyInfo1);
-      var propertyDefinition2 = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          classDefinition,
-          "Test2", 
-          false,
-          true,
-          null,
-          StorageClass.Persistent,
-          propertyInfo2);
+      var propertyDefinition1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "P1");
+      var propertyDefinition2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "P2");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       propertyDefinition1.SetStorageProperty (_fakeStorageProperyDefinition1);
