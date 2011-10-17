@@ -176,8 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty",
               BindingFlags.Instance | BindingFlags.NonPublic));
 
-      var result = ReflectionBasedPropertyResolver.ResolveDefinition (
-          property, _classWithInterface, _classWithInterface.GetPropertyDefinition);
+      var result = ReflectionBasedPropertyResolver.ResolveDefinition (property, _classWithInterface, _classWithInterface.GetPropertyDefinition);
 
       var expected = _classWithInterface.GetMandatoryPropertyDefinition (
           typeof (ClassWithInterface).FullName + "." + typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty");
@@ -270,20 +269,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classWithInterface = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithInterface));
       var properties = new List<PropertyDefinition>();
+      properties.Add (PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classWithInterface, typeof (ClassWithInterface), "ImplicitProperty"));
       properties.Add (
           PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
-              classWithInterface,
-              typeof (ClassWithInterface),
-              "ImplicitProperty",
-              false,
-              100));
-      properties.Add (
-          PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
-              classWithInterface,
-              typeof (ClassWithInterface),
-              typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty",
-              false,
-              100));
+              classWithInterface, typeof (ClassWithInterface), typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty"));
       classWithInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
       return classWithInterface;
     }
@@ -301,18 +290,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
-              classWithInterfaceWithMissingAccessors,
-              typeof (ClassWithInterfaceWithMissingAccessors),
-              "PropertyWithGetAccessor",
-              false,
-              100));
+              classWithInterfaceWithMissingAccessors, typeof (ClassWithInterfaceWithMissingAccessors), "PropertyWithGetAccessor"));
       properties.Add (
           PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
-              classWithInterfaceWithMissingAccessors,
-              typeof (ClassWithInterfaceWithMissingAccessors),
-              "PropertyWithSetAccessor",
-              false,
-              100));
+              classWithInterfaceWithMissingAccessors, typeof (ClassWithInterfaceWithMissingAccessors), "PropertyWithSetAccessor"));
       classWithInterfaceWithMissingAccessors.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
       return classWithInterfaceWithMissingAccessors;
     }
@@ -325,18 +306,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
-              classWithMixinAddingInterface,
-              typeof (MixinAddingInterfaceWithProperties),
-              "ImplicitProperty",
-              false,
-              100));
+              classWithMixinAddingInterface, typeof (MixinAddingInterfaceWithProperties), "ImplicitProperty"));
       properties.Add (
           PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
               classWithMixinAddingInterface,
               typeof (MixinAddingInterfaceWithProperties),
-              typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty",
-              false,
-              100));
+              typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty"));
       classWithMixinAddingInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
       return classWithMixinAddingInterface;
     }
@@ -351,11 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               new[]
               {
                   PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
-                      classWithMixinAddingInterface,
-                      typeof (MixinAddingPropertyBase),
-                      "Property",
-                      false,
-                      100)
+                      classWithMixinAddingInterface, typeof (MixinAddingPropertyBase), "Property")
               },
               true));
       return classWithMixinAddingInterface;

@@ -58,12 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), (ClassDefinition) null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
-          classDefinition,
-          typeof (Order),
-          "Customer",
-          false);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order));
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (classDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection { propertyDefinition });
       var endPoint = new RelationEndPointDefinition (propertyDefinition, true);
 

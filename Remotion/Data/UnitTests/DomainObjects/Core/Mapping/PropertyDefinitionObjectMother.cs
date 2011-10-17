@@ -32,7 +32,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     public static PropertyDefinition CreateForFakePropertyInfo ()
     {
-      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), "Test");
+      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition ());
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition)
+    {
+      return CreateForFakePropertyInfo (classDefinition, "Test");
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName)
@@ -44,11 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       return CreateForFakePropertyInfo (
           classDefinition, propertyName, typeof (string), true, null, storageClass);
-    }
-
-    public static PropertyDefinition CreateForFakePropertyInfo_ObjectID (ClassDefinition classDefinition, string propertyName)
-    {
-      return CreateForFakePropertyInfo (classDefinition, propertyName, true, typeof (ObjectID), true, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType)
@@ -107,33 +107,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           CreatePropertyInformationStub (propertyName + "FakeProperty", propertyType, classDefinition.ClassType));
     }
 
+    public static PropertyDefinition CreateForFakePropertyInfo_ObjectID (ClassDefinition classDefinition)
+    {
+      return CreateForFakePropertyInfo_ObjectID (classDefinition, "Test");
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo_ObjectID (ClassDefinition classDefinition, string propertyName)
+    {
+      return CreateForFakePropertyInfo (classDefinition, propertyName, true, typeof (ObjectID), true, null, StorageClass.Persistent);
+    }
+
     public static PropertyDefinition CreateAndFindPropertyInfo (ClassDefinition classDefinition, Type declaringClassType, string propertyName)
-    {
-      return CreateAndFindPropertyInfo (classDefinition, declaringClassType, propertyName, null, null, StorageClass.Persistent);
-    }
-
-    public static PropertyDefinition CreateAndFindPropertyInfo (ClassDefinition classDefinition, Type declaringClassType, string propertyName, bool isNullable)
-    {
-      return CreateAndFindPropertyInfo (classDefinition, declaringClassType, propertyName, isNullable, null, StorageClass.Persistent);
-    }
-
-    public static PropertyDefinition CreateAndFindPropertyInfo (
-        ClassDefinition classDefinition,
-        Type declaringClassType,
-        string propertyName,
-        bool isNullable,
-        int maxLength)
-    {
-      return CreateAndFindPropertyInfo (classDefinition, declaringClassType, propertyName, isNullable, maxLength, StorageClass.Persistent);
-    }
-
-    public static PropertyDefinition CreateAndFindPropertyInfo (
-        ClassDefinition classDefinition,
-        Type declaringClassType,
-        string propertyName,
-        bool? isNullable,
-        int? maxLength,
-        StorageClass storageClass)
     {
       var propertyInfo = declaringClassType.GetProperty (
           propertyName, 
@@ -146,12 +130,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition,
           fullPropertyName,
           IsObjectID (propertyInfo.PropertyType),
-          isNullable ?? IsNullable (propertyInfo.PropertyType),
-          maxLength,
-          storageClass,
+          IsNullable (propertyInfo.PropertyType),
+          null,
+          StorageClass.Persistent,
           propertyInfo);
     }
-    
+
     public static PropertyDefinition CreateForPropertyInformation (
         ClassDefinition classDefinition,
         StorageClass storageClass,

@@ -41,14 +41,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderTicket), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (OrderTicket), "Order");
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection(new[]{propertyDefinition},true));
-      var expectedPropertyInfo = PropertyInfoAdapter.Create(typeof (OrderTicket).GetProperty ("Order"));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderTicket));
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (classDefinition);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       var fakeRelationEndPoint = new RelationEndPointDefinition (propertyDefinition, false);
+
+      var expectedPropertyInfo = PropertyInfoAdapter.Create (typeof (OrderTicket).GetProperty ("Order"));
       
       _mappingObjectFactoryMock
-          .Expect (mock => mock.CreateRelationEndPointDefinition (Arg.Is (classDefinition), Arg.Is (expectedPropertyInfo)))
+          .Expect (
+              mock =>
+              mock.CreateRelationEndPointDefinition (
+                  Arg.Is (classDefinition), Arg.Is (PropertyInfoAdapter.Create (expectedPropertyInfo.PropertyInfo))))
           .Return (fakeRelationEndPoint);
       _mappingObjectFactoryMock.Replay();
 
