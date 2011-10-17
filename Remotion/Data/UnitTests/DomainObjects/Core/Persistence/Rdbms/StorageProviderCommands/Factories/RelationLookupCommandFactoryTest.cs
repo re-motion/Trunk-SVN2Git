@@ -348,7 +348,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
     private PropertyDefinition CreateForeignKeyPropertyDefinition (ClassDefinition classDefinition)
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.Create_WithObjectIDFlag (classDefinition, "OrderTicket", true);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (classDefinition, "OrderTicket");
       propertyDefinition.SetStorageProperty (_foreignKeyStoragePropertyDefinitionStrictMock);
       return propertyDefinition;
     }

@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void GetRelationColumnName ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (FileSystemItem), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, "ParentFolder");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder");
       var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
       var result = _provider.GetRelationColumnName (relationDefinition);
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classDefinition =
           ClassDefinitionObjectMother.CreateClassDefinition (typeof (FileSystemItem), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, "ParentFolder2");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder2");
       var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
       var result = _provider.GetRelationColumnName (relationDefinition);
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void GetRelationClassIDColumnName ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (FileSystemItem), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, "ParentFolder");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (FileSystemItem), "ParentFolder");
       var relationDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
       var result = _provider.GetRelationClassIDColumnName (relationDefinition);

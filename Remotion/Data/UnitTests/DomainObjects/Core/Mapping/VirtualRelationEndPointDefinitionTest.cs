@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (endPoint.GetSortExpression(), Is.Not.Null);
       Assert.That (
           endPoint.GetSortExpression().ToString(),
-          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Product ASC"));
+          Is.EqualTo ("Product ASC"));
     }
 
     [Test]
@@ -149,8 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (ObjectList<OrderItem>),
           sortExpressionString);
       var orderItemClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (OrderItem));
-      var oppositeProperty = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (orderItemClassDefinition, "Order");
-      var productProperty = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (orderItemClassDefinition, "Product");
+      var oppositeProperty = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (orderItemClassDefinition, "Order");
+      var productProperty = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (orderItemClassDefinition, "Product");
       orderItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{oppositeProperty, productProperty}, true));
       orderItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var oppositeEndPoint = new RelationEndPointDefinition (oppositeProperty, false);
