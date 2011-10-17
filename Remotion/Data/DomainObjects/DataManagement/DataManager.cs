@@ -114,6 +114,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
     {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
       return from endPointID in dataContainer.AssociatedRelationEndPointIDs
              let endPoint = _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID)
              let oppositeRelationEndPointIDs = endPoint.GetOppositeRelationEndPointIDs ()
