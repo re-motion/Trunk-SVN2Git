@@ -47,8 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, StorageClass storageClass)
     {
-      return CreateForFakePropertyInfo (
-          classDefinition, propertyName, typeof (string), true, null, storageClass);
+      return CreateForFakePropertyInfo (classDefinition, propertyName, typeof (string), true, null, storageClass);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType)
@@ -56,18 +55,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateForFakePropertyInfo (classDefinition, propertyName, false, propertyType, true, null, StorageClass.Persistent);
     }
 
-    public static PropertyDefinition CreateForFakePropertyInfo (
-        ClassDefinition classDefinition, string propertyName, Type propertyType, StorageClass storageClass)
+    public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType, StorageClass storageClass)
     {
       return CreateForFakePropertyInfo (
           classDefinition, propertyName, propertyType, IsNullable (propertyType), null, storageClass);
     }
 
-    public static PropertyDefinition CreateForFakePropertyInfo (
-        ClassDefinition classDefinition, string propertyName, Type propertyType, bool isNullable, StorageClass storageClass)
+    public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType, bool isNullable, StorageClass storageClass)
     {
       return CreateForFakePropertyInfo (
           classDefinition, propertyName, propertyType, isNullable, null, storageClass);
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, bool isNullable)
+    {
+      return CreateForFakePropertyInfo (classDefinition, "Test", typeof (string), isNullable, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (
@@ -117,6 +119,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateForFakePropertyInfo (classDefinition, propertyName, true, typeof (ObjectID), true, null, StorageClass.Persistent);
     }
 
+    public static PropertyDefinition CreateForFakePropertyInfo_ObjectID (ClassDefinition classDefinition, string propertyName, StorageClass storageClass)
+    {
+      return CreateForFakePropertyInfo (classDefinition, propertyName, true, typeof (ObjectID), true, null, storageClass);
+    }
+
     public static PropertyDefinition CreateAndFindPropertyInfo (ClassDefinition classDefinition, Type declaringClassType, string propertyName)
     {
       var propertyInfo = declaringClassType.GetProperty (
@@ -149,37 +156,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null,
           storageClass,
           propertyInformation);
-    }
-
-    public static PropertyDefinition CreateForPropertyInfo (
-        ClassDefinition classDefinition,
-        StorageClass storageClass,
-        PropertyInfo propertyInfo)
-    {
-      return CreateForPropertyInfo (
-          classDefinition,
-          propertyInfo.Name,
-          IsObjectID (propertyInfo.PropertyType),
-          IsNullable (propertyInfo.PropertyType),
-          null,
-          storageClass,
-          propertyInfo);
-    }
-
-    public static PropertyDefinition CreateForPropertyInfo (
-        ClassDefinition classDefinition,
-        StorageClass storageClass,
-        PropertyInfo propertyInfo,
-        bool isNullable)
-    {
-      return CreateForPropertyInfo (
-          classDefinition,
-          propertyInfo.Name,
-          IsObjectID (propertyInfo.PropertyType),
-          isNullable,
-          null,
-          storageClass,
-          propertyInfo);
     }
 
     public static PropertyDefinition CreateForPropertyInfo (

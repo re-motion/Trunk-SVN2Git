@@ -104,8 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveColumn_NoPrimaryKeyColumn ()
     {
-      var property = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (_classDefinition, StorageClass.Persistent, property);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
@@ -128,8 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveColumn_PrimaryKeyColumn ()
     {
-      var property = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (_classDefinition, StorageClass.Persistent, property);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
@@ -153,8 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Compound-column properties are not supported by this LINQ provider.")]
     public void ResolveColumn_CompoundColumn ()
     {
-      var property = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (_classDefinition, StorageClass.Persistent, property);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo();
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 

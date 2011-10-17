@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
@@ -34,8 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
   [TestFixture]
   public class DataStoragePropertyDefinitionFactoryTest : StandardMappingTest
   {
-    private PropertyInfo _propertyInfoStub;
-
     private StorageTypeInformation _fakeStorageTypeInformation1;
     private StorageTypeInformation _fakeStorageTypeInformation2;
 
@@ -56,8 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public override void SetUp ()
     {
       base.SetUp();
-
-      _propertyInfoStub = typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty");
 
       _fakeStorageTypeInformation1 = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
       _fakeStorageTypeInformation2 = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
@@ -91,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_NotSupportedType ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition);
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType (Arg.Is (propertyDefinition), Arg<bool>.Is.Anything))
           .Throw (new NotSupportedException ("Msg."));
@@ -109,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (_classWithAllDataTypesDefinition, StorageClass.Persistent, _propertyInfoStub);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition);
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType (propertyDefinition, false))
           .Return (_fakeStorageTypeInformation1);
@@ -122,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       var result = (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
       _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
 
-      Assert.That (result.PropertyType, Is.SameAs (typeof (bool)));
+      Assert.That (result.PropertyType, Is.SameAs (typeof (string)));
       Assert.That (result.ColumnDefinition.Name, Is.EqualTo ("FakeColumnName"));
       Assert.That (result.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
     }
@@ -130,10 +125,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty_RespectsNullability_ForClassAboveDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          _classAboveDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
+      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition, false);
+      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition, true);
       Assert.That (_classAboveDbTableAttribute.BaseClass, Is.Null);
 
       _storageTypeInformationProviderStrictMock
@@ -165,10 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty_RespectsNullability_ForClassWithDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          _classWithDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
+      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo(_classWithDbTableAttribute, false);
+      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithDbTableAttribute, true);
 
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType (propertyDefinitionNotNullable, false))
@@ -199,10 +190,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty_OverridesNullability_ForClassBelowDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          _classBelowDbTableAttribute, StorageClass.Persistent, _propertyInfoStub, true);
+      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classBelowDbTableAttribute, false);
+      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classBelowDbTableAttribute, true);
 
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType (propertyDefinitionNotNullable, true))
@@ -236,16 +225,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ValueProperty_OverridesNullability_ForClassBelowBelowDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          _classBelowBelowDbTableAttribute,
-          StorageClass.Persistent,
-          _propertyInfoStub,
-          false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          _classBelowBelowDbTableAttribute,
-          StorageClass.Persistent,
-          _propertyInfoStub,
-          true);
+      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classBelowBelowDbTableAttribute, false);
+      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classBelowBelowDbTableAttribute, true);
 
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType (propertyDefinitionNotNullable, true))

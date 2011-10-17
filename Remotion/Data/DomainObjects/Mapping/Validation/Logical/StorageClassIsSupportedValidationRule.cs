@@ -36,7 +36,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions select Validate (propertyDefinition.PropertyInfo);
+      return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions 
+             select Validate (propertyDefinition.PropertyInfo);
     }
 
     private MappingValidationResult Validate (IPropertyInformation propertyInfo)

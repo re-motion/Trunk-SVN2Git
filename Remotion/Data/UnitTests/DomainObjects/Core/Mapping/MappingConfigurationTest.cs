@@ -307,17 +307,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Property: PropertyWithStorageClassNone")]
     public void PropertyDefinitionsAreValidated ()
     {
-      var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (type);
-      var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo(classDefinition, StorageClass.None, propertyInfo);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
+          classDefinition, typeof (DerivedValidationDomainObjectClass), "PropertyWithStorageClassNone");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
-          _mockMappingLoader, new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          _mockMappingLoader,
+          new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]

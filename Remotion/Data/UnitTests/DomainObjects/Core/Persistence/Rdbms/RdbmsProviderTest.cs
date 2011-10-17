@@ -498,8 +498,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainersByRelatedID_StorageClassTransaction ()
     {
       var objectID = DomainObjectIDs.Order1;
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          objectID.ClassDefinition, StorageClass.Transaction, typeof (Order).GetProperty ("Official"));
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (objectID.ClassDefinition, "Test", StorageClass.Transaction);
       var relationEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
       _connectionCreatorMock.Expect (mock => mock.CreateConnection()).Return (_connectionStub);

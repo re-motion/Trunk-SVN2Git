@@ -97,8 +97,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classWithAllDataTypesDefinition =
           ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassWithAllDataTypes), null);
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (
+          classWithAllDataTypesDefinition, typeof (ClassWithAllDataTypes), "BooleanProperty");
 
       var result = _provider.GetColumnName (propertyDefinition);
 
@@ -110,8 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Distributor), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForPropertyInfo (
-          classDefinition, StorageClass.Persistent, typeof (Distributor).GetProperty ("NumberOfShops"));
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateAndFindPropertyInfo (classDefinition, typeof (Distributor), "NumberOfShops");
 
       var result = _provider.GetColumnName (propertyDefinition);
 
