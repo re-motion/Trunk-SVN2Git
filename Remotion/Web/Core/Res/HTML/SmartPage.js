@@ -95,9 +95,7 @@ function SmartPage_Context(
   var _isMsIE = $.browser.msie;
   var _cacheStateHasSubmitted = 'hasSubmitted';
   var _cacheStateHasLoaded = 'hasLoaded';
-
-  var _defaultButtonFired = false;
-
+  
   var _loadHandler = function() { SmartPage_Context.Instance.OnLoad(); };
   var _beforeUnloadHandler = function() { return SmartPage_Context.Instance.OnBeforeUnload(); };
   var _unloadHandler = function() { return SmartPage_Context.Instance.OnUnload(); };
@@ -106,7 +104,6 @@ function SmartPage_Context(
   var _formSubmitHandler = function() { return SmartPage_Context.Instance.OnFormSubmit(); };
   var _formClickHandler = function(evt) { return SmartPage_Context.Instance.OnFormClick(evt); };
   var _doPostBackHandler = function(eventTarget, eventArg) { SmartPage_Context.Instance.DoPostBack(eventTarget, eventArg); };
-  var _fireDefaultButtonHandler = function(eventTarget, eventArg) { SmartPage_Context.Instance.FireDefaultButton(eventTarget, eventArg); };
   var _valueChangedHandler = function(evt) { SmartPage_Context.Instance.OnValueChanged(evt); };
   var _elementFocusHandler = function(evt) { SmartPage_Context.Instance.OnElementFocus(evt); };
   var _elementBlurHandler = function(evt) { SmartPage_Context.Instance.OnElementBlur(evt); };
@@ -188,9 +185,6 @@ function SmartPage_Context(
       SetDataChangedEventHandlers(_theForm);
 
     SetFocusEventHandlers(window.document.body);
-
-    if (TypeUtility.IsDefined(window.WebForm_FireDefaultButton))
-      WebForm_FireDefaultButton = _fireDefaultButtonHandler;
 
     if (TypeUtility.IsDefined(window.Sys) && TypeUtility.IsDefined(Sys.WebForms) && TypeUtility.IsDefined(Sys.WebForms.PageRequestManager))
     {
@@ -485,7 +479,6 @@ function SmartPage_Context(
     _formSubmitHandler = null;
     _formClickHandler = null;
     _doPostBackHandler = null;
-    _fireDefaultButtonHandler = null;
     _valueChangedHandler = null;
     _elementFocusHandler = null;
     _elementBlurHandler = null;
@@ -727,29 +720,6 @@ function SmartPage_Context(
   function CreatePostbackSettings(async, panelID, sourceElement)
   {
     return { async: async, panelID: panelID, sourceElement: sourceElement };
-  }
-
-  this.FireDefaultButton = function(evt, defaultButtonID)
-  {
-    var sourceElement = GetEventSource(evt);
-    var e = TypeUtility.IsUndefined(evt) ? window.event : evt;
-
-    if (!_defaultButtonFired && e.keyCode == 13 && !(sourceElement != null && sourceElement.tagName.toLowerCase() == "textarea"))
-    {
-      var defaultButton = document.getElementById(defaultButtonID);
-
-      if (defaultButton != null && TypeUtility.IsDefined(defaultButton.click))
-      {
-        _defaultButtonFired = true;
-        defaultButton.focus();
-        defaultButton.click();
-        e.cancelBubble = true;
-        if (TypeUtility.IsDefined(e.stopPropagation))
-          e.stopPropagation();
-        return false;
-      }
-    }
-    return true;
   }
 
   // Event handler for Window.OnScroll.

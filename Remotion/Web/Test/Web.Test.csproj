@@ -150,6 +150,13 @@
     <Compile Include="CssHandler.ashx.cs">
       <DependentUpon>CssHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="DefaultButtonTest.aspx.cs">
+      <DependentUpon>DefaultButtonTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DefaultButtonTest.aspx.designer.cs">
+      <DependentUpon>DefaultButtonTest.aspx</DependentUpon>
+    </Compile>
     <Compile Include="DropDownMenu.aspx.cs">
       <DependentUpon>DropDownMenu.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -352,6 +359,7 @@
     <Compile Include="CssIncludeTest.aspx.designer.cs">
       <DependentUpon>CssIncludeTest.aspx</DependentUpon>
     </Compile>
+    <Content Include="DefaultButtonTest.aspx" />
     <Content Include="ExecutionEngine\ZeroControl.ascx" />
     <Content Include="ExecutionEngine\FourthControl.ascx" />
     <Content Include="ExecutionEngine\ThirdControl.ascx" />
