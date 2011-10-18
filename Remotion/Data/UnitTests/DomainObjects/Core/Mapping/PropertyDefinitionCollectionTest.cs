@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyNameIndexer ()
     {
       _collection.Add (_propertyDefinition);
-      Assert.AreSame (_propertyDefinition, _collection["Name"]);
+      Assert.AreSame (_propertyDefinition, _collection[_propertyDefinition.PropertyName]);
     }
 
     [Test]
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ContainsPropertyNameTrue ()
     {
       _collection.Add (_propertyDefinition);
-      Assert.IsTrue (_collection.Contains ("Name"));
+      Assert.IsTrue (_collection.Contains (_propertyDefinition.PropertyName));
     }
 
     [Test]
