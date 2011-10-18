@@ -233,42 +233,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="PropertyValue"/> is equal to the current <b>PropertyValue</b>.
-    /// </summary>
-    /// <param name="obj">The <see cref="PropertyValue"/> to compare with the current <b>PropertyValue</b>. </param>
-    /// <returns><see langword="true"/> if the specified <see cref="PropertyValue"/> is equal to the current <b>PropertyValue</b>; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
-    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
-    public override bool Equals (object obj)
-    {
-      CheckNotDiscarded ();
-
-      var propertyValue = obj as PropertyValue;
-
-      if (propertyValue != null)
-      {
-        return _value.Equals (propertyValue._value)
-               && _originalValue.Equals (propertyValue._originalValue)
-               && HasChanged.Equals (propertyValue.HasChanged)
-               && Definition.Equals (propertyValue.Definition);
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    /// <summary>
-    /// Returns the hash code for this instance.
-    /// </summary>
-    /// <returns>A 32-bit signed integer hash code.</returns>
-    public override int GetHashCode()
-    {
-      CheckNotDiscarded ();
-      return EqualityUtility.GetRotatedHashCode (_definition.PropertyName, _value, _originalValue, HasChanged);
-    }
-
-    /// <summary>
     /// Gets a value indicating the discarded status of the <see cref="PropertyValue"/>.
     /// </summary>
     /// <remarks>

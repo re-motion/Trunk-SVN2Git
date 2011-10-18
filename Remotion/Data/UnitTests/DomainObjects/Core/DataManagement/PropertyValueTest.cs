@@ -87,50 +87,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void TestEquals ()
-    {
-      PropertyDefinition intDefinition = CreateIntPropertyDefinition ("test");
-      var propertyValue1 = new PropertyValue (intDefinition, 5);
-      var propertyValue2 = new PropertyValue (intDefinition, 5);
-      Assert.IsTrue (propertyValue1.Equals (propertyValue2), "Initial values");
-
-      propertyValue1.Value = 10;
-      Assert.IsFalse (propertyValue1.Equals (propertyValue2), "After changing first value.");
-
-      propertyValue1.Value = 5;
-      Assert.IsTrue (propertyValue1.Equals (propertyValue2), "After changing first value back to initial value.");
-
-      propertyValue1.Value = 10;
-      propertyValue2.Value = 10;
-      Assert.IsTrue (propertyValue1.Equals (propertyValue2), "After changing both values.");
-
-      PropertyValue propertyValue3 = CreateIntPropertyValue ("test", 10);
-      propertyValue3.Value = 10;
-      Assert.IsFalse (propertyValue1.Equals (propertyValue3), "Different original values.");
-    }
-
-    [Test]
-    public void HashCode ()
-    {
-      PropertyValue propertyValue1 = CreateIntPropertyValue ("test", 5);
-      PropertyValue propertyValue2 = CreateIntPropertyValue ("test", 5);
-      Assert.IsTrue (propertyValue1.GetHashCode() == propertyValue2.GetHashCode(), "Initial values");
-
-      propertyValue1.Value = 10;
-      Assert.IsFalse (propertyValue1.GetHashCode() == propertyValue2.GetHashCode(), "After changing first value.");
-
-      propertyValue1.Value = 5;
-      Assert.IsTrue (propertyValue1.GetHashCode() == propertyValue2.GetHashCode(), "After changing first value back to initial value.");
-
-      propertyValue1.Value = 10;
-      propertyValue2.Value = 10;
-      Assert.IsTrue (propertyValue1.GetHashCode() == propertyValue2.GetHashCode(), "After changing both values.");
-
-      PropertyValue propertyValue3 = CreateIntPropertyValue ("test", 10);
-      Assert.IsFalse (propertyValue1.GetHashCode() == propertyValue3.GetHashCode(), "Different original values.");
-    }
-
-    [Test]
     public void IsRelationProperty_False ()
     {
       PropertyDefinition intDefinition = CreateIntPropertyDefinition ("test");

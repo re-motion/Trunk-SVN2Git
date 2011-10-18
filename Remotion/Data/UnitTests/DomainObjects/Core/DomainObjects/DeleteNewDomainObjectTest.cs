@@ -421,23 +421,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       bool hasBeenTouched = _orderNumberValue.HasBeenTouched;
     }
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueEquals ()
-    {
-      _newOrder.Delete ();
-
-      _orderNumberValue.Equals (null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueGetHashCode ()
-    {
-      _newOrder.Delete ();
-
-      _orderNumberValue.GetHashCode ();
-    }
 
     [Test]
     public void PropertyValueIsDiscarded ()

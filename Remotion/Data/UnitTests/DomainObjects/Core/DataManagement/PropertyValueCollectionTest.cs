@@ -17,9 +17,8 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -39,24 +38,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Property 'DoesNotExist' does not exist.\r\nParameter name: propertyName")]
     public void NonExistingPropertyName ()
     {
-      _collection.Add (CreatePropertyValue ("PropertyName 1", typeof (int), 42));
-      _collection.Add (CreatePropertyValue ("PropertyName 2", typeof (int), 43));
+      _collection.Add (CreatePropertyValue ("PropertyName 1"));
+      _collection.Add (CreatePropertyValue ("PropertyName 2"));
 
-      PropertyValue propertyValue = _collection["DoesNotExist"];
+      Dev.Null = _collection["DoesNotExist"];
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Property 'PropertyName' already exists in collection.\r\nParameter name: value")]
     public void DuplicatePropertyNames ()
     {
-      _collection.Add (CreatePropertyValue ("PropertyName", typeof (int), 42));
-      _collection.Add (CreatePropertyValue ("PropertyName", typeof (int), 43));
+      _collection.Add (CreatePropertyValue ("PropertyName"));
+      _collection.Add (CreatePropertyValue ("PropertyName"));
     }
 
     [Test]
     public void ContainsPropertyValueTrue ()
     {
-      PropertyValue value = CreatePropertyValue ("PropertyName", typeof (int), 42);
+      PropertyValue value = CreatePropertyValue ("PropertyName");
 
       _collection.Add (value);
 
@@ -66,10 +65,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void ContainsPropertyValueFalse ()
     {
-      PropertyValue value = CreatePropertyValue ("PropertyName", typeof (int), 42);
+      PropertyValue value = CreatePropertyValue ("PropertyName");
       _collection.Add (value);
 
-      PropertyValue copy = CreatePropertyValue ("PropertyName", typeof (int), 42);
+      PropertyValue copy = CreatePropertyValue ("PropertyName");
 
       Assert.IsFalse (_collection.Contains (copy));
 
@@ -82,12 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _collection.Contains ((PropertyValue) null);
     }
 
-    private PropertyValue CreatePropertyValue (string name, Type propertyType, object value)
+    private PropertyValue CreatePropertyValue (string name)
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
-      var definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          classDefinition, name, propertyType, StorageClass.Persistent);
-      return new PropertyValue (definition, value);
+      var definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, name);
+      return new PropertyValue (definition, definition.DefaultValue);
     }
   }
 }
