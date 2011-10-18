@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.IsNotNull (actualContainers);
       Assert.AreEqual (1, actualContainers.Length);
 
-      DataContainer expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer ();
+      DataContainer expectedContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer ();
       var checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainers[0]);
     }

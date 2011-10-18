@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var actualContainer = Provider.LoadDataContainers (new[] { id }).ToArray()[0].LocatedObject;
 
-      var expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer ();
+      var expectedContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer ();
 
       var checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainer);

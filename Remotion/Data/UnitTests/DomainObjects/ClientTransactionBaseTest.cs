@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     private ClientTransactionMock _clientTransactionMock;
     private ClientTransactionScope _transactionScope;
-    private TestDataContainerFactory _testDataContainerFactory;
+    private TestDataContainerObjectMother _testDataContainerObjectMother;
 
     // construction and disposing
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public override void TearDown ()
     {
       base.TearDown();
-      _testDataContainerFactory = null;
+      _testDataContainerObjectMother = null;
       DisposeTransaction();
     }
 
@@ -62,9 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects
       get { return _clientTransactionMock; }
     }
 
-    protected TestDataContainerFactory TestDataContainerFactory
+    protected TestDataContainerObjectMother TestDataContainerObjectMother
     {
-      get { return _testDataContainerFactory; }
+      get { return _testDataContainerObjectMother; }
     }
 
     private void DisposeTransaction ()
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
       _clientTransactionMock = new ClientTransactionMock();
       _transactionScope = _clientTransactionMock.EnterDiscardingScope();
-      _testDataContainerFactory = new TestDataContainerFactory (_clientTransactionMock);
+      _testDataContainerObjectMother = new TestDataContainerObjectMother ();
     }
 
     protected void CheckIfObjectIsDeleted (ObjectID id)

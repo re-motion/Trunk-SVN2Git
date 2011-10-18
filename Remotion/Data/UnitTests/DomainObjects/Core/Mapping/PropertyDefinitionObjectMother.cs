@@ -55,12 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateForFakePropertyInfo (classDefinition, propertyName, propertyType, true, null, StorageClass.Persistent);
     }
 
-    public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType, bool isNullable, StorageClass storageClass)
-    {
-      return CreateForFakePropertyInfo (
-          classDefinition, propertyName, propertyType, isNullable, null, storageClass);
-    }
-
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, bool isNullable)
     {
       return CreateForFakePropertyInfo (classDefinition, "Test", typeof (string), isNullable, null, StorageClass.Persistent);
@@ -116,7 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType, bool isNullable)
     {
-      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, propertyType, isNullable, StorageClass.Persistent);
+      return CreateForFakePropertyInfo (
+          ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, propertyType, isNullable, null, StorageClass.Persistent);
     }
 
 

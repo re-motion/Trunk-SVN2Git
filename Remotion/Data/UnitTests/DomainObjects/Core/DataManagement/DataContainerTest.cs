@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetObjectID ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateOrder1DataContainer();
+      DataContainer dataContainer = TestDataContainerObjectMother.CreateOrder1DataContainer();
       var id = (ObjectID) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
       Assert.That (id, Is.Not.Null);
     }
@@ -185,16 +185,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetNullObjectID ()
     {
-      var id = new ObjectID ("Official", 1);
-      DataContainer container = DataContainer.CreateNew (id);
+      var id = new ObjectID (typeof (Order), Guid.NewGuid());
+      var container = DataContainer.CreateNew (id);
 
-      PropertyDefinition reportsToDefinition =
-          PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-              container.ClassDefinition, "ReportsTo", typeof(string), true, StorageClass.Persistent);
-
-      container.PropertyValues.Add (new PropertyValue (reportsToDefinition, null));
-
-      Assert.That (container.GetValue ("ReportsTo"), Is.Null);
+      Assert.That (container.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), Is.Null);
     }
 
     [Test]
@@ -202,14 +196,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         ExpectedMessage = "Property 'NonExistingPropertyName' does not exist.\r\nParameter name: propertyName")]
     public void GetObjectIDForNonExistingProperty ()
     {
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer();
+      DataContainer container = TestDataContainerObjectMother.CreateOrder1DataContainer();
       container.GetValue ("NonExistingPropertyName");
     }
 
     [Test]
     public void ChangePropertyBackToOriginalValue ()
     {
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer();
+      DataContainer container = TestDataContainerObjectMother.CreateOrder1DataContainer();
 
       container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
       Assert.That (container.State, Is.EqualTo (StateType.Changed));
@@ -232,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetBytes ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer();
+      DataContainer dataContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer();
 
       ResourceManager.IsEqualToImage1 (
           (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
@@ -242,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetBytes ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer();
+      DataContainer dataContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer();
 
       dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"] = new byte[0];
       ResourceManager.IsEmptyImage (
@@ -255,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetTimestamp ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer();
+      DataContainer dataContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer();
       dataContainer.SetTimestamp (10);
 
       Assert.That (dataContainer.Timestamp, Is.EqualTo (10));

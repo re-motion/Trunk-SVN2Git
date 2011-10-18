@@ -151,25 +151,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void LoadRelatedDataContainer ()
     {
-      DataContainer orderTicketContainer = TestDataContainerFactory.CreateOrderTicket1DataContainer();
+      DataContainer orderTicketContainer = TestDataContainerObjectMother.CreateOrderTicket1DataContainer();
 
       DataContainer orderContainer = _persistenceManager.LoadRelatedDataContainer (
           orderTicketContainer, RelationEndPointID.Create(orderTicketContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
 
       DataContainerChecker checker = new DataContainerChecker();
-      checker.Check (TestDataContainerFactory.CreateOrder1DataContainer(), orderContainer);
+      checker.Check (TestDataContainerObjectMother.CreateOrder1DataContainer(), orderContainer);
     }
 
     [Test]
     public void LoadDataContainerOverVirtualEndPoint ()
     {
-      DataContainer orderContainer = TestDataContainerFactory.CreateOrder1DataContainer();
+      DataContainer orderContainer = TestDataContainerObjectMother.CreateOrder1DataContainer();
 
       DataContainer orderTicketContainer = _persistenceManager.LoadRelatedDataContainer (
           orderContainer, RelationEndPointID.Create(orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
 
       DataContainerChecker checker = new DataContainerChecker();
-      checker.Check (TestDataContainerFactory.CreateOrderTicket1DataContainer(), orderTicketContainer);
+      checker.Check (TestDataContainerObjectMother.CreateOrderTicket1DataContainer(), orderTicketContainer);
     }
 
     [Test]

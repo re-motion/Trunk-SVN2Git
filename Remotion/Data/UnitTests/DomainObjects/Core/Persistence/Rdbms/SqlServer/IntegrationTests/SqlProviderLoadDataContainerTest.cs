@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       DataContainer actualContainer = Provider.LoadDataContainer (id).LocatedObject;
 
-      DataContainer expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer ();
+      DataContainer expectedContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer ();
 
       DataContainerChecker checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainer);
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void LoadDerivedDataContainerByID ()
     {
       DataContainer actualContainer = Provider.LoadDataContainer (DomainObjectIDs.Partner1).LocatedObject;
-      DataContainer expectedContainer = TestDataContainerFactory.CreatePartner1DataContainer ();
+      DataContainer expectedContainer = TestDataContainerObjectMother.CreatePartner1DataContainer ();
 
       DataContainerChecker checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainer);
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void LoadTwiceDerivedDataContainerByID ()
     {
       DataContainer actualContainer = Provider.LoadDataContainer (DomainObjectIDs.Distributor2).LocatedObject;
-      DataContainer expectedContainer = TestDataContainerFactory.CreateDistributor2DataContainer ();
+      DataContainer expectedContainer = TestDataContainerObjectMother.CreateDistributor2DataContainer ();
 
       DataContainerChecker checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainer);

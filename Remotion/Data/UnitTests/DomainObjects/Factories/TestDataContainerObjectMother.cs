@@ -21,32 +21,17 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
-  public class TestDataContainerFactory
+  public class TestDataContainerObjectMother
   {
-    // types
+    private readonly DomainObjectIDs _domainObjectIDs;
 
-    // members and constants
-
-    // member fields
-
-    private ClientTransactionMock _clientTransactionMock;
-    private DomainObjectIDs _domainObjectIDs;
-
-    // construction and disposing
-
-    public TestDataContainerFactory (ClientTransactionMock clientTransactionMock)
+    public TestDataContainerObjectMother ()
     {
-      ArgumentUtility.CheckNotNull ("clientTransactionMock", clientTransactionMock);
-      _clientTransactionMock = clientTransactionMock;
-
       _domainObjectIDs = StandardConfiguration.Instance.GetDomainObjectIDs();
     }
-
-    // methods and properties
 
     public DataContainer CreateCustomer1DataContainer ()
     {

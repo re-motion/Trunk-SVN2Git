@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp ();
 
-      _dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
+      _dataContainer = TestDataContainerObjectMother.CreateOrder1DataContainer ();
       _collection = new DataContainerCollection ();
     }
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDifference ()
     {
-      DataContainer differentDataContainer = TestDataContainerFactory.CreateOrder2DataContainer ();
+      DataContainer differentDataContainer = TestDataContainerObjectMother.CreateOrder2DataContainer ();
 
       _collection.Add (_dataContainer);
       _collection.Add (differentDataContainer);
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _collection.Add (_dataContainer);
 
       DataContainerCollection secondCollection = new DataContainerCollection ();
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer ();
+      DataContainer container = TestDataContainerObjectMother.CreateOrder1DataContainer ();
       secondCollection.Add (container);
 
       DataContainerCollection mergedCollection = _collection.Merge (secondCollection);
@@ -192,11 +192,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MergeTwoCollections ()
     {
       _collection.Add (_dataContainer);
-      DataContainer order2 = TestDataContainerFactory.CreateOrder2DataContainer ();
+      DataContainer order2 = TestDataContainerObjectMother.CreateOrder2DataContainer ();
       _collection.Add (order2);
 
       DataContainerCollection secondCollection = new DataContainerCollection ();
-      DataContainer order1 = TestDataContainerFactory.CreateOrder1DataContainer ();
+      DataContainer order1 = TestDataContainerObjectMother.CreateOrder1DataContainer ();
       secondCollection.Add (order1);
 
       DataContainerCollection mergedCollection = _collection.Merge (secondCollection);
@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetByChangedState ()
     {
       _collection.Add (_dataContainer);
-      _collection.Add (TestDataContainerFactory.CreateCustomer1DataContainer ());
+      _collection.Add (TestDataContainerObjectMother.CreateCustomer1DataContainer ());
 
       _dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
 
@@ -326,11 +326,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Join ()
     {
-      DataContainer firstDataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
+      DataContainer firstDataContainer = TestDataContainerObjectMother.CreateOrder1DataContainer ();
       DataContainerCollection firstCollection = new DataContainerCollection ();
       firstCollection.Add (firstDataContainer);
 
-      DataContainer secondDataContainer = TestDataContainerFactory.CreateOrder2DataContainer ();
+      DataContainer secondDataContainer = TestDataContainerObjectMother.CreateOrder2DataContainer ();
       DataContainerCollection secondCollection = new DataContainerCollection ();
       secondCollection.Add (secondDataContainer);
 
@@ -343,7 +343,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void JoinWithSameDataContainer ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
+      DataContainer dataContainer = TestDataContainerObjectMother.CreateOrder1DataContainer ();
       DataContainerCollection firstCollection = new DataContainerCollection ();
       firstCollection.Add (dataContainer);
 
@@ -358,12 +358,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void JoinWithDataContainersOfSameID ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
+      DataContainer dataContainer = TestDataContainerObjectMother.CreateOrder1DataContainer ();
       DataContainerCollection firstCollection = new DataContainerCollection ();
       firstCollection.Add (dataContainer);
 
       DataContainerCollection secondCollection = new DataContainerCollection ();
-      secondCollection.Add (TestDataContainerFactory.CreateOrder1DataContainer ());
+      secondCollection.Add (TestDataContainerObjectMother.CreateOrder1DataContainer ());
 
       DataContainerCollection joinedCollection = DataContainerCollection.Join (firstCollection, secondCollection);
       Assert.That (joinedCollection.Count, Is.EqualTo (1));

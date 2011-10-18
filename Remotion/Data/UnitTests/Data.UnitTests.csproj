@@ -1451,7 +1451,7 @@
     <Compile Include="DomainObjects\Factories\StorageProviderDefinitionObjectMother.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Factories\TestDataContainerFactory.cs">
+    <Compile Include="DomainObjects\Factories\TestDataContainerObjectMother.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectTest.cs">

@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void DataContainerWithNoRelation ()
     {
-      var container = TestDataContainerFactory.CreateClassWithAllDataTypes1DataContainer ();
+      var container = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer ();
       _relationEndPointManager.RegisterEndPointsForDataContainer (container);
 
       Assert.AreEqual (0, _relationEndPointManager.RelationEndPoints.Count);
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void OrderTicket ()
     {
-      var orderTicketContainer = TestDataContainerFactory.CreateOrderTicket1DataContainer ();
+      var orderTicketContainer = TestDataContainerObjectMother.CreateOrderTicket1DataContainer ();
       _relationEndPointManager.RegisterEndPointsForDataContainer (orderTicketContainer);
 
       Assert.AreEqual (2, _relationEndPointManager.RelationEndPoints.Count, "Count");
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void VirtualEndPoint ()
     {
-      DataContainer container = TestDataContainerFactory.CreateClassWithGuidKeyDataContainer ();
+      DataContainer container = TestDataContainerObjectMother.CreateClassWithGuidKeyDataContainer ();
       _relationEndPointManager.RegisterEndPointsForDataContainer (container);
 
       Assert.AreEqual (0, _relationEndPointManager.RelationEndPoints.Count);
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void DerivedDataContainer ()
     {
-      DataContainer distributorContainer = TestDataContainerFactory.CreateDistributor2DataContainer ();
+      DataContainer distributorContainer = TestDataContainerObjectMother.CreateDistributor2DataContainer ();
       _relationEndPointManager.RegisterEndPointsForDataContainer (distributorContainer);
 
       Assert.AreEqual (4, _relationEndPointManager.RelationEndPoints.Count);
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void DataContainerWithOneToManyRelation ()
     {
-      DataContainer orderContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
+      DataContainer orderContainer = TestDataContainerObjectMother.CreateOrder1DataContainer ();
 
       _relationEndPointManager.RegisterEndPointsForDataContainer (orderContainer);
 
