@@ -162,8 +162,9 @@
               Check Box
             </td>
             <td>
-              <remotion:BocCheckBox ID="CheckBox" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em" ShowDescription="True" />
-              <remotion:BocCheckBox ID="CheckBoxReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em" ReadOnly="true" ShowDescription="True" />
+              <remotion:BocCheckBox ID="CheckBox" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" ShowDescription="True" />
+              <remotion:BocCheckBox ID="CheckBoxReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" ReadOnly="true" ShowDescription="True" />
+              M
             </td>
             <td>
             </td>
@@ -173,8 +174,9 @@
               Boolean Value
             </td>
             <td>
-              <remotion:BocBooleanValue ID="BooleanValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em" />
-              <remotion:BocBooleanValue ID="BooleanValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em" ReadOnly="true" />
+              <remotion:BocBooleanValue ID="BooleanValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" />
+              <remotion:BocBooleanValue ID="BooleanValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" ReadOnly="true" />
+              M
             </td>
             <td>
             </td>
@@ -184,8 +186,9 @@
               Text Value
             </td>
             <td>
-              <remotion:BocTextValue ID="TextValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="LastName" Width="8em" />
-              <remotion:BocTextValue ID="TextValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="LastName" Width="8em" ReadOnly="true" />
+              <remotion:BocTextValue ID="TextValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="LastName" />
+              <remotion:BocTextValue ID="TextValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="LastName" ReadOnly="true" />
+              M
             </td>
             <td>
             </td>
@@ -195,8 +198,9 @@
               Enum Value
             </td>
             <td>
-              <remotion:BocEnumValue ID="EnumValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="MarriageStatus" Width="8em" />
-              <remotion:BocEnumValue ID="EnumValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="MarriageStatus" Width="8em" ReadOnly="true" />
+              <remotion:BocEnumValue ID="EnumValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="MarriageStatus" />
+              <remotion:BocEnumValue ID="EnumValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="MarriageStatus" ReadOnly="true" />
+              M
             </td>
             <td>
             </td>
@@ -206,8 +210,9 @@
               Date Time Value
             </td>
             <td>
-              <remotion:BocDateTimeValue ID="DateTmeValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" Width="15em" />
-              <remotion:BocDateTimeValue ID="DateTimeValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" Width="15em" ReadOnly="true" />
+              <remotion:BocDateTimeValue ID="DateTmeValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" />
+              <remotion:BocDateTimeValue ID="DateTimeValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" ReadOnly="true" />
+              M
             </td>
             <td>
             </td>
@@ -217,8 +222,9 @@
               Date Value
             </td>
             <td>
-              <remotion:BocDateTimeValue ID="DateValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" Width="10em"  />
-              <remotion:BocDateTimeValue ID="DateValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" Width="10em"  ReadOnly="true" />
+              <remotion:BocDateTimeValue ID="DateValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" />
+              <remotion:BocDateTimeValue ID="DateValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" ReadOnly="true" />
+              M
             </td>
             <td>
             </td>
@@ -228,16 +234,17 @@
               Reference Value
             </td>
             <td>
-              <remotion:BocReferenceValue ID="ReferenceValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em">
+              <remotion:BocReferenceValue ID="ReferenceValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" >
                 <OptionsMenuItems>
                   <remotion:WebMenuItem ItemID="Item1" Text="Item 1" />
                 </OptionsMenuItems>
               </remotion:BocReferenceValue>
-              <remotion:BocReferenceValue ID="ReferenceValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em" ReadOnly="true">
+              <remotion:BocReferenceValue ID="ReferenceValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" ReadOnly="true">
                 <OptionsMenuItems>
                   <remotion:WebMenuItem ItemID="Item1" Text="Item 1" />
                 </OptionsMenuItems>
               </remotion:BocReferenceValue>
+              M
             </td>
             <td>
             </td>
@@ -247,18 +254,19 @@
               Auto Complete Refence Value
             </td>
             <td>
-              <remotion:BocAutoCompleteReferenceValue ID="AutoCompleteReferenceValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em"
+              <remotion:BocAutoCompleteReferenceValue ID="AutoCompleteReferenceValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" 
                 SearchServicePath="~/IndividualControlTests/AutoCompleteService.asmx">
                 <OptionsMenuItems>
                   <remotion:WebMenuItem ItemID="Item1" Text="Item 1" />
                 </OptionsMenuItems>
               </remotion:BocAutoCompleteReferenceValue>
               <remotion:BocAutoCompleteReferenceValue ID="AutoCompleteReferenceValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner"
-                Width="15em" ReadOnly="true" SearchServicePath="~/IndividualControlTests/AutoCompleteService.asmx">
+                ReadOnly="true" SearchServicePath="~/IndividualControlTests/AutoCompleteService.asmx">
                 <OptionsMenuItems>
                   <remotion:WebMenuItem ItemID="Item1" Text="Item 1" />
                 </OptionsMenuItems>
               </remotion:BocAutoCompleteReferenceValue>
+              M
             </td>
             <td>
             </td>
