@@ -519,7 +519,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type 'System.Char' is not supported by this storage provider.")]
     public void GetStorageType_PropertyDefinition_WithNotSupportedType ()
     {
-      var propertyDefinition = CreatePropertyDefinition (typeof (Char), false);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("Name", typeof (Char));
 
       _storageTypeInformationProvider.GetStorageType (propertyDefinition, false);
     }
@@ -632,10 +632,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private PropertyDefinition CreatePropertyDefinition (Type propertyType, bool isNullable, int? maxLength = null)
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition();
       return PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
           classDefinition,
           "Name",
+          false,
           propertyType,
           isNullable,
           maxLength,
