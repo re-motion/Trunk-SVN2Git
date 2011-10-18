@@ -42,40 +42,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName)
     {
-      return CreateForFakePropertyInfo (classDefinition, propertyName, typeof (string), true, null, StorageClass.Persistent);
+      return CreateForFakePropertyInfo (classDefinition, propertyName, false, typeof (string), true, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, StorageClass storageClass)
     {
-      return CreateForFakePropertyInfo (classDefinition, propertyName, typeof (string), true, null, storageClass);
+      return CreateForFakePropertyInfo (classDefinition, propertyName, false, typeof (string), true, null, storageClass);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType)
     {
-      return CreateForFakePropertyInfo (classDefinition, propertyName, propertyType, true, null, StorageClass.Persistent);
+      return CreateForFakePropertyInfo (classDefinition, propertyName, false, propertyType, true, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, bool isNullable)
     {
-      return CreateForFakePropertyInfo (classDefinition, "Test", typeof (string), isNullable, null, StorageClass.Persistent);
-    }
-
-    public static PropertyDefinition CreateForFakePropertyInfo (
-        ClassDefinition classDefinition,
-        string propertyName,
-        Type propertyType,
-        bool isNullable,
-        int? maxLength,
-        StorageClass storageClass)
-    {
-      return CreateForFakePropertyInfo (
-          classDefinition,
-          propertyName,
-          IsObjectID (propertyType),
-          propertyType,
-          isNullable,
-          maxLength,
-          storageClass);
+      return CreateForFakePropertyInfo (classDefinition, "Test", false, typeof (string), isNullable, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (
@@ -104,14 +86,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType)
     {
-      return CreateForFakePropertyInfo (
-          ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, propertyType, IsNullable (propertyType), null, StorageClass.Persistent);
+      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, false, propertyType, IsNullable (propertyType), null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType, bool isNullable)
     {
-      return CreateForFakePropertyInfo (
-          ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, propertyType, isNullable, null, StorageClass.Persistent);
+      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, false, propertyType, isNullable, null, StorageClass.Persistent);
     }
 
 
@@ -233,8 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static PropertyDefinition CreateForFakePropertyInfo_MaxLength (string propertyName, Type propertyType, int maxLength)
     {
-      return CreateForFakePropertyInfo (
-          ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, propertyType, true, maxLength, StorageClass.Persistent);
+      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, false, propertyType, true, maxLength, StorageClass.Persistent);
     }
   }
 }
