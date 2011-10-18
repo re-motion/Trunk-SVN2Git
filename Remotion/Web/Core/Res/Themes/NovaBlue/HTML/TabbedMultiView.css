@@ -184,6 +184,7 @@ div.tabbedMultiViewTabStrip span.tabStripTab a:hover
 div.tabbedMultiViewTabStrip span.tabStripTabSelected
 {
   border: solid 1px #083779;
+  border-bottom: none;
 }
 
 body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabSelected
@@ -195,13 +196,13 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected a
 {
   border: none;
   border-bottom: solid 1px White;
-  margin-bottom: -1px;
   background-color: White;
   color: #0D4EBA;
 }
 
 body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabSelected a
 {
+  margin-bottom: -1px;
   padding-bottom: 1px;
 }
 
