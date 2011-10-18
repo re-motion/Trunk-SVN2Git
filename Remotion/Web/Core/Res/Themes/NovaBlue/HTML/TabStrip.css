@@ -77,6 +77,11 @@
   white-space: nowrap;
 }
 
+*.tabStripTabsPane *.anchorBody img
+{
+  vertical-align: text-bottom;
+}
+
 *.tabStripTabsPane ul *.tabStripTabWrapper
 {
   float: left;
