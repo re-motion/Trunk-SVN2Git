@@ -159,6 +159,18 @@
         </remotion:TabView>
         <remotion:TabView ID="second" Title="Second">
         </remotion:TabView>
+        <remotion:TabView ID="TabView1" Title="Some more">
+        </remotion:TabView>
+        <remotion:TabView ID="TabView2" Title="Still more">
+        </remotion:TabView>
+        <remotion:TabView ID="TabView3" Title="Another one">
+        </remotion:TabView>
+        <remotion:TabView ID="TabView4" Title="And here we go">
+        </remotion:TabView>
+        <remotion:TabView ID="TabView5" Title="Still not enough?">
+        </remotion:TabView>
+        <remotion:TabView ID="TabView6" Title="Apparently not">
+        </remotion:TabView>
       </Views>
       <BottomControls>
         <remotion:SmartHyperLink ID="SmartHyperLink1" runat="server" NavigateUrl="~/Start.aspx">test</remotion:SmartHyperLink>
