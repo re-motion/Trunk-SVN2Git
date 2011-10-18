@@ -9,6 +9,20 @@ span.bocMultilineTextValue
   vertical-align: middle;
   overflow: hidden;
 }
+  
+.bocMultilineTextValue.readOnly
+{
+  min-height: inherit;
+}
+
+body.msie7 .bocMultilineTextValue.readOnly
+{
+  min-height: auto;
+}
+
+.bocMultilineTextValue.disabled
+{
+}
 
 span.bocMultilineTextValue .content
 {
@@ -32,12 +46,4 @@ span.bocMultilineTextValue textarea
   width: 100%;
   height: 100%;
   display: inline-block;
-}
-
-.bocMultilineTextValue.readOnly
-{
-}
-
-.bocMultilineTextValue.disabled
-{
 }

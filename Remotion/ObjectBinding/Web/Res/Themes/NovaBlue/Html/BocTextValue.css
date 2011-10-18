@@ -9,6 +9,20 @@ span.bocTextValue
   vertical-align: middle;
   overflow: hidden;
 }
+  
+.bocTextValue.readOnly
+{
+  min-height: inherit;
+}
+
+body.msie7 .bocTextValue.readOnly
+{
+  min-height: auto;
+}
+
+.bocTextValue.disabled
+{
+}
 
 span.bocTextValue .content
 {
@@ -18,13 +32,17 @@ span.bocTextValue .content
   right: 0.5em;
   width: auto;
   top: 0;
-  bottom: 0.5em;
+  bottom: 0.1em;
   height: auto;
 }
 
 .bocTextValue.readOnly .content
 {
   position: static;
+}
+
+.bocTextValue.readOnly .content span
+{
 }
 
 span.bocTextValue input
@@ -38,12 +56,4 @@ span.bocTextValue textarea
   width: 100%;
   height: 100%;
   display: inline-block;
-}
-
-.bocTextValue.readOnly
-{
-}
-
-.bocTextValue.disabled
-{
 }

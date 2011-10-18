@@ -16,6 +16,23 @@ span.bocDateValue
   white-space: nowrap;
   zoom: 1;
 }
+  
+span.bocDateTimeValue.readOnly,
+span.bocDateValue.readOnly
+{
+  height: inherit;
+}
+
+body.msie7 span.bocDateTimeValue.readOnly,
+body.msie7 span.bocDateValue.readOnly
+{
+  height: auto;
+}
+
+span.bocDateTimeValue.disabled,
+span.bocDateValue.disabled
+{
+}
 
 span.bocDateValue
 {
