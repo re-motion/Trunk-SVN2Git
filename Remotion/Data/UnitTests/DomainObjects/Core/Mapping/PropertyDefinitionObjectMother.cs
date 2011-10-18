@@ -109,6 +109,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           CreatePropertyInformationStub (propertyName + "FakeProperty", propertyType, classDefinition.ClassType));
     }
 
+    public static PropertyDefinition CreateForFakePropertyInfo_ObjectID ()
+    {
+      return CreateForFakePropertyInfo_ObjectID (ClassDefinitionObjectMother.CreateClassDefinition());
+    }
+
     public static PropertyDefinition CreateForFakePropertyInfo_ObjectID (ClassDefinition classDefinition)
     {
       return CreateForFakePropertyInfo_ObjectID (classDefinition, "Test");

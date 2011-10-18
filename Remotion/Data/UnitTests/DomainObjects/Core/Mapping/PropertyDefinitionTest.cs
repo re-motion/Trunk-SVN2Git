@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetToString ()
+    public new void ToString ()
     {
       PropertyDefinition propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classDefinition, "ThePropertyName");
 
@@ -251,12 +251,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetStorageProperty ()
     {
-      PropertyDefinition propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classDefinition, "ThePropertyName");
-      var columnDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Test");
+      PropertyDefinition propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classDefinition);
+      var storagePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty("Test");
 
-      propertyDefinition.SetStorageProperty (columnDefinition);
+      propertyDefinition.SetStorageProperty (storagePropertyDefinition);
 
-      Assert.That (propertyDefinition.StoragePropertyDefinition, Is.SameAs (columnDefinition));
+      Assert.That (propertyDefinition.StoragePropertyDefinition, Is.SameAs (storagePropertyDefinition));
     }
   }
 }

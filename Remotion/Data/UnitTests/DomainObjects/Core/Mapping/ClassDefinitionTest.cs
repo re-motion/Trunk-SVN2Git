@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetPropertyDefinitions ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_domainBaseClass, "Test");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_domainBaseClass);
 
       _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
 
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         )]
     public void SetPropertyDefinitions_Twice_ThrowsException ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_domainBaseClass, "Test");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_domainBaseClass);
 
       _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
       _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
@@ -439,7 +439,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetAllPropertyDefinitions_Cached ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Test");
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition);
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetReadOnly();
@@ -958,7 +958,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       // this test does not affect other tests through modifying the singleton instances.
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
 
-      PropertyDefinition propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Test");
+      PropertyDefinition propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition);
       Assert.AreSame (classDefinition, propertyDefinition.ClassDefinition);
 
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -968,10 +968,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Contains ()
     {
-      Assert.IsFalse (
-          _orderClass.Contains (
-              PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-                  _orderClass, "PropertyName")));
+      Assert.IsFalse (_orderClass.Contains (PropertyDefinitionObjectMother.CreateForFakePropertyInfo ()));
       Assert.IsTrue (
           _orderClass.Contains (
               _orderClass["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));

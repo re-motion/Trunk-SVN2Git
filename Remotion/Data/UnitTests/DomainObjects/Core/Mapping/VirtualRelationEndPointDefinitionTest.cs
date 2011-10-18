@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetSortExpression_NonNull ()
     {
-      var endPoint = CreateFullVirtualEndPoint ("Product asc");
+      var endPoint = CreateFullVirtualEndPointAndClassDefinition_WithProductProperty ("Product asc");
 
       Assert.That (endPoint.GetSortExpression(), Is.Not.Null);
       Assert.That (
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\nProperty: OrderItems")]
     public void GetSortExpression_Error ()
     {
-      var endPoint = CreateFullVirtualEndPoint ("Product asc asc");
+      var endPoint = CreateFullVirtualEndPointAndClassDefinition_WithProductProperty ("Product asc asc");
       Dev.Null = endPoint.GetSortExpression();
     }
 
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.AreEqual (PropertyInfoAdapter.Create(typeof (Employee).GetProperty ("Computer")), relationEndPointDefinition.PropertyInfo);
     }
 
-    private VirtualRelationEndPointDefinition CreateFullVirtualEndPoint (string sortExpressionString)
+    private VirtualRelationEndPointDefinition CreateFullVirtualEndPointAndClassDefinition_WithProductProperty (string sortExpressionString)
     {
       var endPoint = VirtualRelationEndPointDefinitionFactory.Create (
           _orderClassDefinition,
