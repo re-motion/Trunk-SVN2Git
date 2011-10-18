@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
+using Remotion.Utilities;
 using Rhino.Mocks;
 using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
@@ -33,6 +34,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static PropertyDefinition CreateForFakePropertyInfo ()
     {
       return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition ());
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, StorageClass storageClass)
+    {
+      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition(), propertyName, storageClass);
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType)
+    {
+      return CreateForFakePropertyInfo (propertyName, propertyType, false);
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType, bool isNullable)
+    {
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition();
+      return CreateForFakePropertyInfo (classDefinition, propertyName, false, propertyType, isNullable, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition)
@@ -69,31 +86,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         int? maxLength,
         StorageClass storageClass)
     {
-      return CreateForPropertyInformation (
-          classDefinition,
-          propertyName,
-          isObjectID,
-          isNullable,
-          maxLength,
-          storageClass,
-          CreatePropertyInformationStub (propertyName + "FakeProperty", propertyType, classDefinition.ClassType));
-    }
+      Type declaringType = classDefinition.ClassType;
+      
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub.Stub (stub => stub.Name).Return (propertyName + "FakeProperty");
+      propertyInformationStub.Stub (stub => stub.PropertyType).Return (propertyType);
+      propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (declaringType));
+      propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (TypeAdapter.Create (declaringType));
 
-    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, StorageClass storageClass)
-    {
-      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, storageClass);
+      return CreateForPropertyInformation (classDefinition, propertyName, isObjectID, isNullable, maxLength, storageClass, propertyInformationStub);
     }
-
-    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType)
-    {
-      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, false, propertyType, IsNullable (propertyType), null, StorageClass.Persistent);
-    }
-
-    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType, bool isNullable)
-    {
-      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, false, propertyType, isNullable, null, StorageClass.Persistent);
-    }
-
 
     public static PropertyDefinition CreateForFakePropertyInfo_ObjectID ()
     {
@@ -124,11 +126,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var fullPropertyName = declaringClassType.FullName + "." + propertyName;
 
+      var isObjectID = ReflectionUtility.IsDomainObject (propertyInfo.PropertyType);
+
       return CreateForPropertyInformation (
           classDefinition,
           fullPropertyName,
-          IsObjectID (propertyInfo.PropertyType),
-          IsNullable (propertyInfo.PropertyType),
+          isObjectID,
+          true,
           null,
           StorageClass.Persistent,
           PropertyInfoAdapter.Create (propertyInfo));
@@ -182,33 +186,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           maxLength,
           storageClass);
       return propertyDefinition;
-    }
-
-    private static bool IsObjectID (Type propertyType)
-    {
-      Assert.IsFalse (propertyType == typeof (ObjectID));
-      return ReflectionUtility.IsDomainObject (propertyType);
-    }
-
-    private static bool IsNullable (Type propertyType)
-    {
-      if (propertyType.IsValueType)
-        return Nullable.GetUnderlyingType (propertyType) != null;
-
-      if (typeof (DomainObject).IsAssignableFrom (propertyType))
-        return true;
-
-      return false;
-    }
-
-    private static IPropertyInformation CreatePropertyInformationStub (string propertyName, Type propertyType, Type declaringType)
-    {
-      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
-      propertyInformationStub.Stub (stub => stub.Name).Return (propertyName);
-      propertyInformationStub.Stub (stub => stub.PropertyType).Return (propertyType);
-      propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (declaringType));
-      propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (TypeAdapter.Create (declaringType));
-      return propertyInformationStub;
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo_MaxLength (string propertyName, Type propertyType, int maxLength)
