@@ -273,8 +273,17 @@
           </tr>
           <tr>
             <td>
+            HTML Input
             </td>
             <td>
+            M
+            <input type="text" name="TextInput" value="Some Text" />
+            M
+            <input type="checkbox" nane="CheckBoxInput" checked="checked" />
+            M
+            <select name="Select" >
+            <option selected="selected">Option 1</option>
+            </select>
             </td>
             <td>
             </td>
