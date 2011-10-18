@@ -27,33 +27,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class PropertyDefinitionCollectionTest : MappingReflectionTestBase
   {
     private PropertyDefinitionCollection _collection;
-    private PropertyDefinition _propertyDefinition1;
-    private PropertyDefinition _propertyDefinition2;
-    private PropertyDefinition _propertyDefinitionNonPersisted;
-    private ClassDefinition _classDefinition;
+    private PropertyDefinition _propertyDefinition;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
-      _propertyDefinition1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Name", StorageClass.Persistent);
-      _propertyDefinition2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Name2", StorageClass.Persistent);
-      _propertyDefinitionNonPersisted = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Name3", StorageClass.Transaction);
+      _propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
       _collection = new PropertyDefinitionCollection();
     }
 
     [Test]
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition_MakeCollectionReadOnlyIsFalse ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classDefinition, "Test", StorageClass.Persistent);
-
-      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition);
       
-      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition, false);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      
+      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (classDefinition, false);
 
       Assert.That (propertyDefinitions.Count, Is.EqualTo (1));
       Assert.That (propertyDefinitions.IsReadOnly, Is.False);
@@ -63,11 +55,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition_MakeCollectionReadOnlyIsTrue ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classDefinition, "Test", StorageClass.Persistent);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition);
 
-      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
 
-      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition, true);
+      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (classDefinition, true);
 
       Assert.That (propertyDefinitions.Count, Is.EqualTo (1));
       Assert.That (propertyDefinitions.IsReadOnly, Is.True);
@@ -80,10 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company));
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), baseClassDefinition);
 
-      var propertyDefinitionInBaseClass = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          baseClassDefinition, "Property1", StorageClass.Persistent);
-      var propertyDefinitionInDerivedClass = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          classDefinition, "Property2", StorageClass.Persistent);
+      var propertyDefinitionInBaseClass = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (baseClassDefinition, "Property1");
+      var propertyDefinitionInDerivedClass = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Property2");
 
       baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinitionInBaseClass }, true));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinitionInDerivedClass }, true));
@@ -98,28 +89,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Add ()
     {
-      _collection.Add (_propertyDefinition1);
+      _collection.Add (_propertyDefinition);
       Assert.AreEqual (1, _collection.Count);
     }
 
     [Test]
     public void PropertyNameIndexer ()
     {
-      _collection.Add (_propertyDefinition1);
-      Assert.AreSame (_propertyDefinition1, _collection["Name"]);
+      _collection.Add (_propertyDefinition);
+      Assert.AreSame (_propertyDefinition, _collection["Name"]);
     }
 
     [Test]
     public void NumericIndexer ()
     {
-      _collection.Add (_propertyDefinition1);
-      Assert.AreSame (_propertyDefinition1, _collection[0]);
+      _collection.Add (_propertyDefinition);
+      Assert.AreSame (_propertyDefinition, _collection[0]);
     }
 
     [Test]
     public void ContainsPropertyNameTrue ()
     {
-      _collection.Add (_propertyDefinition1);
+      _collection.Add (_propertyDefinition);
       Assert.IsTrue (_collection.Contains ("Name"));
     }
 
@@ -132,24 +123,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ContainsPropertyDefinitionTrue ()
     {
-      _collection.Add (_propertyDefinition1);
-      Assert.IsTrue (_collection.Contains (_propertyDefinition1));
+      _collection.Add (_propertyDefinition);
+      Assert.IsTrue (_collection.Contains (_propertyDefinition));
     }
 
     [Test]
     public void ContainsPropertyDefinitionFalse ()
     {
-      _collection.Add (_propertyDefinition1);
+      _collection.Add (_propertyDefinition);
 
       var copy =
           new PropertyDefinition (
-              _propertyDefinition1.ClassDefinition,
-              _propertyDefinition1.PropertyInfo,
-              _propertyDefinition1.PropertyName,
-              _propertyDefinition1.IsObjectID,
-              _propertyDefinition1.IsNullable,
-              _propertyDefinition1.MaxLength,
-              _propertyDefinition1.StorageClass);
+              _propertyDefinition.ClassDefinition,
+              _propertyDefinition.PropertyInfo,
+              _propertyDefinition.PropertyName,
+              _propertyDefinition.IsObjectID,
+              _propertyDefinition.IsNullable,
+              _propertyDefinition.MaxLength,
+              _propertyDefinition.StorageClass);
 
       Assert.IsFalse (_collection.Contains (copy));
     }
@@ -157,18 +148,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CopyConstructor ()
     {
-      var copiedCollection = new PropertyDefinitionCollection (new[] { _propertyDefinition1 }, false);
+      var copiedCollection = new PropertyDefinitionCollection (new[] { _propertyDefinition }, false);
 
       Assert.AreEqual (1, copiedCollection.Count);
-      Assert.AreSame (_propertyDefinition1, copiedCollection[0]);
+      Assert.AreSame (_propertyDefinition, copiedCollection[0]);
     }
 
     [Test]
     public void ContainsPropertyDefinition ()
     {
-      _collection.Add (_propertyDefinition1);
+      _collection.Add (_propertyDefinition);
 
-      Assert.IsTrue (_collection.Contains (_propertyDefinition1));
+      Assert.IsTrue (_collection.Contains (_propertyDefinition));
     }
 
     [Test]
@@ -181,11 +172,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetAllPersistent ()
     {
-      _collection.Add (_propertyDefinition1);
-      _collection.Add (_propertyDefinition2);
-      _collection.Add (_propertyDefinitionNonPersisted);
+      var persistentProperty1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("P1", StorageClass.Persistent);
+      var persistentProperty2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("P2", StorageClass.Persistent);
+      var nonPersistentProperty1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("P3", StorageClass.Transaction);
+      var nonPersistentProperty2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("P4", StorageClass.None);
 
-      Assert.That (_collection.GetAllPersistent().ToArray(), Is.EqualTo (new[] { _propertyDefinition1, _propertyDefinition2 }));
+      _collection.Add (persistentProperty1);
+      _collection.Add (persistentProperty2);
+      _collection.Add (nonPersistentProperty1);
+      _collection.Add (nonPersistentProperty2);
+
+      Assert.That (_collection.GetAllPersistent().ToArray(), Is.EqualTo (new[] { persistentProperty1, persistentProperty2 }));
     }
 
     [Test]
@@ -201,12 +198,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetEnumerator ()
     {
-      _collection.Add (_propertyDefinition1);
+      _collection.Add (_propertyDefinition);
 
       IEnumerator<PropertyDefinition> enumerator = _collection.GetEnumerator();
       
       Assert.That (enumerator.MoveNext (), Is.True);
-      Assert.That (enumerator.Current, Is.SameAs (_propertyDefinition1));
+      Assert.That (enumerator.Current, Is.SameAs (_propertyDefinition));
       Assert.That (enumerator.MoveNext(), Is.False);
     }
   }

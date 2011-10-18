@@ -120,8 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void GetStoragePropertiesForHierarchy_NonPersistentPropertiesAreFiltered ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
-      var nonPersistentProperty = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          classDefinition, "NonPersistentProperty", StorageClass.None);
+      var nonPersistentProperty = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 

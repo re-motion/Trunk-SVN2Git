@@ -40,6 +40,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateForFakePropertyInfo (classDefinition, "Test");
     }
 
+    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, StorageClass storageClass)
+    {
+      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition(), propertyName, storageClass);
+    }
+
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName)
     {
       return CreateForFakePropertyInfo (classDefinition, propertyName, typeof (string), true, null, StorageClass.Persistent);
@@ -48,11 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, StorageClass storageClass)
     {
       return CreateForFakePropertyInfo (classDefinition, propertyName, typeof (string), true, null, storageClass);
-    }
-
-    public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType)
-    {
-      return CreateForFakePropertyInfo (classDefinition, propertyName, false, propertyType, true, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType, StorageClass storageClass)
