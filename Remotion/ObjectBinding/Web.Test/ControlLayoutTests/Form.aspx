@@ -217,8 +217,8 @@
               Date Value
             </td>
             <td>
-              <remotion:BocDateTimeValue ID="DateValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" Width="15em" />
-              <remotion:BocDateTimeValue ID="DateValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" Width="15em" ReadOnly="true" />
+              <remotion:BocDateTimeValue ID="DateValue" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" Width="10em"  />
+              <remotion:BocDateTimeValue ID="DateValueReadOnly" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" Width="10em"  ReadOnly="true" />
             </td>
             <td>
             </td>
