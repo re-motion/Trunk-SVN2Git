@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -30,28 +29,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition _classDefinition;
     private RelationEndPointDefinition _endPoint1;
     private RelationEndPointDefinition _endPoint2;
-    private PropertyDefinition _propertyDefinition1;
-    private PropertyDefinition _propertyDefinition2;
-    private PropertyDefinition _propertyDefinition3;
-    private PropertyDefinition _propertyDefinition4;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
-      _propertyDefinition1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Property1", typeof (DomainObject), StorageClass.Persistent);
-      _propertyDefinition2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Property2", typeof (DomainObject), StorageClass.Persistent);
-      _propertyDefinition3 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Property3", typeof (DomainObject), StorageClass.Persistent);
-      _propertyDefinition4 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _classDefinition, "Property4", typeof (DomainObject), StorageClass.Persistent);
+      var propertyDefinition1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (_classDefinition, "Property1");
+      var propertyDefinition2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (_classDefinition, "Property2");
+      var propertyDefinition3 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (_classDefinition, "Property3");
+      var propertyDefinition4 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (_classDefinition, "Property4");
       _classDefinition.SetPropertyDefinitions (
-          new PropertyDefinitionCollection (new[] { _propertyDefinition1, _propertyDefinition2, _propertyDefinition3, _propertyDefinition4 }, true));
-      _endPoint1 = new RelationEndPointDefinition (_propertyDefinition1, false);
-      _endPoint2 = new RelationEndPointDefinition (_propertyDefinition2, false);
+          new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2, propertyDefinition3, propertyDefinition4 }, true));
+      _endPoint1 = new RelationEndPointDefinition (propertyDefinition1, false);
+      _endPoint2 = new RelationEndPointDefinition (propertyDefinition2, false);
       _collection = new RelationEndPointDefinitionCollection();
     }
 
@@ -85,12 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateForAllRelationEndPoints_ClassDefinitionWithBaseClassDefinition ()
     {
       var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company));
-      var basedPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          baseClassDefinition, "Property1", typeof (DomainObject), StorageClass.Persistent);
+      var basedPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (baseClassDefinition, "Property1");
       baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { basedPropertyDefinition }, true));
       var derivedClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), baseClassDefinition);
-      var derivedPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          derivedClassDefinition, "Property2", typeof (DomainObject), StorageClass.Persistent);
+      var derivedPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (derivedClassDefinition, "Property2");
       derivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { derivedPropertyDefinition }, true));
 
       var endPoint1 = new RelationEndPointDefinition (basedPropertyDefinition, false);

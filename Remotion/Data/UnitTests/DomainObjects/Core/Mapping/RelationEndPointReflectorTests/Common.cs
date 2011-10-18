@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithRealRelationEndPoints));
       var propertyDefinition = 
-          PropertyDefinitionObjectMother.CreateForFakePropertyInfo(classDefinition, "Unidirectional", typeof (string), StorageClass.Persistent);
+          PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Unidirectional", typeof (string));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var mappingNameResolverMock = MockRepository.GenerateStub<IMappingNameResolver>();

@@ -40,11 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateForFakePropertyInfo (classDefinition, "Test");
     }
 
-    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, StorageClass storageClass)
-    {
-      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition(), propertyName, storageClass);
-    }
-
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName)
     {
       return CreateForFakePropertyInfo (classDefinition, propertyName, typeof (string), true, null, StorageClass.Persistent);
@@ -55,10 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateForFakePropertyInfo (classDefinition, propertyName, typeof (string), true, null, storageClass);
     }
 
-    public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType, StorageClass storageClass)
+    public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType)
     {
-      return CreateForFakePropertyInfo (
-          classDefinition, propertyName, propertyType, IsNullable (propertyType), null, storageClass);
+      return CreateForFakePropertyInfo (classDefinition, propertyName, propertyType, true, null, StorageClass.Persistent);
     }
 
     public static PropertyDefinition CreateForFakePropertyInfo (ClassDefinition classDefinition, string propertyName, Type propertyType, bool isNullable, StorageClass storageClass)
@@ -108,6 +102,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           storageClass,
           CreatePropertyInformationStub (propertyName + "FakeProperty", propertyType, classDefinition.ClassType));
     }
+
+    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, StorageClass storageClass)
+    {
+      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, storageClass);
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType)
+    {
+      return CreateForFakePropertyInfo (
+          ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, propertyType, IsNullable (propertyType), null, StorageClass.Persistent);
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo (string propertyName, Type propertyType, bool isNullable)
+    {
+      return CreateForFakePropertyInfo (ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, propertyType, isNullable, StorageClass.Persistent);
+    }
+
 
     public static PropertyDefinition CreateForFakePropertyInfo_ObjectID ()
     {
@@ -223,6 +234,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (declaringType));
       propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (TypeAdapter.Create (declaringType));
       return propertyInformationStub;
+    }
+
+    public static PropertyDefinition CreateForFakePropertyInfo_MaxLength (string propertyName, Type propertyType, int maxLength)
+    {
+      return CreateForFakePropertyInfo (
+          ClassDefinitionObjectMother.CreateClassDefinition (), propertyName, propertyType, true, maxLength, StorageClass.Persistent);
     }
   }
 }

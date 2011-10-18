@@ -31,26 +31,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class PropertyValueTest : StandardMappingTest
   {
-    private ClassDefinition _orderClassDefinition;
     private PropertyDefinition _orderNumberPropertyDefinition;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _orderClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order");
       _orderNumberPropertyDefinition = CreatePropertyDefinition ("OrderNumber", typeof (int), false);
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        @"The property 'test' \(declared on class 'Order'\) is invalid because its values cannot be copied\. "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        @"The property 'test' \(declared on class 'ClassName'\) is invalid because its values cannot be copied\. "
         + @"Only value types, strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's type is "
         + @"'System\.Collections\.Generic\.List`1\[\[System\.Object, mscorlib, Version=*",
         MatchType = MessageMatch.Regex)]
     public void PropertyValue_WithReferenceType_NotAllowed ()
     {
-      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (List<object>), true);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("ClassName");
+      PropertyDefinition propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "test", typeof (List<object>));
       new PropertyValue (propertyDefinition, null);
     }
 
@@ -222,8 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ValueTooLongException))]
     public void MaxLengthCheck ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (string), true, 10, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_MaxLength ("test", typeof (string), 10);
       var propertyValue = new PropertyValue (definition, "12345");
       propertyValue.Value = "12345678901";
     }
@@ -232,8 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ValueTooLongException))]
     public void MaxLengthCheckInConstructor ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (string), true, 10, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_MaxLength ("test", typeof (string), 10);
       new PropertyValue (definition, "12345678901");
     }
 
@@ -241,8 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheckInConstructor ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (string), true, 10, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (string));
       new PropertyValue (definition, 123);
     }
 
@@ -250,8 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheck ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (string), true, 10, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (string));
       var propertyValue = new PropertyValue (definition, "123");
       propertyValue.Value = 123;
     }
@@ -260,8 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableStringToNull ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (string), false, 10, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (string), false);
       var propertyValue = new PropertyValue (definition, string.Empty);
 
       propertyValue.Value = null;
@@ -270,8 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetNullableBinary ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (byte[]), true, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]), true);
       var propertyValue = new PropertyValue (definition, null);
       Assert.IsNull (propertyValue.Value);
     }
@@ -279,8 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetNotNullableBinary ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (byte[]), false, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]), false);
 
       var propertyValue = new PropertyValue (definition, new byte[0]);
       ResourceManager.IsEmptyImage ((byte[]) propertyValue.Value);
@@ -293,8 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void SetBinaryWithInvalidType ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (byte[]), false, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]));
       new PropertyValue (definition, new int[0]);
     }
 
@@ -302,8 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableBinaryToNullViaConstructor ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (byte[]), false, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]), false);
       new PropertyValue (definition, null);
     }
 
@@ -311,8 +301,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableBinaryToNullViaProperty ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (byte[]), false, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]), false);
       var propertyValue = new PropertyValue (definition, ResourceManager.GetImage1());
       propertyValue.Value = null;
     }
@@ -320,8 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetNullableExtensibleEnum ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (Color), true, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), true);
 
       var propertyValue = new PropertyValue (definition, null);
       Assert.IsNull (propertyValue.Value);
@@ -330,8 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetNotNullableExtensibleEnum ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (Color), false, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), false);
 
       var propertyValue = new PropertyValue (definition, ExtensibleEnum<Color>.Values.Red());
       Assert.AreEqual (ExtensibleEnum<Color>.Values.Red(), propertyValue.Value);
@@ -341,13 +328,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void SetExtensibleEnumWithInvalidType ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition,
-          "test",
-          typeof (Color),
-          false,
-          null,
-          StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), false);
       new PropertyValue (definition, 12);
     }
 
@@ -355,8 +336,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableExtensibleEnumToNullViaConstructor ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (Color), false, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), false);
       new PropertyValue (definition, null);
     }
 
@@ -364,8 +344,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableExtensibleEnumToNullViaProperty ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (Color), false, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), false);
 
       var propertyValue = new PropertyValue (definition, ExtensibleEnum<Color>.Values.Red());
       propertyValue.Value = null;
@@ -375,8 +354,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ValueTooLongException), ExpectedMessage = "Value for property 'test' is too large. Maximum size: 1000000.")]
     public void SetBinaryLargerThanMaxLength ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (byte[]), true, 1000000, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_MaxLength ("test", typeof (byte[]), 1000000);
       var propertyValue = new PropertyValue (definition, new byte[0]);
       propertyValue.Value = ResourceManager.GetImageLarger1MB();
     }
@@ -384,8 +362,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EnumCheck_ValidNonFlagsEnum ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (DayOfWeek), StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek));
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = DayOfWeek.Monday;
@@ -397,8 +374,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
                                                                               + "'System.DayOfWeek'.")]
     public void EnumCheck_InvalidNonFlagsEnum ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (DayOfWeek), StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek));
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = (DayOfWeek) 17420;
@@ -407,8 +383,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EnumCheck_ValidFlagsEnum ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (AttributeTargets), StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (AttributeTargets));
 
       var propertyValue = new PropertyValue (definition, AttributeTargets.Method);
       propertyValue.Value = AttributeTargets.Field | AttributeTargets.Method;
@@ -420,8 +395,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
                                                                               + "'System.AttributeTargets'.")]
     public void EnumCheck_InvalidFlagsEnum ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (AttributeTargets), StorageClass.Persistent);
+      var definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (AttributeTargets));
 
       var propertyValue = new PropertyValue (definition, AttributeTargets.Method);
       propertyValue.Value = (AttributeTargets) (-1);
@@ -430,8 +404,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EnumCheck_ValidNullEnum ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (DayOfWeek?), true, null, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek?), true);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = DayOfWeek.Monday;
@@ -445,8 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
                                                                               + "'System.DayOfWeek'.")]
     public void EnumCheck_InvalidNullEnum ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (DayOfWeek?), true, null, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek?), true);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = (DayOfWeek) 17420;
@@ -456,8 +428,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void EnumCheck_InvalidNonNullEnum_Null ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (DayOfWeek), false, null, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek), false);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = null;
@@ -468,17 +439,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "Value '17420' for property 'test' is not defined by enum type 'System.DayOfWeek'.")]
     public void EnumCheckInConstructor ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (DayOfWeek), StorageClass.Persistent);
-
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek));
       new PropertyValue (definition, (DayOfWeek) 17420);
     }
 
     [Test]
     public void SetRelationPropertyDirectly ()
     {
-      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", typeof (DomainObject), true, StorageClass.Persistent);
+      PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID ();
       var propertyValue = new PropertyValue (definition, null);
 
       propertyValue.Value = DomainObjectIDs.Customer1;
@@ -710,8 +678,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private PropertyDefinition CreatePropertyDefinition (string name, Type propertyType, bool isNullable)
     {
-      return PropertyDefinitionObjectMother.CreateForFakePropertyInfo (
-          _orderClassDefinition, name, propertyType, isNullable, StorageClass.Persistent);
+      return PropertyDefinitionObjectMother.CreateForFakePropertyInfo (name, propertyType, isNullable);
     }
 
     private PropertyValue CreatePropertyValue (string name, Type propertyType, bool isNullable, object value)
