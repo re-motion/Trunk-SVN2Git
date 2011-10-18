@@ -8,7 +8,6 @@ span.bocReferenceValue
   vertical-align: middle;
   overflow: hidden;
   min-height: 1.7em;
-  top: 0;
 }
 
 span.bocReferenceValue span.body
@@ -23,7 +22,7 @@ span.bocReferenceValue select
   height: 1.68em;
 }
 
-span.bocReferenceValue.disabled img
+span.bocReferenceValue.disabled a.command img
 {
   opacity: 0.4;
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
@@ -72,7 +71,7 @@ span.bocReferenceValue span.DropDownMenuContainer a.command span
 
 span.bocReferenceValue.readOnly a.command img
 {
-  margin-right: 7px;
+  margin-right: 6px;
 }
 
 /* withoutOptionsMenu */
@@ -93,21 +92,6 @@ span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSele
   height: 1.6em;
 }
 
-body.webkit span.bocReferenceValue.readOnly > span.DropDownMenuContainer > span.DropDownMenuSelect
-{
-  height: 1.6em !important;
-}
-
-body.webkit span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
-{
-  height: 1.5em;
-}
-
-body.webkit span.bocReferenceValue.readOnly > span.body span.optionsMenu span.DropDownMenuSelect
-{
-  height: 1.4em;
-}
-    
 span.bocReferenceValue span.content.embeddedOptionsMenu
 {
   right: 1.3em; /* width of span.DropDownMenuButton + desired space between */
@@ -122,9 +106,9 @@ span.bocReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect
   top: 0;
 }
 
-body.mozilla span.bocReferenceValue span.optionsMenu span.DropDownMenuSelect,
-body.mozilla span.bocReferenceValue.disabled span.optionsMenu span.DropDownMenuSelect,
-body.mozilla span.bocReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect
+body.webkit span.bocReferenceValue span.optionsMenu span.DropDownMenuSelect,
+body.webkit span.bocReferenceValue.disabled span.optionsMenu span.DropDownMenuSelect,
+body.webkit span.bocReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect
 {
   height: 1.45em;
 }
@@ -152,11 +136,6 @@ span.bocReferenceValue span.optionsMenu
   right: 0;
   top: 0;
   width: 6em; /* Define width of span.optionsMenu */
-}
-
-body.msie7 span.bocReferenceValue span.optionsMenu
-{
-  top: 0;
 }
 
 span.bocReferenceValue span.content.separateOptionsMenu
