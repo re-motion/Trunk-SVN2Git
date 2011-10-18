@@ -7,8 +7,7 @@ span.bocReferenceValue
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
-  min-height: 1.65em;
-  max-height: 2em;
+  min-height: 1.7em;
 }
 
 span.bocReferenceValue span.body
@@ -18,11 +17,12 @@ span.bocReferenceValue span.body
 
 span.bocReferenceValue select
 {
-   width: 100%;
-   display: inline-block;
+  width: 100%;
+  display: inline-block;
+  height: 1.68em;
 }
 
-span.bocReferenceValue.disabled img
+span.bocReferenceValue.disabled a.command img
 {
   opacity: 0.4;
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
@@ -52,7 +52,9 @@ span.bocReferenceValue span.body a.command
 span.bocReferenceValue a[href].command:hover
 {
   display: inline-block;
-  border: solid 1px #005588;
+  border-color: #005588;
+  border-width: 1px;
+  border-style: solid;
   background-color: #fee197;
   padding: 0;
 }
@@ -70,7 +72,7 @@ span.bocReferenceValue span.DropDownMenuContainer a.command span
 
 span.bocReferenceValue.readOnly a.command img
 {
-  margin-right: 7px;
+  margin-right: 6px;
 }
 
 /* withoutOptionsMenu */
@@ -81,9 +83,7 @@ span.bocReferenceValue span.content.withoutOptionsMenu
 
 /* embeddedOptionsMenu */
 span.bocReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect,
-span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect,
-span.bocReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect select,
-span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect select
+span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
 {
   height: 1.7em;
 }
@@ -93,31 +93,6 @@ span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSele
   height: 1.6em;
 }
 
-body.mozilla span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSelect
-{ 
-  height: 1.55em;
-}
-
-body.webkit span.bocReferenceValue.readOnly > span.DropDownMenuContainer > span.DropDownMenuSelect
-{
-  height: 1.6em !important;
-}
-
-body.webkit span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
-{
-  height: 1.8em;
-}
-
-body.webkit span.bocReferenceValue span.optionsMenu span.DropDownMenuSelect
-{
-  margin-top: 0.2em;
-}
-    
-body.webkit span.bocReferenceValue.readOnly > span.body span.optionsMenu span.DropDownMenuSelect
-{
-  height: 1.4em;
-}
-    
 span.bocReferenceValue span.content.embeddedOptionsMenu
 {
   right: 1.3em; /* width of span.DropDownMenuButton + desired space between */
@@ -128,7 +103,15 @@ span.bocReferenceValue span.optionsMenu span.DropDownMenuSelect,
 span.bocReferenceValue.disabled span.optionsMenu span.DropDownMenuSelect,
 span.bocReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect
 {
-  height: 1.4em;
+  height: 1.5em;
+  top: 0;
+}
+
+body.webkit span.bocReferenceValue span.optionsMenu span.DropDownMenuSelect,
+body.webkit span.bocReferenceValue.disabled span.optionsMenu span.DropDownMenuSelect,
+body.webkit span.bocReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect
+{
+  height: 1.45em;
 }
 
 span.bocReferenceValue span.content,
@@ -151,8 +134,8 @@ span.bocReferenceValue span.optionsMenu
 {
   position: absolute;
   display: inline-block;
-  top: 0;
   right: 0;
+  top: 0;
   width: 6em; /* Define width of span.optionsMenu */
 }
 
