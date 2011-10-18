@@ -136,6 +136,11 @@ div.tabbedMultiViewTabStrip
   margin-right: 0;
 }
 
+body.msie7 div.tabbedMultiViewTabStrip
+{
+  margin-top: 0;
+}
+
 div.tabbedMultiViewTabStrip div.tabStripTabsPane
 {
   border-bottom: solid 1px #02537c;
