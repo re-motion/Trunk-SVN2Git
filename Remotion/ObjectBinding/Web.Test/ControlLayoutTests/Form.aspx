@@ -288,47 +288,9 @@
             <td>
             </td>
           </tr>
-          <tr>
-            <td>
-            </td>
-            <td>
-            </td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td>
-            </td>
-            <td>
-            </td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td>
-            </td>
-            <td>
-            </td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td>
-            </td>
-            <td>
-            </td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td>
-            </td>
-            <td>
-            </td>
-            <td>
-            </td>
-          </tr>
+
         </table>
+        <p></p>
         <div>
           Line 11 M
           <remotion:BocCheckBox ID="Line11CheckBox01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em" />
