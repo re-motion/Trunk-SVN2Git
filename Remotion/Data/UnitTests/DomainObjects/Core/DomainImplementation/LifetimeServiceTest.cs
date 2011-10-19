@@ -121,14 +121,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    [Ignore ("TODO 4242")]
     public void GetObjectReference_WithInvalidObject ()
     {
       var instance = Order.NewObject ();
       instance.Delete();
       Assert.That (instance.IsInvalid, Is.True);
-      
-      Assert.That (LifetimeService.GetObjectReference (ClientTransactionMock, instance.ID), Is.SameAs (instance));
+
+      var result = LifetimeService.GetObjectReference (ClientTransactionMock, instance.ID);
+
+      Assert.That (result, Is.SameAs (instance));
     }
 
     [Test]

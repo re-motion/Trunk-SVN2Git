@@ -438,14 +438,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void GetObjectReference_KnownObject_Invalid_Throws ()
+    public void GetObjectReference_KnownObject_Invalid_Works ()
     {
       var instance = DomainObjectMother.CreateObjectInTransaction<Order> (_transaction);
       LifetimeService.DeleteObject (_transaction, instance);
       Assert.That (instance.TransactionContext[_transaction].IsInvalid, Is.True);
 
-      ClientTransactionTestHelper.CallGetObjectReference (_transaction, instance.ID);
+      var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, instance.ID);
+
+      Assert.That (result, Is.SameAs (instance));
     }
 
     [Test]

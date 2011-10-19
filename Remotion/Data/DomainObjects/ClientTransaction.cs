@@ -859,10 +859,11 @@ public class ClientTransaction
   /// Gets a reference to a <see cref="DomainObject"/> with the given <see cref="ObjectID"/> from this <see cref="ClientTransaction"/>. If the
   /// transaction does not currently hold an object with this <see cref="ObjectID"/>, an object reference representing that <see cref="ObjectID"/> 
   /// is created without calling a constructor and without loading the object's data from the data source. This method does not check whether an
-  /// object with the given <see cref="ObjectID"/> actually exists in the data source.
+  /// object with the given <see cref="ObjectID"/> actually exists in the data source, and it will also return invalid or deleted objects.
   /// </summary>
   /// <param name="objectID">The <see cref="ObjectID"/> to get an object reference for.</param>
-  /// <returns>An object with the given <see cref="ObjectID"/>, possibly in <see cref="StateType.NotLoadedYet"/> state.</returns>
+  /// <returns>An object with the given <see cref="ObjectID"/>, possibly in <see cref="StateType.NotLoadedYet"/>, <see cref="StateType.Deleted"/>,
+  /// or <see cref="StateType.Invalid"/> state.</returns>
   /// <remarks>
   /// <para>
   /// When an object with the given <paramref name="objectID"/> has already been enlisted in the transaction, that object is returned. Otherwise,
@@ -873,13 +874,12 @@ public class ClientTransaction
   /// </para>
   /// </remarks>
   /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null" />.</exception>
-  /// <exception cref="ObjectInvalidException">The object with the given <paramref name="objectID"/> is invalid in this transaction.</exception>
   protected internal virtual DomainObject GetObjectReference (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
 
     if (IsInvalid (objectID))
-      throw new ObjectInvalidException (objectID);
+      return GetInvalidObjectReference (objectID);
 
     var enlistedObject = GetEnlistedDomainObject (objectID);
     if (enlistedObject != null)
