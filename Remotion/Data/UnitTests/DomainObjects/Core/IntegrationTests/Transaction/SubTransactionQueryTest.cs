@@ -228,5 +228,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Assert.That (loadedObjects[1].State, Is.EqualTo (StateType.Unchanged));
       }
     }
+
+    [Test]
+    [Ignore ("TODO 4242")]
+    public void QueryInSubtransaction_ReturningObjectDeletedInParentTransaction ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
+
+      var outerResult = ClientTransaction.Current.QueryManager.GetCollection<Order> (query).ToArray ();
+      Assert.That (outerResult.Length, Is.EqualTo (1));
+
+      outerResult[0].Delete();
+      Assert.That (outerResult[0].State, Is.EqualTo (StateType.Deleted));
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var finalResult = ClientTransaction.Current.QueryManager.GetCollection (query);
+        var loadedObjects = finalResult.ToArray ();
+
+        Assert.That (loadedObjects[0], Is.SameAs (outerResult[0]));
+        Assert.That (loadedObjects[0].State, Is.EqualTo (StateType.Invalid));
+      }
+    }
+
+    [Test]
+    [Ignore ("TODO 4242")]
+    public void QueryInSubtransaction_ReturningObjectInvalidInParentTransaction ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
+
+      var outerResult = ClientTransaction.Current.QueryManager.GetCollection<Order> (query).ToArray ();
+      Assert.That (outerResult.Length, Is.EqualTo (1));
+
+      outerResult[0].Delete ();
+      Assert.That (outerResult[0].State, Is.EqualTo (StateType.Deleted));
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        Assert.That (outerResult[0].State, Is.EqualTo (StateType.Invalid));
+
+        using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+        {
+          var finalResult = ClientTransaction.Current.QueryManager.GetCollection (query);
+          var loadedObjects = finalResult.ToArray ();
+
+          Assert.That (loadedObjects[0], Is.SameAs (outerResult[0]));
+          Assert.That (loadedObjects[0].State, Is.EqualTo (StateType.Invalid));
+        }
+      }
+    }
   }
 }

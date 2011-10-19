@@ -207,7 +207,12 @@
     </Compile>
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistableDataObjectMother.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionCommitValidationTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CLientTransactionGetRelationsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitValidationTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionNewObjectGetObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionPropertyTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRelationTest.cs" />
     <Compile Include="UnitTesting\ConstraintExpressionExtensions.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionBaseTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionsTest.cs" />

@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
@@ -165,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Location obj = GetUnidirectionalWithDeleted ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Client client = obj.Client;
+        Dev.Null = obj.Client;
       }
     }
 
@@ -190,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Location obj = GetUnidirectionalWithDeletedNew ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Client client = obj.Client;
+        Dev.Null = obj.Client;
       }
     }
 

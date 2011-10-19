@@ -100,6 +100,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
+    public void GetObject_WithInvalidObject_Throws ()
+    {
+      var instance = Order.NewObject ();
+      instance.Delete ();
+      Assert.That (instance.IsInvalid, Is.True);
+
+      Assert.That (() => LifetimeService.GetObject (ClientTransactionMock, instance.ID, false), Throws.TypeOf<ObjectInvalidException> ());
+      Assert.That (() => LifetimeService.GetObject (ClientTransactionMock, instance.ID, true), Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
     public void GetObjectReference ()
     {
       var result = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
@@ -110,14 +121,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void GetObjectReference_Invalid ()
+    [Ignore ("TODO 4242")]
+    public void GetObjectReference_WithInvalidObject ()
     {
       var instance = Order.NewObject ();
       instance.Delete();
       Assert.That (instance.IsInvalid, Is.True);
       
-      LifetimeService.GetObjectReference (ClientTransactionMock, instance.ID);
+      Assert.That (LifetimeService.GetObjectReference (ClientTransactionMock, instance.ID), Is.SameAs (instance));
     }
 
     [Test]
