@@ -28,7 +28,7 @@ using Remotion.Data.DomainObjects.Tracing;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
   /// Represents a top-level <see cref="ClientTransaction"/>, which does not have a parent transaction.

@@ -189,7 +189,7 @@
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryUtility.cs" />
-    <Compile Include="Infrastructure\PersistableData.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\PersistableData.cs" />
     <Compile Include="DataManagement\RelationEndPoints\DataContainerEndPointsRegistrationAgentBase.cs" />
     <Compile Include="DataManagement\RelationEndPoints\DelegatingDataContainerEndPointsRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\ExistingDataContainerEndPointsRegistrationAgent.cs" />
@@ -447,10 +447,10 @@
     <Compile Include="Infrastructure\ClientTransactionListenerBase.cs" />
     <Compile Include="Infrastructure\IClientTransactionComponentFactory.cs" />
     <Compile Include="Infrastructure\InitializedEventDomainObjectTransactionContextDecorator.cs" />
-    <Compile Include="Infrastructure\IPersistenceStrategy.cs" />
-    <Compile Include="Infrastructure\IObjectLoader.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\IPersistenceStrategy.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\IObjectLoader.cs" />
     <Compile Include="Infrastructure\NullClientTransactionListener.cs" />
-    <Compile Include="Infrastructure\ObjectLoader.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\ObjectLoader.cs" />
     <Compile Include="Infrastructure\DomainObjectStateCache.cs" />
     <Compile Include="Infrastructure\RootClientTransactionComponentFactory.cs" />
     <Compile Include="Infrastructure\SubClientTransactionListener.cs" />
@@ -647,7 +647,7 @@
     <Compile Include="Infrastructure\IPropertyAccessorStrategy.cs" />
     <Compile Include="Infrastructure\PropertyIndexer.cs" />
     <Compile Include="Infrastructure\RelatedObjectPropertyAccessorStrategy.cs" />
-    <Compile Include="Infrastructure\RootPersistenceStrategy.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\RootPersistenceStrategy.cs" />
     <Compile Include="Infrastructure\TransactionUnlocker.cs" />
     <Compile Include="Infrastructure\ValuePropertyAccessorStrategy.cs" />
     <Compile Include="LoadMode.cs" />
@@ -932,7 +932,7 @@
     <Compile Include="StateType.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\SubPersistenceStrategy.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\SubPersistenceStrategy.cs" />
     <Compile Include="Transport\BinaryImportStrategy.cs" />
     <Compile Include="Transport\IExportStrategy.cs" />
     <Compile Include="Transport\IImportStrategy.cs" />
