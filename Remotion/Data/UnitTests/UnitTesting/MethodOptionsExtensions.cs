@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
@@ -23,14 +24,34 @@ namespace Remotion.Data.UnitTests.UnitTesting
   {
     /// <summary>
     /// Provides support for ordered Rhino.Mocks expectations without dedicated <see cref="MockRepository"/> instance. Create an 
-    /// <see cref="OrderedExpectationCounter"/>, then call <see cref="Ordered{T}"/> with that counter for all expectations that should occur 
+    /// <see cref="OrderedExpectationCounter"/>, then call this method with that counter for all expectations that should occur 
     /// in the same order as declared.
-    /// Uses <see cref="IMethodOptions{T}.WhenCalled"/> internally.
+    /// Uses <see cref="IMethodOptions{T}.WhenCalled"/> internally; use <see cref="WhenCalledOrdered{T}"/> when you need to specify your own
+    /// <see cref="IMethodOptions{T}.WhenCalled"/> handler.
     /// </summary>
     public static IMethodOptions<T> Ordered<T> (this IMethodOptions<T> options, OrderedExpectationCounter counter)
     {
-      var expectedPosition = counter.GetNextExpectedPosition();
-      return options.WhenCalled (mi => counter.CheckPosition (mi.Method.ToString(), expectedPosition));
+      return WhenCalledOrdered (options, counter, mi => { });
+    }
+
+    /// <summary>
+    /// Provides support for ordered Rhino.Mocks expectations without dedicated <see cref="MockRepository"/> instance. Create an 
+    /// <see cref="OrderedExpectationCounter"/>, then call this method with that counter for all expectations that should occur 
+    /// in the same order as declared.
+    /// Use this method rather then <see cref="Ordered{T}"/> when you need to specify your own <see cref="IMethodOptions{T}.WhenCalled"/> handler.
+    /// </summary>
+    public static IMethodOptions<T> WhenCalledOrdered<T> (
+        this IMethodOptions<T> options, 
+        OrderedExpectationCounter counter, 
+        Action<MethodInvocation> whenCalledAction)
+    {
+      var expectedPosition = counter.GetNextExpectedPosition ();
+      return options.WhenCalled (
+          mi =>
+          {
+            counter.CheckPosition (mi.Method.ToString(), expectedPosition);
+            whenCalledAction (mi);
+          });
     }
   }
 }

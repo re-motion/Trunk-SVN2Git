@@ -926,8 +926,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetClientTransaction ()
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-
-      PrivateInvoke.InvokeNonPublicMethod (dc, "SetClientTransaction", ClientTransactionMock);
+      DataContainerTestHelper.SetClientTransaction (dc, ClientTransactionMock);
 
       Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
     }
@@ -938,8 +937,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetClientTransaction_Twice ()
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      PrivateInvoke.InvokeNonPublicMethod (dc, "SetClientTransaction", ClientTransactionMock);
-      PrivateInvoke.InvokeNonPublicMethod (dc, "SetClientTransaction", ClientTransactionMock);
+      DataContainerTestHelper.SetClientTransaction (dc, ClientTransactionMock);
+      DataContainerTestHelper.SetClientTransaction (dc, ClientTransactionMock);
     }
 
     [Test]
