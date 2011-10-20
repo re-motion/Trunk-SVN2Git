@@ -82,9 +82,9 @@ function SmartPage_Context(
   var _isExecutingDoPostBack = false;
 
   // The hidden field containing the smart scrolling data.
-  var _smartScrollingField = null;
+  var _smartScrollingFieldID = null;
   // The hidden field containing the smart focusing data.
-  var _smartFocusField = null;
+  var _smartFocusFieldID = null;
 
   var _activeElement = null;
   // The hashtable of eventhandlers: Hashtable < event-key, Array < event-handler > >
@@ -113,22 +113,23 @@ function SmartPage_Context(
     _theForm = window.document.forms[theFormID];
     {
       if (_theForm == null)
-        window.alert('"' + theFormID + '" does not specify a Form.');
+        throw ('"' + theFormID + '" does not specify a Form.');
     }
 
     if (smartScrollingFieldID != null)
     {
-      _smartScrollingField = _theForm.elements[smartScrollingFieldID];
-      if (_smartScrollingField == null)
-        window.alert('"' + smartScrollingFieldID + '" does not specify a element of Form "' + _theForm.id + '".');
+      if (_theForm.elements[smartScrollingFieldID] == null)
+        throw ('"' + smartScrollingFieldID + '" does not specify a element of Form "' + _theForm.id + '".');
     }
 
     if (smartFocusFieldID != null)
     {
-      _smartFocusField = _theForm.elements[smartFocusFieldID];
-      if (_smartFocusField == null)
-        window.alert('"' + smartFocusFieldID + '" does not specify a element of Form "' + _theForm.id + '".');
+      if (_theForm.elements[smartFocusFieldID] == null)
+        throw ('"' + smartFocusFieldID + '" does not specify a element of Form "' + _theForm.id + '".');
     }
+
+    _smartScrollingFieldID = smartScrollingFieldID;
+    _smartFocusFieldID = smartFocusFieldID;
 
     this.SetEventHandlers();
   };
@@ -323,19 +324,19 @@ function SmartPage_Context(
   // Backs up the smart scrolling and smart focusing data for the next post back.
   this.Backup = function()
   {
-    if (_smartScrollingField != null)
-      _smartScrollingField.value = SmartScrolling_Backup(this.GetActiveElement());
-    if (_smartFocusField != null)
-      _smartFocusField.value = SmartFocus_Backup(GetFocusableElement (this.GetActiveElement()));
+    if (_smartScrollingFieldID != null)
+      _theForm.elements[_smartScrollingFieldID].value = SmartScrolling_Backup(this.GetActiveElement());
+    if (_smartFocusFieldID != null)
+      _theForm.elements[_smartFocusFieldID].value = SmartFocus_Backup(GetFocusableElement(this.GetActiveElement()));
   };
 
   // Restores the smart scrolling and smart focusing data from the previous post back.
   this.Restore = function()
   {
-    if (_smartScrollingField != null)
-      SmartScrolling_Restore(_smartScrollingField.value);
-    if (_smartFocusField != null)
-      SmartFocus_Restore(_smartFocusField.value);
+    if (_smartScrollingFieldID != null)
+      SmartScrolling_Restore(_theForm.elements[_smartScrollingFieldID].value);
+    if (_smartFocusFieldID != null)
+      SmartFocus_Restore(_theForm.elements[_smartFocusFieldID].value);
   };
 
   // Event handler for window.OnLoad
@@ -468,8 +469,6 @@ function SmartPage_Context(
 
     _theForm = null;
     _activeElement = null;
-    _smartScrollingField = null;
-    _smartFocusField = null;
 
     _loadHandler = null;
     _beforeUnloadHandler = null;
