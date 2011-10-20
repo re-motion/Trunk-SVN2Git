@@ -110,7 +110,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result }));
     }
 
-
     [Test]
     public void LoadObjects ()
     {
@@ -585,6 +584,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository.VerifyAll ();
       Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
       Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[1] }));
+    }
+
+    [Test]
+    public void LoadCollectionQueryResult_WithNulls ()
+    {
+      _persistenceStrategyMock
+          .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
+          .Return (new[] { _order1DataContainer, null });
+
+      _persistenceStrategyMock.Replay ();
+
+      var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery, _dataManager);
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      CheckLoadedObject (result[0], _order1DataContainer);
+      Assert.That (result[1], Is.Null);
     }
 
     [Test]

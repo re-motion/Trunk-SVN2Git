@@ -16,17 +16,14 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
-using Remotion.FunctionalProgramming;
-using Remotion.Logging;
 using Remotion.Utilities;
+using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
@@ -40,8 +37,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   [Serializable]
   public class ObjectLoader : IObjectLoader
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (ObjectLoader));
-
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
@@ -89,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainer = _persistenceStrategy.LoadDataContainer (id);
-      return LoadObject (dataContainer, dataManager);
+      return UnwrapLoadedObject (dataContainer, dataManager);
     }
 
     public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
@@ -98,12 +93,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainers = _persistenceStrategy.LoadDataContainers (idsToBeLoaded, throwOnNotFound);
-      LoadObjects (dataContainers, dataManager);
 
-      var loadedDomainObjects = (from id in idsToBeLoaded
-                                 let dataContainer = dataContainers[id]
-                                 select dataContainer != null ? dataContainer.DomainObject : null).ToArray ();
-      return loadedDomainObjects;
+      // TODO 4242
+      //Assertion.IsTrue (dataContainers.Count == idsToBeLoaded.Count, "Persistence strategy must return exactly as many items as requested.");
+      //Assertion.DebugAssert (
+      //    dataContainers.Select ((dc, i) => dc != null ? dc.ID : idsToBeLoaded[i]).SequenceEqual (idsToBeLoaded), 
+      //    "Persistence strategy result must be in the same order as the input IDs (with not found objects replaced with null).");
+
+      var objectDictionary = UnwrapLoadedObjects<DomainObject> (dataContainers, dataManager)
+          .Where (domainObject => domainObject != null)
+          .ToDictionary (domainObject => domainObject.ID);
+      return idsToBeLoaded.Select (id => objectDictionary.GetValueOrDefault (id)).ToArray();
     }
 
     public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager)
@@ -119,14 +119,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       var originatingDataContainer = dataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
       var relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
-
-      if (relatedDataContainer != null)
-      {
-        var existingDataContainer = dataManager.GetDataContainerWithoutLoading (relatedDataContainer.ID);
-        return existingDataContainer != null ? existingDataContainer.DomainObject : LoadObject (relatedDataContainer, dataManager);
-      }
-      else
-        return null;
+      return UnwrapLoadedObject (relatedDataContainer, dataManager);
     }
 
     public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager)
@@ -138,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID);
-      return MergeQueryResult<DomainObject> (relatedDataContainers, dataManager);
+      return UnwrapLoadedObjects<DomainObject> (relatedDataContainers, dataManager).ToArray();
     }
 
     public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject
@@ -147,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainers = _persistenceStrategy.LoadDataContainersForQuery (query);
-      var resultArray = MergeQueryResult<T> (dataContainers, dataManager);
+      var resultArray = UnwrapLoadedObjects<T> (dataContainers, dataManager).ToArray();
       
       if (resultArray.Length > 0)
       {
@@ -158,107 +151,49 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return resultArray;
     }
 
-    private void RaiseLoadingNotificiations (ReadOnlyCollection<ObjectID> objectIDs)
-    {
-      if (objectIDs.Count != 0)
-        _transactionEventSink.ObjectsLoading (_clientTransaction, objectIDs);
-    }
-
-    private void RaiseLoadedNotifications (ReadOnlyCollection<DomainObject> loadedObjects)
-    {
-      if (loadedObjects.Count != 0)
-      {
-        using (_clientTransaction.EnterNonDiscardingScope ())
-        {
-          foreach (var loadedDomainObject in loadedObjects)
-            loadedDomainObject.OnLoaded();
-
-          _transactionEventSink.ObjectsLoaded (_clientTransaction, loadedObjects);
-
-          _clientTransaction.OnLoaded (new ClientTransactionEventArgs (loadedObjects));
-        }
-      }
-    }
-
-    private T[] MergeQueryResult<T> (IEnumerable<DataContainer> queryResult, IDataManager dataManager) 
+    private IEnumerable<T> UnwrapLoadedObjects<T> (IEnumerable<DataContainer> queryResult, IDataManager dataManager) 
         where T : DomainObject
     {
-      FindNewDataContainersAndInitialize (queryResult, dataManager);
+      var registrar = new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
+      var loadedObjects = queryResult.Select (dc => GetLoadedObject (dc, dataManager));
 
-      var relatedObjects = from loadedDataContainer in queryResult
-                           let maybeDataContainer =
-                              Maybe // loadedDataContainer is null at this position when the query returned null
-                                .ForValue (loadedDataContainer)
-                                .Select (dc => Assertion.IsNotNull (dataManager.GetDataContainerWithoutLoading (dc.ID)))
-                           let maybeDomainObject = maybeDataContainer.Select (dc => GetCastQueryResultObject<T> (dc.DomainObject))
-                           select maybeDomainObject.ValueOrDefault();
-
-      return relatedObjects.ToArray ();
+      return registrar.GetDomainObjects (loadedObjects).Select (ConvertLoadedDomainObject<T>);
     }
 
-    private void FindNewDataContainersAndInitialize (IEnumerable<DataContainer> dataContainers, IDataManager dataManager)
+    private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject
     {
-      var newlyLoadedDataContainers = (from dataContainer in dataContainers
-                                       where dataContainer != null && dataManager.GetDataContainerWithoutLoading (dataContainer.ID) == null
-                                       select dataContainer).ToList ();
-
-      LoadObjects (newlyLoadedDataContainers, dataManager);
-    }
-
-    private T GetCastQueryResultObject<T> (DomainObject domainObject) where T : DomainObject
-    {
-      var castDomainObject = domainObject as T;
-      if (castDomainObject != null)
-        return castDomainObject;
+      if (domainObject == null || domainObject is T)
+        return (T) domainObject;
       else
       {
-        string message = string.Format (
+        var message = string.Format (
             "The query returned an object of type '{0}', but a query result of type '{1}' was expected.",
-            domainObject.ID.ClassDefinition.ClassType.FullName,
-            typeof (T).FullName);
-
+            domainObject.GetPublicDomainObjectType(),
+            typeof (T));
         throw new UnexpectedQueryResultException (message);
       }
     }
 
-    private DomainObject LoadObject (DataContainer dataContainer, IDataManager dataManager)
+    private DomainObject UnwrapLoadedObject (DataContainer dataContainer, IDataManager dataManager)
     {
-      RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (new[] { dataContainer.ID }));
+      var registrar = new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
+      var loadedObject = GetLoadedObject (dataContainer, dataManager);
 
-      var loadedDomainObject = InitializeLoadedDataContainer (dataContainer, dataManager);
-      RaiseLoadedNotifications (new ReadOnlyCollection<DomainObject> (new[] { loadedDomainObject }));
-
-      return loadedDomainObject;
+      return registrar.GetDomainObject (loadedObject);
     }
 
-    private void LoadObjects (IList<DataContainer> dataContainers, IDataManager dataManager)
+    private ILoadedObject GetLoadedObject (DataContainer dataContainer, IDataManager dataManager)
     {
-      var newlyLoadedIDs = ListAdapter.AdaptReadOnly (dataContainers, dc => dc.ID);
-      RaiseLoadingNotificiations (newlyLoadedIDs);
-
-      var loadedDomainObjects = new List<DomainObject> ();
-      try
+      if (dataContainer == null)
+        return new NullLoadedObject ();
+      else
       {
-        // Leave forech loop (instead of LINQ query + AddRange) for readability
-        // ReSharper disable LoopCanBeConvertedToQuery
-        foreach (var dataContainer in dataContainers)
-          loadedDomainObjects.Add (InitializeLoadedDataContainer (dataContainer, dataManager));
-        // ReSharper restore LoopCanBeConvertedToQuery
+        var existingDataContainer = dataManager.GetDataContainerWithoutLoading (dataContainer.ID);
+        if (existingDataContainer != null)
+          return new AlreadyExistingLoadedObject (existingDataContainer);
+        else
+          return new FreshlyLoadedObject (dataContainer);
       }
-      finally
-      {
-        RaiseLoadedNotifications (loadedDomainObjects.AsReadOnly ());
-      }
-    }
-
-    private DomainObject InitializeLoadedDataContainer (DataContainer dataContainer, IDataManager dataManager)
-    {
-      var domainObjectReference = _clientTransaction.GetObjectReference (dataContainer.ID);
-
-      dataContainer.SetDomainObject (domainObjectReference);
-      dataManager.RegisterDataContainer (dataContainer);
-
-      return domainObjectReference;
     }
   }
 }

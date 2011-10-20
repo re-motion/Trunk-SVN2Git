@@ -80,8 +80,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {
         DomainObject parentObject = _parentTransaction.GetObject (id, false);
-        DataContainer thisDataContainer = TransferParentObject (parentObject.ID);
-        return thisDataContainer;
+        return TransferParentObject (parentObject.ID);
       }
     }
 
@@ -137,7 +136,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         {
           DataContainer transferredContainer = TransferParentObject (parentObject.ID);
           transferredContainers.Add (transferredContainer);
-          Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
         }
         return transferredContainers;
       }
@@ -155,14 +153,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
         var parentObjects = queryResult.AsEnumerable();
 
-        var transferredContainers = new List<DataContainer>();
-        foreach (var parentObject in parentObjects)
-        {
-          DataContainer transferredContainer = TransferParentObject (parentObject.ID);
-          transferredContainers.Add (transferredContainer);
-          Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
-        }
-        return transferredContainers.ToArray();
+        return parentObjects.Select (parentObject => TransferParentObject (parentObject.ID)).ToArray();
       }
     }
 
@@ -191,7 +182,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       thisDataContainer.SetPropertyDataFromSubTransaction (parentDataContainer);
       thisDataContainer.SetTimestamp (parentDataContainer.Timestamp);
-      thisDataContainer.SetDomainObject (parentDataContainer.DomainObject);
       thisDataContainer.CommitState(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
 
       return thisDataContainer;
