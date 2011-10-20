@@ -76,12 +76,6 @@ span.bocDateInputWrapper input
   width: 100%;
 }
 
-body.mozilla span.bocDateInputWrapper input
-{
-  height: 1.2em;
-  line-height: 1em;
-}
-
 span.bocTime24HoursWithSeconds input,
 span.bocTime12HoursWithSeconds input
 {
@@ -142,6 +136,20 @@ span.bocDateValue.disabled a img
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
 
+body.mozilla span.bocDateInputWrapper input,
+body.mozilla span.bocTimeInputWrapper input
+{
+  height: 1.2em;
+  line-height: 1em;
+}
+
+body.webkit span.bocDateInputWrapper input,
+body.webkit span.bocTimeInputWrapper input
+{
+  height: 1.2em;
+  line-height: 1em;
+}
+
 body.msie7 span.bocDate24Hours,
 body.msie7 span.bocDate12Hours,
 body.msie7 span.bocDate24HoursWithSeconds,
@@ -152,16 +160,4 @@ body.msie7 span.bocTime24HoursWithSeconds,
 body.msie7 span.bocTime12HoursWithSeconds
 {
   top: -0.1em;
-}
-
-body.webkit span.bocDate24Hours,
-body.webkit span.bocDate12Hours,
-body.webkit span.bocDate24HoursWithSeconds,
-body.webkit span.bocDate12HoursWithSeconds,
-body.webkit span.bocTime24Hours,
-body.webkit span.bocTime12Hours,
-body.webkit span.bocTime24HoursWithSeconds,
-body.webkit span.bocTime12HoursWithSeconds
-{
-  top: -0.2em;
 }
