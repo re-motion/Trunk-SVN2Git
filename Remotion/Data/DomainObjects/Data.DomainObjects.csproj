@@ -186,10 +186,13 @@
     <Compile Include="DataManagement\Commands\UnregisterDataContainerCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
     <Compile Include="DataManagement\DataManagementService.cs" />
+    <Compile Include="DataManagement\IDataContainerProvider.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObject.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FreshlyLoadedObject.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObject.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectProvider.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectVisitor.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectProvider.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectRegistrationAgent.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObject.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />

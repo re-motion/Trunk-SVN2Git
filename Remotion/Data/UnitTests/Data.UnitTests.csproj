@@ -208,6 +208,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\FreshlyLoadedObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistableDataObjectMother.cs" />

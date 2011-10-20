@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -26,7 +25,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Provides an interface for classes managing the data inside a <see cref="ClientTransaction"/>.
   /// </summary>
-  public interface IDataManager : IRelationEndPointProvider
+  public interface IDataManager : IRelationEndPointProvider, IDataContainerProvider
   {
     IDataContainerMapReadOnlyView DataContainers { get; }
     IRelationEndPointMapReadOnlyView RelationEndPoints { get; }
@@ -48,9 +47,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     
     void Commit ();
     void Rollback ();
-    
-    DataContainer GetDataContainerWithLazyLoad (ObjectID objectID);
-    DataContainer GetDataContainerWithoutLoading (ObjectID objectID);
+
     IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject);
     IDataManagementCommand CreateUnloadCommand (params ObjectID[] objectIDs);
     IDataManagementCommand CreateUnloadVirtualEndPointsCommand (params RelationEndPointID[] endPointIDs);
