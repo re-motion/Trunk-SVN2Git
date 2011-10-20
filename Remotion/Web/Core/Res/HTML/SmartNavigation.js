@@ -158,7 +158,7 @@ function SmartFocus_Restore (data)
 
       if (activeElement.is(isEnabledFilter))
       {
-        activeElement.focus();
+        setTimeout(function () { activeElement.focus(); }, 0);
       }
       else
       {
@@ -167,13 +167,15 @@ function SmartFocus_Restore (data)
         var fallBackElement = focusableElements.slice(elementIndex).filter(isEnabledFilter).first();
         if (fallBackElement.length > 0)
         {
-          fallBackElement.focus();
+          setTimeout(function () { fallBackElement.focus(); }, 0);
         }
         else
         {
           fallBackElement = focusableElements.slice(0, elementIndex).filter(isEnabledFilter).last();
           if (fallBackElement)
-            fallBackElement.focus();
+          {
+            setTimeout(function () { fallBackElement.focus(); }, 0);
+          }
         }
       }
     }
