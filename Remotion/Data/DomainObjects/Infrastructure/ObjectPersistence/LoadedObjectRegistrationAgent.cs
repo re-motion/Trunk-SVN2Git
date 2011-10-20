@@ -48,6 +48,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         _domainObjectAccessors.Add (() => alreadyExistingLoadedObject.ExistingDataContainer.DomainObject);
       }
 
+      public void VisitNullLoadedObject (NullLoadedObject nullLoadedObject)
+      {
+        ArgumentUtility.CheckNotNull ("nullLoadedObject", nullLoadedObject);
+        _domainObjectAccessors.Add (() => null);
+      }
+
       public void RegisterAllDataContainers (IDataManager dataManager, ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
       {
         ArgumentUtility.CheckNotNull ("dataManager", dataManager);

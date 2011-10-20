@@ -110,6 +110,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
+    public void GetDomainObject_NullLoadedObject ()
+    {
+      var nullLoadedObject = GetNullLoadedObject ();
+
+      _mockRepository.ReplayAll ();
+
+      var result = _agent.GetDomainObject (nullLoadedObject);
+
+      _eventSinkMock.AssertWasNotCalled (
+          mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
+      _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
     public void GetDomainObjects_MultipleObjects ()
     {
       var freshlyLoadedObject1 = GetFreshlyLoadedObject ();
@@ -120,8 +137,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       var registerableDataContainer2 = freshlyLoadedObject2.FreshlyLoadedDataContainer;
       Assert.That (registerableDataContainer2.HasDomainObject, Is.False);
 
-      var alreadyExistingLoadedObject1 = GetAlreadyExistingLoadedObject ();
-      var alreadyExistingLoadedObject2 = GetAlreadyExistingLoadedObject ();
+      var alreadyExistingLoadedObject = GetAlreadyExistingLoadedObject ();
+      var nullLoadedObject = GetNullLoadedObject ();
 
       using (_mockRepository.Ordered ())
       {
@@ -154,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       var result =
           _agent.GetDomainObjects (
-              new ILoadedObject[] { freshlyLoadedObject1, alreadyExistingLoadedObject1, freshlyLoadedObject2, alreadyExistingLoadedObject2 });
+              new ILoadedObject[] { freshlyLoadedObject1, alreadyExistingLoadedObject, freshlyLoadedObject2, nullLoadedObject });
 
       _mockRepository.VerifyAll ();
 
@@ -162,9 +179,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           new[]
           {
               registerableDataContainer1.DomainObject, 
-              alreadyExistingLoadedObject1.ExistingDataContainer.DomainObject,
+              alreadyExistingLoadedObject.ExistingDataContainer.DomainObject,
               registerableDataContainer2.DomainObject, 
-              alreadyExistingLoadedObject2.ExistingDataContainer.DomainObject
+              null
           };
       Assert.That (result, Is.EqualTo (expectedResult));
       Assert.That (_clientTransaction.IsDiscarded, Is.False);
@@ -230,6 +247,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       dataContainer.SetDomainObject (domainObject);
       DataContainerTestHelper.SetClientTransaction (dataContainer, _clientTransaction);
       return new AlreadyExistingLoadedObject (dataContainer);
+    }
+
+    private NullLoadedObject GetNullLoadedObject ()
+    {
+      return new NullLoadedObject();
     }
 
     private void CheckHasEnlistedDomainObject (DataContainer dataContainer)

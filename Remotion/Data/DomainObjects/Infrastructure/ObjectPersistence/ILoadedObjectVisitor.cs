@@ -7,5 +7,6 @@
   {
     void VisitFreshlyLoadedObject (FreshlyLoadedObject freshlyLoadedObject);
     void VisitAlreadyExistingLoadedObject (AlreadyExistingLoadedObject alreadyExistingLoadedObject);
+    void VisitNullLoadedObject (NullLoadedObject nullLoadedObject);
   }
 }

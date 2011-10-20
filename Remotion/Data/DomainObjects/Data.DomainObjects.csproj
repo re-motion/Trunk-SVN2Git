@@ -191,6 +191,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObject.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectVisitor.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectRegistrationAgent.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObject.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryUtility.cs" />
