@@ -237,6 +237,12 @@ span.bocAutoCompleteReferenceValueInput input
   line-height: 1em;
 }
 
+body.msie7 span.bocAutoCompleteReferenceValueInput input,
+body.msie8 span.bocAutoCompleteReferenceValueInput input
+{
+  line-height: normal;
+}
+
 body.msie7 span.bocAutoCompleteReferenceValueInput
 {
   top: -0.1em;

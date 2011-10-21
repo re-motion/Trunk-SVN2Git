@@ -143,6 +143,14 @@ span.bocTimeInputWrapper input
   line-height: 1em;
 }
 
+body.msie7 span.bocDateInputWrapper input,
+body.msie7 span.bocTimeInputWrapper input,
+body.msie8 span.bocDateInputWrapper input,
+body.msie8 span.bocTimeInputWrapper input
+{
+  line-height: normal;
+}
+
 body.msie7 span.bocDate24Hours,
 body.msie7 span.bocDate12Hours,
 body.msie7 span.bocDate24HoursWithSeconds,

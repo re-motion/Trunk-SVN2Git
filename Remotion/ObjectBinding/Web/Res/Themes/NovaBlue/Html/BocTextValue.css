@@ -59,6 +59,12 @@ span.bocTextValue input
   line-height: 1em;
 }
 
+body.msie7 span.bocTextValue input,
+body.msie8 span.bocTextValue input
+{
+  line-height: normal;
+}
+
 body.msie7 span.bocTextValue .content
 {
   top: -0.1em;
