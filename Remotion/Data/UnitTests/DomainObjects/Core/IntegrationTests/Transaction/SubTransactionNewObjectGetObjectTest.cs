@@ -513,7 +513,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4242")]
+    [Ignore ("TODO 4426")]
     public void TryGetObjects_DeletedInParentTransaction ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);

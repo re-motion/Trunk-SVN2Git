@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4242")]
+    [Ignore ("TODO 4426")]
     public void QueryInSubtransaction_ReturningObjectDeletedInParentTransaction ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4242")]
+    [Ignore ("TODO 4426")]
     public void QueryInSubtransaction_ReturningObjectInvalidInParentTransaction ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
