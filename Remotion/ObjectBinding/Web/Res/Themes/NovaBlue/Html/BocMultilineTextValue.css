@@ -9,18 +9,6 @@ span.bocMultilineTextValue
   vertical-align: middle;
   overflow: hidden;
 }
-
-span.bocMultilineTextValue .content
-{
-  position: absolute;
-  display: block;
-  left: 0;
-  right: 0.5em;
-  width: auto;
-  top: 0;
-  bottom: 0.5em;
-  height: auto;
-}
   
 .bocMultilineTextValue.readOnly
 {
@@ -34,6 +22,18 @@ body.msie7 .bocMultilineTextValue.readOnly
 
 .bocMultilineTextValue.disabled
 {
+}
+
+span.bocMultilineTextValue .content
+{
+  position: absolute;
+  display: block;
+  left: 0;
+  right: 0.5em;
+  width: auto;
+  top: 0;
+  bottom: 0.5em;
+  height: auto;
 }
 
 .bocMultilineTextValue.readOnly .content

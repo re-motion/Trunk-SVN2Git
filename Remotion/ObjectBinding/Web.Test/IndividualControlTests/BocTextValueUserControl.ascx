@@ -100,14 +100,31 @@
     <td style="WIDTH: 20%"><asp:label id=DisabledUnboundReadOnlyFirstNameFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boctextvalue id="BocTextValue1" runat="server" ValueType="Int32" required="True"></remotion:boctextvalue></td>
+    <td><remotion:boctextvalue id="Int32" runat="server" ValueType="Int32" required="True"></remotion:boctextvalue></td>
     <td></td>
     <td style="WIDTH: 20%"></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boctextvalue id="BocTextValue2" runat="server" ValueType="Double"></remotion:boctextvalue></td>
+    <td><remotion:boctextvalue id="Double" runat="server" ValueType="Double"></remotion:boctextvalue></td>
     <td></td>
-    <td style="WIDTH: 20%"></td></tr></table>
+    <td style="WIDTH: 20%"></td></tr>
+  <tr>
+    <td></td>
+    <td><remotion:boctextvalue id="Multiline" runat="server" ValueType="String">
+    <TextBoxStyle TextMode="MultiLine"/>
+    </remotion:boctextvalue></td>
+    <td></td>
+    <td style="WIDTH: 20%"></td></tr>
+  <tr>
+    <td></td>
+    <td><remotion:boctextvalue id="MultilineReadOnly" runat="server" ValueType="String" ReadOnly="true" Text="line 1
+line 2
+line 3">
+    <TextBoxStyle TextMode="MultiLine"/>
+    </remotion:boctextvalue></td>
+    <td></td>
+    <td style="WIDTH: 20%"></td></tr>
+</table>
 <p><remotion:webbutton id=FirstNameTestSetNullButton runat="server" Text="FirstName Set Null" width="220px"/><remotion:webbutton id=FirstNameTestSetNewValueButton runat="server" Text="FirstName Set New Value" width="220px"/></p>
 <p>FirstName Field Text Changed: <asp:label id=FirstNameFieldTextChangedLabel runat="server" enableviewstate="False">#</asp:label></p>
 <p><br /><remotion:webbutton id=ReadOnlyFirstNameTestSetNullButton runat="server" Text="Read Only FirstName Set Null" width="220px"/><remotion:webbutton id=ReadOnlyFirstNameTestSetNewValueButton runat="server" Text="Read Only FirstName Set New Value" width="220px"/></p>
