@@ -40,6 +40,16 @@ span.bocAutoCompleteReferenceValueButton
   border-bottom: 1px solid #005588;
 }
 
+span.bocAutoCompleteReferenceValue.disabled span.bocAutoCompleteReferenceValueButton
+{
+  background-color: #E8E8E8;
+  border-top: solid 1px Gray;
+  border-bottom: solid 1px Gray;
+  border-right: solid 1px Gray;
+  border-left: solid 1px #E8E8E8;
+  background-image: url('../Image/AutoCompleteReferenceValueDropDownArrowDisabled.gif');
+}
+
 span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
 {
   right: 0.1em;

@@ -34,7 +34,17 @@ span.bocAutoCompleteReferenceValueButton
   background-position: center center;
   background-repeat: no-repeat;
   background-color: #083779;
-  border: none;
+  border: solid 1px #083779;
+}
+
+span.bocAutoCompleteReferenceValue.disabled span.bocAutoCompleteReferenceValueButton
+{
+  background-color: #E8E8E8;
+  border-top: solid 1px Gray;
+  border-bottom: solid 1px Gray;
+  border-right: solid 1px Gray;
+  border-left: solid 1px Gray;
+  background-image: url('../Image/AutoCompleteReferenceValueDropDownArrowDisabled.gif');
 }
 
 span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
@@ -50,15 +60,10 @@ body.msie7 span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueBu
   bottom: 0px;
 }
 
-span.bocAutoCompleteReferenceValue.disabled span.bocAutoCompleteReferenceValueButton
-{
-  background-image: url('../Image/AutoCompleteReferenceValueDropDownArrowDisabled.gif');
-}
-
 span.bocAutoCompleteReferenceValueButton img
 {
   height: 1.1em;
-  width: 13px;
+  width: 11px;
   border: none;
 }
 
