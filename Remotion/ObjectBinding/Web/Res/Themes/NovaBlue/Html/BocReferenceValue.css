@@ -24,13 +24,17 @@ span.bocReferenceValue select
 
 span.bocReferenceValue a.command
 {
-  cursor: default;
   display: inline-block;
   margin-top: 1px;
   margin-left: 1px;
   border: solid 1px transparent;
   height: 1.3em; 
+}
+
+span.bocReferenceValue a[href].command
+{
   color: #083779;
+  cursor: default;
 }
 
 span.bocReferenceValue .disabled a.command,
@@ -75,8 +79,8 @@ span.bocReferenceValue.readOnly a.command img
   margin-right: 6px;
 }
 
-span.bocReferenceValue .disabled a.command img,
-span.bocReferenceValue.disabled a.command img
+span.bocReferenceValue.disabled a.command img,
+span.bocReferenceValue .disabled a.command img
 {
   opacity: 0.4;
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
