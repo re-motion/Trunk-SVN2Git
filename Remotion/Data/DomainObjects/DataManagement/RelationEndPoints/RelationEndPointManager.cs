@@ -196,7 +196,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       else
       {
         _lazyLoader.LoadLazyDataContainer (endPointID.ObjectID); // will trigger indirect call to RegisterEndPointsForDataContainer
-        return Assertion.IsNotNull (_map[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
+        var endPoint = GetRelationEndPointWithoutLoading (endPointID);
+        Assertion.IsNotNull (endPoint, "Non-virtual end-points are registered when the DataContainer is loaded.");
+        return endPoint;
       }
     }
     

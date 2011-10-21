@@ -31,6 +31,5 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager);
     DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager);
     T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject;
-    ClientTransaction ClientTransaction { get; }
   }
 }
