@@ -27,13 +27,9 @@ body.msie7 .bocTextValue.readOnly
 span.bocTextValue .content
 {
   position: absolute;
-  display: block;
   left: 0;
   right: 0.5em;
   width: auto;
-  top: 0;
-  bottom: 0.5em;
-  height: auto;
 }
 
 .bocTextValue.readOnly .content
@@ -41,10 +37,13 @@ span.bocTextValue .content
   position: static;
 }
 
+.bocTextValue.readOnly .content span
+{
+}
+
 span.bocTextValue input
 {
   width: 100%;
-  display: inline-block;
 }
 
 span.bocTextValue textarea
@@ -64,4 +63,9 @@ body.webkit span.bocTextValue input
 {
   height: 1.2em;
   line-height: 1em;
+}
+
+body.msie7 span.bocTextValue .content
+{
+  top: -0.1em;
 }
