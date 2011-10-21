@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
@@ -27,16 +28,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   public class LoadedObjectProvider : ILoadedObjectProvider
   {
     private readonly IDataContainerProvider _dataContainerProvider;
+    private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
 
-    public LoadedObjectProvider (IDataContainerProvider dataContainerProvider)
+    public LoadedObjectProvider (IDataContainerProvider dataContainerProvider, IInvalidDomainObjectManager invalidDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      
       _dataContainerProvider = dataContainerProvider;
+      _invalidDomainObjectManager = invalidDomainObjectManager;
     }
 
     public ILoadedObject GetLoadedObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      if (_invalidDomainObjectManager.IsInvalid (objectID))
+        return new InvalidLoadedObject (_invalidDomainObjectManager.GetInvalidObjectReference (objectID));
 
       var dataContainer = _dataContainerProvider.GetDataContainerWithoutLoading (objectID);
       return dataContainer != null ? new AlreadyExistingLoadedObject (dataContainer) : null;
