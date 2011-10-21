@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
@@ -46,11 +47,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         ClientTransaction clientTransaction,
         IPersistenceStrategy persistenceStrategy,
         IClientTransactionListener transactionEventSink,
-        IEagerFetcher eagerFetcher)
+        IEagerFetcher eagerFetcher/*, 
+        ILoadedObjectRegistrationAgent loadedObjectRegistrationAgent,
+        ILoadedObjectProvider alreadyLoadedObjectProvider*/)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+      ArgumentUtility.CheckNotNull ("eagerFetcher", eagerFetcher);
+      //ArgumentUtility.CheckNotNull ("loadedObjectRegistrationAgent", loadedObjectRegistrationAgent);
+      //ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
 
       _persistenceStrategy = persistenceStrategy;
       _clientTransaction = clientTransaction;
@@ -154,7 +160,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     private IEnumerable<T> UnwrapAndRegisterLoadedObjects<T> (IEnumerable<DataContainer> queryResult, IDataManager dataManager) 
         where T : DomainObject
     {
-      var registrar = CreateRegistrationAgent (dataManager);
+      var registrar = GetLoadedObjectRegistrationAgent (dataManager);
       var loadedObjects = queryResult.Select (dc => GetLoadedObject (dc, dataManager));
 
       return registrar.RegisterIfRequired (loadedObjects).Select (ConvertLoadedDomainObject<T>);
@@ -162,7 +168,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
     private DomainObject UnwrapAndRegisterLoadedObject (DataContainer dataContainer, IDataManager dataManager)
     {
-      var registrar = CreateRegistrationAgent (dataManager);
+      var registrar = GetLoadedObjectRegistrationAgent (dataManager);
       var loadedObject = GetLoadedObject (dataContainer, dataManager);
 
       return registrar.RegisterIfRequired (loadedObject);
@@ -188,17 +194,57 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         return new NullLoadedObject ();
       else
       {
-        var existingDataContainer = dataManager.GetDataContainerWithoutLoading (dataContainer.ID);
-        if (existingDataContainer != null)
-          return new AlreadyExistingLoadedObject (existingDataContainer);
-        else
-          return new FreshlyLoadedObject (dataContainer);
+        var alreadyLoadedObjectProvider = GetLoadedObjectProvider(dataManager);
+        var existingLoadedObject = alreadyLoadedObjectProvider.GetLoadedObject (dataContainer.ID);
+        return existingLoadedObject ?? new FreshlyLoadedObject (dataContainer);
       }
     }
 
-    private LoadedObjectRegistrationAgent CreateRegistrationAgent (IDataManager dataManager)
+    // TODO 4427: Replace with injected instance
+    private ILoadedObjectProvider GetLoadedObjectProvider (IDataManager dataManager)
+    {
+      return new LoadedObjectProvider (dataManager, new FakeInvalidDomainObjectManager());
+    }
+
+    // TODO 4427: Replace with injected instance
+    private ILoadedObjectRegistrationAgent GetLoadedObjectRegistrationAgent (IDataManager dataManager)
     {
       return new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
     }
+
+    // TODO 4427: Remove
+    class FakeInvalidDomainObjectManager : IInvalidDomainObjectManager
+    {
+      public IEnumerable<ObjectID> InvalidObjectIDs
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public bool IsInvalid (ObjectID id)
+      {
+        return false;
+      }
+
+      public DomainObject GetInvalidObjectReference (ObjectID id)
+      {
+        throw new NotImplementedException();
+      }
+
+      public bool MarkInvalid (DomainObject domainObject)
+      {
+        throw new NotImplementedException();
+      }
+
+      public bool MarkNotInvalid (ObjectID objectID)
+      {
+        throw new NotImplementedException();
+      }
+
+      public void MarkInvalidThroughHierarchy (DomainObject domainObject)
+      {
+        throw new NotImplementedException();
+      }
+    }
+
   }
 }
