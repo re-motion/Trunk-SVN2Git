@@ -69,12 +69,21 @@ a
 
 /*  All elements sporting the class "disabled". */
 .disabled,
+.disabled a,
 .disabled input,
 .disabled select,
 .disabled textarea,
 .disabled label
 {
   color: Gray;
+}
+
+img.disabled,
+.disabled img
+{
+  opacity: 0.4;
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
 
 img.Icon

@@ -16,13 +16,13 @@ span.listMenuItem
 
 span.listMenuItem a
 {
-  color: Blue;
+  color: #083779;
   padding: 2px;
 }
 
 span.listMenuItem a:hover
 {
-  color: Blue;
+  color: #083779;
   padding: 1px;
   border-width: 1px;
   background-color: #e6f0ff;

@@ -65,11 +65,11 @@ span.bocAutoCompleteReferenceValueButton img
   border: none;
 }
 
-span.bocAutoCompleteReferenceValue.disabled a.command img
+span.bocAutoCompleteReferenceValue .disabled a.command,
+span.bocAutoCompleteReferenceValue.disabled a.command
 {
-  opacity: 0.4;
-  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
-          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  color: gray;
+  cursor: default;
 }
 
 span.bocAutoCompleteReferenceValue a.command
@@ -115,6 +115,14 @@ span.bocAutoCompleteReferenceValue span.DropDownMenuContainer a.command span
 span.bocAutoCompleteReferenceValue.readOnly a.command img
 {
   margin-right: 6px;
+}
+
+span.bocAutoCompleteReferenceValue .disabled a.command img,
+span.bocAutoCompleteReferenceValue.disabled a.command img
+{
+  opacity: 0.4;
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
 
 /* withoutOptionsMenu */

@@ -39,6 +39,13 @@ span.bocReferenceValue a.command
   height: 1.3em; 
 }
 
+span.bocReferenceValue .disabled a.command,
+span.bocReferenceValue.disabled a.command
+{
+  color: gray;
+  cursor: default;
+}
+
 span.bocReferenceValue span.DropDownMenuContainer a.command
 {
   margin-right: 17px;
@@ -73,6 +80,14 @@ span.bocReferenceValue span.DropDownMenuContainer a.command span
 span.bocReferenceValue.readOnly a.command img
 {
   margin-right: 6px;
+}
+
+span.bocReferenceValue .disabled a.command img,
+span.bocReferenceValue.disabled a.command img
+{
+  opacity: 0.4;
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
 
 /* withoutOptionsMenu */
