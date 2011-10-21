@@ -353,22 +353,14 @@ div.bocListFakeTableHead
 {
   position: absolute;
   top: 0;
-  left: -1px !important;
+  left: 0;
   right: 0;
   margin: 0;
   padding:0;
   z-index: 1;
 }
 
-body.msie7 div.bocListFakeTableHead,
-body.msie div.bocListFakeTableHead
+body.msie7 div.bocListFakeTableHead
 {
   margin: -0.5px;
 }
-
-body.mozilla  div.bocListFakeTableHead,
-body.webkit   div.bocListFakeTableHead,
-body.opera    div.bocListFakeTableHead
-{
-  left: 0;
-} 

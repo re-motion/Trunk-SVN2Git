@@ -31,16 +31,13 @@
 
 .bocCheckBox img
 {
-  margin-left: 4px;
+  margin-left: 0px;
   margin-right: 0;
   padding: 0px;
   vertical-align: middle;
 }
 
-body.mozilla .bocCheckBox img,
-body.webkit  .bocCheckBox img,
-body.opera   .bocCheckBox img,
-body.msie    .bocCheckBox img
+body.msie7 .bocCheckBox img
 {
-  margin-left: 0px;
+  margin-left: 4px;
 }

@@ -28,7 +28,7 @@ StyleUtility.AddBrowserSwitch = function ()
   var version = parseInt($.browser.version);
   
   if ($.browser.msie)
-    (version < 8) ? browser = 'msie' + version : browser = 'msie';
+    (version < 9) ? browser = 'msie' + version : browser = 'msie';
   else if ($.browser.mozilla)
     browser = 'mozilla';
   else if ($.browser.webkit)

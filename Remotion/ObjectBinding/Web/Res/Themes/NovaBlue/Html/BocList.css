@@ -361,8 +361,8 @@ div.bocListFakeTableHead
   z-index: 1;
 }
 
-body.msie7 div.bocListFakeTableHead,
-body.msie div.bocListFakeTableHead
+body.msie7 div.bocListFakeTableHead
 {
   margin: -0.5px;
 }
+
