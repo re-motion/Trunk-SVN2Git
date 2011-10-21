@@ -78,6 +78,12 @@ a[href]
   color: Gray;
 }
 
+body.webkit .disabled input,
+body.webkit .disabled textarea
+{
+  color: Black;
+}
+
 img.disabled,
 .disabled img
 {
