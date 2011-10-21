@@ -53,13 +53,7 @@ span.bocTextValue textarea
   display: inline-block;
 }
 
-body.mozilla span.bocTextValue input
-{
-  height: 1.2em;
-  line-height: 1em;
-}
-
-body.webkit span.bocTextValue input
+span.bocTextValue input
 {
   height: 1.2em;
   line-height: 1em;

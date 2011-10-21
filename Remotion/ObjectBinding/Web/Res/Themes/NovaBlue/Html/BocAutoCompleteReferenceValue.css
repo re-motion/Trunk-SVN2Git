@@ -153,6 +153,20 @@ body.webkit span.bocAutoCompleteReferenceValue.readOnly span.optionsMenu span.Dr
   height: 1.45em;
 }
 
+span.bocAutoCompleteReferenceValue span.optionsMenu span.DropDownMenuSelect a.DropDownMenuLabel,
+span.bocAutoCompleteReferenceValue.disabled span.optionsMenu span.DropDownMenuSelect a.DropDownMenuLabel,
+span.bocAutoCompleteReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect a.DropDownMenuLabel
+{
+  top: 0.15em;
+}
+
+body.mozilla span.bocAutoCompleteReferenceValue span.optionsMenu span.DropDownMenuSelect a.DropDownMenuLabel,
+body.mozilla span.bocAutoCompleteReferenceValue.disabled span.optionsMenu span.DropDownMenuSelect a.DropDownMenuLabel,
+body.mozilla span.bocAutoCompleteReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect a.DropDownMenuLabel
+{
+  top: 0.1em;
+}
+
 span.bocAutoCompleteReferenceValue span.content,
 span.bocAutoCompleteReferenceValue.disabled span.content
 {
@@ -214,13 +228,7 @@ span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueInput
   right: 0.5em;
 }
 
-body.mozilla span.bocAutoCompleteReferenceValueInput input
-{
-  height: 1.2em;
-  line-height: 1em;
-}
-
-body.webkit span.bocAutoCompleteReferenceValueInput input
+span.bocAutoCompleteReferenceValueInput input
 {
   height: 1.2em;
   line-height: 1em;

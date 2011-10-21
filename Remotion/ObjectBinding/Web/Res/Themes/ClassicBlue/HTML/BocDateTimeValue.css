@@ -136,15 +136,8 @@ span.bocDateValue.disabled a img
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
 
-body.mozilla span.bocDateInputWrapper input,
-body.mozilla span.bocTimeInputWrapper input
-{
-  height: 1.2em;
-  line-height: 1em;
-}
-
-body.webkit span.bocDateInputWrapper input,
-body.webkit span.bocTimeInputWrapper input
+span.bocDateInputWrapper input,
+span.bocTimeInputWrapper input
 {
   height: 1.2em;
   line-height: 1em;
