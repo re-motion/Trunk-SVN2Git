@@ -157,7 +157,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       var registrar = new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
       var loadedObjects = queryResult.Select (dc => GetLoadedObject (dc, dataManager));
 
-      return registrar.GetDomainObjects (loadedObjects).Select (ConvertLoadedDomainObject<T>);
+      return registrar.RegisterIfRequired (loadedObjects).Select (ConvertLoadedDomainObject<T>);
     }
 
     private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject
@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       var registrar = new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
       var loadedObject = GetLoadedObject (dataContainer, dataManager);
 
-      return registrar.GetDomainObject (loadedObject);
+      return registrar.RegisterIfRequired (loadedObject);
     }
 
     private ILoadedObject GetLoadedObject (DataContainer dataContainer, IDataManager dataManager)

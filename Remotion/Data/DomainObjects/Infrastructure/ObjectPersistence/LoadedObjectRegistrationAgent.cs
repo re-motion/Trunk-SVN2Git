@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// Takes <see cref="ILoadedObject"/> instances, registers all freshly loaded ones - triggering the necessary load events - and then returns
   /// the corresponding <see cref="DomainObject"/> instances.
   /// </summary>
-  public class LoadedObjectRegistrationAgent
+  public class LoadedObjectRegistrationAgent : ILoadedObjectRegistrationAgent
   {
     private class RegisteredDataContainerGatheringVisitor : ILoadedObjectVisitor
     {
@@ -117,14 +117,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       _dataManager = dataManager;
     }
 
-    public DomainObject GetDomainObject (ILoadedObject loadedObject)
+    public DomainObject RegisterIfRequired (ILoadedObject loadedObject)
     {
       ArgumentUtility.CheckNotNull ("loadedObject", loadedObject);
 
-      return GetDomainObjects (new[] { loadedObject }).Single();
+      return RegisterIfRequired (new[] { loadedObject }).Single();
     }
 
-    public IEnumerable<DomainObject> GetDomainObjects (IEnumerable<ILoadedObject> loadedObjects)
+    public IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObject> loadedObjects)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
 

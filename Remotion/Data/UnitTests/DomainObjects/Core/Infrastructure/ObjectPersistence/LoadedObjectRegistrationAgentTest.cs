@@ -57,13 +57,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void GetDomainObject_AlreadyExistingLoadedObject ()
+    public void RegisterIfRequired_Single_AlreadyExistingLoadedObject ()
     {
       var alreadyExistingLoadedObject = GetAlreadyExistingLoadedObject();
 
       _mockRepository.ReplayAll();
 
-      var result = _agent.GetDomainObject (alreadyExistingLoadedObject);
+      var result = _agent.RegisterIfRequired (alreadyExistingLoadedObject);
 
       _eventSinkMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void GetDomainObject_FreshlyLoadedObject ()
+    public void RegisterIfRequired_Single_FreshlyLoadedObject ()
     {
       var freshlyLoadedObject = GetFreshlyLoadedObject();
       var dataContainer = freshlyLoadedObject.FreshlyLoadedDataContainer;
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       }
       _mockRepository.ReplayAll();
 
-      var result = _agent.GetDomainObject (freshlyLoadedObject);
+      var result = _agent.RegisterIfRequired (freshlyLoadedObject);
 
       _mockRepository.VerifyAll();
 
@@ -110,13 +110,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void GetDomainObject_NullLoadedObject ()
+    public void RegisterIfRequired_Single_NullLoadedObject ()
     {
       var nullLoadedObject = GetNullLoadedObject ();
 
       _mockRepository.ReplayAll ();
 
-      var result = _agent.GetDomainObject (nullLoadedObject);
+      var result = _agent.RegisterIfRequired (nullLoadedObject);
 
       _eventSinkMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -127,13 +127,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void GetDomainObject_InvalidLoadedObject ()
+    public void RegisterIfRequired_Single_InvalidLoadedObject ()
     {
       var alreadyExistingLoadedObject = GetInvalidLoadedObject ();
 
       _mockRepository.ReplayAll ();
 
-      var result = _agent.GetDomainObject (alreadyExistingLoadedObject);
+      var result = _agent.RegisterIfRequired (alreadyExistingLoadedObject);
 
       _eventSinkMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void GetDomainObjects_MultipleObjects ()
+    public void RegisterIfRequired_Many_MultipleObjects ()
     {
       var freshlyLoadedObject1 = GetFreshlyLoadedObject ();
       var registerableDataContainer1 = freshlyLoadedObject1.FreshlyLoadedDataContainer;
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository.ReplayAll ();
 
       var result =
-          _agent.GetDomainObjects (
+          _agent.RegisterIfRequired (
               new ILoadedObject[] { freshlyLoadedObject1, alreadyExistingLoadedObject, freshlyLoadedObject2, nullLoadedObject, invalidLoadedObject });
 
       _mockRepository.VerifyAll ();
@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void GetDomainObjects_ExceptionWhenRegisteringObject ()
+    public void RegisterIfRequired_Many_ExceptionWhenRegisteringObject ()
     {
       var exception = new Exception ("Test");
       
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository.ReplayAll ();
 
       Assert.That (
-          () => _agent.GetDomainObjects (new ILoadedObject[] { freshlyLoadedObject1, freshlyLoadedObject2 }), 
+          () => _agent.RegisterIfRequired (new ILoadedObject[] { freshlyLoadedObject1, freshlyLoadedObject2 }), 
           Throws.Exception.SameAs (exception));
 
       _mockRepository.VerifyAll ();
