@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainer = _persistenceStrategy.LoadDataContainer (id);
-      return UnwrapLoadedObject (dataContainer, dataManager);
+      return UnwrapAndRegisterLoadedObject (dataContainer, dataManager);
     }
 
     public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       //    dataContainers.Select ((dc, i) => dc != null ? dc.ID : idsToBeLoaded[i]).SequenceEqual (idsToBeLoaded), 
       //    "Persistence strategy result must be in the same order as the input IDs (with not found objects replaced with null).");
 
-      var objectDictionary = UnwrapLoadedObjects<DomainObject> (dataContainers, dataManager)
+      var objectDictionary = UnwrapAndRegisterLoadedObjects<DomainObject> (dataContainers, dataManager)
           .Where (domainObject => domainObject != null)
           .ToDictionary (domainObject => domainObject.ID);
       return idsToBeLoaded.Select (id => objectDictionary.GetValueOrDefault (id)).ToArray();
@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       var originatingDataContainer = dataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
       var relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
-      return UnwrapLoadedObject (relatedDataContainer, dataManager);
+      return UnwrapAndRegisterLoadedObject (relatedDataContainer, dataManager);
     }
 
     public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager)
@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID);
-      return UnwrapLoadedObjects<DomainObject> (relatedDataContainers, dataManager).ToArray();
+      return UnwrapAndRegisterLoadedObjects<DomainObject> (relatedDataContainers, dataManager).ToArray();
     }
 
     public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject
@@ -140,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainers = _persistenceStrategy.LoadDataContainersForQuery (query);
-      var resultArray = UnwrapLoadedObjects<T> (dataContainers, dataManager).ToArray();
+      var resultArray = UnwrapAndRegisterLoadedObjects<T> (dataContainers, dataManager).ToArray();
       
       if (resultArray.Length > 0)
       {
@@ -151,13 +151,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return resultArray;
     }
 
-    private IEnumerable<T> UnwrapLoadedObjects<T> (IEnumerable<DataContainer> queryResult, IDataManager dataManager) 
+    private IEnumerable<T> UnwrapAndRegisterLoadedObjects<T> (IEnumerable<DataContainer> queryResult, IDataManager dataManager) 
         where T : DomainObject
     {
-      var registrar = new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
+      var registrar = CreateRegistrationAgent (dataManager);
       var loadedObjects = queryResult.Select (dc => GetLoadedObject (dc, dataManager));
 
       return registrar.RegisterIfRequired (loadedObjects).Select (ConvertLoadedDomainObject<T>);
+    }
+
+    private DomainObject UnwrapAndRegisterLoadedObject (DataContainer dataContainer, IDataManager dataManager)
+    {
+      var registrar = CreateRegistrationAgent (dataManager);
+      var loadedObject = GetLoadedObject (dataContainer, dataManager);
+
+      return registrar.RegisterIfRequired (loadedObject);
     }
 
     private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject
@@ -168,20 +176,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       {
         var message = string.Format (
             "The query returned an object of type '{0}', but a query result of type '{1}' was expected.",
-            domainObject.GetPublicDomainObjectType(),
+            domainObject.GetPublicDomainObjectType (),
             typeof (T));
         throw new UnexpectedQueryResultException (message);
       }
     }
-
-    private DomainObject UnwrapLoadedObject (DataContainer dataContainer, IDataManager dataManager)
-    {
-      var registrar = new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
-      var loadedObject = GetLoadedObject (dataContainer, dataManager);
-
-      return registrar.RegisterIfRequired (loadedObject);
-    }
-
+    
     private ILoadedObject GetLoadedObject (DataContainer dataContainer, IDataManager dataManager)
     {
       if (dataContainer == null)
@@ -194,6 +194,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         else
           return new FreshlyLoadedObject (dataContainer);
       }
+    }
+
+    private LoadedObjectRegistrationAgent CreateRegistrationAgent (IDataManager dataManager)
+    {
+      return new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
     }
   }
 }
