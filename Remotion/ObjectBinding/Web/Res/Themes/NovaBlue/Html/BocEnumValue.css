@@ -8,11 +8,6 @@ span.bocEnumValue
   vertical-align: middle;
   overflow: hidden;
 }
-span.bocEnumValue select
-{
-  width: 100%;
-  height: 1.68em;
-}
 
 .bocEnumValue.readOnly
 {
@@ -22,6 +17,36 @@ span.bocEnumValue select
 {
 }
 
+span.bocEnumValue select
+{
+  width: 100%;
+}
+
+span.bocEnumValue select
+{
+  height: 1.68em;
+}
+
+span.bocEnumValue select[size]
+{
+  height: auto;
+}
+
+span.bocEnumValue select[size="1"]
+{
+  height: 1.68em;
+}
+
+body.webkit span.bocEnumValue select[size="2"]
+{
+  height: 2.85em;
+}
+
+body.webkit span.bocEnumValue select[size="3"]
+{
+  height: 4.2em;
+}
+
 .bocEnumValue td
 {
   white-space: nowrap;
@@ -29,5 +54,5 @@ span.bocEnumValue select
 
 .bocEnumValue td label
 {
-  vertical-align: top;
+  vertical-align: text-bottom;
 }
