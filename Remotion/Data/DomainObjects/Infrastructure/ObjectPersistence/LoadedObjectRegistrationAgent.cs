@@ -54,6 +54,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         _domainObjectAccessors.Add (() => null);
       }
 
+      public void VisitInvalidLoadedObject (InvalidLoadedObject invalidLoadedObject)
+      {
+        ArgumentUtility.CheckNotNull ("invalidLoadedObject", invalidLoadedObject);
+        _domainObjectAccessors.Add (() => invalidLoadedObject.InvalidObjectReference);
+      }
+
       public void RegisterAllDataContainers (IDataManager dataManager, ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
       {
         ArgumentUtility.CheckNotNull ("dataManager", dataManager);

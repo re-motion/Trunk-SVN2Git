@@ -192,6 +192,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObject.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectProvider.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectVisitor.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\InvalidLoadedObject.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectProvider.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectRegistrationAgent.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObject.cs" />
