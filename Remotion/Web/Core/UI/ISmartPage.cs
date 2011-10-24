@@ -26,9 +26,15 @@ namespace Remotion.Web.UI
   /// <summary>
   ///   This interface represents a page that has a dirty-state and can prevent multiple postbacks.
   /// </summary>
-  /// <include file='doc\include\UI\ISmartPage.xml' path='ISmartPage/Class/*' />
+  /// <include file='..\doc\include\UI\ISmartPage.xml' path='ISmartPage/Class/*' />
   public interface ISmartPage: IPage
   {
+    /// <summary>
+    /// Gets an <see cref="ISmartPageClientScriptManager"/> object used to manage, register, and add scripts to the page.
+    /// </summary>
+    /// <returns>An <see cref="ISmartPageClientScriptManager"/> object.</returns>
+    new ISmartPageClientScriptManager ClientScript { get; }
+
     /// <summary> Gets the post back data for the page. </summary>
     NameValueCollection GetPostBackCollection ();
 
@@ -92,7 +98,7 @@ namespace Remotion.Web.UI
     /// <summary> 
     ///   Registers Java Script functions to be executed when the respective <paramref name="pageEvent"/> is raised.
     /// </summary>
-    /// <include file='doc\include\UI\ISmartPage.xml' path='ISmartPage/RegisterClientSidePageEventHandler/*' />
+    /// <include file='..\doc\include\UI\ISmartPage.xml' path='ISmartPage/RegisterClientSidePageEventHandler/*' />
     void RegisterClientSidePageEventHandler (SmartPageEvents pageEvent, string key, string function);
 
     /// <summary>

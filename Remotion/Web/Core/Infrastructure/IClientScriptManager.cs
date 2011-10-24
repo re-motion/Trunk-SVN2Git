@@ -20,6 +20,9 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Infrastructure
 {
+  /// <summary>
+  /// Defines methods for managing client scripts in Web applications.
+  /// </summary>
   public interface IClientScriptManager
   {
     /// <summary>

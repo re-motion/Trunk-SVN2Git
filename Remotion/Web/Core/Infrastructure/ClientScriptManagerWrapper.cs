@@ -21,6 +21,9 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Infrastructure
 {
+  /// <summary>
+  /// The <see cref="ClientScriptManagerWrapper"/> type is the default implementation of the <see cref="IClientScriptManager"/> interface.
+  /// </summary>
   public class ClientScriptManagerWrapper : IClientScriptManager
   {
     private readonly ClientScriptManager _clientScriptManager;

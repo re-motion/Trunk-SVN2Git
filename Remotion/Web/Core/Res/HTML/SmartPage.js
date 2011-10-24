@@ -970,7 +970,12 @@ function SmartPage_Context(
     {
       return true;
     }
-    else if (tagName == 'p'
+    else if (tagName == 'input'
+             || tagName == 'select'
+             || tagName == 'textarea'
+             || tagName == 'button'
+             || tagName == 'li'
+             || tagName == 'p'
              || tagName == 'div'
              || tagName == 'td'
              || tagName == 'table'
@@ -1050,6 +1055,14 @@ function SmartPage_Context(
   this.DisableAbortConfirmation = function()
   {
     _isAbortConfirmationEnabled = false;
+  }
+
+  this.ShowAbortConfirmation = function ()
+  {
+    if (_isAbortConfirmationEnabled && (!_isDirtyStateTrackingEnabled || _isDirty))
+      return window.confirm(_abortMessage);
+    else
+      return true;
   }
 
   // Perform initialization

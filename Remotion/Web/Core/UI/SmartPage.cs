@@ -32,7 +32,7 @@ namespace Remotion.Web.UI
 ///   <b>SmartPage</b> is the default implementation of the <see cref="ISmartPage"/> interface. Use this type
 ///   a base class for pages that should supress multiple postbacks, require smart navigation, or have a dirty-state.
 /// </summary>
-/// <include file='doc\include\UI\SmartPage.xml' path='SmartPage/Class/*' />
+/// <include file='..\doc\include\UI\SmartPage.xml' path='SmartPage/Class/*' />
 public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 {
   #region IPage Implementation
@@ -81,15 +81,23 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 
   #region ISmartPage Implementation
 
+  /// <summary>
+  /// Gets an <see cref="ISmartPageClientScriptManager"/> object used to manage, register, and add scripts to the page.
+  /// </summary>
+  /// <returns>An <see cref="ISmartPageClientScriptManager"/> object.</returns>
+  public new ISmartPageClientScriptManager ClientScript
+  {
+    get { return _clientScriptManager; }
+  }
+
   /// <summary> 
   ///   Registers Java Script functions to be executed when the respective <paramref name="pageEvent"/> is raised.
   /// </summary>
-  /// <include file='doc\include\ExecutionEngine\WxePage.xml' path='WxePage/RegisterClientSidePageEventHandler/*' />
+  /// <include file='..\doc\include\ExecutionEngine\WxePage.xml' path='WxePage/RegisterClientSidePageEventHandler/*' />
   public void RegisterClientSidePageEventHandler (SmartPageEvents pageEvent, string key, string function)
   {
     _smartPageInfo.RegisterClientSidePageEventHandler (pageEvent, key, function);
   }
-
 
   string ISmartPage.CheckFormStateFunction
   {
@@ -221,14 +229,14 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
   private bool? _enableStatusIsSubmittingMessage;
   private bool? _enableSmartScrolling;
   private bool? _enableSmartFocusing;
-  private readonly ClientScriptManagerWrapper _clientScriptManager;
+  private readonly SmartPageClientScriptManager _clientScriptManager;
 
   public SmartPage()
   {
     _smartPageInfo = new SmartPageInfo (this);
     _validatableControlInitializer = new ValidatableControlInitializer (this);
     _postLoadInvoker = new PostLoadInvoker (this);
-    _clientScriptManager = new ClientScriptManagerWrapper (ClientScript);
+    _clientScriptManager = new SmartPageClientScriptManager (base.ClientScript);
   }
 
   protected override NameValueCollection DeterminePostBackMode()

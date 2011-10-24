@@ -261,6 +261,8 @@
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\WebTreeViewRenderer.cs" />
     <Compile Include="UI\Controls\WebUpdatePanelRenderMode.cs" />
     <Compile Include="Infrastructure\BuildManagerWrapper.cs" />
+    <Compile Include="UI\ISmartPageClientScriptManager.cs" />
+    <Compile Include="UI\SmartPageClientScriptManager.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
