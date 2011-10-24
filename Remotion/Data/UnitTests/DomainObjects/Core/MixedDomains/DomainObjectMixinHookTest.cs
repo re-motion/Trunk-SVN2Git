@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Mixins.Utilities;
@@ -188,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     private ClientTransaction CreateTransactionWithStubbedLoading (DataContainer loadableDataContainer)
     {
       var persistenceStrategyStub = MockRepository.GenerateStub<IPersistenceStrategy>();
-      persistenceStrategyStub.Stub (stub => stub.LoadDataContainer (loadableDataContainer.ID)).Return (loadableDataContainer);
+      persistenceStrategyStub.Stub (stub => stub.LoadObjectData (loadableDataContainer.ID)).Return (new FreshlyLoadedObjectData (loadableDataContainer));
       return ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (persistenceStrategyStub);
     }
   }

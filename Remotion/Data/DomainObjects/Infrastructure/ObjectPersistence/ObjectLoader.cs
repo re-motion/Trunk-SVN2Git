@@ -75,11 +75,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
-      var dataContainer = _persistenceStrategy.LoadDataContainer (id);
-      Assertion.IsNotNull (dataContainer, "LoadDataContainer throws an exception if the ObjectID cannot be found.");
-
-      var loadedObject = new FreshlyLoadedObjectData (dataContainer);
-      return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObject, dataManager);
+      var loadedObjectData = _persistenceStrategy.LoadObjectData (id);
+      return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, dataManager);
     }
 
     public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
@@ -87,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       
-      var dataContainers = _persistenceStrategy.LoadDataContainers (idsToBeLoaded, throwOnNotFound);
+      var loadedObjectData = _persistenceStrategy.LoadObjectData (idsToBeLoaded, throwOnNotFound);
 
       // TODO 4428
       //Assertion.IsTrue (dataContainers.Count == idsToBeLoaded.Count, "Persistence strategy must return exactly as many items as requested.");
@@ -95,9 +92,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       //    dataContainers.Select ((dc, i) => dc != null ? dc.ID : idsToBeLoaded[i]).SequenceEqual (idsToBeLoaded), 
       //    "Persistence strategy result must be in the same order as the input IDs (with not found objects replaced with null).");
 
-      var loadedObjects = dataContainers.Select (dc => dc == null ? (ILoadedObjectData) new NullLoadedObjectData() : new FreshlyLoadedObjectData (dc));
       var objectDictionary = _loadedObjectDataRegistrationAgent
-          .RegisterIfRequired (loadedObjects, dataManager)
+          .RegisterIfRequired (loadedObjectData, dataManager)
           .Select (ConvertLoadedDomainObject<DomainObject>)
           .Where (domainObject => domainObject != null)
           .ToDictionary (domainObject => domainObject.ID);
@@ -117,9 +113,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("GetOrLoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
       var originatingDataContainer = dataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
-      var relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
-      var loadedObject = GetLoadedObject (relatedDataContainer, alreadyLoadedObjectDataProvider);
-      return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObject, dataManager);
+      var loadedObjectData = _persistenceStrategy.ResolveObjectRelationData (
+          originatingDataContainer, relationEndPointID, alreadyLoadedObjectDataProvider);
+      return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, dataManager);
     }
 
     public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
@@ -131,8 +127,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("GetOrLoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
-      var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID);
-      var loadedObjects = relatedDataContainers.Select (dc => GetLoadedObject (dc, alreadyLoadedObjectDataProvider));
+      var loadedObjects = _persistenceStrategy.ResolveCollectionRelationData (relationEndPointID, alreadyLoadedObjectDataProvider);
       return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjects, dataManager).Select (ConvertLoadedDomainObject<DomainObject>).ToArray();
     }
 
@@ -142,9 +137,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
 
-      var dataContainers = _persistenceStrategy.LoadDataContainersForQuery (query);
-      var loadedObjects = dataContainers.Select (dc => GetLoadedObject (dc, alreadyLoadedObjectDataProvider));
-      var resultArray = _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjects, dataManager).Select (ConvertLoadedDomainObject<T>).ToArray();
+      var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, alreadyLoadedObjectDataProvider);
+      var resultArray = _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, dataManager).Select (ConvertLoadedDomainObject<T>).ToArray();
       
       if (resultArray.Length > 0)
       {
@@ -166,17 +160,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
             domainObject.GetPublicDomainObjectType (),
             typeof (T));
         throw new UnexpectedQueryResultException (message);
-      }
-    }
-    
-    private ILoadedObjectData GetLoadedObject (DataContainer dataContainer, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
-    {
-      if (dataContainer == null)
-        return new NullLoadedObjectData ();
-      else
-      {
-        var existingLoadedObject = alreadyLoadedObjectDataProvider.GetLoadedObject (dataContainer.ID);
-        return existingLoadedObject ?? new FreshlyLoadedObjectData (dataContainer);
       }
     }
   }

@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _parentTransaction.Execute (order1.Delete);
       _parentTransaction.IsReadOnly = true;
       
-      _persistenceStrategy.LoadDataContainers (new[] { order1.ID }, false);
+      _persistenceStrategy.LoadObjectData (new[] { order1.ID }, false);
     }
 
     [Test]

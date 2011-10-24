@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetScalar ()
     {
-      _persistenceStrategyMock.Expect (mock => mock.LoadScalarForQuery (_scalarQuery)).Return (27);
+      _persistenceStrategyMock.Expect (mock => mock.ExecuteScalarQuery (_scalarQuery)).Return (27);
       _persistenceStrategyMock.Replay ();
 
       var result = _queryManager.GetScalar (_scalarQuery);

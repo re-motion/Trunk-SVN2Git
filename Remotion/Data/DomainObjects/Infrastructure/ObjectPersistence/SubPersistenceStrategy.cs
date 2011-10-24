@@ -73,75 +73,69 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _parentTransaction.CreateNewObjectID (classDefinition);
     }
 
-    public virtual DataContainer LoadDataContainer (ObjectID id)
+    public virtual ILoadedObjectData LoadObjectData (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {
         DomainObject parentObject = _parentTransaction.GetObject (id, false);
-        return TransferParentObject (parentObject.ID);
+        return TransferParentObject (parentObject);
       }
     }
 
-    public virtual DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       if (objectIDs.Count == 0)
-        return new DataContainerCollection();
+        return Enumerable.Empty<ILoadedObjectData>();
 
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {
         var parentObjects = _parentTransaction.GetObjects<DomainObject> (objectIDs, throwOnNotFound).Where (obj => obj != null);
-        var loadedDataContainers = new DataContainerCollection();
-        foreach (DomainObject parentObject in parentObjects)
-        {
-          DataContainer thisDataContainer = TransferParentObject (parentObject.ID);
-          loadedDataContainers.Add (thisDataContainer);
-        }
-
-        return loadedDataContainers;
+        // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
+        return parentObjects.Select (parentObject => (ILoadedObjectData) TransferParentObject (parentObject)).ToArray ();
       }
     }
 
-    public virtual DataContainer LoadRelatedDataContainer (DataContainer originatingDataContainer, RelationEndPointID relationEndPointID)
+    public virtual ILoadedObjectData ResolveObjectRelationData (
+        DataContainer originatingDataContainer, 
+        RelationEndPointID relationEndPointID, 
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       if (!relationEndPointID.Definition.IsVirtual)
-        throw new ArgumentException ("LoadRelatedDataContainer can only be called for virtual end points.", "relationEndPointID");
+        throw new ArgumentException ("ResolveObjectRelationData can only be called for virtual end points.", "relationEndPointID");
 
-      DomainObject parentRelatedObject;
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {
-        parentRelatedObject = _parentTransaction.GetRelatedObject (relationEndPointID);
-      }
+        var parentRelatedObject = _parentTransaction.GetRelatedObject (relationEndPointID);
 
-      if (parentRelatedObject != null)
-        return LoadDataContainer (parentRelatedObject.ID);
-      else
-        return null;
+        if (parentRelatedObject == null)
+          return new NullLoadedObjectData();
+        else
+        {
+          return TransferParentObject(parentRelatedObject, alreadyLoadedObjectDataProvider);
+        }
+      }
     }
 
-    public virtual DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    public virtual IEnumerable<ILoadedObjectData> ResolveCollectionRelationData (
+        RelationEndPointID relationEndPointID, 
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {
-        DomainObjectCollection parentObjects = _parentTransaction.GetRelatedObjects (relationEndPointID);
-
-        var transferredContainers = new DataContainerCollection();
-        foreach (DomainObject parentObject in parentObjects)
-        {
-          DataContainer transferredContainer = TransferParentObject (parentObject.ID);
-          transferredContainers.Add (transferredContainer);
-        }
-        return transferredContainers;
+        var parentObjects = _parentTransaction.GetRelatedObjects (relationEndPointID).Cast<DomainObject>();
+        // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
+        return parentObjects.Select (parentObject => TransferParentObject (parentObject, alreadyLoadedObjectDataProvider)).ToList ();
       }
     }
 
-    public virtual DataContainer[] LoadDataContainersForQuery (IQuery query)
+    public virtual IEnumerable<ILoadedObjectData> ExecuteCollectionQuery (IQuery query, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -153,21 +147,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
         var parentObjects = queryResult.AsEnumerable();
 
-        return parentObjects.Select (parentObject => TransferParentObject (parentObject.ID)).ToArray();
+        // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
+        return parentObjects.Select (parentObject => TransferParentObject (parentObject, alreadyLoadedObjectDataProvider)).ToList ();
       }
     }
 
-    public virtual object LoadScalarForQuery (IQuery query)
+    public virtual object ExecuteScalarQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
       return _parentTransaction.QueryManager.GetScalar (query);
     }
 
-    private DataContainer TransferParentObject (ObjectID objectID)
+    private ILoadedObjectData TransferParentObject (DomainObject parentRelatedObject, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
-      var parentDataContainer = _parentTransaction.DataManager.GetDataContainerWithLazyLoad (objectID);
-      return TransferParentContainer (parentDataContainer);
+      var existingLoadedObject = alreadyLoadedObjectDataProvider.GetLoadedObject (parentRelatedObject.ID);
+      if (existingLoadedObject != null)
+        return existingLoadedObject;
+      else
+        return TransferParentObject (parentRelatedObject);
+    }
+
+    private FreshlyLoadedObjectData TransferParentObject (DomainObject parentObject)
+    {
+      var parentDataContainer = _parentTransaction.DataManager.GetDataContainerWithLazyLoad (parentObject.ID);
+      var dataContainer = TransferParentContainer (parentDataContainer);
+      return new FreshlyLoadedObjectData (dataContainer);
     }
 
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)

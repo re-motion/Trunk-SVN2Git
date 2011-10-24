@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Collection)
         throw new ArgumentException ("A collection query cannot be used with GetScalar.", "query");
 
-      return _persistenceStrategy.LoadScalarForQuery (query);
+      return _persistenceStrategy.ExecuteScalarQuery (query);
     }
 
     /// <summary>

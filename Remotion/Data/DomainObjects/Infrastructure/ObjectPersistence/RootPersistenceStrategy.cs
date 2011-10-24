@@ -58,50 +58,64 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
     }
 
-    public virtual DataContainer LoadDataContainer (ObjectID id)
+    public virtual ILoadedObjectData LoadObjectData (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
       using (var persistenceManager = CreatePersistenceManager())
       {
-        return persistenceManager.LoadDataContainer (id);
+        var dataContainer = persistenceManager.LoadDataContainer (id);
+        Assertion.IsNotNull (dataContainer);
+        return new FreshlyLoadedObjectData (dataContainer);
       }
     }
 
-    public virtual DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       if (objectIDs.Count == 0)
-        return new DataContainerCollection();
+        return Enumerable.Empty<ILoadedObjectData>();
 
       using (var persistenceManager = CreatePersistenceManager())
       {
-        return persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
+        var dataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
+        return dataContainers.Select (
+            dataContainer =>
+            {
+              Assertion.IsNotNull (dataContainer);
+              return (ILoadedObjectData) new FreshlyLoadedObjectData (dataContainer);
+            });
       }
     }
 
-    public virtual DataContainer LoadRelatedDataContainer (DataContainer originatingDataContainer, RelationEndPointID relationEndPointID)
+    public virtual ILoadedObjectData ResolveObjectRelationData (
+        DataContainer originatingDataContainer, 
+        RelationEndPointID relationEndPointID, 
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
       using (var persistenceManager = CreatePersistenceManager())
       {
-        return persistenceManager.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
+        var dataContainer = persistenceManager.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
+        return GetLoadedObjectData (dataContainer, alreadyLoadedObjectDataProvider);
       }
     }
 
-    public virtual DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    public virtual IEnumerable<ILoadedObjectData> ResolveCollectionRelationData (
+        RelationEndPointID relationEndPointID, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
       using (var persistenceManager = CreatePersistenceManager())
       {
-        return persistenceManager.LoadRelatedDataContainers (relationEndPointID);
+        var dataContainers = persistenceManager.LoadRelatedDataContainers (relationEndPointID);
+        return dataContainers.Select (dc => GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider));
       }
     }
 
-    public virtual DataContainer[] LoadDataContainersForQuery (IQuery query)
+    public virtual IEnumerable<ILoadedObjectData> ExecuteCollectionQuery (IQuery query, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -111,11 +125,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       using (var storageProviderManager = CreateStorageProviderManager())
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderDefinition.Name);
-        return provider.ExecuteCollectionQuery (query).ToArray();
+        var dataContainers = provider.ExecuteCollectionQuery (query);
+        return dataContainers.Select (dc => GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider));
       }
     }
 
-    public virtual object LoadScalarForQuery (IQuery query)
+    public virtual object ExecuteScalarQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -160,6 +175,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       var listenerFactories = SafeServiceLocator.Current.GetAllInstances<IPersistenceExtensionFactory>();
       return new CompoundPersistenceExtension (listenerFactories.SelectMany (f => f.CreatePersistenceExtensions (_transactionID)));
+    }
+
+    private ILoadedObjectData GetLoadedObjectData (DataContainer dataContainer, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    {
+      if (dataContainer == null)
+        return new NullLoadedObjectData();
+
+      var knownLoadedObjectData = alreadyLoadedObjectDataProvider.GetLoadedObject (dataContainer.ID);
+      return knownLoadedObjectData ?? new FreshlyLoadedObjectData (dataContainer);
     }
   }
 }

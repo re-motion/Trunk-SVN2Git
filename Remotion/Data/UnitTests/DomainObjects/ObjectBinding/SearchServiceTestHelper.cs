@@ -17,7 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.ObjectBinding;
@@ -46,12 +46,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       return ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<T> (_persistenceStrategyStub);
     }
 
-    public void StubQueryResult (string queryID, DataContainer[] fakeResult)
+    public void StubQueryResult (string queryID, ILoadedObjectData[] fakeResult)
     {
-      _persistenceStrategyStub.Stub (stub => stub.LoadDataContainersForQuery (Arg<IQuery>.Matches (q => q.ID == queryID))).Return (fakeResult);
+      _persistenceStrategyStub
+          .Stub (stub => stub.ExecuteCollectionQuery (Arg<IQuery>.Matches (q => q.ID == queryID), Arg<ILoadedObjectDataProvider>.Is.Anything))
+          .Return (fakeResult);
     }
 
-    public void StubSearchAllObjectsQueryResult (Type domainObjectType, params DataContainer[] fakeResult)
+    public void StubSearchAllObjectsQueryResult (Type domainObjectType, params ILoadedObjectData[] fakeResult)
     {
       var query = (IQuery) PrivateInvoke.InvokeNonPublicMethod (new BindableDomainObjectSearchAllService (), "GetQuery", domainObjectType);
 
@@ -62,19 +64,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public T CreateTransactionWithStubbedQuery<T> (string queryID) where T : ClientTransaction
     {
       var transaction = CreateStubbableTransaction<T>();
-      
-      var fakeResultDataContainer = CreateFakeResultDataContainer ();
+
+      var fakeResultDataContainer = CreateFakeResultData (transaction);
       StubQueryResult (queryID, new[] { fakeResultDataContainer });
       
       return transaction;
     }
 
-    public DataContainer CreateFakeResultDataContainer ()
+    public ILoadedObjectData CreateFakeResultData (ClientTransaction clientTransaction)
     {
-      return DataContainer.CreateForExisting (
+      var existingDataContainer = DataContainer.CreateForExisting (
           new ObjectID (typeof (OppositeBidirectionalBindableDomainObject), Guid.NewGuid ()),
           null,
           pd => pd.DefaultValue);
+      existingDataContainer.SetDomainObject (LifetimeService.GetObjectReference (clientTransaction, existingDataContainer.ID));
+      ClientTransactionTestHelper.GetDataManager (clientTransaction).RegisterDataContainer (existingDataContainer);
+      return new AlreadyExistingLoadedObjectData (existingDataContainer);
     }
   }
 }

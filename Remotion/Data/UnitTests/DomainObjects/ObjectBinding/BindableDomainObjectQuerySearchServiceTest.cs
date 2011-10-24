@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var transaction = _searchServiceTestHelper.CreateStubbableTransaction<ClientTransaction> ();
       _transactionScope = transaction.EnterDiscardingScope ();
 
-      var fakeResultDataContainer = _searchServiceTestHelper.CreateFakeResultDataContainer ();
+      var fakeResultDataContainer = _searchServiceTestHelper.CreateFakeResultData (transaction);
       _searchServiceTestHelper.StubQueryResult (_stubbedQueryID, new[] { fakeResultDataContainer });
 
       var referencingObject = SampleBindableMixinDomainObject.NewObject ();

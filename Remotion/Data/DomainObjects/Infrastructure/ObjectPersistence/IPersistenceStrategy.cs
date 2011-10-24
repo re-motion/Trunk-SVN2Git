@@ -40,10 +40,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     ObjectID CreateNewObjectID (ClassDefinition classDefinition);
 
     /// <summary>
-    /// Loads a data container from the underlying data source.
+    /// Loads the data for the given <see cref="ObjectID"/> from the underlying data source.
     /// </summary>
-    /// <param name="id">The id of the <see cref="DataContainer"/> to load.</param>
-    /// <returns>A <see cref="DataContainer"/> with the given <paramref name="id"/>.</returns>
+    /// <param name="id">The id of the data to load.</param>
+    /// <returns>An <see cref="ILoadedObjectData"/> instance for the given <paramref name="id"/>.</returns>
     /// <remarks>
     /// <para>
     /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
@@ -55,16 +55,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
     /// </para>
     /// </remarks>
-    DataContainer LoadDataContainer (ObjectID id);
+    ILoadedObjectData LoadObjectData (ObjectID id);
 
     /// <summary>
-    /// Loads a number of data containers from the underlying data source.
+    /// Loads the data for a number of <see cref="ObjectID"/> values from the underlying data source.
     /// </summary>
-    /// <param name="objectIDs">The ids of the <see cref="DataContainer"/> objects to load.</param>
-    /// <returns>A <see cref="DataContainerCollection"/> with the loaded containers in the same order as in <paramref name="objectIDs"/>.</returns>
+    /// <param name="objectIDs">The ids of the data to load.</param>
     /// <param name="throwOnNotFound">If <see langword="true" />, this method should throw a <see cref="BulkLoadException"/> if a data container 
-    /// cannot be found for an <see cref="ObjectID"/>. If <see langword="false" />, the method should proceed as if the invalid ID hadn't been given.
+    ///   cannot be found for an <see cref="ObjectID"/>. If <see langword="false" />, the method should represent the unknown ID as a 
+    ///   <see cref="NullLoadedObjectData"/> object.
     /// </param>
+    /// <returns>A sequence of <see cref="ILoadedObjectData"/> instances in the same order as in <paramref name="objectIDs"/>. Items that
+    /// couldn't be found are represented by a <see cref="NullLoadedObjectData"/> if <paramref name="throwOnNotFound"/> is set to 
+    /// <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// <para>
     /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
@@ -76,49 +80,62 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
     /// </para>
     /// </remarks>
-    DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
+    IEnumerable<ILoadedObjectData> LoadObjectData (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
 
     /// <summary>
-    /// Loads the related <see cref="DataContainer"/> for a given <see cref="RelationEndPointID"/>.
+    /// Resolves the relation identified by the given <see cref="RelationEndPointID"/>, loading the related object's data unless already available.
     /// </summary>
-    /// <param name="originatingDataContainer">
-    ///   A <see cref="DataContainer"/> representing the object whose related object's <see cref="DataContainer"/> should be loaded.
-    /// </param>
-    /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> of the end point that should be evaluated.
-    ///   <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
-    /// <returns>The related <see cref="DataContainer"/>.</returns>
+    /// <param name="originatingDataContainer">A <see cref="DataContainer"/> representing the object whose related object's <see cref="DataContainer"/> should be loaded.</param>
+    /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> of the end point that should be resolved.
+    /// <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/> (i.e., represent a single object, not a collection).
+    /// Must not be <see langword="null"/>.</param>
+    /// <param name="alreadyLoadedObjectDataProvider">An implementation of <see cref="ILoadedObjectDataProvider"/> that is used to determine
+    /// whether the result object is already known by the <see cref="ClientTransaction"/>. If so, the existing object data is returned; otherwise,
+    /// the data is loaded and returned.</param>
+    /// <returns>
+    /// An <see cref="ILoadedObjectData"/> instance representing the related object. If the object already exists, the existing object
+    /// is returned. Otherwise, a new one is created. If the related object is <see langword="null"/>, a <see cref="NullLoadedObjectData"/> instance
+    /// is returned.
+    /// </returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-    /// <exception cref="System.InvalidCastException"><paramref name="relationEndPointID"/> does not refer to an 
+    /// <exception cref="System.InvalidCastException"><paramref name="relationEndPointID"/> does not refer to an
     /// <see cref="ObjectEndPoint"/></exception>
     /// <exception cref="Persistence.PersistenceException">
-    ///   The related object could not be loaded, but is mandatory.<br /> -or- <br />
-    ///   The relation refers to non-existing object.<br /> -or- <br />
-    ///   <paramref name="relationEndPointID"/> does not refer to an <see cref="ObjectEndPoint"/>.
+    /// The related object could not be loaded, but is mandatory.<br/> -or- <br/>
+    /// The relation refers to non-existing object.<br/> -or- <br/>
+    /// 	<paramref name="relationEndPointID"/> does not refer to an <see cref="ObjectEndPoint"/>.
     /// </exception>
     /// <exception cref="Persistence.StorageProviderException">
-    ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
-    ///   An error occurred while accessing the data source.
+    /// The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br/> -or- <br/>
+    /// An error occurred while accessing the data source.
     /// </exception>
     /// <remarks>
-    /// <para>
-    /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
+    /// 	<para>
+    /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a
     /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
-    /// All of these activities are performed by the caller. 
+    /// All of these activities are performed by the caller.
     /// </para>
-    /// <para>
-    /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
+    /// 	<para>
+    /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and
     /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
     /// </para>
     /// </remarks>
-    DataContainer LoadRelatedDataContainer (DataContainer originatingDataContainer, RelationEndPointID relationEndPointID);
+    ILoadedObjectData ResolveObjectRelationData (
+        DataContainer originatingDataContainer, 
+        RelationEndPointID relationEndPointID, 
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
 
     /// <summary>
-    /// Loads all related <see cref="DataContainer"/>s of a given <see cref="RelationEndPointID"/>.
+    /// Resolves the relation identified by the given <see cref="RelationEndPointID"/>, loading all the related objects' data unless already available.
     /// </summary>
     /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> of the end point that should be evaluated.
-    /// <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
+    ///   <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
+    /// <param name="alreadyLoadedObjectDataProvider">An implementation of <see cref="ILoadedObjectDataProvider"/> that is used to determine
+    ///   whether the result object is already known by the <see cref="ClientTransaction"/>. If so, the existing object data is returned; otherwise,
+    ///   the data is loaded and returned.</param>
     /// <returns>
-    /// A <see cref="DataContainerCollection"/> containing all related <see cref="DataContainer"/>s.
+    /// A sequence of <see cref="ILoadedObjectData"/> instances representing the related objects. If an object already exists, the existing object
+    /// is returned. Otherwise, a new one is created.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -136,14 +153,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// 	<paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br/> -or- <br/>
     /// The StorageProvider for the related objects could not be initialized.
     /// </exception>
-    DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
+    IEnumerable<ILoadedObjectData> ResolveCollectionRelationData (RelationEndPointID relationEndPointID, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
 
     /// <summary>
-    /// Executes the given <see cref="IQuery"/> and returns its results as an array of <see cref="DataContainer"/> instances.
+    /// Executes the given <see cref="IQuery"/>, loading the result objects' data unless already available.
     /// </summary>
     /// <param name="query">The <see cref="IQuery"/> to be executed.</param>
+    /// <param name="alreadyLoadedObjectDataProvider">An implementation of <see cref="ILoadedObjectDataProvider"/> that is used to determine
+    ///   whether the result object is already known by the <see cref="ClientTransaction"/>. If so, the existing object data is returned; otherwise,
+    ///   the data is loaded and returned.</param>
     /// <returns>
-    /// An array of <see cref="DataContainer"/> representing the result of the query.
+    /// A sequence of <see cref="ILoadedObjectData"/> instances representing the result of the query.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -167,7 +187,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
     /// An error occurred while executing the query.
     /// </exception>
-    DataContainer[] LoadDataContainersForQuery (IQuery query);
+    IEnumerable<ILoadedObjectData> ExecuteCollectionQuery (IQuery query, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
 
     /// <summary>
     /// Executes the given <see cref="IQuery"/> and returns its result as a scalar value.
@@ -186,7 +206,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
     /// An error occurred while executing the query.
     /// </exception>
-    object LoadScalarForQuery (IQuery query);
+    object ExecuteScalarQuery (IQuery query);
 
     /// <summary>
     /// Persists the given data.
