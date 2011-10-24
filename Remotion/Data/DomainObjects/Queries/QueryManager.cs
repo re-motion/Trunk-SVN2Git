@@ -34,6 +34,7 @@ namespace Remotion.Data.DomainObjects.Queries
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly IDataManager _dataManager;
+    private readonly ILoadedObjectProvider _alreadyLoadedObjectProvider;
 
     // construction and disposing
 
@@ -46,24 +47,29 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="clientTransaction">The client transaction to use for the notifications via <paramref name="transactionEventSink"/>.</param>
     /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
     /// <param name="dataManager">The <see cref="IDataManager"/> managing the data inside the <see cref="ClientTransaction"/>.</param>
+    /// <param name="alreadyLoadedObjectProvider">The <see cref="ILoadedObjectProvider"/> to use to determine objects already loaded into the 
+    /// transaction.</param>
     public QueryManager (
         IPersistenceStrategy persistenceStrategy,
         IObjectLoader objectLoader,
         ClientTransaction clientTransaction,
         IClientTransactionListener transactionEventSink,
-        IDataManager dataManager)
+        IDataManager dataManager,
+        ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
 
       _persistenceStrategy = persistenceStrategy;
       _objectLoader = objectLoader;
       _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
       _dataManager = dataManager;
+      _alreadyLoadedObjectProvider = alreadyLoadedObjectProvider;
     }
 
     public IPersistenceStrategy PersistenceStrategy
@@ -89,6 +95,11 @@ namespace Remotion.Data.DomainObjects.Queries
     public IDataManager DataManager
     {
       get { return _dataManager; }
+    }
+
+    public ILoadedObjectProvider AlreadyLoadedObjectProvider
+    {
+      get { return _alreadyLoadedObjectProvider; }
     }
 
     /// <summary>
@@ -168,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Scalar)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
-      var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query, _dataManager);
+      var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query, _dataManager, _alreadyLoadedObjectProvider);
       var queryResult = new QueryResult<T> (query, resultArray);
       return _transactionEventSink.FilterQueryResult (_clientTransaction, queryResult);
     }

@@ -30,17 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public static class ClientTransactionObjectMother
   {
-    public static ClientTransaction CreatePartialMock ()
-    {
-      return CreatePartialMock(new MockRepository ());
-    }
-
-    public static ClientTransaction CreatePartialMock (MockRepository mockRepository)
-    {
-      var componentFactory = RootClientTransactionComponentFactory.Create();
-      return mockRepository.PartialMock<ClientTransaction> (componentFactory);
-    }
-
     public static ClientTransaction CreateStrictMock ()
     {
       return CreateStrictMock(new MockRepository ());
@@ -138,7 +127,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<ClientTransaction>.Is.Anything,
               Arg<IPersistenceStrategy>.Is.Anything,
               Arg<IObjectLoader>.Is.Anything,
-              Arg<IDataManager>.Is.Anything,
+              Arg<IDataManager>.Is.Anything, 
+              Arg<IInvalidDomainObjectManager>.Is.Anything,
               Arg<ReadOnlyClientTransactionListener>.Is.Anything))
           .Return (queryManager);
       return componentFactoryStub;

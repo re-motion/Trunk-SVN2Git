@@ -116,15 +116,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IPersistenceStrategy persistenceStrategy,
         IObjectLoader objectLoader,
         IDataManager dataManager,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
         IClientTransactionListener eventSink)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
 
-      return ClientTransactionComponentFactoryUtility.CreateQueryManager (constructedTransaction, persistenceStrategy, objectLoader, dataManager, eventSink);
+      return ClientTransactionComponentFactoryUtility.CreateQueryManager (
+          constructedTransaction, 
+          persistenceStrategy, 
+          objectLoader, 
+          dataManager, 
+          invalidDomainObjectManager,
+          eventSink);
     }
 
     public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction)

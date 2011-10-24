@@ -16,12 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   public interface ILoadedObjectRegistrationAgent
   {
-    DomainObject RegisterIfRequired (ILoadedObject loadedObject);
-    IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObject> loadedObjects);
+    DomainObject RegisterIfRequired (ILoadedObject loadedObject, IDataManager dataManager);
+    IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObject> loadedObjects, IDataManager dataManager);
   }
 }

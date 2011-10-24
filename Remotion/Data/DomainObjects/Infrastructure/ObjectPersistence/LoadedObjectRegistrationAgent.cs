@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// Takes <see cref="ILoadedObject"/> instances, registers all freshly loaded ones - triggering the necessary load events - and then returns
   /// the corresponding <see cref="DomainObject"/> instances.
   /// </summary>
+  [Serializable]
   public class LoadedObjectRegistrationAgent : ILoadedObjectRegistrationAgent
   {
     private class RegisteredDataContainerGatheringVisitor : ILoadedObjectVisitor
@@ -104,27 +105,34 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
-    private readonly IDataManager _dataManager;
 
-    public LoadedObjectRegistrationAgent (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink, IDataManager dataManager)
+    public LoadedObjectRegistrationAgent (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
-      _dataManager = dataManager;
     }
 
-    public DomainObject RegisterIfRequired (ILoadedObject loadedObject)
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
+
+    public IClientTransactionListener TransactionEventSink
+    {
+      get { return _transactionEventSink; }
+    }
+
+    public DomainObject RegisterIfRequired (ILoadedObject loadedObject, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("loadedObject", loadedObject);
 
-      return RegisterIfRequired (new[] { loadedObject }).Single();
+      return RegisterIfRequired (new[] { loadedObject }, dataManager).Single ();
     }
 
-    public IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObject> loadedObjects)
+    public IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObject> loadedObjects, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
 
@@ -132,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       foreach (var loadedObject in loadedObjects)
         loadedObject.Accept (visitor);
 
-      visitor.RegisterAllDataContainers (_dataManager, _clientTransaction, _transactionEventSink);
+      visitor.RegisterAllDataContainers (dataManager, _clientTransaction, _transactionEventSink);
       return visitor.GetAllDomainObjects ();
     }
   }

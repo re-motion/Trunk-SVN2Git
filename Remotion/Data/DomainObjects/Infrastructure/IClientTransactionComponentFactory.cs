@@ -48,12 +48,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IClientTransactionListener eventSink);
     IDataManager CreateDataManager (
         ClientTransaction constructedTransaction, IInvalidDomainObjectManager invalidDomainObjectManager, IObjectLoader objectLoader);
-    IQueryManager CreateQueryManager (
-        ClientTransaction constructedTransaction,
-        IPersistenceStrategy persistenceStrategy,
-        IObjectLoader objectLoader,
-        IDataManager dataManager,
-        IClientTransactionListener eventSink);
+    IQueryManager CreateQueryManager (ClientTransaction constructedTransaction, IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IDataManager dataManager, IInvalidDomainObjectManager invalidDomainObjectManager, IClientTransactionListener eventSink);
     ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction);
     
     // This member is likely to be removed in the future

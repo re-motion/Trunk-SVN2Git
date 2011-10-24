@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -181,7 +180,7 @@ public class ClientTransaction
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
     _objectLoader = componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
     _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager, _objectLoader);
-    _queryManager = componentFactory.CreateQueryManager (this, _persistenceStrategy, _objectLoader, _dataManager, _eventSink);
+    _queryManager = componentFactory.CreateQueryManager (this, _persistenceStrategy, _objectLoader, _dataManager, _invalidDomainObjectManager, _eventSink);
 
     _extensions = componentFactory.CreateExtensionCollection (this);
     _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));

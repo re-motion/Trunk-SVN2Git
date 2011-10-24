@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -53,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
       _transactionEventReceiverMock = _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_clientTransaction);
 
-      _agent = new LoadedObjectRegistrationAgent (_clientTransaction, _eventSinkMock, _dataManagerMock);
+      _agent = new LoadedObjectRegistrationAgent (_clientTransaction, _eventSinkMock);
     }
 
     [Test]
@@ -63,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll();
 
-      var result = _agent.RegisterIfRequired (alreadyExistingLoadedObject);
+      var result = _agent.RegisterIfRequired (alreadyExistingLoadedObject, _dataManagerMock);
 
       _eventSinkMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -101,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       }
       _mockRepository.ReplayAll();
 
-      var result = _agent.RegisterIfRequired (freshlyLoadedObject);
+      var result = _agent.RegisterIfRequired (freshlyLoadedObject, _dataManagerMock);
 
       _mockRepository.VerifyAll();
 
@@ -116,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _agent.RegisterIfRequired (nullLoadedObject);
+      var result = _agent.RegisterIfRequired (nullLoadedObject, _dataManagerMock);
 
       _eventSinkMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -133,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _agent.RegisterIfRequired (alreadyExistingLoadedObject);
+      var result = _agent.RegisterIfRequired (alreadyExistingLoadedObject, _dataManagerMock);
 
       _eventSinkMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -189,7 +190,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       var result =
           _agent.RegisterIfRequired (
-              new ILoadedObject[] { freshlyLoadedObject1, alreadyExistingLoadedObject, freshlyLoadedObject2, nullLoadedObject, invalidLoadedObject });
+              new ILoadedObject[] { freshlyLoadedObject1, alreadyExistingLoadedObject, freshlyLoadedObject2, nullLoadedObject, invalidLoadedObject }, 
+              _dataManagerMock);
 
       _mockRepository.VerifyAll ();
 
@@ -246,10 +248,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository.ReplayAll ();
 
       Assert.That (
-          () => _agent.RegisterIfRequired (new ILoadedObject[] { freshlyLoadedObject1, freshlyLoadedObject2 }), 
+          () => _agent.RegisterIfRequired (new ILoadedObject[] { freshlyLoadedObject1, freshlyLoadedObject2 }, _dataManagerMock), 
           Throws.Exception.SameAs (exception));
 
       _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Serializability ()
+    {
+      var clientTransaction = ClientTransaction.CreateRootTransaction();
+      var agent = new LoadedObjectRegistrationAgent (clientTransaction, ClientTransactionTestHelper.GetTransactionEventSink (clientTransaction));
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (agent);
+
+      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedInstance.TransactionEventSink, Is.Not.Null);
     }
 
     private FreshlyLoadedObject GetFreshlyLoadedObject ()

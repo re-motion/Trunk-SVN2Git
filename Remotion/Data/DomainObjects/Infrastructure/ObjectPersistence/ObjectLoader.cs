@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
@@ -39,34 +38,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   public class ObjectLoader : IObjectLoader
   {
     private readonly IPersistenceStrategy _persistenceStrategy;
-    private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _transactionEventSink;
     private readonly IEagerFetcher _eagerFetcher;
+    private readonly ILoadedObjectRegistrationAgent _loadedObjectRegistrationAgent;
 
     public ObjectLoader (
-        ClientTransaction clientTransaction,
         IPersistenceStrategy persistenceStrategy,
-        IClientTransactionListener transactionEventSink,
-        IEagerFetcher eagerFetcher/*, 
-        ILoadedObjectRegistrationAgent loadedObjectRegistrationAgent,
-        ILoadedObjectProvider alreadyLoadedObjectProvider*/)
+        IEagerFetcher eagerFetcher, 
+        ILoadedObjectRegistrationAgent loadedObjectRegistrationAgent)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
       ArgumentUtility.CheckNotNull ("eagerFetcher", eagerFetcher);
-      //ArgumentUtility.CheckNotNull ("loadedObjectRegistrationAgent", loadedObjectRegistrationAgent);
-      //ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
+      ArgumentUtility.CheckNotNull ("loadedObjectRegistrationAgent", loadedObjectRegistrationAgent);
 
       _persistenceStrategy = persistenceStrategy;
-      _clientTransaction = clientTransaction;
-      _transactionEventSink = transactionEventSink;
       _eagerFetcher = eagerFetcher;
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
+      _loadedObjectRegistrationAgent = loadedObjectRegistrationAgent;
     }
 
     public IPersistenceStrategy PersistenceStrategy
@@ -74,14 +60,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _persistenceStrategy; }
     }
 
-    public IClientTransactionListener TransactionEventSink
-    {
-      get { return _transactionEventSink; }
-    }
-
     public IEagerFetcher EagerFetcher
     {
       get { return _eagerFetcher; }
+    }
+
+    public ILoadedObjectRegistrationAgent LoadedObjectRegistrationAgent
+    {
+      get { return _loadedObjectRegistrationAgent; }
     }
 
     public DomainObject LoadObject (ObjectID id, IDataManager dataManager)
@@ -90,14 +76,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainer = _persistenceStrategy.LoadDataContainer (id);
-      return UnwrapAndRegisterLoadedObject (dataContainer, dataManager);
+      Assertion.IsNotNull (dataContainer, "LoadDataContainer throws an exception if the ObjectID cannot be found.");
+
+      var loadedObject = new FreshlyLoadedObject (dataContainer);
+      return _loadedObjectRegistrationAgent.RegisterIfRequired (loadedObject, dataManager);
     }
 
     public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-
+      
       var dataContainers = _persistenceStrategy.LoadDataContainers (idsToBeLoaded, throwOnNotFound);
 
       // TODO 4428
@@ -106,17 +95,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       //    dataContainers.Select ((dc, i) => dc != null ? dc.ID : idsToBeLoaded[i]).SequenceEqual (idsToBeLoaded), 
       //    "Persistence strategy result must be in the same order as the input IDs (with not found objects replaced with null).");
 
-      var objectDictionary = UnwrapAndRegisterLoadedObjects<DomainObject> (dataContainers, dataManager)
+      var loadedObjects = dataContainers.Select (dc => dc == null ? (ILoadedObject) new NullLoadedObject() : new FreshlyLoadedObject (dc));
+      var objectDictionary = _loadedObjectRegistrationAgent
+          .RegisterIfRequired (loadedObjects, dataManager)
+          .Select (ConvertLoadedDomainObject<DomainObject>)
           .Where (domainObject => domainObject != null)
           .ToDictionary (domainObject => domainObject.ID);
       return idsToBeLoaded.Select (id => objectDictionary.GetValueOrDefault (id)).ToArray();
     }
 
-    public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager)
+    public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
+      
       if (!relationEndPointID.Definition.IsVirtual)
         throw new ArgumentException ("LoadRelatedObject can only be used with virtual end points.", "relationEndPointID");
 
@@ -125,53 +118,41 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       var originatingDataContainer = dataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
       var relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
-      return UnwrapAndRegisterLoadedObject (relatedDataContainer, dataManager);
+      var loadedObject = GetLoadedObject (relatedDataContainer, alreadyLoadedObjectProvider);
+      return _loadedObjectRegistrationAgent.RegisterIfRequired (loadedObject, dataManager);
     }
 
-    public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager)
+    public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
 
       if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID);
-      return UnwrapAndRegisterLoadedObjects<DomainObject> (relatedDataContainers, dataManager).ToArray();
+      var loadedObjects = relatedDataContainers.Select (dc => GetLoadedObject (dc, alreadyLoadedObjectProvider));
+      return _loadedObjectRegistrationAgent.RegisterIfRequired (loadedObjects, dataManager).Select (ConvertLoadedDomainObject<DomainObject>).ToArray();
     }
 
-    public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject
+    public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
 
       var dataContainers = _persistenceStrategy.LoadDataContainersForQuery (query);
-      var resultArray = UnwrapAndRegisterLoadedObjects<T> (dataContainers, dataManager).ToArray();
+      var loadedObjects = dataContainers.Select (dc => GetLoadedObject (dc, alreadyLoadedObjectProvider));
+      var resultArray = _loadedObjectRegistrationAgent.RegisterIfRequired (loadedObjects, dataManager).Select (ConvertLoadedDomainObject<T>).ToArray();
       
       if (resultArray.Length > 0)
       {
         foreach (var fetchQuery in query.EagerFetchQueries)
-          _eagerFetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this, dataManager);
+          _eagerFetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this, dataManager, alreadyLoadedObjectProvider);
       }
 
       return resultArray;
-    }
-
-    private IEnumerable<T> UnwrapAndRegisterLoadedObjects<T> (IEnumerable<DataContainer> queryResult, IDataManager dataManager) 
-        where T : DomainObject
-    {
-      var registrar = GetLoadedObjectRegistrationAgent (dataManager);
-      var loadedObjects = queryResult.Select (dc => GetLoadedObject (dc, dataManager));
-
-      return registrar.RegisterIfRequired (loadedObjects).Select (ConvertLoadedDomainObject<T>);
-    }
-
-    private DomainObject UnwrapAndRegisterLoadedObject (DataContainer dataContainer, IDataManager dataManager)
-    {
-      var registrar = GetLoadedObjectRegistrationAgent (dataManager);
-      var loadedObject = GetLoadedObject (dataContainer, dataManager);
-
-      return registrar.RegisterIfRequired (loadedObject);
     }
 
     private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject
@@ -188,63 +169,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
     }
     
-    private ILoadedObject GetLoadedObject (DataContainer dataContainer, IDataManager dataManager)
+    private ILoadedObject GetLoadedObject (DataContainer dataContainer, ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
       if (dataContainer == null)
         return new NullLoadedObject ();
       else
       {
-        var alreadyLoadedObjectProvider = GetLoadedObjectProvider(dataManager);
         var existingLoadedObject = alreadyLoadedObjectProvider.GetLoadedObject (dataContainer.ID);
         return existingLoadedObject ?? new FreshlyLoadedObject (dataContainer);
       }
     }
-
-    // TODO 4427: Replace with injected instance
-    private ILoadedObjectProvider GetLoadedObjectProvider (IDataManager dataManager)
-    {
-      return new LoadedObjectProvider (dataManager, new FakeInvalidDomainObjectManager());
-    }
-
-    // TODO 4427: Replace with injected instance
-    private ILoadedObjectRegistrationAgent GetLoadedObjectRegistrationAgent (IDataManager dataManager)
-    {
-      return new LoadedObjectRegistrationAgent (_clientTransaction, _transactionEventSink, dataManager);
-    }
-
-    // TODO 4427: Remove
-    class FakeInvalidDomainObjectManager : IInvalidDomainObjectManager
-    {
-      public IEnumerable<ObjectID> InvalidObjectIDs
-      {
-        get { throw new NotImplementedException(); }
-      }
-
-      public bool IsInvalid (ObjectID id)
-      {
-        return false;
-      }
-
-      public DomainObject GetInvalidObjectReference (ObjectID id)
-      {
-        throw new NotImplementedException();
-      }
-
-      public bool MarkInvalid (DomainObject domainObject)
-      {
-        throw new NotImplementedException();
-      }
-
-      public bool MarkNotInvalid (ObjectID objectID)
-      {
-        throw new NotImplementedException();
-      }
-
-      public void MarkInvalidThroughHierarchy (DomainObject domainObject)
-      {
-        throw new NotImplementedException();
-      }
-    }
-
   }
 }

@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
@@ -46,17 +45,29 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       get { return _registrationAgent; }
     }
 
+    /// <summary>
+    /// Performs the eager fetching.
+    /// </summary>
+    /// <param name="originalObjects">The original objects.</param>
+    /// <param name="relationEndPointDefinition">The relation end point definition.</param>
+    /// <param name="fetchQuery">The fetch query.</param>
+    /// <param name="fetchQueryResultLoader">The fetch query result loader.</param>
+    /// <param name="dataManager">The data manager.</param>
+    /// <param name="alreadyLoadedObjectProvider">The already loaded object provider.</param>
     public void PerformEagerFetching (
         DomainObject[] originalObjects,
         IRelationEndPointDefinition relationEndPointDefinition,
         IQuery fetchQuery,
         IObjectLoader fetchQueryResultLoader,
-        IDataManager dataManager)
+        IDataManager dataManager,
+        ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("originalObjects", originalObjects);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
       ArgumentUtility.CheckNotNull ("fetchQueryResultLoader", fetchQueryResultLoader);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
 
       s_log.DebugFormat (
           "Eager fetching objects for {0} via query {1} ('{2}').",
@@ -65,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
           fetchQuery.Statement);
 
       // Executing the query will automatically register all loaded DomainObjects. End-points will be explicitly marked complete below.
-      var fetchedObjects = fetchQueryResultLoader.LoadCollectionQueryResult<DomainObject> (fetchQuery, dataManager);
+      var fetchedObjects = fetchQueryResultLoader.LoadCollectionQueryResult<DomainObject> (fetchQuery, dataManager, alreadyLoadedObjectProvider);
       s_log.DebugFormat (
           "The eager fetch query yielded {0} related objects for {1} original objects.",
           fetchedObjects.Length,

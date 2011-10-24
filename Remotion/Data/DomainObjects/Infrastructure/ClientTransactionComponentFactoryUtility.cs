@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
@@ -67,14 +68,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
               new FetchedVirtualObjectRelationDataRegistrationAgent(),
               new FetchedCollectionRelationDataRegistrationAgent());
       var eagerFetcher = new EagerFetcher (registrationAgent);
-      return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
+      return new ObjectLoader (
+          persistenceStrategy,
+          eagerFetcher,
+          new LoadedObjectRegistrationAgent (clientTransaction, eventSink));
     }
 
    public static IQueryManager CreateQueryManager (
         ClientTransaction clientTransaction,
         IPersistenceStrategy persistenceStrategy,
         IObjectLoader objectLoader,
-        IDataManager dataManager, 
+        IDataManager dataManager,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
         IClientTransactionListener eventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
@@ -82,8 +87,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+     ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
 
-      return new QueryManager (persistenceStrategy, objectLoader, clientTransaction, eventSink, dataManager);
+     return new QueryManager (
+         persistenceStrategy,
+         objectLoader,
+         clientTransaction,
+         eventSink,
+         dataManager,
+         new LoadedObjectProvider (dataManager, invalidDomainObjectManager));
     }
   }
 }

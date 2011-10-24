@@ -39,9 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private DataManager _dataManager;
-    private DataManager _dataManagerWithMocks;
+
+    private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
     private IObjectLoader _objectLoaderMock;
     private IRelationEndPointManager _endPointManagerMock;
+    private DataManager _dataManagerWithMocks;
 
     public override void SetUp ()
     {
@@ -53,9 +55,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
       _endPointManagerMock = MockRepository.GenerateStrictMock<IRelationEndPointManager> ();
 
+      _invalidDomainObjectManagerMock = MockRepository.GenerateMock<IInvalidDomainObjectManager>();
       _dataManagerWithMocks = new DataManager (
           ClientTransactionMock,
-          new RootInvalidDomainObjectManager (),
+          _invalidDomainObjectManagerMock,
           _objectLoaderMock,
           dm => _endPointManagerMock);
     }
@@ -914,7 +917,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObjects (endPointID, _dataManagerWithMocks))
+          .Expect (mock => mock.LoadRelatedObjects (
+              Arg.Is (endPointID), 
+              Arg.Is (_dataManagerWithMocks),
+              Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider 
+                  && ((LoadedObjectProvider) p).DataContainerProvider == _dataManagerWithMocks
+                  && ((LoadedObjectProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 
@@ -964,7 +972,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObject (endPointID, _dataManagerWithMocks))
+          .Expect (mock => mock.LoadRelatedObject (Arg
+              .Is (endPointID), 
+              Arg.Is (_dataManagerWithMocks),
+              Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider 
+                  && ((LoadedObjectProvider) p).DataContainerProvider == _dataManagerWithMocks
+                  && ((LoadedObjectProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
           .Return (loaderResult)
           .WhenCalled (mi => endPointMock.Stub (stub => stub.IsDataComplete).Return (true));
       _objectLoaderMock.Replay ();
@@ -994,7 +1007,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObject (endPointID, _dataManagerWithMocks))
+          .Expect (mock => mock.LoadRelatedObject (
+              Arg.Is (endPointID),
+              Arg.Is (_dataManagerWithMocks),
+              Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider
+                  && ((LoadedObjectProvider) p).DataContainerProvider == _dataManagerWithMocks
+                  && ((LoadedObjectProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 

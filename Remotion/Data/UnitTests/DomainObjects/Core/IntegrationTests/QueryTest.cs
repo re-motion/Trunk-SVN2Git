@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.DomainObjects.DataManagement;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
@@ -280,8 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void CollectionQuery_ThrowsOnInvalidObjects ()
+    public void CollectionQuery_AllowsInvalidObjects ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
@@ -290,10 +288,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var query = QueryFactory.CreateCollectionQuery (
           "test",
           order1.ID.StorageProviderDefinition,
-          "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
+          "SELECT * FROM [Order] WHERE OrderNo=1",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
-      ClientTransaction.Current.QueryManager.GetCollection (query);
+      
+      var result = ClientTransaction.Current.QueryManager.GetCollection (query);
+      Assert.That (result.ToArray(), Is.EqualTo (new[] { order1 }));
     }
 
     [Test]

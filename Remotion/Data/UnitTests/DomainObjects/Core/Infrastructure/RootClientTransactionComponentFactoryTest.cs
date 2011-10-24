@@ -31,6 +31,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Rhino.Mocks;
@@ -109,9 +110,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (result, Is.TypeOf (typeof (ObjectLoader)));
       Assert.That (((ObjectLoader) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
-      Assert.That (((ObjectLoader) result).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (((ObjectLoader) result).TransactionEventSink, Is.SameAs (eventSink));
       Assert.That (((ObjectLoader) result).EagerFetcher, Is.TypeOf<EagerFetcher> ());
+      Assert.That (((ObjectLoader) result).LoadedObjectRegistrationAgent, Is.TypeOf<LoadedObjectRegistrationAgent> ()
+          .With.Property ((LoadedObjectRegistrationAgent agent) => agent.ClientTransaction).SameAs (_fakeConstructedTransaction)
+          .With.Property ((LoadedObjectRegistrationAgent agent) => agent.TransactionEventSink).SameAs (eventSink));
 
       var eagerFetcher = ((EagerFetcher) ((ObjectLoader) result).EagerFetcher);
       Assert.That (eagerFetcher.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
@@ -163,14 +165,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
       var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
 
-      var result = _factory.CreateQueryManager (_fakeConstructedTransaction, persistenceStrategy, objectLoader, dataManager, eventSink);
+      var result = _factory.CreateQueryManager (_fakeConstructedTransaction, persistenceStrategy, objectLoader, dataManager, invalidDomainObjectManager, eventSink);
 
       Assert.That (result, Is.TypeOf (typeof (QueryManager)));
       Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
       Assert.That (((QueryManager) result).ObjectLoader, Is.SameAs (objectLoader));
       Assert.That (((QueryManager) result).DataManager, Is.SameAs (dataManager));
+      Assert.That (((QueryManager) result).AlreadyLoadedObjectProvider, Is.TypeOf<LoadedObjectProvider> ()
+          .With.Property ((LoadedObjectProvider provider) => provider.DataContainerProvider).SameAs (dataManager)
+          .With.Property ((LoadedObjectProvider provider) => provider.InvalidDomainObjectManager).SameAs (invalidDomainObjectManager));
       Assert.That (((QueryManager) result).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (((QueryManager) result).TransactionEventSink, Is.SameAs (eventSink));
     }

@@ -28,8 +28,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   {
     DomainObject LoadObject (ObjectID id, IDataManager dataManager);
     DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager);
-    DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager);
-    DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager);
-    T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject;
+    DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider);
+    DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider);
+    T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider) where T : DomainObject;
   }
 }

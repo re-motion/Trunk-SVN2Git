@@ -46,20 +46,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       return _decorated.LoadObjects (idsToBeLoaded, throwOnNotFound, dataManager);
     }
 
-    public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager)
+    public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
       ++NumberOfCallsToLoadRelatedObject;
-      return _decorated.LoadRelatedObject (relationEndPointID, dataManager);
+      return _decorated.LoadRelatedObject (relationEndPointID, dataManager, alreadyLoadedObjectProvider);
     }
 
-    public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager)
+    public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
-      return _decorated.LoadRelatedObjects (relationEndPointID, dataManager);
+      return _decorated.LoadRelatedObjects (relationEndPointID, dataManager, alreadyLoadedObjectProvider);
     }
 
-    public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T: DomainObject
+    public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider) where T: DomainObject
     {
-      return _decorated.LoadCollectionQueryResult<T> (query, dataManager);
+      return _decorated.LoadCollectionQueryResult<T> (query, dataManager, alreadyLoadedObjectProvider);
     }
   }
 }

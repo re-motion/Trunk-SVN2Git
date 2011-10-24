@@ -10,11 +10,6 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   /// </summary>
   public interface IEagerFetcher
   {
-    void PerformEagerFetching (
-        DomainObject[] originalObjects,
-        IRelationEndPointDefinition relationEndPointDefinition,
-        IQuery fetchQuery,
-        IObjectLoader fetchQueryResultLoader,
-        IDataManager dataManager);
+    void PerformEagerFetching (DomainObject[] originalObjects, IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery, IObjectLoader fetchQueryResultLoader, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider);
   }
 }
