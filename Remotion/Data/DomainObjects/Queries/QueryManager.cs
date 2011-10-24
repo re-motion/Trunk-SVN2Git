@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Scalar)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
-      var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query, _dataManager, _alreadyLoadedObjectProvider);
+      var resultArray = _objectLoader.GetOrLoadCollectionQueryResult<T> (query, _dataManager, _alreadyLoadedObjectProvider);
       var queryResult = new QueryResult<T> (query, resultArray);
       return _transactionEventSink.FilterQueryResult (_clientTransaction, queryResult);
     }

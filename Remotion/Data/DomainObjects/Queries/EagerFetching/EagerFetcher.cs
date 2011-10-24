@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
           fetchQuery.Statement);
 
       // Executing the query will automatically register all loaded DomainObjects. End-points will be explicitly marked complete below.
-      var fetchedObjects = fetchQueryResultLoader.LoadCollectionQueryResult<DomainObject> (fetchQuery, dataManager, alreadyLoadedObjectProvider);
+      var fetchedObjects = fetchQueryResultLoader.GetOrLoadCollectionQueryResult<DomainObject> (fetchQuery, dataManager, alreadyLoadedObjectProvider);
       s_log.DebugFormat (
           "The eager fetch query yielded {0} related objects for {1} original objects.",
           fetchedObjects.Length,

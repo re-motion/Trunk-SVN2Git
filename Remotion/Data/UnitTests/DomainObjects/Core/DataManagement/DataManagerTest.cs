@@ -917,7 +917,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObjects (
+          .Expect (mock => mock.GetOrLoadRelatedObjects (
               Arg.Is (endPointID), 
               Arg.Is (_dataManagerWithMocks),
               Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider 
@@ -972,7 +972,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObject (Arg
+          .Expect (mock => mock.GetOrLoadRelatedObject (Arg
               .Is (endPointID), 
               Arg.Is (_dataManagerWithMocks),
               Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider 
@@ -1007,7 +1007,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObject (
+          .Expect (mock => mock.GetOrLoadRelatedObject (
               Arg.Is (endPointID),
               Arg.Is (_dataManagerWithMocks),
               Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider

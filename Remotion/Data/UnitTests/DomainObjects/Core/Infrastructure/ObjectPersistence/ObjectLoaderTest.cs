@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void LoadRelatedObject_WithAlreadyExistingObject ()
+    public void GetOrLoadRelatedObject_WithAlreadyExistingObject ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order3, "OrderTicket");
       var fakeOriginatingDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order3);
@@ -185,14 +185,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Return (_domainObject1);
       _mockRepository.ReplayAll();      
 
-      var result = _objectLoader.LoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
+      var result = _objectLoader.GetOrLoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.SameAs (_domainObject1));
     }
 
     [Test]
-    public void LoadRelatedObject_WithFreshlyLoadedObject ()
+    public void GetOrLoadRelatedObject_WithFreshlyLoadedObject ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order3, "OrderTicket");
       var fakeOriginatingDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order3);
@@ -208,14 +208,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Return (_domainObject1);
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
+      var result = _objectLoader.GetOrLoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.SameAs (_domainObject1));
     }
 
     [Test]
-    public void LoadRelatedObject_WithNull ()
+    public void GetOrLoadRelatedObject_WithNull ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order3, "OrderTicket");
       var fakeOriginatingDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order3);
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Return (null);
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
+      var result = _objectLoader.GetOrLoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.Null);
@@ -238,24 +238,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "LoadRelatedObject can only be used with virtual end points.\r\nParameter name: relationEndPointID")]
-    public void LoadRelatedObject_NonVirtualID ()
+        "GetOrLoadRelatedObject can only be used with virtual end points.\r\nParameter name: relationEndPointID")]
+    public void GetOrLoadRelatedObject_NonVirtualID ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      _objectLoader.LoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
+      _objectLoader.GetOrLoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "LoadRelatedObject can only be used with one-valued end points.\r\nParameter name: relationEndPointID")]
-    public void LoadRelatedObject_WrongCardinality ()
+        "GetOrLoadRelatedObject can only be used with one-valued end points.\r\nParameter name: relationEndPointID")]
+    public void GetOrLoadRelatedObject_WrongCardinality ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_domainObject1.ID, "OrderItems");
-      _objectLoader.LoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
+      _objectLoader.GetOrLoadRelatedObject (endPointID, _dataManagerStub, _loadedObjectProviderMock);
     }
 
     [Test]
-    public void LoadRelatedObjects ()
+    public void GetOrLoadRelatedObjects ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
 
@@ -275,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadRelatedObjects (endPointID, _dataManagerStub, _loadedObjectProviderMock);
+      var result = _objectLoader.GetOrLoadRelatedObjects (endPointID, _dataManagerStub, _loadedObjectProviderMock);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
@@ -283,15 +283,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "LoadRelatedObjects can only be used with many-valued end points.\r\nParameter name: relationEndPointID")]
-    public void LoadRelatedObjects_WrongCardinality ()
+        "GetOrLoadRelatedObjects can only be used with many-valued end points.\r\nParameter name: relationEndPointID")]
+    public void GetOrLoadRelatedObjects_WrongCardinality ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      _objectLoader.LoadRelatedObjects (endPointID, _dataManagerStub, _loadedObjectProviderMock);
+      _objectLoader.GetOrLoadRelatedObjects (endPointID, _dataManagerStub, _loadedObjectProviderMock);
     }
 
     [Test]
-    public void LoadCollectionQueryResult ()
+    public void GetOrLoadCollectionQueryResult ()
     {
       _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
@@ -309,14 +309,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
     }
 
     [Test]
-    public void LoadCollectionQueryResult_WithNulls ()
+    public void GetOrLoadCollectionQueryResult_WithNulls ()
     {
       _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
@@ -333,7 +333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1, null }));
@@ -343,7 +343,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage =
         "The query returned an object of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order', but a query result of type "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer' was expected.")]
-    public void LoadCollectionQueryResult_CastError ()
+    public void GetOrLoadCollectionQueryResult_CastError ()
     {
       _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
@@ -359,11 +359,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      _objectLoader.LoadCollectionQueryResult<Customer> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
+      _objectLoader.GetOrLoadCollectionQueryResult<Customer> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
     }
 
     [Test]
-    public void LoadCollectionQueryResult_WithFetching ()
+    public void GetOrLoadCollectionQueryResult_WithFetching ()
     {
       var fetchQueryStub = CreateFakeQuery ();
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
@@ -391,14 +391,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1 }));
     }
 
     [Test]
-    public void LoadCollectionQueryResult_WithFetching_NoOriginalObjects ()
+    public void GetOrLoadCollectionQueryResult_WithFetching_NoOriginalObjects ()
     {
       var fetchQueryStub = CreateFakeQuery ();
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
@@ -413,7 +413,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
+      _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectProviderMock);
 
       _fetcherMock.AssertWasNotCalled (mock => mock.PerformEagerFetching (
           Arg<DomainObject[]>.Is.Anything,

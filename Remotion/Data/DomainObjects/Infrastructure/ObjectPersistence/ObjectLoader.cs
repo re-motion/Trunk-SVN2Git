@@ -104,17 +104,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return idsToBeLoaded.Select (id => objectDictionary.GetValueOrDefault (id)).ToArray();
     }
 
-    public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
+    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
       
       if (!relationEndPointID.Definition.IsVirtual)
-        throw new ArgumentException ("LoadRelatedObject can only be used with virtual end points.", "relationEndPointID");
+        throw new ArgumentException ("GetOrLoadRelatedObject can only be used with virtual end points.", "relationEndPointID");
 
       if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
-        throw new ArgumentException ("LoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
+        throw new ArgumentException ("GetOrLoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
       var originatingDataContainer = dataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
       var relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
@@ -122,21 +122,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _loadedObjectRegistrationAgent.RegisterIfRequired (loadedObject, dataManager);
     }
 
-    public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
+    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
 
       if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
-        throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
+        throw new ArgumentException ("GetOrLoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID);
       var loadedObjects = relatedDataContainers.Select (dc => GetLoadedObject (dc, alreadyLoadedObjectProvider));
       return _loadedObjectRegistrationAgent.RegisterIfRequired (loadedObjects, dataManager).Select (ConvertLoadedDomainObject<DomainObject>).ToArray();
     }
 
-    public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider) where T : DomainObject
+    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);

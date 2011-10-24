@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjects = new[] { _fetchedOrderItem1, _fetchedOrderItem2, _fetchedOrderItem3 };
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerStub, _alreadyLoadedObjectProviderStub))
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerStub, _alreadyLoadedObjectProviderStub))
           .Return (relatedObjects);
       _objectLoaderMock.Replay();
 
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjects = new[] { _fetchedOrderItem1, _fetchedOrderItem2, _fetchedOrderItem3 };
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerStub, _alreadyLoadedObjectProviderStub))
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerStub, _alreadyLoadedObjectProviderStub))
           .Return (relatedObjects);
       _objectLoaderMock.Replay ();
 

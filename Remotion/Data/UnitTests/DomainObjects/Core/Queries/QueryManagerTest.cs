@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void GetCollection ()
     {
       _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery, _dataManagerStub, _alreadyLoadedObjectProviderStub))
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult<Order> (_collectionQuery, _dataManagerStub, _alreadyLoadedObjectProviderStub))
           .Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLoaderMock.Replay ();
 
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var filteredResult = new QueryResult<Order> (_collectionQuery, new[] { _fakeOrder2 });
 
       _objectLoaderMock
-          .Stub (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery, _dataManagerStub, _alreadyLoadedObjectProviderStub))
+          .Stub (mock => mock.GetOrLoadCollectionQueryResult<Order> (_collectionQuery, _dataManagerStub, _alreadyLoadedObjectProviderStub))
           .Return (originalResult);
       _objectLoaderMock.Replay ();
 
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var filteredResult = new QueryResult<DomainObject> (_collectionQuery, new[] { _fakeOrder2 });
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_collectionQuery, _dataManagerStub, _alreadyLoadedObjectProviderStub))
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_collectionQuery, _dataManagerStub, _alreadyLoadedObjectProviderStub))
           .Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLoaderMock.Replay ();
 
