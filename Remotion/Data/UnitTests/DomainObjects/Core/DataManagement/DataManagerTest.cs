@@ -920,9 +920,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .Expect (mock => mock.GetOrLoadRelatedObjects (
               Arg.Is (endPointID), 
               Arg.Is (_dataManagerWithMocks),
-              Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider 
-                  && ((LoadedObjectProvider) p).DataContainerProvider == _dataManagerWithMocks
-                  && ((LoadedObjectProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
+              Arg<ILoadedObjectDataProvider>.Matches (p => p is LoadedObjectDataProvider 
+                  && ((LoadedObjectDataProvider) p).DataContainerProvider == _dataManagerWithMocks
+                  && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 
@@ -975,9 +975,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .Expect (mock => mock.GetOrLoadRelatedObject (Arg
               .Is (endPointID), 
               Arg.Is (_dataManagerWithMocks),
-              Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider 
-                  && ((LoadedObjectProvider) p).DataContainerProvider == _dataManagerWithMocks
-                  && ((LoadedObjectProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
+              Arg<ILoadedObjectDataProvider>.Matches (p => p is LoadedObjectDataProvider 
+                  && ((LoadedObjectDataProvider) p).DataContainerProvider == _dataManagerWithMocks
+                  && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
           .Return (loaderResult)
           .WhenCalled (mi => endPointMock.Stub (stub => stub.IsDataComplete).Return (true));
       _objectLoaderMock.Replay ();
@@ -1010,9 +1010,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .Expect (mock => mock.GetOrLoadRelatedObject (
               Arg.Is (endPointID),
               Arg.Is (_dataManagerWithMocks),
-              Arg<ILoadedObjectProvider>.Matches (p => p is LoadedObjectProvider
-                  && ((LoadedObjectProvider) p).DataContainerProvider == _dataManagerWithMocks
-                  && ((LoadedObjectProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
+              Arg<ILoadedObjectDataProvider>.Matches (p => p is LoadedObjectDataProvider
+                  && ((LoadedObjectDataProvider) p).DataContainerProvider == _dataManagerWithMocks
+                  && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 

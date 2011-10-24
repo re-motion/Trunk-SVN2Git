@@ -14,22 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
-  /// <summary>
-  /// Provides a common interface for classes allowing to load a set of <see cref="DomainObject"/> objects into a <see cref="ClientTransaction"/>.
-  /// </summary>
-  public interface IObjectLoader
+  public interface ILoadedObjectDataRegistrationAgent
   {
-    DomainObject LoadObject (ObjectID id, IDataManager dataManager);
-    DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager);
-    DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
-    DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
-    T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider) where T : DomainObject;
+    DomainObject RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataManager dataManager);
+    IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataManager dataManager);
   }
 }

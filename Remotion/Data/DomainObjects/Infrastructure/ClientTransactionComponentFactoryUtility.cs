@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new ObjectLoader (
           persistenceStrategy,
           eagerFetcher,
-          new LoadedObjectRegistrationAgent (clientTransaction, eventSink));
+          new LoadedObjectDataRegistrationAgent (clientTransaction, eventSink));
     }
 
    public static IQueryManager CreateQueryManager (
@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
          clientTransaction,
          eventSink,
          dataManager,
-         new LoadedObjectProvider (dataManager, invalidDomainObjectManager));
+         new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager));
     }
   }
 }

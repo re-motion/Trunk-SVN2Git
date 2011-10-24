@@ -3,7 +3,7 @@
   /// <summary>
   /// Represents an object loaded via an implementation of <see cref="IPersistenceStrategy"/>.
   /// </summary>
-  public interface ILoadedObject
+  public interface ILoadedObjectData
   {
     ObjectID ObjectID { get; }
 

@@ -20,19 +20,33 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Represents a <see langword="null" /> reference that was loaded via <see cref="IPersistenceStrategy"/>.
+  /// Represents an object that already exists in the target <see cref="ClientTransaction"/> as an invalid object.
   /// </summary>
-  public class NullLoadedObject : ILoadedObject
+  public class InvalidLoadedObjectData : ILoadedObjectData
   {
+    private readonly DomainObject _invalidObjectReference;
+
+    public InvalidLoadedObjectData (DomainObject invalidObjectReference)
+    {
+      ArgumentUtility.CheckNotNull ("invalidObjectReference", invalidObjectReference);
+
+      _invalidObjectReference = invalidObjectReference;
+    }
+
     public ObjectID ObjectID
     {
-      get { return null; }
+      get { return _invalidObjectReference.ID; }
+    }
+
+    public DomainObject InvalidObjectReference
+    {
+      get { return _invalidObjectReference; }
     }
 
     public void Accept (ILoadedObjectVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitNullLoadedObject (this);
+      visitor.VisitInvalidLoadedObject (this);
     }
   }
 }

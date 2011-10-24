@@ -1,13 +1,13 @@
 ﻿namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Provides a method to dispatch on <see cref="ILoadedObject"/> implementations.
+  /// Provides a method to dispatch on <see cref="ILoadedObjectData"/> implementations.
   /// </summary>
   public interface ILoadedObjectVisitor
   {
-    void VisitFreshlyLoadedObject (FreshlyLoadedObject freshlyLoadedObject);
-    void VisitAlreadyExistingLoadedObject (AlreadyExistingLoadedObject alreadyExistingLoadedObject);
-    void VisitNullLoadedObject (NullLoadedObject nullLoadedObject);
-    void VisitInvalidLoadedObject (InvalidLoadedObject invalidLoadedObject);
+    void VisitFreshlyLoadedObject (FreshlyLoadedObjectData freshlyLoadedObjectData);
+    void VisitAlreadyExistingLoadedObject (AlreadyExistingLoadedObjectData alreadyExistingLoadedObjectData);
+    void VisitNullLoadedObject (NullLoadedObjectData nullLoadedObjectData);
+    void VisitInvalidLoadedObject (InvalidLoadedObjectData invalidLoadedObjectData);
   }
 }

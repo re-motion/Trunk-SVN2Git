@@ -17,37 +17,40 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
 {
   [TestFixture]
-  public class NullLoadedObjectTest
+  public class InvalidLoadedObjectDataTest : StandardMappingTest
   {
-    private NullLoadedObject _loadedObject;
+    private InvalidLoadedObjectData _loadedObjectData;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
-      _loadedObject = new NullLoadedObject();
+      base.SetUp ();
+
+      _loadedObjectData = new InvalidLoadedObjectData (DomainObjectMother.CreateFakeObject<Order>());
     }
 
     [Test]
     public void ObjectID ()
     {
-      Assert.That (_loadedObject.ObjectID, Is.Null);
+      Assert.That (_loadedObjectData.ObjectID, Is.EqualTo (_loadedObjectData.InvalidObjectReference.ID));
     }
 
     [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ILoadedObjectVisitor>();
-      visitorMock.Expect (mock => mock.VisitNullLoadedObject (_loadedObject));
-      visitorMock.Replay ();
 
-      _loadedObject.Accept (visitorMock);
+      visitorMock.Expect (mock => mock.VisitInvalidLoadedObject (_loadedObjectData));
+      visitorMock.Replay();
 
-      visitorMock.VerifyAllExpectations ();
+      _loadedObjectData.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations();
     }
   }
 }

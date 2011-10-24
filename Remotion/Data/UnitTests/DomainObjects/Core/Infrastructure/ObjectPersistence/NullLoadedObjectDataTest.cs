@@ -15,38 +15,39 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Rhino.Mocks;
 
-namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
 {
-  /// <summary>
-  /// Represents an object that already exists in the target <see cref="ClientTransaction"/> as an invalid object.
-  /// </summary>
-  public class InvalidLoadedObject : ILoadedObject
+  [TestFixture]
+  public class NullLoadedObjectDataTest
   {
-    private readonly DomainObject _invalidObjectReference;
+    private NullLoadedObjectData _loadedObjectData;
 
-    public InvalidLoadedObject (DomainObject invalidObjectReference)
+    [SetUp]
+    public void SetUp ()
     {
-      ArgumentUtility.CheckNotNull ("invalidObjectReference", invalidObjectReference);
-
-      _invalidObjectReference = invalidObjectReference;
+      _loadedObjectData = new NullLoadedObjectData();
     }
 
-    public ObjectID ObjectID
+    [Test]
+    public void ObjectID ()
     {
-      get { return _invalidObjectReference.ID; }
+      Assert.That (_loadedObjectData.ObjectID, Is.Null);
     }
 
-    public DomainObject InvalidObjectReference
+    [Test]
+    public void Accept ()
     {
-      get { return _invalidObjectReference; }
-    }
+      var visitorMock = MockRepository.GenerateStrictMock<ILoadedObjectVisitor>();
+      visitorMock.Expect (mock => mock.VisitNullLoadedObject (_loadedObjectData));
+      visitorMock.Replay ();
 
-    public void Accept (ILoadedObjectVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitInvalidLoadedObject (this);
+      _loadedObjectData.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
     }
   }
 }

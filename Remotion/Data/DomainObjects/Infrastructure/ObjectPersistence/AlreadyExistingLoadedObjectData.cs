@@ -23,11 +23,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// <summary>
   /// Represents a loaded object whose data already exists in the target <see cref="ClientTransaction"/>.
   /// </summary>
-  public class AlreadyExistingLoadedObject : ILoadedObject
+  public class AlreadyExistingLoadedObjectData : ILoadedObjectData
   {
     private readonly DataContainer _existingDataContainer;
 
-    public AlreadyExistingLoadedObject (DataContainer existingDataContainer)
+    public AlreadyExistingLoadedObjectData (DataContainer existingDataContainer)
     {
       ArgumentUtility.CheckNotNull ("existingDataContainer", existingDataContainer);
 

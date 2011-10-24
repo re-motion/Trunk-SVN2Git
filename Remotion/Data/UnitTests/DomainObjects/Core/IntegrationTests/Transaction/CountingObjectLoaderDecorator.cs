@@ -46,20 +46,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       return _decorated.LoadObjects (idsToBeLoaded, throwOnNotFound, dataManager);
     }
 
-    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
+    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ++NumberOfCallsToLoadRelatedObject;
-      return _decorated.GetOrLoadRelatedObject (relationEndPointID, dataManager, alreadyLoadedObjectProvider);
+      return _decorated.GetOrLoadRelatedObject (relationEndPointID, dataManager, alreadyLoadedObjectDataProvider);
     }
 
-    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider)
+    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
-      return _decorated.GetOrLoadRelatedObjects (relationEndPointID, dataManager, alreadyLoadedObjectProvider);
+      return _decorated.GetOrLoadRelatedObjects (relationEndPointID, dataManager, alreadyLoadedObjectDataProvider);
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectProvider alreadyLoadedObjectProvider) where T: DomainObject
+    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider) where T: DomainObject
     {
-      return _decorated.GetOrLoadCollectionQueryResult<T> (query, dataManager, alreadyLoadedObjectProvider);
+      return _decorated.GetOrLoadCollectionQueryResult<T> (query, dataManager, alreadyLoadedObjectDataProvider);
     }
   }
 }

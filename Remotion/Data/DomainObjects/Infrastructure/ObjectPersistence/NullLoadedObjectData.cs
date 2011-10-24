@@ -15,14 +15,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
-  public interface ILoadedObjectRegistrationAgent
+  /// <summary>
+  /// Represents a <see langword="null" /> reference that was loaded via <see cref="IPersistenceStrategy"/>.
+  /// </summary>
+  public class NullLoadedObjectData : ILoadedObjectData
   {
-    DomainObject RegisterIfRequired (ILoadedObject loadedObject, IDataManager dataManager);
-    IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObject> loadedObjects, IDataManager dataManager);
+    public ObjectID ObjectID
+    {
+      get { return null; }
+    }
+
+    public void Accept (ILoadedObjectVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      visitor.VisitNullLoadedObject (this);
+    }
   }
 }

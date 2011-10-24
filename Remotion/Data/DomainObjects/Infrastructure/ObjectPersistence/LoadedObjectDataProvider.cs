@@ -22,16 +22,16 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Returns <see cref="AlreadyExistingLoadedObject"/> and <see cref="NullLoadedObject"/> instances for objects known by a given 
+  /// Returns <see cref="AlreadyExistingLoadedObjectData"/> and <see cref="NullLoadedObjectData"/> instances for objects known by a given 
   /// <see cref="IDataContainerProvider"/>.
   /// </summary>
   [Serializable]
-  public class LoadedObjectProvider : ILoadedObjectProvider
+  public class LoadedObjectDataProvider : ILoadedObjectDataProvider
   {
     private readonly IDataContainerProvider _dataContainerProvider;
     private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
 
-    public LoadedObjectProvider (IDataContainerProvider dataContainerProvider, IInvalidDomainObjectManager invalidDomainObjectManager)
+    public LoadedObjectDataProvider (IDataContainerProvider dataContainerProvider, IInvalidDomainObjectManager invalidDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
@@ -50,15 +50,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _invalidDomainObjectManager; }
     }
 
-    public ILoadedObject GetLoadedObject (ObjectID objectID)
+    public ILoadedObjectData GetLoadedObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       if (_invalidDomainObjectManager.IsInvalid (objectID))
-        return new InvalidLoadedObject (_invalidDomainObjectManager.GetInvalidObjectReference (objectID));
+        return new InvalidLoadedObjectData (_invalidDomainObjectManager.GetInvalidObjectReference (objectID));
 
       var dataContainer = _dataContainerProvider.GetDataContainerWithoutLoading (objectID);
-      return dataContainer != null ? new AlreadyExistingLoadedObject (dataContainer) : null;
+      return dataContainer != null ? new AlreadyExistingLoadedObjectData (dataContainer) : null;
     }
   }
 }

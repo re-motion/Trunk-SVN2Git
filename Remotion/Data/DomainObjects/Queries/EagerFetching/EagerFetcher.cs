@@ -53,21 +53,21 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     /// <param name="fetchQuery">The fetch query.</param>
     /// <param name="fetchQueryResultLoader">The fetch query result loader.</param>
     /// <param name="dataManager">The data manager.</param>
-    /// <param name="alreadyLoadedObjectProvider">The already loaded object provider.</param>
+    /// <param name="alreadyLoadedObjectDataProvider">The already loaded object provider.</param>
     public void PerformEagerFetching (
         DomainObject[] originalObjects,
         IRelationEndPointDefinition relationEndPointDefinition,
         IQuery fetchQuery,
         IObjectLoader fetchQueryResultLoader,
         IDataManager dataManager,
-        ILoadedObjectProvider alreadyLoadedObjectProvider)
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("originalObjects", originalObjects);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
       ArgumentUtility.CheckNotNull ("fetchQueryResultLoader", fetchQueryResultLoader);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectProvider", alreadyLoadedObjectProvider);
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
 
       s_log.DebugFormat (
           "Eager fetching objects for {0} via query {1} ('{2}').",
@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
           fetchQuery.Statement);
 
       // Executing the query will automatically register all loaded DomainObjects. End-points will be explicitly marked complete below.
-      var fetchedObjects = fetchQueryResultLoader.GetOrLoadCollectionQueryResult<DomainObject> (fetchQuery, dataManager, alreadyLoadedObjectProvider);
+      var fetchedObjects = fetchQueryResultLoader.GetOrLoadCollectionQueryResult<DomainObject> (fetchQuery, dataManager, alreadyLoadedObjectDataProvider);
       s_log.DebugFormat (
           "The eager fetch query yielded {0} related objects for {1} original objects.",
           fetchedObjects.Length,

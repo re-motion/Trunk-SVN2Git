@@ -32,7 +32,7 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
 {
   [TestFixture]
-  public class LoadedObjectRegistrationAgentTest : StandardMappingTest
+  public class LoadedObjectDataRegistrationAgentTest : StandardMappingTest
   {
     private ClientTransaction _clientTransaction;
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     private IDataManager _dataManagerMock;
     private ClientTransactionMockEventReceiver _transactionEventReceiverMock;
 
-    private LoadedObjectRegistrationAgent _agent;
+    private LoadedObjectDataRegistrationAgent _agent;
 
     public override void SetUp ()
     {
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
       _transactionEventReceiverMock = _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_clientTransaction);
 
-      _agent = new LoadedObjectRegistrationAgent (_clientTransaction, _eventSinkMock);
+      _agent = new LoadedObjectDataRegistrationAgent (_clientTransaction, _eventSinkMock);
     }
 
     [Test]
@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       var result =
           _agent.RegisterIfRequired (
-              new ILoadedObject[] { freshlyLoadedObject1, alreadyExistingLoadedObject, freshlyLoadedObject2, nullLoadedObject, invalidLoadedObject }, 
+              new ILoadedObjectData[] { freshlyLoadedObject1, alreadyExistingLoadedObject, freshlyLoadedObject2, nullLoadedObject, invalidLoadedObject }, 
               _dataManagerMock);
 
       _mockRepository.VerifyAll ();
@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository.ReplayAll ();
 
       Assert.That (
-          () => _agent.RegisterIfRequired (new ILoadedObject[] { freshlyLoadedObject1, freshlyLoadedObject2 }, _dataManagerMock), 
+          () => _agent.RegisterIfRequired (new ILoadedObjectData[] { freshlyLoadedObject1, freshlyLoadedObject2 }, _dataManagerMock), 
           Throws.Exception.SameAs (exception));
 
       _mockRepository.VerifyAll ();
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     public void Serializability ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction();
-      var agent = new LoadedObjectRegistrationAgent (clientTransaction, ClientTransactionTestHelper.GetTransactionEventSink (clientTransaction));
+      var agent = new LoadedObjectDataRegistrationAgent (clientTransaction, ClientTransactionTestHelper.GetTransactionEventSink (clientTransaction));
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (agent);
 
@@ -266,31 +266,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       Assert.That (deserializedInstance.TransactionEventSink, Is.Not.Null);
     }
 
-    private FreshlyLoadedObject GetFreshlyLoadedObject ()
+    private FreshlyLoadedObjectData GetFreshlyLoadedObject ()
     {
       var id = new ObjectID (typeof (Order), Guid.NewGuid());
       var dataContainer = DataContainer.CreateForExisting (id, null, pd => pd.DefaultValue);
-      return new FreshlyLoadedObject (dataContainer);
+      return new FreshlyLoadedObjectData (dataContainer);
     }
 
-    private AlreadyExistingLoadedObject GetAlreadyExistingLoadedObject ()
+    private AlreadyExistingLoadedObjectData GetAlreadyExistingLoadedObject ()
     {
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
       var dataContainer = DataContainer.CreateForExisting (domainObject.ID, null, pd => pd.DefaultValue);
       dataContainer.SetDomainObject (domainObject);
       DataContainerTestHelper.SetClientTransaction (dataContainer, _clientTransaction);
-      return new AlreadyExistingLoadedObject (dataContainer);
+      return new AlreadyExistingLoadedObjectData (dataContainer);
     }
 
-    private NullLoadedObject GetNullLoadedObject ()
+    private NullLoadedObjectData GetNullLoadedObject ()
     {
-      return new NullLoadedObject();
+      return new NullLoadedObjectData();
     }
 
-    private InvalidLoadedObject GetInvalidLoadedObject ()
+    private InvalidLoadedObjectData GetInvalidLoadedObject ()
     {
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
-      return new InvalidLoadedObject (domainObject);
+      return new InvalidLoadedObjectData (domainObject);
     }
 
     private void CheckHasEnlistedDomainObject (DataContainer dataContainer)

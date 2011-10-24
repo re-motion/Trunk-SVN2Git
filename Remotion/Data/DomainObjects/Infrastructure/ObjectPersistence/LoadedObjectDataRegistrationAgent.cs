@@ -24,41 +24,41 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Takes <see cref="ILoadedObject"/> instances, registers all freshly loaded ones - triggering the necessary load events - and then returns
+  /// Takes <see cref="ILoadedObjectData"/> instances, registers all freshly loaded ones - triggering the necessary load events - and then returns
   /// the corresponding <see cref="DomainObject"/> instances.
   /// </summary>
   [Serializable]
-  public class LoadedObjectRegistrationAgent : ILoadedObjectRegistrationAgent
+  public class LoadedObjectDataRegistrationAgent : ILoadedObjectDataRegistrationAgent
   {
     private class RegisteredDataContainerGatheringVisitor : ILoadedObjectVisitor
     {
       private readonly List<Func<DomainObject>> _domainObjectAccessors = new List<Func<DomainObject>> ();
       private readonly List<DataContainer> _dataContainersToBeRegistered = new List<DataContainer> ();
 
-      public void VisitFreshlyLoadedObject (FreshlyLoadedObject freshlyLoadedObject)
+      public void VisitFreshlyLoadedObject (FreshlyLoadedObjectData freshlyLoadedObjectData)
       {
-        ArgumentUtility.CheckNotNull ("freshlyLoadedObject", freshlyLoadedObject);
+        ArgumentUtility.CheckNotNull ("freshlyLoadedObjectData", freshlyLoadedObjectData);
       
-        _dataContainersToBeRegistered.Add (freshlyLoadedObject.FreshlyLoadedDataContainer);
-        _domainObjectAccessors.Add (() => freshlyLoadedObject.FreshlyLoadedDataContainer.DomainObject);
+        _dataContainersToBeRegistered.Add (freshlyLoadedObjectData.FreshlyLoadedDataContainer);
+        _domainObjectAccessors.Add (() => freshlyLoadedObjectData.FreshlyLoadedDataContainer.DomainObject);
       }
 
-      public void VisitAlreadyExistingLoadedObject (AlreadyExistingLoadedObject alreadyExistingLoadedObject)
+      public void VisitAlreadyExistingLoadedObject (AlreadyExistingLoadedObjectData alreadyExistingLoadedObjectData)
       {
-        ArgumentUtility.CheckNotNull ("alreadyExistingLoadedObject", alreadyExistingLoadedObject);
-        _domainObjectAccessors.Add (() => alreadyExistingLoadedObject.ExistingDataContainer.DomainObject);
+        ArgumentUtility.CheckNotNull ("alreadyExistingLoadedObjectData", alreadyExistingLoadedObjectData);
+        _domainObjectAccessors.Add (() => alreadyExistingLoadedObjectData.ExistingDataContainer.DomainObject);
       }
 
-      public void VisitNullLoadedObject (NullLoadedObject nullLoadedObject)
+      public void VisitNullLoadedObject (NullLoadedObjectData nullLoadedObjectData)
       {
-        ArgumentUtility.CheckNotNull ("nullLoadedObject", nullLoadedObject);
+        ArgumentUtility.CheckNotNull ("nullLoadedObjectData", nullLoadedObjectData);
         _domainObjectAccessors.Add (() => null);
       }
 
-      public void VisitInvalidLoadedObject (InvalidLoadedObject invalidLoadedObject)
+      public void VisitInvalidLoadedObject (InvalidLoadedObjectData invalidLoadedObjectData)
       {
-        ArgumentUtility.CheckNotNull ("invalidLoadedObject", invalidLoadedObject);
-        _domainObjectAccessors.Add (() => invalidLoadedObject.InvalidObjectReference);
+        ArgumentUtility.CheckNotNull ("invalidLoadedObjectData", invalidLoadedObjectData);
+        _domainObjectAccessors.Add (() => invalidLoadedObjectData.InvalidObjectReference);
       }
 
       public void RegisterAllDataContainers (IDataManager dataManager, ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
 
-    public LoadedObjectRegistrationAgent (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
+    public LoadedObjectDataRegistrationAgent (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
@@ -125,14 +125,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _transactionEventSink; }
     }
 
-    public DomainObject RegisterIfRequired (ILoadedObject loadedObject, IDataManager dataManager)
+    public DomainObject RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataManager dataManager)
     {
-      ArgumentUtility.CheckNotNull ("loadedObject", loadedObject);
+      ArgumentUtility.CheckNotNull ("loadedObjectData", loadedObjectData);
 
-      return RegisterIfRequired (new[] { loadedObject }, dataManager).Single ();
+      return RegisterIfRequired (new[] { loadedObjectData }, dataManager).Single ();
     }
 
-    public IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObject> loadedObjects, IDataManager dataManager)
+    public IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
 

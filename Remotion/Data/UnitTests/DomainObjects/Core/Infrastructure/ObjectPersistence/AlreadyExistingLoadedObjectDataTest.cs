@@ -25,58 +25,49 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
 {
   [TestFixture]
-  public class FreshlyLoadedObjectTest : StandardMappingTest
+  public class AlreadyExistingLoadedObjectDataTest : StandardMappingTest
   {
     private DataContainer _dataContainer;
-    private FreshlyLoadedObject _loadedObject;
+    private AlreadyExistingLoadedObjectData _loadedObjectData;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _loadedObject = new FreshlyLoadedObject (_dataContainer);
+      _dataContainer.SetDomainObject (DomainObjectMother.CreateFakeObject<Order> (_dataContainer.ID));
+      ClientTransactionTestHelper.RegisterDataContainer (ClientTransaction.CreateRootTransaction (), _dataContainer);
+
+      _loadedObjectData = new AlreadyExistingLoadedObjectData (_dataContainer);
     }
     
     [Test]
     public void Initialization ()
     {
-      Assert.That (_loadedObject.FreshlyLoadedDataContainer, Is.SameAs (_dataContainer));
-      Assert.That (_loadedObject.ObjectID, Is.EqualTo (_dataContainer.ID));
+      Assert.That (_loadedObjectData.ExistingDataContainer, Is.SameAs (_dataContainer));
+      Assert.That (_loadedObjectData.ObjectID, Is.EqualTo (_dataContainer.ID));
     }
 
     [Test]
-    public void Initialization_WithClientTransaction_Throws ()
+    public void Initialization_WithoutClientTransaction_Throws ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransaction.CreateRootTransaction (), dataContainer);
-
+      var existingDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      existingDataContainer.SetDomainObject (DomainObjectMother.CreateFakeObject<Order> (existingDataContainer.ID));
+      
       Assert.That (
-          () => new FreshlyLoadedObject (dataContainer),
+          () => new AlreadyExistingLoadedObjectData (existingDataContainer),
           Throws.ArgumentException.With.Message.EqualTo (
-              "The DataContainer must not have been registered with a ClientTransaction.\r\nParameter name: freshlyLoadedDataContainer"));
+              "The DataContainer must have been registered with a ClientTransaction.\r\nParameter name: existingDataContainer"));
     }
-
-    [Test]
-    public void Initialization_WithDomainObject_Throws ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dataContainer.SetDomainObject (DomainObjectMother.CreateFakeObject<Order> (dataContainer.ID));
-
-      Assert.That (
-          () => new FreshlyLoadedObject (dataContainer),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "The DataContainer must not have been registered with a DomainObject.\r\nParameter name: freshlyLoadedDataContainer"));
-    }
-
+    
     [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ILoadedObjectVisitor>();
-      visitorMock.Expect (mock => mock.VisitFreshlyLoadedObject (_loadedObject));
+      visitorMock.Expect (mock => mock.VisitAlreadyExistingLoadedObject (_loadedObjectData));
       visitorMock.Replay();
 
-      _loadedObject.Accept (visitorMock);
+      _loadedObjectData.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations();
     }

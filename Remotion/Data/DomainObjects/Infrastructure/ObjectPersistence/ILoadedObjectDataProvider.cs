@@ -17,17 +17,17 @@
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Allows an <see cref="IPersistenceStrategy"/> to get <see cref="ILoadedObject"/> instances for objects whose data is already known by the target 
+  /// Allows an <see cref="IPersistenceStrategy"/> to get <see cref="ILoadedObjectData"/> instances for objects whose data is already known by the target 
   /// <see cref="ClientTransaction"/>.
   /// </summary>
-  public interface ILoadedObjectProvider
+  public interface ILoadedObjectDataProvider
   {
     /// <summary>
-    /// Gets an <see cref="ILoadedObject"/> identified by <paramref name="objectID"/>, returning <see langword="null" /> if the 
+    /// Gets an <see cref="ILoadedObjectData"/> identified by <paramref name="objectID"/>, returning <see langword="null" /> if the 
     /// <paramref name="objectID"/> does not identify a known loaded object.
     /// </summary>
     /// <param name="objectID">The object ID. Must not be <see langword="null" />.</param>
-    /// <returns>An <see cref="ILoadedObject"/> for <paramref name="objectID"/>, or <see langword="null" /> if no such object is known.</returns>
-    ILoadedObject GetLoadedObject (ObjectID objectID);
+    /// <returns>An <see cref="ILoadedObjectData"/> for <paramref name="objectID"/>, or <see langword="null" /> if no such object is known.</returns>
+    ILoadedObjectData GetLoadedObject (ObjectID objectID);
   }
 }
