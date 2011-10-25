@@ -25,13 +25,11 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SecurityManagerPrincipalTests
 {
   [TestFixture]
-  public class GetSubstitutions : DomainTest
+  public class GetActiveSubstitutions : DomainTest
   {
-    private ObjectID _rootTenantID;
-    private ObjectID _childTenantID;
-    private ObjectID _grandChildTenantID;
+    private ObjectID _tenantID;
     private ObjectID _userID;
-
+    private ObjectID[] _substitutionIDs;
 
     public override void SetUp ()
     {
@@ -43,9 +41,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Secu
 
       User user = User.FindByUserName ("substituting.user");
       _userID = user.ID;
-      _rootTenantID = user.Tenant.ID;
-      _childTenantID = user.Tenant.Children.Single ().ID;
-      _grandChildTenantID = user.Tenant.Children.Single ().Children.Single ().ID;
+      _tenantID = user.Tenant.ID;
+      _substitutionIDs = user.GetActiveSubstitutions().Select (s => s.ID).ToArray();
+      Assert.That (_substitutionIDs.Length, Is.EqualTo (2));
     }
 
     public override void TearDown ()
@@ -56,12 +54,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Secu
     }
 
     [Test]
-    [Ignore]
-    public void IncludeInactiveSubstitutions ()
+    public void ExcludeInactiveSubstitutions ()
     {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_childTenantID, _userID, null);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_tenantID, _userID, null);
 
-      Assert.That (principal.GetTenants (true).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _childTenantID, _grandChildTenantID }));
+      Assert.That (principal.GetActiveSubstitutions().Select (t => t.ID), Is.EquivalentTo (_substitutionIDs));
     }
   }
 }
