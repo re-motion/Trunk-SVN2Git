@@ -80,6 +80,23 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     }
 
     [Test]
+    public void RefreshDoesNotResetCacheWithOldRevision ()
+    {
+      UserProxy proxy = _principal.User;
+      _principal.Refresh ();
+      Assert.That (proxy, Is.SameAs (_principal.User));
+    }
+
+    [Test]
+    public void RefreshResetsCacheWithNewRevision ()
+    {
+      UserProxy proxy = _principal.User;
+      Revision.IncrementRevision ();
+      _principal.Refresh ();
+      Assert.That (proxy, Is.Not.SameAs (_principal.User));
+    }
+
+    [Test]
     public void UsesSecurityFreeSection ()
     {
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();

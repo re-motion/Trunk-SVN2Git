@@ -130,7 +130,10 @@ namespace Remotion.SecurityManager.Domain
     public void Refresh ()
     {
       if (GetRevision() > _revision)
+      {
+        ResetCache();
         InitializeClientTransaction();
+      }
     }
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
@@ -203,6 +206,14 @@ namespace Remotion.SecurityManager.Domain
       {
         return SubstitutionProxy.Create (substitution);
       }
+    }
+
+    private void ResetCache ()
+    {
+      _tenantProxy = null;
+      _userProxy = null;
+      _substitutionProxy = null;
+      _securityPrincipal = null;
     }
 
     private Tenant GetTenant (ClientTransaction transaction)

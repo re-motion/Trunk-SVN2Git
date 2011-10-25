@@ -59,6 +59,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.That (deserialized.DisplayName, Is.EqualTo (proxy.DisplayName));
     }
 
+    [Test]
+    [Ignore]
+    public void Equals_True ()
+    {
+      User user = CreateUser ();
+      var proxy1 = UserProxy.Create (user);
+      var proxy2 = UserProxy.Create (user);
+
+      Assert.That (proxy1.Equals (proxy2), Is.True);
+    }
+
     private User CreateUser ()
     {
       var tenant = _testHelper.CreateTenant ("TheTenant", "UID");

@@ -32,12 +32,23 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
   [TestFixture]
   public class GetSecurityPrincipal : DomainTest
   {
+    private User _user;
+    private Tenant _tenant;
+    private Substitution _substitution;
+    private SecurityManagerPrincipal _principal;
+
     public override void SetUp ()
     {
       base.SetUp ();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
       ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ();
+
+      _user = User.FindByUserName ("substituting.user");
+      _tenant = _user.Tenant;
+      _substitution = _user.GetActiveSubstitutions ().Where (s => s.SubstitutedRole != null).First ();
+
+      _principal = new SecurityManagerPrincipal (_tenant.ID, _user.ID, _substitution.ID);
     }
 
     public override void TearDown ()
@@ -50,43 +61,46 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     [Test]
     public void Test ()
     {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().Where (s => s.SubstitutedRole != null).First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
-
-      ISecurityPrincipal securityPrincipal = principal.GetSecurityPrincipal();
+      ISecurityPrincipal securityPrincipal = _principal.GetSecurityPrincipal();
       Assert.That (securityPrincipal.IsNull, Is.False);
-      Assert.That (securityPrincipal.User, Is.EqualTo (user.UserName));
+      Assert.That (securityPrincipal.User, Is.EqualTo (_user.UserName));
       Assert.That (securityPrincipal.Role, Is.Null);
-      Assert.That (securityPrincipal.SubstitutedUser, Is.EqualTo (substitution.SubstitutedUser.UserName));
-      Assert.That (securityPrincipal.SubstitutedRole.Group, Is.EqualTo (substitution.SubstitutedRole.Group.UniqueIdentifier));
-      Assert.That (securityPrincipal.SubstitutedRole.Position, Is.EqualTo (substitution.SubstitutedRole.Position.UniqueIdentifier));
+      Assert.That (securityPrincipal.SubstitutedUser, Is.EqualTo (_substitution.SubstitutedUser.UserName));
+      Assert.That (securityPrincipal.SubstitutedRole.Group, Is.EqualTo (_substitution.SubstitutedRole.Group.UniqueIdentifier));
+      Assert.That (securityPrincipal.SubstitutedRole.Position, Is.EqualTo (_substitution.SubstitutedRole.Position.UniqueIdentifier));
     }
 
     [Test]
     public void UsesCache ()
     {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, null);
-
-      Assert.That (principal.GetSecurityPrincipal(), Is.SameAs (principal.GetSecurityPrincipal()));
+      Assert.That (_principal.GetSecurityPrincipal(), Is.SameAs (_principal.GetSecurityPrincipal()));
     }
 
     [Test]
     public void DoesNotCacheDuringSerialization ()
     {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, null);
-
-      var deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (principal, principal.GetSecurityPrincipal()));
+      var deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (_principal, _principal.GetSecurityPrincipal()));
       SecurityManagerPrincipal deserialziedSecurityManagerPrincipal = deserialized.Item1;
       ISecurityPrincipal deserialziedSecurityPrincipal = deserialized.Item2;
 
       Assert.That (deserialziedSecurityManagerPrincipal.GetSecurityPrincipal (), Is.Not.SameAs (deserialziedSecurityPrincipal));
+    }
+
+    [Test]
+    public void RefreshDoesNotResetCacheWithOldRevision ()
+    {
+      var securityPrincipal = _principal.GetSecurityPrincipal ();
+      _principal.Refresh ();
+      Assert.That (securityPrincipal, Is.SameAs (_principal.GetSecurityPrincipal ()));
+    }
+
+    [Test]
+    public void RefreshResetsCacheWithNewRevision ()
+    {
+      var securityPrincipal = _principal.GetSecurityPrincipal ();
+      Revision.IncrementRevision ();
+      _principal.Refresh ();
+      Assert.That (securityPrincipal, Is.Not.SameAs (_principal.GetSecurityPrincipal ()));
     }
 
     [Test]
@@ -96,16 +110,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().Where (s => s.SubstitutedRole != null).First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
-
       ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        ISecurityPrincipal securityPrincipal = principal.GetSecurityPrincipal();
+        ISecurityPrincipal securityPrincipal = _principal.GetSecurityPrincipal();
         Assert.That (securityPrincipal.IsNull, Is.False);
         Assert.That (securityPrincipal.User, Is.EqualTo ("substituting.user"));
       }
