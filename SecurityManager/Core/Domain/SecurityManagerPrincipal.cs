@@ -65,6 +65,7 @@ namespace Remotion.SecurityManager.Domain
     private readonly ObjectID _tenantID;
     private readonly ObjectID _userID;
     private readonly ObjectID _substitutionID;
+
     [NonSerialized]
     private ISecurityPrincipal _securityPrincipal;
 
@@ -86,17 +87,24 @@ namespace Remotion.SecurityManager.Domain
 
     public TenantProxy Tenant
     {
-      get { return TenantProxy.Create (GetTenant (_transaction)); }
+      get
+      {
+        return CreateTenantProxy(GetTenant (_transaction));
+      }
     }
 
     public UserProxy User
     {
-      get { return UserProxy.Create (GetUser (_transaction)); }
+      get { return CreateUserProxy (GetUser (_transaction)); }
     }
 
     public SubstitutionProxy Substitution
     {
-      get { return _substitutionID != null ? SubstitutionProxy.Create (GetSubstitution (_transaction)) : null; }
+      get
+      {
+        Substitution substitution = GetSubstitution (_transaction);
+        return substitution != null ? CreateSubstitutionProxy (substitution) : null;
+      }
     }
 
     public void Refresh ()
@@ -109,14 +117,14 @@ namespace Remotion.SecurityManager.Domain
     {
       return GetUser (_transaction).Tenant.GetHierachy()
           .Where (t => includeAbstractTenants || !t.IsAbstract)
-          .Select (TenantProxy.Create)
+          .Select (CreateTenantProxy)
           .ToArray();
     }
 
     public SubstitutionProxy[] GetActiveSubstitutions ()
     {
       return GetUser (_transaction).GetActiveSubstitutions()
-          .Select (SubstitutionProxy.Create)
+          .Select (CreateSubstitutionProxy)
           .ToArray();
     }
 
@@ -129,7 +137,7 @@ namespace Remotion.SecurityManager.Domain
 
     private SecurityPrincipal CreateSecurityPrincipal ()
     {
-      using (new SecurityFreeSection ())
+      using (new SecurityFreeSection())
       {
         string user = GetUser (_transaction).UserName;
         ISecurityPrincipalRole role = null;
@@ -155,8 +163,6 @@ namespace Remotion.SecurityManager.Domain
 
     private Tenant GetTenant (ClientTransaction transaction)
     {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
-
       using (transaction.EnterNonDiscardingScope())
       {
         return OrganizationalStructure.Tenant.GetObject (_tenantID);
@@ -165,8 +171,6 @@ namespace Remotion.SecurityManager.Domain
 
     private User GetUser (ClientTransaction transaction)
     {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
-
       using (transaction.EnterNonDiscardingScope())
       {
         return OrganizationalStructure.User.GetObject (_userID);
@@ -175,8 +179,6 @@ namespace Remotion.SecurityManager.Domain
 
     private Substitution GetSubstitution (ClientTransaction transaction)
     {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
-
       if (_substitutionID == null)
         return null;
 
@@ -193,6 +195,30 @@ namespace Remotion.SecurityManager.Domain
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
         _transaction.Extensions.Add (new SecurityClientTransactionExtension());
+    }
+    
+    private TenantProxy CreateTenantProxy (Tenant tenant)
+    {
+      using (new SecurityFreeSection())
+      {
+        return TenantProxy.Create (tenant);
+      }
+    }
+
+    private UserProxy CreateUserProxy (User user)
+    {
+      using (new SecurityFreeSection())
+      {
+        return UserProxy.Create (user);
+      }
+    }
+
+    private SubstitutionProxy CreateSubstitutionProxy (Substitution substitution)
+    {
+      using (new SecurityFreeSection())
+      {
+        return SubstitutionProxy.Create (substitution);
+      }
     }
 
     bool INullObject.IsNull

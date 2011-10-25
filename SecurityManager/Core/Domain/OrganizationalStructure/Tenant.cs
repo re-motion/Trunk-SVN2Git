@@ -160,8 +160,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     }
 
     /// <summary>
-    /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access for the respective child-object.
+    /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>.
     /// </summary>
+    /// <remarks>
+    ///   If the user does not have read access for the respective tenant, the hierarchy evaluation stops at this point for the evaluated branch.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">
     /// Thrown if the hierarchy contains a circular reference.
     /// </exception>

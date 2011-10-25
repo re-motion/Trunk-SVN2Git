@@ -19,6 +19,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
@@ -101,9 +102,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
 
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
 
-      ISecurityPrincipal securityPrincipal = principal.GetSecurityPrincipal();
-      Assert.That (securityPrincipal.IsNull, Is.False);
-      Assert.That (securityPrincipal.User, Is.EqualTo (user.UserName));
+      ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        ISecurityPrincipal securityPrincipal = principal.GetSecurityPrincipal();
+        Assert.That (securityPrincipal.IsNull, Is.False);
+        Assert.That (securityPrincipal.User, Is.EqualTo ("substituting.user"));
+      }
     }
   }
 }
