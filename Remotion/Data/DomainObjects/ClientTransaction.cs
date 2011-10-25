@@ -937,12 +937,13 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets a number of objects that are already loaded or attempts to load them from the data source. If an object cannot be found, an exception is
-  /// thrown.
+  /// Gets a number of objects that are already loaded or attempts to load them from the data source.
+  /// If an object cannot be found, an exception is thrown.
   /// </summary>
   /// <typeparam name="T">The type of objects expected to be returned. Specify <see cref="DomainObject"/> if no specific type is expected.</typeparam>
   /// <param name="objectIDs">The IDs of the objects to be retrieved.</param>
-  /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in <paramref name="objectIDs"/>.</returns>
+  /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in 
+  /// <paramref name="objectIDs"/>. This list might include deleted objects.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
   /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
@@ -952,53 +953,35 @@ public class ClientTransaction
       where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-    return GetObjects<T> (objectIDs, true);
+
+    // this performs a bulk load operation, throwing on invalid IDs and unknown objects
+    EnsureDataAvailable (objectIDs, true);
+
+    var result = objectIDs.Select (GetLoadedObjectOrNull).Cast<T>();
+    return result.ToArray ();
   }
 
   /// <summary>
-  /// Gets a number of objects that are already loaded or attempts to load them from the data source. If an object is not found, the result array
-  /// will contain a <see langword="null" /> reference in its place.
+  /// Gets a number of objects that are already loaded (including invalid objects) or attempts to load them from the data source. 
+  /// If an object is not found, the result array will contain a <see langword="null" /> reference in its place.
   /// </summary>
   /// <typeparam name="T">The type of objects expected to be returned. Specify <see cref="DomainObject"/> if no specific type is expected.</typeparam>
   /// <param name="objectIDs">The IDs of the objects to be retrieved.</param>
-  /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in <paramref name="objectIDs"/>.</returns>
+  /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in 
+  /// <paramref name="objectIDs"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   public T[] TryGetObjects<T> (params ObjectID[] objectIDs) 
       where T : DomainObject
   {
     ArgumentUtility.CheckNotNullOrEmpty ("objectIDs", objectIDs);
-    return GetObjects<T> (objectIDs, false);
-  }
 
-  /// <summary>
-  /// Gets a number of objects that are already loaded or attempts to load them from the data source.
-  /// </summary>
-  /// <typeparam name="T">The type of objects expected to be returned. Specify <see cref="DomainObject"/> if no specific type is expected.</typeparam>
-  /// <param name="objectIDs">The IDs of the objects to be retrieved.</param>
-  /// <param name="throwOnNotFound">Specifies whether an <see cref="ObjectNotFoundException"/> is raised (and encapsulated in a
-  /// <see cref="BulkLoadException"/>) when an object cannot be found in the data source. If this parameter is set to false, such objects are
-  /// ignored.</param>
-  /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in <paramref name="objectIDs"/>.</returns>
-  /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
-  /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
-  /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
-  /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
-  protected internal virtual T[] GetObjects<T> (ICollection<ObjectID> objectIDs, bool throwOnNotFound) 
-      where T : DomainObject
-  {
-    ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+    // this performs a bulk load operation
+    EnsureDataAvailable (objectIDs.Where (id => !IsInvalid (id)), false);
 
-    EnsureDataAvailable (objectIDs, throwOnNotFound); // this performs a bulk load operation
-
-    var result = from id in objectIDs
-                 let maybeDataContainer = Maybe.ForValue (DataManager.DataContainers[id])
-                 let maybeDomainObject = maybeDataContainer.Select (dc => (T) dc.DomainObject)
-                 select maybeDomainObject.ValueOrDefault ();
+    var result = objectIDs.Select (GetInvalidOrLoadedObjectReferenceOrNull).Cast<T>();
     return result.ToArray ();
   }
 
@@ -1381,6 +1364,19 @@ public class ClientTransaction
   public virtual ITransaction ToITransation ()
   {
     return new ClientTransactionWrapper (this);
+  }
+
+  private DomainObject GetInvalidOrLoadedObjectReferenceOrNull (ObjectID objectID)
+  {
+    if (IsInvalid (objectID))
+      return GetInvalidObjectReference (objectID);
+    else
+      return GetLoadedObjectOrNull(objectID);
+  }
+
+  private DomainObject GetLoadedObjectOrNull (ObjectID objectID)
+  {
+    return Maybe.ForValue (DataManager.GetDataContainerWithoutLoading (objectID)).Select (dc => dc.DomainObject).ValueOrDefault ();
   }
 
   [Obsolete ("This method has been removed. Please implement the desired behavior yourself, using GetEnlistedDomainObjects(), EnlistDomainObject(), "

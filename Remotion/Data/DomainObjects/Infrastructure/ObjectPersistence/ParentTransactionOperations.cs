@@ -61,12 +61,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _parentTransaction.GetObject (objectID, false);
     }
 
-    public IEnumerable<DomainObject> GetObjects (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public IEnumerable<DomainObject> GetObjects (ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
       CheckDisposed ();
       
-      return _parentTransaction.GetObjects<DomainObject> (objectIDs, throwOnNotFound);
+      return _parentTransaction.GetObjects<DomainObject> (objectIDs);
+    }
+
+    public IEnumerable<DomainObject> TryGetObjects (ObjectID[] objectIDs)
+    {
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+      CheckDisposed ();
+
+      return _parentTransaction.TryGetObjects<DomainObject> (objectIDs);
     }
 
     public DomainObject GetRelatedObject (RelationEndPointID relationEndPointID)

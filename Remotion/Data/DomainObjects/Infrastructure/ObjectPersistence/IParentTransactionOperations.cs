@@ -15,7 +15,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     ObjectID CreateNewObjectID (ClassDefinition classDefinition);
 
     DomainObject GetObject (ObjectID objectID);
-    IEnumerable<DomainObject> GetObjects (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
+    IEnumerable<DomainObject> GetObjects (ObjectID[] objectIDs);
+    IEnumerable<DomainObject> TryGetObjects (ObjectID[] objectIDs);
 
     DomainObject GetRelatedObject (RelationEndPointID relationEndPointID);
     IEnumerable<DomainObject> GetRelatedObjects (RelationEndPointID relationEndPointID);

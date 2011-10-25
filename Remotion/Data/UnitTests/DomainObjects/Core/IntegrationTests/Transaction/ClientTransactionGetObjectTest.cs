@@ -292,7 +292,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4426")]
     public void TryGetObjects_WithInvalidObject_Works ()
     {
       var order = Order.NewObject ();

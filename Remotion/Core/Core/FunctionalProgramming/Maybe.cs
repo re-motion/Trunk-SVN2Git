@@ -209,7 +209,7 @@ namespace Remotion.FunctionalProgramming
     /// <returns>This instance.</returns>
     public Maybe<T> Do (Action<T> action, Action otherwise)
     {
-      return Do (action).Otherwise (otherwise);
+      return Do (action).OtherwiseDo (otherwise);
     }
 
     /// <summary>
@@ -217,7 +217,7 @@ namespace Remotion.FunctionalProgramming
     /// </summary>
     /// <param name="action">The action to execute.</param>
     /// <returns>This instance.</returns>
-    public Maybe<T> Otherwise (Action action)
+    public Maybe<T> OtherwiseDo (Action action)
     {
       if (!_hasValue)
         action();
@@ -302,6 +302,24 @@ namespace Remotion.FunctionalProgramming
         return Maybe.ForValue (selector (_value));
       else
         return Maybe<TR>.Nothing;
+    }
+
+    /// <summary>
+    /// Selects a new value if this instance does not have a value.
+    /// If it already has a value, that value is retained.
+    /// </summary>
+    /// <param name="selector">The selector function. This function is only executed if this instance doesn't have a value.</param>
+    /// <returns>This <see cref="Maybe{T}"/> instance if it holds a value. Otherwise, a new <see cref="Maybe{T}"/> instance holding the result of 
+    /// the <paramref name="selector"/> (or <see cref="Nothing"/> if the selector returned <see langword="null" />).
+    /// </returns>
+    public Maybe<T> OtherwiseSelect (Func<T> selector)
+    {
+      ArgumentUtility.CheckNotNull ("selector", selector);
+
+      if (_hasValue)
+        return this;
+      else
+        return Maybe.ForValue (selector());
     }
 
     /// <summary>

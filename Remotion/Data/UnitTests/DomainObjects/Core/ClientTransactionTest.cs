@@ -1201,6 +1201,149 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
+    [Test]
+    public void TryGetObjects ()
+    {
+      var fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      var fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
+
+      var alreadyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      alreadyLoadedDataContainer.SetDomainObject (fakeOrder1);
+
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      newlyLoadedDataContainer.SetDomainObject (fakeOrder2);
+
+      using (_mockRepository.Ordered ())
+      {
+        _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (false);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1)).Return (alreadyLoadedDataContainer);
+
+        _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order2)).Return (false);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order2)).Return (null);
+
+        _objectLoaderMock
+            .Expect (
+                mock => mock.LoadObjects (
+                    Arg<IList<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2 }),
+                    Arg.Is (false),
+                    Arg.Is (_dataManagerMock)))
+            .Return (new[] { fakeOrder2 });
+
+        _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (false);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1)).Return (alreadyLoadedDataContainer);
+
+        _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order2)).Return (false);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order2)).Return (newlyLoadedDataContainer);
+      }
+      _mockRepository.ReplayAll();
+
+      var result = _transactionWithMocks.TryGetObjects<Order> (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (new[] { fakeOrder1, fakeOrder2 }));
+    }
+
+    [Test]
+    public void TryGetObjects_WithNotFoundObjects ()
+    {
+      var fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
+
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      newlyLoadedDataContainer.SetDomainObject (fakeOrder2);
+
+      using (_mockRepository.Ordered ())
+      {
+        _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (false);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1)).Return (null);
+
+        _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order2)).Return (false);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order2)).Return (null);
+
+        _objectLoaderMock
+            .Expect (
+                mock => mock.LoadObjects (
+                    Arg<IList<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }),
+                    Arg.Is (false),
+                    Arg.Is (_dataManagerMock)))
+            .Return (new[] { null, fakeOrder2 });
+        
+        _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (false);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1)).Return (null);
+
+        _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order2)).Return (false);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order2)).Return (newlyLoadedDataContainer);
+      }
+      _mockRepository.ReplayAll ();
+
+      var result = _transactionWithMocks.TryGetObjects<Order> (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (new[] { null, fakeOrder2 }));
+    }
+
+    [Test]
+    public void TryGetObjects_WithInvalidObjects ()
+    {
+      var fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      var fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
+
+      var alreadyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      alreadyLoadedDataContainer.SetDomainObject (fakeOrder2);
+
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (true);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order2)).Return (false);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.GetInvalidObjectReference (DomainObjectIDs.Order1)).Return (fakeOrder1);
+
+      _dataManagerMock.Stub (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order2)).Return (alreadyLoadedDataContainer);
+
+      _objectLoaderMock
+          .Stub (mock => mock.LoadObjects (Arg<IList<ObjectID>>.List.Equal (new DomainObject[0]), Arg.Is (false), Arg.Is (_dataManagerMock)))
+          .Return (new DomainObject[0]);
+
+      _mockRepository.ReplayAll ();
+
+      var result = _transactionWithMocks.TryGetObjects<Order> (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+
+      _dataManagerMock.AssertWasNotCalled (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1));
+      Assert.That (result, Is.EqualTo (new[] { fakeOrder1, fakeOrder2 }));
+    }
+
+    [Test]
+    public void GetObjects ()
+    {
+      var fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      var fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
+
+      var alreadyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      alreadyLoadedDataContainer.SetDomainObject (fakeOrder1);
+
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      newlyLoadedDataContainer.SetDomainObject (fakeOrder2);
+
+      using (_mockRepository.Ordered ())
+      {
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1)).Return (alreadyLoadedDataContainer);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order2)).Return (null);
+
+        _objectLoaderMock
+            .Expect (
+                mock => mock.LoadObjects (
+                    Arg<IList<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2 }),
+                    Arg.Is (true),
+                    Arg.Is (_dataManagerMock)))
+            .Return (new[] { fakeOrder2 });
+
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1)).Return (alreadyLoadedDataContainer);
+        _dataManagerMock.Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order2)).Return (newlyLoadedDataContainer);
+      }
+      _mockRepository.ReplayAll ();
+
+      var result = _transactionWithMocks.GetObjects<Order> (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (new[] { fakeOrder1, fakeOrder2 }));
+    }
+
     private ClientTransaction CreateTransactionInHierarchy (ClientTransaction parent)
     {
       return ClientTransactionObjectMother.Create (

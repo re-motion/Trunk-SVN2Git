@@ -262,7 +262,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     }
 
     [Test]
-    public void Do_Otherwise_Nothing_DoesNotExecuteAction_ExecutesOtherwise ()
+    public void Do_OtherwiseDo_Nothing_DoesNotExecuteAction_ExecutesOtherwise ()
     {
       bool actionExecuted = false;
       bool otherwiseExecuted = false;
@@ -274,7 +274,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     }
 
     [Test]
-    public void Do_Otherwise_NonNothing_ExecutesAction_DoesNotExecuteOtherwise ()
+    public void Do_OtherwiseDo_NonNothing_ExecutesAction_DoesNotExecuteOtherwise ()
     {
       bool actionExecuted = false;
       bool otherwiseExecuted = false;
@@ -294,36 +294,36 @@ namespace Remotion.UnitTests.FunctionalProgramming
     }
 
     [Test]
-    public void Do_Otherwise_ReturnsInstance ()
+    public void Do_OtherwiseDo_ReturnsInstance ()
     {
       var result = _stringNonNothingTest.Do (s => { }, () => { });
       Assert.That (result, Is.EqualTo (_stringNonNothingTest));
     }
 
     [Test]
-    public void Otherwise_Nothing_ExecutesAction ()
+    public void OtherwiseDo_Nothing_ExecutesAction ()
     {
       bool otherwiseExecuted = false;
 
-      _stringNothing.Otherwise (() => otherwiseExecuted = true);
+      _stringNothing.OtherwiseDo (() => otherwiseExecuted = true);
 
       Assert.That (otherwiseExecuted, Is.True);
     }
 
     [Test]
-    public void Otherwise_NonNothing_DoesNotExecuteAction ()
+    public void OtherwiseDo_NonNothing_DoesNotExecuteAction ()
     {
       bool otherwiseExecuted = false;
 
-      _stringNonNothingTest.Otherwise (() => otherwiseExecuted = true);
+      _stringNonNothingTest.OtherwiseDo (() => otherwiseExecuted = true);
 
       Assert.That (otherwiseExecuted, Is.False);
     }
 
     [Test]
-    public void Otherwise_ReturnsInstance ()
+    public void OtherwiseDo_ReturnsInstance ()
     {
-      var result = _stringNonNothingTest.Otherwise (() => { });
+      var result = _stringNonNothingTest.OtherwiseDo (() => { });
       Assert.That (result, Is.EqualTo (_stringNonNothingTest));
     }
 
@@ -501,6 +501,32 @@ namespace Remotion.UnitTests.FunctionalProgramming
     public void Where_NonNothing_True_ReturnsNonNothing ()
     {
       Assert.That (_stringNonNothingTest.Where (s => true), Is.EqualTo (_stringNonNothingTest));
+    }
+
+    [Test]
+    public void OtherwiseSelect_OriginalNotNull ()
+    {
+      var result = _stringNonNothingTest.OtherwiseSelect (
+          () =>
+          {
+            Assert.Fail ("Should not be called");
+            return null;
+          });
+      Assert.That (result, Is.EqualTo (_stringNonNothingTest));
+    }
+
+    [Test]
+    public void OtherwiseSelect_OriginalNull_NewNotNull ()
+    {
+      var result = _stringNothing.OtherwiseSelect (() => "newValue");
+      Assert.That (result, Is.EqualTo (Maybe.ForValue ("newValue")));
+    }
+
+    [Test]
+    public void OtherwiseSelect_OriginalNull_NewNull ()
+    {
+      var result = _stringNothing.OtherwiseSelect (() => null);
+      Assert.That (result, Is.EqualTo (Maybe<string>.Nothing));
     }
 
     [Test]
