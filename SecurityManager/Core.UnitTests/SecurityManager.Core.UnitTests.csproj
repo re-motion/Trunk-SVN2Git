@@ -200,6 +200,7 @@
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\Common.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\IsActive.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\SubstitutionTestBase.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantProxyTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\Common.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\GetParents.cs" />
