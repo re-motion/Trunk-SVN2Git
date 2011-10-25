@@ -31,16 +31,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Secu
   [TestFixture]
   public class Common : DomainTest
   {
-    private DatabaseFixtures _dbFixtures;
-
-    public override void TestFixtureSetUp ()
-    {
-      base.TestFixtureSetUp();
-
-      _dbFixtures = new DatabaseFixtures();
-      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
-    }
-
     public override void SetUp ()
     {
       base.SetUp();

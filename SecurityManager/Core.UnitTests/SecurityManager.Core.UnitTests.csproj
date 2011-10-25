@@ -191,7 +191,9 @@
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossibleGroups.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossiblePositions.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\DeleteRole.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\GetSubstitutions.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\GetTenants.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutedRole.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SubstitutionPropertiesSearchServiceTestBase.cs" />

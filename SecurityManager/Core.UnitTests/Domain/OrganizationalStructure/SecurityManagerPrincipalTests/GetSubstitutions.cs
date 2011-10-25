@@ -1,4 +1,4 @@
-// This file is part of re-strict (www.re-motion.org)
+﻿// This file is part of re-strict (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -26,12 +25,13 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SecurityManagerPrincipalTests
 {
   [TestFixture]
-  public class GetTenants : DomainTest
+  public class GetSubstitutions : DomainTest
   {
     private ObjectID _rootTenantID;
     private ObjectID _childTenantID;
     private ObjectID _grandChildTenantID;
     private ObjectID _userID;
+
 
     public override void SetUp ()
     {
@@ -50,33 +50,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Secu
 
     public override void TearDown ()
     {
-      base.TearDown();
+      base.TearDown ();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
     }
 
     [Test]
-    public void GetTenantHierarchyFromUser ()
+    [Ignore]
+    public void IncludeInactiveSubstitutions ()
     {
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_childTenantID, _userID, null);
 
       Assert.That (principal.GetTenants (true).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _childTenantID, _grandChildTenantID }));
-    }
-
-    [Test]
-    public void IncludeAbstractTenants ()
-    {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantID, _userID, null);
-
-      Assert.That (principal.GetTenants (true).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _childTenantID, _grandChildTenantID }));
-    }
-
-    [Test]
-    public void ExcludeAbstractTenants ()
-    {
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantID, _userID, null);
-
-      Assert.That (principal.GetTenants (false).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _grandChildTenantID }));
     }
   }
 }
