@@ -260,15 +260,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       Assertion.IsFalse (dataContainer.IsDiscarded);
 
       var parentDataContainer = DataContainer.CreateNew (dataContainer.ID);
-
       parentDataContainer.SetDomainObject (dataContainer.DomainObject);
 
-      parentTransactionOperations.RegisterDataContainer (parentDataContainer);
-
       parentDataContainer.SetPropertyDataFromSubTransaction (dataContainer);
-      if (dataContainer.HasBeenMarkedChanged)
-        parentDataContainer.MarkAsChanged ();
-      parentDataContainer.SetTimestamp (dataContainer.Timestamp);
+
+      Assertion.IsFalse (dataContainer.HasBeenMarkedChanged);
+      Assertion.IsNull (dataContainer.Timestamp);
+
+      parentTransactionOperations.RegisterDataContainer (parentDataContainer);
     }
 
     private void PersistChangedDataContainer (DataContainer dataContainer, IParentTransactionOperations parentTransactionOperations)

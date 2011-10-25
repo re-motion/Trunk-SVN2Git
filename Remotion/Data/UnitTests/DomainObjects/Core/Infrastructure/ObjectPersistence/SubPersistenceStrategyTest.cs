@@ -18,58 +18,65 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
 {
   [TestFixture]
   public class SubPersistenceStrategyTest : ClientTransactionBaseTest
   {
-    private ClientTransactionMock _parentTransaction;
-    private IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
+    private IParentTransactionOperations _parentTransactionOperationsMock;
     private SubPersistenceStrategy _persistenceStrategy;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _parentTransaction = new ClientTransactionMock ();
-      _parentTransaction.IsReadOnly = true;
-
-      _parentInvalidDomainObjectManager = ClientTransactionTestHelper.GetInvalidDomainObjectManager (_parentTransaction);
-      _persistenceStrategy = new SubPersistenceStrategy (new ParentTransactionContext (_parentTransaction, _parentInvalidDomainObjectManager));
+      _parentTransactionOperationsMock = MockRepository.GenerateStrictMock<IParentTransactionOperations> ();
+      var parentTransactionContextStub = MockRepository.GenerateStub<IParentTransactionContext> ();
+      parentTransactionContextStub.Stub (stub => stub.AccessParentTransaction()).Return (_parentTransactionOperationsMock);
+      _persistenceStrategy = new SubPersistenceStrategy (parentTransactionContextStub);
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException), ExpectedMessage = 
-        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is already deleted in the parent transaction.")]
-    public void LoadDataContainers_ObjectDeletedInParent ()
-    {
-      _parentTransaction.IsReadOnly = false;
-      var order1 = _parentTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _parentTransaction.Execute (order1.Delete);
-      _parentTransaction.IsReadOnly = true;
-      
-      _persistenceStrategy.LoadObjectData (new[] { order1.ID }, false);
-    }
-
-    [Test]
-    public void PersistData_NewDataContainer_ClearsInvalidFlagInParent ()
+    public void PersistData_NewDataContainer ()
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> ();
-      _parentInvalidDomainObjectManager.MarkInvalid (instance);
-      Assert.That (_parentInvalidDomainObjectManager.IsInvalid (instance.ID), Is.True);
-
       var dataContainer = DataContainer.CreateNew (instance.ID);
+      dataContainer.PropertyValues[GetPropertyIdentifier (typeof (Order), "OrderNumber")].Value = 12;
       dataContainer.SetDomainObject (instance);
 
-      _persistenceStrategy.PersistData (
-          Array.AsReadOnly (new[] { new PersistableData (instance, StateType.New, dataContainer, new IRelationEndPoint[0]) }));
+      var persistableData = new PersistableData (instance, StateType.New, dataContainer, new IRelationEndPoint[0]);
 
-      Assert.That (_parentInvalidDomainObjectManager.IsInvalid (instance.ID), Is.False);
+      using (_parentTransactionOperationsMock.GetMockRepository ().Ordered ())
+      {
+        _parentTransactionOperationsMock.Stub (mock => mock.IsInvalid (instance.ID)).Return (true);
+        _parentTransactionOperationsMock.Expect (mock => mock.MarkNotInvalid (instance.ID));
+        _parentTransactionOperationsMock.Stub (stub => stub.GetDataContainerWithoutLoading (instance.ID)).Return (null);
+        _parentTransactionOperationsMock
+            .Expect (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything))
+            .WhenCalled (
+                mi =>
+                {
+                  var dc = (DataContainer) mi.Arguments[0];
+                  Assert.That (dc.ID, Is.EqualTo (instance.ID));
+                  Assert.That (dc.State, Is.EqualTo (StateType.New));
+                  Assert.That (dc.HasDomainObject, Is.True);
+                  Assert.That (dc.DomainObject, Is.SameAs (instance));
+                  Assert.That (dc.PropertyValues[GetPropertyIdentifier (typeof (Order), "OrderNumber")].Value, Is.EqualTo (12));
+                }
+            );
+        _parentTransactionOperationsMock.Expect (mock => mock.Dispose());
+      }
+
+      _parentTransactionOperationsMock.Replay();
+
+      _persistenceStrategy.PersistData (Array.AsReadOnly (new[] { persistableData }));
+
+      _parentTransactionOperationsMock.VerifyAllExpectations();
     }
   }
 }
