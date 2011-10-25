@@ -15,7 +15,6 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -27,10 +26,10 @@ using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Rhino.Mocks;
 
-namespace Remotion.SecurityManager.UnitTests.Domain
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SecurityManagerPrincipalTests
 {
   [TestFixture]
-  public class SecurityManagerPrincipalTest : DomainTest
+  public class Common : DomainTest
   {
     private DatabaseFixtures _dbFixtures;
 

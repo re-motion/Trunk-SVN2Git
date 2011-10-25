@@ -191,6 +191,7 @@
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossibleGroups.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossiblePositions.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\DeleteRole.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\GetTenants.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutedRole.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SubstitutionPropertiesSearchServiceTestBase.cs" />
@@ -250,7 +251,7 @@
     <Compile Include="Domain\Metadata\SecurableClassValidationResultTest.cs" />
     <Compile Include="Domain\RevisionTest.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalProviderTest.cs" />
-    <Compile Include="Domain\SecurityManagerPrincipalTest.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\Common.cs" />
     <Compile Include="Domain\SerializationTest.cs" />
     <Compile Include="Persistence\RevisionStorageProviderExtensionTest.cs" />
     <Compile Include="Persistence\SecurityManagerSqlStorageObjectFactoryTest.cs" />

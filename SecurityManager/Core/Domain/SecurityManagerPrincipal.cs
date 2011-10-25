@@ -16,6 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -106,6 +108,34 @@ namespace Remotion.SecurityManager.Domain
         InitializeClientTransaction();
     }
 
+    public TenantProxy[] GetTenants (bool includeAbstractTenants)
+    {
+      return GetTenant (_transaction).GetHierachy().Where (t => includeAbstractTenants || !t.IsAbstract).Select (TenantProxy.Create).ToArray();
+    }
+
+    public ISecurityPrincipal GetSecurityPrincipal ()
+    {
+      using (new SecurityFreeSection ())
+      {
+        string substitutedUser = null;
+        SecurityPrincipalRole substitutedRole = null;
+
+        Substitution substitution = Substitution;
+        if (substitution != null)
+        {
+          substitutedUser = substitution.SubstitutedUser.UserName;
+          if (substitution.SubstitutedRole != null)
+          {
+            substitutedRole = new SecurityPrincipalRole (
+                substitution.SubstitutedRole.Group.UniqueIdentifier,
+                substitution.SubstitutedRole.Position.UniqueIdentifier);
+          }
+        }
+
+        return new SecurityPrincipal (User.UserName, null, substitutedUser, substitutedRole);
+      }
+    }
+
     private Tenant GetTenant (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
@@ -151,29 +181,6 @@ namespace Remotion.SecurityManager.Domain
     bool INullObject.IsNull
     {
       get { return false; }
-    }
-
-    public ISecurityPrincipal GetSecurityPrincipal ()
-    {
-      using (new SecurityFreeSection())
-      {
-        string substitutedUser = null;
-        SecurityPrincipalRole substitutedRole = null;
-
-        Substitution substitution = Substitution;
-        if (substitution != null)
-        {
-          substitutedUser = substitution.SubstitutedUser.UserName;
-          if (substitution.SubstitutedRole != null)
-          {
-            substitutedRole = new SecurityPrincipalRole (
-                substitution.SubstitutedRole.Group.UniqueIdentifier,
-                substitution.SubstitutedRole.Position.UniqueIdentifier);
-          }
-        }
-
-        return new SecurityPrincipal (User.UserName, null, substitutedUser, substitutedRole);
-      }
     }
 
     private int GetRevision ()

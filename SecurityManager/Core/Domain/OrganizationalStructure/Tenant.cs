@@ -162,28 +162,34 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// <summary>
     /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access for the respective child-object.
     /// </summary>
-    /// <exception cref="PermissionDeniedException">
-    /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
-    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown if the hierarchy contains a circular reference.
     /// </exception>
-    [DemandPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Tenant> GetHierachy ()
     {
-      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      securityClient.CheckMethodAccess (this, "GetHierachy");
-
-      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchy (this)));
+      return GetHierarchyWithSecurityCheck (this);
     }
 
     /// <summary>
     /// Resolves the hierarchy for the current tenant as long as the user has <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
     /// </summary>
+    private IEnumerable<Tenant> GetHierarchyWithSecurityCheck (Tenant startPoint)
+    {
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
+        return new Tenant[0];
+
+      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchyWithCircularReferenceCheck (startPoint)));
+    }
+
+    /// <summary>
+    /// Resolves the hierarchy for the current tenant as long as the current object is not equal to the <param name="startPoint"/>, 
+    /// which would indicate a circular reference.
+    /// </summary>
     /// <exception cref="InvalidOperationException">
     /// Thrown if the current object equals the <paramref name="startPoint"/>.
     /// </exception>
-    private IEnumerable<Tenant> GetHierarchy (Tenant startPoint)
+    private IEnumerable<Tenant> GetHierarchyWithCircularReferenceCheck (Tenant startPoint)
     {
       if (this == startPoint)
       {
@@ -191,11 +197,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
             string.Format ("The hierarchy for tenant '{0}' cannot be resolved because a circular reference exists.", startPoint.ID));
       }
 
-      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-      if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
-        return new Tenant[0];
-
-      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchy (startPoint)));
+      return GetHierarchyWithSecurityCheck (startPoint);
     }
   }
 }

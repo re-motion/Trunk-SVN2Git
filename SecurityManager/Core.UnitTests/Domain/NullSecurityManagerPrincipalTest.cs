@@ -44,6 +44,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     }
 
     [Test]
+    public void GetTenants ()
+    {
+      ISecurityManagerPrincipal principal = SecurityManagerPrincipal.Null;
+
+      Assert.That (principal.GetTenants (true), Is.Empty);
+    }
+
+    [Test]
     public void GetSecurityPrincipal ()
     {
       ISecurityManagerPrincipal principal = SecurityManagerPrincipal.Null;

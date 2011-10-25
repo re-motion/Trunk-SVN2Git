@@ -46,7 +46,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     }
 
     [Test]
-    public void SerializeAndDeserialize ()
+    public void Serialization ()
     {
       var proxy = TenantProxy.Create (_testHelper.CreateTenant ("TheTenant", "UID"));
 

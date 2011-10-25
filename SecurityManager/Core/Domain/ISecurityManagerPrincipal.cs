@@ -33,5 +33,6 @@ namespace Remotion.SecurityManager.Domain
     Substitution Substitution { get; }
     void Refresh ();
     ISecurityPrincipal GetSecurityPrincipal ();
+    TenantProxy[] GetTenants (bool includeAbstractTenants);
   }
 }

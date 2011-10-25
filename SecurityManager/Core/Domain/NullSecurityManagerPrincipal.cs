@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
@@ -52,6 +53,11 @@ namespace Remotion.SecurityManager.Domain
 
     public void Refresh ()
     {
+    }
+
+    public TenantProxy[] GetTenants (bool includeAbstractTenants)
+    {
+      return new TenantProxy[0];
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()
