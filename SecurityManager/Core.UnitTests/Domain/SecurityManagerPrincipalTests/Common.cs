@@ -177,56 +177,5 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       //var bindingTransaction = principal.User.GetBindingTransaction ();
       //Assert.That (bindingTransaction.Extensions, Has.No.InstanceOf<SecurityClientTransactionExtension> ());
     }
-
-    [Test]
-    public void GetTenant_UsesSecurityFreeSection ()
-    {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
-      securityProviderStub.Stub (stub => stub.IsNull).Return (false);
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions ().First ();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
-      var tenantProxy = principal.Tenant;
-
-      Assert.That (tenantProxy.DisplayName, Is.EqualTo (tenant.DisplayName));
-    }
-
-    [Test]
-    public void GetUser_UsesSecurityFreeSection ()
-    {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
-      securityProviderStub.Stub (stub => stub.IsNull).Return (false);
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions ().First ();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
-      var userProxy = principal.User;
-
-      Assert.That (userProxy.DisplayName, Is.EqualTo (user.DisplayName));
-    }
-
-    [Test]
-    public void GetSubstitution_UsesSecurityFreeSection ()
-    {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
-      securityProviderStub.Stub (stub => stub.IsNull).Return (false);
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions ().First ();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
-      var substitutionProxy = principal.Substitution;
-
-      Assert.That (substitutionProxy.DisplayName, Is.EqualTo (substitution.DisplayName));
-    }
   }
 }
