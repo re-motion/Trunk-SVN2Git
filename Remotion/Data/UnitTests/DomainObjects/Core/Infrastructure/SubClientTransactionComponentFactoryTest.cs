@@ -129,8 +129,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var result = _factory.CreatePersistenceStrategy (_fakeConstructedTransaction);
 
       Assert.That (result, Is.TypeOf<SubPersistenceStrategy> ());
-      Assert.That (((SubPersistenceStrategy) result).ParentTransaction, Is.SameAs (_parentTransaction));
-      Assert.That (((SubPersistenceStrategy) result).ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
+      var parentTransactionContext = ((SubPersistenceStrategy) result).ParentTransactionContext;
+      Assert.That (parentTransactionContext, Is.TypeOf<ParentTransactionContext>());
+      Assert.That (((ParentTransactionContext) parentTransactionContext).ParentTransaction, Is.SameAs (_parentTransaction));
+      Assert.That (
+          ((ParentTransactionContext) parentTransactionContext).ParentInvalidDomainObjectManager, 
+          Is.SameAs (_parentInvalidDomainObjectManagerStub));
     }
 
     [Test]

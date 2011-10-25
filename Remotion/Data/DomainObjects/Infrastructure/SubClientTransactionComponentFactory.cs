@@ -37,7 +37,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class SubClientTransactionComponentFactory : IClientTransactionComponentFactory
   {
-    public static SubClientTransactionComponentFactory Create (ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
+    public static SubClientTransactionComponentFactory Create (
+        ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
     {
       return ObjectFactory.Create<SubClientTransactionComponentFactory> (true, ParamList.Create (parentTransaction, parentInvalidDomainObjectManager));
     }
@@ -76,7 +77,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (_parentTransaction, _parentInvalidDomainObjectManager));
+      
+      var parentTransactionContext = new ParentTransactionContext (_parentTransaction, _parentInvalidDomainObjectManager);
+      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (parentTransactionContext));
     }
 
     public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)

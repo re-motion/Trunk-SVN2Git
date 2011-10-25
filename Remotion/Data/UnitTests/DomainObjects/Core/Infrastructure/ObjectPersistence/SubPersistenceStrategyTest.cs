@@ -40,24 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _parentTransaction.IsReadOnly = true;
 
       _parentInvalidDomainObjectManager = ClientTransactionTestHelper.GetInvalidDomainObjectManager (_parentTransaction);
-      _persistenceStrategy = new SubPersistenceStrategy (_parentTransaction, _parentInvalidDomainObjectManager);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "In order for the subtransaction persistence strategy to work correctly, the parent transaction needs to be read-only. Use "
-        + "ClientTransaction.CreateSubTransaction() to create a subtransaction and automatically set the parent transaction read-only.\r\n"
-        + "Parameter name: parentTransaction")] 
-    public void Initialization_ThrowsWhenParentTransactionWriteable ()
-    {
-      var writeableParentTransaction = new ClientTransactionMock();
-      new SubPersistenceStrategy (writeableParentTransaction, _parentInvalidDomainObjectManager);
-    }
-
-    [Test]
-    public void ParentTransaction ()
-    {
-      Assert.That (_persistenceStrategy.ParentTransaction, Is.SameAs (_parentTransaction));
+      _persistenceStrategy = new SubPersistenceStrategy (new ParentTransactionContext (_parentTransaction, _parentInvalidDomainObjectManager));
     }
 
     [Test]
