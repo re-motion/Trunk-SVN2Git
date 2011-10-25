@@ -192,7 +192,10 @@
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossiblePositions.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\DeleteRole.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\GetActiveSubstitutions.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\GetSecurityPrincipal.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\GetTenants.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\Initialize.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\Refresh.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionProxyTest.cs" />

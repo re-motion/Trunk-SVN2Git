@@ -33,108 +33,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Secu
   {
     public override void SetUp ()
     {
-      base.SetUp();
+      base.SetUp ();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
-      ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
+      ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ();
     }
 
     public override void TearDown ()
     {
-      base.TearDown();
+      base.TearDown ();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
     }
-
-    [Test]
-    public void Initialize_WithObjects ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
-
-      Assert.That (principal.Tenant.ID, Is.EqualTo (tenant.ID));
-      Assert.That (principal.Tenant, Is.Not.SameAs (tenant));
-
-      Assert.That (principal.User.ID, Is.EqualTo (user.ID));
-      Assert.That (principal.User, Is.Not.SameAs (user));
-
-      Assert.That (principal.Substitution.ID, Is.EqualTo (substitution.ID));
-      Assert.That (principal.Substitution, Is.Not.SameAs (substitution));
-    }
-
-    [Test]
-    public void Initialize_WithObjectIDs ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
-
-      Assert.That (principal.Tenant.ID, Is.EqualTo (tenant.ID));
-      Assert.That (principal.Tenant, Is.Not.SameAs (tenant));
-
-      Assert.That (principal.User.ID, Is.EqualTo (user.ID));
-      Assert.That (principal.User, Is.Not.SameAs (user));
-
-      Assert.That (principal.Substitution.ID, Is.EqualTo (substitution.ID));
-      Assert.That (principal.Substitution, Is.Not.SameAs (substitution));
-    }
-
-    [Test]
-    public void Refresh_SameRevisionDoesNotChangeTransaction ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
-
-      Tenant oldTenant = principal.Tenant;
-      User oldUser = principal.User;
-      Substitution oldSubstitution = principal.Substitution;
-
-      ClientTransactionScope.ResetActiveScope ();
-
-      principal.Refresh();
-
-      Assert.That (principal.Tenant, Is.SameAs (oldTenant));
-      Assert.That (principal.User, Is.SameAs (oldUser));
-      Assert.That (principal.Substitution, Is.SameAs (oldSubstitution));
-    }
-
-    [Test]
-    public void Refresh_NewRevisionResetsTransaction ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
-
-      Tenant oldTenant = principal.Tenant;
-      User oldUser = principal.User;
-      Substitution oldSubstitution = principal.Substitution;
-
-      Revision.IncrementRevision();
-      
-      ClientTransactionScope.ResetActiveScope ();
-
-      principal.Refresh();
-
-      Assert.That (principal.Tenant.ID, Is.EqualTo (oldTenant.ID));
-      Assert.That (principal.Tenant, Is.Not.SameAs (oldTenant));
-
-      Assert.That (principal.User.ID, Is.EqualTo (oldUser.ID));
-      Assert.That (principal.User, Is.Not.SameAs (oldUser));
-
-      Assert.That (principal.Substitution.ID, Is.EqualTo (oldSubstitution.ID));
-      Assert.That (principal.Substitution, Is.Not.SameAs (oldSubstitution));
-    }
-
+    
     [Test]
     public void Get_Current_NotInitialized ()
     {
@@ -200,104 +111,37 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Secu
     }
 
     [Test]
-    public void GetSecurityPrincipal ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().Where (s => s.SubstitutedRole != null).First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
-
-      ISecurityPrincipal securityPrincipal = principal.GetSecurityPrincipal();
-      Assert.That (securityPrincipal.IsNull, Is.False);
-      Assert.That (securityPrincipal.User, Is.EqualTo (user.UserName));
-      Assert.That (securityPrincipal.Role, Is.Null);
-      Assert.That (securityPrincipal.SubstitutedUser, Is.EqualTo (substitution.SubstitutedUser.UserName));
-      Assert.That (securityPrincipal.SubstitutedRole.Group, Is.EqualTo (substitution.SubstitutedRole.Group.UniqueIdentifier));
-      Assert.That (securityPrincipal.SubstitutedRole.Position, Is.EqualTo (substitution.SubstitutedRole.Position.UniqueIdentifier));
-    }
-
-    [Test]
-    public void GetSecurityPrincipal_UsesSecurityFreeSection ()
-    {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
-      securityProviderStub.Stub (stub => stub.IsNull).Return (false);
-      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().Where (s => s.SubstitutedRole != null).First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
-
-      ISecurityPrincipal securityPrincipal = principal.GetSecurityPrincipal();
-      Assert.That (securityPrincipal.IsNull, Is.False);
-      Assert.That (securityPrincipal.User, Is.EqualTo (user.UserName));
-    }
-
-    [Test]
-    public void Serialization ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
-
-      var principal = new SecurityManagerPrincipal (tenant, user, substitution);
-      var deserializedPrincipal = Serializer.SerializeAndDeserialize (principal);
-
-      Assert.That (deserializedPrincipal.Tenant.ID, Is.EqualTo (principal.Tenant.ID));
-      Assert.That (deserializedPrincipal.Tenant, Is.Not.SameAs (principal.Tenant));
-
-      Assert.That (deserializedPrincipal.User.ID, Is.EqualTo (principal.User.ID));
-      Assert.That (deserializedPrincipal.User, Is.Not.SameAs (principal.User));
-
-      Assert.That (deserializedPrincipal.Substitution.ID, Is.EqualTo (principal.Substitution.ID));
-      Assert.That (deserializedPrincipal.Substitution, Is.Not.SameAs (principal.Substitution));
-    }
-
-    [Test]
-    public void Get_IsNull ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-
-      ISecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, null);
-
-      Assert.That (principal.IsNull, Is.False);
-    }
-
-    [Test]
     public void ActiveSecurityProviderAddsSecurityClientTransactionExtension ()
     {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
+      Substitution substitution = user.GetActiveSubstitutions ().First ();
 
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
 
-      var bindingTransaction = principal.User.GetBindingTransaction();
-      Assert.That (bindingTransaction.Extensions, Has.Some.InstanceOf<SecurityClientTransactionExtension>());
+      var bindingTransaction = principal.User.GetBindingTransaction ();
+      Assert.That (bindingTransaction.Extensions, Has.Some.InstanceOf<SecurityClientTransactionExtension> ());
     }
 
     [Test]
     public void NullSecurityProviderDoesNotAddSecurityClientTransactionExtension ()
     {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
       securityProviderStub.Stub (stub => stub.IsNull).Return (true);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
+      Substitution substitution = user.GetActiveSubstitutions ().First ();
 
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
 
-      var bindingTransaction = principal.User.GetBindingTransaction();
-      Assert.That (bindingTransaction.Extensions, Has.No.InstanceOf<SecurityClientTransactionExtension>());
+      var bindingTransaction = principal.User.GetBindingTransaction ();
+      Assert.That (bindingTransaction.Extensions, Has.No.InstanceOf<SecurityClientTransactionExtension> ());
     }
   }
 }

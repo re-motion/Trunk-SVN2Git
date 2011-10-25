@@ -115,9 +115,11 @@ namespace Remotion.SecurityManager.Domain
           .ToArray();
     }
 
-    public Substitution[] GetActiveSubstitutions ()
+    public SubstitutionProxy[] GetActiveSubstitutions ()
     {
-      return GetUser (_transaction).GetActiveSubstitutions().ToArray();
+      return GetUser (_transaction).GetActiveSubstitutions()
+          .Select (SubstitutionProxy.Create)
+          .ToArray();
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()
