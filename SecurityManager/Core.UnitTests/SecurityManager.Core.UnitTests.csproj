@@ -199,6 +199,7 @@
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SubstitutionPropertiesSearchServiceTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutingUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SetUpFixture.cs" />
+    <Compile Include="Domain\OrganizationalStructure\UserProxyTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\Common.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\IsActive.cs" />
