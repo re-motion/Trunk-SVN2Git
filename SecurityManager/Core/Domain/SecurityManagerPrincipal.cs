@@ -69,6 +69,15 @@ namespace Remotion.SecurityManager.Domain
     [NonSerialized]
     private ISecurityPrincipal _securityPrincipal;
 
+    [NonSerialized]
+    private TenantProxy _tenantProxy;
+
+    [NonSerialized]
+    private UserProxy _userProxy;
+
+    [NonSerialized]
+    private SubstitutionProxy _substitutionProxy;
+
     public SecurityManagerPrincipal (ObjectID tenantID, ObjectID userID, ObjectID substitutionID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
@@ -89,21 +98,32 @@ namespace Remotion.SecurityManager.Domain
     {
       get
       {
-        return CreateTenantProxy(GetTenant (_transaction));
+        if (_tenantProxy == null)
+          _tenantProxy = CreateTenantProxy (GetTenant (_transaction));
+        return _tenantProxy;
       }
     }
 
     public UserProxy User
     {
-      get { return CreateUserProxy (GetUser (_transaction)); }
+      get
+      {
+        if (_userProxy == null)
+          _userProxy = CreateUserProxy (GetUser (_transaction));
+        return _userProxy;
+      }
     }
 
     public SubstitutionProxy Substitution
     {
       get
       {
-        Substitution substitution = GetSubstitution (_transaction);
-        return substitution != null ? CreateSubstitutionProxy (substitution) : null;
+        if (_substitutionProxy == null)
+        {
+          Substitution substitution = GetSubstitution (_transaction);
+          _substitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
+        }
+        return _substitutionProxy;
       }
     }
 
@@ -161,42 +181,6 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private Tenant GetTenant (ClientTransaction transaction)
-    {
-      using (transaction.EnterNonDiscardingScope())
-      {
-        return OrganizationalStructure.Tenant.GetObject (_tenantID);
-      }
-    }
-
-    private User GetUser (ClientTransaction transaction)
-    {
-      using (transaction.EnterNonDiscardingScope())
-      {
-        return OrganizationalStructure.User.GetObject (_userID);
-      }
-    }
-
-    private Substitution GetSubstitution (ClientTransaction transaction)
-    {
-      if (_substitutionID == null)
-        return null;
-
-      using (transaction.EnterNonDiscardingScope())
-      {
-        return (Substitution) OrganizationalStructure.Substitution.GetObject (_substitutionID);
-      }
-    }
-
-    private void InitializeClientTransaction ()
-    {
-      _transaction = ClientTransaction.CreateBindingTransaction();
-      _revision = GetRevision();
-
-      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-        _transaction.Extensions.Add (new SecurityClientTransactionExtension());
-    }
-    
     private TenantProxy CreateTenantProxy (Tenant tenant)
     {
       using (new SecurityFreeSection())
@@ -221,9 +205,40 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    bool INullObject.IsNull
+    private Tenant GetTenant (ClientTransaction transaction)
     {
-      get { return false; }
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        return OrganizationalStructure.Tenant.GetObject (_tenantID);
+      }
+    }
+
+    private User GetUser (ClientTransaction transaction)
+    {
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        return OrganizationalStructure.User.GetObject (_userID);
+      }
+    }
+
+    private Substitution GetSubstitution (ClientTransaction transaction)
+    {
+      if (_substitutionID == null)
+        return null;
+
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        return (Substitution) OrganizationalStructure.Substitution.GetObject (_substitutionID);
+      }
+    }
+
+    private void InitializeClientTransaction ()
+    {
+      _transaction = ClientTransaction.CreateBindingTransaction ();
+      _revision = GetRevision ();
+
+      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+        _transaction.Extensions.Add (new SecurityClientTransactionExtension ());
     }
 
     private int GetRevision ()
@@ -232,6 +247,11 @@ namespace Remotion.SecurityManager.Domain
       {
         return Revision.GetRevision();
       }
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
     }
   }
 }

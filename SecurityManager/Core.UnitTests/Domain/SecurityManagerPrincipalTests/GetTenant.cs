@@ -17,7 +17,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
@@ -59,6 +61,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var tenantProxy = _principal.Tenant;
 
       Assert.That (tenantProxy.ID, Is.EqualTo (_tenant.ID));
+    }
+
+    [Test]
+    public void UsesCache ()
+    {
+      Assert.That (_principal.Tenant, Is.SameAs (_principal.Tenant));
+    }
+
+    [Test]
+    public void DoesNotCacheDuringSerialization ()
+    {
+      var deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (_principal, _principal.Tenant));
+      SecurityManagerPrincipal deserialziedSecurityManagerPrincipal = deserialized.Item1;
+      TenantProxy deserialziedTenant = deserialized.Item2;
+
+      Assert.That (deserialziedSecurityManagerPrincipal.Tenant, Is.Not.SameAs (deserialziedTenant));
     }
 
     [Test]

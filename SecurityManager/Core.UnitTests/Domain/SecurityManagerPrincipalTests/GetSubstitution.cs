@@ -17,7 +17,9 @@
 // 
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
@@ -61,6 +63,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var substitutionProxy = _principal.Substitution;
 
       Assert.That (substitutionProxy.ID, Is.EqualTo (_substitution.ID));
+    }
+
+    [Test]
+    public void UsesCache ()
+    {
+      Assert.That (_principal.Substitution, Is.SameAs (_principal.Substitution));
+    }
+
+    [Test]
+    public void DoesNotCacheDuringSerialization ()
+    {
+      var deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (_principal, _principal.Substitution));
+      SecurityManagerPrincipal deserialziedSecurityManagerPrincipal = deserialized.Item1;
+      SubstitutionProxy deserialziedSubstitution = deserialized.Item2;
+
+      Assert.That (deserialziedSecurityManagerPrincipal.Substitution, Is.Not.SameAs (deserialziedSubstitution));
     }
 
     [Test]
