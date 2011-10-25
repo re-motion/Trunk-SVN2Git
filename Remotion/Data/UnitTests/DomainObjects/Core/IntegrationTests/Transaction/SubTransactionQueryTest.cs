@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         var queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
         var array = queriedObjects.ToArray ();
-        Customer queriedObject = (Customer) array[0];
+        var queriedObject = (Customer) array[0];
 
         Assert.IsNotNull (queriedObjects);
         Assert.AreEqual (1, queriedObjects.Count);
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
       }
 
-      Customer queriedObject = (Customer) queriedObjects.ToArray()[0];
+      var queriedObject = (Customer) queriedObjects.ToArray()[0];
 
       Assert.IsNotNull (queriedObjects);
       Assert.AreEqual (1, queriedObjects.Count);
@@ -275,6 +275,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           Assert.That (loadedObjects[0], Is.SameAs (outerResult[0]));
           Assert.That (loadedObjects[0].State, Is.EqualTo (StateType.Invalid));
         }
+      }
+    }
+
+    [Test]
+    public void GetCollectionWithNullValues ()
+    {
+      var query = QueryFactory.CreateCollectionQuery (
+          "test",
+          DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
+          "SELECT [Employee].* FROM [Computer] LEFT OUTER JOIN [Employee] ON [Computer].[EmployeeID] = [Employee].[ID] "
+          + "WHERE [Computer].[ID] IN (@1, @2, @3) "
+          + "ORDER BY [Computer].[ID] asc",
+          new QueryParameterCollection(),
+          typeof (DomainObjectCollection));
+
+      query.Parameters.Add ("@1", DomainObjectIDs.Computer5); // no employee
+      query.Parameters.Add ("@3", DomainObjectIDs.Computer4); // no employee
+      query.Parameters.Add ("@2", DomainObjectIDs.Computer1); // employee 3
+
+      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope ())
+      {
+        var result = ClientTransaction.Current.QueryManager.GetCollection (query);
+        Assert.That (result.ContainsNulls(), Is.True);
+        Assert.That (result.ToArray(), Is.EqualTo (new[] { null, null, Employee.GetObject (DomainObjectIDs.Employee3) }));
       }
     }
   }

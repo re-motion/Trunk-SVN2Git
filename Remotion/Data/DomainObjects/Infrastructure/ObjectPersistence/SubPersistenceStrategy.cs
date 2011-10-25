@@ -107,12 +107,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
       {
+        // parentRelatedObject may be null
         var parentRelatedObject = parentTransactionOperations.GetRelatedObject (relationEndPointID);
-
-        if (parentRelatedObject == null)
-          return new NullLoadedObjectData ();
-        else
-          return TransferParentObject (parentRelatedObject.ID, alreadyLoadedObjectDataProvider, parentTransactionOperations);
+        return TransferParentObject (parentRelatedObject, alreadyLoadedObjectDataProvider, parentTransactionOperations);
       }
     }
 
@@ -128,7 +125,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         var parentObjects = parentTransactionOperations.GetRelatedObjects (relationEndPointID);
         // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
         return parentObjects
-            .Select (parentObject => TransferParentObject (parentObject.ID, alreadyLoadedObjectDataProvider, parentTransactionOperations))
+            .Select (parentObject =>
+            {
+              Assertion.IsNotNull (parentObject);
+              return TransferParentObject (parentObject, alreadyLoadedObjectDataProvider, parentTransactionOperations);
+            })
             .ToList ();
       }
     }
@@ -147,8 +148,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
         // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
         return parentObjects
-            .Select (parentObject => TransferParentObject (parentObject.ID, alreadyLoadedObjectDataProvider, parentTransactionOperations))
-            .ToList ();
+          .Select (parentObject => TransferParentObject (parentObject, alreadyLoadedObjectDataProvider, parentTransactionOperations))
+          .ToList ();
       }
     }
 
@@ -163,15 +164,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     }
 
     private ILoadedObjectData TransferParentObject (
-        ObjectID objectID,
+        DomainObject parentObject,
         ILoadedObjectDataProvider alreadyLoadedObjectDataProvider,
         IParentTransactionOperations parentTransactionOperations)
     {
-      var existingLoadedObject = alreadyLoadedObjectDataProvider.GetLoadedObject (objectID);
+      if (parentObject == null)
+        return new NullLoadedObjectData();
+
+      var existingLoadedObject = alreadyLoadedObjectDataProvider.GetLoadedObject (parentObject.ID);
       if (existingLoadedObject != null)
         return existingLoadedObject;
       else
-        return TransferParentObject (objectID, parentTransactionOperations);
+        return TransferParentObject (parentObject.ID, parentTransactionOperations);
     }
 
     private FreshlyLoadedObjectData TransferParentObject (ObjectID objectID, IParentTransactionOperations parentTransactionOperations)
