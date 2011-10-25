@@ -111,6 +111,37 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     }
 
     [Test]
+    public void Serialization ()
+    {
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+      Substitution substitution = user.GetActiveSubstitutions ().First ();
+
+      var principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
+      var deserializedPrincipal = Serializer.SerializeAndDeserialize (principal);
+
+      Assert.That (deserializedPrincipal.Tenant.ID, Is.EqualTo (principal.Tenant.ID));
+      Assert.That (deserializedPrincipal.Tenant, Is.Not.SameAs (principal.Tenant));
+
+      Assert.That (deserializedPrincipal.User.ID, Is.EqualTo (principal.User.ID));
+      Assert.That (deserializedPrincipal.User, Is.Not.SameAs (principal.User));
+
+      Assert.That (deserializedPrincipal.Substitution.ID, Is.EqualTo (principal.Substitution.ID));
+      Assert.That (deserializedPrincipal.Substitution, Is.Not.SameAs (principal.Substitution));
+    }
+
+    [Test]
+    public void Test_IsNull ()
+    {
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+
+      ISecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, null);
+
+      Assert.That (principal.IsNull, Is.False);
+    }
+
+    [Test]
     public void ActiveSecurityProviderAddsSecurityClientTransactionExtension ()
     {
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();

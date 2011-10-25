@@ -65,6 +65,8 @@ namespace Remotion.SecurityManager.Domain
     private readonly ObjectID _tenantID;
     private readonly ObjectID _userID;
     private readonly ObjectID _substitutionID;
+    [NonSerialized]
+    private ISecurityPrincipal _securityPrincipal;
 
     public SecurityManagerPrincipal (ObjectID tenantID, ObjectID userID, ObjectID substitutionID)
     {
@@ -120,10 +122,20 @@ namespace Remotion.SecurityManager.Domain
 
     public ISecurityPrincipal GetSecurityPrincipal ()
     {
+      if (_securityPrincipal == null)
+        _securityPrincipal = CreateSecurityPrincipal();
+      return _securityPrincipal;
+    }
+
+    private SecurityPrincipal CreateSecurityPrincipal ()
+    {
       using (new SecurityFreeSection ())
       {
+        string user = GetUser (_transaction).UserName;
+        ISecurityPrincipalRole role = null;
+
         string substitutedUser = null;
-        SecurityPrincipalRole substitutedRole = null;
+        ISecurityPrincipalRole substitutedRole = null;
 
         Substitution substitution = GetSubstitution (_transaction);
         if (substitution != null)
@@ -137,7 +149,7 @@ namespace Remotion.SecurityManager.Domain
           }
         }
 
-        return new SecurityPrincipal (GetUser (_transaction).UserName, null, substitutedUser, substitutedRole);
+        return new SecurityPrincipal (user, role, substitutedUser, substitutedRole);
       }
     }
 

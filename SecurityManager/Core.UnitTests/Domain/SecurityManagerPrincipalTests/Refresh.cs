@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       Tenant tenant = user.Tenant;
       Substitution substitution = user.GetActiveSubstitutions ().First ();
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
 
       var oldTenant = principal.Tenant;
       var oldUser = principal.User;
@@ -73,7 +73,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       Tenant tenant = user.Tenant;
       Substitution substitution = user.GetActiveSubstitutions ().First ();
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
 
       var oldTenant = principal.Tenant;
       var oldUser = principal.User;
