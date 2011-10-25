@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
 namespace Remotion.SecurityManager.Clients.Web
@@ -61,7 +62,7 @@ namespace Remotion.SecurityManager.Clients.Web
       else
       {
         var user = SecurityManagerUser.GetObject (ObjectID.Parse (UsersField.BusinessObjectUniqueIdentifier));
-        ApplicationInstance.SetCurrentPrincipal (new SecurityManagerPrincipal (user.Tenant, user, null));
+        ApplicationInstance.SetCurrentPrincipal (new SecurityManagerPrincipal (user.Tenant.ID, user.ID, null));
       }
     }
 

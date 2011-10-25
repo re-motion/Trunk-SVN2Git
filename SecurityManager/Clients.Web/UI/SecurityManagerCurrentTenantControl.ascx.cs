@@ -16,9 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Web.UI;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -59,7 +57,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       {
         var tenants = GetPossibleTenants();
         CurrentTenantField.SetBusinessObjectList (tenants);
-        var currentTenant = TenantProxy.Create (SecurityManagerPrincipal.Current.Tenant);
+        var currentTenant = SecurityManagerPrincipal.Current.Tenant;
 
         CurrentTenantField.LoadUnboundValue (currentTenant, false);
 
@@ -68,9 +66,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI
         bool hasExactlyOneTenant = isCurrentTenantTheOnlyTenantInTheCollection || isCurrentTenantTheOnlyTenant;
         IsTenantSelectionEnabled = !hasExactlyOneTenant;
 
-        Substitution[] substitutions = GetPossibleSubstitutions();
+        var substitutions = GetPossibleSubstitutions();
         CurrentSubstitutionField.SetBusinessObjectList (substitutions);
-        Substitution currentSubstitution = SecurityManagerPrincipal.Current.Substitution;
+        var currentSubstitution = SecurityManagerPrincipal.Current.Substitution;
 
         CurrentSubstitutionField.LoadUnboundValue (currentSubstitution, false);
         IsSubstitutionSelectionEnabled = substitutions.Length > 0;
@@ -88,12 +86,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       return SecurityManagerPrincipal.Current.GetTenants (EnableAbstractTenants);
     }
 
-    private Substitution[] GetPossibleSubstitutions ()
+    private SubstitutionProxy[] GetPossibleSubstitutions ()
     {
-      if (SecurityManagerPrincipal.Current.IsNull)
-        return new Substitution[0];
-
-      return SecurityManagerPrincipal.Current.User.GetActiveSubstitutions().ToArray();
+      return SecurityManagerPrincipal.Current.GetActiveSubstitutions();
     }
 
     protected void CurrentTenantField_SelectionChanged (object sender, EventArgs e)
@@ -103,9 +98,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       ApplicationInstance.SetCurrentPrincipal (
           new SecurityManagerPrincipal (
-              Tenant.GetObject (ObjectID.Parse (tenantID)),
-              SecurityManagerPrincipal.Current.User,
-              SecurityManagerPrincipal.Current.Substitution));
+              ObjectID.Parse (tenantID),
+              SecurityManagerPrincipal.Current.User.ID,
+              SecurityManagerPrincipal.Current.Substitution != null ? SecurityManagerPrincipal.Current.Substitution.ID : null));
 
       _isCurrentTenantFieldReadOnly = true;
       CurrentTenantField.IsDirty = false;
@@ -117,9 +112,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       ApplicationInstance.SetCurrentPrincipal (
           new SecurityManagerPrincipal (
-              SecurityManagerPrincipal.Current.Tenant,
-              SecurityManagerPrincipal.Current.User,
-              substitutionID != null ? (Substitution) Substitution.GetObject (ObjectID.Parse (substitutionID)) : null));
+              SecurityManagerPrincipal.Current.Tenant.ID,
+              SecurityManagerPrincipal.Current.User.ID,
+              substitutionID != null ? ObjectID.Parse (substitutionID) : null));
 
       _isCurrentSubstitutionFieldReadOnly = true;
       CurrentSubstitutionField.IsDirty = false;

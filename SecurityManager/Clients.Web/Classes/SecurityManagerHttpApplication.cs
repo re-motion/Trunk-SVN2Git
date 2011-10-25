@@ -21,6 +21,7 @@ using System.Web.SessionState;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
@@ -90,7 +91,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
           if (user == null)
             return SecurityManagerPrincipal.Null;
           else
-            return new SecurityManagerPrincipal (user.Tenant, user, null);
+            return new SecurityManagerPrincipal (user.Tenant.ID, user.ID, null);
         }
       }
     }

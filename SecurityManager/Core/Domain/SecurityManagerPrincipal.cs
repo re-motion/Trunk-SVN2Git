@@ -66,18 +66,14 @@ namespace Remotion.SecurityManager.Domain
     private readonly ObjectID _userID;
     private readonly ObjectID _substitutionID;
 
-    public SecurityManagerPrincipal (Tenant tenant, User user, Substitution substitution)
-        : this (
-            ArgumentUtility.CheckNotNull ("tenant", tenant).ID,
-            ArgumentUtility.CheckNotNull ("user", user).ID,
-            substitution != null ? substitution.ID : null)
-    {
-    }
-
     public SecurityManagerPrincipal (ObjectID tenantID, ObjectID userID, ObjectID substitutionID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
       ArgumentUtility.CheckNotNull ("userID", userID);
+      ArgumentUtility.CheckTypeIsAssignableFrom ("tenantID", tenantID.ClassDefinition.ClassType, typeof (Tenant));
+      ArgumentUtility.CheckTypeIsAssignableFrom ("userID", userID.ClassDefinition.ClassType, typeof (User));
+      if (substitutionID != null)
+        ArgumentUtility.CheckTypeIsAssignableFrom ("substitutionID", substitutionID.ClassDefinition.ClassType, typeof (Substitution));
 
       _tenantID = tenantID;
       _userID = userID;
@@ -98,7 +94,7 @@ namespace Remotion.SecurityManager.Domain
 
     public SubstitutionProxy Substitution
     {
-      get { return SubstitutionProxy.Create (GetSubstitution (_transaction)); }
+      get { return _substitutionID != null ? SubstitutionProxy.Create (GetSubstitution (_transaction)) : null; }
     }
 
     public void Refresh ()
