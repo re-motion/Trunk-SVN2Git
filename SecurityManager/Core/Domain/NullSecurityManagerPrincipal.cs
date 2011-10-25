@@ -36,17 +36,17 @@ namespace Remotion.SecurityManager.Domain
     {       
     }
 
-    public Tenant Tenant
+    public TenantProxy Tenant
     {
       get { return null; }
     }
 
-    public User User
+    public UserProxy User
     {
       get { return null; }
     }
 
-    public Substitution Substitution
+    public SubstitutionProxy Substitution
     {
       get { return null; }
     }
@@ -58,6 +58,11 @@ namespace Remotion.SecurityManager.Domain
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
     {
       return new TenantProxy[0];
+    }
+
+    public SubstitutionProxy[] GetActiveSubstitutions ()
+    {
+      return new SubstitutionProxy[0];
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()

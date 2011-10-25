@@ -28,11 +28,12 @@ namespace Remotion.SecurityManager.Domain
   /// </summary>
   public interface ISecurityManagerPrincipal : INullObject
   {
-    Tenant Tenant { get; }
-    User User { get; }
-    Substitution Substitution { get; }
+    TenantProxy Tenant { get; }
+    UserProxy User { get; }
+    SubstitutionProxy Substitution { get; }
     void Refresh ();
     ISecurityPrincipal GetSecurityPrincipal ();
     TenantProxy[] GetTenants (bool includeAbstractTenants);
+    SubstitutionProxy[] GetActiveSubstitutions ();
   }
 }

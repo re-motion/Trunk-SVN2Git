@@ -86,19 +86,19 @@ namespace Remotion.SecurityManager.Domain
       InitializeClientTransaction();
     }
 
-    public Tenant Tenant
+    public TenantProxy Tenant
     {
-      get { return GetTenant (_transaction); }
+      get { return TenantProxy.Create (GetTenant (_transaction)); }
     }
 
-    public User User
+    public UserProxy User
     {
-      get { return GetUser (_transaction); }
+      get { return UserProxy.Create (GetUser (_transaction)); }
     }
 
-    public Substitution Substitution
+    public SubstitutionProxy Substitution
     {
-      get { return GetSubstitution (_transaction); }
+      get { return SubstitutionProxy.Create (GetSubstitution (_transaction)); }
     }
 
     public void Refresh ()
@@ -129,7 +129,7 @@ namespace Remotion.SecurityManager.Domain
         string substitutedUser = null;
         SecurityPrincipalRole substitutedRole = null;
 
-        Substitution substitution = Substitution;
+        Substitution substitution = GetSubstitution (_transaction);
         if (substitution != null)
         {
           substitutedUser = substitution.SubstitutedUser.UserName;
@@ -141,7 +141,7 @@ namespace Remotion.SecurityManager.Domain
           }
         }
 
-        return new SecurityPrincipal (User.UserName, null, substitutedUser, substitutedRole);
+        return new SecurityPrincipal (GetUser (_transaction).UserName, null, substitutedUser, substitutedRole);
       }
     }
 
@@ -151,7 +151,7 @@ namespace Remotion.SecurityManager.Domain
 
       using (transaction.EnterNonDiscardingScope())
       {
-        return Tenant.GetObject (_tenantID);
+        return OrganizationalStructure.Tenant.GetObject (_tenantID);
       }
     }
 
@@ -161,7 +161,7 @@ namespace Remotion.SecurityManager.Domain
 
       using (transaction.EnterNonDiscardingScope())
       {
-        return User.GetObject (_userID);
+        return OrganizationalStructure.User.GetObject (_userID);
       }
     }
 
@@ -174,7 +174,7 @@ namespace Remotion.SecurityManager.Domain
 
       using (transaction.EnterNonDiscardingScope())
       {
-        return (Substitution) Substitution.GetObject (_substitutionID);
+        return (Substitution) OrganizationalStructure.Substitution.GetObject (_substitutionID);
       }
     }
 

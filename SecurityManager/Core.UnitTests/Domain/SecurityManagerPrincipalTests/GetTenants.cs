@@ -15,7 +15,6 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -23,7 +22,7 @@ using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SecurityManagerPrincipalTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
   [TestFixture]
   public class GetTenants : DomainTest

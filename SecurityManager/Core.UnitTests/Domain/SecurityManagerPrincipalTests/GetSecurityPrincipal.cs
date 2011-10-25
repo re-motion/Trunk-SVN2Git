@@ -25,7 +25,7 @@ using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Rhino.Mocks;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SecurityManagerPrincipalTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
   [TestFixture]
   public class GetSecurityPrincipal : DomainTest

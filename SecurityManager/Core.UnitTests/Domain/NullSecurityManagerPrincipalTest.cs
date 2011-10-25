@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.SecurityManager.Domain;
 
@@ -49,6 +48,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       ISecurityManagerPrincipal principal = SecurityManagerPrincipal.Null;
 
       Assert.That (principal.GetTenants (true), Is.Empty);
+    }
+
+    [Test]
+    public void GetActiveSubstitutions ()
+    {
+      ISecurityManagerPrincipal principal = SecurityManagerPrincipal.Null;
+
+      Assert.That (principal.GetActiveSubstitutions(), Is.Empty);
     }
 
     [Test]

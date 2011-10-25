@@ -22,7 +22,7 @@ using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SecurityManagerPrincipalTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
   [TestFixture]
   public class GetActiveSubstitutions : DomainTest

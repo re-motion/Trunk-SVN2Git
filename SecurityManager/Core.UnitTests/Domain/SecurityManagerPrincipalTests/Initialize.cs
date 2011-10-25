@@ -22,10 +22,10 @@ using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SecurityManagerPrincipalTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
   [TestFixture]
-  public class Refresh : DomainTest
+  public class Initialize : DomainTest
   {
     public override void SetUp ()
     {
@@ -42,56 +42,41 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Secu
       SecurityConfiguration.Current.SecurityProvider = null;
     }
 
-
     [Test]
-    public void SameRevisionDoesNotChangeTransaction ()
+    public void Initialize_WithObjects ()
     {
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions ().First ();
+      Substitution substitution = user.GetActiveSubstitutions().First();
 
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
 
-      Tenant oldTenant = principal.Tenant;
-      User oldUser = principal.User;
-      Substitution oldSubstitution = principal.Substitution;
+      Assert.That (principal.Tenant.ID, Is.EqualTo (tenant.ID));
+      Assert.That (principal.Tenant, Is.Not.SameAs (tenant));
 
-      ClientTransactionScope.ResetActiveScope ();
+      Assert.That (principal.User.ID, Is.EqualTo (user.ID));
+      Assert.That (principal.User, Is.Not.SameAs (user));
 
-      principal.Refresh ();
-
-      Assert.That (principal.Tenant, Is.SameAs (oldTenant));
-      Assert.That (principal.User, Is.SameAs (oldUser));
-      Assert.That (principal.Substitution, Is.SameAs (oldSubstitution));
+      Assert.That (principal.Substitution.ID, Is.EqualTo (substitution.ID));
+      Assert.That (principal.Substitution, Is.Not.SameAs (substitution));
     }
 
     [Test]
-    public void NewRevisionResetsTransaction ()
+    public void Initialize_WithObjectIDs ()
     {
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions ().First ();
+      Substitution substitution = user.GetActiveSubstitutions().First();
 
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
 
-      Tenant oldTenant = principal.Tenant;
-      User oldUser = principal.User;
-      Substitution oldSubstitution = principal.Substitution;
+      Assert.That (principal.Tenant.ID, Is.EqualTo (tenant.ID));
+      Assert.That (principal.Tenant, Is.Not.SameAs (tenant));
 
-      Revision.IncrementRevision ();
+      Assert.That (principal.User.ID, Is.EqualTo (user.ID));
+      Assert.That (principal.User, Is.Not.SameAs (user));
 
-      ClientTransactionScope.ResetActiveScope ();
-
-      principal.Refresh ();
-
-      Assert.That (principal.Tenant.ID, Is.EqualTo (oldTenant.ID));
-      Assert.That (principal.Tenant, Is.Not.SameAs (oldTenant));
-
-      Assert.That (principal.User.ID, Is.EqualTo (oldUser.ID));
-      Assert.That (principal.User, Is.Not.SameAs (oldUser));
-
-      Assert.That (principal.Substitution.ID, Is.EqualTo (oldSubstitution.ID));
-      Assert.That (principal.Substitution, Is.Not.SameAs (oldSubstitution));
-    }
-  }
+      Assert.That (principal.Substitution.ID, Is.EqualTo (substitution.ID));
+      Assert.That (principal.Substitution, Is.Not.SameAs (substitution));
+    }}
 }
