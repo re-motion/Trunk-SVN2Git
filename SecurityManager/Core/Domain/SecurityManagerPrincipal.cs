@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
@@ -110,7 +109,10 @@ namespace Remotion.SecurityManager.Domain
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
     {
-      return GetTenant (_transaction).GetHierachy().Where (t => includeAbstractTenants || !t.IsAbstract).Select (TenantProxy.Create).ToArray();
+      return GetUser (_transaction).Tenant.GetHierachy()
+          .Where (t => includeAbstractTenants || !t.IsAbstract)
+          .Select (TenantProxy.Create)
+          .ToArray();
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()

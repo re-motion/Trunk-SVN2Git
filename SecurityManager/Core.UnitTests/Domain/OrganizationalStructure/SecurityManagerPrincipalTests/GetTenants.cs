@@ -75,6 +75,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Secu
     }
 
     [Test]
+    public void GetTenantHierarchyFromUser ()
+    {
+      User user = User.FindByUserName ("substituting.user");
+    
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_childTenantID, user.ID, null);
+
+      Assert.That (principal.GetTenants (true).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _childTenantID, _grandChildTenantID }));
+    }
+    
+    [Test]
     public void IncludeAbstractTenants ()
     {
       User user = User.FindByUserName ("substituting.user");

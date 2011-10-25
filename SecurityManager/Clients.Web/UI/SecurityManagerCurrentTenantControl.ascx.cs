@@ -57,9 +57,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       if (!IsPostBack)
       {
-        Tenant[] tenants = GetPossibleTenants();
+        var tenants = GetPossibleTenants();
         CurrentTenantField.SetBusinessObjectList (tenants);
-        Tenant currentTenant = SecurityManagerPrincipal.Current.Tenant;
+        var currentTenant = TenantProxy.Create (SecurityManagerPrincipal.Current.Tenant);
 
         CurrentTenantField.LoadUnboundValue (currentTenant, false);
 
@@ -83,17 +83,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI
         CurrentSubstitutionField.Command.Type = CommandType.None;
     }
 
-    private Tenant[] GetPossibleTenants ()
+    private TenantProxy[] GetPossibleTenants ()
     {
-      if (SecurityManagerPrincipal.Current.IsNull)
-        return new Tenant[0];
-
-      IEnumerable<Tenant> tenants = SecurityManagerPrincipal.Current.User.Tenant.GetHierachy();
-
-      if (!EnableAbstractTenants)
-        tenants = tenants.Where (t => !t.IsAbstract);
-
-      return tenants.ToArray();
+      return SecurityManagerPrincipal.Current.GetTenants (EnableAbstractTenants);
     }
 
     private Substitution[] GetPossibleSubstitutions ()
