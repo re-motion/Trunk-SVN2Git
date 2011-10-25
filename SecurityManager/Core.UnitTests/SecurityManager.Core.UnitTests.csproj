@@ -195,6 +195,7 @@
     <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\GetTenants.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityManagerPrincipalTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionProxyTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutedRole.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SubstitutionPropertiesSearchServiceTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutingUser.cs" />

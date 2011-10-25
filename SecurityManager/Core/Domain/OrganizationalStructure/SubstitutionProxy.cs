@@ -1,4 +1,4 @@
-// This file is part of re-strict (www.re-motion.org)
+﻿// This file is part of re-strict (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -23,19 +23,19 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
   [Serializable]
-  public sealed class TenantProxy : OrganizationalStructureObjectProxy
+  public sealed class SubstitutionProxy : OrganizationalStructureObjectProxy
   {
-    public static TenantProxy Create (Tenant tenant)
+    public static SubstitutionProxy Create (Substitution substitution)
     {
-      ArgumentUtility.CheckNotNull ("tenant", tenant);
+      ArgumentUtility.CheckNotNull ("substitution", substitution);
 
-      return new TenantProxy (
-          tenant.ID,
-          ((IBusinessObjectWithIdentity) tenant).UniqueIdentifier,
-          ((IBusinessObjectWithIdentity) tenant).DisplayName);
+      return new SubstitutionProxy (
+          substitution.ID,
+          ((IBusinessObjectWithIdentity) substitution).UniqueIdentifier,
+          ((IBusinessObjectWithIdentity) substitution).DisplayName);
     }
 
-    private TenantProxy (ObjectID id, string uniqueIdentifier, string displayName)
+    private SubstitutionProxy (ObjectID id, string uniqueIdentifier, string displayName)
         : base (id, uniqueIdentifier, displayName)
     {
     }

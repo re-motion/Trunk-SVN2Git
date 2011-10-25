@@ -23,43 +23,21 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
   [Serializable]
-  public sealed class UserProxy : BindableObjectWithIdentityBase
+  public sealed class UserProxy : OrganizationalStructureObjectProxy
   {
-    private readonly ObjectID _id;
-    private readonly string _uniqueIdentifier;
-    private readonly string _displayName;
-
     public static UserProxy Create (User user)
     {
       ArgumentUtility.CheckNotNull ("user", user);
 
-      return new UserProxy (user.ID, ((IBusinessObjectWithIdentity) user).UniqueIdentifier, ((IBusinessObjectWithIdentity) user).DisplayName);
+      return new UserProxy (
+          user.ID,
+          ((IBusinessObjectWithIdentity) user).UniqueIdentifier,
+          ((IBusinessObjectWithIdentity) user).DisplayName);
     }
 
     private UserProxy (ObjectID id, string uniqueIdentifier, string displayName)
+        : base (id, uniqueIdentifier, displayName)
     {
-      ArgumentUtility.CheckNotNull ("id", id);
-      ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
-      ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
-
-      _id = id;
-      _uniqueIdentifier = uniqueIdentifier;
-      _displayName = displayName;
-    }
-
-    public ObjectID ID
-    {
-      get { return _id; }
-    }
-
-    public override string UniqueIdentifier
-    {
-      get { return _uniqueIdentifier; }
-    }
-
-    public override string DisplayName
-    {
-      get { return _displayName; }
     }
   }
 }

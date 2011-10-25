@@ -1,4 +1,4 @@
-// This file is part of re-strict (www.re-motion.org)
+﻿// This file is part of re-strict (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -23,21 +23,36 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
   [Serializable]
-  public sealed class TenantProxy : OrganizationalStructureObjectProxy
+  public abstract class OrganizationalStructureObjectProxy : BindableObjectWithIdentityBase
   {
-    public static TenantProxy Create (Tenant tenant)
-    {
-      ArgumentUtility.CheckNotNull ("tenant", tenant);
+    private readonly ObjectID _id;
+    private readonly string _uniqueIdentifier;
+    private readonly string _displayName;
 
-      return new TenantProxy (
-          tenant.ID,
-          ((IBusinessObjectWithIdentity) tenant).UniqueIdentifier,
-          ((IBusinessObjectWithIdentity) tenant).DisplayName);
+    protected OrganizationalStructureObjectProxy (ObjectID id, string uniqueIdentifier, string displayName)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
+
+      _id = id;
+      _uniqueIdentifier = uniqueIdentifier;
+      _displayName = displayName;
     }
 
-    private TenantProxy (ObjectID id, string uniqueIdentifier, string displayName)
-        : base (id, uniqueIdentifier, displayName)
+    public ObjectID ID
     {
+      get { return _id; }
+    }
+
+    public override string UniqueIdentifier
+    {
+      get { return _uniqueIdentifier; }
+    }
+
+    public override string DisplayName
+    {
+      get { return _displayName; }
     }
   }
 }
