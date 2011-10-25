@@ -109,29 +109,18 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
 
   var tableBlock = $(bocList).children('div.bocListTableBlock').first();
   var hasDimensions = false;
-  var version = parseInt($.browser.version);
-  if ($.browser.msie && version < 9)
+
+  var bocListTable = tableBlock.children('div.bocListTableScrollContainer').first().children('table').first();
+  var isTableBlockBiggerThanBocList = $(bocList).height() < bocListTable.height();
+  if (isTableBlockBiggerThanBocList)
   {
-    if ($(bocList).css('height') != 'auto' || $(bocList).css('width') != 'auto')
-    {
-      $(bocList).addClass('hasDimensions');
-      hasDimensions = true;
-    }
-  }
-  else
-  {
-    var bocListTable = tableBlock.children('div.bocListTableScrollContainer').first().children('table').first();
-    var isTableBlockBiggerThanBocList = $(bocList).height() < bocListTable.height();
-    if (isTableBlockBiggerThanBocList)
-    {
-      $(bocList).addClass('hasDimensions');
-      hasDimensions = true;
-    }
+    $(bocList).addClass('hasDimensions');
+    hasDimensions = true;
   }
 
   if (hasDimensions)
   {
-    if ($.browser.msie && version < 8) //RM-4376 
+    if ($('body').is('.msie7')) //RM-4376 
       return;
 
     BocList_FixUpScrolling(tableBlock);
