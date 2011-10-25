@@ -209,7 +209,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Many_ExceptionWhenRegisteringObject ()
+    public void RegisterIfRequired_Many_NoObjects ()
+    {
+      _mockRepository.ReplayAll ();
+
+      var result = _agent.RegisterIfRequired (new ILoadedObjectData[0], _dataManagerMock);
+
+      _eventSinkMock.AssertWasNotCalled (
+          mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (
+          mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _transactionEventReceiverMock.AssertWasNotCalled (
+          mock => mock.Loaded (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
+
+      Assert.That (result, Is.Empty);
+    }
+
+    [Test]
+    public void RegisterIfRequired_Many_ExceptionWhenRegisteringObject_EventsFiredIfOtherObjectsSucceeded ()
     {
       var exception = new Exception ("Test");
       
@@ -252,6 +270,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           Throws.Exception.SameAs (exception));
 
       _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void RegisterIfRequired_Many_ExceptionWhenRegisteringObject_EventsNotFiredWhenNoOtherObjectsSucceeded ()
+    {
+      var exception = new Exception ("Test");
+
+      var freshlyLoadedObject1 = GetFreshlyLoadedObject();
+      var registerableDataContainer1 = freshlyLoadedObject1.FreshlyLoadedDataContainer;
+
+      using (_mockRepository.Ordered())
+      {
+        _eventSinkMock.Expect (
+            mock => mock.ObjectsLoading (
+                Arg.Is (_clientTransaction),
+                Arg<ReadOnlyCollection<ObjectID>>.Is.Equal (new[] { registerableDataContainer1.ID })));
+        _dataManagerMock
+            .Expect (mock => mock.RegisterDataContainer (registerableDataContainer1))
+            .Throw (exception);
+      }
+      _mockRepository.ReplayAll();
+
+      Assert.That (
+          () => _agent.RegisterIfRequired (new ILoadedObjectData[] { freshlyLoadedObject1 }, _dataManagerMock),
+          Throws.Exception.SameAs (exception));
+
+      _eventSinkMock.AssertWasNotCalled (
+          mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
     }
 
     [Test]

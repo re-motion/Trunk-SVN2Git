@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
@@ -88,12 +89,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           using (clientTransaction.EnterNonDiscardingScope())
           {
             var domainObjects = loadedDomainObjects.AsReadOnly();
-            foreach (var domainObject in domainObjects)
-              domainObject.OnLoaded();
-
-            transactionEventSink.ObjectsLoaded (clientTransaction, domainObjects);
-            clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
+            RaiseLoadedEvents (transactionEventSink, clientTransaction, domainObjects);
           }
+        }
+      }
+
+      private void RaiseLoadedEvents (IClientTransactionListener transactionEventSink, ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+      {
+        if (domainObjects.Count > 0)
+        {
+          foreach (var domainObject in domainObjects)
+            domainObject.OnLoaded();
+
+          transactionEventSink.ObjectsLoaded (clientTransaction, domainObjects);
+          clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
         }
       }
 
