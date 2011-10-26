@@ -22,6 +22,13 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
+  /// <summary>
+  /// Proxy for the <see cref="Substitution"/> domain object class.
+  /// </summary>
+  /// <remarks>
+  /// Used when a threadsafe representation of the domain object is required.
+  /// </remarks>
+  /// <threadsafety static="true" instance="true"/>
   [Serializable]
   public sealed class SubstitutionProxy : OrganizationalStructureObjectProxy
   {

@@ -22,6 +22,9 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
+  /// <summary>
+  /// Base class for proxy objects used instead of the organizational structure domain objects.
+  /// </summary>
   [Serializable]
   public abstract class OrganizationalStructureObjectProxy : BindableObjectWithIdentityBase
   {
