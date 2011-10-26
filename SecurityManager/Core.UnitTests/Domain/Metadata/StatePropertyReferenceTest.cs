@@ -1,4 +1,4 @@
-// This file is part of re-strict (www.re-motion.org)
+﻿// This file is part of re-strict (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -23,7 +22,7 @@ using Remotion.SecurityManager.Domain.Metadata;
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 {
   [TestFixture]
-  public class AccessTypeReferenceTest : DomainTest
+  public class StatePropertyReferenceTest : DomainTest
   {
     private MetadataTestHelper _testHelper;
 
@@ -35,27 +34,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void SetAndGet_Index ()
-    {
-      AccessTypeReference accessTypeReference = AccessTypeReference.NewObject();
-
-      accessTypeReference.Index = 1;
-      Assert.AreEqual (1, accessTypeReference.Index);
-    }
-
-    [Test]
     public void TouchClassOnCommit ()
     {
       SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
-      var accessTypeReference = AccessTypeReference.NewObject();
-      accessTypeReference.Class = classDefinition;
-      accessTypeReference.AccessType = _testHelper.CreateAccessTypeCreate (0);
+      var statePropertyReference = StatePropertyReference.NewObject();
+      statePropertyReference.Class = classDefinition;
+      statePropertyReference.StateProperty = _testHelper.CreateFileStateProperty (0);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
         classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
-        accessTypeReference.MarkAsChanged();
+        statePropertyReference.MarkAsChanged();
 
         ClientTransaction.Current.Commit();
 
