@@ -20,28 +20,31 @@ using System.Threading;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Collections
 {
-  public class LockingDataStoreDecoratorTestHelper
+  public static class LockingDataStoreDecoratorTestHelper
   {
     public static void CheckLockIsHeld<TKey, TValue> (LockingDataStoreDecorator<TKey, TValue> lockingDataStoreDecorator)
     {
+      ArgumentUtility.CheckNotNull ("lockingDataStoreDecorator", lockingDataStoreDecorator);
+
       bool lockAcquired = TryAcquireLockFromOtherThread (lockingDataStoreDecorator);
       Assert.That (lockAcquired, Is.False, "Parallel thread should have been blocked.");
     }
 
     public static void CheckLockIsNotHeld<TKey, TValue> (LockingDataStoreDecorator<TKey, TValue> lockingDataStoreDecorator)
     {
+      ArgumentUtility.CheckNotNull ("lockingDataStoreDecorator", lockingDataStoreDecorator);
+
       bool lockAcquired = TryAcquireLockFromOtherThread (lockingDataStoreDecorator);
       Assert.That (lockAcquired, Is.True, "Parallel thread should not have been blocked.");
     }
 
-    public static bool TryAcquireLockFromOtherThread<TKey, TValue> (LockingDataStoreDecorator<TKey, TValue> lockingDataStoreDecorator)
+    private static bool TryAcquireLockFromOtherThread<TKey, TValue> (LockingDataStoreDecorator<TKey, TValue> lockingDataStoreDecorator)
     {
-      var innerDataStore =
-          lockingDataStoreDecorator;
-      var lockObject = PrivateInvoke.GetNonPublicField (innerDataStore, "_lock");
+      var lockObject = PrivateInvoke.GetNonPublicField (lockingDataStoreDecorator, "_lock");
       Assert.That (lockObject, Is.Not.Null);
 
       bool lockAcquired = true;
