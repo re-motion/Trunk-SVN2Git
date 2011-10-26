@@ -21,6 +21,7 @@ using System.Web.UI;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
+using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
@@ -31,9 +32,9 @@ namespace Remotion.SecurityManager.Clients.Web
   {
     private ClientTransaction _clientTransaction;
 
-    protected Global ApplicationInstance
+    protected SecurityManagerHttpApplication ApplicationInstance
     {
-      get { return (Global) Context.ApplicationInstance; }
+      get { return (SecurityManagerHttpApplication) Context.ApplicationInstance; }
     }
 
     protected override void OnLoad (EventArgs e)
@@ -62,7 +63,8 @@ namespace Remotion.SecurityManager.Clients.Web
       else
       {
         var user = SecurityManagerUser.GetObject (ObjectID.Parse (UsersField.BusinessObjectUniqueIdentifier));
-        ApplicationInstance.SetCurrentPrincipal (new SecurityManagerPrincipal (user.Tenant.ID, user.ID, null));
+        var securityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (user.Tenant.ID, user.ID, null);
+        ApplicationInstance.SetCurrentPrincipal (securityManagerPrincipal);
       }
     }
 

@@ -21,6 +21,7 @@ using System.Web.SessionState;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
@@ -29,9 +30,16 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
   public class SecurityManagerHttpApplication : HttpApplication
   {
     private static readonly string s_principalKey = typeof (SecurityManagerHttpApplication).AssemblyQualifiedName + "_Principal";
+    private ISecurityManagerPrincipalFactory _securityManagerPrincipalFactory;
 
     public SecurityManagerHttpApplication ()
     {
+    }
+
+    public ISecurityManagerPrincipalFactory SecurityManagerPrincipalFactory
+    {
+      get { return _securityManagerPrincipalFactory; }
+      set { _securityManagerPrincipalFactory = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     public void SetCurrentPrincipal (ISecurityManagerPrincipal securityManagerPrincipal)
@@ -63,8 +71,10 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
       base.Init();
 
-      PostAcquireRequestState += SecurityManagerHttpApplication_PostAcquireRequestState;
+      if (SecurityManagerPrincipalFactory == null)
+        SecurityManagerPrincipalFactory = SafeServiceLocator.Current.GetInstance<ISecurityManagerPrincipalFactory>();
 
+      PostAcquireRequestState += SecurityManagerHttpApplication_PostAcquireRequestState;
     }
 
     private void SecurityManagerHttpApplication_PostAcquireRequestState (object sender, EventArgs e)
@@ -91,7 +101,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
           if (user == null)
             return SecurityManagerPrincipal.Null;
           else
-            return new SecurityManagerPrincipal (user.Tenant.ID, user.ID, null);
+            return SecurityManagerPrincipalFactory.CreateWithLocking (user.Tenant.ID, user.ID, null);
         }
       }
     }

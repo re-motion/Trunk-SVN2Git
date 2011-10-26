@@ -96,11 +96,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       string tenantID = CurrentTenantField.BusinessObjectUniqueIdentifier;
       Assertion.IsNotNull (tenantID);
 
-      ApplicationInstance.SetCurrentPrincipal (
-          new SecurityManagerPrincipal (
-              ObjectID.Parse (tenantID),
-              SecurityManagerPrincipal.Current.User.ID,
-              SecurityManagerPrincipal.Current.Substitution != null ? SecurityManagerPrincipal.Current.Substitution.ID : null));
+      var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
+      var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
+          ObjectID.Parse (tenantID),
+          oldSecurityManagerPrincipal.User.ID,
+          oldSecurityManagerPrincipal.Substitution != null ? oldSecurityManagerPrincipal.Substitution.ID : null);
+      ApplicationInstance.SetCurrentPrincipal (newSecurityManagerPrincipal);
 
       _isCurrentTenantFieldReadOnly = true;
       CurrentTenantField.IsDirty = false;
@@ -110,11 +111,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     {
       string substitutionID = CurrentSubstitutionField.BusinessObjectUniqueIdentifier;
 
-      ApplicationInstance.SetCurrentPrincipal (
-          new SecurityManagerPrincipal (
-              SecurityManagerPrincipal.Current.Tenant.ID,
-              SecurityManagerPrincipal.Current.User.ID,
-              substitutionID != null ? ObjectID.Parse (substitutionID) : null));
+      var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
+      var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
+          oldSecurityManagerPrincipal.Tenant.ID,
+          oldSecurityManagerPrincipal.User.ID,
+          substitutionID != null ? ObjectID.Parse (substitutionID) : null);
+      ApplicationInstance.SetCurrentPrincipal (newSecurityManagerPrincipal);
 
       _isCurrentSubstitutionFieldReadOnly = true;
       CurrentSubstitutionField.IsDirty = false;

@@ -43,6 +43,7 @@ namespace Remotion.SecurityManager.Domain
   /// <code>SecurityManagerPrincipal.Current.User.BindingTransaction.CommitAllEndPoints()</code>.
   /// </para>
   /// </remarks>
+  /// <threadsafety static="true" instance="false"/>
   [Serializable]
   public class SecurityManagerPrincipal : ISecurityManagerPrincipal
   {

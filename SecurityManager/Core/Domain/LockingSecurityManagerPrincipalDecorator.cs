@@ -25,6 +25,7 @@ namespace Remotion.SecurityManager.Domain
   /// <summary>
   /// Provides a synchronization wrapper around an implementation of <see cref="ISecurityManagerPrincipal"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true"/>
   [Serializable]
   public class LockingSecurityManagerPrincipalDecorator : ISecurityManagerPrincipal
   {
