@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Threading;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
@@ -23,6 +24,7 @@ using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain
@@ -31,6 +33,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain
   public class LockingSecurityManagerPrincipalDecoratorTest : DomainTest
   {
     private OrganizationalStructureTestHelper _helper;
+    private ISecurityManagerPrincipal _innerPrincipalMock;
+    private LockingSecurityManagerPrincipalDecorator _decorator;
 
     public override void SetUp ()
     {
@@ -38,8 +42,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
       _helper = new OrganizationalStructureTestHelper();
       _helper.Transaction.EnterNonDiscardingScope();
-    }
 
+      _innerPrincipalMock = MockRepository.GenerateMock<ISecurityManagerPrincipal>();
+      _decorator = new LockingSecurityManagerPrincipalDecorator (_innerPrincipalMock);
+    }
 
     [Test]
     public void Get_Members ()
@@ -52,67 +58,33 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       substitution.SubstitutingUser = user;
       substitution.SubstitutedUser = _helper.CreateUser ("SubstitutingUser", "FN", "LN", null, group, tenant);
 
-      var tenantProxy = TenantProxy.Create (tenant);
-      var userProxy = UserProxy.Create (user);
-      var substitutionProxy = SubstitutionProxy.Create (substitution);
-
-      var innerPrincipalStub = MockRepository.GenerateStub<ISecurityManagerPrincipal>();
-      innerPrincipalStub.Stub (stub => stub.Tenant).Return (tenantProxy);
-      innerPrincipalStub.Stub (stub => stub.User).Return (userProxy);
-      innerPrincipalStub.Stub (stub => stub.Substitution).Return (substitutionProxy);
-
-      ISecurityManagerPrincipal decorator = new LockingSecurityManagerPrincipalDecorator (innerPrincipalStub);
-
-      Assert.That (decorator.Tenant, Is.SameAs (tenantProxy));
-      Assert.That (decorator.User, Is.SameAs (userProxy));
-      Assert.That (decorator.Substitution, Is.SameAs (substitutionProxy));
+      ExpectSynchronizedDelegation (mock => mock.Tenant, TenantProxy.Create (tenant));
+      ExpectSynchronizedDelegation (mock => mock.User, UserProxy.Create (user));
+      ExpectSynchronizedDelegation (mock => mock.Substitution, SubstitutionProxy.Create (substitution));
     }
 
     [Test]
     public void Refresh ()
     {
-      var innerPrincipalMock = MockRepository.GenerateMock<ISecurityManagerPrincipal>();
-      ISecurityManagerPrincipal decorator = new LockingSecurityManagerPrincipalDecorator (innerPrincipalMock);
-
-      decorator.Refresh();
-
-      innerPrincipalMock.AssertWasCalled (mock => mock.Refresh());
+      ExpectSynchronizedDelegation (mock => mock.Refresh());
     }
 
     [Test]
     public void GetTenants ()
     {
-      var innerPrincipalStub = MockRepository.GenerateStub<ISecurityManagerPrincipal>();
-      var tenantProxies = new TenantProxy[0];
-      innerPrincipalStub.Stub (stub => stub.GetTenants (true)).Return (tenantProxies);
-
-      ISecurityManagerPrincipal decorator = new LockingSecurityManagerPrincipalDecorator (innerPrincipalStub);
-
-      Assert.That (decorator.GetTenants (true), Is.SameAs (tenantProxies));
+      ExpectSynchronizedDelegation (mock => mock.GetTenants (true), new TenantProxy[0]);
     }
 
     [Test]
     public void GetActiveSubstitutions ()
     {
-      var innerPrincipalStub = MockRepository.GenerateStub<ISecurityManagerPrincipal>();
-      var substitutionProxies = new SubstitutionProxy[0];
-      innerPrincipalStub.Stub (stub => stub.GetActiveSubstitutions()).Return (substitutionProxies);
-
-      ISecurityManagerPrincipal decorator = new LockingSecurityManagerPrincipalDecorator (innerPrincipalStub);
-
-      Assert.That (decorator.GetActiveSubstitutions(), Is.SameAs (substitutionProxies));
+      ExpectSynchronizedDelegation (mock => mock.GetActiveSubstitutions(), new SubstitutionProxy[0]);
     }
 
     [Test]
     public void GetSecurityPrincipal ()
     {
-      var innerPrincipalStub = MockRepository.GenerateStub<ISecurityManagerPrincipal>();
-      var securityPrincipal = MockRepository.GenerateStub<ISecurityPrincipal>();
-      innerPrincipalStub.Stub (stub => stub.GetSecurityPrincipal()).Return (securityPrincipal);
-
-      ISecurityManagerPrincipal decorator = new LockingSecurityManagerPrincipalDecorator (innerPrincipalStub);
-
-      Assert.That (decorator.GetSecurityPrincipal(), Is.SameAs (securityPrincipal));
+      ExpectSynchronizedDelegation (mock => mock.GetSecurityPrincipal (), MockRepository.GenerateStub<ISecurityPrincipal>());
     }
 
     [Test]
@@ -133,11 +105,64 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     [Test]
     public void Get_IsNull ()
     {
-      var innerPrincipalStub = MockRepository.GenerateStub<ISecurityManagerPrincipal>();
-      innerPrincipalStub.Stub (stub => stub.IsNull).Return (false);
+      _innerPrincipalMock.Stub (mock => mock.IsNull).Return (false);
 
-      ISecurityManagerPrincipal decorator = new LockingSecurityManagerPrincipalDecorator (innerPrincipalStub);
-      Assert.That (decorator.IsNull, Is.False);
+      Assert.That (((INullObject) _decorator).IsNull, Is.False);
+    }
+
+    private void ExpectSynchronizedDelegation<TResult> (Func<ISecurityManagerPrincipal, TResult> action, TResult fakeResult)
+    {
+      _innerPrincipalMock
+          .Expect (mock => action (mock))
+          .Return (fakeResult)
+          .WhenCalled (mi => LockingSecurityManagerPrincipalDecoratorTestHelper.CheckLockIsHeld (_decorator));
+      _innerPrincipalMock.Replay();
+
+      TResult actualResult = action (_decorator);
+
+      _innerPrincipalMock.VerifyAllExpectations();
+      Assert.That (actualResult, Is.SameAs (fakeResult));
+    }
+
+    private void ExpectSynchronizedDelegation (Action<ISecurityManagerPrincipal> action)
+    {
+      _innerPrincipalMock
+          .Expect (action)
+          .WhenCalled (mi => LockingSecurityManagerPrincipalDecoratorTestHelper.CheckLockIsHeld (_decorator));
+      _innerPrincipalMock.Replay ();
+
+      action (_decorator);
+
+      _innerPrincipalMock.VerifyAllExpectations ();
+    }
+  }
+
+  public static class LockingSecurityManagerPrincipalDecoratorTestHelper
+  {
+    public static void CheckLockIsHeld (LockingSecurityManagerPrincipalDecorator lockingDecorator)
+    {
+      ArgumentUtility.CheckNotNull ("lockingDecorator", lockingDecorator);
+
+      bool lockAcquired = TryAcquireLockFromOtherThread (lockingDecorator);
+      Assert.That (lockAcquired, Is.False, "Parallel thread should have been blocked.");
+    }
+
+    public static void CheckLockIsNotHeld (LockingSecurityManagerPrincipalDecorator lockingDecorator)
+    {
+      ArgumentUtility.CheckNotNull ("lockingDecorator", lockingDecorator);
+
+      bool lockAcquired = TryAcquireLockFromOtherThread (lockingDecorator);
+      Assert.That (lockAcquired, Is.True, "Parallel thread should not have been blocked.");
+    }
+
+    private static bool TryAcquireLockFromOtherThread (LockingSecurityManagerPrincipalDecorator lockingDecorator)
+    {
+      var lockObject = PrivateInvoke.GetNonPublicField (lockingDecorator, "_lock");
+      Assert.That (lockObject, Is.Not.Null);
+
+      bool lockAcquired = true;
+      ThreadRunner.Run (() => lockAcquired = Monitor.TryEnter (lockObject, TimeSpan.Zero));
+      return lockAcquired;
     }
   }
 }

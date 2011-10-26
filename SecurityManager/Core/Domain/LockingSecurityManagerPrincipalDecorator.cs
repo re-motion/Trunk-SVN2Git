@@ -26,9 +26,10 @@ namespace Remotion.SecurityManager.Domain
   /// Provides a synchronization wrapper around an implementation of <see cref="ISecurityManagerPrincipal"/>.
   /// </summary>
   [Serializable]
-  public class LockingSecurityManagerPrincipalDecorator: ISecurityManagerPrincipal
+  public class LockingSecurityManagerPrincipalDecorator : ISecurityManagerPrincipal
   {
     private readonly ISecurityManagerPrincipal _innerPrincipal;
+    private object _lock = new object();
 
     public LockingSecurityManagerPrincipalDecorator (ISecurityManagerPrincipal innerPrincipal)
     {
@@ -44,37 +45,67 @@ namespace Remotion.SecurityManager.Domain
 
     public TenantProxy Tenant
     {
-      get { return _innerPrincipal.Tenant; }
+      get
+      {
+        lock (_lock)
+        {
+          return _innerPrincipal.Tenant;
+        }
+      }
     }
 
     public UserProxy User
     {
-      get { return _innerPrincipal.User; }
+      get
+      {
+        lock (_lock)
+        {
+          return _innerPrincipal.User;
+        }
+      }
     }
 
     public SubstitutionProxy Substitution
     {
-      get { return _innerPrincipal.Substitution; }
+      get
+      {
+        lock (_lock)
+        {
+          return _innerPrincipal.Substitution;
+        }
+      }
     }
 
     public void Refresh ()
     {
-      _innerPrincipal.Refresh();
+       lock (_lock)
+       {
+         _innerPrincipal.Refresh();
+       }
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()
     {
-      return _innerPrincipal.GetSecurityPrincipal();
+      lock (_lock)
+      {
+        return _innerPrincipal.GetSecurityPrincipal();
+      }
     }
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
     {
-      return _innerPrincipal.GetTenants (includeAbstractTenants);
+      lock (_lock)
+      {
+        return _innerPrincipal.GetTenants (includeAbstractTenants);
+      }
     }
 
     public SubstitutionProxy[] GetActiveSubstitutions ()
     {
-      return _innerPrincipal.GetActiveSubstitutions();
+      lock (_lock)
+      {
+        return _innerPrincipal.GetActiveSubstitutions();
+      }
     }
   }
 }
