@@ -18,7 +18,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -270,6 +269,26 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
         Assert.IsNotNull (ace.SpecificUser);
         ace.Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
+      }
+    }
+
+    [Test]
+    public void TouchClass ()
+    {
+      SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      StatelessAccessControlList acl = _testHelper.CreateStatelessAcl (classDefinition);
+      var ace = _testHelper.CreateAceWithOwningUser();
+      acl.AccessControlEntries.Add (ace);
+     
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
+        ace.MarkAsChanged();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.IsTrue (commitOnClassWasCalled);
       }
     }
   }

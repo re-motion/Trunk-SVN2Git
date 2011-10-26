@@ -48,5 +48,24 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("PermissionsInternal")]
     [Mandatory]
     public abstract AccessControlEntry AccessControlEntry { get; }
+    
+    [StorageClassNone]
+    public SecurableClassDefinition Class
+    {
+      get
+      {
+        if (AccessControlEntry == null)
+          return null;
+        return AccessControlEntry.Class;
+      }
+    }
+
+    protected override void OnCommitting (EventArgs args)
+    {
+      base.OnCommitting (args);
+
+      if (Class != null)
+        Class.Touch();
+    }
   }
 }

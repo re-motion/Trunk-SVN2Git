@@ -176,31 +176,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void Touch_AfterCreation ()
-    {
-      AccessControlEntry ace = AccessControlEntry.NewObject();
-
-      Assert.AreEqual (StateType.New, ace.State);
-
-      ace.Touch();
-
-      Assert.AreEqual (StateType.New, ace.State);
-    }
-
-    [Test]
-    public void Touch_InNotLoadedState ()
-    {
-      AccessControlEntry ace = AccessControlEntry.NewObject ();
-
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        Assert.AreEqual (StateType.NotLoadedYet, ace.State);
-        ace.Touch ();
-        Assert.AreEqual (StateType.Changed, ace.State);
-      }
-    }
-
-    [Test]
     public void SetAndGet_Index ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();

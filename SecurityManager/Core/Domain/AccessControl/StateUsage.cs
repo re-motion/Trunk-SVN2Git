@@ -43,13 +43,24 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("StateUsages")]
     [Mandatory]
     public abstract StateCombination StateCombination { get; set; }
+    
+    [StorageClassNone]
+    public SecurableClassDefinition Class
+    {
+      get
+      {
+        if (StateCombination == null)
+          return null;
+        return StateCombination.Class;
+      }
+    }
 
     protected override void OnCommitting (EventArgs args)
     {
       base.OnCommitting (args);
 
-      if (StateCombination != null && StateCombination.Class != null)
-        StateCombination.Class.Touch ();
+      if (Class != null)
+        Class.Touch ();
     }
   }
 }

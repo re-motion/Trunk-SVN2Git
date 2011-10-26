@@ -77,12 +77,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         _matcher = new SecurityTokenMatcher (this);
     }
 
-    public void Touch ()
-    {
-      if (State == StateType.Unchanged || State == StateType.NotLoadedYet)
-        MarkAsChanged ();
-    }
-
     public abstract int Index { get; set; }
 
     [DisableEnumValues (typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
@@ -118,6 +112,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract AccessControlList AccessControlList { get; set; }
+
+    [StorageClassNone]
+    public SecurableClassDefinition Class
+    {
+      get
+      {
+        if (AccessControlList == null)
+          return null;
+        return AccessControlList.Class;
+      }
+    }
 
     [DBBidirectionalRelation ("AccessControlEntry", SortExpression = "Index ASC")]
     protected abstract ObjectList<Permission> PermissionsInternal { get; }
@@ -156,7 +161,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         permission.Index = 0;
       else
         permission.Index = PermissionsInternal[PermissionsInternal.Count - 2].Index + 1;
-      Touch();
     }
 
     public void AllowAccess (AccessTypeDefinition accessType)
@@ -312,6 +316,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
 
       base.OnCommitting (args);
+
+      if (Class != null)
+        Class.Touch();
     }
   }
 }

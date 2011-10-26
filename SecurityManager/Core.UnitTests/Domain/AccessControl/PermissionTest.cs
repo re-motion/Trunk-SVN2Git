@@ -19,16 +19,20 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 {
   [TestFixture]
   public class PermissionTest : DomainTest
   {
+    private AccessControlTestHelper _testHelper;
+
     public override void SetUp ()
     {
-      base.SetUp ();
-      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
+      base.SetUp();
+      _testHelper = new AccessControlTestHelper();
+      _testHelper.Transaction.EnterNonDiscardingScope();
     }
 
     [Test]
@@ -38,6 +42,28 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       permission.Index = 1;
       Assert.AreEqual (1, permission.Index);
+    }
+
+    [Test]
+    public void TouchClassOnCommit ()
+    {
+      SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      StatelessAccessControlList acl = _testHelper.CreateStatelessAcl (classDefinition);
+      var ace = _testHelper.CreateAceWithOwningUser();
+      acl.AccessControlEntries.Add (ace);
+      var accessType = _testHelper.AttachJournalizeAccessType (classDefinition);
+      _testHelper.AttachAccessType (ace, accessType, true);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
+        ace.Permissions[0].MarkAsChanged();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.IsTrue (commitOnClassWasCalled);
+      }
     }
   }
 }
