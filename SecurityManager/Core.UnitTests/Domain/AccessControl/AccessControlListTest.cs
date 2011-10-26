@@ -18,7 +18,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -228,31 +227,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateOrderClassDefinitionWithProperties());
 
       Assert.AreEqual (StateType.New, acl.State);
-    }
-
-    [Test]
-    public void Touch_AfterCreation ()
-    {
-      AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateOrderClassDefinitionWithProperties());
-
-      Assert.AreEqual (StateType.New, acl.State);
-      acl.Touch();
-
-      Assert.AreEqual (StateType.New, acl.State);
-    }
-
-    [Test]
-    public void Touch_InNotLoadedState ()
-    {
-      AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateOrderClassDefinitionWithProperties ());
-
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        Assert.AreEqual (StateType.NotLoadedYet, acl.State);
-        acl.Touch();
-
-        Assert.AreEqual (StateType.Changed, acl.State);
-      }
     }
 
     [Test]

@@ -62,9 +62,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         stateCombination.Index = 0;
       else
         stateCombination.Index = stateCombinations[stateCombinations.Count - 2].Index + 1;
-      Touch();
-      if (Class != null)
-        Class.Touch();
     }
 
     public abstract int Index { get; set; }

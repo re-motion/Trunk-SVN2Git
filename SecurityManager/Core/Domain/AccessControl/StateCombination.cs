@@ -47,28 +47,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     protected StateCombination ()
     {
-      SubscribeCollectionEvents();
     }
 
     // methods and properties
-
-    //TODO: Add test for initialize during on load
-    protected override void OnLoaded (LoadMode loadMode)
-    {
-      base.OnLoaded (loadMode);
-      SubscribeCollectionEvents (); // always subscribe collection events when the object gets a new data container
-    }
-
-    private void SubscribeCollectionEvents ()
-    {
-      StateUsages.Added += StateUsages_Added;
-    }
-
-    private void StateUsages_Added (object sender, DomainObjectCollectionChangeEventArgs args)
-    {
-      if (Class != null )
-        Class.Touch ();
-    }
 
     public abstract int Index { get; set; }
 
@@ -111,6 +92,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public StateDefinition[] GetStates ()
     {
       return StateUsages.Select (stateUsage => stateUsage.StateDefinition).ToArray();
+    }
+
+    protected override void OnCommitting (EventArgs args)
+    {
+      base.OnCommitting (args);
+
+      if (Class != null)
+        Class.Touch();
     }
 
     //TODO: Rewrite with test

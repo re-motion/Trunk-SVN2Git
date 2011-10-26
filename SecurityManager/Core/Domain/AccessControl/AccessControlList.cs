@@ -58,13 +58,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         ace.Index = 0;
       else
         ace.Index = accessControlEntries[accessControlEntries.Count - 2].Index + 1;
-      Touch();
-    }
-
-    public void Touch ()
-    {
-      if (State == StateType.Unchanged || State == StateType.NotLoadedYet)
-        MarkAsChanged ();
     }
 
     [StorageClassNone]
@@ -131,6 +124,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
       return GetAccessTypes (token, null);
+    }
+
+    protected override void OnCommitting (EventArgs args)
+    {
+      base.OnCommitting (args);
+
+      if (Class != null)
+        Class.Touch();
     }
 
     //TODO: Rewrite with test

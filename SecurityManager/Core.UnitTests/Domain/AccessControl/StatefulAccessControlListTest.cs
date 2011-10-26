@@ -60,9 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatefulAccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        classDefinition.EnsureDataAvailable ();
         acl.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, classDefinition.State);
         Assert.AreEqual (StateType.Unchanged, acl.State);
 
         StateCombination stateCombination = acl.CreateStateCombination ();
@@ -70,7 +68,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         Assert.AreSame (acl, stateCombination.AccessControlList);
         Assert.AreEqual (acl.Class, stateCombination.Class);
         Assert.IsEmpty (stateCombination.StateUsages);
-        Assert.AreEqual (StateType.Changed, classDefinition.State);
         Assert.AreEqual (StateType.Changed, acl.State);
       }
     }
@@ -136,6 +133,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
       acl.CreateStateCombination ();
+    }
+
+    [Test]
+    public void TouchClassOnCommit ()
+    {
+      StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
+      acl.Class = _testHelper.CreateClassDefinition ("SecurableClass");
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        acl.Class.Committing += delegate { commitOnClassWasCalled = true; };
+        acl.MarkAsChanged();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.IsTrue (commitOnClassWasCalled);
+      }
     }
   }
 }

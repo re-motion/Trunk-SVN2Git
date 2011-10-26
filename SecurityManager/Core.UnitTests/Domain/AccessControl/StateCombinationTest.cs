@@ -87,15 +87,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatePropertyDefinition property = _testHelper.CreateTestProperty();
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        classDefinition.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, classDefinition.State);
-
         combination.AttachState (property["Test1"]);
 
         Assert.AreEqual (1, combination.StateUsages.Count);
         StateUsage stateUsage = combination.StateUsages[0];
         Assert.AreSame (property["Test1"], stateUsage.StateDefinition);
-        Assert.AreEqual (StateType.Changed, classDefinition.State);
       }
     }
 
@@ -217,6 +213,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       stateCombination.Index = 1;
       Assert.AreEqual (1, stateCombination.Index);
+    }
+
+    [Test]
+    public void TouchClassOnCommit ()
+    {
+      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
+      StateCombination combination = _testHelper.CreateStateCombination (orderClass);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        orderClass.Committing += delegate { commitOnClassWasCalled = true; };
+        combination.MarkAsChanged();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.IsTrue (commitOnClassWasCalled);
+      }
     }
 
     private static List<StateDefinition> CreateEmptyStateList ()

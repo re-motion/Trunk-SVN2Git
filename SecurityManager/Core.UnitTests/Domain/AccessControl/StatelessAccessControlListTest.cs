@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -41,6 +42,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatelessAccessControlList acl = _testHelper.CreateStatelessAcl (classDefinition);
 
       Assert.That (acl.Class, Is.SameAs (classDefinition));
+    }
+
+    [Test]
+    public void TouchClassOnCommit ()
+    {
+      SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      StatelessAccessControlList acl = _testHelper.CreateStatelessAcl (classDefinition);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        bool commitOnClassWasCalled = false;
+        classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
+        acl.MarkAsChanged();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.IsTrue (commitOnClassWasCalled);
+      }
     }
   }
 }

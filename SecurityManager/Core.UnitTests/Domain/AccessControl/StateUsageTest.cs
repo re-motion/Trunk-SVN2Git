@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
@@ -43,42 +42,44 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [ExpectedException (typeof (ConstraintViolationException), ExpectedMessage =
         "The securable class definition 'Remotion.SecurityManager.UnitTests.TestDomain.Order' contains at least one state combination "
         + "that has been defined twice.")]
-    public void ValidateDuringCommit_ByTouchOnClass ()
+    public void ValidateDuringCommit ()
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
       StateDefinition paidState = paymentProperty[EnumWrapper.Get (PaymentState.Paid).Name];
       StateDefinition notPaidState = paymentProperty[EnumWrapper.Get (PaymentState.None).Name];
-      StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paidState);
+      _testHelper.CreateStateCombination (orderClass, paidState);
       StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, notPaidState);
-      StateCombination combination3 = _testHelper.CreateStateCombination (orderClass);
-      combination1.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
-      combination2.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
-      combination3.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
+      _testHelper.CreateStateCombination (orderClass);
 
-      using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         StateUsage stateUsage = combination2.StateUsages[0];
         stateUsage.StateDefinition = paidState;
 
-        ClientTransactionScope.CurrentTransaction.Commit();
+        ClientTransaction.Current.Commit();
       }
     }
 
-    private StateCombination GetStatelessCombinationForClass (SecurableClassDefinition classDefinition)
+    [Test]
+    public void TouchClassOnCommit ()
     {
-      foreach (StateCombination currentCombination in classDefinition.StateCombinations)
+      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
+      StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
+      StateDefinition paidState = paymentProperty[EnumWrapper.Get (PaymentState.Paid).Name];
+      StateCombination combination = _testHelper.CreateStateCombination (orderClass, paidState);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        if (currentCombination.StateUsages.Count == 0)
-          return currentCombination;
+        bool commitOnClassWasCalled = false;
+        orderClass.Committing += delegate { commitOnClassWasCalled = true; };
+        StateUsage stateUsage = combination.StateUsages[0];
+        stateUsage.MarkAsChanged();
+
+        ClientTransaction.Current.Commit();
+
+        Assert.That (commitOnClassWasCalled, Is.True);
       }
-
-      return null;
-    }
-
-    private static List<StateDefinition> CreateEmptyStateList ()
-    {
-      return new List<StateDefinition>();
     }
   }
 }
