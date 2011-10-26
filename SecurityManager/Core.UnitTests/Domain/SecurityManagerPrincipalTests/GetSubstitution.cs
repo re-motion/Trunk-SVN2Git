@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -38,21 +39,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
-      ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ();
+      ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
 
       _user = User.FindByUserName ("substituting.user");
       _tenant = _user.Tenant;
-      _substitution = _user.GetActiveSubstitutions ().First ();
+      _substitution = _user.GetActiveSubstitutions().First();
 
       _principal = new SecurityManagerPrincipal (_tenant.ID, _user.ID, _substitution.ID);
     }
 
     public override void TearDown ()
     {
-      base.TearDown ();
+      base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
     }
@@ -85,7 +86,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     public void RefreshDoesNotResetCacheWithOldRevision ()
     {
       SubstitutionProxy proxy = _principal.Substitution;
-      _principal.Refresh ();
+      _principal.Refresh();
       Assert.That (proxy, Is.SameAs (_principal.Substitution));
     }
 
@@ -101,13 +102,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     [Test]
     public void UsesSecurityFreeSection ()
     {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+      Revision.IncrementRevision();
+      _principal.Refresh();
 
       var substitutionProxy = _principal.Substitution;
 
-      Assert.That (substitutionProxy.DisplayName, Is.EqualTo (_substitution.DisplayName));
+      Assert.That (substitutionProxy.ID, Is.EqualTo (_substitution.ID));
     }
   }
 }

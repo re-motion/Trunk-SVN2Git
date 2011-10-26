@@ -121,13 +121,16 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("SubstitutingUser")]
     protected abstract ObjectList<Substitution> SubstitutingFor { get; }
 
-    //[DemandPropertyWritePermission (SecurityManagerAccessTypes.AssignSubstitute)]
     [DBBidirectionalRelation ("SubstitutedUser")]
     public abstract ObjectList<Substitution> SubstitutedBy { get; [DemandPermission (SecurityManagerAccessTypes.AssignSubstitute)] protected set; }
 
-    public IList<Substitution> GetActiveSubstitutions ()
+    public IEnumerable<Substitution> GetActiveSubstitutions ()
     {
-      return SubstitutingFor.Where (s => s.IsActive).ToArray();
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
+        return new Substitution[0];
+
+      return SubstitutingFor.Where (s => s.IsActive);
     }
 
     protected override void OnDeleting (EventArgs args)

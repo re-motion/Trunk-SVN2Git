@@ -83,7 +83,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     public void RefreshDoesNotResetCacheWithOldRevision ()
     {
       TenantProxy proxy = _principal.Tenant;
-      _principal.Refresh ();
+      _principal.Refresh();
       Assert.That (proxy, Is.SameAs (_principal.Tenant));
     }
 
@@ -102,10 +102,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+      Revision.IncrementRevision();
+      _principal.Refresh();
 
       var tenantProxy = _principal.Tenant;
 
-      Assert.That (tenantProxy.DisplayName, Is.EqualTo (_tenant.DisplayName));
+      Assert.That (tenantProxy.ID, Is.EqualTo (_tenant.ID));
     }
   }
 }

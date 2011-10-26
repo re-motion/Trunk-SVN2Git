@@ -16,9 +16,11 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -48,9 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     {
       Tenant root = TestHelper.CreateTenant ("Root", "UID: Root");
 
-      var tenants = root.GetHierachy().ToArray();
-
-      Assert.That (tenants, Is.EquivalentTo (new[] { root }));
+      Assert.That (root.GetHierachy().ToArray(), Is.EquivalentTo (new[] { root }));
     }
 
     [Test]
@@ -62,9 +62,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Tenant child2 = TestHelper.CreateTenant ("Child2", "UID: Child2");
       child2.Parent = root;
 
-      var tenants = root.GetHierachy().ToArray();
-
-      Assert.That (tenants, Is.EquivalentTo (new[] { root, child1, child2 }));
+      Assert.That (root.GetHierachy().ToArray(), Is.EquivalentTo (new[] { root, child1, child2 }));
     }
 
     [Test]
@@ -78,9 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Tenant grandChild1 = TestHelper.CreateTenant ("GrandChild1", "UID: GrandChild1");
       grandChild1.Parent = child1;
 
-      var tenants = root.GetHierachy().ToArray();
-
-      Assert.That (tenants, Is.EquivalentTo (new[] { root, child1, child2, grandChild1 }));
+      Assert.That (root.GetHierachy().ToArray(), Is.EquivalentTo (new[] { root, child1, child2, grandChild1 }));
     }
 
     [Test]
@@ -133,9 +129,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        var tenants = root.GetHierachy().ToArray();
+        ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension ());
 
-        Assert.That (tenants, Is.EquivalentTo (new[] { root, child2 }));
+        Assert.That (root.GetHierachy(), Is.EquivalentTo (new[] { root, child2 }));
       }
     }
 
@@ -152,9 +148,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        var tenants = root.GetHierachy ().ToArray ();
+        ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
 
-        Assert.That (tenants, Is.Empty);
+        Assert.That (root.GetHierachy(), Is.Empty);
       }
     }
   }

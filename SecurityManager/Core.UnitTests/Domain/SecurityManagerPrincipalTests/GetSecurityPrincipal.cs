@@ -15,11 +15,11 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.Security.Configuration;
@@ -39,21 +39,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
-      ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ();
+      ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
 
       _user = User.FindByUserName ("substituting.user");
       _tenant = _user.Tenant;
-      _substitution = _user.GetActiveSubstitutions ().Where (s => s.SubstitutedRole != null).First ();
+      _substitution = _user.GetActiveSubstitutions().Where (s => s.SubstitutedRole != null).First();
 
       _principal = new SecurityManagerPrincipal (_tenant.ID, _user.ID, _substitution.ID);
     }
 
     public override void TearDown ()
     {
-      base.TearDown ();
+      base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
     }
@@ -83,24 +83,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       SecurityManagerPrincipal deserialziedSecurityManagerPrincipal = deserialized.Item1;
       ISecurityPrincipal deserialziedSecurityPrincipal = deserialized.Item2;
 
-      Assert.That (deserialziedSecurityManagerPrincipal.GetSecurityPrincipal (), Is.Not.SameAs (deserialziedSecurityPrincipal));
+      Assert.That (deserialziedSecurityManagerPrincipal.GetSecurityPrincipal(), Is.Not.SameAs (deserialziedSecurityPrincipal));
     }
 
     [Test]
     public void RefreshDoesNotResetCacheWithOldRevision ()
     {
-      var securityPrincipal = _principal.GetSecurityPrincipal ();
-      _principal.Refresh ();
-      Assert.That (securityPrincipal, Is.SameAs (_principal.GetSecurityPrincipal ()));
+      var securityPrincipal = _principal.GetSecurityPrincipal();
+      _principal.Refresh();
+      Assert.That (securityPrincipal, Is.SameAs (_principal.GetSecurityPrincipal()));
     }
 
     [Test]
     public void RefreshResetsCacheWithNewRevision ()
     {
-      var securityPrincipal = _principal.GetSecurityPrincipal ();
-      Revision.IncrementRevision ();
-      _principal.Refresh ();
-      Assert.That (securityPrincipal, Is.Not.SameAs (_principal.GetSecurityPrincipal ()));
+      var securityPrincipal = _principal.GetSecurityPrincipal();
+      Revision.IncrementRevision();
+      _principal.Refresh();
+      Assert.That (securityPrincipal, Is.Not.SameAs (_principal.GetSecurityPrincipal()));
     }
 
     [Test]
@@ -109,14 +109,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+      Revision.IncrementRevision();
+      _principal.Refresh();
 
-      ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
-      {
-        ISecurityPrincipal securityPrincipal = _principal.GetSecurityPrincipal();
-        Assert.That (securityPrincipal.IsNull, Is.False);
-        Assert.That (securityPrincipal.User, Is.EqualTo ("substituting.user"));
-      }
+      ISecurityPrincipal securityPrincipal = _principal.GetSecurityPrincipal();
+      Assert.That (securityPrincipal.IsNull, Is.False);
+      Assert.That (securityPrincipal.User, Is.EqualTo ("substituting.user"));
     }
   }
 }
