@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void Create ()
     {
-      User user = CreateUser();
+      var user = CreateUser();
       var proxy = UserProxy.Create (user);
 
       Assert.That (proxy.ID, Is.EqualTo (user.ID));
@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void Serialization ()
     {
-      User user = CreateUser();
+      var user = CreateUser();
       var proxy = UserProxy.Create (user);
 
       var deserialized = Serializer.SerializeAndDeserialize (proxy);
@@ -60,14 +60,61 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     }
 
     [Test]
-    [Ignore]
-    public void Equals_True ()
+    public void Equals_EqualObject_True ()
     {
-      User user = CreateUser ();
+      var user = CreateUser ();
       var proxy1 = UserProxy.Create (user);
       var proxy2 = UserProxy.Create (user);
 
       Assert.That (proxy1.Equals (proxy2), Is.True);
+      Assert.That (proxy2.Equals (proxy1), Is.True);
+    }
+
+    [Test]
+    public void Equals_SameObject_True ()
+    {
+      var user = CreateUser ();
+      var proxy1 = UserProxy.Create (user);
+
+// ReSharper disable EqualExpressionComparison
+      Assert.That (proxy1.Equals (proxy1), Is.True);
+// ReSharper restore EqualExpressionComparison
+    }
+
+    [Test]
+    public void Equals_Null_False ()
+    {
+      var user = CreateUser ();
+      var proxy1 = UserProxy.Create (user);
+
+      Assert.That (proxy1.Equals (null), Is.False);
+    }
+
+    [Test]
+    public void Equals_OtherObject_False ()
+    {
+      var proxy1 = UserProxy.Create (CreateUser ());
+      var proxy2 = UserProxy.Create (CreateUser ());
+
+      Assert.That (proxy1.Equals (proxy2), Is.False);
+    }
+
+    [Test]
+    public void Equals_OtherType_False ()
+    {
+      var proxy1 = UserProxy.Create (CreateUser ());
+
+      Assert.That (proxy1.Equals ("other"), Is.False);
+    }
+
+    [Test]
+    public void GetHashcode_EqualObject_SameHashcode()
+    {
+      var user = CreateUser ();
+      var proxy1 = UserProxy.Create (user);
+      var proxy2 = UserProxy.Create (user);
+
+      Assert.That (proxy2.GetHashCode (), Is.EqualTo (proxy1.GetHashCode()));
     }
 
     private User CreateUser ()

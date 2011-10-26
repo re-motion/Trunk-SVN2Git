@@ -54,5 +54,19 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       get { return _displayName; }
     }
+
+    public override bool Equals (object obj)
+    {
+      if (obj == null)
+        return false;
+      if (obj.GetType() != this.GetType())
+        return false;
+      return ((OrganizationalStructureObjectProxy) obj)._id == this._id;
+    }
+
+    public override int GetHashCode ()
+    {
+      return _id.GetHashCode();
+    }
   }
 }
