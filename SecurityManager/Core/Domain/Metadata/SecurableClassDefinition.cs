@@ -113,7 +113,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
         accessControlList.Index = 0;
       else
         accessControlList.Index = accessControlLists[accessControlLists.Count - 2].Index + 1;
-      Touch();
     }
 
     [DBBidirectionalRelation ("DerivedClasses")]
@@ -314,6 +313,8 @@ namespace Remotion.SecurityManager.Domain.Metadata
       }
 
       base.OnCommitting (args);
+
+      Touch();
     }
 
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
