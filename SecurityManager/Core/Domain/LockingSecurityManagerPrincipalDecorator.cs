@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Domain
   public class LockingSecurityManagerPrincipalDecorator : ISecurityManagerPrincipal
   {
     private readonly ISecurityManagerPrincipal _innerPrincipal;
-    private object _lock = new object();
+    private readonly object _lock = new object();
 
     public LockingSecurityManagerPrincipalDecorator (ISecurityManagerPrincipal innerPrincipal)
     {
