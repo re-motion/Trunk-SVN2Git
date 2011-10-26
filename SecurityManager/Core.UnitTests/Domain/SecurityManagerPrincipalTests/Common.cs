@@ -15,12 +15,11 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
-using Remotion.ObjectBinding;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
@@ -34,19 +33,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
   {
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
-      ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ();
+      ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
     }
 
     public override void TearDown ()
     {
-      base.TearDown ();
+      base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       SecurityConfiguration.Current.SecurityProvider = null;
     }
-    
+
     [Test]
     public void Get_Current_NotInitialized ()
     {
@@ -116,7 +115,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     {
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions ().First ();
+      Substitution substitution = user.GetActiveSubstitutions().First();
 
       var principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
       var deserializedPrincipal = Serializer.SerializeAndDeserialize (principal);
@@ -145,37 +144,35 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     [Test]
     public void ActiveSecurityProviderAddsSecurityClientTransactionExtension ()
     {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+      Substitution substitution = user.GetActiveSubstitutions().First();
+
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions ().First ();
-
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
 
-      Assert.Ignore ();
-      //var bindingTransaction = principal.User.GetBindingTransaction ();
-      //Assert.That (bindingTransaction.Extensions, Has.Some.InstanceOf<SecurityClientTransactionExtension> ());
+      //Must test for observable effect
+      Assert.That (principal.GetActiveSubstitutions(), Is.Empty);
     }
 
     [Test]
     public void NullSecurityProviderDoesNotAddSecurityClientTransactionExtension ()
     {
-      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (true);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
       User user = User.FindByUserName ("substituting.user");
       Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions ().First ();
+      Substitution substitution = user.GetActiveSubstitutions().First();
 
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant.ID, user.ID, substitution.ID);
 
-      Assert.Ignore ();
-      //var bindingTransaction = principal.User.GetBindingTransaction ();
-      //Assert.That (bindingTransaction.Extensions, Has.No.InstanceOf<SecurityClientTransactionExtension> ());
+      //Must test for observable effect
+      Assert.That (principal.GetActiveSubstitutions(), Is.Not.Empty);
     }
   }
 }

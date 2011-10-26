@@ -138,7 +138,13 @@ namespace Remotion.SecurityManager.Domain
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
     {
-      return GetUser (_transaction).Tenant.GetHierachy()
+      Tenant tenant;
+      using (new SecurityFreeSection())
+      {
+        tenant = GetUser (_transaction).Tenant;
+      }
+
+      return tenant.GetHierachy()
           .Where (t => includeAbstractTenants || !t.IsAbstract)
           .Select (CreateTenantProxy)
           .ToArray();

@@ -18,9 +18,11 @@
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
@@ -76,6 +78,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantID, _userID, null);
 
       Assert.That (principal.GetTenants (false).Select (t => t.ID), Is.EqualTo (new[] { _rootTenantID, _grandChildTenantID }));
+    }
+
+    [Test]
+    public void UsesSecurityFreeSectionToAccessTenantOfUser ()
+    {
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
+      securityProviderStub.Stub (stub => stub.IsNull).Return (false);
+      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (_rootTenantID, _userID, null);
+
+      Assert.That (principal.GetTenants (true), Is.Empty);
     }
   }
 }
