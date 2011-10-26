@@ -141,6 +141,7 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilter.cs" />
     <Compile Include="Domain\DomainObjectDeleteHandler.cs" />
     <Compile Include="Domain\ISecurityManagerPrincipal.cs" />
+    <Compile Include="Domain\ISecurityManagerPrincipalFactory.cs" />
     <Compile Include="Domain\LockingSecurityManagerPrincipalDecorator.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureObjectProxy.cs" />
@@ -152,6 +153,7 @@
     </Compile>
     <Compile Include="Domain\OrganizationalStructure\UserProxy.cs" />
     <Compile Include="Domain\SecurityManagerPrincipal.cs" />
+    <Compile Include="Domain\SecurityManagerPrincipalFactory.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalProvider.cs" />
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\AccessControl\TenantCondition.cs" />

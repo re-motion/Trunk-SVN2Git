@@ -174,6 +174,7 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\UserConditionStateful.cs" />
     <Compile Include="Domain\BindableObjectProviderTestHelper.cs" />
     <Compile Include="Domain\DomainObjectDeleteHandlerTest.cs" />
+    <Compile Include="Domain\ISecurityManagerPrincipalFactoryTest.cs" />
     <Compile Include="Domain\LockingSecurityManagerPrincipalDecoratorTest.cs" />
     <Compile Include="Domain\LockingSecurityManagerPrincipalDecoratorTestHelper.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossibleGroups.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossiblePositions.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\DeleteRole.cs" />
+    <Compile Include="Domain\SecurityManagerPrincipalFactoryTest.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\GetActiveSubstitutions.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\GetSecurityPrincipal.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\GetSubstitution.cs" />

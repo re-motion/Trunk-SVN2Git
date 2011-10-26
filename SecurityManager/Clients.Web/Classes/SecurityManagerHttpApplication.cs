@@ -21,7 +21,6 @@ using System.Web.SessionState;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
@@ -57,7 +56,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     protected bool HasSessionState
     {
-      get { return Context.Handler is IRequiresSessionState || Context.Handler is IReadOnlySessionState; }
+      get { return Context.Handler is IRequiresSessionState; }
     }
 
     public override void Init ()
@@ -65,6 +64,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       base.Init();
 
       PostAcquireRequestState += SecurityManagerHttpApplication_PostAcquireRequestState;
+
     }
 
     private void SecurityManagerHttpApplication_PostAcquireRequestState (object sender, EventArgs e)
