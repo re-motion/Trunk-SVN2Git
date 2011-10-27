@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Reflection;
 using Remotion.Security;
-using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
