@@ -211,5 +211,53 @@ AspNetPatches.Apply = function ()
     //patch for IE9 issue: XmlHttpRequest.abort passes an argument to the onreadystatechange handler by ASP.NET AJAX requires an empty argument list
     //Fixed in ASP.NET AJAX 4.0 in the same manner.
     Function.emptyMethod = function () { };
-  } 
+  }
+
+  if (window.ValidatorOnChange)
+  {
+    //patch for ASP.NET 2.0/3.5 issue: ValidatorOnChange does not initialize the 'vals' array if there are no clientside validators.
+    //http://connect.microsoft.com/VisualStudio/feedback/details/471224
+    //Fixed in ASP.NET 4.0
+    ValidatorOnChange = function (event)
+    {
+      if (!event)
+      {
+        event = window.event;
+      }
+      Page_InvalidControlToBeFocused = null;
+      var targetedControl;
+      if ((typeof (event.srcElement) != "undefined") && (event.srcElement != null))
+      {
+        targetedControl = event.srcElement;
+      }
+      else
+      {
+        targetedControl = event.target;
+      }
+      var vals;
+      if (typeof (targetedControl.Validators) != "undefined")
+      {
+        vals = targetedControl.Validators;
+      }
+      else
+      {
+        if (targetedControl.tagName.toLowerCase() == "label")
+        {
+          targetedControl = document.getElementById(targetedControl.htmlFor);
+          vals = targetedControl.Validators;
+        }
+        else
+        {
+          //patch
+          vals = new Array();
+        }
+      }
+      var i;
+      for (i = 0; i < vals.length; i++)
+      {
+        ValidatorValidate(vals[i], null, event);
+      }
+      ValidatorUpdateIsValid();
+    };
+  }
 }
