@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure

@@ -28,6 +28,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Reflection;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -76,14 +77,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       Assertion.IsNotNull (propertyDefinition);
       Assertion.IsTrue (propertyDefinition is IBusinessObjectReferenceProperty);
 
-      IBusinessObjectReferenceProperty referenceProperty = (IBusinessObjectReferenceProperty) propertyDefinition;
+      var referenceProperty = (IBusinessObjectReferenceProperty) propertyDefinition;
+
+      var securityManagerSearchArguments = new SecurityManagerSearchArguments (ObjectID.Parse (args), completionSetCount, prefixText);
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        IEnumerable<IBusinessObject> result = referenceProperty.SearchAvailableObjects (
-            (IBusinessObject) LifetimeService.NewObject (ClientTransaction.Current, type, ParamList.Empty), new DefaultSearchArguments (args));
-        if (completionSetCount.HasValue)
-          result = result.Take (completionSetCount.Value);
+        var result = referenceProperty.SearchAvailableObjects (null, securityManagerSearchArguments);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();
       }
     }

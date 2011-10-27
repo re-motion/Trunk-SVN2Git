@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionPropertiesSearchServiceTests
 {
@@ -56,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
       DomainObjectCollection expectedUsers = User.FindByTenantID (_user.Tenant.ID);
       Assert.That (expectedUsers, Is.Not.Empty);
 
-      IBusinessObject[] actualUsers = _searchService.Search (null, _substitutingUserProperty, new DefaultSearchArguments (_user.Tenant.ID.ToString()));
+      IBusinessObject[] actualUsers = _searchService.Search (null, _substitutingUserProperty, new SecurityManagerSearchArguments (_user.Tenant.ID, null, null));
 
       Assert.That (actualUsers, Is.EquivalentTo (expectedUsers));
     }

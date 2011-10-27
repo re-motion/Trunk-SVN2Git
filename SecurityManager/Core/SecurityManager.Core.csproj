@@ -152,10 +152,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Domain\OrganizationalStructure\UserProxy.cs" />
+    <Compile Include="Domain\SearchInfrastructure\IDisplayNameFilter.cs" />
+    <Compile Include="Domain\SearchInfrastructure\IResultSizeConstraint.cs" />
+    <Compile Include="Domain\SearchInfrastructure\ITenantFilter.cs" />
+    <Compile Include="Domain\SearchInfrastructure\SecurityManagerSearchArguments.cs" />
     <Compile Include="Domain\SecurityManagerPrincipal.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalFactory.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalProvider.cs" />
-    <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
+    <Compile Include="Domain\SearchInfrastructure\SecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\AccessControl\TenantCondition.cs" />
     <Compile Include="Domain\AccessControl\GroupCondition.cs" />
     <Compile Include="Domain\AccessControl\IAccessControlListFinder.cs" />

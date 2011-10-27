@@ -17,11 +17,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.Domain
+namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   /// <summary>
   /// Base-Implementation of <see cref="ISearchAvailableObjectsService"/> for the <see cref="BaseSecurityManagerObject"/> type.
@@ -54,9 +55,18 @@ namespace Remotion.SecurityManager.Domain
 
       Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]> searchDelegate;
       if (_searchDelegates.TryGetValue (property.Identifier, out searchDelegate))
-        return searchDelegate (referencingSecurityManagerObject, property, searchArguments);
+        return searchDelegate (referencingSecurityManagerObject, property, CreateSearchArguments(searchArguments));
 
       throw new ArgumentException (string.Format ("The property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
+    }
+
+    private ISearchAvailableObjectsArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)
+    {
+      var defaultSearchArguments = searchArguments as DefaultSearchArguments;
+      if (defaultSearchArguments != null && !string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
+        return new SecurityManagerSearchArguments (ObjectID.Parse (defaultSearchArguments.SearchStatement), null, null);
+
+      return searchArguments;
     }
   }
 }

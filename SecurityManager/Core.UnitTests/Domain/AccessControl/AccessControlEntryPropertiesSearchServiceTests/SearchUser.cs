@@ -22,6 +22,7 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryPropertiesSearchServiceTests
@@ -62,7 +63,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       ObjectList<User> expected = User.FindByTenantID (tenant.ID);
       Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actual = _searchService.Search (ace, _property, new DefaultSearchArguments(tenant.ID.ToString()));
+      IBusinessObject[] actual = _searchService.Search (ace, _property, new SecurityManagerSearchArguments (tenant.ID, null, null));
+
+      Assert.That (actual, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Search_DefaultSearchArgument ()
+    {
+      AccessControlEntry ace = AccessControlEntry.NewObject();
+      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
+      Assert.That (tenant, Is.Not.Null);
+
+      ObjectList<User> expected = User.FindByTenantID (tenant.ID);
+      Assert.That (expected, Is.Not.Empty);
+
+      IBusinessObject[] actual = _searchService.Search (ace, _property, new DefaultSearchArguments (tenant.ID.ToString()));
 
       Assert.That (actual, Is.EqualTo (expected));
     }

@@ -16,11 +16,11 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
@@ -47,21 +47,19 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private IBusinessObject[] SearchGroups (
         AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
-      var defaultSearchArguments = ArgumentUtility.CheckNotNullAndType<DefaultSearchArguments> ("searchArguments", searchArguments);
-      ArgumentUtility.CheckNotNullOrEmpty ("defaultSearchArguments.SearchStatement", defaultSearchArguments.SearchStatement);
-      ObjectID tenantID = ObjectID.Parse (defaultSearchArguments.SearchStatement);
+      var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
+      var tenantFilter = (ITenantFilter) securityManagerSearchArguments;
 
-      return Group.FindByTenantID (tenantID).ToArray();
+      return Group.FindByTenantID (tenantFilter.Value).ToArray();
     }
 
     private IBusinessObject[] SearchUsers (
         AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
-      var defaultSearchArguments = ArgumentUtility.CheckNotNullAndType<DefaultSearchArguments> ("searchArguments", searchArguments);
-      ArgumentUtility.CheckNotNullOrEmpty ("defaultSearchArguments.SearchStatement", defaultSearchArguments.SearchStatement);
-      ObjectID tenantID = ObjectID.Parse (defaultSearchArguments.SearchStatement);
+      var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
+      var tenantFilter = (ITenantFilter) securityManagerSearchArguments;
 
-      return User.FindByTenantID (tenantID).ToArray();
+      return User.FindByTenantID (tenantFilter.Value).ToArray();
     }
   }
 }
