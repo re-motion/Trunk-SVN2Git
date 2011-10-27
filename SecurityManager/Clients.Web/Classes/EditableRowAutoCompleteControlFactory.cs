@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Web;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
@@ -50,11 +49,14 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       if (IsAutoCompleteReferenceValueRequired (propertyPath))
       {
         var control = new BocAutoCompleteReferenceValue();
+        control.Init += delegate
+        {
+          SecurityManagerSearchWebService.BindServiceToControl (control);
+        };
         control.PreRender += delegate
         {
           BasePage page = (BasePage) control.Page;
           control.Args = page.CurrentFunction.TenantID.ToString();
-          SecurityManagerSearchWebService.BindServiceToControl (control);
         };
 
         return control;
