@@ -83,7 +83,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
         IEnumerable<IBusinessObject> result = referenceProperty.SearchAvailableObjects (
             (IBusinessObject) LifetimeService.NewObject (ClientTransaction.Current, type, ParamList.Empty), new DefaultSearchArguments (args));
         if (completionSetCount.HasValue)
-          result = result.Take (0);
+          result = result.Take (completionSetCount.Value);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();
       }
     }
