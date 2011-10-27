@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
                    where c.Name == name
                    select c;
 
-      return result.ToArray().SingleOrDefault();
+      return result.SingleOrDefault();
     }
 
     public static ObjectList<SecurableClassDefinition> FindAll ()
