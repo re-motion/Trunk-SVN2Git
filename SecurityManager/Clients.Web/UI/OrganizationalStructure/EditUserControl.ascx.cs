@@ -156,10 +156,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (e.Item.ItemID == "DeleteItem")
       {
-        foreach (Role role in SubstitutedByList.GetSelectedBusinessObjects())
+        foreach (Substitution substitution in SubstitutedByList.GetSelectedBusinessObjects())
         {
-          SubstitutedByList.RemoveRow (role);
-          role.Delete();
+          SubstitutedByList.RemoveRow (substitution);
+          substitution.Delete();
         }
       }
 
