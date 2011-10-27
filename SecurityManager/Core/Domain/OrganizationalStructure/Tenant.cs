@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
                    where t.UniqueIdentifier == uniqueIdentifier
                    select t;
 
-      return result.ToArray().SingleOrDefault();
+      return result.SingleOrDefault();
     }
 
     [DemandPermission (GeneralAccessTypes.Search)]

@@ -104,7 +104,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
                    where g.UniqueIdentifier == uniqueIdentifier
                    select g;
 
-      return result.ToArray().SingleOrDefault();
+      return result.SingleOrDefault();
     }
 
     //[DemandMethodPermission (GeneralAccessTypes.Create)]
