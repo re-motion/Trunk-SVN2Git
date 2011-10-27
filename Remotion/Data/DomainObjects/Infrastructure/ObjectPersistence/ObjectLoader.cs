@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Remotion.Collections;
 
@@ -79,12 +80,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, dataManager);
     }
 
-    public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
+    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      
-      var loadedObjectData = _persistenceStrategy.LoadObjectData (idsToBeLoaded, throwOnNotFound);
+
+      var idsToBeLoadedAsCollection = idsToBeLoaded.ConvertToCollection();
+      var loadedObjectData = _persistenceStrategy.LoadObjectData (idsToBeLoadedAsCollection, throwOnNotFound);
 
       // TODO 4428
       //Assertion.IsTrue (dataContainers.Count == idsToBeLoaded.Count, "Persistence strategy must return exactly as many items as requested.");
@@ -97,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           .Select (ConvertLoadedDomainObject<DomainObject>)
           .Where (domainObject => domainObject != null)
           .ToDictionary (domainObject => domainObject.ID);
-      return idsToBeLoaded.Select (id => objectDictionary.GetValueOrDefault (id)).ToArray();
+      return idsToBeLoadedAsCollection.Select (id => objectDictionary.GetValueOrDefault (id)).ToArray ();
     }
 
     public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)

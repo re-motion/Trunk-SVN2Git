@@ -24,6 +24,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DataContainer GetDataContainerWithoutLoading (ObjectID objectID);
 
     DataContainer GetDataContainerWithLazyLoad (ObjectID objectID);
-    IEnumerable<DataContainer> GetDataContainersWithLazyLoad (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
+    IEnumerable<DataContainer> GetDataContainersWithLazyLoad (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound);
   }
 }

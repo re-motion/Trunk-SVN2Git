@@ -16,12 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
@@ -66,25 +66,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
     }
 
-    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-
-      if (objectIDs.Count == 0)
-        return Enumerable.Empty<ILoadedObjectData> ();
 
       using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
       {
         IEnumerable<DomainObject> parentObjects;
         if (throwOnNotFound)
         {
-          parentObjects = parentTransactionOperations.GetObjects (objectIDs.ToArray ());
+          parentObjects = parentTransactionOperations.GetObjects (objectIDs);
         }
         else
         {
           // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
           // TransferParentObject below will throw on invalid IDs.
-          parentObjects = parentTransactionOperations.TryGetObjects (objectIDs.ToArray()).Where (obj => obj != null);
+          parentObjects = parentTransactionOperations.TryGetObjects (objectIDs).Where (obj => obj != null);
         }
 
         // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
@@ -202,15 +199,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return thisDataContainer;
     }
 
-    public virtual void PersistData (ReadOnlyCollection<PersistableData> data)
+    public virtual void PersistData (IEnumerable<PersistableData> data)
     {
       ArgumentUtility.CheckNotNull ("data", data);
 
+      var dataAsCollection = data.ConvertToCollection();
+
       // filter out those items whose state is only Changed due to relation changes
-      var dataContainers = data.Select (item => item.DataContainer).Where (dc => dc.State != StateType.Unchanged);
+      var dataContainers = dataAsCollection.Select (item => item.DataContainer).Where (dc => dc.State != StateType.Unchanged);
 
       // only handle changed end-points; end-points of new and deleted objects will implicitly be handled by PersistDataContainers
-      var endPoints = data.SelectMany (item => item.GetAssociatedEndPoints ()).Where (ep => ep.HasChanged);
+      var endPoints = dataAsCollection.SelectMany (item => item.GetAssociatedEndPoints ()).Where (ep => ep.HasChanged);
 
       using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
       {

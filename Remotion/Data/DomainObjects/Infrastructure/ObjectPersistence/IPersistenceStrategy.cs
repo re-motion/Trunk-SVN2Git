@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
     /// </para>
     /// </remarks>
-    IEnumerable<ILoadedObjectData> LoadObjectData (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
+    IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound);
 
     /// <summary>
     /// Resolves the relation identified by the given <see cref="RelationEndPointID"/>, loading the related object's data unless already available.
@@ -216,6 +216,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// The caller must ensure that the data represented by <paramref name="data"/> is consistent and complete; otherwise an inconsistent state
     /// might arise in the underlying data store.
     /// </remarks>
-    void PersistData (ReadOnlyCollection<PersistableData> data);
+    void PersistData (IEnumerable<PersistableData> data);
   }
 }

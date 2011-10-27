@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -70,12 +69,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
     }
 
-    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-
-      if (objectIDs.Count == 0)
-        return Enumerable.Empty<ILoadedObjectData>();
 
       using (var persistenceManager = CreatePersistenceManager())
       {
@@ -144,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
     }
 
-    public virtual void PersistData (ReadOnlyCollection<PersistableData> data)
+    public virtual void PersistData (IEnumerable<PersistableData> data)
     {
       ArgumentUtility.CheckNotNull ("data", data);
 

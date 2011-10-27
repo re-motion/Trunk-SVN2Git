@@ -897,7 +897,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var nonLoadedDataContainer2 = PrepareNonLoadedDataContainer ();
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadObjects (new[] { nonLoadedDataContainer1.ID, nonLoadedDataContainer2.ID }, true, _dataManagerWithMocks))
+          .Expect (mock => mock.LoadObjects (
+              Arg<IEnumerable<ObjectID>>.List.Equal (new[] { nonLoadedDataContainer1.ID, nonLoadedDataContainer2.ID }), 
+              Arg.Is (true), 
+              Arg.Is (_dataManagerWithMocks)))
           .WhenCalled (
               mi =>
               {
@@ -919,7 +922,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetDataContainersWithLazyLoad_ThrowOnNotFoundFalse ()
     {
       _objectLoaderMock
-          .Expect (mock => mock.LoadObjects (new[] { DomainObjectIDs.Order1 }, false, _dataManagerWithMocks))
+          .Expect (mock => mock.LoadObjects (
+              Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 }),
+              Arg.Is (false),
+              Arg.Is (_dataManagerWithMocks)))
           .Return (new DomainObject[] { null });
       _objectLoaderMock.Replay ();
 
@@ -934,6 +940,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (true);
 
+      _objectLoaderMock
+          .Expect (mock => mock.LoadObjects (Arg<IEnumerable<ObjectID>>.Is.Anything, Arg.Is (true), Arg.Is (_dataManagerWithMocks)))
+          // evaluate args to trigger exception
+          .WhenCalled (mi => ((IEnumerable<ObjectID>) mi.Arguments[0]).ToList())
+          .Return (null);
       _objectLoaderMock.Replay ();
 
       Assert.That (

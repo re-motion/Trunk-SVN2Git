@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       return _decorated.LoadObject (id, dataManager);
     }
 
-    public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
+    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
     {
       return _decorated.LoadObjects (idsToBeLoaded, throwOnNotFound, dataManager);
     }

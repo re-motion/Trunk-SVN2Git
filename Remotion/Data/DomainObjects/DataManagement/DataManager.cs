@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Validation;
+using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -233,13 +234,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return dataContainer ?? LoadLazyDataContainer (objectID);
     }
 
-    public IEnumerable<DataContainer> GetDataContainersWithLazyLoad (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public IEnumerable<DataContainer> GetDataContainersWithLazyLoad (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      var idsToBeLoaded = objectIDs.Where (id => GetDataContainerWithoutLoading (id) == null);
-      _objectLoader.LoadObjects (idsToBeLoaded.ToList(), throwOnNotFound, this);
-      return objectIDs.Select (GetDataContainerWithoutLoading);
+      var objectIDsAsCollection = objectIDs.ConvertToCollection();
+
+      var idsToBeLoaded = objectIDsAsCollection.Where (id => GetDataContainerWithoutLoading (id) == null);
+      _objectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound, this);
+      return objectIDsAsCollection.Select (GetDataContainerWithoutLoading);
     }
 
     public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
