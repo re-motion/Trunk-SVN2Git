@@ -332,5 +332,26 @@ namespace Remotion.UnitTests.FunctionalProgramming
 
       Assert.That (result, Is.EqualTo (new[] { Tuple.Create (1, "a"), Tuple.Create (2, "b") }));
     }
+
+    [Test]
+    public void ConvertToCollection_WithCollection ()
+    {
+      var collection = new[] { 1, 2, 3 };
+
+      ICollection<int> result = collection.ConvertToCollection ();
+
+      Assert.That (result, Is.SameAs (collection));
+    }
+
+    [Test]
+    public void ConvertToCollection_WithNonCollection ()
+    {
+      var collection = Enumerable.Range (1, 3);
+
+      ICollection<int> result = collection.ConvertToCollection ();
+
+      Assert.That (result, Is.Not.SameAs (collection));
+      Assert.That (result, Is.EqualTo (collection));
+    }
   }
 }

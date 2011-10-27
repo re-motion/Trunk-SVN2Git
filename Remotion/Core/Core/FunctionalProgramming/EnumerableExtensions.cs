@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.FunctionalProgramming
 {
@@ -268,6 +269,25 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("second", second);
 
       return first.Zip (second, Tuple.Create);
+    }
+
+    /// <summary>
+    /// Returns an object of type <see cref="ICollection{T}"/> that has the same items as the source <see cref="IEnumerable{T}"/>. If the source 
+    /// <see cref="IEnumerable{T}"/> already implements <see cref="ICollection{T}"/>, the same instance is returned without any copying taking place.
+    /// </summary>
+    /// <typeparam name="T">The item type of the <paramref name="source"/> sequence (and the result <see cref="ICollection{T}"/>).</typeparam>
+    /// <param name="source">The <see cref="IEnumerable{T}"/> to be returned as an <see cref="ICollection{T}"/> instance.</param>
+    /// <returns><paramref name="source"/> if that object implements <see cref="ICollection{T}"/>, otherwise a new collection with the same items
+    /// as <paramref name="source"/>.</returns>
+    public static ICollection<T> ConvertToCollection<T> (this IEnumerable<T> source)
+    {
+      ArgumentUtility.CheckNotNull ("source", source);
+
+      var collection = source as ICollection<T>;
+      if (collection != null)
+        return collection;
+
+      return source.ToList();
     }
   }
 }
