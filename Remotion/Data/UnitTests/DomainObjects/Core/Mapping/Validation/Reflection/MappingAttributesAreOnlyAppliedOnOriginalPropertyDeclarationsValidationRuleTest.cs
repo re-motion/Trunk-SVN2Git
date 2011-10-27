@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
-    [Ignore ("TODO 3424: Utilities.ReflectionUtility.IsOriginalDeclaration does not work for Mixins")]
+    [Ignore ("TODO RM-4449: Utilities.ReflectionUtility.IsOriginalDeclaration does not work for Mixins")]
     public void NonOriginalPropertiesDeclarationWithMappingAttributeOnMixin_NoInheritanceRoot ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassUsingMixinPropertiesNoInheritanceRoot));
