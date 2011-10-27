@@ -28,7 +28,6 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -37,7 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class DataManagerTest : ClientTransactionBaseTest
   {
-    private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private DataManager _dataManager;
 
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
@@ -50,7 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       base.SetUp ();
 
       _dataManager = ClientTransactionMock.DataManager;
-      _invalidDomainObjectManager = (IInvalidDomainObjectManager) PrivateInvoke.GetNonPublicField (_dataManager, "_invalidDomainObjectManager");
 
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
       _endPointManagerMock = MockRepository.GenerateStrictMock<IRelationEndPointManager> ();
@@ -829,17 +826,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainerWithoutLoading_NotLoaded ()
     {
-      var result = _dataManager.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);
+      var result = _dataManagerWithMocks.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);
       Assert.That (result, Is.Null);
     }
 
     [Test]
     public void GetDataContainerWithoutLoading_Loaded ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+      var dataContainer = PrepareLoadedDataContainer ();
       
-      var result = _dataManager.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);
+      var result = _dataManagerWithMocks.GetDataContainerWithoutLoading (dataContainer.ID);
 
       Assert.That (result, Is.SameAs (dataContainer));
     }
@@ -848,24 +844,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ObjectInvalidException))]
     public void GetDataContainerWithoutLoading_Invalid ()
     {
-      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
-      _invalidDomainObjectManager.MarkInvalid (domainObject);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (true);
 
-      _dataManager.GetDataContainerWithoutLoading (domainObject.ID);
+      _dataManagerWithMocks.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);
     }
 
     [Test]
     public void GetDataContainerWithLazyLoad_Loaded ()
     {
-      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
-      var dataContainer = DataContainer.CreateNew (domainObject.ID);
-      dataContainer.SetDomainObject (domainObject);
-
-      DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, dataContainer);
+      var dataContainer = PrepareLoadedDataContainer ();
 
       _objectLoaderMock.Replay ();
-      
-      var result = _dataManagerWithMocks.GetDataContainerWithLazyLoad (domainObject.ID);
+
+      var result = _dataManagerWithMocks.GetDataContainerWithLazyLoad (dataContainer.ID);
 
       _objectLoaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (dataContainer));
@@ -874,17 +865,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainerWithLazyLoad_NotLoaded ()
     {
-      var domainObject = DomainObjectMother.CreateFakeObject<Order>();
-      var dataContainer = DataContainer.CreateNew (domainObject.ID);
-      dataContainer.SetDomainObject (domainObject);
+      var dataContainer = PrepareNonLoadedDataContainer ();
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadObject (domainObject.ID, _dataManagerWithMocks))
+          .Expect (mock => mock.LoadObject (dataContainer.ID, _dataManagerWithMocks))
           .WhenCalled (mi => DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, dataContainer))
-          .Return (domainObject);
+          .Return (dataContainer.DomainObject);
       _objectLoaderMock.Replay ();
 
-      var result = _dataManagerWithMocks.GetDataContainerWithLazyLoad (domainObject.ID);
+      var result = _dataManagerWithMocks.GetDataContainerWithLazyLoad (dataContainer.ID);
 
       _objectLoaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (dataContainer));
@@ -894,10 +883,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ObjectInvalidException))]
     public void GetDataContainerWithLazyLoad_Invalid ()
     {
-      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
-      _invalidDomainObjectManager.MarkInvalid (domainObject);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (true);
 
-      _dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
+      _dataManagerWithMocks.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void GetDataContainersWithLazyLoad ()
+    {
+      var loadedDataContainer = PrepareLoadedDataContainer();
+
+      var nonLoadedDataContainer1 = PrepareNonLoadedDataContainer ();
+      var nonLoadedDataContainer2 = PrepareNonLoadedDataContainer ();
+
+      _objectLoaderMock
+          .Expect (mock => mock.LoadObjects (new[] { nonLoadedDataContainer1.ID, nonLoadedDataContainer2.ID }, true, _dataManagerWithMocks))
+          .WhenCalled (
+              mi =>
+              {
+                DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, nonLoadedDataContainer1);
+                DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, nonLoadedDataContainer2);
+              })
+          .Return (new[] { nonLoadedDataContainer1.DomainObject, nonLoadedDataContainer2.DomainObject });
+      _objectLoaderMock.Replay ();
+
+      var result = _dataManagerWithMocks.GetDataContainersWithLazyLoad (
+          new[] { nonLoadedDataContainer1.ID, loadedDataContainer.ID, nonLoadedDataContainer2.ID }, 
+          true);
+
+      _objectLoaderMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (new[] { nonLoadedDataContainer1, loadedDataContainer, nonLoadedDataContainer2 }));
+    }
+
+    [Test]
+    public void GetDataContainersWithLazyLoad_ThrowOnNotFoundFalse ()
+    {
+      _objectLoaderMock
+          .Expect (mock => mock.LoadObjects (new[] { DomainObjectIDs.Order1 }, false, _dataManagerWithMocks))
+          .Return (new DomainObject[] { null });
+      _objectLoaderMock.Replay ();
+
+      var result = _dataManagerWithMocks.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1 }, false);
+
+      _objectLoaderMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (new DataContainer[] { null }));
+    }
+
+    [Test]
+    public void GetDataContainersWithLazyLoad_WithInvalidID ()
+    {
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (true);
+
+      _objectLoaderMock.Replay ();
+
+      Assert.That (
+          () => _dataManagerWithMocks.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true),
+          Throws.TypeOf<ObjectInvalidException>());
+
     }
 
     [Test]
@@ -1184,5 +1226,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (actualPersistableData.DomainObjectState, Is.EqualTo (expectedPersistableData.DomainObjectState));
       Assert.That (actualPersistableData.DataContainer, Is.SameAs (expectedPersistableData.DataContainer));
     }
+
+    private DataContainer PrepareNonLoadedDataContainer ()
+    {
+      var nonLoadedDomainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      var nonLoadedDataContainer = DataContainer.CreateNew (nonLoadedDomainObject.ID);
+      nonLoadedDataContainer.SetDomainObject (nonLoadedDomainObject);
+      return nonLoadedDataContainer;
+    }
+
+    private DataContainer PrepareLoadedDataContainer ()
+    {
+      var loadedDomainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      var loadedDataContainer = DataContainer.CreateNew (loadedDomainObject.ID);
+      loadedDataContainer.SetDomainObject (loadedDomainObject);
+      DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, loadedDataContainer);
+      return loadedDataContainer;
+    }
+
   }
 }

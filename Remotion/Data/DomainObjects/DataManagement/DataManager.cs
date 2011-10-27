@@ -215,14 +215,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);
     }
 
-    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      var dataContainer = GetDataContainerWithoutLoading (objectID);
-      return dataContainer ?? LoadLazyDataContainer (objectID);
-    }
-
     public DataContainer GetDataContainerWithoutLoading (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
@@ -231,6 +223,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ObjectInvalidException (objectID);
 
       return DataContainers[objectID];
+    }
+
+    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      var dataContainer = GetDataContainerWithoutLoading (objectID);
+      return dataContainer ?? LoadLazyDataContainer (objectID);
+    }
+
+    public IEnumerable<DataContainer> GetDataContainersWithLazyLoad (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    {
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+
+      var idsToBeLoaded = objectIDs.Where (id => GetDataContainerWithoutLoading (id) == null);
+      _objectLoader.LoadObjects (idsToBeLoaded.ToList(), throwOnNotFound, this);
+      return objectIDs.Select (GetDataContainerWithoutLoading);
     }
 
     public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)

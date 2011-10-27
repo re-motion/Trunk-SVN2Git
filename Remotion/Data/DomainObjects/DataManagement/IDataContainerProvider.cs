@@ -15,12 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   public interface IDataContainerProvider
   {
-    DataContainer GetDataContainerWithLazyLoad (ObjectID objectID);
     DataContainer GetDataContainerWithoutLoading (ObjectID objectID);
+
+    DataContainer GetDataContainerWithLazyLoad (ObjectID objectID);
+    IEnumerable<DataContainer> GetDataContainersWithLazyLoad (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
   }
 }
