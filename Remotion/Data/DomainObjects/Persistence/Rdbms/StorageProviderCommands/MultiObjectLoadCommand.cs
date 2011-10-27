@@ -60,6 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
       {
         using (var reader = executionContext.ExecuteReader (command, CommandBehavior.SingleResult))
         {
+          // Use yield return to keep reader and command open while reading items
           foreach (var dataContainer in commandBuilderTuple.Item2.ReadSequence (reader))
             yield return dataContainer;
         }
