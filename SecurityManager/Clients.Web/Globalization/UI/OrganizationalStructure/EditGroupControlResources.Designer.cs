@@ -82,9 +82,9 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalSt
         /// <summary>
         ///   Looks up a localized string similar to The selected group cannot be selected as parent because it would result in a circular hierarchy with the group being edited..
         /// </summary>
-        internal static string auto_ParentValidator_Text {
+        internal static string auto_ParentValidator_ErrorMessage {
             get {
-                return ResourceManager.GetString("auto:ParentValidator:Text", resourceCulture);
+                return ResourceManager.GetString("auto:ParentValidator:ErrorMessage", resourceCulture);
             }
         }
         

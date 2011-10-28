@@ -129,7 +129,7 @@
   <data name="auto:RolesField:FixedColumns:PositionNameItem:ColumnTitle" xml:space="preserve">
     <value>Stelle</value>
   </data>
-  <data name="auto:ParentValidator:Text" xml:space="preserve">
+  <data name="auto:ParentValidator:ErrorMessage" xml:space="preserve">
     <value>Die ausgewählte Gruppe kann nicht als übergeordnete Gruppe verwendet werden, da dadurch eine zirkuläre Hierarchie entstehen würde.</value>
   </data>
 </root>
