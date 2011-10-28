@@ -28,22 +28,22 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocReferenceValue runat="server" ID="UserField" DataSourceControl="CurrentObject" PropertyIdentifier="User">
+      <remotion:BocAutoCompleteReferenceValue runat="server" ID="UserField" DataSourceControl="CurrentObject" PropertyIdentifier="User">
         <PersistedCommand>
           <remotion:BocCommand />
         </PersistedCommand>
-      </remotion:BocReferenceValue>
+      </remotion:BocAutoCompleteReferenceValue>
     </td>
   </tr>
   <tr>
     <td></td>
     <td>
-      <remotion:BocReferenceValue runat="server" ID="GroupField" DataSourceControl="CurrentObject" PropertyIdentifier="Group" OnSelectionChanged="GroupField_SelectionChanged">
+      <remotion:BocAutoCompleteReferenceValue runat="server" ID="GroupField" DataSourceControl="CurrentObject" PropertyIdentifier="Group" OnSelectionChanged="GroupField_SelectionChanged">
         <PersistedCommand>
           <remotion:BocCommand />
         </PersistedCommand>
-        <DropDownListStyle AutoPostBack="True" />
-      </remotion:BocReferenceValue>
+        <TextBoxStyle AutoPostBack="True" />
+      </remotion:BocAutoCompleteReferenceValue>
     </td>
   </tr>
   <tr>

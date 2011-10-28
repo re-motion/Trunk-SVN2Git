@@ -30,8 +30,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   [WebMultiLingualResources (typeof (EditRoleControlResources))]
   public partial class EditRoleControl : BaseControl
   {
-    private BusinessObjectBoundEditableWebControl _groupField;
-    private BusinessObjectBoundEditableWebControl _userField;
+    private BocAutoCompleteReferenceValue _groupField;
+    private BocAutoCompleteReferenceValue _userField;
 
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -45,15 +45,27 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     public override IFocusableControl InitialFocusControl
     {
-      get { return (IFocusableControl) _userField; }
+      get { return _userField; }
     }
 
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
 
-      _groupField = GetBoundEditableWebControl ("GroupField", "Group");
-      _userField = GetBoundEditableWebControl ("UserField", "User");
+      _groupField = GetControl<BocAutoCompleteReferenceValue> ("GroupField", "Group");
+      _userField = GetControl<BocAutoCompleteReferenceValue> ("UserField", "User");
+
+      if (CurrentFunction.TenantID == null)
+        throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
+
+      _groupField.Args = CurrentFunction.TenantID.ToString();
+      _userField.Args = CurrentFunction.TenantID.ToString();
+
+      if (string.IsNullOrEmpty (_groupField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (_groupField);
+
+      if (string.IsNullOrEmpty (_userField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (_userField);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -107,14 +119,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       InitializePositionField (false);
     }
 
-    private BusinessObjectBoundEditableWebControl GetBoundEditableWebControl (string controlID, string propertyIdentifier)
+    private TControl GetControl<TControl> (string controlID, string propertyIdentifier)
+      where TControl : Control, IBusinessObjectBoundWebControl, IFocusableControl
     {
       Control control = FindControl (controlID);
       
       if (control == null)
         throw new InvalidOperationException (string.Format ("No control with the ID '{0}' found.", controlID));
       
-      if (!(control is BusinessObjectBoundEditableWebControl))
+      if (!(control is TControl))
       {
         throw new InvalidOperationException (
             string.Format ("Control '{0}' must be of type '{1}'.", controlID, typeof (BusinessObjectBoundEditableWebControl).FullName));
@@ -126,7 +139,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
             string.Format ("Control '{0}' must implement the '{1}' interface.", controlID, typeof (IFocusableControl).FullName));
       }
       
-      BusinessObjectBoundEditableWebControl boundEditableWebControl = (BusinessObjectBoundEditableWebControl) control;
+      TControl boundEditableWebControl = (TControl) control;
       if (boundEditableWebControl.Property == null || boundEditableWebControl.Property.Identifier != propertyIdentifier)
         throw new InvalidOperationException (string.Format ("Control '{0}' is not bound to property '{1}'.", controlID, propertyIdentifier));
 

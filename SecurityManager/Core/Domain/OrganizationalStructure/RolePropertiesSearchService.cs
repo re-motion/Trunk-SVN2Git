@@ -35,32 +35,30 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public RolePropertiesSearchService ()
     {
-      AddSearchDelegate ("Group", FindPossibleGroups);
-      AddSearchDelegate ("User", FindPossibleUsers);
+      AddSearchDelegate ("Group", SearchGroups);
+      AddSearchDelegate ("User", SearchUsers);
     }
 
-    private IQueryable<IBusinessObject> FindPossibleGroups (
-        Role role,
+    private IQueryable<IBusinessObject> SearchGroups (
+        Role referencingObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
-      ArgumentUtility.CheckNotNull ("role", role);
+       ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
+      var tenantFilter = (ITenantConstraint) searchArguments;
 
-      if (role.User == null || role.User.Tenant == null)
-        return Enumerable.Empty<IBusinessObject>().AsQueryable();
-      return role.GetPossibleGroups (role.User.Tenant.ID).Cast<IBusinessObject>().AsQueryable();
+      return Group.FindByTenantID (tenantFilter.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
     }
 
-    private IQueryable<IBusinessObject> FindPossibleUsers (
-        Role role,
+    private IQueryable<IBusinessObject> SearchUsers (
+        Role referencingObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
-      ArgumentUtility.CheckNotNull ("role", role);
+      ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
+      var tenantFilter = (ITenantConstraint) searchArguments;
 
-      if (role.Group == null || role.Group.Tenant == null)
-        return Enumerable.Empty<IBusinessObject>().AsQueryable();
-      return User.FindByTenantID (role.Group.Tenant.ID).Cast<IBusinessObject>().AsQueryable();
+      return User.FindByTenantID (tenantFilter.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }
