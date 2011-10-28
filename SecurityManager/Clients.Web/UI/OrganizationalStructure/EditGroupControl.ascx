@@ -67,7 +67,7 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocList ID="ChildrenList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Children" OnMenuItemClick="ChildrenList_MenuItemClick" Selection="Multiple" ShowEmptyListMessage="true" ShowEmptyListReadOnlyMode="true">
+      <remotion:BocList ID="ChildrenList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Children" ReadOnly="True" Selection="Disabled" ShowEmptyListMessage="true" ShowEmptyListReadOnlyMode="true">
         <FixedColumns>
           <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="DisplayName">
             <PersistedCommand>
@@ -75,18 +75,6 @@
             </PersistedCommand>
           </remotion:BocSimpleColumnDefinition>
         </FixedColumns>
-        <ListMenuItems>
-          <remotion:BocMenuItem ItemID="AddItem" Text="$res:Add">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-          <remotion:BocMenuItem ItemID="RemoveItem" RequiredSelection="OneOrMore" Text="$res:Remove">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-        </ListMenuItems>
       </remotion:BocList>
       <asp:CustomValidator ID="ChildrenValidator" runat="server" OnServerValidate="ChildrenValidator_ServerValidate" Text="###" />
     </td>

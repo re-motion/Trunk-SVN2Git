@@ -128,34 +128,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
     }
 
-    protected void ChildrenList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      if (e.Item.ItemID == "AddItem")
-      {
-        if (!Page.IsReturningPostBack)
-        {
-          SearchGroupFormFunction searchGroupFormFunction = new SearchGroupFormFunction (WxeTransactionMode.None);
-
-          Page.ExecuteFunction (searchGroupFormFunction, WxeCallArguments.Default);
-        }
-        else
-        {
-          SearchGroupFormFunction returningFunction = (SearchGroupFormFunction) Page.ReturningFunction;
-
-          if (!returningFunction.HasUserCancelled)
-          {
-            if (!ChildrenList.Value.Contains (returningFunction.SelectedGroup))
-              ChildrenList.AddRow (returningFunction.SelectedGroup);
-          }
-        }
-      }
-
-      if (e.Item.ItemID == "RemoveItem")
-        ChildrenList.RemoveRows (ChildrenList.GetSelectedBusinessObjects ());
-
-      ChildrenList.ClearSelectedRows ();
-    }
-
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {
       args.IsValid = IsParentHierarchyValid ((Group) ParentField.Value);
