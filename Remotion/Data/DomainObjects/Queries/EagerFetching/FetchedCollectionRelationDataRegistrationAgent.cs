@@ -37,11 +37,14 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject[] originatingObjects,
         DomainObject[] relatedObjects,
-        IDataManager dataManager)
+        IDataContainerProvider dataContainerProvider,
+        IRelationEndPointProvider relationEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
       ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
+      ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
+      ArgumentUtility.CheckNotNull ("relationEndPointProvider", relationEndPointProvider);
 
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many || relationEndPointDefinition.IsAnonymous)
         throw new ArgumentException ("Only collection-valued relations can be handled by this registration agent.", "relationEndPointDefinition");
@@ -49,8 +52,8 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
-      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, dataManager);
-      RegisterEndPointData (relationEndPointDefinition, dataManager, originatingObjects, groupedRelatedObjects);
+      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, dataContainerProvider);
+      RegisterEndPointData (relationEndPointDefinition, relationEndPointProvider, originatingObjects, groupedRelatedObjects);
     }
 
     private ILookup<ObjectID, DomainObject> CorrelateRelatedObjects (

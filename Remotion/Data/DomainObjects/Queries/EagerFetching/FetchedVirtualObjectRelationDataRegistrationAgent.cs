@@ -38,12 +38,14 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject[] originatingObjects,
         DomainObject[] relatedObjects,
-        IDataManager dataManager)
+        IDataContainerProvider dataContainerProvider,
+        IRelationEndPointProvider relationEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
       ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
+      ArgumentUtility.CheckNotNull ("relationEndPointProvider", relationEndPointProvider);
 
       if (relationEndPointDefinition.Cardinality != CardinalityType.One || !relationEndPointDefinition.IsVirtual)
       {
@@ -55,8 +57,8 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
-      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, dataManager);
-      RegisterEndPointData (relationEndPointDefinition, dataManager, originatingObjects, groupedRelatedObjects);
+      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, dataContainerProvider);
+      RegisterEndPointData (relationEndPointDefinition, relationEndPointProvider, originatingObjects, groupedRelatedObjects);
     }
 
     private IDictionary<ObjectID, DomainObject> CorrelateRelatedObjects (

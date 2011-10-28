@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -36,7 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
     private DelegatingFetchedRelationDataRegistrationAgent _agent;
 
-    private IDataManager _dataManagerStub;
+    private IDataContainerProvider _dataContainerProviderStub;
+    private IRelationEndPointProvider _relationEndPointProviderStub;
     private DomainObject[] _originatingObjects;
     private DomainObject[] _relatedObjects;
 
@@ -51,7 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _agent = new DelegatingFetchedRelationDataRegistrationAgent (_realObjectAgentMock, _virtualObjectAgentMock, _collectionAgentMock);
 
-      _dataManagerStub = MockRepository.GenerateStub<IDataManager>();
+      _dataContainerProviderStub = MockRepository.GenerateStub<IDataContainerProvider> ();
+      _relationEndPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
       _originatingObjects = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order> () };
       _relatedObjects = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order> () };
     }
@@ -69,7 +72,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _mockRepository.ReplayAll();
 
       Assert.That (
-          () => _agent.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, _relatedObjects, _dataManagerStub),
+          () => _agent.GroupAndRegisterRelatedObjects (
+              endPointDefinition, 
+              _originatingObjects, 
+              _relatedObjects, 
+              _dataContainerProviderStub, 
+              _relationEndPointProviderStub),
           Throws.InvalidOperationException.With.Message.EqualTo ("Anonymous relation end-points cannot have data registered."));
     }
 
@@ -79,11 +87,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var endPointDefinition = GetEndPointDefinition (typeof (OrderItem), "Order");
 
       _realObjectAgentMock
-          .Expect (mock => mock.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, _relatedObjects, _dataManagerStub));
+          .Expect (
+              mock => mock.GroupAndRegisterRelatedObjects (
+                  endPointDefinition,
+                  _originatingObjects,
+                  _relatedObjects,
+                  _dataContainerProviderStub,
+                  _relationEndPointProviderStub));
 
       _mockRepository.ReplayAll ();
 
-      _agent.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, _relatedObjects, _dataManagerStub);
+      _agent.GroupAndRegisterRelatedObjects (
+          endPointDefinition,
+          _originatingObjects,
+          _relatedObjects,
+          _dataContainerProviderStub,
+          _relationEndPointProviderStub);
 
       _mockRepository.VerifyAll();
     }
@@ -94,11 +113,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
 
       _virtualObjectAgentMock
-          .Expect (mock => mock.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, _relatedObjects, _dataManagerStub));
+          .Expect (mock => mock.GroupAndRegisterRelatedObjects (
+              endPointDefinition,
+              _originatingObjects,
+              _relatedObjects,
+              _dataContainerProviderStub,
+              _relationEndPointProviderStub));
 
       _mockRepository.ReplayAll ();
 
-      _agent.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, _relatedObjects, _dataManagerStub);
+      _agent.GroupAndRegisterRelatedObjects (
+          endPointDefinition, _originatingObjects, _relatedObjects, _dataContainerProviderStub, _relationEndPointProviderStub);
 
       _mockRepository.VerifyAll ();
     }
@@ -109,11 +134,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
 
       _collectionAgentMock
-          .Expect (mock => mock.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, _relatedObjects, _dataManagerStub));
+          .Expect (
+              mock =>
+              mock.GroupAndRegisterRelatedObjects (
+                  endPointDefinition, _originatingObjects, _relatedObjects, _dataContainerProviderStub, _relationEndPointProviderStub));
 
       _mockRepository.ReplayAll ();
 
-      _agent.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, _relatedObjects, _dataManagerStub);
+      _agent.GroupAndRegisterRelatedObjects (
+          endPointDefinition, _originatingObjects, _relatedObjects, _dataContainerProviderStub, _relationEndPointProviderStub);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GroupAndRegisterRelatedObjects_CollectionEndPoints_EmptyRelatedObjects ()
+    {
+      var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
+
+      var relatedObjects = new DomainObject[0];
+      _collectionAgentMock
+          .Expect (
+              mock =>
+              mock.GroupAndRegisterRelatedObjects (
+                  endPointDefinition, _originatingObjects, relatedObjects, _dataContainerProviderStub, _relationEndPointProviderStub));
+
+      _mockRepository.ReplayAll ();
+
+      _agent.GroupAndRegisterRelatedObjects (
+          endPointDefinition, _originatingObjects, relatedObjects, _dataContainerProviderStub, _relationEndPointProviderStub);
 
       _mockRepository.VerifyAll ();
     }

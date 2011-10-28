@@ -45,15 +45,6 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       get { return _registrationAgent; }
     }
 
-    /// <summary>
-    /// Performs the eager fetching.
-    /// </summary>
-    /// <param name="originalObjects">The original objects.</param>
-    /// <param name="relationEndPointDefinition">The relation end point definition.</param>
-    /// <param name="fetchQuery">The fetch query.</param>
-    /// <param name="fetchQueryResultLoader">The fetch query result loader.</param>
-    /// <param name="dataManager">The data manager.</param>
-    /// <param name="alreadyLoadedObjectDataProvider">The already loaded object provider.</param>
     public void PerformEagerFetching (
         DomainObject[] originalObjects,
         IRelationEndPointDefinition relationEndPointDefinition,
@@ -84,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
       try
       {
-        _registrationAgent.GroupAndRegisterRelatedObjects (relationEndPointDefinition, originalObjects, fetchedObjects, dataManager);
+        _registrationAgent.GroupAndRegisterRelatedObjects (relationEndPointDefinition, originalObjects, fetchedObjects, dataManager, dataManager);
       }
       catch (InvalidOperationException ex)
       {

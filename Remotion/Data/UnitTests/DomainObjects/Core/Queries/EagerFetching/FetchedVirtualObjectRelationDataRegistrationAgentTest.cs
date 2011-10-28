@@ -44,7 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     private DataContainer _fetchedOrderTicketDataContainer2;
     private DataContainer _fetchedOrderTicketDataContainer3;
 
-    private IDataManager _dataManagerMock;
+    private IDataContainerProvider _dataContainerProviderStub;
+    private IRelationEndPointProvider _relationEndPointProviderMock;
 
     private IRelationEndPointDefinition _endPointDefinition;
 
@@ -65,7 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _fetchedOrderTicketDataContainer2 = CreateFetchedOrderTicketDataContainer (_fetchedOrderTicket2, _originatingOrder2.ID);
       _fetchedOrderTicketDataContainer3 = CreateFetchedOrderTicketDataContainer (_fetchedOrderTicket2, DomainObjectIDs.Order3);
 
-      _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager>();
+      _dataContainerProviderStub = MockRepository.GenerateStub<IDataContainerProvider> ();
+      _relationEndPointProviderMock = MockRepository.GenerateStrictMock<IRelationEndPointProvider> ();
 
       _endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
     }
@@ -73,29 +75,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects ()
     {
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketDataContainer1);
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketDataContainer2);
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket3.ID)).Return (_fetchedOrderTicketDataContainer3);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketDataContainer1);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketDataContainer2);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket3.ID)).Return (_fetchedOrderTicketDataContainer3);
 
       var endPointMock1 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _dataManagerMock, endPointMock1, false);
+      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _relationEndPointProviderMock, endPointMock1, false);
       endPointMock1.Expect (mock => mock.MarkDataComplete (_fetchedOrderTicket1));
 
       var endPointMock2 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint (_originatingOrder2.ID, _endPointDefinition, _dataManagerMock, endPointMock2, false);
+      ExpectGetEndPoint (_originatingOrder2.ID, _endPointDefinition, _relationEndPointProviderMock, endPointMock2, false);
       endPointMock2.Expect (mock => mock.MarkDataComplete (_fetchedOrderTicket2));
 
-      _dataManagerMock.Replay ();
+      _relationEndPointProviderMock.Replay ();
       endPointMock1.Replay ();
       endPointMock2.Replay ();
 
       _agent.GroupAndRegisterRelatedObjects(
           _endPointDefinition,
           new[] { _originatingOrder1, _originatingOrder2 },
-          new[] { _fetchedOrderTicket1, _fetchedOrderTicket2, _fetchedOrderTicket3 },
-          _dataManagerMock);
+          new[] { _fetchedOrderTicket1, _fetchedOrderTicket2, _fetchedOrderTicket3 }, _dataContainerProviderStub, _relationEndPointProviderMock);
 
-      _dataManagerMock.VerifyAllExpectations ();
+      _relationEndPointProviderMock.VerifyAllExpectations ();
       endPointMock1.VerifyAllExpectations ();
       endPointMock2.VerifyAllExpectations ();
     }
@@ -103,30 +104,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithNullOriginalObject ()
     {
-      _dataManagerMock.Replay ();
+      _relationEndPointProviderMock.Replay ();
 
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new DomainObject[] { null },
-          new DomainObject[0], 
-          _dataManagerMock);
+          new DomainObject[0], _dataContainerProviderStub, _relationEndPointProviderMock);
 
-      _dataManagerMock.VerifyAllExpectations ();
+      _relationEndPointProviderMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GroupAndRegisterRelatedObjects_WithNullRelatedObject ()
     {
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _dataManagerMock, endPointMock, false);
+      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _relationEndPointProviderMock, endPointMock, false);
       endPointMock.Expect (mock => mock.MarkDataComplete (null));
 
-      _dataManagerMock.Replay ();
+      _relationEndPointProviderMock.Replay ();
       endPointMock.Replay();
 
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingOrder1 }, new DomainObject[] { null }, _dataManagerMock);
+      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingOrder1 }, new DomainObject[] { null }, _dataContainerProviderStub, _relationEndPointProviderMock);
 
-      _dataManagerMock.VerifyAllExpectations ();
+      _relationEndPointProviderMock.VerifyAllExpectations ();
       endPointMock.VerifyAllExpectations();
     }
 
@@ -134,50 +134,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     public void GroupAndRegisterRelatedObjects_WithRelatedObjectPointingToNull ()
     {
       var dataContainerPointingToNull = CreateFetchedOrderTicketDataContainer (_fetchedOrderTicket1, null);
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (dataContainerPointingToNull);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (dataContainerPointingToNull);
 
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _dataManagerMock, endPointMock, false);
+      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _relationEndPointProviderMock, endPointMock, false);
       endPointMock.Expect (mock => mock.MarkDataComplete (null));
 
-      _dataManagerMock.Replay ();
+      _relationEndPointProviderMock.Replay ();
       endPointMock.Replay();
 
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new[] { _originatingOrder1 },
-          new[] { _fetchedOrderTicket1 },
-          _dataManagerMock);
+          new[] { _fetchedOrderTicket1 }, _dataContainerProviderStub, _relationEndPointProviderMock);
 
-      _dataManagerMock.VerifyAllExpectations ();
+      _relationEndPointProviderMock.VerifyAllExpectations ();
       endPointMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GroupAndRegisterRelatedObjects_WithEndPointAlreadyComplete ()
     {
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketDataContainer1);
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketDataContainer2);
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket3.ID)).Return (_fetchedOrderTicketDataContainer3);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketDataContainer1);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketDataContainer2);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket3.ID)).Return (_fetchedOrderTicketDataContainer3);
 
       var endPointMock1 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _dataManagerMock, endPointMock1, true);
+      ExpectGetEndPoint(_originatingOrder1.ID, _endPointDefinition, _relationEndPointProviderMock, endPointMock1, true);
 
       var endPointMock2 = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      ExpectGetEndPoint (_originatingOrder2.ID, _endPointDefinition, _dataManagerMock, endPointMock2, false);
+      ExpectGetEndPoint (_originatingOrder2.ID, _endPointDefinition, _relationEndPointProviderMock, endPointMock2, false);
       endPointMock2.Expect (mock => mock.MarkDataComplete (_fetchedOrderTicket2));
 
-      _dataManagerMock.Replay ();
+      _relationEndPointProviderMock.Replay ();
       endPointMock1.Replay ();
       endPointMock2.Replay ();
 
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new[] { _originatingOrder1, _originatingOrder2 },
-          new[] { _fetchedOrderTicket1, _fetchedOrderTicket2 },
-          _dataManagerMock);
+          new[] { _fetchedOrderTicket1, _fetchedOrderTicket2 }, _dataContainerProviderStub, _relationEndPointProviderMock);
 
-      _dataManagerMock.VerifyAllExpectations();
+      _relationEndPointProviderMock.VerifyAllExpectations();
       endPointMock1.VerifyAllExpectations();
       endPointMock2.VerifyAllExpectations();
     }
@@ -185,24 +183,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     [Test]
     public void GroupAndRegisterRelatedObjects_WithInvalidDuplicateForeignKey ()
     {
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketDataContainer1);
-      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketDataContainer1);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketDataContainer1);
+      _dataContainerProviderStub.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketDataContainer1);
 
-      _dataManagerMock.Replay ();
+      _relationEndPointProviderMock.Replay ();
 
       Assert.That (
           () => _agent.GroupAndRegisterRelatedObjects (
               _endPointDefinition,
               new[] { _originatingOrder1, _originatingOrder2 },
-              new[] { _fetchedOrderTicket1, _fetchedOrderTicket2 },
-              _dataManagerMock),
+              new[] { _fetchedOrderTicket1, _fetchedOrderTicket2 }, _dataContainerProviderStub, _relationEndPointProviderMock),
           Throws.InvalidOperationException.With.Message.EqualTo (
               "Two items in the related object result set point back to the same object. This is not allowed in a 1:1 relation. "
               + "Object 1: 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. "
               + "Object 2: 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid'. "
               + "Foreign key property: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'"));
 
-      _dataManagerMock.VerifyAllExpectations ();
+      _relationEndPointProviderMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -213,14 +210,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
         + "has class 'OrderTicket'.")]
     public void GroupAndRegisterRelatedObjects_InvalidOriginalObject ()
     {
-      _dataManagerMock.Replay();
+      _relationEndPointProviderMock.Replay();
 
       var invalidOriginalObject = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new[] { invalidOriginalObject },
-          new DomainObject[0], 
-          _dataManagerMock);
+          new DomainObject[0], _dataContainerProviderStub, _relationEndPointProviderMock);
     }
 
     [Test]
@@ -230,15 +226,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket' was expected.")]
     public void GroupAndRegisterRelatedObjects_InvalidRelatedObject ()
     {
-      _dataManagerMock.Replay();
+      _relationEndPointProviderMock.Replay();
 
       var invalidFetchedObject = DomainObjectMother.CreateFakeObject<OrderItem> (DomainObjectIDs.OrderItem1);
 
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new[] { _originatingOrder1, _originatingOrder2 }, 
-          new[] { invalidFetchedObject },
-          _dataManagerMock);
+          new[] { invalidFetchedObject }, _dataContainerProviderStub, _relationEndPointProviderMock);
     }
 
     [Test]
@@ -247,7 +242,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
 
       Assert.That (
-          () => _agent.GroupAndRegisterRelatedObjects (endPointDefinition, new[] { _originatingOrder1 }, new[] { _fetchedOrderTicket1 }, _dataManagerMock), 
+          () =>
+          _agent.GroupAndRegisterRelatedObjects (
+              endPointDefinition,
+              new[] { _originatingOrder1 },
+              new[] { _fetchedOrderTicket1 },
+              _dataContainerProviderStub,
+              _relationEndPointProviderMock), 
           Throws.ArgumentException.With.Message.EqualTo (
               "Only virtual object-valued relation end-points can be handled by this registration agent.\r\nParameter name: relationEndPointDefinition"));
     }
@@ -268,12 +269,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     private void ExpectGetEndPoint (
         ObjectID objectID,
         IRelationEndPointDefinition endPointDefinition,
-        IDataManager dataManagerMock,
+        IRelationEndPointProvider relationEndPointProviderMock,
         IVirtualObjectEndPoint virtualObjectEndPointMock,
         bool expectedIsDataComplete)
     {
       var relationEndPointID = RelationEndPointID.Create (objectID, endPointDefinition);
-      dataManagerMock.Expect (mock => mock.GetRelationEndPointWithMinimumLoading (relationEndPointID)).Return (virtualObjectEndPointMock);
+      relationEndPointProviderMock.Expect (mock => mock.GetRelationEndPointWithMinimumLoading (relationEndPointID)).Return (virtualObjectEndPointMock);
       virtualObjectEndPointMock.Expect (mock => mock.IsDataComplete).Return (expectedIsDataComplete);
     }
   }

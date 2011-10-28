@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _objectLoaderMock.Replay();
 
       _registrationAgentMock.Expect (
-          mock => mock.GroupAndRegisterRelatedObjects (_endPointDefinition, originatingObjects, relatedObjects, _dataManagerStub));
+          mock => mock.GroupAndRegisterRelatedObjects (_endPointDefinition, originatingObjects, relatedObjects, _dataManagerStub, _dataManagerStub));
       _registrationAgentMock.Replay();
 
       _eagerFetcher.PerformEagerFetching (
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       var invalidOperationException = new InvalidOperationException ("There was a problem registering stuff.");
       _registrationAgentMock
-          .Expect (mock => mock.GroupAndRegisterRelatedObjects (_endPointDefinition, originatingObjects, relatedObjects, _dataManagerStub))
+          .Expect (mock => mock.GroupAndRegisterRelatedObjects (_endPointDefinition, originatingObjects, relatedObjects, _dataManagerStub, _dataManagerStub))
           .Throw (invalidOperationException);
       _registrationAgentMock.Replay ();
 

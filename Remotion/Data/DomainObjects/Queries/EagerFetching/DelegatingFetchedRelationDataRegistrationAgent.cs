@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -62,18 +63,20 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     public void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition, 
-        DomainObject[] originatingObjects, 
-        DomainObject[] relatedObjects, 
-        IDataManager dataManager)
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject[] originatingObjects,
+        DomainObject[] relatedObjects,
+        IDataContainerProvider dataContainerProvider,
+        IRelationEndPointProvider relationEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
-      ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
-      ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNullOrEmpty ("originatingObjects", originatingObjects);
+      ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
+      ArgumentUtility.CheckNotNull ("relationEndPointProvider", relationEndPointProvider);
 
       var specificAgent = GetSpecificAgent (relationEndPointDefinition);
-      specificAgent.GroupAndRegisterRelatedObjects (relationEndPointDefinition, originatingObjects, relatedObjects, dataManager);
+      specificAgent.GroupAndRegisterRelatedObjects (
+          relationEndPointDefinition, originatingObjects, relatedObjects, dataContainerProvider, relationEndPointProvider);
     }
 
     private IFetchedRelationDataRegistrationAgent GetSpecificAgent (IRelationEndPointDefinition relationEndPointDefinition)
