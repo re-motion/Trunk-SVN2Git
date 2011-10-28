@@ -16,12 +16,14 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -115,6 +117,42 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     protected IResourceUrlFactory ResourceUrlFactory
     {
       get { return ServiceLocator.GetInstance<IResourceUrlFactory>(); }
+    }
+
+    protected TControl GetControl<TControl> (string controlID, string propertyIdentifier)
+        where TControl : Control, IBusinessObjectBoundWebControl, IFocusableControl
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("controlID", controlID);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
+
+      var control = FindControl (controlID);
+      
+      if (control == null)
+      {
+        throw new InvalidOperationException (string.Format ("No control with the ID '{0}' found on {1}.", controlID, GetType().Name));
+      }
+
+      if (!(control is TControl))
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "Control '{0}' on {2} must be of type '{1}'.", controlID, typeof (BusinessObjectBoundEditableWebControl).FullName, GetType().Name));
+      }
+
+      if (!(control is IFocusableControl))
+      {
+        throw new InvalidOperationException (
+            string.Format ("Control '{0}' on {2} must implement the '{1}' interface.", controlID, typeof (IFocusableControl).FullName, GetType().Name));
+      }
+
+      var boundEditableWebControl = (TControl) control;
+      if (boundEditableWebControl.Property == null || boundEditableWebControl.Property.Identifier != propertyIdentifier)
+      {
+        throw new InvalidOperationException (
+            string.Format ("Control '{0}' on {2} is not bound to property '{1}'.", controlID, propertyIdentifier, GetType().Name));
+      }
+
+      return boundEditableWebControl;
     }
   }
 }

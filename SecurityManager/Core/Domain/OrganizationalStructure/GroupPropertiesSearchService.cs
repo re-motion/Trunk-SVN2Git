@@ -38,13 +38,19 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     }
 
     private IQueryable<IBusinessObject> FindPossibleParentGroups (
-        Group group,
+        Group referencingObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
-      ArgumentUtility.CheckNotNull ("group", group);
+       ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
+      var tenantFilter = (ITenantConstraint) searchArguments;
 
-      return group.GetPossibleParentGroups().Cast<IBusinessObject>().AsQueryable();
+      var query = Group.FindByTenantID (tenantFilter.Value);
+
+      if (referencingObject != null)
+        query = query.Where (g => g != referencingObject);
+
+      return query.Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

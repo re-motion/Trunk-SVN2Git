@@ -34,6 +34,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   [WebMultiLingualResources (typeof (EditGroupControlResources))]
   public partial class EditGroupControl : BaseControl
   {
+    private BocAutoCompleteReferenceValue _parentGroupField;
+
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -49,6 +51,16 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       get { return NameField; }
     }
 
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+
+      _parentGroupField = GetControl<BocAutoCompleteReferenceValue> ("ParentField", "Parent");
+
+      if (string.IsNullOrEmpty (_parentGroupField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (_parentGroupField);
+    }
+
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
@@ -60,6 +72,16 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (RolesList.IsReadOnly)
         RolesList.Selection = RowSelection.Disabled;
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+       
+      if (CurrentFunction.TenantID == null)
+        throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
+
+      _parentGroupField.Args = CurrentFunction.TenantID.ToString();
     }
 
     private void FillGroupTypeField ()

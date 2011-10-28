@@ -16,18 +16,15 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.Script.Services;
 using System.Web.Services;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -69,21 +66,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       ArgumentUtility.CheckNotNullOrEmpty ("businessObjectProperty", businessObjectProperty);
       ArgumentUtility.CheckNotNullOrEmpty ("args", args);
 
-      Type type = TypeUtility.GetType (businessObjectClass, true);
-      var provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
-      var bindableObjectClass = provider.GetBindableObjectClass (type);
-
-      IBusinessObjectProperty propertyDefinition = bindableObjectClass.GetPropertyDefinition (businessObjectProperty);
-      Assertion.IsNotNull (propertyDefinition);
-      Assertion.IsTrue (propertyDefinition is IBusinessObjectReferenceProperty);
-
-      var referenceProperty = (IBusinessObjectReferenceProperty) propertyDefinition;
-
+      var businessObjectClassWithIdentity = GetBusinessObjectClassWithIdentity (businessObjectClass);
+      var referenceProperty = GetReferenceProperty (businessObjectProperty, businessObjectClassWithIdentity);
       var securityManagerSearchArguments = new SecurityManagerSearchArguments (ObjectID.Parse (args), completionSetCount, prefixText);
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        var result = referenceProperty.SearchAvailableObjects (null, securityManagerSearchArguments);
+        var referencingObject = businessObjectClassWithIdentity.GetObject (businessObject);
+        var result = referenceProperty.SearchAvailableObjects (referencingObject, securityManagerSearchArguments);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();
       }
     }
@@ -101,6 +91,27 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       if (result.Count() == 1)
         return result.Single();
       return null;
+    }
+
+    private IBusinessObjectReferenceProperty GetReferenceProperty (
+        string businessObjectProperty, IBusinessObjectClassWithIdentity businessObjectClassWithIdentity)
+    {
+      var propertyDefinition = businessObjectClassWithIdentity.GetPropertyDefinition (businessObjectProperty);
+      Assertion.IsNotNull (propertyDefinition);
+      Assertion.IsTrue (propertyDefinition is IBusinessObjectReferenceProperty);
+
+      return (IBusinessObjectReferenceProperty) propertyDefinition;
+    }
+
+    private IBusinessObjectClassWithIdentity GetBusinessObjectClassWithIdentity (string businessObjectClass)
+    {
+      var type = TypeUtility.GetType (businessObjectClass, true);
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
+      var bindableObjectClass = provider.GetBindableObjectClass (type);
+      Assertion.IsNotNull (bindableObjectClass);
+      Assertion.IsTrue (bindableObjectClass is IBusinessObjectClassWithIdentity);
+
+      return (IBusinessObjectClassWithIdentity) bindableObjectClass;
     }
   }
 }

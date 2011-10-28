@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 {
@@ -33,8 +34,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _parentGroupProperty;
-    private IBusinessObjectReferenceProperty _tenantProperty;
     private Group _group;
+    private ObjectID _tenantID;
 
     public override void TestFixtureSetUp ()
     {
@@ -56,11 +57,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       _searchService = new GroupPropertiesSearchService();
       IBusinessObjectClass groupClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Group));
       _parentGroupProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Parent");
-      _tenantProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Tenant");
       Assert.That (_parentGroupProperty, Is.Not.Null);
 
       _group = Group.FindByUnqiueIdentifier ("UID: group0");
       Assert.That (_group, Is.Not.Null);
+
+      _tenantID = _group.Tenant.ID;
     }
 
     public override void TestFixtureTearDown ()
@@ -78,39 +80,81 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void SupportsProperty_WithInvalidProperty ()
     {
-      Assert.That (_searchService.SupportsProperty (_tenantProperty), Is.False);
+      IBusinessObjectClass groupClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Group));
+      var otherProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Tenant");
+      Assert.That (_searchService.SupportsProperty (otherProperty), Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The property 'Tenant' is not supported by the 'Remotion.SecurityManager.Domain.OrganizationalStructure.GroupPropertiesSearchService' type.",
+        MatchType = MessageMatch.Contains)]
+    public void Search_WithInvalidProperty ()
+    {
+      IBusinessObjectClass groupClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Group));
+      var otherProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Tenant");
+      _searchService.Search (_group, otherProperty, null);
     }
 
     [Test]
     public void Search ()
     {
-      var expectedParentGroups = _group.GetPossibleParentGroups().ToArray();
-      Assert.That (expectedParentGroups, Is.Not.Empty);
+      var expected = Group.FindByTenantID (_tenantID).ToArray();
+      Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actualParentGroups = _searchService.Search (_group, _parentGroupProperty, null);
+      var actual = _searchService.Search (null, _parentGroupProperty, new SecurityManagerSearchArguments (_tenantID, null, null));
 
-      Assert.That (actualParentGroups, Is.EquivalentTo (expectedParentGroups));
+      Assert.That (actual, Is.EqualTo (expected));
     }
 
     [Test]
-    public void Search_WithGroupHasNoTenant ()
+    public void Search_ExcludeReferencingGroup ()
     {
-      _group.Tenant = null;
+      var expected = Group.FindByTenantID (_tenantID).Where (g => g != _group).ToArray();
+      Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actualParentGroups = _searchService.Search (_group, _parentGroupProperty, null);
+      var actual = _searchService.Search (_group, _parentGroupProperty, new SecurityManagerSearchArguments (_tenantID, null, null));
 
-      Assert.That (actualParentGroups, Is.Empty);
+      Assert.That (actual, Is.EquivalentTo (expected));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage =
-        "The property 'Tenant' is not supported by the 'Remotion.SecurityManager.Domain.OrganizationalStructure.GroupPropertiesSearchService' type.",
-        MatchType = MessageMatch.Contains)]
-    public void Search_WithInvalidProperty ()
+    public void Search_WithDisplayNameConstraint_FindNameContainingPrefix ()
     {
+      var expected = Group.FindByTenantID (_tenantID).Where (g => g.Name.Contains ("Group1")).ToArray();
+      Assert.That (expected.Length, Is.GreaterThan (1));
 
-      _searchService.Search (_group, _tenantProperty, null);
+      var actual = _searchService.Search (null, _parentGroupProperty, new SecurityManagerSearchArguments (_tenantID, null, "Group1"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_FindShortNameContainingPrefix ()
+    {
+      var expected = Group.FindByTenantID (_tenantID).Where (g => g.ShortName.Contains ("G1")).ToArray();
+      Assert.That (expected.Length, Is.GreaterThan (1));
+
+      var actual = _searchService.Search (null, _parentGroupProperty, new SecurityManagerSearchArguments (_tenantID, null, "G1"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithResultSizeConstraint ()
+    {
+      var actual = _searchService.Search (null, _parentGroupProperty, new SecurityManagerSearchArguments (_tenantID, 3, null));
+
+      Assert.That (actual.Length, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
+    {
+      var actual = _searchService.Search (null, _parentGroupProperty, new SecurityManagerSearchArguments (_tenantID, 1, "Group1"));
+
+      Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (((Group) actual[0]).Name, Is.StringContaining ("group1"));
     }
   }
 }

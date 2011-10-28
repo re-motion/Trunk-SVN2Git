@@ -56,11 +56,11 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocReferenceValue ID="ParentField" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Parent">
+      <remotion:BocAutoCompleteReferenceValue ID="ParentField" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Parent">
         <PersistedCommand>
           <remotion:BocCommand />
         </PersistedCommand>
-      </remotion:BocReferenceValue>
+      </remotion:BocAutoCompleteReferenceValue>
       <asp:CustomValidator ID="ParentValidator" runat="server" OnServerValidate="ParentValidator_ServerValidate" ControlToValidate="ParentField" Text="###" />
     </td>
   </tr>

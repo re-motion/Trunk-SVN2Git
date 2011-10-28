@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
@@ -55,12 +54,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       _groupField = GetControl<BocAutoCompleteReferenceValue> ("GroupField", "Group");
       _userField = GetControl<BocAutoCompleteReferenceValue> ("UserField", "User");
 
-      if (CurrentFunction.TenantID == null)
-        throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
-
-      _groupField.Args = CurrentFunction.TenantID.ToString();
-      _userField.Args = CurrentFunction.TenantID.ToString();
-
       if (string.IsNullOrEmpty (_groupField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (_groupField);
 
@@ -75,6 +68,17 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       InitializeUserField();
       InitializeGroupField();
       InitializePositionField (IsPostBack);
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+      
+      if (CurrentFunction.TenantID == null)
+        throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
+
+      _groupField.Args = CurrentFunction.TenantID.ToString();
+      _userField.Args = CurrentFunction.TenantID.ToString();
     }
 
     public override bool Validate ()
@@ -117,33 +121,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected void GroupField_SelectionChanged (object sender, EventArgs e)
     {
       InitializePositionField (false);
-    }
-
-    private TControl GetControl<TControl> (string controlID, string propertyIdentifier)
-      where TControl : Control, IBusinessObjectBoundWebControl, IFocusableControl
-    {
-      Control control = FindControl (controlID);
-      
-      if (control == null)
-        throw new InvalidOperationException (string.Format ("No control with the ID '{0}' found.", controlID));
-      
-      if (!(control is TControl))
-      {
-        throw new InvalidOperationException (
-            string.Format ("Control '{0}' must be of type '{1}'.", controlID, typeof (BusinessObjectBoundEditableWebControl).FullName));
-      }
-      
-      if (!(control is IFocusableControl))
-      {
-        throw new InvalidOperationException (
-            string.Format ("Control '{0}' must implement the '{1}' interface.", controlID, typeof (IFocusableControl).FullName));
-      }
-      
-      TControl boundEditableWebControl = (TControl) control;
-      if (boundEditableWebControl.Property == null || boundEditableWebControl.Property.Identifier != propertyIdentifier)
-        throw new InvalidOperationException (string.Format ("Control '{0}' is not bound to property '{1}'.", controlID, propertyIdentifier));
-
-      return boundEditableWebControl;
     }
   }
 }
