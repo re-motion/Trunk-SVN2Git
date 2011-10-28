@@ -174,21 +174,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);
     }
 
-    public bool TrySetCollectionEndPointData (RelationEndPointID relationEndPointID, DomainObject[] items)
-    {
-      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-      ArgumentUtility.CheckNotNull ("items", items);
-      
-      return _relationEndPointManager.TrySetCollectionEndPointData (relationEndPointID, items);
-    }
-
-    public bool TrySetVirtualObjectEndPointData (RelationEndPointID relationEndPointID, DomainObject item)
-    {
-      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-
-      return _relationEndPointManager.TrySetVirtualObjectEndPointData (relationEndPointID, item);
-    }
-
     public void Commit ()
     {
       var deletedDataContainers = _dataContainerMap.Where (dc => dc.State == StateType.Deleted).ToList();

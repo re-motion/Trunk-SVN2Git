@@ -38,9 +38,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     
     bool HasRelationChanged (DataContainer dataContainer);
 
-    bool TrySetCollectionEndPointData (RelationEndPointID relationEndPointID, DomainObject[] items);
-    bool TrySetVirtualObjectEndPointData (RelationEndPointID relationEndPointID, DomainObject item);
-    
     void Commit ();
     void Rollback ();
 

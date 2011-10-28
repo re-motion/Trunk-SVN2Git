@@ -62,9 +62,9 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     private IDictionary<ObjectID, DomainObject> CorrelateRelatedObjects (
         IEnumerable<DomainObject> relatedObjects,
         VirtualRelationEndPointDefinition relationEndPointDefinition,
-        IDataManager dataManager)
+        IDataContainerProvider dataContainerProvider)
     {
-      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, dataManager);
+      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, dataContainerProvider);
       var dictionary = new Dictionary<ObjectID, DomainObject>();
       foreach (var tuple in relatedObjectsWithForeignKey.Where (tuple => tuple.Item1 != null))
       {
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
     private void RegisterEndPointData (
        IRelationEndPointDefinition relationEndPointDefinition,
-       IDataManager dataManager,
+       IRelationEndPointProvider relationEndPointProvider,
        IEnumerable<DomainObject> originatingObjects,
        IDictionary<ObjectID, DomainObject> groupedRelatedObjects)
     {
@@ -99,10 +99,20 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         {
           var relationEndPointID = RelationEndPointID.Create (originalObject.ID, relationEndPointDefinition);
           var relatedObject = relatedObjectsByOriginalObject.GetValueOrDefault (originalObject.ID);
-          if (!dataManager.TrySetVirtualObjectEndPointData (relationEndPointID, relatedObject))
+          if (!TrySetVirtualObjectEndPointData (relationEndPointProvider, relationEndPointID, relatedObject))
             s_log.DebugFormat ("Relation data for relation end-point '{0}' is discarded; the end-point has already been loaded.", relationEndPointID);
         }
       }
+    }
+
+    private bool TrySetVirtualObjectEndPointData (IRelationEndPointProvider relationEndPointProvider, RelationEndPointID endPointID, DomainObject item)
+    {
+      var endPoint = (IVirtualObjectEndPoint) relationEndPointProvider.GetRelationEndPointWithMinimumLoading (endPointID);
+      if (endPoint.IsDataComplete)
+        return false;
+
+      endPoint.MarkDataComplete (item);
+      return true;
     }
   }
 }

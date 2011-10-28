@@ -212,60 +212,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _map.RollbackAllEndPoints();
     }
 
-    public bool TrySetCollectionEndPointData (RelationEndPointID endPointID, DomainObject[] items)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("items", items);
-      CheckNotAnonymous (endPointID, "TrySetCollectionEndPointData", "endPointID");
-      CheckCardinality (endPointID, CardinalityType.Many, "TrySetCollectionEndPointData", "endPointID");
-
-      var endPoint = (ICollectionEndPoint) GetVirtualEndPointOrRegisterEmpty (endPointID);
-      if (endPoint.IsDataComplete)
-        return false;
-
-      endPoint.MarkDataComplete (items);
-      return true;
-    }
-
-    public bool TrySetVirtualObjectEndPointData (RelationEndPointID endPointID, DomainObject item)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckNotAnonymous (endPointID, "TrySetVirtualObjectEndPointData", "endPointID");
-      CheckCardinality (endPointID, CardinalityType.One, "TrySetVirtualObjectEndPointData", "endPointID");
-      if (!endPointID.Definition.IsVirtual)
-        throw new ArgumentException ("The given RelationEndPointID must denote a virtual end-point.", "endPointID");
-      
-      var endPoint = (IVirtualObjectEndPoint) GetVirtualEndPointOrRegisterEmpty (endPointID);
-      if (endPoint.IsDataComplete)
-        return false;
-
-      endPoint.MarkDataComplete (item);
-      return true;
-    }
-
-    private IVirtualEndPoint GetVirtualEndPointOrRegisterEmpty (RelationEndPointID endPointID)
-    {
-      return (IVirtualEndPoint) GetRelationEndPointWithoutLoading (endPointID) ?? RegisterVirtualEndPoint (endPointID);
-    }
-
     private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)
     {
       var endPoint = _endPointFactory.CreateVirtualEndPoint (endPointID, false);
       _registrationAgent.RegisterEndPoint (endPoint, _map);
       return endPoint;
-    }
-
-    private void CheckCardinality (
-        RelationEndPointID endPointID,
-        CardinalityType expectedCardinality,
-        string methodName,
-        string argumentName)
-    {
-      if (endPointID.Definition.Cardinality != expectedCardinality)
-      {
-        var message = string.Format ("{0} can only be called for end points with a cardinality of '{1}'.", methodName, expectedCardinality);
-        throw new ArgumentException (message, argumentName);
-      }
     }
 
     private void CheckNotAnonymous (RelationEndPointID endPointID, string methodName, string argumentName)

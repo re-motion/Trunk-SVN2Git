@@ -20,8 +20,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     void CommitAllEndPoints ();
     void RollbackAllEndPoints ();
-    
-    bool TrySetCollectionEndPointData (RelationEndPointID endPointID, DomainObject[] items);
-    bool TrySetVirtualObjectEndPointData (RelationEndPointID endPointID, DomainObject item);
   }
 }
