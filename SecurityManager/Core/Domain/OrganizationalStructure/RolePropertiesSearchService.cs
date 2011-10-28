@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
@@ -38,22 +39,22 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       AddSearchDelegate ("User", FindPossibleUsers);
     }
 
-    private IBusinessObject[] FindPossibleGroups (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IQueryable<IBusinessObject> FindPossibleGroups (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("role", role);
 
       if (role.User == null || role.User.Tenant == null)
-        return new IBusinessObject[0];
-      return role.GetPossibleGroups (role.User.Tenant.ID).ToArray();
+        return Enumerable.Empty<IBusinessObject>().AsQueryable();
+      return role.GetPossibleGroups (role.User.Tenant.ID).Cast<IBusinessObject>().AsQueryable();
     }
 
-    private IBusinessObject[] FindPossibleUsers (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IQueryable<IBusinessObject> FindPossibleUsers (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("role", role);
 
       if (role.Group == null || role.Group.Tenant == null)
-        return new IBusinessObject[0];
-      return User.FindByTenantID (role.Group.Tenant.ID).ToArray();
+        return Enumerable.Empty<IBusinessObject>().AsQueryable();
+      return User.FindByTenantID (role.Group.Tenant.ID).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

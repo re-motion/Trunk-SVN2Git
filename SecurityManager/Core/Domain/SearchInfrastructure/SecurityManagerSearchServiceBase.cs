@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -34,10 +35,18 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
   public abstract class SecurityManagerSearchServiceBase<T> : ISearchAvailableObjectsService
       where T: BaseSecurityManagerObject
   {
-    private readonly Dictionary<string, Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]>> _searchDelegates = new Dictionary<string, Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]>>();
+    protected delegate IQueryable<IBusinessObject> SearchDelegate (
+        T referencingObject,
+        IBusinessObjectReferenceProperty property,
+        ISearchAvailableObjectsArguments searchArguments);
 
-    protected void AddSearchDelegate (string propertyName, Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]> searchDelegate)
+    private readonly Dictionary<string, SearchDelegate> _searchDelegates = new Dictionary<string, SearchDelegate>();
+
+    protected void AddSearchDelegate (string propertyName, SearchDelegate searchDelegate)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckNotNull ("searchDelegate", searchDelegate);
+
       _searchDelegates.Add (propertyName, searchDelegate);
     }
 
@@ -48,25 +57,46 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       return _searchDelegates.ContainsKey (property.Identifier);
     }
 
-    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    public IBusinessObject[] Search (
+        IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       T referencingSecurityManagerObject = ArgumentUtility.CheckType<T> ("referencingObject", referencingObject);
       ArgumentUtility.CheckNotNull ("property", property);
 
-      Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]> searchDelegate;
-      if (_searchDelegates.TryGetValue (property.Identifier, out searchDelegate))
-        return searchDelegate (referencingSecurityManagerObject, property, CreateSearchArguments(searchArguments));
+      var securityManagerSearchArguments = CreateSearchArguments (searchArguments);
 
-      throw new ArgumentException (string.Format ("The property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
+      SearchDelegate searchDelegate;
+      if (!_searchDelegates.TryGetValue (property.Identifier, out searchDelegate))
+      {
+        throw new ArgumentException (
+            string.Format ("The property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
+      }
+
+      return CreateQuery (searchDelegate, referencingSecurityManagerObject, property, securityManagerSearchArguments).ToArray();
     }
 
-    private ISearchAvailableObjectsArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)
+    private IQueryable<IBusinessObject> CreateQuery (
+        SearchDelegate searchDelegate,
+        T referencingSecurityManagerObject,
+        IBusinessObjectReferenceProperty property,
+        SecurityManagerSearchArguments searchArguments)
+    {
+      var query = searchDelegate (referencingSecurityManagerObject, property, searchArguments);
+
+      var resultSizeConstraint = ((IResultSizeConstraint) searchArguments);
+      if (resultSizeConstraint.Value.HasValue)
+        query = query.Take (resultSizeConstraint.Value.Value);
+
+      return query;
+    }
+
+    private SecurityManagerSearchArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)
     {
       var defaultSearchArguments = searchArguments as DefaultSearchArguments;
       if (defaultSearchArguments != null && !string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
         return new SecurityManagerSearchArguments (ObjectID.Parse (defaultSearchArguments.SearchStatement), null, null);
 
-      return searchArguments;
+      return ArgumentUtility.CheckType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
     }
   }
 }

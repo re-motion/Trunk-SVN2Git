@@ -37,11 +37,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       AddSearchDelegate ("Parent", FindPossibleParentGroups);
     }
 
-    private IBusinessObject[] FindPossibleParentGroups (Group group, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IQueryable<IBusinessObject> FindPossibleParentGroups (Group group, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("group", group);
 
-      return group.GetPossibleParentGroups().ToArray();
+      return group.GetPossibleParentGroups().Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

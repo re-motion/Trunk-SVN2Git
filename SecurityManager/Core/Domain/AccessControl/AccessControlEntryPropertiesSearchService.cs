@@ -37,15 +37,15 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   {
     public AccessControlEntryPropertiesSearchService ()
     {
-      AddSearchDelegate ("SpecificTenant", delegate { return Tenant.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificTenant", delegate { return Tenant.FindAll().Cast<IBusinessObject>().AsQueryable(); });
       AddSearchDelegate ("SpecificGroup", SearchGroups);
       AddSearchDelegate ("SpecificUser", SearchUsers);
-      AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll().ToArray(); });
-      AddSearchDelegate ("SpecificGroupType", delegate { return GroupType.FindAll().ToArray(); });
-      AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll().Cast<IBusinessObject>().AsQueryable(); });
+      AddSearchDelegate ("SpecificGroupType", delegate { return GroupType.FindAll().Cast<IBusinessObject>().AsQueryable(); });
+      AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().Cast<IBusinessObject>().AsQueryable(); });
     }
 
-    private IBusinessObject[] SearchGroups (
+    private IQueryable<IBusinessObject> SearchGroups (
         AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
@@ -57,16 +57,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (!string.IsNullOrEmpty (displayNameConstraint.Text))
         groups = groups.Where (g => g.Name.Contains (displayNameConstraint.Text) || g.ShortName.Contains (displayNameConstraint.Text));
 
-      return groups.ToArray();
+      return groups.Cast<IBusinessObject>();
     }
 
-    private IBusinessObject[] SearchUsers (
+    private IQueryable<IBusinessObject> SearchUsers (
         AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
       var tenantFilter = (ITenantConstraint) securityManagerSearchArguments;
 
-      return User.FindByTenantID (tenantFilter.Value).ToArray();
+      return User.FindByTenantID (tenantFilter.Value).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

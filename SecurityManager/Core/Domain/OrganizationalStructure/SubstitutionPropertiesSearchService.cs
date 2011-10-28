@@ -16,7 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using System.Linq;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
@@ -39,23 +39,23 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       AddSearchDelegate ("SubstitutedRole", FindPossibleSubstitutedRoles);
     }
 
-    private IBusinessObject[] FindPossibleSubstitutingUsers (
+    private IQueryable<IBusinessObject> FindPossibleSubstitutingUsers (
         Substitution substitution, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
       var tenantFilter = (ITenantConstraint) securityManagerSearchArguments;
 
-      return User.FindByTenantID (tenantFilter.Value).ToArray();
+      return User.FindByTenantID (tenantFilter.Value).Cast<IBusinessObject>().AsQueryable();
     }
 
-    private IBusinessObject[] FindPossibleSubstitutedRoles (
+    private IQueryable<IBusinessObject> FindPossibleSubstitutedRoles (
         Substitution substitution, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("substitution", substitution);
 
       if (substitution.SubstitutedUser == null)
-        return new IBusinessObject[0];
-      return substitution.SubstitutedUser.Roles.ToArray();
+        return Enumerable.Empty<IBusinessObject>().AsQueryable();
+      return substitution.SubstitutedUser.Roles.Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

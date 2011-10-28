@@ -24,7 +24,7 @@ using System.Reflection;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle ("Remotion Security Manager Core Components Unittests")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 
-//[assembly: ApplyQueryExecutorMixin]
+//[assembly: Remotion.Development.Data.UnitTesting.DomainObjects.Linq.ApplyQueryExecutorMixin]

@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void Search_WithNameRestriction_FindNameContainingPrefix ()
+    public void Search_WithDisplayNameConstraint_FindNameContainingPrefix ()
     {
       var expected = Group.FindByTenantID (_tenantID).Where (g => g.Name.Contains ("Group1")).ToArray();
       Assert.That (expected.Length, Is.GreaterThan (1));
@@ -83,7 +83,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void Search_WithNameRestriction_FindShortNameContainingPrefix ()
+    public void Search_WithDisplayNameConstraint_FindShortNameContainingPrefix ()
     {
       var expected = Group.FindByTenantID (_tenantID).Where (g => g.ShortName.Contains ("G1")).ToArray();
       Assert.That (expected.Length, Is.GreaterThan (1));
@@ -91,6 +91,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "G1"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithResultSizeConstraint ()
+    {
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 3, null));
+
+      Assert.That (actual.Length, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
+    {
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, "Group1"));
+
+      Assert.That (actual.Length, Is.EqualTo (1));
     }
   }
 }

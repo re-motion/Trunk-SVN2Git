@@ -37,13 +37,13 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       AddSearchDelegate ("OwningGroup", FindPossibleOwningGroups);
     }
 
-    private IBusinessObject[] FindPossibleOwningGroups (User user, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IQueryable<IBusinessObject> FindPossibleOwningGroups (User user, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("user", user);
 
       if (user.Tenant == null)
-        return new IBusinessObject[0];
-      return Group.FindByTenantID (user.Tenant.ID).ToArray();
+        return Enumerable.Empty<IBusinessObject>().AsQueryable();
+      return Group.FindByTenantID (user.Tenant.ID).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }
