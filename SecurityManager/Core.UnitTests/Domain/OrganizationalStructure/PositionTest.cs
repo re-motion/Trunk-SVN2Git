@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -51,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
         Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
-        User user = User.FindByTenantID (tenant.ID)[0];
+        User user = User.FindByTenantID (tenant.ID).First();
         Role role = user.Roles[0];
         Position position = role.Position;
         AccessControlEntry ace = testHelper.CreateAceWithPosition (position);
@@ -72,7 +73,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
-        User user = User.FindByTenantID (tenant.ID)[0];
+        User user = User.FindByTenantID (tenant.ID).First();
         Role role = user.Roles[0];
         Position position = role.Position;
         position.Delete ();

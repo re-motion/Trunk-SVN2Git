@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
@@ -33,11 +34,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _property;
+    private ObjectID _tenantID;
 
     public override void SetUp ()
     {
       base.SetUp();
-      
+
       _testHelper = new OrganizationalStructureTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
 
@@ -45,6 +47,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       IBusinessObjectClass aceClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (AccessControlEntry));
       _property = (IBusinessObjectReferenceProperty) aceClass.GetPropertyDefinition ("SpecificUser");
       Assert.That (_property, Is.Not.Null);
+
+      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
+      Assert.That (tenant, Is.Not.Null);
+
+      _tenantID = tenant.ID;
     }
 
     [Test]
@@ -56,14 +63,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void Search ()
     {
-      AccessControlEntry ace = AccessControlEntry.NewObject();
-      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
-      Assert.That (tenant, Is.Not.Null);
-
-      ObjectList<User> expected = User.FindByTenantID (tenant.ID);
+      var expected = User.FindByTenantID (_tenantID);
       Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actual = _searchService.Search (ace, _property, new SecurityManagerSearchArguments (tenant.ID, null, null));
+      IBusinessObject[] actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, null));
 
       Assert.That (actual, Is.EqualTo (expected));
     }
@@ -71,16 +74,51 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void Search_DefaultSearchArgument ()
     {
-      AccessControlEntry ace = AccessControlEntry.NewObject();
-      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
-      Assert.That (tenant, Is.Not.Null);
-
-      ObjectList<User> expected = User.FindByTenantID (tenant.ID);
+      var expected = User.FindByTenantID (_tenantID);
       Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actual = _searchService.Search (ace, _property, new DefaultSearchArguments (tenant.ID.ToString()));
+      IBusinessObject[] actual = _searchService.Search (null, _property, new DefaultSearchArguments (_tenantID.ToString()));
 
       Assert.That (actual, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_FindLastNameContainingPrefix ()
+    {
+      var expected = User.FindByTenantID (_tenantID).Where (u => u.LastName.Contains ("user")).ToArray();
+      Assert.That (expected.Length, Is.GreaterThan (1));
+
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "user"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_FindFirstNameContainingPrefix ()
+    {
+      var expected = User.FindByTenantID (_tenantID).Where (u => u.FirstName.Contains ("est")).ToArray();
+      Assert.That (expected, Is.Not.Empty);
+
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "est"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithResultSizeConstraint ()
+    {
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 3, null));
+
+      Assert.That (actual.Length, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
+    {
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, "user")).ToArray();
+
+      Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (((User) actual[0]).LastName, Is.StringContaining ("user"));
     }
   }
 }

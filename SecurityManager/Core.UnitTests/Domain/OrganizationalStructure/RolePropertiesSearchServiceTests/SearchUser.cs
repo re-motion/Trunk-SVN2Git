@@ -17,12 +17,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using System.Collections.Generic;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RolePropertiesSearchServiceTests
 {
@@ -58,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       Group group = Group.FindByUnqiueIdentifier ("UID: group0");
       Assert.That (group, Is.Not.Null);
       Role role = TestHelper.CreateRole (_user, group, null);
-      DomainObjectCollection expectedUsers = User.FindByTenantID (group.Tenant.ID);
+      var expectedUsers = User.FindByTenantID (group.Tenant.ID);
       Assert.That (expectedUsers, Is.Not.Empty);
 
       IBusinessObject[] actualUsers = _searchService.Search (role, _userProperty, null);

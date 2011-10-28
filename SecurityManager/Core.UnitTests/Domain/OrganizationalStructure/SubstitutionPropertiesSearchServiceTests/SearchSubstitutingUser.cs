@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -54,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
     [Test]
     public void Search ()
     {
-      DomainObjectCollection expectedUsers = User.FindByTenantID (_user.Tenant.ID);
+      var expectedUsers = User.FindByTenantID (_user.Tenant.ID);
       Assert.That (expectedUsers, Is.Not.Empty);
 
       IBusinessObject[] actualUsers = _searchService.Search (null, _substitutingUserProperty, new SecurityManagerSearchArguments (_user.Tenant.ID, null, null));

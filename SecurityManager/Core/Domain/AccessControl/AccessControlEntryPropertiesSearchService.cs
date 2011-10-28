@@ -53,13 +53,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
       var tenantConstraint = (ITenantConstraint) searchArguments;
 
-      var groups = Group.FindByTenantID (tenantConstraint.Value);
-
-      var displayNameConstraint = (IDisplayNameConstraint) searchArguments;
-      if (!string.IsNullOrEmpty (displayNameConstraint.Text))
-        groups = groups.Where (g => g.Name.Contains (displayNameConstraint.Text) || g.ShortName.Contains (displayNameConstraint.Text));
-
-      return groups.Cast<IBusinessObject>();
+      return Group.FindByTenantID (tenantConstraint.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>();
     }
 
     private IQueryable<IBusinessObject> SearchUsers (
@@ -70,7 +64,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
       var tenantFilter = (ITenantConstraint) searchArguments;
 
-      return User.FindByTenantID (tenantFilter.Value).Cast<IBusinessObject>().AsQueryable();
+      return User.FindByTenantID (tenantFilter.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

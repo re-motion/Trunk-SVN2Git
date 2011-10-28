@@ -107,6 +107,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, "Group1"));
 
       Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (((Group) actual[0]).Name, Is.StringContaining ("group1"));
     }
   }
 }

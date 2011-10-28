@@ -83,12 +83,9 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
         SecurityManagerSearchArguments searchArguments)
     {
       var query = searchDelegate (referencingSecurityManagerObject, property, searchArguments);
-
-      var resultSizeConstraint = ((IResultSizeConstraint) searchArguments);
-      if (resultSizeConstraint != null && resultSizeConstraint.Value.HasValue)
-        query = query.Take (resultSizeConstraint.Value.Value);
-
-      return query;
+// ReSharper disable RedundantCast
+      return query.Apply ((IResultSizeConstraint) searchArguments);
+// ReSharper restore RedundantCast
     }
 
     private SecurityManagerSearchArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)

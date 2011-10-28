@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -56,9 +57,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     [Test]
     public void Find_UsersByTenantID ()
     {
-      DomainObjectCollection users = User.FindByTenantID (_expectedTenantID);
+      var users = User.FindByTenantID (_expectedTenantID);
 
-      Assert.AreEqual (6, users.Count);
+      Assert.AreEqual (6, users.Count());
     }
   }
 }

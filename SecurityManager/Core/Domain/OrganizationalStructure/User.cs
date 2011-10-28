@@ -65,16 +65,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return result.SingleOrDefault();
     }
 
-    public static ObjectList<User> FindByTenantID (ObjectID tenantID)
+    public static IQueryable<User> FindByTenantID (ObjectID tenantID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
 
-      var result = from u in QueryFactory.CreateLinqQuery<User>()
-                   where u.Tenant.ID == tenantID
-                   orderby u.LastName, u.FirstName
-                   select u;
-
-      return result.ToObjectList ();
+      return from u in QueryFactory.CreateLinqQuery<User>()
+             where u.Tenant.ID == tenantID
+             orderby u.LastName, u.FirstName
+             select u;
     }
 
     //[DemandMethodPermission (GeneralAccessTypes.Create)]
