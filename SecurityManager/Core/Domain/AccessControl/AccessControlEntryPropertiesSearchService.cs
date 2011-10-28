@@ -49,16 +49,22 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
-      var tenantFilter = (ITenantFilter) securityManagerSearchArguments;
+      var tenantConstraint = (ITenantConstraint) securityManagerSearchArguments;
 
-      return Group.FindByTenantID (tenantFilter.Value).ToArray();
+      var groups = Group.FindByTenantID (tenantConstraint.Value);
+
+      var displayNameConstraint = (IDisplayNameConstraint) securityManagerSearchArguments;
+      if (!string.IsNullOrEmpty (displayNameConstraint.Text))
+        groups = groups.Where (g => g.Name.Contains (displayNameConstraint.Text) || g.ShortName.Contains (displayNameConstraint.Text));
+
+      return groups.ToArray();
     }
 
     private IBusinessObject[] SearchUsers (
         AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
-      var tenantFilter = (ITenantFilter) securityManagerSearchArguments;
+      var tenantFilter = (ITenantConstraint) securityManagerSearchArguments;
 
       return User.FindByTenantID (tenantFilter.Value).ToArray();
     }

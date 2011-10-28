@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
-  public class SecurityManagerSearchArguments : ITenantFilter, IDisplayNameFilter, IResultSizeConstraint
+  public class SecurityManagerSearchArguments : ITenantConstraint, IDisplayNameConstraint, IResultSizeConstraint
   {
     private readonly ObjectID _tenantID;
     private readonly string _displayNameFilter;
@@ -35,12 +35,12 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       _displayNameFilter = displayNameFilter;
     }
 
-    ObjectID ITenantFilter.Value
+    ObjectID ITenantConstraint.Value
     {
       get { return _tenantID; }
     }
 
-    string IDisplayNameFilter.Text
+    string IDisplayNameConstraint.Text
     {
       get { return _displayNameFilter; }
     }

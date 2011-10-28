@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         Substitution substitution, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
-      var tenantFilter = (ITenantFilter) securityManagerSearchArguments;
+      var tenantFilter = (ITenantConstraint) securityManagerSearchArguments;
 
       return User.FindByTenantID (tenantFilter.Value).ToArray();
     }

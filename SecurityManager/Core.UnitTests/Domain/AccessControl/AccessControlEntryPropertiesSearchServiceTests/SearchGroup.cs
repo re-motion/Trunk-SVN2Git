@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -33,11 +34,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _property;
+    private ObjectID _tenantID;
 
     public override void SetUp ()
     {
       base.SetUp();
-      
+
       _testHelper = new OrganizationalStructureTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
 
@@ -45,6 +47,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       IBusinessObjectClass aceClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (AccessControlEntry));
       _property = (IBusinessObjectReferenceProperty) aceClass.GetPropertyDefinition ("SpecificGroup");
       Assert.That (_property, Is.Not.Null);
+
+      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
+      Assert.That (tenant, Is.Not.Null);
+
+      _tenantID = tenant.ID;
     }
 
     [Test]
@@ -56,16 +63,34 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void Search ()
     {
-      AccessControlEntry ace = AccessControlEntry.NewObject();
-      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
-      Assert.That (tenant, Is.Not.Null);
-
-      var expected = Group.FindByTenantID (tenant.ID).ToArray();
+      var expected = Group.FindByTenantID (_tenantID).ToArray();
       Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actual = _searchService.Search (ace, _property, new SecurityManagerSearchArguments (tenant.ID, null, null));
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, null));
 
       Assert.That (actual, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Search_WithNameRestriction_FindNameContainingPrefix ()
+    {
+      var expected = Group.FindByTenantID (_tenantID).Where (g => g.Name.Contains ("Group1")).ToArray();
+      Assert.That (expected.Length, Is.GreaterThan (1));
+
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "Group1"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithNameRestriction_FindShortNameContainingPrefix ()
+    {
+      var expected = Group.FindByTenantID (_tenantID).Where (g => g.ShortName.Contains ("G1")).ToArray();
+      Assert.That (expected.Length, Is.GreaterThan (1));
+
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "G1"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
     }
   }
 }

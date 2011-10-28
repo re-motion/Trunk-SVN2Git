@@ -107,13 +107,23 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
         Tenant tenant1 = CreateTenant ("TestTenant");
         tenant1.UniqueIdentifier = "UID: testTenant";
-        Group rootGroup = CreateGroup ("rootGroup", "UID: rootGroup", null, tenant1);
+        Group rootGroup = CreateGroup ("rootGroup", "RG", "UID: rootGroup", null, tenant1);
         for (int i = 0; i < 2; i++)
         {
-          Group parentGroup = CreateGroup (string.Format ("parentGroup{0}", i), string.Format ("UID: parentGroup{0}", i), rootGroup, tenant1);
+          Group parentGroup = CreateGroup (
+              string.Format ("parentGroup{0}", i),
+              string.Format ("PG{0}", i),
+              string.Format ("UID: parentGroup{0}", i),
+              rootGroup,
+              tenant1);
           parentGroup.GroupType = groupType1;
 
-          Group group = CreateGroup (string.Format ("group{0}", i), string.Format ("UID: group{0}", i), parentGroup, tenant1);
+          Group group = CreateGroup (
+              string.Format ("group{0}", i),
+              string.Format ("G{0}", i),
+              string.Format ("UID: group{0}", i),
+              parentGroup,
+              tenant1);
           group.GroupType = groupType2;
 
           User user1 = CreateUser (string.Format ("group{0}/user1", i), string.Empty, "user1", string.Empty, group, tenant1);
@@ -123,10 +133,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain
           CreateRole (user2, parentGroup, officialPosition);
         }
 
-        Group testRootGroup = CreateGroup ("testRootGroup", "UID: testRootGroup", null, tenant1);
-        Group testParentOfOwningGroup = CreateGroup ("testParentOfOwningGroup", "UID: testParentOfOwningGroup", testRootGroup, tenant1);
-        Group testOwningGroup = CreateGroup ("testOwningGroup", "UID: testOwningGroup", testParentOfOwningGroup, tenant1);
-        Group testGroup = CreateGroup ("testGroup", "UID: testGroup", null, tenant1);
+        Group testRootGroup = CreateGroup ("testRootGroup", null, "UID: testRootGroup", null, tenant1);
+        Group testParentOfOwningGroup = CreateGroup ("testParentOfOwningGroup", null, "UID: testParentOfOwningGroup", testRootGroup, tenant1);
+        Group testOwningGroup = CreateGroup ("testOwningGroup", null, "UID: testOwningGroup", testParentOfOwningGroup, tenant1);
+        Group testGroup = CreateGroup ("testGroup", null, "UID: testGroup", null, tenant1);
         User testUser = CreateUser ("test.user", "test", "user", "Dipl.Ing.(FH)", testOwningGroup, tenant1);
 
         Role officialRole = CreateRole (testUser, testGroup, officialPosition);
@@ -154,7 +164,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         disabledRoleSubstitution.IsEnabled = false;
 
         Tenant tenant2 = CreateTenant ("Tenant 2");
-        Group groupTenant2 = CreateGroup ("Group Tenant 2", "UID: group Tenant 2", null, tenant2);
+        Group groupTenant2 = CreateGroup ("Group Tenant 2", "GT2", "UID: group Tenant 2", null, tenant2);
         User userTenant2 = CreateUser ("User.Tenant2", "User", "Tenant 2", string.Empty, groupTenant2, tenant2);
         Substitution userTenant2Substitution = Substitution.NewObject ();
         userTenant2Substitution.SubstitutingUser = userTenant2;
@@ -319,10 +329,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       }
     }
 
-    private Group CreateGroup (string name, string uniqueIdentifier, Group parent, Tenant tenant)
+    private Group CreateGroup (string name, string shortName, string uniqueIdentifier, Group parent, Tenant tenant)
     {
       Group group = _factory.CreateGroup();
       group.Name = name;
+      group.ShortName = shortName;
       group.Parent = parent;
       group.Tenant = tenant;
       group.UniqueIdentifier = uniqueIdentifier;

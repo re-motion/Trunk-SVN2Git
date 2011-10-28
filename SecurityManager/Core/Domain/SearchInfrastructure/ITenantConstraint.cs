@@ -15,12 +15,13 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
-  public interface IDisplayNameFilter : ISearchAvailableObjectsArguments
+  public interface ITenantConstraint : ISearchAvailableObjectsArguments
   {
-    string Text { get;}
+    ObjectID Value { get;}
   }
 }
