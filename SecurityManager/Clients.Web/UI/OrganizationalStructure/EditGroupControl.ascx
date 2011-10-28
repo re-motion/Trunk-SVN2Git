@@ -76,7 +76,6 @@
           </remotion:BocSimpleColumnDefinition>
         </FixedColumns>
       </remotion:BocList>
-      <asp:CustomValidator ID="ChildrenValidator" runat="server" OnServerValidate="ChildrenValidator_ServerValidate" Text="###" />
     </td>
   </tr>
   <tr>
