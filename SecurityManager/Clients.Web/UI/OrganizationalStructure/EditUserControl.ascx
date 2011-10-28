@@ -62,12 +62,12 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocReferenceValue ID="OwningGroupField" runat="server" DataSourceControl="CurrentObject"
+      <remotion:BocAutoCompleteReferenceValue ID="OwningGroupField" runat="server" DataSourceControl="CurrentObject"
         PropertyIdentifier="OwningGroup">
         <PersistedCommand>
           <remotion:BocCommand />
         </PersistedCommand>
-      </remotion:BocReferenceValue>
+      </remotion:BocAutoCompleteReferenceValue>
     </td>
   </tr>
   <tr>

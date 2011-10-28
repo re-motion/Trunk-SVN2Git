@@ -34,19 +34,18 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public UserPropertiesSearchService ()
     {
-      AddSearchDelegate ("OwningGroup", FindPossibleOwningGroups);
+      AddSearchDelegate ("OwningGroup", SearchPossibleOwningGroups);
     }
 
-    private IQueryable<IBusinessObject> FindPossibleOwningGroups (
-        User user,
+    private IQueryable<IBusinessObject> SearchPossibleOwningGroups (
+        User referencingObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
+      var tenantFilter = (ITenantConstraint) searchArguments;
 
-      if (user.Tenant == null)
-        return Enumerable.Empty<IBusinessObject>().AsQueryable();
-      return Group.FindByTenantID (user.Tenant.ID).Cast<IBusinessObject>().AsQueryable();
+      return Group.FindByTenantID (tenantFilter.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

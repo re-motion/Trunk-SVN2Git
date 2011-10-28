@@ -34,6 +34,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   public partial class EditUserControl : BaseControl
   {
     private bool _isNewSubstitution;
+    private BocAutoCompleteReferenceValue _owningGroupField;
 
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -61,6 +62,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       editModeColumn.EditIcon = GetIcon ("EditItem.gif", GlobalResources.Edit);
       editModeColumn.SaveIcon = GetIcon ("ApplyButton.gif", GlobalResources.Apply);
       editModeColumn.CancelIcon = GetIcon ("CancelButton.gif", GlobalResources.Cancel);
+ 
+      _owningGroupField = GetControl<BocAutoCompleteReferenceValue> ("OwningGroupField", "OwningGroup");
+
+      if (string.IsNullOrEmpty (_owningGroupField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (_owningGroupField);
     }
 
     private IconInfo GetIcon (string resourceUrl, string alternateText)
@@ -82,6 +88,16 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (RolesList.IsReadOnly)
         RolesList.Selection = RowSelection.Disabled;
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+       
+      if (CurrentFunction.TenantID == null)
+        throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
+
+      _owningGroupField.Args = CurrentFunction.TenantID.ToString();
     }
 
     public override bool Validate ()
