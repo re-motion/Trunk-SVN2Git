@@ -61,15 +61,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("SubstitutedRole")]
     public abstract ObjectList<Substitution> SubstitutedBy { get; }
 
-    public List<Group> GetPossibleGroups (ObjectID tenantID)
-    {
-      ArgumentUtility.CheckNotNull ("tenantID", tenantID);
-
-      IEnumerable<Group> groups = Group.FindByTenantID (tenantID);
-
-      return FilterByAccess (groups, SecurityManagerAccessTypes.AssignRole);
-    }
-
     public List<Position> GetPossiblePositions (Group group)
     {
       ArgumentUtility.CheckNotNull ("group", group);
