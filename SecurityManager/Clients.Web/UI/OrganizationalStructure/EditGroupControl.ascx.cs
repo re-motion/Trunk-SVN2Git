@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   [WebMultiLingualResources (typeof (EditGroupControlResources))]
   public partial class EditGroupControl : BaseControl
   {
-    private BocAutoCompleteReferenceValue _parentGroupField;
+    private BocAutoCompleteReferenceValue _parentField;
 
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -55,10 +55,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnInit (e);
 
-      _parentGroupField = GetControl<BocAutoCompleteReferenceValue> ("ParentField", "Parent");
+      _parentField = GetControl<BocAutoCompleteReferenceValue> ("ParentField", "Parent");
 
-      if (string.IsNullOrEmpty (_parentGroupField.SearchServicePath))
-        SecurityManagerSearchWebService.BindServiceToControl (_parentGroupField);
+      if (string.IsNullOrEmpty (_parentField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (_parentField);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -81,7 +81,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       if (CurrentFunction.TenantID == null)
         throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
 
-      _parentGroupField.Args = CurrentFunction.TenantID.ToString();
+      _parentField.Args = CurrentFunction.TenantID.ToString();
     }
 
     private void FillGroupTypeField ()
@@ -152,7 +152,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {
-      args.IsValid = IsParentHierarchyValid ((Group) ParentField.Value);
+      args.IsValid = IsParentHierarchyValid ((Group) _parentField.Value);
     }
 
     private bool IsParentHierarchyValid (Group group)
