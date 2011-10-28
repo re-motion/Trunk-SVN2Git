@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       var groups = child1.GetPossibleParentGroups().ToArray();
 
-      var expectedGroups = Group.FindByTenantID (_expectedTenantID).Except (new[] { child1, grandChild1, grandChild2 }).ToArray();
+      var expectedGroups = Group.FindByTenantID (_expectedTenantID).AsEnumerable().Except (new[] { child1, grandChild1, grandChild2 }).ToArray();
 
       Assert.That (groups, Is.Not.Empty);
       Assert.That (groups, Is.EquivalentTo (expectedGroups));
@@ -94,7 +94,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       var groups = root.GetPossibleParentGroups().ToArray();
 
-      var expectedGroups = Group.FindByTenantID (_expectedTenantID).Except (new[] { root, child1, grandChild1 }).ToArray();
+      var expectedGroups = Group.FindByTenantID (_expectedTenantID).AsEnumerable().Except (new[] { root, child1, grandChild1 }).ToArray();
 
       Assert.That (groups, Is.Not.Empty);
       Assert.That (groups, Is.EquivalentTo (expectedGroups));
@@ -125,7 +125,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       var groups = grandChild1.GetPossibleParentGroups().ToArray();
 
-      var expectedGroups = Group.FindByTenantID (_expectedTenantID).Except (new[] { child1, grandChild1 }).ToArray();
+      var expectedGroups = Group.FindByTenantID (_expectedTenantID).AsEnumerable().Except (new[] { child1, grandChild1 }).ToArray();
 
       Assert.That (groups, Is.Not.Empty);
       Assert.That (groups, Is.EquivalentTo (expectedGroups));

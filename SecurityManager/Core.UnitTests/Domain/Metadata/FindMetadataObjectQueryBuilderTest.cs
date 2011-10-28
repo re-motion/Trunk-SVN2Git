@@ -18,7 +18,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -28,15 +27,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
   [TestFixture]
   public class FindMetadataObjectQueryBuilderTest : DomainTest
   {
+    private readonly ExpressionTreeComparer _expressionTreeComparer 
+        = new ExpressionTreeComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
+
     private FindMetadataObjectQueryBuilder _queryBuilder;
-    private ExpressionTreeComparer _expressionTreeComparer;
-
-    public override void TestFixtureSetUp ()
-    {
-      base.TestFixtureSetUp();
-
-      _expressionTreeComparer = new ExpressionTreeComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
-    }
 
     [SetUp]
     public override void SetUp ()

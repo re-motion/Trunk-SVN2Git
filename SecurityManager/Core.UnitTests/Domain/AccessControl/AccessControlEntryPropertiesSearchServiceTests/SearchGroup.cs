@@ -16,8 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
       Assert.That (tenant, Is.Not.Null);
 
-      ObjectList<Group> expected = Group.FindByTenantID (tenant.ID);
+      var expected = Group.FindByTenantID (tenant.ID).ToArray();
       Assert.That (expected, Is.Not.Empty);
 
       IBusinessObject[] actual = _searchService.Search (ace, _property, new SecurityManagerSearchArguments (tenant.ID, null, null));

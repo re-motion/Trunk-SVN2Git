@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
         Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransactionScope.CurrentTransaction);
         _expectedTenantID = tenant.ID;
 
-        DomainObjectCollection groups = Group.FindByTenantID (_expectedTenantID);
+        var groups = Group.FindByTenantID (_expectedTenantID);
         foreach (Group group in groups)
         {
           if (group.UniqueIdentifier == "UID: rootGroup")

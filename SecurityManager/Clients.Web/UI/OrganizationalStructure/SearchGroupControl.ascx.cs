@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
@@ -52,7 +53,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnLoad (e);
 
-      GroupList.LoadUnboundValue (Group.FindByTenantID (CurrentTenantID), false);
+      GroupList.LoadUnboundValue (Group.FindByTenantID (CurrentTenantID).ToArray(), false);
     }
 
     protected void GroupList_ListItemCommandClick (object sender, BocListItemCommandClickEventArgs e)

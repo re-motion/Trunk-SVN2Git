@@ -84,16 +84,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return DomainObject.GetObject<Group> (id);
     }
 
-    public static ObjectList<Group> FindByTenantID (ObjectID tenantID)
+    public static IQueryable<Group> FindByTenantID (ObjectID tenantID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
 
-      var result = from g in QueryFactory.CreateLinqQuery<Group>()
+      return from g in QueryFactory.CreateLinqQuery<Group>()
                    where g.Tenant.ID == tenantID
                    orderby g.Name, g.ShortName
                    select g;
-      
-      return result.ToObjectList();
     }
 
     public static Group FindByUnqiueIdentifier (string uniqueIdentifier)
@@ -250,7 +248,10 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       }
 
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-      return Group.FindByTenantID (Tenant.ID).Except (hierarchy).Where (t => securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
+      return Group.FindByTenantID (Tenant.ID)
+          .AsEnumerable()
+          .Except (hierarchy)
+          .Where (t => securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
     }
 
     /// <summary>

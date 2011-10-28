@@ -16,8 +16,11 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupTests
@@ -25,6 +28,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
   [TestFixture]
   public class FindGroup : GroupTestBase
   {
+    private readonly ExpressionTreeComparer _expressionTreeComparer 
+        = new ExpressionTreeComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
+
     private DatabaseFixtures _dbFixtures;
     private ObjectID _expectedTenantID;
 
@@ -56,9 +62,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void Find_GroupsByTenantID ()
     {
-      DomainObjectCollection groups = Group.FindByTenantID (_expectedTenantID);
+      var expected = from g in QueryFactory.CreateLinqQuery<Group>()
+                     where g.Tenant.ID == _expectedTenantID
+                     orderby g.Name, g.ShortName
+                     select g;
 
-      Assert.AreEqual (9, groups.Count);
+      var actual = Group.FindByTenantID (_expectedTenantID);
+
+      _expressionTreeComparer.Compare (expected, actual);
+
+      Assert.AreEqual (9, actual.Count());
     }
   }
 }

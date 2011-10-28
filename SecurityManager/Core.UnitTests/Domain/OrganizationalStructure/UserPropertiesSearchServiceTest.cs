@@ -84,7 +84,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void Search ()
     {
-      DomainObjectCollection expectedOwningGroups = Group.FindByTenantID (_user.Tenant.ID);
+      var expectedOwningGroups = Group.FindByTenantID (_user.Tenant.ID);
       Assert.That (expectedOwningGroups, Is.Not.Empty);
 
       IBusinessObject[] actualOwningGroups = _searchService.Search (_user, _owningGroupProperty, null);
