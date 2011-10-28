@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     protected delegate IQueryable<IBusinessObject> SearchDelegate (
         T referencingObject,
         IBusinessObjectReferenceProperty property,
-        ISearchAvailableObjectsArguments searchArguments);
+        SecurityManagerSearchArguments searchArguments);
 
     private readonly Dictionary<string, SearchDelegate> _searchDelegates = new Dictionary<string, SearchDelegate>();
 
@@ -58,12 +58,12 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     }
 
     public IBusinessObject[] Search (
-        IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+        IBusinessObject referencingObject,
+        IBusinessObjectReferenceProperty property,
+        ISearchAvailableObjectsArguments searchArguments)
     {
       T referencingSecurityManagerObject = ArgumentUtility.CheckType<T> ("referencingObject", referencingObject);
       ArgumentUtility.CheckNotNull ("property", property);
-
-      var securityManagerSearchArguments = CreateSearchArguments (searchArguments);
 
       SearchDelegate searchDelegate;
       if (!_searchDelegates.TryGetValue (property.Identifier, out searchDelegate))
@@ -72,6 +72,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
             string.Format ("The property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
       }
 
+      var securityManagerSearchArguments = CreateSearchArguments (searchArguments);
       return CreateQuery (searchDelegate, referencingSecurityManagerObject, property, securityManagerSearchArguments).ToArray();
     }
 
@@ -84,7 +85,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       var query = searchDelegate (referencingSecurityManagerObject, property, searchArguments);
 
       var resultSizeConstraint = ((IResultSizeConstraint) searchArguments);
-      if (resultSizeConstraint.Value.HasValue)
+      if (resultSizeConstraint != null && resultSizeConstraint.Value.HasValue)
         query = query.Take (resultSizeConstraint.Value.Value);
 
       return query;
@@ -93,9 +94,12 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     private SecurityManagerSearchArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)
     {
       var defaultSearchArguments = searchArguments as DefaultSearchArguments;
-      if (defaultSearchArguments != null && !string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
+      if (defaultSearchArguments != null)
+      {
+        if (string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
+          return null;
         return new SecurityManagerSearchArguments (ObjectID.Parse (defaultSearchArguments.SearchStatement), null, null);
-
+      }
       return ArgumentUtility.CheckType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
     }
   }

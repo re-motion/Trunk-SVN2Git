@@ -39,7 +39,10 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       AddSearchDelegate ("User", FindPossibleUsers);
     }
 
-    private IQueryable<IBusinessObject> FindPossibleGroups (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IQueryable<IBusinessObject> FindPossibleGroups (
+        Role role,
+        IBusinessObjectReferenceProperty property,
+        SecurityManagerSearchArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("role", role);
 
@@ -48,7 +51,10 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return role.GetPossibleGroups (role.User.Tenant.ID).Cast<IBusinessObject>().AsQueryable();
     }
 
-    private IQueryable<IBusinessObject> FindPossibleUsers (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IQueryable<IBusinessObject> FindPossibleUsers (
+        Role role,
+        IBusinessObjectReferenceProperty property,
+        SecurityManagerSearchArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("role", role);
 

@@ -46,14 +46,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     }
 
     private IQueryable<IBusinessObject> SearchGroups (
-        AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+        AccessControlEntry referencingObject,
+        IBusinessObjectReferenceProperty property,
+        SecurityManagerSearchArguments searchArguments)
     {
-      var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
-      var tenantConstraint = (ITenantConstraint) securityManagerSearchArguments;
+      ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
+      var tenantConstraint = (ITenantConstraint) searchArguments;
 
       var groups = Group.FindByTenantID (tenantConstraint.Value);
 
-      var displayNameConstraint = (IDisplayNameConstraint) securityManagerSearchArguments;
+      var displayNameConstraint = (IDisplayNameConstraint) searchArguments;
       if (!string.IsNullOrEmpty (displayNameConstraint.Text))
         groups = groups.Where (g => g.Name.Contains (displayNameConstraint.Text) || g.ShortName.Contains (displayNameConstraint.Text));
 
@@ -61,10 +63,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     }
 
     private IQueryable<IBusinessObject> SearchUsers (
-        AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+        AccessControlEntry referencingObject,
+        IBusinessObjectReferenceProperty property,
+        SecurityManagerSearchArguments searchArguments)
     {
-      var securityManagerSearchArguments = ArgumentUtility.CheckNotNullAndType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
-      var tenantFilter = (ITenantConstraint) securityManagerSearchArguments;
+      ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
+      var tenantFilter = (ITenantConstraint) searchArguments;
 
       return User.FindByTenantID (tenantFilter.Value).Cast<IBusinessObject>().AsQueryable();
     }

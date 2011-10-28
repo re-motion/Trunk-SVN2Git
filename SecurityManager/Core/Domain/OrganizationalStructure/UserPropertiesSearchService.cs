@@ -37,7 +37,10 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       AddSearchDelegate ("OwningGroup", FindPossibleOwningGroups);
     }
 
-    private IQueryable<IBusinessObject> FindPossibleOwningGroups (User user, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IQueryable<IBusinessObject> FindPossibleOwningGroups (
+        User user,
+        IBusinessObjectReferenceProperty property,
+        SecurityManagerSearchArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("user", user);
 
