@@ -21,14 +21,9 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -890,47 +885,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository.ReplayAll();
 
       _order1.OrderNumber = oldOrderNumber + 1;
-
-      _mockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void LoadRelatedDataContainerForEndPoint ()
-    {
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
-
-      _mockRepository.BackToRecord (_extensionMock);
-
-      //Note: no reading notification must be performed
-
-      _mockRepository.ReplayAll();
-
-      using (var persistanceManager = new PersistenceManager(NullPersistenceExtension.Instance))
-      {
-        ClassDefinition orderTicketDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket));
-        IRelationEndPointDefinition orderEndPointDefinition =
-            orderTicketDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
-        persistanceManager.LoadRelatedDataContainer (
-            orderTicket.InternalDataContainer, RelationEndPointID.Create(orderTicket.ID, orderEndPointDefinition));
-      }
-
-      _mockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void LoadRelatedDataContainerForVirtualEndPoint ()
-    {
-      //Note: no reading notification must be performed
-      _mockRepository.ReplayAll();
-
-      using (var persistenceManager = new PersistenceManager(NullPersistenceExtension.Instance))
-      {
-        ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
-        IRelationEndPointDefinition orderTicketEndPointDefinition =
-            orderDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-        persistenceManager.LoadRelatedDataContainer (
-            _order1.InternalDataContainer, RelationEndPointID.Create(_order1.ID, orderTicketEndPointDefinition));
-      }
 
       _mockRepository.VerifyAll();
     }

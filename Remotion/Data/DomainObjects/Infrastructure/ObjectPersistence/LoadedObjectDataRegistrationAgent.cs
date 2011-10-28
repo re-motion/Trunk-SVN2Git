@@ -62,9 +62,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         _domainObjectAccessors.Add (() => invalidLoadedObjectData.InvalidObjectReference);
       }
 
-      public void RegisterAllDataContainers (IDataManager dataManager, ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
+      public void RegisterAllDataContainers (
+          IDataContainerLifetimeManager lifetimeManager,
+          ClientTransaction clientTransaction,
+          IClientTransactionListener transactionEventSink)
       {
-        ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+        ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
 
         if (_dataContainersToBeRegistered.Count == 0)
           return;
@@ -80,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           {
             var domainObject = clientTransaction.GetObjectReference (dataContainer.ID);
             dataContainer.SetDomainObject (domainObject);
-            dataManager.RegisterDataContainer (dataContainer);
+            lifetimeManager.RegisterDataContainer (dataContainer);
             loadedDomainObjects.Add (domainObject);
           }
         }
@@ -134,14 +137,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _transactionEventSink; }
     }
 
-    public DomainObject RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataManager dataManager)
+    public DomainObject RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager)
     {
       ArgumentUtility.CheckNotNull ("loadedObjectData", loadedObjectData);
 
-      return RegisterIfRequired (new[] { loadedObjectData }, dataManager).Single ();
+      return RegisterIfRequired (new[] { loadedObjectData }, lifetimeManager).Single ();
     }
 
-    public IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataManager dataManager)
+    public IEnumerable<DomainObject> RegisterIfRequired (
+        IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
 
@@ -149,7 +153,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       foreach (var loadedObject in loadedObjects)
         loadedObject.Accept (visitor);
 
-      visitor.RegisterAllDataContainers (dataManager, _clientTransaction, _transactionEventSink);
+      visitor.RegisterAllDataContainers (lifetimeManager, _clientTransaction, _transactionEventSink);
       return visitor.GetAllDomainObjects ();
     }
   }

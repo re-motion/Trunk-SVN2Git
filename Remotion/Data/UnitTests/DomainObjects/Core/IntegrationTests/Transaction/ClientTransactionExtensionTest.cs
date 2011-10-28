@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -825,29 +824,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void LoadRelatedDataContainerForEndPoint ()
-    {
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
-
-      _mockRepository.BackToRecord (_extensionMock);
-
-      //Note: no reading notification must be performed
-
-      _mockRepository.ReplayAll();
-
-      using (var persistanceManager = new PersistenceManager(NullPersistenceExtension.Instance))
-      {
-        ClassDefinition orderTicketDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket));
-        IRelationEndPointDefinition orderEndPointDefinition =
-            orderTicketDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
-        persistanceManager.LoadRelatedDataContainer (
-            orderTicket.InternalDataContainer, RelationEndPointID.Create(orderTicket.ID, orderEndPointDefinition));
-      }
-
-      _mockRepository.VerifyAll();
-    }
-
-    [Test]
     public void LoadRelatedDataContainerForVirtualEndPoint ()
     {
       //Note: no reading notification must be performed
@@ -858,8 +834,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
         IRelationEndPointDefinition orderTicketEndPointDefinition =
             orderDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-        persistenceManager.LoadRelatedDataContainer (
-            _order1.InternalDataContainer, RelationEndPointID.Create(_order1.ID, orderTicketEndPointDefinition));
+        persistenceManager.LoadRelatedDataContainer (RelationEndPointID.Create(_order1.ID, orderTicketEndPointDefinition));
       }
 
       _mockRepository.VerifyAll();

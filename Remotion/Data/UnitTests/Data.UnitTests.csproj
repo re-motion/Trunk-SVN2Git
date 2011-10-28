@@ -213,6 +213,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistableDataObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Relations\ObjectWithInvalidForeignKeyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionCommitValidationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CLientTransactionGetRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionGetObjectTest.cs" />

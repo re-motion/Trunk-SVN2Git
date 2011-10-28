@@ -15,18 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
 
-namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
+namespace Remotion.Data.DomainObjects.DataManagement
 {
-  /// <summary>
-  /// Provides an interface for classes registering <see cref="ILoadedObjectData"/> instances if required, depending on the concrete type of the 
-  /// <see cref="ILoadedObjectData"/> instances.
-  /// </summary>
-  public interface ILoadedObjectDataRegistrationAgent
+  public interface IDataContainerLifetimeManager
   {
-    DomainObject RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager);
-    IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager);
+    void RegisterDataContainer (DataContainer dataContainer);
+    void Discard (DataContainer dataContainer);
   }
 }

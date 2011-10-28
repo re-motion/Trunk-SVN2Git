@@ -15,18 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 {
-  /// <summary>
-  /// Provides an interface for classes registering <see cref="ILoadedObjectData"/> instances if required, depending on the concrete type of the 
-  /// <see cref="ILoadedObjectData"/> instances.
-  /// </summary>
-  public interface ILoadedObjectDataRegistrationAgent
+  [TestFixture]
+  public class ObjectWithInvalidForeignKeyTest : ClientTransactionBaseTest
   {
-    DomainObject RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager);
-    IEnumerable<DomainObject> RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager);
+    [Test]
+    public void AccessInvalidForeignKeyRelation ()
+    {
+      var id = new ObjectID (typeof (ClassWithInvalidRelation), new Guid ("{AFA9CF46-8E77-4da8-9793-53CAA86A277C}"));
+
+      var instance = (ClassWithInvalidRelation) ClassWithInvalidRelation.GetObject (id);
+
+      Assert.That (() => instance.ClassWithGuidKey, Throws.TypeOf <ObjectNotFoundException>());
+    }
   }
 }

@@ -25,22 +25,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Provides an interface for classes managing the data inside a <see cref="ClientTransaction"/>.
   /// </summary>
-  public interface IDataManager : IRelationEndPointProvider, IDataContainerProvider
+  public interface IDataManager : IRelationEndPointProvider, IDataContainerProvider, IDataContainerLifetimeManager
   {
     IDataContainerMapReadOnlyView DataContainers { get; }
     IRelationEndPointMapReadOnlyView RelationEndPoints { get; }
 
     DomainObjectStateCache DomainObjectStateCache { get; }
 
-    void Discard (DataContainer dataContainer);
-
     IEnumerable<PersistableData> GetLoadedDataByObjectState (params StateType[] domainObjectStates);
     IEnumerable<PersistableData> GetNewChangedDeletedData ();
     IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer);
     
     bool HasRelationChanged (DataContainer dataContainer);
-    
-    void RegisterDataContainer (DataContainer dataContainer);
 
     bool TrySetCollectionEndPointData (RelationEndPointID relationEndPointID, DomainObject[] items);
     bool TrySetVirtualObjectEndPointData (RelationEndPointID relationEndPointID, DomainObject item);

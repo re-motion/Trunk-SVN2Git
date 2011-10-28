@@ -35,26 +35,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public int NumberOfCallsToLoadObject { get; set; }
     public int NumberOfCallsToLoadRelatedObject { get; set; }
 
-    public DomainObject LoadObject (ObjectID id, IDataManager dataManager)
+    public DomainObject LoadObject (ObjectID id, IDataContainerLifetimeManager lifetimeManager)
     {
       ++NumberOfCallsToLoadObject;
-      return _decorated.LoadObject (id, dataManager);
+      return _decorated.LoadObject (id, lifetimeManager);
     }
 
-    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
+    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataContainerLifetimeManager lifetimeManager)
     {
-      return _decorated.LoadObjects (idsToBeLoaded, throwOnNotFound, dataManager);
+      return _decorated.LoadObjects (idsToBeLoaded, throwOnNotFound, lifetimeManager);
     }
 
-    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ++NumberOfCallsToLoadRelatedObject;
-      return _decorated.GetOrLoadRelatedObject (relationEndPointID, dataManager, alreadyLoadedObjectDataProvider);
+      return _decorated.GetOrLoadRelatedObject (relationEndPointID, lifetimeManager, alreadyLoadedObjectDataProvider);
     }
 
-    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
-      return _decorated.GetOrLoadRelatedObjects (relationEndPointID, dataManager, alreadyLoadedObjectDataProvider);
+      return _decorated.GetOrLoadRelatedObjects (relationEndPointID, lifetimeManager, alreadyLoadedObjectDataProvider);
     }
 
     public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider) where T: DomainObject

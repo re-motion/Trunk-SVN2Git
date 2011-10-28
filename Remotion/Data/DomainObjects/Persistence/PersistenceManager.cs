@@ -171,7 +171,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     private DataContainerCollection SortDataContainers (DataContainerCollection dataContainers, IEnumerable<ObjectID> orderedIDs)
     {
-      DataContainerCollection orderedResultCollection = new DataContainerCollection();
+      var orderedResultCollection = new DataContainerCollection();
       foreach (ObjectID id in orderedIDs)
       {
         DataContainer dataContainer = dataContainers[id];
@@ -183,7 +183,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     private IEnumerable<KeyValuePair<string, List<ObjectID>>> GroupIDsByProvider (IEnumerable<ObjectID> ids)
     {
-      MultiDictionary<string, ObjectID> result = new MultiDictionary<string, ObjectID>();
+      var result = new MultiDictionary<string, ObjectID>();
       foreach (var id in ids)
         result[id.StorageProviderDefinition.Name].Add (id);
       return result;
@@ -225,14 +225,13 @@ namespace Remotion.Data.DomainObjects.Persistence
       return oppositeDataContainers;
     }
 
-    public DataContainer LoadRelatedDataContainer (DataContainer dataContainer, RelationEndPointID relationEndPointID)
+    public DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       CheckDisposed();
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
       if (!relationEndPointID.Definition.IsVirtual)
-        return GetOppositeDataContainerForEndPoint (dataContainer, relationEndPointID);
+        throw new ArgumentException ("LoadRelatedDataContainer can only be used with virtual end points.", "relationEndPointID");
 
       return GetOppositeDataContainerForVirtualEndPoint (relationEndPointID);
     }
@@ -260,27 +259,6 @@ namespace Remotion.Data.DomainObjects.Persistence
         return GetNullDataContainerWithRelationCheck (relationEndPointID);
 
       return oppositeDataContainers[0];
-    }
-
-    private DataContainer GetOppositeDataContainerForEndPoint (DataContainer dataContainer, RelationEndPointID relationEndPointID)
-    {
-      var oppositeID = (ObjectID) dataContainer.PropertyValues[relationEndPointID.Definition.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
-      if (oppositeID == null)
-        return GetNullDataContainerWithRelationCheck (relationEndPointID);
-
-      var oppositeProvider = _storageProviderManager.GetMandatory (oppositeID.StorageProviderDefinition.Name);
-      var oppositeDataContainer = oppositeProvider.LoadDataContainer (oppositeID).LocatedObject;
-      if (oppositeDataContainer == null)
-      {
-        throw CreatePersistenceException (
-            "Property '{0}' of object '{1}' refers to non-existing object '{2}'.",
-            relationEndPointID.Definition.PropertyName,
-            relationEndPointID.ObjectID,
-            oppositeID);
-      }
-      
-      CheckClassIDForEndPoint (dataContainer, relationEndPointID, oppositeDataContainer);
-      return oppositeDataContainer;
     }
 
     private DataContainerCollection LoadOppositeDataContainers (
@@ -322,24 +300,6 @@ namespace Remotion.Data.DomainObjects.Persistence
             oppositeDataContainer.ID,
             objectID.ClassID,
             relationEndPointID.ObjectID.ClassID);
-      }
-    }
-
-    private void CheckClassIDForEndPoint (
-        DataContainer dataContainer,
-        RelationEndPointID relationEndPointID,
-        DataContainer oppositeDataContainer)
-    {
-      var id = (ObjectID) dataContainer.PropertyValues[relationEndPointID.Definition.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
-      if (id.ClassID != oppositeDataContainer.ID.ClassID)
-      {
-        throw CreatePersistenceException (
-            "The property '{0}' of the provided DataContainer '{1}'"
-            + " refers to ClassID '{2}', but the ClassID of the loaded DataContainer is '{3}'.",
-            relationEndPointID.Definition.PropertyName,
-            dataContainer.ID,
-            id.ClassID,
-            oppositeDataContainer.ID.ClassID);
       }
     }
 

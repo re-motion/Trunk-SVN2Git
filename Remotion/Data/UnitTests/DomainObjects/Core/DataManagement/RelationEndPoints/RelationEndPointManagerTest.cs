@@ -618,26 +618,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void GetRelationEndPointWithLazyLoad_DoesNotLoadData_OfObjectsWithVirtualEndPointNotYetRegistered_IfNotNeeded ()
-    {
-      OrderTicket.GetObject (DomainObjectIDs.OrderTicket1); // ensure opposite real end point is available
-      var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var realEndPoint = _relationEndPointManager.GetRelationEndPointWithoutLoading (realEndPointID);
-      Assert.That (realEndPoint, Is.Not.Null);
-      Assert.That (realEndPoint.Definition.IsVirtual, Is.False);
-
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      Assert.That (endPointID.Definition.IsVirtual, Is.True);
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
-
-      var result = _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID);
-      Assert.That (result, Is.Not.Null);
-
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
-    }
-
-    [Test]
-    public void GetRelationEndPointWithLazyLoad_LoadsData_OfObjectsWithVirtualEndPointNotYetRegistered_IfNeeded ()
+    public void GetRelationEndPointWithLazyLoad_DoesNotLoadData_OfObjectsWithVirtualEndPointNotYetRegistered ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       Assert.That (endPointID.Definition.IsVirtual, Is.True);
@@ -646,7 +627,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID);
       Assert.That (result, Is.Not.Null);
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
     }
 
     [Test]

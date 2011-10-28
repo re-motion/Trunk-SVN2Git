@@ -85,7 +85,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// <summary>
     /// Resolves the relation identified by the given <see cref="RelationEndPointID"/>, loading the related object's data unless already available.
     /// </summary>
-    /// <param name="originatingDataContainer">A <see cref="DataContainer"/> representing the object whose related object's <see cref="DataContainer"/> should be loaded.</param>
     /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> of the end point that should be resolved.
     /// <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/> (i.e., represent a single object, not a collection).
     /// Must not be <see langword="null"/>.</param>
@@ -121,7 +120,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// </para>
     /// </remarks>
     ILoadedObjectData ResolveObjectRelationData (
-        DataContainer originatingDataContainer, 
         RelationEndPointID relationEndPointID, 
         ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
 

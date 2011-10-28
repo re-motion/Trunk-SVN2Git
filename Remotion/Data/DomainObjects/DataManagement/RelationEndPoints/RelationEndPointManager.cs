@@ -191,7 +191,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
       else if (endPointID.Definition.IsVirtual)
       {
-        return GetVirtualEndPointOrRegisterEmpty (endPointID);
+        return RegisterVirtualEndPoint (endPointID);
       }
       else
       {

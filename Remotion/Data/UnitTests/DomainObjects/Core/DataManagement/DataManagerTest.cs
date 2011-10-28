@@ -308,6 +308,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Discard_RemovesEndPoints ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+
+      var endPointID = RelationEndPointID.Create (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
+
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
+    }
+
+    [Test]
+    public void Discard_RemovesDataContainer ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.SameAs (dataContainer));
+
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.Null);
+    }
+
+    [Test]
+    public void Discard_DiscardsDataContainer ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (dataContainer.IsDiscarded, Is.True);
+    }
+
+    [Test]
+    public void Discard_MarksObjectInvalid ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (_dataManager.ClientTransaction.IsInvalid (dataContainer.ID), Is.True);
+      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (ClientTransactionMock, dataContainer.ID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot discard data for object 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid': The relations of object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' cannot be unloaded.\r\n"
+        + "Relation end-point "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' would "
+        + "leave a dangling reference.")]
+    public void Discard_ThrowsOnDanglingReferences ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+
+      var endPointID = RelationEndPointID.Create (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPoint = (RealObjectEndPoint) _dataManager.GetRelationEndPointWithoutLoading (endPointID);
+      RealObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Order1);
+
+      _dataManager.Discard (dataContainer);
+    }
+
+    [Test]
     public void TrySetCollectionEndPointData_True ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
@@ -375,78 +447,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (result, Is.False);
       Assert.That (endPoint.GetData (), Is.Not.SameAs (item));
-    }
-
-    [Test]
-    public void Discard_RemovesEndPoints ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
-
-      _dataManager.Discard (dataContainer);
-
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
-    }
-
-    [Test]
-    public void Discard_RemovesDataContainer ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.SameAs (dataContainer));
-
-      _dataManager.Discard (dataContainer);
-
-      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.Null);
-    }
-
-    [Test]
-    public void Discard_DiscardsDataContainer ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      _dataManager.Discard (dataContainer);
-
-      Assert.That (dataContainer.IsDiscarded, Is.True);
-    }
-
-    [Test]
-    public void Discard_MarksObjectInvalid ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-
-      _dataManager.Discard (dataContainer);
-
-      Assert.That (_dataManager.ClientTransaction.IsInvalid (dataContainer.ID), Is.True);
-      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (ClientTransactionMock, dataContainer.ID));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot discard data for object 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid': The relations of object "
-        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' cannot be unloaded.\r\n"
-        + "Relation end-point "
-        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' would "
-        + "leave a dangling reference.")]
-    public void Discard_ThrowsOnDanglingReferences ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
-      var endPoint = (RealObjectEndPoint) _dataManager.GetRelationEndPointWithoutLoading (endPointID);
-      RealObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Order1);
-
-      _dataManager.Discard (dataContainer);
     }
 
     [Test]
@@ -1025,9 +1025,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.GetOrLoadRelatedObject (Arg
-              .Is (endPointID), 
-              Arg.Is (_dataManagerWithMocks),
+          .Expect (mock => mock.GetOrLoadRelatedObject (
+              Arg.Is (endPointID), 
+              Arg.Is (_dataManagerWithMocks), 
               Arg<ILoadedObjectDataProvider>.Matches (p => p is LoadedObjectDataProvider 
                   && ((LoadedObjectDataProvider) p).DataContainerProvider == _dataManagerWithMocks
                   && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
@@ -1063,9 +1063,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .Expect (mock => mock.GetOrLoadRelatedObject (
               Arg.Is (endPointID),
               Arg.Is (_dataManagerWithMocks),
-              Arg<ILoadedObjectDataProvider>.Matches (p => p is LoadedObjectDataProvider
-                  && ((LoadedObjectDataProvider) p).DataContainerProvider == _dataManagerWithMocks
-                  && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
+              Arg<ILoadedObjectDataProvider>.Matches (
+                  p => p is LoadedObjectDataProvider
+                       && ((LoadedObjectDataProvider) p).DataContainerProvider == _dataManagerWithMocks
+                       && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 

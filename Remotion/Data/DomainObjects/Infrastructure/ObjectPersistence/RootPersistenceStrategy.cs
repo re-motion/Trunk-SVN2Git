@@ -86,7 +86,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     }
 
     public virtual ILoadedObjectData ResolveObjectRelationData (
-        DataContainer originatingDataContainer, 
         RelationEndPointID relationEndPointID, 
         ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
@@ -94,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       using (var persistenceManager = CreatePersistenceManager())
       {
-        var dataContainer = persistenceManager.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
+        var dataContainer = persistenceManager.LoadRelatedDataContainer (relationEndPointID);
         return GetLoadedObjectData (dataContainer, alreadyLoadedObjectDataProvider);
       }
     }

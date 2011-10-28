@@ -92,7 +92,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     }
 
     public virtual ILoadedObjectData ResolveObjectRelationData (
-        DataContainer originatingDataContainer,
         RelationEndPointID relationEndPointID,
         ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {

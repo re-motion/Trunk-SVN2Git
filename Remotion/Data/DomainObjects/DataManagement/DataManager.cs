@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Data.DomainObjects.Validation;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -150,6 +149,31 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
     }
 
+    public void Discard (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+      var unregisterEndPointsCommand = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
+      var unregisterDataContainerCommand = CreateUnregisterDataContainerCommand (dataContainer.ID);
+      var compositeCommand = new CompositeCommand (unregisterEndPointsCommand, unregisterDataContainerCommand);
+
+      try
+      {
+        compositeCommand.NotifyAndPerform ();
+      }
+      catch (Exception ex)
+      {
+        var message = string.Format ("Cannot discard data for object '{0}': {1}", dataContainer.ID, ex.Message);
+        throw new InvalidOperationException (message, ex);
+      }
+
+      dataContainer.Discard ();
+
+      var domainObject = dataContainer.DomainObject;
+      if (_invalidDomainObjectManager.MarkInvalid (domainObject))
+        _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);
+    }
+
     public bool TrySetCollectionEndPointData (RelationEndPointID relationEndPointID, DomainObject[] items)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
@@ -189,31 +213,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         Discard (newDataContainer);
 
       _dataContainerMap.RollbackAllDataContainers();
-    }
-
-    public void Discard (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      var unregisterEndPointsCommand = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
-      var unregisterDataContainerCommand = CreateUnregisterDataContainerCommand (dataContainer.ID);
-      var compositeCommand = new CompositeCommand (unregisterEndPointsCommand, unregisterDataContainerCommand);
-
-      try
-      {
-        compositeCommand.NotifyAndPerform ();
-      }
-      catch (Exception ex)
-      {
-        var message = string.Format ("Cannot discard data for object '{0}': {1}", dataContainer.ID, ex.Message);
-        throw new InvalidOperationException (message, ex);
-      }
-
-      dataContainer.Discard();
-
-      var domainObject = dataContainer.DomainObject;
-      if (_invalidDomainObjectManager.MarkInvalid (domainObject))
-        _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);
     }
 
     public DataContainer GetDataContainerWithoutLoading (ObjectID objectID)
@@ -269,7 +268,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (virtualObjectEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var domainObject = _objectLoader.GetOrLoadRelatedObject (virtualObjectEndPoint.ID, this, new LoadedObjectDataProvider (this, _invalidDomainObjectManager));
+      var alreadyLoadedObjectDataProvider = new LoadedObjectDataProvider (this, _invalidDomainObjectManager);
+      var domainObject = _objectLoader.GetOrLoadRelatedObject (virtualObjectEndPoint.ID, this, alreadyLoadedObjectDataProvider);
+
       // Since RelationEndPointManager.RegisterEndPoint contains a query optimization for 1:1 relations, it is possible that
       // loading the related object has already marked the end-point complete. In that case, we won't call it again (to avoid an exception).
       if (!virtualObjectEndPoint.IsDataComplete)
