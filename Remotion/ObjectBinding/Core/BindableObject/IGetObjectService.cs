@@ -37,8 +37,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// The <see cref="BindableObjectClassWithIdentity"/> containing the metadata for the object's type. Must not be <see langword="null" />.
     /// </param>
     /// <param name="uniqueIdentifier">The unique identifier of the object. Must not be <see langword="null" /> or empty.</param>
-    /// <returns>The object specified by <paramref name="uniqueIdentifier"/>.</returns>
-    /// <remarks>The behavior for missing objects is not defined and depends on the specific implementation of the <see cref="IGetObjectService"/>.</remarks>
+    /// <returns>The object specified by <paramref name="uniqueIdentifier"/> or <see langword="null" /> of not found.</returns>
     IBusinessObjectWithIdentity GetObject ([NotNull] BindableObjectClassWithIdentity classWithIdentity, [NotNull] string uniqueIdentifier);
   }
 }
