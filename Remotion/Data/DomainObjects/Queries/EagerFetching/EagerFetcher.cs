@@ -51,6 +51,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IQuery fetchQuery,
         IObjectLoader fetchQueryResultLoader,
         IDataManager dataManager,
+        IDataContainerLifetimeManager lifetimeManager,
         ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("originalObjects", originalObjects);
@@ -58,6 +59,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
       ArgumentUtility.CheckNotNull ("fetchQueryResultLoader", fetchQueryResultLoader);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
 
       s_log.DebugFormat (
@@ -67,7 +69,8 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
           fetchQuery.Statement);
 
       // Executing the query will automatically register all loaded DomainObjects. End-points will be explicitly marked complete below.
-      var fetchedObjects = fetchQueryResultLoader.GetOrLoadCollectionQueryResult<DomainObject> (fetchQuery, dataManager, alreadyLoadedObjectDataProvider);
+      var fetchedObjects = fetchQueryResultLoader.GetOrLoadCollectionQueryResult<DomainObject> (
+          fetchQuery, lifetimeManager, alreadyLoadedObjectDataProvider, dataManager);
       s_log.DebugFormat (
           "The eager fetch query yielded {0} related objects for {1} original objects.",
           fetchedObjects.Length,

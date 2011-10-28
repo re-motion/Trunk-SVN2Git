@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var result = ClientTransactionComponentFactoryUtility.CreateQueryManager (
           clientTransaction,
           persistenceStrategy,
-          objectLoader,
+          objectLoader, 
           dataManager,
           invalidDomainObjectManager,
           eventSink);
@@ -137,6 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (result, Is.TypeOf (typeof (QueryManager)));
       Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
       Assert.That (((QueryManager) result).ObjectLoader, Is.SameAs (objectLoader));
+      Assert.That (((QueryManager) result).DataContainerLifetimeManager, Is.SameAs (dataManager));
       Assert.That (((QueryManager) result).DataManager, Is.SameAs (dataManager));
       Assert.That (((QueryManager) result).AlreadyLoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider>()
           .With.Property ((LoadedObjectDataProvider provider) => provider.DataContainerProvider).SameAs (dataManager)

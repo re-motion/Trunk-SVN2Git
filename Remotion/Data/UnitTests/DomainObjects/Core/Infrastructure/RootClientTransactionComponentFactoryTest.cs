@@ -168,11 +168,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
 
-      var result = _factory.CreateQueryManager (_fakeConstructedTransaction, persistenceStrategy, objectLoader, dataManager, invalidDomainObjectManager, eventSink);
+      var result = _factory.CreateQueryManager (
+          _fakeConstructedTransaction,
+          persistenceStrategy,
+          objectLoader,
+          dataManager,
+          invalidDomainObjectManager,
+          eventSink);
 
       Assert.That (result, Is.TypeOf (typeof (QueryManager)));
       Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
       Assert.That (((QueryManager) result).ObjectLoader, Is.SameAs (objectLoader));
+      Assert.That (((QueryManager) result).DataContainerLifetimeManager, Is.SameAs (dataManager));
       Assert.That (((QueryManager) result).DataManager, Is.SameAs (dataManager));
       Assert.That (((QueryManager) result).AlreadyLoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ()
           .With.Property ((LoadedObjectDataProvider provider) => provider.DataContainerProvider).SameAs (dataManager)

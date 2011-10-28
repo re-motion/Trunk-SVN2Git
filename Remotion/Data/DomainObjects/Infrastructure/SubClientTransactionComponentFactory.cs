@@ -134,13 +134,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new DataManager (constructedTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
     }
 
-    public IQueryManager CreateQueryManager (
-        ClientTransaction constructedTransaction,
-        IPersistenceStrategy persistenceStrategy,
-        IObjectLoader objectLoader,
-        IDataManager dataManager,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IClientTransactionListener eventSink)
+    public IQueryManager CreateQueryManager (ClientTransaction constructedTransaction, IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IDataManager dataManager, IInvalidDomainObjectManager invalidDomainObjectManager, IClientTransactionListener eventSink)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
@@ -151,7 +145,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ClientTransactionComponentFactoryUtility.CreateQueryManager (
           constructedTransaction,
           persistenceStrategy,
-          objectLoader,
+          objectLoader, 
           dataManager,
           invalidDomainObjectManager,
           eventSink);

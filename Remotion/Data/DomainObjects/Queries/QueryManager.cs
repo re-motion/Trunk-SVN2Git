@@ -33,6 +33,7 @@ namespace Remotion.Data.DomainObjects.Queries
     private readonly IObjectLoader _objectLoader;
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IDataContainerLifetimeManager _dataContainerLifetimeManager;
     private readonly IDataManager _dataManager;
     private readonly ILoadedObjectDataProvider _alreadyLoadedObjectDataProvider;
 
@@ -46,6 +47,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// the <see cref="ClientTransaction"/> housing the objects loaded by queries.</param>
     /// <param name="clientTransaction">The client transaction to use for the notifications via <paramref name="transactionEventSink"/>.</param>
     /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
+    /// <param name="dataContainerLifetimeManager">The <see cref="IDataContainerLifetimeManager"/> used to register data with the <see cref="ClientTransaction"/>.</param>
     /// <param name="dataManager">The <see cref="IDataManager"/> managing the data inside the <see cref="ClientTransaction"/>.</param>
     /// <param name="alreadyLoadedObjectDataProvider">The <see cref="ILoadedObjectDataProvider"/> to use to determine objects already loaded into the 
     /// transaction.</param>
@@ -54,6 +56,7 @@ namespace Remotion.Data.DomainObjects.Queries
         IObjectLoader objectLoader,
         ClientTransaction clientTransaction,
         IClientTransactionListener transactionEventSink,
+        IDataContainerLifetimeManager dataContainerLifetimeManager,
         IDataManager dataManager,
         ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
@@ -61,6 +64,7 @@ namespace Remotion.Data.DomainObjects.Queries
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+      ArgumentUtility.CheckNotNull ("dataContainerLifetimeManager", dataContainerLifetimeManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
 
@@ -68,6 +72,7 @@ namespace Remotion.Data.DomainObjects.Queries
       _objectLoader = objectLoader;
       _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
+      _dataContainerLifetimeManager = dataContainerLifetimeManager;
       _dataManager = dataManager;
       _alreadyLoadedObjectDataProvider = alreadyLoadedObjectDataProvider;
     }
@@ -90,6 +95,11 @@ namespace Remotion.Data.DomainObjects.Queries
     public IClientTransactionListener TransactionEventSink
     {
       get { return _transactionEventSink; }
+    }
+
+    public IDataContainerLifetimeManager DataContainerLifetimeManager
+    {
+      get { return _dataContainerLifetimeManager; }
     }
 
     public IDataManager DataManager
@@ -179,7 +189,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Scalar)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
-      var resultArray = _objectLoader.GetOrLoadCollectionQueryResult<T> (query, _dataManager, _alreadyLoadedObjectDataProvider);
+      var resultArray = _objectLoader.GetOrLoadCollectionQueryResult<T> (query, _dataContainerLifetimeManager, _alreadyLoadedObjectDataProvider, _dataManager);
       var queryResult = new QueryResult<T> (query, resultArray);
       return _transactionEventSink.FilterQueryResult (_clientTransaction, queryResult);
     }

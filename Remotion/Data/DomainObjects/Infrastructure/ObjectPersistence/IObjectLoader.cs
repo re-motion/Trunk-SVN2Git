@@ -30,6 +30,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataContainerLifetimeManager lifetimeManager);
     DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
     DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
-    T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider) where T : DomainObject;
+    T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider, IDataManager dataManager) where T : DomainObject;
   }
 }

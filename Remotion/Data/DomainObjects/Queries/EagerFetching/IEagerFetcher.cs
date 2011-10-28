@@ -31,6 +31,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IQuery fetchQuery,
         IObjectLoader fetchQueryResultLoader,
         IDataManager dataManager,
+        IDataContainerLifetimeManager lifetimeManager,
         ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
   }
 }

@@ -138,19 +138,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjects, lifetimeManager).Select (ConvertLoadedDomainObject<DomainObject>).ToArray();
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider) where T : DomainObject
+    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider, IDataManager dataManager) where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
 
       var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, alreadyLoadedObjectDataProvider);
-      var resultArray = _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, dataManager).Select (ConvertLoadedDomainObject<T>).ToArray();
+      var resultArray = _loadedObjectDataRegistrationAgent
+          .RegisterIfRequired (loadedObjectData, lifetimeManager)
+          .Select (ConvertLoadedDomainObject<T>)
+          .ToArray ();
       
       if (resultArray.Length > 0)
       {
         foreach (var fetchQuery in query.EagerFetchQueries)
-          _eagerFetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this, dataManager, alreadyLoadedObjectDataProvider);
+          _eagerFetcher.PerformEagerFetching (
+              resultArray, fetchQuery.Key, fetchQuery.Value, this, dataManager, lifetimeManager, alreadyLoadedObjectDataProvider);
       }
 
       return resultArray;

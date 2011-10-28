@@ -254,12 +254,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _loadedObjectDataRegistrationAgentMock
           .Expect (mock => mock.RegisterIfRequired (
               Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _fakeLoadedObjectData1, _fakeLoadedObjectData2 }),
-              Arg.Is (_dataManagerStub)))
+              Arg.Is (_lifetimeManagerStub)))
           .Return (new[] { _domainObject1, _domainObject2 });
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectDataProviderStub);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
@@ -275,12 +275,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Expect (
               mock =>
               mock.RegisterIfRequired (
-                  Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _fakeLoadedObjectData1, _fakeLoadedObjectData2 }), Arg.Is (_dataManagerStub)))
+                  Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _fakeLoadedObjectData1, _fakeLoadedObjectData2 }), Arg.Is (_lifetimeManagerStub)))
           .Return (new[] { _domainObject1, null });
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectDataProviderStub);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1, null }));
@@ -298,12 +298,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _loadedObjectDataRegistrationAgentMock
           .Expect (
               mock =>
-              mock.RegisterIfRequired (Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _fakeLoadedObjectData1 }), Arg.Is (_dataManagerStub)))
+              mock.RegisterIfRequired (Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _fakeLoadedObjectData1 }), Arg.Is (_lifetimeManagerStub)))
           .Return (new[] { _domainObject1 });
 
       _mockRepository.ReplayAll ();
 
-      _objectLoader.GetOrLoadCollectionQueryResult<Customer> (_fakeQuery, _dataManagerStub, _loadedObjectDataProviderStub);
+      _objectLoader.GetOrLoadCollectionQueryResult<Customer> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
     }
 
     [Test]
@@ -317,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Expect (mock => mock.ExecuteCollectionQuery (_fakeQuery, _loadedObjectDataProviderStub))
           .Return (new[] { _fakeLoadedObjectData1 });
       _loadedObjectDataRegistrationAgentMock
-          .Expect (mock => mock.RegisterIfRequired (Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _fakeLoadedObjectData1 }), Arg.Is (_dataManagerStub)))
+          .Expect (mock => mock.RegisterIfRequired (Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _fakeLoadedObjectData1 }), Arg.Is (_lifetimeManagerStub)))
           .Return (new[] { _domainObject1 });
       _fetcherMock
           .Expect (mock => mock.PerformEagerFetching (
@@ -326,11 +326,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
               Arg.Is (fetchQueryStub),
               Arg.Is (_objectLoader),
               Arg.Is (_dataManagerStub), 
+              Arg.Is (_lifetimeManagerStub), 
               Arg.Is (_loadedObjectDataProviderStub)));
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectDataProviderStub);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1 }));
@@ -347,12 +348,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Expect (mock => mock.ExecuteCollectionQuery (_fakeQuery, _loadedObjectDataProviderStub))
           .Return (new ILoadedObjectData[0]);
       _loadedObjectDataRegistrationAgentMock
-          .Expect (mock => mock.RegisterIfRequired (Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new ILoadedObjectData[0]), Arg.Is (_dataManagerStub)))
+          .Expect (mock => mock.RegisterIfRequired (Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new ILoadedObjectData[0]), Arg.Is (_lifetimeManagerStub)))
           .Return (new DomainObject[0]);
 
       _mockRepository.ReplayAll ();
 
-      _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _dataManagerStub, _loadedObjectDataProviderStub);
+      _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
 
       _fetcherMock.AssertWasNotCalled (mock => mock.PerformEagerFetching (
           Arg<DomainObject[]>.Is.Anything,
@@ -360,6 +361,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           Arg<IQuery>.Is.Anything,
           Arg<IObjectLoader>.Is.Anything,
           Arg<IDataManager>.Is.Anything, 
+          Arg<IDataContainerLifetimeManager>.Is.Anything, 
           Arg<ILoadedObjectDataProvider>.Is.Anything));
     }
 

@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           new LoadedObjectDataRegistrationAgent (clientTransaction, eventSink));
     }
 
-   public static IQueryManager CreateQueryManager (
+    public static IQueryManager CreateQueryManager (
         ClientTransaction clientTransaction,
         IPersistenceStrategy persistenceStrategy,
         IObjectLoader objectLoader,
@@ -86,16 +86,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-     ArgumentUtility.CheckNotNull ("eventSink", eventSink);
-     ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
 
-     return new QueryManager (
-         persistenceStrategy,
-         objectLoader,
-         clientTransaction,
-         eventSink,
-         dataManager,
-         new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager));
+      return new QueryManager (
+          persistenceStrategy,
+          objectLoader,
+          clientTransaction,
+          eventSink,
+          dataManager,
+          dataManager,
+          new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager));
     }
   }
 }
