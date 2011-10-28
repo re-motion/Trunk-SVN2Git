@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
       var tenantFilter = (ITenantConstraint) searchArguments;
 
-      return User.FindByTenantID (tenantFilter.Value).Cast<IBusinessObject>().AsQueryable();
+      return User.FindByTenantID (tenantFilter.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
     }
 
     private IQueryable<IBusinessObject> FindPossibleSubstitutedRoles (

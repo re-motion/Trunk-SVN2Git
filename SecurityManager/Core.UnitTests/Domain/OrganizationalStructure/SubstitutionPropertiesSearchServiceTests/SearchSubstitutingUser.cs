@@ -16,7 +16,9 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -28,8 +30,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
   public class SearchSubstitutingUser : SubstitutionPropertiesSearchServiceTestBase
   {
     private ISearchAvailableObjectsService _searchService;
-    private IBusinessObjectReferenceProperty _substitutingUserProperty;
+    private IBusinessObjectReferenceProperty _property;
     private User _user;
+    private ObjectID _tenantID;
 
     public override void SetUp ()
     {
@@ -37,28 +40,69 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
 
       _searchService = new SubstitutionPropertiesSearchService();
       IBusinessObjectClass substitutionClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Substitution));
-      _substitutingUserProperty = (IBusinessObjectReferenceProperty) substitutionClass.GetPropertyDefinition ("SubstitutingUser");
-      Assert.That (_substitutingUserProperty, Is.Not.Null);
+      _property = (IBusinessObjectReferenceProperty) substitutionClass.GetPropertyDefinition ("SubstitutingUser");
+      Assert.That (_property, Is.Not.Null);
 
       _user = User.FindByUserName ("group0/user1");
       Assert.That (_user, Is.Not.Null);
-    }
+
+      _tenantID = _user.Tenant.ID;
+   }
 
     [Test]
     public void SupportsProperty ()
     {
-      Assert.That (_searchService.SupportsProperty (_substitutingUserProperty), Is.True);
+      Assert.That (_searchService.SupportsProperty (_property), Is.True);
     }
 
     [Test]
     public void Search ()
     {
-      var expectedUsers = User.FindByTenantID (_user.Tenant.ID);
+      var expectedUsers = User.FindByTenantID (_tenantID);
       Assert.That (expectedUsers, Is.Not.Empty);
 
-      IBusinessObject[] actualUsers = _searchService.Search (null, _substitutingUserProperty, new SecurityManagerSearchArguments (_user.Tenant.ID, null, null));
+      IBusinessObject[] actualUsers = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, null));
 
       Assert.That (actualUsers, Is.EquivalentTo (expectedUsers));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_FindLastNameContainingPrefix ()
+    {
+      var expected = User.FindByTenantID (_tenantID).Where (u => u.LastName.Contains ("user")).ToArray();
+      Assert.That (expected.Length, Is.GreaterThan (1));
+
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "user"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_FindFirstNameContainingPrefix ()
+    {
+      var expected = User.FindByTenantID (_tenantID).Where (u => u.FirstName.Contains ("est")).ToArray();
+      Assert.That (expected, Is.Not.Empty);
+
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "est"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Search_WithResultSizeConstraint ()
+    {
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 3, null));
+
+      Assert.That (actual.Length, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
+    {
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, "user")).ToArray();
+
+      Assert.That (actual.Length, Is.EqualTo (1));
+      Assert.That (((User) actual[0]).LastName, Is.StringContaining ("user"));
     }
   }
 }
