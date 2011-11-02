@@ -31,14 +31,14 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
   public abstract class SecurityManagerSearchServiceBase<TReferencingObject> : ISearchAvailableObjectsService
       where TReferencingObject: BaseSecurityManagerObject
   {
-    protected delegate IQueryable<IBusinessObject> SearchDelegate (
+    protected delegate IQueryable<IBusinessObject> QueryFactory (
         TReferencingObject referencingObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments);
 
     public abstract bool SupportsProperty (IBusinessObjectReferenceProperty property);
 
-    protected abstract SearchDelegate GetSearchDelegate (IBusinessObjectReferenceProperty property);
+    protected abstract QueryFactory GetQueryFactory (IBusinessObjectReferenceProperty property);
 
     public IBusinessObject[] Search (
         IBusinessObject referencingObject,
@@ -48,19 +48,19 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       var referencingSecurityManagerObject = ArgumentUtility.CheckType<TReferencingObject> ("referencingObject", referencingObject);
       ArgumentUtility.CheckNotNull ("property", property);
 
-      var searchDelegate = GetSearchDelegate(property);
+      var queryFactory = GetQueryFactory (property);
 
       var securityManagerSearchArguments = CreateSearchArguments (searchArguments);
-      return CreateQuery (searchDelegate, referencingSecurityManagerObject, property, securityManagerSearchArguments).ToArray();
+      return CreateQuery (queryFactory, referencingSecurityManagerObject, property, securityManagerSearchArguments).ToArray();
     }
 
     private IQueryable<IBusinessObject> CreateQuery (
-        SearchDelegate searchDelegate,
+        QueryFactory queryFactory,
         TReferencingObject referencingSecurityManagerObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
-      var query = searchDelegate (referencingSecurityManagerObject, property, searchArguments);
+      var query = queryFactory (referencingSecurityManagerObject, property, searchArguments);
       // ReSharper disable RedundantCast
       return query.Apply ((IResultSizeConstraint) searchArguments);
       // ReSharper restore RedundantCast

@@ -35,8 +35,8 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public RolePropertiesSearchService ()
     {
-      AddSearchDelegate ("Group", SearchGroups);
-      AddSearchDelegate ("User", SearchUsers);
+      RegisterQueryFactory ("Group", SearchGroups);
+      RegisterQueryFactory ("User", SearchUsers);
     }
 
     private IQueryable<IBusinessObject> SearchGroups (

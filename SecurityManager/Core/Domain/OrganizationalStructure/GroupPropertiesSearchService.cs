@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public GroupPropertiesSearchService ()
     {
-      AddSearchDelegate ("Parent", SearchPossibleParentGroups);
+      RegisterQueryFactory ("Parent", SearchPossibleParentGroups);
     }
 
     private IQueryable<IBusinessObject> SearchPossibleParentGroups (

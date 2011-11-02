@@ -35,8 +35,8 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public SubstitutionPropertiesSearchService ()
     {
-      AddSearchDelegate ("SubstitutingUser", FindPossibleSubstitutingUsers);
-      AddSearchDelegate ("SubstitutedRole", FindPossibleSubstitutedRoles);
+      RegisterQueryFactory ("SubstitutingUser", FindPossibleSubstitutingUsers);
+      RegisterQueryFactory ("SubstitutedRole", FindPossibleSubstitutedRoles);
     }
 
     private IQueryable<IBusinessObject> FindPossibleSubstitutingUsers (

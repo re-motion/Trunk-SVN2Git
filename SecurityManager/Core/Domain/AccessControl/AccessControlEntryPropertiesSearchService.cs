@@ -37,12 +37,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   {
     public AccessControlEntryPropertiesSearchService ()
     {
-      AddSearchDelegate ("SpecificTenant", delegate { return Tenant.FindAll().Cast<IBusinessObject>().AsQueryable(); });
-      AddSearchDelegate ("SpecificGroup", SearchGroups);
-      AddSearchDelegate ("SpecificUser", SearchUsers);
-      AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll().Cast<IBusinessObject>().AsQueryable(); });
-      AddSearchDelegate ("SpecificGroupType", delegate { return GroupType.FindAll().Cast<IBusinessObject>().AsQueryable(); });
-      AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().Cast<IBusinessObject>().AsQueryable(); });
+      RegisterQueryFactory ("SpecificTenant", delegate { return Tenant.FindAll().Cast<IBusinessObject>().AsQueryable(); });
+      RegisterQueryFactory ("SpecificGroup", SearchGroups);
+      RegisterQueryFactory ("SpecificUser", SearchUsers);
+      RegisterQueryFactory ("SpecificPosition", delegate { return Position.FindAll().Cast<IBusinessObject>().AsQueryable(); });
+      RegisterQueryFactory ("SpecificGroupType", delegate { return GroupType.FindAll().Cast<IBusinessObject>().AsQueryable(); });
+      RegisterQueryFactory ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().Cast<IBusinessObject>().AsQueryable(); });
     }
 
     private IQueryable<IBusinessObject> SearchGroups (

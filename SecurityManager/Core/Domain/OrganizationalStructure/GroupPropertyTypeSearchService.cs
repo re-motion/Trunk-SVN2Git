@@ -25,20 +25,18 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
   /// <summary>
-  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for the <see cref="User"/> type.
+  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="Group"/> type.
+  /// The <see cref="ISearchAvailableObjectsService.Search"/> method filters by <see cref="ITenantConstraint"/>, <see cref="IDisplayNameConstraint"/>,
+  /// and <see cref="IResultSizeConstraint"/>.
   /// </summary>
   /// <remarks>
-  /// The service is applied to the <see cref="User.OwningGroup"/> property via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
+  /// The service can be applied to any <see cref="Group"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
+  /// via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public sealed class UserPropertiesSearchService : SecurityManagerPropertyBasedSearchServiceBase<User>
+  public class GroupPropertyTypeSearchService : SecurityManagerPropertyTypeBasedSearchServiceBase<Group>
   {
-    public UserPropertiesSearchService ()
-    {
-      RegisterQueryFactory ("OwningGroup", SearchPossibleOwningGroups);
-    }
-
-    private IQueryable<IBusinessObject> SearchPossibleOwningGroups (
-        User referencingObject,
+    protected override IQueryable<IBusinessObject> CreateQuery (
+        BaseSecurityManagerObject referencingObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {

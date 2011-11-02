@@ -144,6 +144,7 @@
     <Compile Include="Domain\ISecurityManagerPrincipalFactory.cs" />
     <Compile Include="Domain\LockingSecurityManagerPrincipalDecorator.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupPropertyTypeSearchService.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureObjectProxy.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionProxy.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantProxy.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Domain\SearchInfrastructure\ITenantConstraint.cs" />
     <Compile Include="Domain\SearchInfrastructure\ResultSizeExtensions.cs" />
     <Compile Include="Domain\SearchInfrastructure\SecurityManagerPropertyBasedSearchServiceBase.cs" />
+    <Compile Include="Domain\SearchInfrastructure\SecurityManagerPropertyTypeBasedSearchServiceBase.cs" />
     <Compile Include="Domain\SearchInfrastructure\SecurityManagerSearchArguments.cs" />
     <Compile Include="Domain\SecurityManagerPrincipal.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalFactory.cs" />

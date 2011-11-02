@@ -16,7 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
@@ -25,42 +25,40 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   /// <summary>
   /// Base-Implementation of <see cref="ISearchAvailableObjectsService"/> for the <see cref="BaseSecurityManagerObject"/> type when implementing a 
-  /// search service for a specific property.
+  /// search service for a specific property type.
   /// </summary>
-  /// <typeparam name="TReferencingObject">The <see cref="Type"/> of the object that exposes the property.</typeparam>
+  /// <typeparam name="TReferencedObject">The <see cref="Type"/> of the object referenced by the property.</typeparam>
   /// <remarks>
-  /// Inherit from this type and add search delegates for the properties the specified <typeparamref name="TReferencingObject"/> using the <see cref="RegisterQueryFactory"/> 
-  /// method from the constructor.
+  /// Inherit from this type and implement the <see cref="CreateQuery"/> template method to return a new query for the 
+  /// <typeparamref name="TReferencedObject"/>.
   /// </remarks>
-  public abstract class SecurityManagerPropertyBasedSearchServiceBase<TReferencingObject> : SecurityManagerSearchServiceBase<TReferencingObject>
-      where TReferencingObject: BaseSecurityManagerObject
+  public abstract class SecurityManagerPropertyTypeBasedSearchServiceBase<TReferencedObject>
+      : SecurityManagerSearchServiceBase<BaseSecurityManagerObject>
+      where TReferencedObject: BaseSecurityManagerObject
   {
-    private readonly Dictionary<string, QueryFactory> _queryFactories = new Dictionary<string, QueryFactory>();
-
-    protected void RegisterQueryFactory (string propertyName, QueryFactory queryFactory)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("queryFactory", queryFactory);
-
-      _queryFactories.Add (propertyName, queryFactory);
-    }
+    protected abstract IQueryable<IBusinessObject> CreateQuery (
+        BaseSecurityManagerObject referencingObject,
+        IBusinessObjectReferenceProperty property,
+        SecurityManagerSearchArguments searchArguments);
 
     public override sealed bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
-      return _queryFactories.ContainsKey (property.Identifier);
+      return typeof (TReferencedObject).IsAssignableFrom (property.PropertyType);
     }
 
     protected override sealed QueryFactory GetQueryFactory (IBusinessObjectReferenceProperty property)
     {
-      QueryFactory queryFactory;
-      if (!_queryFactories.TryGetValue (property.Identifier, out queryFactory))
+      ArgumentUtility.CheckNotNull ("property", property);
+
+      if (!SupportsProperty (property))
       {
         throw new ArgumentException (
-            string.Format ("The property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
+            string.Format ("The type of the property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
       }
-      return queryFactory;
+
+      return CreateQuery;
     }
   }
 }
