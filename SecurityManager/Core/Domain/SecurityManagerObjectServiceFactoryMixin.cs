@@ -39,16 +39,8 @@ namespace Remotion.SecurityManager.Domain
   ///     <description>Service creates instance of type</description>
   ///   </listheader>
   ///   <item>
-  ///     <term><see cref="UserPropertiesSearchService"/></term>
-  ///     <description><see cref="UserPropertiesSearchService"/></description>
-  ///   </item>
-  ///   <item>
   ///     <term><see cref="GroupPropertiesSearchService"/></term>
   ///     <description><see cref="GroupPropertiesSearchService"/></description>
-  ///   </item>
-  ///   <item>
-  ///     <term><see cref="RolePropertiesSearchService"/></term>
-  ///     <description><see cref="RolePropertiesSearchService"/></description>
   ///   </item>
   /// </list>
   /// </remarks>
@@ -66,14 +58,8 @@ namespace Remotion.SecurityManager.Domain
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("serviceType", serviceType, typeof (IBusinessObjectService));
 
-      if (serviceType == typeof (UserPropertiesSearchService))
-        return new UserPropertiesSearchService();
-
       if (serviceType == typeof (GroupPropertiesSearchService))
         return new GroupPropertiesSearchService();
-
-      if (serviceType == typeof (RolePropertiesSearchService))
-        return new RolePropertiesSearchService();
 
       if (serviceType == typeof (SubstitutionPropertiesSearchService))
         return new SubstitutionPropertiesSearchService ();

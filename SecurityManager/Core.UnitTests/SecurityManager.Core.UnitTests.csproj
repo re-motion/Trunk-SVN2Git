@@ -195,8 +195,6 @@
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GroupTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\OnCommitting.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\SecurableObjectImpelementation.cs" />
-    <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\RolePropertiesSearchServiceTestBase.cs" />
-    <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\BindableObjectImpelementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossiblePositions.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\DeleteRole.cs" />
@@ -255,10 +253,6 @@
     <Compile Include="Domain\Metadata\SecurableClassDefinitionTest.cs" />
     <Compile Include="Domain\Metadata\StatePropertyDefinitionTest.cs" />
     <Compile Include="Domain\Metadata\SecurableClassDefinitionWrapper.cs" />
-    <Compile Include="Domain\OrganizationalStructure\UserPropertiesSearchServiceTest.cs" />
-    <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SearchOtherProperty.cs" />
-    <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SearchUser.cs" />
-    <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SearchGroup.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTypePositionTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureFactoryTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupPropertiesSearchServiceTest.cs" />

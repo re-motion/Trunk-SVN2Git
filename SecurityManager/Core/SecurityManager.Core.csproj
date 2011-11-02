@@ -197,8 +197,6 @@
     <Compile Include="Domain\Metadata\StateDefinition.cs" />
     <Compile Include="Domain\Metadata\StatePropertyDefinition.cs" />
     <Compile Include="Domain\Metadata\StatePropertyReference.cs" />
-    <Compile Include="Domain\OrganizationalStructure\UserPropertiesSearchService.cs" />
-    <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchService.cs" />
     <Compile Include="Domain\OrganizationalStructure\Delegation.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupPropertiesSearchService.cs" />
     <Compile Include="Domain\OrganizationalStructure\Tenant.cs" />
