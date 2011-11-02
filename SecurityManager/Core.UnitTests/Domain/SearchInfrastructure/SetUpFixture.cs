@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupPropertyTypeSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure
 {
   [SetUpFixture]
   public class SetUpFixture

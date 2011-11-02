@@ -15,9 +15,11 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupPropertyTypeSearchServiceTests
+using Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure;
+
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure
 {
-  public class GroupPropertyTypeSearchServiceTestBase : DomainTest
+  public class SearchServiceTestBase : DomainTest
   {
     private OrganizationalStructureTestHelper _testHelper;
 
