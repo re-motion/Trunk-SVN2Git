@@ -24,7 +24,9 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
@@ -52,13 +54,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return GetObject<Tenant> (id);
     }
 
-    public static ObjectList<Tenant> FindAll ()
+    public static IQueryable<Tenant> FindAll ()
     {
-      var result = from t in QueryFactory.CreateLinqQuery<Tenant>()
-                   orderby t.Name
-                   select t;
-
-      return result.ToObjectList();
+      return from t in QueryFactory.CreateLinqQuery<Tenant>()
+             orderby t.Name
+             select t;
     }
 
     public static Tenant FindByUnqiueIdentifier (string uniqueIdentifier)
@@ -95,6 +95,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract bool IsAbstract { get; set; }
 
     [DBBidirectionalRelation ("Children")]
+    [SearchAvailableObjectsServiceType (typeof (TenantPropertyTypeSearchService))]
     public abstract Tenant Parent { get; set; }
 
     [DBBidirectionalRelation ("Parent")]
@@ -156,7 +157,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       }
 
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-      return Tenant.FindAll().Except (hierarchy).Where (t => securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
+      return Tenant.FindAll().ToArray().Except (hierarchy).Where (t => securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
     }
 
     /// <summary>

@@ -31,7 +31,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
   {
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _property;
-    private User _user;
     private ObjectID _tenantID;
 
     public override void SetUp ()
@@ -43,10 +42,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
       _property = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("User");
       Assert.That (_property, Is.Not.Null);
 
-      _user = User.FindByUserName ("group0/user1");
-      Assert.That (_user, Is.Not.Null);
+      var user = User.FindByUserName ("group0/user1");
+      Assert.That (user, Is.Not.Null);
 
-      _tenantID = _user.Tenant.ID;
+      _tenantID = user.Tenant.ID;
     }
 
     [Test]

@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Rhino.Mocks;
 
@@ -75,6 +74,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
 
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()
+          .AddService (typeof (TenantPropertyTypeSearchService), _searchServiceStub);
       _searchServiceStub.Stub (stub => stub.SupportsProperty (property)).Return (true);
       _searchServiceStub.Stub (stub => stub.Search (_ace, property, _searchServiceArgsStub)).Return (expected);
 

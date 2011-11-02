@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       var tenants = child1.GetPossibleParentTenants().ToArray();
 
-      var expectedTenants = Tenant.FindAll().Except (new[] { child1, grandChild1, grandChild2 }).ToArray();
+      var expectedTenants = Tenant.FindAll().ToArray().Except (new[] { child1, grandChild1, grandChild2 }).ToArray();
 
       Assert.That (tenants, Is.Not.Empty);
       Assert.That (tenants, Is.EquivalentTo (expectedTenants));
@@ -97,7 +97,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       var tenants = root.GetPossibleParentTenants().ToArray();
 
-      var expectedTenants = Tenant.FindAll().Except (new[] { root, child1, grandChild1 }).ToArray();
+      var expectedTenants = Tenant.FindAll().ToArray().Except (new[] { root, child1, grandChild1 }).ToArray();
 
       Assert.That (tenants, Is.Not.Empty);
       Assert.That (tenants, Is.EquivalentTo (expectedTenants));
@@ -129,7 +129,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       var tenants = grandChild1.GetPossibleParentTenants().ToArray();
 
-      var expectedTenants = Tenant.FindAll().Except (new[] { child1, grandChild1 }).ToArray();
+      var expectedTenants = Tenant.FindAll().ToArray().Except (new[] { child1, grandChild1 }).ToArray();
 
       Assert.That (tenants, Is.Not.Empty);
       Assert.That (tenants, Is.EquivalentTo (expectedTenants));

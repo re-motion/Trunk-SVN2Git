@@ -67,6 +67,9 @@ namespace Remotion.SecurityManager.Domain
       if (serviceType == typeof (AccessControlEntryPropertiesSearchService))
         return new AccessControlEntryPropertiesSearchService ();
 
+      if (serviceType == typeof (TenantPropertyTypeSearchService))
+        return new TenantPropertyTypeSearchService();
+
       if (serviceType == typeof (GroupPropertyTypeSearchService))
         return new GroupPropertyTypeSearchService();
       

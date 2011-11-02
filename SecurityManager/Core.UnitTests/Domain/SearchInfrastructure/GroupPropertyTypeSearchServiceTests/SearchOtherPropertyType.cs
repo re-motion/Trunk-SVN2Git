@@ -48,8 +48,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.GroupPr
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The type of the property 'Tenant' is not supported by the "
-        + "'Remotion.SecurityManager.Domain.SearchInfrastructure.GroupPropertyTypeSearchService' type.",
+        "The type of the property 'Tenant', declared on 'Remotion.SecurityManager.Domain.OrganizationalStructure.User, Remotion.SecurityManager', "
+        + "is not supported by the 'Remotion.SecurityManager.Domain.SearchInfrastructure.GroupPropertyTypeSearchService' type.",
         MatchType = MessageMatch.Contains)]
     public void Search_WithInvalidProperty ()
     {

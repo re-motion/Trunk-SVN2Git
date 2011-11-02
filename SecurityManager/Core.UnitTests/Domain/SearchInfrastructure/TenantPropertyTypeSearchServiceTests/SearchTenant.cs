@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -23,10 +24,10 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.GroupPropertyTypeSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.TenantPropertyTypeSearchServiceTests
 {
   [TestFixture]
-  public class SearchGroup : SearchServiceTestBase
+  public class SearchTenant : SearchServiceTestBase
   {
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _property;
@@ -36,15 +37,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.GroupPr
     {
       base.SetUp();
 
-      _searchService = new GroupPropertyTypeSearchService();
-      IBusinessObjectClass roleClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Role));
-      _property = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Group");
+      _searchService = new TenantPropertyTypeSearchService();
+      IBusinessObjectClass roleClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (User));
+      _property = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Tenant");
       Assert.That (_property, Is.Not.Null);
 
-      var group = Group.FindByUnqiueIdentifier ("UID: group0");
-      Assert.That (group, Is.Not.Null);
+      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
+      Assert.That (tenant, Is.Not.Null);
 
-      _tenantID = group.Tenant.ID;
+      _tenantID = tenant.ID;
     }
 
     [Test]
@@ -56,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.GroupPr
     [Test]
     public void Search ()
     {
-      var expected = Group.FindByTenantID (_tenantID).ToArray();
+      var expected = Tenant.FindAll().ToArray();
       Assert.That (expected, Is.Not.Empty);
 
       var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, null));
@@ -67,21 +68,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.GroupPr
     [Test]
     public void Search_WithDisplayNameConstraint_FindNameContainingPrefix ()
     {
-      var expected = Group.FindByTenantID (_tenantID).Where (g => g.Name.Contains ("Group1")).ToArray();
-      Assert.That (expected.Length, Is.GreaterThan (1));
+      var expected = Tenant.FindAll().Where (g => g.Name.Contains ("Test")).ToArray();
+      Assert.That (expected.Length, Is.EqualTo (1));
 
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "Group1"));
-
-      Assert.That (actual, Is.EquivalentTo (expected));
-    }
-
-    [Test]
-    public void Search_WithDisplayNameConstraint_FindShortNameContainingPrefix ()
-    {
-      var expected = Group.FindByTenantID (_tenantID).Where (g => g.ShortName.Contains ("G1")).ToArray();
-      Assert.That (expected.Length, Is.GreaterThan (1));
-
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "G1"));
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "Test"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
@@ -89,18 +79,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.GroupPr
     [Test]
     public void Search_WithResultSizeConstraint ()
     {
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 3, null));
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, null));
 
-      Assert.That (actual.Length, Is.EqualTo (3));
+      Assert.That (actual.Length, Is.EqualTo (1));
     }
 
     [Test]
     public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
     {
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, "Group1"));
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, "Tenant"));
 
       Assert.That (actual.Length, Is.EqualTo (1));
-      Assert.That (((Group) actual[0]).Name, Is.StringContaining ("group1"));
+      Assert.That (((Tenant) actual[0]).Name, Is.StringContaining ("Tenant"));
     }
   }
 }

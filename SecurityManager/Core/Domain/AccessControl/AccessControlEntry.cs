@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DisableEnumValues (typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
     public abstract UserCondition UserCondition { get; set; }
 
-    [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
+    [SearchAvailableObjectsServiceType (typeof (TenantPropertyTypeSearchService))]
     public abstract Tenant SpecificTenant { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (GroupPropertyTypeSearchService))]

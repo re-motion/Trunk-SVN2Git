@@ -17,10 +17,14 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.TenantTests
 {
@@ -119,6 +123,31 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       }
 
       Assert.IsTrue (isFound, "Property UnqiueIdentifier declared on Tenant was not found.");
+    }
+
+    [Test]
+    public void SearchParents ()
+    {
+      ISearchAvailableObjectsService searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectsService>();
+      ISearchAvailableObjectsArguments args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments>();
+
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()
+          .AddService (typeof (TenantPropertyTypeSearchService), searchServiceStub);
+      IBusinessObjectClass tenantClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Tenant));
+      IBusinessObjectReferenceProperty parentProperty = (IBusinessObjectReferenceProperty) tenantClass.GetPropertyDefinition ("Parent");
+      Assert.That (parentProperty, Is.Not.Null);
+
+      Tenant tenant = TestHelper.CreateTenant ("TestTenant", string.Empty);
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
+
+      searchServiceStub.Stub (stub => stub.SupportsProperty (parentProperty)).Return (true);
+      searchServiceStub.Stub (stub => stub.Search (tenant, parentProperty, args)).Return (expected);
+
+      Assert.That (parentProperty.SupportsSearchAvailableObjects, Is.True);
+
+      IBusinessObject[] actual = parentProperty.SearchAvailableObjects (tenant, args);
+      Assert.That (actual, Is.SameAs (expected));
     }
   }
 }

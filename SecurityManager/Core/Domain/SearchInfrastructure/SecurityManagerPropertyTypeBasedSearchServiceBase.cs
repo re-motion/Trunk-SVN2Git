@@ -38,7 +38,9 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
   {
     protected abstract IQueryable<IBusinessObject> CreateQuery (
         BaseSecurityManagerObject referencingObject,
-        IBusinessObjectReferenceProperty property, ITenantConstraint tenantConstraint, IDisplayNameConstraint displayNameConstraint);
+        IBusinessObjectReferenceProperty property,
+        ITenantConstraint tenantConstraint,
+        IDisplayNameConstraint displayNameConstraint);
 
     public override sealed bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {
@@ -54,7 +56,11 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       if (!SupportsProperty (property))
       {
         throw new ArgumentException (
-            string.Format ("The type of the property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
+            string.Format (
+                "The type of the property '{0}', declared on '{1}', is not supported by the '{2}' type.",
+                property.Identifier,
+                property.ReflectedClass.Identifier,
+                GetType().FullName));
       }
 
       return CreateQuery;

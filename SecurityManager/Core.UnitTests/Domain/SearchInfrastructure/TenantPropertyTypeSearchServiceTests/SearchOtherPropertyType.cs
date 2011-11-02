@@ -22,40 +22,40 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPropertyTypeSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.TenantPropertyTypeSearchServiceTests
 {
   [TestFixture]
   public class SearchOtherProperty : SearchServiceTestBase
   {
     private ISearchAvailableObjectsService _searchService;
-    private IBusinessObjectReferenceProperty _tenantProperty;
+    private IBusinessObjectReferenceProperty _groupProperty;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _searchService = new UserPropertyTypeSearchService();
+      _searchService = new TenantPropertyTypeSearchService();
       IBusinessObjectClass userClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (User));
-      _tenantProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("Tenant");
-      Assert.That (_tenantProperty, Is.Not.Null);
+      _groupProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("OwningGroup");
+      Assert.That (_groupProperty, Is.Not.Null);
     }
 
     [Test]
     public void SupportsProperty_WithInvalidProperty ()
     {
-      Assert.That (_searchService.SupportsProperty (_tenantProperty), Is.False);
+      Assert.That (_searchService.SupportsProperty (_groupProperty), Is.False);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The type of the property 'Tenant', declared on 'Remotion.SecurityManager.Domain.OrganizationalStructure.User, Remotion.SecurityManager', "
-        + "is not supported by the 'Remotion.SecurityManager.Domain.SearchInfrastructure.UserPropertyTypeSearchService' type.",
+        "The type of the property 'OwningGroup', declared on 'Remotion.SecurityManager.Domain.OrganizationalStructure.User, Remotion.SecurityManager', "
+        + "is not supported by the 'Remotion.SecurityManager.Domain.SearchInfrastructure.TenantPropertyTypeSearchService' type.",
         MatchType = MessageMatch.Contains)]
     public void Search_WithInvalidProperty ()
     {
       Role role = TestHelper.CreateRole (null, null, null);
 
-      _searchService.Search (role, _tenantProperty, null);
+      _searchService.Search (role, _groupProperty, null);
     }
   }
 }

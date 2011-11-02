@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       if (!_queryFactories.TryGetValue (property.Identifier, out queryFactory))
       {
         throw new ArgumentException (
-            string.Format ("The property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
+            string.Format ("The property '{0}' is not supported by the '{1}' type.", property.Identifier, GetType().FullName));
       }
       return queryFactory;
     }

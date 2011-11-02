@@ -24,6 +24,16 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   internal static class DisplayNameConstraintExtensions
   {
+    public static IQueryable<Tenant> Apply (this IQueryable<Tenant> tenants, IDisplayNameConstraint constraint)
+    {
+      ArgumentUtility.CheckNotNull ("tenants", tenants);
+
+      if (HasConstraint (constraint))
+        return tenants.Where (t => t.Name.Contains (constraint.Text));
+
+      return tenants;
+    }
+
     public static IQueryable<Group> Apply (this IQueryable<Group> groups, IDisplayNameConstraint constraint)
     {
       ArgumentUtility.CheckNotNull ("groups", groups);
@@ -39,7 +49,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       ArgumentUtility.CheckNotNull ("users", users);
 
       if (HasConstraint (constraint))
-        return users.Where (g => g.LastName.Contains (constraint.Text) || g.FirstName.Contains (constraint.Text));
+        return users.Where (u => u.LastName.Contains (constraint.Text) || u.FirstName.Contains (constraint.Text));
 
       return users;
     }

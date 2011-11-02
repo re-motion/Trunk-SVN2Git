@@ -29,14 +29,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// Implementation of <see cref="ISearchAvailableObjectsService"/> for the <see cref="AccessControlEntry"/> type.
   /// </summary>
   /// <remarks>
-  /// The service is applied to the <see cref="AccessControlEntry.SpecificTenant"/>, <see cref="AccessControlEntry.SpecificPosition"/>, 
+  /// The service is applied to the <see cref="AccessControlEntry.SpecificPosition"/>, <see cref="AccessControlEntry.SpecificGroupType"/>
   /// and <see cref="AccessControlEntry.SpecificAbstractRole"/> properties via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
   public class AccessControlEntryPropertiesSearchService : SecurityManagerPropertyBasedSearchServiceBase<AccessControlEntry>
   {
     public AccessControlEntryPropertiesSearchService ()
     {
-      RegisterQueryFactory ("SpecificTenant", delegate { return Tenant.FindAll().Cast<IBusinessObject>().AsQueryable(); });
       RegisterQueryFactory ("SpecificPosition", delegate { return Position.FindAll().Cast<IBusinessObject>().AsQueryable(); });
       RegisterQueryFactory ("SpecificGroupType", delegate { return GroupType.FindAll().Cast<IBusinessObject>().AsQueryable(); });
       RegisterQueryFactory ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().Cast<IBusinessObject>().AsQueryable(); });

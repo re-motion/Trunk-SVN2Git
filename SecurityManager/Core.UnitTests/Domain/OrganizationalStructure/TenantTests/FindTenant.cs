@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -40,9 +41,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     [Test]
     public void FindAll ()
     {
-      DomainObjectCollection tenants = Tenant.FindAll();
+      var tenants = Tenant.FindAll().ToArray();
 
-      Assert.AreEqual (2, tenants.Count);
+      Assert.AreEqual (2, tenants.Length);
       Assert.AreEqual (_expectedTenantID, tenants[1].ID);
     }
 
