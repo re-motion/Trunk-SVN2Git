@@ -113,7 +113,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract Tenant Tenant { get; set; }
 
     [Mandatory]
-    [SearchAvailableObjectsServiceType(typeof (UserPropertiesSearchService))]
+    [SearchAvailableObjectsServiceType(typeof (GroupPropertyTypeSearchService))]
     public abstract Group OwningGroup { get; set; }
 
     [DBBidirectionalRelation ("SubstitutingUser")]

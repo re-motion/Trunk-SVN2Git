@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.Domain
   /// </list>
   /// </remarks>
   [CLSCompliant (false)]
-  [Extends (typeof (BindableObjectServiceFactory), AdditionalDependencies = new Type[] {typeof (BindableDomainObjectServiceFactoryMixin)})]
+  [Extends (typeof (BindableObjectServiceFactory), AdditionalDependencies = new [] {typeof (BindableDomainObjectServiceFactoryMixin)})]
   public class SecurityManagerObjectServiceFactoryMixin
       : Mixin<BindableObjectServiceFactory, IBusinessObjectServiceFactory>, IBusinessObjectServiceFactory
   {
@@ -79,6 +79,9 @@ namespace Remotion.SecurityManager.Domain
 
       if (serviceType == typeof (AccessControlEntryPropertiesSearchService))
         return new AccessControlEntryPropertiesSearchService ();
+
+      if (serviceType == typeof (GroupPropertyTypeSearchService))
+        return new GroupPropertyTypeSearchService();
 
       return Next.CreateService (provider, serviceType);
     }

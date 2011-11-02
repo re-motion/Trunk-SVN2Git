@@ -95,7 +95,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     public abstract Tenant SpecificTenant { get; set; }
 
-    [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
+    [SearchAvailableObjectsServiceType (typeof (GroupPropertyTypeSearchService))]
     public abstract Group SpecificGroup { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]

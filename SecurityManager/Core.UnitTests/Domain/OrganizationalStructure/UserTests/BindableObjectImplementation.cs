@@ -74,7 +74,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       ISearchAvailableObjectsArguments args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments>();
 
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (UserPropertiesSearchService), searchServiceStub);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()
+          .AddService (typeof (GroupPropertyTypeSearchService), searchServiceStub);
       IBusinessObjectClass userClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (User));
       IBusinessObjectReferenceProperty owningGroupProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("OwningGroup");
       Assert.That (owningGroupProperty, Is.Not.Null);
