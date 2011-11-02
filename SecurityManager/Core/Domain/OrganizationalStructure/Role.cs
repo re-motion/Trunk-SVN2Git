@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     [DBBidirectionalRelation ("Roles")]
     [Mandatory]
-    [SearchAvailableObjectsServiceType (typeof (RolePropertiesSearchService))]
+    [SearchAvailableObjectsServiceType (typeof (UserPropertyTypeSearchService))]
     public abstract User User { get; set; }
 
     [DBBidirectionalRelation ("SubstitutedRole")]

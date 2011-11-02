@@ -111,6 +111,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     }
 
     [Test]
+    public void GetService_FromUserPropertyTypeSearchService ()
+    {
+      Assert.That (
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (UserPropertyTypeSearchService)),
+          Is.InstanceOf (typeof (UserPropertyTypeSearchService)));
+    }
+
+    [Test]
     public void GetService_FromIBindableObjectGlobalizationService ()
     {
       Assert.That (

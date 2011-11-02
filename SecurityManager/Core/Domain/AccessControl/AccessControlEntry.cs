@@ -105,7 +105,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     public abstract Position SpecificPosition { get; set; }
 
-    [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
+    [SearchAvailableObjectsServiceType (typeof (UserPropertyTypeSearchService))]
     public abstract User SpecificUser { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]

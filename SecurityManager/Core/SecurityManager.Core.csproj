@@ -161,6 +161,7 @@
     <Compile Include="Domain\SearchInfrastructure\SecurityManagerPropertyBasedSearchServiceBase.cs" />
     <Compile Include="Domain\SearchInfrastructure\SecurityManagerPropertyTypeBasedSearchServiceBase.cs" />
     <Compile Include="Domain\SearchInfrastructure\SecurityManagerSearchArguments.cs" />
+    <Compile Include="Domain\SearchInfrastructure\UserPropertyTypeSearchService.cs" />
     <Compile Include="Domain\SecurityManagerPrincipal.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalFactory.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalProvider.cs" />

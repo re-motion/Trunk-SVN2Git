@@ -128,6 +128,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
 
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()
+          .AddService (typeof (UserPropertyTypeSearchService), _searchServiceStub);
       _searchServiceStub.Stub (stub => stub.SupportsProperty (property)).Return (true);
       _searchServiceStub.Stub (stub => stub.Search (_ace, property, _searchServiceArgsStub)).Return (expected);
 

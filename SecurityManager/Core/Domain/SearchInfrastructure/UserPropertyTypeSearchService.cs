@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using System;
 using System.Linq;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -24,15 +25,15 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   /// <summary>
-  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="Group"/> type.
+  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="User"/> type.
   /// The <see cref="ISearchAvailableObjectsService.Search"/> method filters by <see cref="ITenantConstraint"/>, <see cref="IDisplayNameConstraint"/>,
   /// and <see cref="IResultSizeConstraint"/>.
   /// </summary>
   /// <remarks>
-  /// The service can be applied to any <see cref="Group"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
+  /// The service can be applied to any <see cref="User"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
   /// via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public class GroupPropertyTypeSearchService : SecurityManagerPropertyTypeBasedSearchServiceBase<Group>
+  public class UserPropertyTypeSearchService : SecurityManagerPropertyTypeBasedSearchServiceBase<User>
   {
     protected override IQueryable<IBusinessObject> CreateQuery (
         BaseSecurityManagerObject referencingObject,
@@ -42,7 +43,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
       var tenantConstraint = (ITenantConstraint) searchArguments;
 
-      return Group.FindByTenantID (tenantConstraint.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
+      return User.FindByTenantID (tenantConstraint.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

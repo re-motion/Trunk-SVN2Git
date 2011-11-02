@@ -180,6 +180,8 @@
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\Metadata\StatePropertyReferenceTest.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipalTest.cs" />
+    <Compile Include="Domain\SearchInfrastructure\UserPropertyTypeSearchServiceTests\SearchUser.cs" />
+    <Compile Include="Domain\SearchInfrastructure\UserPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\SearchServiceTestBase.cs" />
     <Compile Include="Domain\SearchInfrastructure\GroupPropertyTypeSearchServiceTests\SearchGroup.cs" />
     <Compile Include="Domain\SearchInfrastructure\GroupPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />

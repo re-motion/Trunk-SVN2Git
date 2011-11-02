@@ -68,7 +68,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       ISearchAvailableObjectsArguments args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments> ();
 
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), searchServiceStub);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()
+          .AddService (typeof (UserPropertyTypeSearchService), searchServiceStub);
       IBusinessObjectClass roleClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Role));
       IBusinessObjectReferenceProperty userProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("User");
       Assert.That (userProperty, Is.Not.Null);
