@@ -63,14 +63,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     }
 
     [Test]
-    public void GetService_FromGroupPropertiesSearchService ()
-    {
-      Assert.That (
-          _serviceFactory.CreateService (_bindableObjectProvider, typeof (GroupPropertiesSearchService)),
-          Is.InstanceOf (typeof (GroupPropertiesSearchService)));
-    }
-
-    [Test]
     public void GetService_FromAccessControlEntryPropertiesSearchService ()
     {
       Assert.That (

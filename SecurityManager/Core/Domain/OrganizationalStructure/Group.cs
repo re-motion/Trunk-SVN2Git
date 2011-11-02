@@ -27,8 +27,8 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Linq;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -146,7 +146,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract Tenant Tenant { get; set; }
 
     [DBBidirectionalRelation ("Children")]
-    [SearchAvailableObjectsServiceType (typeof (GroupPropertiesSearchService))]
+    [SearchAvailableObjectsServiceType (typeof (GroupPropertyTypeSearchService))]
     public abstract Group Parent { get; set; }
 
     [DBBidirectionalRelation ("Parent")]

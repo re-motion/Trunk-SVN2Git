@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     protected abstract IQueryable<IBusinessObject> CreateQuery (
         BaseSecurityManagerObject referencingObject,
         IBusinessObjectReferenceProperty property,
-        ITenantConstraint tenantConstraint,
+        TenantConstraint tenantConstraint,
         IDisplayNameConstraint displayNameConstraint);
 
     public override sealed bool SupportsProperty (IBusinessObjectReferenceProperty property)

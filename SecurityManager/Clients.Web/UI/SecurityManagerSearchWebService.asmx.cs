@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       var businessObjectClassWithIdentity = GetBusinessObjectClassWithIdentity (businessObjectClass);
       var referenceProperty = GetReferenceProperty (businessObjectProperty, businessObjectClassWithIdentity);
-      var securityManagerSearchArguments = new SecurityManagerSearchArguments (ObjectID.Parse (args), completionSetCount, prefixText);
+      var securityManagerSearchArguments = new SecurityManagerSearchArguments (GetTenantConstraint(args), completionSetCount, prefixText);
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
@@ -112,6 +112,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       Assertion.IsTrue (bindableObjectClass is IBusinessObjectClassWithIdentity);
 
       return (IBusinessObjectClassWithIdentity) bindableObjectClass;
+    }
+
+    private TenantConstraint GetTenantConstraint (string args)
+    {
+      if (string.IsNullOrEmpty (args))
+        return null;
+
+      return new TenantConstraint (ObjectID.Parse (args));
     }
   }
 }

@@ -39,8 +39,8 @@ namespace Remotion.SecurityManager.Domain
   ///     <description>Service creates instance of type</description>
   ///   </listheader>
   ///   <item>
-  ///     <term><see cref="GroupPropertiesSearchService"/></term>
-  ///     <description><see cref="GroupPropertiesSearchService"/></description>
+  ///     <term><see cref="SubstitutionPropertiesSearchService"/></term>
+  ///     <description><see cref="SubstitutionPropertiesSearchService"/></description>
   ///   </item>
   /// </list>
   /// </remarks>
@@ -57,9 +57,6 @@ namespace Remotion.SecurityManager.Domain
     public virtual IBusinessObjectService CreateService (IBusinessObjectProviderWithIdentity provider, Type serviceType)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("serviceType", serviceType, typeof (IBusinessObjectService));
-
-      if (serviceType == typeof (GroupPropertiesSearchService))
-        return new GroupPropertiesSearchService();
 
       if (serviceType == typeof (SubstitutionPropertiesSearchService))
         return new SubstitutionPropertiesSearchService ();

@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     protected delegate IQueryable<IBusinessObject> QueryFactory (
         TReferencingObject referencingObject,
         IBusinessObjectReferenceProperty property,
-        ITenantConstraint tenantConstraint,
+        TenantConstraint tenantConstraint,
         IDisplayNameConstraint displayNameConstraint);
 
     public abstract bool SupportsProperty (IBusinessObjectReferenceProperty property);
@@ -61,23 +61,26 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
-      ITenantConstraint tenantConstraint = searchArguments;
       IDisplayNameConstraint displayNameConstraint = searchArguments;
       IResultSizeConstraint resultSizeConstraint = searchArguments;
 
-      var query = queryFactory (referencingSecurityManagerObject, property, tenantConstraint, displayNameConstraint);
+      var query = queryFactory (referencingSecurityManagerObject, property, searchArguments.TenantConstraint, displayNameConstraint);
       return query.Apply (resultSizeConstraint);
     }
 
     private SecurityManagerSearchArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)
     {
+      if (searchArguments == null)
+        return new SecurityManagerSearchArguments (null, null, null);
+
       var defaultSearchArguments = searchArguments as DefaultSearchArguments;
       if (defaultSearchArguments != null)
       {
         if (string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
-          return null;
-        return new SecurityManagerSearchArguments (ObjectID.Parse (defaultSearchArguments.SearchStatement), null, null);
+          return new SecurityManagerSearchArguments (null, null, null);
+        return new SecurityManagerSearchArguments (new TenantConstraint (ObjectID.Parse (defaultSearchArguments.SearchStatement)), null, null);
       }
+
       return ArgumentUtility.CheckType<SecurityManagerSearchArguments> ("searchArguments", searchArguments);
     }
   }

@@ -41,7 +41,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     private IQueryable<IBusinessObject> FindPossibleSubstitutedRoles (
         Substitution substitution,
         IBusinessObjectReferenceProperty property,
-        ITenantConstraint tenantConstraint,
+        TenantConstraint tenantConstraint,
         IDisplayNameConstraint displayNameConstraint)
     {
       ArgumentUtility.CheckNotNull ("substitution", substitution);

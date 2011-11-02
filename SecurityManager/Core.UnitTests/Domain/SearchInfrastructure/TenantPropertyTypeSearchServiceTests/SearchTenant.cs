@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.TenantP
       var expected = Tenant.FindAll().ToArray();
       Assert.That (expected, Is.Not.Empty);
 
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, null));
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (null, null, null));
 
       Assert.That (actual, Is.EqualTo (expected));
     }
@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.TenantP
       var expected = Tenant.FindAll().Where (g => g.Name.Contains ("Test")).ToArray();
       Assert.That (expected.Length, Is.EqualTo (1));
 
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, null, "Test"));
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (null, null, "Test"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.TenantP
     [Test]
     public void Search_WithResultSizeConstraint ()
     {
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, null));
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (null, 1, null));
 
       Assert.That (actual.Length, Is.EqualTo (1));
     }
@@ -87,7 +87,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.TenantP
     [Test]
     public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
     {
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantID, 1, "Tenant"));
+      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (null, 1, "Tenant"));
 
       Assert.That (actual.Length, Is.EqualTo (1));
       Assert.That (((Tenant) actual[0]).Name, Is.StringContaining ("Tenant"));

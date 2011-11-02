@@ -15,13 +15,25 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using System;
 using Remotion.Data.DomainObjects;
-using Remotion.ObjectBinding;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
-  public interface ITenantConstraint : ISearchAvailableObjectsArguments
+  public class TenantConstraint
   {
-    ObjectID Value { get;}
+    private readonly ObjectID _value;
+
+    public TenantConstraint (ObjectID value)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+      _value = value;
+    }
+
+    public ObjectID Value
+    {
+      get { return _value; }
+    }
   }
 }
