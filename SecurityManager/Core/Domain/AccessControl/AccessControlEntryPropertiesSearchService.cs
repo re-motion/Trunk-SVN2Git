@@ -22,7 +22,6 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -38,33 +37,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public AccessControlEntryPropertiesSearchService ()
     {
       RegisterQueryFactory ("SpecificTenant", delegate { return Tenant.FindAll().Cast<IBusinessObject>().AsQueryable(); });
-      RegisterQueryFactory ("SpecificGroup", SearchGroups);
-      RegisterQueryFactory ("SpecificUser", SearchUsers);
       RegisterQueryFactory ("SpecificPosition", delegate { return Position.FindAll().Cast<IBusinessObject>().AsQueryable(); });
       RegisterQueryFactory ("SpecificGroupType", delegate { return GroupType.FindAll().Cast<IBusinessObject>().AsQueryable(); });
       RegisterQueryFactory ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().Cast<IBusinessObject>().AsQueryable(); });
-    }
-
-    private IQueryable<IBusinessObject> SearchGroups (
-        AccessControlEntry referencingObject,
-        IBusinessObjectReferenceProperty property,
-        SecurityManagerSearchArguments searchArguments)
-    {
-      ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
-      var tenantConstraint = (ITenantConstraint) searchArguments;
-
-      return Group.FindByTenantID (tenantConstraint.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>();
-    }
-
-    private IQueryable<IBusinessObject> SearchUsers (
-        AccessControlEntry referencingObject,
-        IBusinessObjectReferenceProperty property,
-        SecurityManagerSearchArguments searchArguments)
-    {
-      ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
-      var tenantFilter = (ITenantConstraint) searchArguments;
-
-      return User.FindByTenantID (tenantFilter.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

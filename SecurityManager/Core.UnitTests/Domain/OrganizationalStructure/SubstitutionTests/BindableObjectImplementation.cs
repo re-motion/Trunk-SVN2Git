@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionTests
@@ -42,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
 
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (
-          typeof (SubstitutionPropertiesSearchService), searchServiceStub);
+          typeof (UserPropertyTypeSearchService), searchServiceStub);
       var substitutionClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Substitution));
       var substitutingUserProperty = (IBusinessObjectReferenceProperty) substitutionClass.GetPropertyDefinition ("SubstitutingUser");
       Assert.That (substitutingUserProperty, Is.Not.Null);

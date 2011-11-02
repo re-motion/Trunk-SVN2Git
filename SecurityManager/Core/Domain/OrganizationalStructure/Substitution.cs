@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -49,7 +50,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     [DBBidirectionalRelation ("SubstitutingFor")]
     [Mandatory]
-    [SearchAvailableObjectsServiceType (typeof (SubstitutionPropertiesSearchService))]
+    [SearchAvailableObjectsServiceType (typeof (UserPropertyTypeSearchService))]
     public abstract User SubstitutingUser { get; set; }
 
     [DBBidirectionalRelation ("SubstitutedBy")]

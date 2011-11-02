@@ -26,8 +26,6 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   /// <summary>
   /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="User"/> type.
-  /// The <see cref="ISearchAvailableObjectsService.Search"/> method filters by <see cref="ITenantConstraint"/>, <see cref="IDisplayNameConstraint"/>,
-  /// and <see cref="IResultSizeConstraint"/>.
   /// </summary>
   /// <remarks>
   /// The service can be applied to any <see cref="User"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
@@ -38,12 +36,12 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     protected override IQueryable<IBusinessObject> CreateQuery (
         BaseSecurityManagerObject referencingObject,
         IBusinessObjectReferenceProperty property,
-        SecurityManagerSearchArguments searchArguments)
+        ITenantConstraint tenantConstraint,
+        IDisplayNameConstraint displayNameConstraint)
     {
-      ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
-      var tenantConstraint = (ITenantConstraint) searchArguments;
+      ArgumentUtility.CheckNotNull ("tenantConstraint", tenantConstraint);
 
-      return User.FindByTenantID (tenantConstraint.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
+      return User.FindByTenantID (tenantConstraint.Value).Apply (displayNameConstraint).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

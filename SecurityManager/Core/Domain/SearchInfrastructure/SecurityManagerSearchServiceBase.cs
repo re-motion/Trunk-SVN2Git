@@ -34,7 +34,8 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     protected delegate IQueryable<IBusinessObject> QueryFactory (
         TReferencingObject referencingObject,
         IBusinessObjectReferenceProperty property,
-        SecurityManagerSearchArguments searchArguments);
+        ITenantConstraint tenantConstraint,
+        IDisplayNameConstraint displayNameConstraint);
 
     public abstract bool SupportsProperty (IBusinessObjectReferenceProperty property);
 
@@ -60,10 +61,12 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
-      var query = queryFactory (referencingSecurityManagerObject, property, searchArguments);
-      // ReSharper disable RedundantCast
-      return query.Apply ((IResultSizeConstraint) searchArguments);
-      // ReSharper restore RedundantCast
+      ITenantConstraint tenantConstraint = searchArguments;
+      IDisplayNameConstraint displayNameConstraint = searchArguments;
+      IResultSizeConstraint resultSizeConstraint = searchArguments;
+
+      var query = queryFactory (referencingSecurityManagerObject, property, tenantConstraint, displayNameConstraint);
+      return query.Apply (resultSizeConstraint);
     }
 
     private SecurityManagerSearchArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)

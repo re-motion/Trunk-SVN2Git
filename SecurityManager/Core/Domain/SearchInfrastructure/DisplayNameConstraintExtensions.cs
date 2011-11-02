@@ -26,24 +26,27 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
   {
     public static IQueryable<Group> Apply (this IQueryable<Group> groups, IDisplayNameConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("constraint", constraint);
       ArgumentUtility.CheckNotNull ("groups", groups);
 
-      if (String.IsNullOrEmpty (constraint.Text))
-        return groups;
+      if (HasConstraint (constraint))
+        return groups.Where (g => g.Name.Contains (constraint.Text) || g.ShortName.Contains (constraint.Text));
 
-      return groups.Where (g => g.Name.Contains (constraint.Text) || g.ShortName.Contains (constraint.Text));
+      return groups;
     }
 
-    public static IQueryable<User> Apply (this IQueryable<User> groups, IDisplayNameConstraint constraint)
+    public static IQueryable<User> Apply (this IQueryable<User> users, IDisplayNameConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("constraint", constraint);
-      ArgumentUtility.CheckNotNull ("groups", groups);
+      ArgumentUtility.CheckNotNull ("users", users);
 
-      if (String.IsNullOrEmpty (constraint.Text))
-        return groups;
+      if (HasConstraint (constraint))
+        return users.Where (g => g.LastName.Contains (constraint.Text) || g.FirstName.Contains (constraint.Text));
 
-      return groups.Where (g => g.LastName.Contains (constraint.Text) || g.FirstName.Contains (constraint.Text));
+      return users;
+    }
+
+    private static bool HasConstraint (IDisplayNameConstraint constraint)
+    {
+      return constraint != null && !String.IsNullOrEmpty (constraint.Text);
     }
   }
 }

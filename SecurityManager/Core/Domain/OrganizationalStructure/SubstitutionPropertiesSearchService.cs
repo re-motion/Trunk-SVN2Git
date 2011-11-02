@@ -35,21 +35,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public SubstitutionPropertiesSearchService ()
     {
-      RegisterQueryFactory ("SubstitutingUser", FindPossibleSubstitutingUsers);
       RegisterQueryFactory ("SubstitutedRole", FindPossibleSubstitutedRoles);
     }
 
-    private IQueryable<IBusinessObject> FindPossibleSubstitutingUsers (
-        Substitution substitution, IBusinessObjectReferenceProperty property, SecurityManagerSearchArguments searchArguments)
-    {
-      ArgumentUtility.CheckNotNull ("searchArguments", searchArguments);
-      var tenantFilter = (ITenantConstraint) searchArguments;
-
-      return User.FindByTenantID (tenantFilter.Value).Apply ((IDisplayNameConstraint) searchArguments).Cast<IBusinessObject>().AsQueryable();
-    }
-
     private IQueryable<IBusinessObject> FindPossibleSubstitutedRoles (
-        Substitution substitution, IBusinessObjectReferenceProperty property, SecurityManagerSearchArguments searchArguments)
+        Substitution substitution,
+        IBusinessObjectReferenceProperty property,
+        ITenantConstraint tenantConstraint,
+        IDisplayNameConstraint displayNameConstraint)
     {
       ArgumentUtility.CheckNotNull ("substitution", substitution);
 
