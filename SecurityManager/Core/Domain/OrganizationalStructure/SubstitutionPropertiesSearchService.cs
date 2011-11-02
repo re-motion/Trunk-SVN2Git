@@ -31,7 +31,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   /// The service is applied to the <see cref="Role.Group"/> and the <see cref="Role.User"/> properties via the
   /// <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public sealed class SubstitutionPropertiesSearchService : SecurityManagerSearchServiceBase<Substitution>
+  public sealed class SubstitutionPropertiesSearchService : SecurityManagerPropertyBasedSearchServiceBase<Substitution>
   {
     public SubstitutionPropertiesSearchService ()
     {

@@ -33,7 +33,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// The service is applied to the <see cref="AccessControlEntry.SpecificTenant"/>, <see cref="AccessControlEntry.SpecificPosition"/>, 
   /// and <see cref="AccessControlEntry.SpecificAbstractRole"/> properties via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public class AccessControlEntryPropertiesSearchService : SecurityManagerSearchServiceBase<AccessControlEntry>
+  public class AccessControlEntryPropertiesSearchService : SecurityManagerPropertyBasedSearchServiceBase<AccessControlEntry>
   {
     public AccessControlEntryPropertiesSearchService ()
     {

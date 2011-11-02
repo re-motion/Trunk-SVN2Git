@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
@@ -28,49 +27,28 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
   /// <summary>
   /// Base-Implementation of <see cref="ISearchAvailableObjectsService"/> for the <see cref="BaseSecurityManagerObject"/> type.
   /// </summary>
-  /// <remarks>
-  /// Inherit from this type and add search delegates for the properties the specified <typeparam name="T"/> using the <see cref="AddSearchDelegate"/> 
-  /// method from the constructor.
-  /// </remarks>
-  public abstract class SecurityManagerSearchServiceBase<T> : ISearchAvailableObjectsService
-      where T: BaseSecurityManagerObject
+  /// <typeparam name="TReferencingObject">The <see cref="Type"/> of the object that exposes the property.</typeparam>
+  public abstract class SecurityManagerSearchServiceBase<TReferencingObject> : ISearchAvailableObjectsService
+      where TReferencingObject: BaseSecurityManagerObject
   {
     protected delegate IQueryable<IBusinessObject> SearchDelegate (
-        T referencingObject,
+        TReferencingObject referencingObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments);
 
-    private readonly Dictionary<string, SearchDelegate> _searchDelegates = new Dictionary<string, SearchDelegate>();
+    public abstract bool SupportsProperty (IBusinessObjectReferenceProperty property);
 
-    protected void AddSearchDelegate (string propertyName, SearchDelegate searchDelegate)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("searchDelegate", searchDelegate);
-
-      _searchDelegates.Add (propertyName, searchDelegate);
-    }
-
-    public bool SupportsProperty (IBusinessObjectReferenceProperty property)
-    {
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      return _searchDelegates.ContainsKey (property.Identifier);
-    }
+    protected abstract SearchDelegate GetSearchDelegate (IBusinessObjectReferenceProperty property);
 
     public IBusinessObject[] Search (
         IBusinessObject referencingObject,
         IBusinessObjectReferenceProperty property,
         ISearchAvailableObjectsArguments searchArguments)
     {
-      T referencingSecurityManagerObject = ArgumentUtility.CheckType<T> ("referencingObject", referencingObject);
+      var referencingSecurityManagerObject = ArgumentUtility.CheckType<TReferencingObject> ("referencingObject", referencingObject);
       ArgumentUtility.CheckNotNull ("property", property);
 
-      SearchDelegate searchDelegate;
-      if (!_searchDelegates.TryGetValue (property.Identifier, out searchDelegate))
-      {
-        throw new ArgumentException (
-            string.Format ("The property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
-      }
+      var searchDelegate = GetSearchDelegate(property);
 
       var securityManagerSearchArguments = CreateSearchArguments (searchArguments);
       return CreateQuery (searchDelegate, referencingSecurityManagerObject, property, securityManagerSearchArguments).ToArray();
@@ -78,14 +56,14 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 
     private IQueryable<IBusinessObject> CreateQuery (
         SearchDelegate searchDelegate,
-        T referencingSecurityManagerObject,
+        TReferencingObject referencingSecurityManagerObject,
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
       var query = searchDelegate (referencingSecurityManagerObject, property, searchArguments);
-// ReSharper disable RedundantCast
+      // ReSharper disable RedundantCast
       return query.Apply ((IResultSizeConstraint) searchArguments);
-// ReSharper restore RedundantCast
+      // ReSharper restore RedundantCast
     }
 
     private SecurityManagerSearchArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)

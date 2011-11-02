@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   /// <remarks>
   /// The service is applied to the <see cref="User.OwningGroup"/> property via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public sealed class UserPropertiesSearchService : SecurityManagerSearchServiceBase<User>
+  public sealed class UserPropertiesSearchService : SecurityManagerPropertyBasedSearchServiceBase<User>
   {
     public UserPropertiesSearchService ()
     {
