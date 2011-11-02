@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         Substitution substitution,
         IBusinessObjectReferenceProperty property,
         TenantConstraint tenantConstraint,
-        IDisplayNameConstraint displayNameConstraint)
+        DisplayNameConstraint displayNameConstraint)
     {
       ArgumentUtility.CheckNotNull ("substitution", substitution);
 

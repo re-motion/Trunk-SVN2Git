@@ -24,39 +24,39 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   internal static class DisplayNameConstraintExtensions
   {
-    public static IQueryable<Tenant> Apply (this IQueryable<Tenant> tenants, IDisplayNameConstraint constraint)
+    public static IQueryable<Tenant> Apply (this IQueryable<Tenant> tenants, DisplayNameConstraint constraint)
     {
       ArgumentUtility.CheckNotNull ("tenants", tenants);
 
       if (HasConstraint (constraint))
-        return tenants.Where (t => t.Name.Contains (constraint.Text));
+        return tenants.Where (t => t.Name.Contains (constraint.Value));
 
       return tenants;
     }
 
-    public static IQueryable<Group> Apply (this IQueryable<Group> groups, IDisplayNameConstraint constraint)
+    public static IQueryable<Group> Apply (this IQueryable<Group> groups, DisplayNameConstraint constraint)
     {
       ArgumentUtility.CheckNotNull ("groups", groups);
 
       if (HasConstraint (constraint))
-        return groups.Where (g => g.Name.Contains (constraint.Text) || g.ShortName.Contains (constraint.Text));
+        return groups.Where (g => g.Name.Contains (constraint.Value) || g.ShortName.Contains (constraint.Value));
 
       return groups;
     }
 
-    public static IQueryable<User> Apply (this IQueryable<User> users, IDisplayNameConstraint constraint)
+    public static IQueryable<User> Apply (this IQueryable<User> users, DisplayNameConstraint constraint)
     {
       ArgumentUtility.CheckNotNull ("users", users);
 
       if (HasConstraint (constraint))
-        return users.Where (u => u.LastName.Contains (constraint.Text) || u.FirstName.Contains (constraint.Text));
+        return users.Where (u => u.LastName.Contains (constraint.Value) || u.FirstName.Contains (constraint.Value));
 
       return users;
     }
 
-    private static bool HasConstraint (IDisplayNameConstraint constraint)
+    private static bool HasConstraint (DisplayNameConstraint constraint)
     {
-      return constraint != null && !String.IsNullOrEmpty (constraint.Text);
+      return constraint != null && !String.IsNullOrEmpty (constraint.Value);
     }
   }
 }

@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
         BaseSecurityManagerObject referencingObject,
         IBusinessObjectReferenceProperty property,
         TenantConstraint tenantConstraint,
-        IDisplayNameConstraint displayNameConstraint)
+        DisplayNameConstraint displayNameConstraint)
     {
       return Tenant.FindAll().Apply (displayNameConstraint).Cast<IBusinessObject>();
     }

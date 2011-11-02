@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
         TReferencingObject referencingObject,
         IBusinessObjectReferenceProperty property,
         TenantConstraint tenantConstraint,
-        IDisplayNameConstraint displayNameConstraint);
+        DisplayNameConstraint displayNameConstraint);
 
     public abstract bool SupportsProperty (IBusinessObjectReferenceProperty property);
 
@@ -61,11 +61,8 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
         IBusinessObjectReferenceProperty property,
         SecurityManagerSearchArguments searchArguments)
     {
-      IDisplayNameConstraint displayNameConstraint = searchArguments;
-      IResultSizeConstraint resultSizeConstraint = searchArguments;
-
-      var query = queryFactory (referencingSecurityManagerObject, property, searchArguments.TenantConstraint, displayNameConstraint);
-      return query.Apply (resultSizeConstraint);
+      var query = queryFactory (referencingSecurityManagerObject, property, searchArguments.TenantConstraint, searchArguments.DisplayNameConstraint);
+      return query.Apply (searchArguments.ResultSizeConstraint);
     }
 
     private SecurityManagerSearchArguments CreateSearchArguments (ISearchAvailableObjectsArguments searchArguments)

@@ -18,7 +18,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -45,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
       var user = User.FindByUserName ("group0/user1");
       Assert.That (user, Is.Not.Null);
 
-      _tenantConstraint = new TenantConstraint(user.Tenant.ID);
+      _tenantConstraint = new TenantConstraint (user.Tenant.ID);
     }
 
     [Test]
@@ -60,7 +59,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
       var expected = User.FindByTenantID (_tenantConstraint.Value);
       Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantConstraint, null, null));
+      IBusinessObject[] actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, null));
 
       Assert.That (actual, Is.EqualTo (expected));
     }
@@ -71,7 +70,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
       var expected = User.FindByTenantID (_tenantConstraint.Value).Where (u => u.LastName.Contains ("user")).ToArray();
       Assert.That (expected.Length, Is.GreaterThan (1));
 
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantConstraint, null, "user"));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, "user"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
@@ -82,7 +81,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
       var expected = User.FindByTenantID (_tenantConstraint.Value).Where (u => u.FirstName.Contains ("est")).ToArray();
       Assert.That (expected, Is.Not.Empty);
 
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantConstraint, null, "est"));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, "est"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
@@ -90,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
     [Test]
     public void Search_WithResultSizeConstraint ()
     {
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantConstraint, 3, null));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (3, null));
 
       Assert.That (actual.Length, Is.EqualTo (3));
     }
@@ -98,10 +97,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
     [Test]
     public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
     {
-      var actual = _searchService.Search (null, _property, new SecurityManagerSearchArguments (_tenantConstraint, 1, "user")).ToArray();
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (1, "user")).ToArray();
 
       Assert.That (actual.Length, Is.EqualTo (1));
       Assert.That (((User) actual[0]).LastName, Is.StringContaining ("user"));
+    }
+
+    private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (int? resultSize, string displayName)
+    {
+      return new SecurityManagerSearchArguments (
+          _tenantConstraint,
+          resultSize.HasValue ? new ResultSizeConstraint (resultSize.Value) : null,
+          !string.IsNullOrEmpty (displayName) ? new DisplayNameConstraint (displayName) : null);
     }
   }
 }

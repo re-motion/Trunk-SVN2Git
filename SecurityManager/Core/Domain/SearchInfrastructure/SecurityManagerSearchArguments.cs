@@ -16,20 +16,21 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.ObjectBinding;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
-  public class SecurityManagerSearchArguments : IDisplayNameConstraint, IResultSizeConstraint
+  public class SecurityManagerSearchArguments : ISearchAvailableObjectsArguments
   {
-    private readonly string _displayNameFilter;
+    private readonly DisplayNameConstraint _displayNameConstraint;
     private readonly TenantConstraint _tenantConstraint;
-    private readonly int? _resultSize;
+    private readonly ResultSizeConstraint _resultSizeConstraint;
 
-    public SecurityManagerSearchArguments (TenantConstraint tenantConstraint, int? resultSize, string displayNameFilter)
+    public SecurityManagerSearchArguments (TenantConstraint tenantConstraint, ResultSizeConstraint resultSizeConstraint, DisplayNameConstraint displayNameConstraint)
     {
       _tenantConstraint = tenantConstraint;
-      _resultSize = resultSize;
-      _displayNameFilter = displayNameFilter;
+      _resultSizeConstraint = resultSizeConstraint;
+      _displayNameConstraint = displayNameConstraint;
     }
 
     public TenantConstraint TenantConstraint
@@ -37,14 +38,14 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       get { return _tenantConstraint; }
     }
 
-    string IDisplayNameConstraint.Text
+    public DisplayNameConstraint DisplayNameConstraint
     {
-      get { return _displayNameFilter; }
+      get { return _displayNameConstraint; }
     }
 
-    int? IResultSizeConstraint.Value
+    public ResultSizeConstraint ResultSizeConstraint
     {
-      get { return _resultSize; }
+      get { return _resultSizeConstraint; }
     }
   }
 }

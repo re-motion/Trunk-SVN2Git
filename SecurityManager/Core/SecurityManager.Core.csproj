@@ -154,9 +154,9 @@
     </Compile>
     <Compile Include="Domain\OrganizationalStructure\UserProxy.cs" />
     <Compile Include="Domain\SearchInfrastructure\DisplayNameConstraintExtensions.cs" />
-    <Compile Include="Domain\SearchInfrastructure\IDisplayNameConstraint.cs" />
-    <Compile Include="Domain\SearchInfrastructure\IResultSizeConstraint.cs" />
-    <Compile Include="Domain\SearchInfrastructure\ITenantConstraint.cs" />
+    <Compile Include="Domain\SearchInfrastructure\DisplayNameConstraint.cs" />
+    <Compile Include="Domain\SearchInfrastructure\ResultSizeConstraint.cs" />
+    <Compile Include="Domain\SearchInfrastructure\TenantConstraint.cs" />
     <Compile Include="Domain\SearchInfrastructure\ResultSizeExtensions.cs" />
     <Compile Include="Domain\SearchInfrastructure\SecurityManagerPropertyBasedSearchServiceBase.cs" />
     <Compile Include="Domain\SearchInfrastructure\SecurityManagerPropertyTypeBasedSearchServiceBase.cs" />

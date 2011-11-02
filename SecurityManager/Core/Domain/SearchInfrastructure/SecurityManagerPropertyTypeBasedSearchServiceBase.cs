@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
         BaseSecurityManagerObject referencingObject,
         IBusinessObjectReferenceProperty property,
         TenantConstraint tenantConstraint,
-        IDisplayNameConstraint displayNameConstraint);
+        DisplayNameConstraint displayNameConstraint);
 
     public override sealed bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {

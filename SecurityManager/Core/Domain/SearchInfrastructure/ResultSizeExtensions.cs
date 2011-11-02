@@ -23,17 +23,14 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   public static class ResultSizeExtensions
   {
-    public static IQueryable<T> Apply<T> (this IQueryable<T> query, IResultSizeConstraint constraint)
+    public static IQueryable<T> Apply<T> (this IQueryable<T> query, ResultSizeConstraint constraint)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
       if (constraint == null)
         return query;
 
-      if (!constraint.Value.HasValue)
-        return query;
-
-      return query.Take (constraint.Value.Value);
+      return query.Take (constraint.Value);
     }
   }
 }
