@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
@@ -27,7 +28,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
   public class EditableRowAutoCompleteControlFactory : EditableRowControlFactory
   {
-    public EditableRowAutoCompleteControlFactory ()
+    public static EditableRowAutoCompleteControlFactory Create ()
+    {
+      return ObjectFactory.Create<EditableRowAutoCompleteControlFactory>();
+    }
+
+    protected EditableRowAutoCompleteControlFactory ()
     {
     }
 

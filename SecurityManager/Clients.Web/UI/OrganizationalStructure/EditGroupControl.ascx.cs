@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
 
-      RolesList.EditModeControlFactory = new EditableRowAutoCompleteControlFactory();
+      RolesList.EditModeControlFactory = EditableRowAutoCompleteControlFactory.Create();
       bocListInlineEditingConfigurator.Configure (RolesList, Role.NewObject);
 
       if (string.IsNullOrEmpty (_parentField.SearchServicePath))

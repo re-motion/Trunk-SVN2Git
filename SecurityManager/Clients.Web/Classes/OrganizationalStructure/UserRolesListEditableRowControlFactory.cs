@@ -17,7 +17,9 @@
 // 
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.FunctionalProgramming;
+using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -25,9 +27,15 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
+  [UsedImplicitly]
   public class UserRolesListEditableRowControlFactory : EditableRowAutoCompleteControlFactory
   {
-    public UserRolesListEditableRowControlFactory ()
+    public static new UserRolesListEditableRowControlFactory Create ()
+    {
+      return ObjectFactory.Create<UserRolesListEditableRowControlFactory>();
+    }
+
+    protected UserRolesListEditableRowControlFactory ()
     {
     }
 
