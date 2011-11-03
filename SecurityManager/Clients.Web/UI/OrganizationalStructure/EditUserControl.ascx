@@ -78,23 +78,6 @@
           <remotion:BocSimpleColumnDefinition ItemID="Group" PropertyPathIdentifier="Group" />
           <remotion:BocSimpleColumnDefinition ItemID="Position" PropertyPathIdentifier="Position" />
         </FixedColumns>
-        <ListMenuItems>
-<%--          <remotion:BocMenuItem ItemID="NewItem" Text="$res:New">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-          <remotion:BocMenuItem ItemID="EditItem" RequiredSelection="ExactlyOne" Text="$res:Edit">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-          <remotion:BocMenuItem ItemID="DeleteItem" RequiredSelection="OneOrMore" Text="$res:Delete">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
---%>        </ListMenuItems>
       </remotion:BocList>
     </td>
   </tr>
