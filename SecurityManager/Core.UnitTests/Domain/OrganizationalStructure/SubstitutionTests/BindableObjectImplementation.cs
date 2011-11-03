@@ -22,6 +22,7 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionTests

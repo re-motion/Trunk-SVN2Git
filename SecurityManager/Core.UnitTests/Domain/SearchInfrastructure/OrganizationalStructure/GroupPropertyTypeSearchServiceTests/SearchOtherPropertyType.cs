@@ -20,9 +20,9 @@ using NUnit.Framework;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.SecurityManager.Domain.SearchInfrastructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPropertyTypeSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.OrganizationalStructure.GroupPropertyTypeSearchServiceTests
 {
   [TestFixture]
   public class SearchOtherProperty : SearchServiceTestBase
@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
     {
       base.SetUp();
 
-      _searchService = new UserPropertyTypeSearchService();
+      _searchService = new GroupPropertyTypeSearchService();
       IBusinessObjectClass userClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (User));
       _tenantProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("Tenant");
       Assert.That (_tenantProperty, Is.Not.Null);
@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.UserPro
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The type of the property 'Tenant', declared on 'Remotion.SecurityManager.Domain.OrganizationalStructure.User, Remotion.SecurityManager', "
-        + "is not supported by the 'Remotion.SecurityManager.Domain.SearchInfrastructure.UserPropertyTypeSearchService' type.",
+        + "is not supported by the 'Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure.GroupPropertyTypeSearchService' type.",
         MatchType = MessageMatch.Contains)]
     public void Search_WithInvalidProperty ()
     {

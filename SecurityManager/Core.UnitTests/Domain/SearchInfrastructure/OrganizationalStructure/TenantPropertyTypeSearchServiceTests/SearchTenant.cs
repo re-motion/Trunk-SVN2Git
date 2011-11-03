@@ -15,15 +15,15 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.TenantPropertyTypeSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.OrganizationalStructure.TenantPropertyTypeSearchServiceTests
 {
   [TestFixture]
   public class SearchTenant : SearchServiceTestBase

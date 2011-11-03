@@ -21,6 +21,7 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
