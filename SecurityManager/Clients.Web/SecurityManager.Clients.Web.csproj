@@ -151,8 +151,6 @@
     <Content Include="UI\OrganizationalStructure\EditGroupTypeForm.aspx" />
     <Content Include="UI\OrganizationalStructure\EditPositionControl.ascx" />
     <Content Include="UI\OrganizationalStructure\EditPositionForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\EditRoleControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\EditRoleForm.aspx" />
     <Content Include="UI\OrganizationalStructure\EditUserControl.ascx" />
     <Content Include="UI\OrganizationalStructure\EditUserForm.aspx" />
     <Content Include="UI\OrganizationalStructure\GroupListControl.ascx" />
@@ -234,16 +232,6 @@
     </Compile>
     <Compile Include="Globalization\UI\OrganizationalStructure\EditTenantFormResources.Designer.cs">
       <DependentUpon>EditTenantFormResources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Globalization\UI\OrganizationalStructure\EditRoleControlResources.Designer.cs">
-      <DependentUpon>EditRoleControlResources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Globalization\UI\OrganizationalStructure\EditRoleFormResources.Designer.cs">
-      <DependentUpon>EditRoleFormResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -491,20 +479,6 @@
     <Compile Include="UI\OrganizationalStructure\EditPositionForm.aspx.designer.cs">
       <DependentUpon>EditPositionForm.aspx</DependentUpon>
     </Compile>
-    <Compile Include="UI\OrganizationalStructure\EditRoleControl.ascx.cs">
-      <DependentUpon>EditRoleControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UI\OrganizationalStructure\EditRoleControl.ascx.designer.cs">
-      <DependentUpon>EditRoleControl.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UI\OrganizationalStructure\EditRoleForm.aspx.cs">
-      <DependentUpon>EditRoleForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UI\OrganizationalStructure\EditRoleForm.aspx.designer.cs">
-      <DependentUpon>EditRoleForm.aspx</DependentUpon>
-    </Compile>
     <Compile Include="UI\OrganizationalStructure\EditUserControl.ascx.cs">
       <DependentUpon>EditUserControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -612,7 +586,6 @@
     <Compile Include="WxeFunctions\OrganizationalStructure\EditGroupFormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\EditGroupTypeFormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\EditPositionFormFunction.cs" />
-    <Compile Include="WxeFunctions\OrganizationalStructure\EditRoleFormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\EditUserFormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\GroupListFormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\GroupTypeListFormFunction.cs" />
@@ -791,14 +764,6 @@
       <LastGenOutput>EditUserControlResources.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditRoleFormResources.de.resx">
-      <LastGenOutput>EditRoleFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditRoleControlResources.de.resx">
-      <LastGenOutput>EditRoleControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditPositionFormResources.de.resx">
       <LastGenOutput>EditPositionFormResources.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
@@ -821,16 +786,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupControlResources.de.resx">
       <LastGenOutput>EditGroupControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditRoleControlResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>EditRoleControlResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditRoleFormResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>EditRoleFormResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditPositionFormResources.resx">
