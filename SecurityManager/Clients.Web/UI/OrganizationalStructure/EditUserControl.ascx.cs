@@ -53,13 +53,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnInit (e);
 
-      var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
-      bocListInlineEditingConfigurator.Configure (SubstitutedByList, Substitution.NewObject);
-
       _owningGroupField = GetControl<BocAutoCompleteReferenceValue> ("OwningGroupField", "OwningGroup");
 
       if (string.IsNullOrEmpty (_owningGroupField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (_owningGroupField);
+
+      var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+      bocListInlineEditingConfigurator.Configure (SubstitutedByList, Substitution.NewObject);
     }
 
     protected override void OnLoad (EventArgs e)

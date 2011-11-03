@@ -21,13 +21,12 @@ using System.Web.UI.WebControls;
 using Remotion.FunctionalProgramming;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
-using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
@@ -59,6 +58,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       _parentField = GetControl<BocAutoCompleteReferenceValue> ("ParentField", "Parent");
       _groupTypeField = GetControl<BocAutoCompleteReferenceValue> ("GroupTypeField", "GroupType");
 
+      var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+      bocListInlineEditingConfigurator.Configure (RolesList, Role.NewObject);
+
       if (string.IsNullOrEmpty (_parentField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (_parentField);
 
@@ -70,6 +72,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnLoad (e);
 
+      if (!IsPostBack)
+      {
+        RolesList.SetSortingOrder (
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) RolesList.FixedColumns.Find ("User"), SortingDirection.Ascending));
+      }
+
       if (ChildrenList.IsReadOnly)
         ChildrenList.Selection = RowSelection.Disabled;
 
@@ -80,7 +88,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-       
+
       if (CurrentFunction.TenantID == null)
         throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
 
@@ -89,63 +97,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     public override bool Validate ()
     {
-      bool isValid = base.Validate ();
+      bool isValid = base.Validate();
 
-      isValid &= FormGridManager.Validate ();
+      isValid &= FormGridManager.Validate();
 
       return isValid;
-    }
-
-    protected void RolesList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      if (e.Item.ItemID == "NewItem")
-      {
-        if (!Page.IsReturningPostBack)
-        {
-          EditRole (null, null, CurrentFunction.Group);
-        }
-        else
-        {
-          var returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
-
-          RolesList.LoadValue (!returningFunction.HasUserCancelled);
-          if (returningFunction.HasUserCancelled)
-            returningFunction.Role.Delete ();
-          else
-            RolesList.IsDirty = true;
-        }
-      }
-
-      if (e.Item.ItemID == "EditItem")
-      {
-        if (!Page.IsReturningPostBack)
-        {
-          EditRole ((Role) RolesList.GetSelectedBusinessObjects ()[0], null, CurrentFunction.Group);
-        }
-        else
-        {
-          var returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
-          if (!returningFunction.HasUserCancelled)
-            RolesList.IsDirty = true;
-        }
-      }
-
-      if (e.Item.ItemID == "DeleteItem")
-      {
-        foreach (Role role in RolesList.GetSelectedBusinessObjects ())
-        {
-          RolesList.RemoveRow (role);
-          role.Delete ();
-        }
-      }
-
-      RolesList.ClearSelectedRows ();
-    }
-
-    private void EditRole (Role role, User user, Group group)
-    {
-      var editRoleFormFunction = new EditRoleFormFunction (WxeTransactionMode.None, (role != null) ? role.ID : null, user, group);
-      Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
     }
 
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)

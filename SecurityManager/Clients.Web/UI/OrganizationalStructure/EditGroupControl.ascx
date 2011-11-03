@@ -81,9 +81,9 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocList ID="RolesList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Roles" OnMenuItemClick="RolesList_MenuItemClick" Selection="Multiple" ShowEmptyListMessage="true" ShowEmptyListReadOnlyMode="true">
+      <remotion:BocList ID="RolesList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Roles" Selection="Multiple" ShowEmptyListMessage="true" ShowEmptyListReadOnlyMode="true">
         <FixedColumns>
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="User">
+          <remotion:BocSimpleColumnDefinition ItemID="User" PropertyPathIdentifier="User">
             <PersistedCommand>
               <remotion:BocListItemCommand />
             </PersistedCommand>
@@ -94,23 +94,6 @@
             </PersistedCommand>
           </remotion:BocSimpleColumnDefinition>
         </FixedColumns>
-        <ListMenuItems>
-          <remotion:BocMenuItem ItemID="NewItem" Text="$res:New">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-          <remotion:BocMenuItem ItemID="EditItem" RequiredSelection="ExactlyOne" Text="$res:Edit">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-          <remotion:BocMenuItem ItemID="DeleteItem" RequiredSelection="OneOrMore" Text="$res:Delete">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-        </ListMenuItems>
       </remotion:BocList>
     </td>
   </tr>
