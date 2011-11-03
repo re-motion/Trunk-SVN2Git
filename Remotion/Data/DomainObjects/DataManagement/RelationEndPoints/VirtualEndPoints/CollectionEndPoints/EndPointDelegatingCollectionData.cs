@@ -35,18 +35,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   public class EndPointDelegatingCollectionData : IDomainObjectCollectionData
   {
     private readonly RelationEndPointID _endPointID;
-    private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly IVirtualEndPointProvider _virtualEndPointProvider;
 
-    public EndPointDelegatingCollectionData (RelationEndPointID endPointID, IRelationEndPointProvider endPointProvider)
+    public EndPointDelegatingCollectionData (RelationEndPointID endPointID, IVirtualEndPointProvider virtualEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
 
       if (endPointID.Definition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("Associated end-point must be a CollectionEndPoint.", "endPointID");
 
       _endPointID = endPointID;
-      _endPointProvider = endPointProvider;
+      _virtualEndPointProvider = virtualEndPointProvider;
     }
 
     public RelationEndPointID EndPointID
@@ -54,9 +54,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _endPointID; }
     }
 
-    public IRelationEndPointProvider EndPointProvider
+    public IVirtualEndPointProvider VirtualEndPointProvider
     {
-      get { return _endPointProvider; }
+      get { return _virtualEndPointProvider; }
     }
 
     public int Count
@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     public ICollectionEndPoint AssociatedEndPoint
     {
-      get { return (ICollectionEndPoint) _endPointProvider.GetRelationEndPointWithMinimumLoading (_endPointID); }
+      get { return (ICollectionEndPoint) _virtualEndPointProvider.GetOrCreateVirtualEndPoint (_endPointID); }
     }
 
     public bool IsDataComplete

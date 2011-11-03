@@ -676,11 +676,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       collectionEndPointStub.Stub (stub => stub.GetData()).Return (endPointDataStub);
 
-      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      var virtualEndPointProviderStub = MockRepository.GenerateStub<IVirtualEndPointProvider>();
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
-      endPointProviderStub.Stub (stub => stub.GetRelationEndPointWithMinimumLoading (endPointID)).Return (collectionEndPointStub);
+      virtualEndPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (endPointID)).Return (collectionEndPointStub);
 
-      var delegatingStrategy = new EndPointDelegatingCollectionData (endPointID, endPointProviderStub);
+      var delegatingStrategy = new EndPointDelegatingCollectionData (endPointID, virtualEndPointProviderStub);
       var associatedCollection = new OrderCollection (new ModificationCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
       Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (associatedCollection), Is.SameAs (collectionEndPointStub));
       return associatedCollection;

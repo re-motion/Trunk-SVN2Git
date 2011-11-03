@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private MockRepository _mockRepository;
 
-    private IRelationEndPointProvider _endPointProviderMock;
+    private IVirtualEndPointProvider _virtualEndPointProviderMock;
     private UnknownRealObjectEndPointSyncState _state;
 
     private RelationEndPointID _endPointID;
@@ -44,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp();
 
       _mockRepository = new MockRepository();
-      _endPointProviderMock = _mockRepository.StrictMock<IRelationEndPointProvider>();
-      _state = new UnknownRealObjectEndPointSyncState(_endPointProviderMock);
+      _virtualEndPointProviderMock = _mockRepository.StrictMock<IVirtualEndPointProvider> ();
+      _state = new UnknownRealObjectEndPointSyncState(_virtualEndPointProviderMock);
 
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");
       _endPointMock = _mockRepository.StrictMock<IRealObjectEndPoint> ();
@@ -140,13 +140,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.EndPointProvider, Is.Not.Null);
+      Assert.That (result.VirtualEndPointProvider, Is.Not.Null);
     }
 
     private void ExpectLoadOpposite ()
     {
       var oppositeID = RelationEndPointID.CreateOpposite (_endPointID.Definition, DomainObjectIDs.Customer1);
-      _endPointProviderMock.Expect (mock => mock.GetRelationEndPointWithMinimumLoading (oppositeID)).Return (_oppositeEndPointMock);
+      _virtualEndPointProviderMock.Expect (mock => mock.GetOrCreateVirtualEndPoint (oppositeID)).Return (_oppositeEndPointMock);
       _oppositeEndPointMock.Expect (mock => mock.EnsureDataComplete());
     }
   }

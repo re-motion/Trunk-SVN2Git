@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       var endPoint = (IRealObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
 
       var oppositeID = RelationEndPointID.CreateOpposite (endPoint.Definition, relatedCustomerID);
-      var oppositeEndPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithMinimumLoading (oppositeID);
+      var oppositeEndPoint = ClientTransactionMock.DataManager.GetOrCreateVirtualEndPoint (oppositeID);
       oppositeEndPoint.EnsureDataComplete ();
 
       Assert.That (endPoint.IsSynchronized, Is.False);

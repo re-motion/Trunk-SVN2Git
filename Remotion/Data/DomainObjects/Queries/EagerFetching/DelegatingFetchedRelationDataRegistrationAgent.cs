@@ -62,21 +62,16 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       get { return _collectionDataRegistrationAgent; }
     }
 
-    public void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects,
-        ILoadedDataContainerProvider loadedDataContainerProvider,
-        IRelationEndPointProvider relationEndPointProvider)
+    public void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects, ILoadedDataContainerProvider loadedDataContainerProvider, IVirtualEndPointProvider virtualEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("originatingObjects", originatingObjects);
       ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
-      ArgumentUtility.CheckNotNull ("relationEndPointProvider", relationEndPointProvider);
+      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
 
       var specificAgent = GetSpecificAgent (relationEndPointDefinition);
       specificAgent.GroupAndRegisterRelatedObjects (
-          relationEndPointDefinition, originatingObjects, relatedObjects, loadedDataContainerProvider, relationEndPointProvider);
+          relationEndPointDefinition, originatingObjects, relatedObjects, loadedDataContainerProvider, virtualEndPointProvider);
     }
 
     private IFetchedRelationDataRegistrationAgent GetSpecificAgent (IRelationEndPointDefinition relationEndPointDefinition)

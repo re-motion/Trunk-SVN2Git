@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Collections;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -45,6 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     }
 
     public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IVirtualEndPoint GetOrCreateVirtualEndPoint (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }

@@ -288,10 +288,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointManager.GetRelationEndPointWithoutLoading (endPointID);
     }
 
-    public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
+    public IVirtualEndPoint GetOrCreateVirtualEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      return _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
+      return _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
     }
 
     public IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject)

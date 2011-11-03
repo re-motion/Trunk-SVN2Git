@@ -14,18 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Mapping;
+using System;
 
-namespace Remotion.Data.DomainObjects.Queries.EagerFetching
+namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
-  /// Registers a set of related objects with a set of originating objects based on an <see cref="IRelationEndPointDefinition"/>. If one of the 
-  /// relation end-points already has data registered, the new related object data is ignored.
+  /// Provides access to <see cref="IVirtualEndPoint"/> instances for a <see cref="ClientTransaction"/>.
   /// </summary>
-  public interface IFetchedRelationDataRegistrationAgent
+  public interface IVirtualEndPointProvider
   {
-    void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects, ILoadedDataContainerProvider loadedDataContainerProvider, IVirtualEndPointProvider virtualEndPointProvider);
+    IVirtualEndPoint GetOrCreateVirtualEndPoint (RelationEndPointID endPointID);
   }
 }

@@ -30,17 +30,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (UnknownRealObjectEndPointSyncState));
 
-    private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly IVirtualEndPointProvider _virtualEndPointProvider;
 
-    public UnknownRealObjectEndPointSyncState (IRelationEndPointProvider endPointProvider)
+    public UnknownRealObjectEndPointSyncState (IVirtualEndPointProvider virtualEndPointProvider)
     {
-      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
-      _endPointProvider = endPointProvider;
+      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
+      _virtualEndPointProvider = virtualEndPointProvider;
     }
 
-    public IRelationEndPointProvider EndPointProvider
+    public IVirtualEndPointProvider VirtualEndPointProvider
     {
-      get { return _endPointProvider; }
+      get { return _virtualEndPointProvider; }
     }
 
     public bool? IsSynchronized (IRealObjectEndPoint endPoint)
@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       var oppositeID = RelationEndPointID.CreateOpposite (endPoint.Definition, endPoint.OppositeObjectID);
       Assertion.IsFalse (oppositeID.Definition.IsAnonymous, "Unidirectional end-points don't get used in unknown state.");
 
-      var oppositeEndPoint = _endPointProvider.GetRelationEndPointWithMinimumLoading (oppositeID);
+      var oppositeEndPoint = _virtualEndPointProvider.GetOrCreateVirtualEndPoint (oppositeID);
       oppositeEndPoint.EnsureDataComplete();
     }
     
@@ -94,13 +94,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
     public UnknownRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
+      _virtualEndPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      info.AddHandle (_endPointProvider);
+      info.AddHandle (_virtualEndPointProvider);
     }
 
     #endregion

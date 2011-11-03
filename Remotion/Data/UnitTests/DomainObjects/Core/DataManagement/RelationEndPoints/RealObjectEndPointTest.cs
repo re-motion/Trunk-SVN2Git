@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var syncState = RealObjectEndPointTestHelper.GetSyncState (endPoint);
       Assert.That (syncState, Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
-      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).EndPointProvider, Is.SameAs (_endPointProviderStub));
+      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).VirtualEndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 
     [Test]
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var syncState = RealObjectEndPointTestHelper.GetSyncState (_endPoint);
       Assert.That (syncState, Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
-      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).EndPointProvider, Is.SameAs (_endPointProviderStub));
+      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).VirtualEndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 
     [Test]

@@ -206,6 +206,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointProviderFake.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\FreshlyLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\InvalidLoadedObjectDataTest.cs" />

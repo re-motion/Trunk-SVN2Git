@@ -667,8 +667,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
       var endPointID3 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
 
-      var endPoint1 = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID1);
-      var endPoint2 = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID2);
+      var endPoint1 = _dataManager.GetOrCreateVirtualEndPoint (endPointID1);
+      var endPoint2 = _dataManager.GetOrCreateVirtualEndPoint (endPointID2);
       
       var command = _dataManager.CreateUnloadVirtualEndPointsCommand (endPointID1, endPointID2, endPointID3);
 
@@ -1066,76 +1066,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetRelationEndPointWithLazyLoad ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, GetPropertyIdentifier (typeof (Order), "OrderTicket"));
+      var fakeEndPoint = MockRepository.GenerateStub<IRelationEndPoint> ();
 
-      var result = _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
+      _endPointManagerMock.Expect (mock => mock.GetRelationEndPointWithLazyLoad (endPointID)).Return (fakeEndPoint);
+      _endPointManagerMock.Replay ();
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.SameAs (_dataManager.GetRelationEndPointWithoutLoading (endPointID)));
+      var result = _dataManagerWithMocks.GetRelationEndPointWithLazyLoad (endPointID);
+
+      _endPointManagerMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeEndPoint));
     }
 
     [Test]
-    public void GetRelationEndPointWithoutLoading_EndPointNotAvailable ()
+    public void GetRelationEndPointWithoutLoading ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, GetPropertyIdentifier (typeof (Order), "OrderTicket"));
+      var fakeEndPoint = MockRepository.GenerateStub<IRelationEndPoint> ();
 
-      var result = _dataManager.GetRelationEndPointWithoutLoading (endPointID);
+      _endPointManagerMock.Expect (mock => mock.GetRelationEndPointWithoutLoading (endPointID)).Return (fakeEndPoint);
+      _endPointManagerMock.Replay ();
 
-      Assert.That (result, Is.Null);
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
+      var result = _dataManagerWithMocks.GetRelationEndPointWithoutLoading (endPointID);
+
+      _endPointManagerMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeEndPoint));
     }
 
     [Test]
-    public void GetRelationEndPointWithoutLoading_EndPointAvailable ()
+    public void GetOrCreateVirtualEndPoint ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, GetPropertyIdentifier (typeof (Order), "OrderTicket"));
+      var fakeVirtualEndPoint = MockRepository.GenerateStub<IVirtualEndPoint>();
 
-      var result = _dataManager.GetRelationEndPointWithoutLoading (endPointID);
+      _endPointManagerMock.Expect (mock => mock.GetOrCreateVirtualEndPoint (endPointID)).Return (fakeVirtualEndPoint);
+      _endPointManagerMock.Replay();
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.SameAs (_dataManager.GetRelationEndPointWithoutLoading (endPointID)));
-    }
+      var result = _dataManagerWithMocks.GetOrCreateVirtualEndPoint (endPointID);
 
-    [Test]
-    public void GetRelationEndPointWithMinimumLoading_RealEndPointNotAvailable ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
-
-      var result = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.SameAs (_dataManager.GetRelationEndPointWithoutLoading (endPointID)));
-      Assert.That (result.IsDataComplete, Is.True);
-    }
-
-    [Test]
-    public void GetRelationEndPointWithMinimumLoading_VirtualEndPointNotAvailable ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
-
-      var result = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.SameAs (_dataManager.GetRelationEndPointWithoutLoading (endPointID)));
-      Assert.That (result.IsDataComplete, Is.False);
-    }
-
-    [Test]
-    public void GetRelationEndPointWithMinimumLoading_EndPointAvailable ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
-
-      var result = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.SameAs (_dataManager.GetRelationEndPointWithoutLoading (endPointID)));
+      _endPointManagerMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeVirtualEndPoint));
     }
 
     private PersistableData CreatePersistableData (DomainObject domainObject)

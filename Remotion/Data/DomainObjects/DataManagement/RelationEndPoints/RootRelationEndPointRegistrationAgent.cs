@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   [Serializable]
   public class RootRelationEndPointRegistrationAgent : RelationEndPointRegistrationAgent
   {
-    public RootRelationEndPointRegistrationAgent (IRelationEndPointProvider endPointProvider)
+    public RootRelationEndPointRegistrationAgent (IVirtualEndPointProvider endPointProvider)
         : base (endPointProvider)
     {
     }

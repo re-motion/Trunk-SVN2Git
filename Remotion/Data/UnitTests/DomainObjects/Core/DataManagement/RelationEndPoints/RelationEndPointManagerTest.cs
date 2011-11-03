@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -560,6 +559,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void GetRelationEndPointWithLazyLoad_EndPointAlreadyAvailable ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Expect (mock => mock.EnsureDataComplete ());
+      endPointMock.Replay ();
+
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointMock);
+
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (endPointMock));
+
+      var result = _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID);
+
+      Assert.That (result, Is.SameAs (endPointMock));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (endPointMock));
+    }
+
+    [Test]
     public void GetRelationEndPointWithLazyLoad_RegistersCollectionEndPoint ()
     {
       _relationEndPointManager.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // preload Order1 before lazily loading its virtual end point
@@ -631,76 +649,96 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void GetRelationEndPointWithMinimumLoading_EndPointAlreadyAvailable ()
+    public void GetOrCreateVirtualEndPoint_AlreadyAvailable ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint> ();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Expect (mock => mock.EnsureDataComplete ());
       endPointMock.Replay ();
 
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointMock);
 
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (endPointMock));
 
-      var result = _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
+      var result = _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
 
       Assert.That (result, Is.SameAs (endPointMock));
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (endPointMock));
     }
 
     [Test]
-    public void GetRelationEndPointWithMinimumLoading_EndPointNotAvailable_Null ()
-    {
-      var endPointID = RelationEndPointID.Create (
-          null,
-          Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems"));
-
-      var result = _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
-
-      Assert.That (result, Is.TypeOf<NullCollectionEndPoint> ());
-    }
-
-    [Test]
-    public void GetRelationEndPointWithMinimumLoading_EndPointNotAvailable_Virtual ()
+    public void GetOrCreateVirtualEndPoint_NewlyCreated_ObjectEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
 
-      var result = _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
+      var result = _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
 
-      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.Not.Null.And.TypeOf<VirtualObjectEndPoint>());
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (result));
       Assert.That (result.IsDataComplete, Is.False);
     }
 
     [Test]
-    public void GetRelationEndPointWithMinimumLoading_EndPointNotAvailable_Real ()
+    public void GetOrCreateVirtualEndPoint_NewlyCreated_CollectionEndPoint ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[endPointID.ObjectID], Is.Null);
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
 
-      var result = _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
+      var result = _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[endPointID.ObjectID], Is.Not.Null);
+      Assert.That (result, Is.Not.Null.And.TypeOf<CollectionEndPoint> ());
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (result));
-      Assert.That (result.IsDataComplete, Is.True);
+      Assert.That (result.IsDataComplete, Is.False);
     }
 
     [Test]
-    public void GetRelationEndPointWithMinimumLoading_Anonymous ()
+    public void GetOrCreateVirtualEndPoint_Null_ObjectEndPoint ()
     {
-      var unidirectionalRelationDefinition = Configuration
-          .GetTypeDefinition (typeof (Location))
-          .GetRelationEndPointDefinition (typeof (Location).FullName + ".Client")
-          .GetOppositeEndPointDefinition ();
-      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Client1, unidirectionalRelationDefinition);
+      var endPointID = RelationEndPointID.Create (null, GetEndPointDefinition (typeof (Order), "OrderTicket"));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
 
-      Assert.That (() => _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID), Throws.ArgumentException.With.Message.EqualTo (
-          "GetRelationEndPointWithMinimumLoading cannot be called for anonymous end points.\r\nParameter name: endPointID"));
+      var result = _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
+
+      Assert.That (result, Is.TypeOf<NullVirtualObjectEndPoint> ());
+    }
+
+    [Test]
+    public void GetOrCreateVirtualEndPoint_Null_CollectionEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (null, GetEndPointDefinition (typeof (Order), "OrderItems"));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
+
+      var result = _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
+
+      Assert.That (result, Is.TypeOf<NullCollectionEndPoint> ());
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "GetOrCreateVirtualEndPoint cannot be called for anonymous end points.\r\nParameter name: endPointID")]
+    public void GetOrCreateVirtualEndPoint_DoesNotSupportAnonymousEndPoints ()
+    {
+      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
+      IRelationEndPoint unidirectionalEndPoint =
+          _relationEndPointManager.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (client.ID, parentClientEndPointDefinition));
+
+      Client parentClient = client.ParentClient;
+      Assert.That (parentClient, Is.Not.Null);
+
+      var anonymousEndPointDefinition = unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition ();
+      _relationEndPointManager.GetOrCreateVirtualEndPoint (RelationEndPointID.Create (parentClient.ID, anonymousEndPointDefinition));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "GetOrCreateVirtualEndPoint cannot be called for non-virtual end points.\r\nParameter name: endPointID")]
+    public void GetOrCreateVirtualEndPoint_NonVirtualEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
+      _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
     }
 
     [Test]

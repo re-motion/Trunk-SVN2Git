@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   [TestFixture]
   public class RootRelationEndPointRegistrationAgentTest : StandardMappingTest
   {
-    private IRelationEndPointProvider _endPointProviderMock;
+    private IVirtualEndPointProvider _virtualEndPointProviderMock;
     private RelationEndPointMap _map;
 
     private RootRelationEndPointRegistrationAgent _agent;
@@ -37,10 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp ();
 
-      _endPointProviderMock = MockRepository.GenerateStrictMock<IRelationEndPointProvider> ();
+      _virtualEndPointProviderMock = MockRepository.GenerateStrictMock<IVirtualEndPointProvider> ();
       _map = new RelationEndPointMap (ClientTransaction.CreateRootTransaction ());
 
-      _agent = new RootRelationEndPointRegistrationAgent (_endPointProviderMock);
+      _agent = new RootRelationEndPointRegistrationAgent (_virtualEndPointProviderMock);
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointMock.Expect (mock => mock.MarkSynchronized ());
       endPointMock.Replay ();
 
-      _endPointProviderMock.Replay ();
+      _virtualEndPointProviderMock.Replay ();
 
       _agent.RegisterEndPoint (endPointMock, _map);
 
@@ -74,15 +74,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       oppositeEndPointMock.Replay ();
 
       var oppositeEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-      _endPointProviderMock
-          .Expect (mock => mock.GetRelationEndPointWithMinimumLoading (oppositeEndPointID))
+      _virtualEndPointProviderMock
+          .Expect (mock => mock.GetOrCreateVirtualEndPoint (oppositeEndPointID))
           .Return (oppositeEndPointMock);
-      _endPointProviderMock.Replay ();
+      _virtualEndPointProviderMock.Replay ();
 
       _agent.RegisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations ();
-      _endPointProviderMock.VerifyAllExpectations ();
+      _virtualEndPointProviderMock.VerifyAllExpectations ();
 
       oppositeEndPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (Arg<DomainObject[]>.Is.Anything));
       oppositeEndPointMock.VerifyAllExpectations ();
@@ -105,15 +105,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       oppositeEndPointMock.Replay ();
 
       var oppositeEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
-      _endPointProviderMock
-          .Expect (mock => mock.GetRelationEndPointWithMinimumLoading (oppositeEndPointID))
+      _virtualEndPointProviderMock
+          .Expect (mock => mock.GetOrCreateVirtualEndPoint (oppositeEndPointID))
           .Return (oppositeEndPointMock);
-      _endPointProviderMock.Replay ();
+      _virtualEndPointProviderMock.Replay ();
 
       _agent.RegisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations ();
-      _endPointProviderMock.VerifyAllExpectations ();
+      _virtualEndPointProviderMock.VerifyAllExpectations ();
       oppositeEndPointMock.VerifyAllExpectations ();
       Assert.That (_map, Has.Member (endPointMock));
     }
@@ -132,16 +132,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       oppositeEndPointMock.Replay ();
 
       var oppositeEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
-      _endPointProviderMock
-          .Expect (mock => mock.GetRelationEndPointWithMinimumLoading (oppositeEndPointID))
+      _virtualEndPointProviderMock
+          .Expect (mock => mock.GetOrCreateVirtualEndPoint (oppositeEndPointID))
           .Return (oppositeEndPointMock);
-      _endPointProviderMock.Replay ();
+      _virtualEndPointProviderMock.Replay ();
 
       _agent.RegisterEndPoint (endPointMock, _map);
 
       oppositeEndPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (Arg<DomainObject>.Is.Anything));
       endPointMock.VerifyAllExpectations ();
-      _endPointProviderMock.VerifyAllExpectations ();
+      _virtualEndPointProviderMock.VerifyAllExpectations ();
       oppositeEndPointMock.VerifyAllExpectations ();
       Assert.That (_map, Has.Member (endPointMock));
     }
@@ -149,11 +149,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Serialization ()
     {
-      var agent = new RootRelationEndPointRegistrationAgent (new SerializableRelationEndPointProviderFake ());
+      var agent = new RootRelationEndPointRegistrationAgent (new SerializableVirtualEndPointProviderFake ());
 
       var deserializedAgent = Serializer.SerializeAndDeserialize (agent);
 
-      Assert.That (deserializedAgent.EndPointProvider, Is.Not.Null);
+      Assert.That (deserializedAgent.VirtualEndPointProvider, Is.Not.Null);
     }
 
     private IRealObjectEndPoint CreateRealObjectEndPointMock (ObjectID originatingObjectID, string shortPropertyName, ObjectID oppositeObjectID)

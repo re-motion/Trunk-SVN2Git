@@ -14,18 +14,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Collections;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.DomainObjects.Queries.EagerFetching
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Registers a set of related objects with a set of originating objects based on an <see cref="IRelationEndPointDefinition"/>. If one of the 
-  /// relation end-points already has data registered, the new related object data is ignored.
-  /// </summary>
-  public interface IFetchedRelationDataRegistrationAgent
+  [Serializable]
+  public class SerializableVirtualEndPointProviderFake : IVirtualEndPointProvider
   {
-    void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects, ILoadedDataContainerProvider loadedDataContainerProvider, IVirtualEndPointProvider virtualEndPointProvider);
+    [NonSerialized]
+    private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _endPoints;
+
+    public SerializableVirtualEndPointProviderFake (params IRelationEndPoint[] endPoints)
+    {
+      _endPoints = endPoints.ToDictionary(ep => ep.ID);
+    }
+
+    public IVirtualEndPoint GetOrCreateVirtualEndPoint (RelationEndPointID endPointID)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

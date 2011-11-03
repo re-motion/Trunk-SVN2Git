@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private RelationEndPointID _endPointID;
 
     private ICollectionEndPoint _collectionEndPointMock;
-    private IRelationEndPointProvider _endPointProviderStub;
+    private IVirtualEndPointProvider _virtualEndPointProviderStub;
 
     private IDomainObjectCollectionData _endPointDataStub;
     private ReadOnlyCollectionDataDecorator _endPointDataDecorator;
@@ -59,9 +59,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       StubCollectionEndPoint (_collectionEndPointMock, ClientTransactionMock, _owningOrder);
-      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithMinimumLoading (_endPointID))
+      _virtualEndPointProviderStub = MockRepository.GenerateStub<IVirtualEndPointProvider> ();
+      _virtualEndPointProviderStub
+          .Stub (stub => stub.GetOrCreateVirtualEndPoint (_endPointID))
           .Return (_collectionEndPointMock);
 
       _endPointDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _nestedCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
       _expandedCommandFake = new ExpandedCommand (_nestedCommandMock);
 
-      _delegatingData = new EndPointDelegatingCollectionData (_endPointID, _endPointProviderStub);
+      _delegatingData = new EndPointDelegatingCollectionData (_endPointID, _virtualEndPointProviderStub);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         "Associated end-point must be a CollectionEndPoint.\r\nParameter name: endPointID")]
     public void Initialization_ChecksEndPointIDCardinality ()
     {
-      new EndPointDelegatingCollectionData (RelationEndPointID.Create (_owningOrder, o => o.Customer), _endPointProviderStub);
+      new EndPointDelegatingCollectionData (RelationEndPointID.Create (_owningOrder, o => o.Customer), _virtualEndPointProviderStub);
     }
 
     [Test]
@@ -419,7 +419,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var deserializedInstance = Serializer.SerializeAndDeserialize (data);
 
       Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
-      Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
+      Assert.That (deserializedInstance.VirtualEndPointProvider, Is.Not.Null);
     }
 
     private ICollectionEndPoint CreateCollectionEndPointStub (ClientTransaction clientTransaction, Order owningOrder)
@@ -482,9 +482,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
-      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      endPointProviderStub.Stub (stub => stub.GetRelationEndPointWithMinimumLoading (_endPointID)).Return (endPointStub);
-      var data = new EndPointDelegatingCollectionData (_endPointID, endPointProviderStub);
+      var virtualEndPointProviderStub = MockRepository.GenerateStub<IVirtualEndPointProvider> ();
+      virtualEndPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_endPointID)).Return (endPointStub);
+      var data = new EndPointDelegatingCollectionData (_endPointID, virtualEndPointProviderStub);
 
       using (_delegatingData.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope())
       {

@@ -174,32 +174,31 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (existingEndPoint != null)
         return existingEndPoint;
 
-      var endPoint = GetRelationEndPointWithMinimumLoading (endPointID);
-      endPoint.EnsureDataComplete ();
-      return endPoint;
-    }
-
-    public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckNotAnonymous (endPointID, "GetRelationEndPointWithMinimumLoading", "endPointID");
-
-      var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
-      if (existingEndPoint != null)
+      if (endPointID.Definition.IsVirtual)
       {
-        return existingEndPoint;
-      }
-      else if (endPointID.Definition.IsVirtual)
-      {
-        return RegisterVirtualEndPoint (endPointID);
+        var endPoint = RegisterVirtualEndPoint (endPointID);
+        endPoint.EnsureDataComplete();
+        return endPoint;
       }
       else
       {
         _lazyLoader.LoadLazyDataContainer (endPointID.ObjectID); // will trigger indirect call to RegisterEndPointsForDataContainer
         var endPoint = GetRelationEndPointWithoutLoading (endPointID);
         Assertion.IsNotNull (endPoint, "Non-virtual end-points are registered when the DataContainer is loaded.");
+        Assertion.IsTrue (endPoint.IsDataComplete);
         return endPoint;
       }
+    }
+
+    public IVirtualEndPoint GetOrCreateVirtualEndPoint (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckNotAnonymous (endPointID, "GetOrCreateVirtualEndPoint", "endPointID");
+
+      if (!endPointID.Definition.IsVirtual)
+        throw new ArgumentException ("GetOrCreateVirtualEndPoint cannot be called for non-virtual end points.", "endPointID");
+
+      return (IVirtualEndPoint) GetRelationEndPointWithoutLoading (endPointID) ?? RegisterVirtualEndPoint (endPointID);
     }
     
     public void CommitAllEndPoints ()

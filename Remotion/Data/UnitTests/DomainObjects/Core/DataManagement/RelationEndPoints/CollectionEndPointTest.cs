@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointProviderStub,
           new CollectionEndPointDataKeeperFactory (ClientTransactionMock, changeDetectionStrategy));
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
-      _endPointProviderStub.Stub (stub => stub.GetRelationEndPointWithMinimumLoading (_customerEndPointID)).Return (_endPoint);
+      _endPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_customerEndPointID)).Return (_endPoint);
 
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
     }
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPoint.Collection);
       var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (dataDecorator);
       Assert.That (wrappedData.EndPointID, Is.EqualTo (_customerEndPointID));
-      Assert.That (wrappedData.EndPointProvider, Is.SameAs (_endPointProviderStub));
+      Assert.That (wrappedData.VirtualEndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 
     [Test]
@@ -651,7 +651,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (
               (ModificationCheckingCollectionDataDecorator) data);
       Assert.That (wrappedData.EndPointID, Is.EqualTo (_endPoint.ID));
-      Assert.That (wrappedData.EndPointProvider, Is.SameAs (_endPoint.EndPointProvider));
+      Assert.That (wrappedData.VirtualEndPointProvider, Is.SameAs (_endPoint.EndPointProvider));
     }
 
     [Test]
