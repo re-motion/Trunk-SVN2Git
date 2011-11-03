@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     protected BaseTransactedFunction CurrentFunction
     {
-      get { return (BaseTransactedFunction) Page.CurrentFunction; }
+      get { return Page.CurrentFunction; }
     }
 
     public virtual IFocusableControl InitialFocusControl
@@ -135,8 +135,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       if (!(control is TControl))
       {
         throw new InvalidOperationException (
-            string.Format (
-                "Control '{0}' on {2} must be of type '{1}'.", controlID, typeof (BusinessObjectBoundEditableWebControl).FullName, GetType().Name));
+            string.Format ("Control '{0}' on {2} must be of type '{1}'.", controlID, typeof (TControl).FullName, GetType().Name));
       }
 
       if (!(control is IFocusableControl))

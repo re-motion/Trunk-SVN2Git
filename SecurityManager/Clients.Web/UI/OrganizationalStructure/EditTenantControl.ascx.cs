@@ -17,10 +17,13 @@
 // 
 using System;
 using System.Linq;
+using System.Web.UI.WebControls;
+using Remotion.FunctionalProgramming;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 
@@ -29,15 +32,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   [WebMultiLingualResources (typeof (EditTenantControlResources))]
   public partial class EditTenantControl : BaseControl
   {
-    // types
+    private BocAutoCompleteReferenceValue _parentField;
 
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -52,20 +48,23 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       get { return NameField; }
     }
+    
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+
+      _parentField = GetControl<BocAutoCompleteReferenceValue> ("ParentField", "Parent");
+
+      if (string.IsNullOrEmpty (_parentField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (_parentField);
+    }
 
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
 
-      FillParentField ();
-
       if (ChildrenList.IsReadOnly)
         ChildrenList.Selection = RowSelection.Disabled;
-    }
-
-    private void FillParentField ()
-    {
-      ParentField.SetBusinessObjectList (CurrentFunction.Tenant.GetPossibleParentTenants().ToArray());
     }
 
     public override bool Validate ()
@@ -75,6 +74,22 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       isValid &= FormGridManager.Validate ();
 
       return isValid;
+    }
+    
+
+    protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)
+    {
+      args.IsValid = IsParentHierarchyValid ((Tenant) _parentField.Value);
+    }
+
+    private bool IsParentHierarchyValid (Tenant group)
+    {
+      var groups = group.CreateSequence (g => g.Parent, g => g != null && g != CurrentFunction.Tenant && g.Parent != group).ToArray();
+      if (groups.Length == 0)
+        return false;
+      if (groups.Last().Parent != null)
+        return false;
+      return true;
     }
   }
 }
