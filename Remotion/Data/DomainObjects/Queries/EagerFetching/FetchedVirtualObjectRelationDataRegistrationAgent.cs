@@ -34,17 +34,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (FetchedVirtualObjectRelationDataRegistrationAgent));
 
-    public override void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects,
-        IDataContainerProvider dataContainerProvider,
-        IRelationEndPointProvider relationEndPointProvider)
+    public override void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects, ILoadedDataContainerProvider loadedDataContainerProvider, IRelationEndPointProvider relationEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
       ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
-      ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
       ArgumentUtility.CheckNotNull ("relationEndPointProvider", relationEndPointProvider);
 
       if (relationEndPointDefinition.Cardinality != CardinalityType.One || !relationEndPointDefinition.IsVirtual)
@@ -57,16 +52,16 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
-      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, dataContainerProvider);
+      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, loadedDataContainerProvider);
       RegisterEndPointData (relationEndPointDefinition, relationEndPointProvider, originatingObjects, groupedRelatedObjects);
     }
 
     private IDictionary<ObjectID, DomainObject> CorrelateRelatedObjects (
         IEnumerable<DomainObject> relatedObjects,
         VirtualRelationEndPointDefinition relationEndPointDefinition,
-        IDataContainerProvider dataContainerProvider)
+        ILoadedDataContainerProvider loadedDataContainerProvider)
     {
-      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, dataContainerProvider);
+      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, loadedDataContainerProvider);
       var dictionary = new Dictionary<ObjectID, DomainObject>();
       foreach (var tuple in relatedObjectsWithForeignKey.Where (tuple => tuple.Item1 != null))
       {

@@ -66,17 +66,17 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject[] originatingObjects,
         DomainObject[] relatedObjects,
-        IDataContainerProvider dataContainerProvider,
+        ILoadedDataContainerProvider loadedDataContainerProvider,
         IRelationEndPointProvider relationEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("originatingObjects", originatingObjects);
-      ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
       ArgumentUtility.CheckNotNull ("relationEndPointProvider", relationEndPointProvider);
 
       var specificAgent = GetSpecificAgent (relationEndPointDefinition);
       specificAgent.GroupAndRegisterRelatedObjects (
-          relationEndPointDefinition, originatingObjects, relatedObjects, dataContainerProvider, relationEndPointProvider);
+          relationEndPointDefinition, originatingObjects, relatedObjects, loadedDataContainerProvider, relationEndPointProvider);
     }
 
     private IFetchedRelationDataRegistrationAgent GetSpecificAgent (IRelationEndPointDefinition relationEndPointDefinition)

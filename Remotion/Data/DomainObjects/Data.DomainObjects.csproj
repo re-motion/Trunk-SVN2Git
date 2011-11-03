@@ -187,7 +187,7 @@
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
     <Compile Include="DataManagement\DataManagementService.cs" />
     <Compile Include="DataManagement\IDataContainerLifetimeManager.cs" />
-    <Compile Include="DataManagement\IDataContainerProvider.cs" />
+    <Compile Include="DataManagement\ILoadedDataContainerProvider.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FreshlyLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectData.cs" />

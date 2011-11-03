@@ -22,27 +22,27 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Returns <see cref="AlreadyExistingLoadedObjectData"/> and <see cref="NullLoadedObjectData"/> instances for objects known by a given 
-  /// <see cref="IDataContainerProvider"/>.
+  /// Returns <see cref="AlreadyExistingLoadedObjectData"/> and <see cref="InvalidLoadedObjectData"/> instances for objects known by a given 
+  /// <see cref="ILoadedDataContainerProvider"/> or <see cref="IInvalidDomainObjectManager"/>.
   /// </summary>
   [Serializable]
   public class LoadedObjectDataProvider : ILoadedObjectDataProvider
   {
-    private readonly IDataContainerProvider _dataContainerProvider;
+    private readonly ILoadedDataContainerProvider _loadedDataContainerProvider;
     private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
 
-    public LoadedObjectDataProvider (IDataContainerProvider dataContainerProvider, IInvalidDomainObjectManager invalidDomainObjectManager)
+    public LoadedObjectDataProvider (ILoadedDataContainerProvider loadedDataContainerProvider, IInvalidDomainObjectManager invalidDomainObjectManager)
     {
-      ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       
-      _dataContainerProvider = dataContainerProvider;
+      _loadedDataContainerProvider = loadedDataContainerProvider;
       _invalidDomainObjectManager = invalidDomainObjectManager;
     }
 
-    public IDataContainerProvider DataContainerProvider
+    public ILoadedDataContainerProvider LoadedDataContainerProvider
     {
-      get { return _dataContainerProvider; }
+      get { return _loadedDataContainerProvider; }
     }
 
     public IInvalidDomainObjectManager InvalidDomainObjectManager
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       if (_invalidDomainObjectManager.IsInvalid (objectID))
         return new InvalidLoadedObjectData (_invalidDomainObjectManager.GetInvalidObjectReference (objectID));
 
-      var dataContainer = _dataContainerProvider.GetDataContainerWithoutLoading (objectID);
+      var dataContainer = _loadedDataContainerProvider.GetDataContainerWithoutLoading (objectID);
       return dataContainer != null ? new AlreadyExistingLoadedObjectData (dataContainer) : null;
     }
   }

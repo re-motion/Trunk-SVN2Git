@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
   [TestFixture]
   public class LoadedObjectDataProviderTest : StandardMappingTest
   {
-    private IDataContainerProvider _dataContainerProviderMock;
+    private ILoadedDataContainerProvider _loadedDataContainerProviderMock;
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
 
     private LoadedObjectDataProvider _dataProvider;
@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       base.SetUp ();
 
-      _dataContainerProviderMock = MockRepository.GenerateStrictMock<IDataContainerProvider>();
+      _loadedDataContainerProviderMock = MockRepository.GenerateStrictMock<ILoadedDataContainerProvider> ();
       _invalidDomainObjectManagerMock = MockRepository.GenerateStrictMock<IInvalidDomainObjectManager>();
-      _dataProvider = new LoadedObjectDataProvider (_dataContainerProviderMock, _invalidDomainObjectManagerMock);
+      _dataProvider = new LoadedObjectDataProvider (_loadedDataContainerProviderMock, _invalidDomainObjectManagerMock);
     }
 
     [Test]
@@ -57,14 +57,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Return (false);
       _invalidDomainObjectManagerMock.Replay ();
 
-      _dataContainerProviderMock
+      _loadedDataContainerProviderMock
           .Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1))
           .Return (dataContainer);
-      _dataContainerProviderMock.Replay ();
+      _loadedDataContainerProviderMock.Replay ();
 
       var loadedObject = _dataProvider.GetLoadedObject (DomainObjectIDs.Order1);
 
-      _dataContainerProviderMock.VerifyAllExpectations();
+      _loadedDataContainerProviderMock.VerifyAllExpectations();
       Assert.That (
           loadedObject, 
           Is.TypeOf<AlreadyExistingLoadedObjectData> ()
@@ -79,14 +79,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
         .Return (false);
       _invalidDomainObjectManagerMock.Replay ();
 
-      _dataContainerProviderMock
+      _loadedDataContainerProviderMock
           .Expect (mock => mock.GetDataContainerWithoutLoading (DomainObjectIDs.Order1))
           .Return (null);
-      _dataContainerProviderMock.Replay ();
+      _loadedDataContainerProviderMock.Replay ();
 
       var loadedObject = _dataProvider.GetLoadedObject (DomainObjectIDs.Order1);
 
-      _dataContainerProviderMock.VerifyAllExpectations ();
+      _loadedDataContainerProviderMock.VerifyAllExpectations ();
       Assert.That (loadedObject, Is.Null);
     }
 
@@ -102,11 +102,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Expect (mock => mock.GetInvalidObjectReference (DomainObjectIDs.Order1))
           .Return (invalidObjectReference);
       _invalidDomainObjectManagerMock.Replay();
-      _dataContainerProviderMock.Replay();
+      _loadedDataContainerProviderMock.Replay();
 
       var loadedObject = _dataProvider.GetLoadedObject (DomainObjectIDs.Order1);
 
-      _dataContainerProviderMock.AssertWasNotCalled (mock => mock.GetDataContainerWithoutLoading (Arg<ObjectID>.Is.Anything));
+      _loadedDataContainerProviderMock.AssertWasNotCalled (mock => mock.GetDataContainerWithoutLoading (Arg<ObjectID>.Is.Anything));
       _invalidDomainObjectManagerMock.VerifyAllExpectations();
 
       Assert.That (
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (provider);
 
-      Assert.That (deserializedInstance.DataContainerProvider, Is.Not.Null);
+      Assert.That (deserializedInstance.LoadedDataContainerProvider, Is.Not.Null);
       Assert.That (deserializedInstance.InvalidDomainObjectManager, Is.Not.Null);
     }
   }

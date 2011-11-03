@@ -33,17 +33,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (FetchedCollectionRelationDataRegistrationAgent));
 
-    public override void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects,
-        IDataContainerProvider dataContainerProvider,
-        IRelationEndPointProvider relationEndPointProvider)
+    public override void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects, ILoadedDataContainerProvider loadedDataContainerProvider, IRelationEndPointProvider relationEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
       ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
-      ArgumentUtility.CheckNotNull ("dataContainerProvider", dataContainerProvider);
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
       ArgumentUtility.CheckNotNull ("relationEndPointProvider", relationEndPointProvider);
 
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many || relationEndPointDefinition.IsAnonymous)
@@ -52,16 +47,16 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
-      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, dataContainerProvider);
+      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, loadedDataContainerProvider);
       RegisterEndPointData (relationEndPointDefinition, relationEndPointProvider, originatingObjects, groupedRelatedObjects);
     }
 
     private ILookup<ObjectID, DomainObject> CorrelateRelatedObjects (
         IEnumerable<DomainObject> relatedObjects, 
         VirtualRelationEndPointDefinition relationEndPointDefinition,
-        IDataContainerProvider dataContainerProvider)
+        ILoadedDataContainerProvider loadedDataContainerProvider)
     {
-      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition(relatedObjects, relationEndPointDefinition, dataContainerProvider);
+      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, loadedDataContainerProvider);
       return relatedObjectsWithForeignKey.ToLookup (k => k.Item1, k => k.Item2);
     }
 

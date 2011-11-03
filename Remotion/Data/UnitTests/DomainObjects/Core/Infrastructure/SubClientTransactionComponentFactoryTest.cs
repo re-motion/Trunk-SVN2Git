@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (((QueryManager) result).DataContainerLifetimeManager, Is.SameAs (dataManager));
       Assert.That (((QueryManager) result).DataManager, Is.SameAs (dataManager));
       Assert.That (((QueryManager) result).AlreadyLoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ()
-          .With.Property ((LoadedObjectDataProvider provider) => provider.DataContainerProvider).SameAs (dataManager)
+          .With.Property ((LoadedObjectDataProvider provider) => provider.LoadedDataContainerProvider).SameAs (dataManager)
           .With.Property ((LoadedObjectDataProvider provider) => provider.InvalidDomainObjectManager).SameAs (invalidDomainObjectManager));
       Assert.That (((QueryManager) result).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (((QueryManager) result).TransactionEventSink, Is.SameAs (eventSink));

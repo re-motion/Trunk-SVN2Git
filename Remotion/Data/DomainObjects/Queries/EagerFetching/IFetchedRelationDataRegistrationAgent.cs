@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject[] originatingObjects,
         DomainObject[] relatedObjects,
-        IDataContainerProvider dataContainerProvider,
+        ILoadedDataContainerProvider loadedDataContainerProvider,
         IRelationEndPointProvider relationEndPointProvider);
   }
 }

@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   [Serializable]
   public abstract class FetchedRelationDataRegistrationAgentBase : IFetchedRelationDataRegistrationAgent
   {
-    public abstract void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects, IDataContainerProvider dataContainerProvider, IRelationEndPointProvider relationEndPointProvider);
+    public abstract void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects, ILoadedDataContainerProvider loadedDataContainerProvider, IRelationEndPointProvider relationEndPointProvider);
 
     protected void CheckOriginatingObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> originatingObjects)
     {
@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     protected IEnumerable<Tuple<ObjectID, DomainObject>> GetForeignKeysForVirtualEndPointDefinition (
         IEnumerable<DomainObject> domainObjects, 
         VirtualRelationEndPointDefinition virtualEndPointDefinition, 
-        IDataContainerProvider dataContainerProvider)
+        ILoadedDataContainerProvider loadedDataContainerProvider)
     {
       var oppositeEndPointDefinition = (RelationEndPointDefinition) virtualEndPointDefinition.GetOppositeEndPointDefinition ();
 
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       return from relatedObject in domainObjects
              where relatedObject != null
              let dataContainer =
-                 CheckRelatedObjectAndGetDataContainer (relatedObject, virtualEndPointDefinition, oppositeEndPointDefinition, dataContainerProvider)
+                 CheckRelatedObjectAndGetDataContainer (relatedObject, virtualEndPointDefinition, oppositeEndPointDefinition, loadedDataContainerProvider)
              let propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyDefinition.PropertyName]
              let originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current)
              select Tuple.Create (originatingObjectID, relatedObject);
@@ -123,11 +123,11 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     private DataContainer CheckRelatedObjectAndGetDataContainer (
         DomainObject relatedObject,
         IRelationEndPointDefinition relationEndPointDefinition, 
-        IRelationEndPointDefinition oppositeEndPointDefinition, 
-        IDataContainerProvider dataContainerProvider)
+        IRelationEndPointDefinition oppositeEndPointDefinition,
+        ILoadedDataContainerProvider loadedDataContainerProvider)
     {
       CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
-      return dataContainerProvider.GetDataContainerWithoutLoading (relatedObject.ID);
+      return loadedDataContainerProvider.GetDataContainerWithoutLoading (relatedObject.ID);
     }
   }
 }
