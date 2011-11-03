@@ -73,13 +73,13 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocList ID="RolesList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Roles" OnMenuItemClick="RolesList_MenuItemClick" Selection="Multiple" ShowEmptyListMessage="True" ShowEmptyListReadOnlyMode="True">
+      <remotion:BocList ID="RolesList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Roles" Selection="Multiple" ShowEmptyListMessage="True" ShowEmptyListReadOnlyMode="True">
         <FixedColumns>
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Group" />
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Position" />
+          <remotion:BocSimpleColumnDefinition ItemID="Group" PropertyPathIdentifier="Group" />
+          <remotion:BocSimpleColumnDefinition ItemID="Position" PropertyPathIdentifier="Position" />
         </FixedColumns>
         <ListMenuItems>
-          <remotion:BocMenuItem ItemID="NewItem" Text="$res:New">
+<%--          <remotion:BocMenuItem ItemID="NewItem" Text="$res:New">
             <PersistedCommand>
               <remotion:BocMenuItemCommand Show="EditMode" />
             </PersistedCommand>
@@ -94,7 +94,7 @@
               <remotion:BocMenuItemCommand Show="EditMode" />
             </PersistedCommand>
           </remotion:BocMenuItem>
-        </ListMenuItems>
+--%>        </ListMenuItems>
       </remotion:BocList>
     </td>
   </tr>

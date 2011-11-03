@@ -59,7 +59,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
         SecurityManagerSearchWebService.BindServiceToControl (_owningGroupField);
 
       var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+
+      SubstitutedByList.EditModeControlFactory = new EditableRowAutoCompleteControlFactory();
       bocListInlineEditingConfigurator.Configure (SubstitutedByList, Substitution.NewObject);
+
+      RolesList.EditModeControlFactory = new UserRolesListEditableRowControlFactory();
+      bocListInlineEditingConfigurator.Configure (RolesList, Role.NewObject);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -69,8 +74,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       if (!IsPostBack)
       {
         RolesList.SetSortingOrder (
-            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) RolesList.FixedColumns[0], SortingDirection.Ascending),
-            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) RolesList.FixedColumns[1], SortingDirection.Ascending));
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) RolesList.FixedColumns.Find ("Group"), SortingDirection.Ascending),
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) RolesList.FixedColumns.Find ("Position"), SortingDirection.Ascending));
       }
 
       if (RolesList.IsReadOnly)
@@ -96,57 +101,57 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       return isValid;
     }
 
-    protected void RolesList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      if (e.Item.ItemID == "NewItem")
-      {
-        if (!Page.IsReturningPostBack)
-        {
-          EditRole (null, CurrentFunction.User, null);
-        }
-        else
-        {
-          EditRoleFormFunction returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
+    //protected void RolesList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
+    //{
+    //  if (e.Item.ItemID == "NewItem")
+    //  {
+    //    if (!Page.IsReturningPostBack)
+    //    {
+    //      EditRole (null, CurrentFunction.User, null);
+    //    }
+    //    else
+    //    {
+    //      EditRoleFormFunction returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
 
-          RolesList.LoadValue (!returningFunction.HasUserCancelled);
-          if (returningFunction.HasUserCancelled)
-            returningFunction.Role.Delete ();
-          else
-            RolesList.IsDirty = true;
-        }
-      }
+    //      RolesList.LoadValue (!returningFunction.HasUserCancelled);
+    //      if (returningFunction.HasUserCancelled)
+    //        returningFunction.Role.Delete ();
+    //      else
+    //        RolesList.IsDirty = true;
+    //    }
+    //  }
 
-      if (e.Item.ItemID == "EditItem")
-      {
-        if (!Page.IsReturningPostBack)
-        {
-          EditRole ((Role) RolesList.GetSelectedBusinessObjects ()[0], CurrentFunction.User, null);
-        }
-        else
-        {
-          EditRoleFormFunction returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
+    //  if (e.Item.ItemID == "EditItem")
+    //  {
+    //    if (!Page.IsReturningPostBack)
+    //    {
+    //      EditRole ((Role) RolesList.GetSelectedBusinessObjects ()[0], CurrentFunction.User, null);
+    //    }
+    //    else
+    //    {
+    //      EditRoleFormFunction returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
 
-          if (!returningFunction.HasUserCancelled)
-            RolesList.IsDirty = true;
-        }
-      }
+    //      if (!returningFunction.HasUserCancelled)
+    //        RolesList.IsDirty = true;
+    //    }
+    //  }
 
-      if (e.Item.ItemID == "DeleteItem")
-      {
-        foreach (Role role in RolesList.GetSelectedBusinessObjects ())
-        {
-          RolesList.RemoveRow (role);
-          role.Delete ();
-        }
-      }
+    //  if (e.Item.ItemID == "DeleteItem")
+    //  {
+    //    foreach (Role role in RolesList.GetSelectedBusinessObjects ())
+    //    {
+    //      RolesList.RemoveRow (role);
+    //      role.Delete ();
+    //    }
+    //  }
 
-      RolesList.ClearSelectedRows ();
-    }
+    //  RolesList.ClearSelectedRows ();
+    //}
 
-    private void EditRole (Role role, User user, Group group)
-    {
-      EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction (WxeTransactionMode.None, (role != null) ? role.ID : null, user, group);
-      Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
-    }
+    //private void EditRole (Role role, User user, Group group)
+    //{
+    //  EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction (WxeTransactionMode.None, (role != null) ? role.ID : null, user, group);
+    //  Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
+    //}
   }
 }

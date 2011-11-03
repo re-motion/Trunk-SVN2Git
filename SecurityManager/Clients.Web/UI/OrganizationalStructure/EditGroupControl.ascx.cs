@@ -59,6 +59,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       _groupTypeField = GetControl<BocAutoCompleteReferenceValue> ("GroupTypeField", "GroupType");
 
       var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+
+      RolesList.EditModeControlFactory = new EditableRowAutoCompleteControlFactory();
       bocListInlineEditingConfigurator.Configure (RolesList, Role.NewObject);
 
       if (string.IsNullOrEmpty (_parentField.SearchServicePath))
@@ -75,7 +77,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       if (!IsPostBack)
       {
         RolesList.SetSortingOrder (
-            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) RolesList.FixedColumns.Find ("User"), SortingDirection.Ascending));
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) RolesList.FixedColumns.Find ("User"), SortingDirection.Ascending),
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) RolesList.FixedColumns.Find ("Position"), SortingDirection.Ascending));
       }
 
       if (ChildrenList.IsReadOnly)

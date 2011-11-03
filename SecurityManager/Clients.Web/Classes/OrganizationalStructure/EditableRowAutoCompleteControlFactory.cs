@@ -19,6 +19,7 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.SecurityManager.Clients.Web.UI;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 
@@ -45,31 +46,45 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
       ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
 
       if (IsAutoCompleteReferenceValueRequired (propertyPath))
+        return CreateBocAutoCompleteReferenceValue(propertyPath);
+
+      return base.CreateFromPropertyPath (propertyPath);
+    }
+
+    protected virtual IBusinessObjectBoundEditableWebControl CreateBocAutoCompleteReferenceValue (IBusinessObjectPropertyPath propertyPath)
+    {
+      ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
+
+      var control = new BocAutoCompleteReferenceValue();
+      SecurityManagerSearchWebService.BindServiceToControl (control);
+
+      if (Is<User> (propertyPath) || Is<Group> (propertyPath))
       {
-        var control = new BocAutoCompleteReferenceValue();
-        control.Init += delegate
-        {
-          SecurityManagerSearchWebService.BindServiceToControl (control);
-        };
         control.PreRender += delegate
         {
           BasePage page = (BasePage) control.Page;
           control.Args = page.CurrentFunction.TenantID.ToString();
         };
-
-        return control;
       }
 
-      return base.CreateFromPropertyPath (propertyPath);
+      return control;
     }
 
-    private bool IsAutoCompleteReferenceValueRequired (IBusinessObjectPropertyPath propertyPath)
+    protected virtual bool IsAutoCompleteReferenceValueRequired (IBusinessObjectPropertyPath propertyPath)
     {
+      ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
+
       bool isScalarReferenceProperty = !propertyPath.LastProperty.IsList && propertyPath.LastProperty is IBusinessObjectReferenceProperty;
       if (isScalarReferenceProperty)
         return true;
 
       return false;
+    }
+
+    private bool Is<T> (IBusinessObjectPropertyPath propertyPath)
+        where T: OrganizationalStructureObject
+    {
+      return typeof (T).IsAssignableFrom (propertyPath.LastProperty.PropertyType);
     }
   }
 }

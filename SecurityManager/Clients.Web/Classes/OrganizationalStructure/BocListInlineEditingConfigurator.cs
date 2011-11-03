@@ -47,8 +47,6 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 
       if (!ControlHelper.IsDesignMode (bocList))
       {
-        bocList.EditModeControlFactory = new EditableRowAutoCompleteControlFactory();
-
         bocList.FixedColumns.Insert (
             0,
             new BocRowEditModeColumnDefinition

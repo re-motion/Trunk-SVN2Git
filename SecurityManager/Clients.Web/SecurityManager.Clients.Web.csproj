@@ -180,6 +180,7 @@
     <Compile Include="Classes\OrganizationalStructure\EditableRowAutoCompleteControlFactory.cs" />
     <Compile Include="Classes\OrganizationalStructure\InlineEditingDeleteItemMenuItemCommand.cs" />
     <Compile Include="Classes\OrganizationalStructure\InlineEditingNewItemMenuItemCommand.cs" />
+    <Compile Include="Classes\OrganizationalStructure\UserRolesListEditableRowControlFactory.cs" />
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />
     <Compile Include="Classes\BaseControl.cs">
       <SubType>ASPXCodeBehind</SubType>

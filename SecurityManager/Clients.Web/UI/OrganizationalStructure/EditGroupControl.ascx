@@ -88,7 +88,7 @@
               <remotion:BocListItemCommand />
             </PersistedCommand>
           </remotion:BocSimpleColumnDefinition>
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Position">
+          <remotion:BocSimpleColumnDefinition ItemID="Position" PropertyPathIdentifier="Position">
             <PersistedCommand>
               <remotion:BocListItemCommand />
             </PersistedCommand>

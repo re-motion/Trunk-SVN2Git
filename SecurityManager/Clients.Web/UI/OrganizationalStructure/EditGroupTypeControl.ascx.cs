@@ -44,6 +44,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       base.OnInit (e);
 
       var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+
+      PositionsList.EditModeControlFactory = new EditableRowAutoCompleteControlFactory();
       bocListInlineEditingConfigurator.Configure (PositionsList, GroupTypePosition.NewObject);
     }
 
