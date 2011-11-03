@@ -18,41 +18,37 @@
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
-using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
-using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (EditGroupTypeControlResources))]
   public partial class EditGroupTypeControl : BaseControl
   {
-    // types
+    private BocListInlineEditingManager<GroupTypePosition> _positionsListInlineEditingManager;
 
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
     }
 
-    protected new EditGroupTypeFormFunction CurrentFunction
-    {
-      get { return (EditGroupTypeFormFunction) base.CurrentFunction; }
-    }
-
     public override IFocusableControl InitialFocusControl
     {
       get { return NameField; }
+    }
+
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+
+      Page.RegisterRequiresControlState (this);
+
+      _positionsListInlineEditingManager =
+          new BocListInlineEditingManager<GroupTypePosition> (PositionsList, GroupTypePosition.NewObject, ResourceUrlFactory);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -61,7 +57,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (!IsPostBack)
       {
-        PositionsList.SetSortingOrder (new BocListSortingOrderEntry ((IBocSortableColumnDefinition) PositionsList.FixedColumns[0], SortingDirection.Ascending));
+        PositionsList.SetSortingOrder (
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) PositionsList.FixedColumns.Find ("Position"), SortingDirection.Ascending));
       }
 
       if (PositionsList.IsReadOnly)
@@ -70,66 +67,28 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     public override bool Validate ()
     {
-      bool isValid = base.Validate ();
+      bool isValid = base.Validate();
 
-      isValid &= FormGridManager.Validate ();
+      isValid &= FormGridManager.Validate();
 
       return isValid;
     }
 
-    protected void PositionsList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
+    protected override void LoadControlState (object savedState)
     {
-      if (e.Item.ItemID == "NewItem")
-      {
-        if (!Page.IsReturningPostBack)
-        {
-          EditGroupTypePosition (null, null, CurrentFunction.GroupType);
-        }
-        else
-        {
-          EditGroupTypePositionFormFunction returningFunction = (EditGroupTypePositionFormFunction) Page.ReturningFunction;
+      object[] controlState = (object[]) savedState;
 
-          PositionsList.LoadValue (!returningFunction.HasUserCancelled);
-          if (returningFunction.HasUserCancelled)
-            returningFunction.GroupTypePosition.Delete ();
-          else
-            PositionsList.IsDirty = true;
-        }
-      }
-
-      if (e.Item.ItemID == "EditItem")
-      {
-        if (!Page.IsReturningPostBack)
-        {
-          EditGroupTypePosition ((GroupTypePosition) PositionsList.GetSelectedBusinessObjects ()[0], null, CurrentFunction.GroupType);
-        }
-        else
-        {
-          EditGroupTypePositionFormFunction returningFunction = (EditGroupTypePositionFormFunction) Page.ReturningFunction;
-
-          if (!returningFunction.HasUserCancelled)
-            PositionsList.IsDirty = true;
-        }
-      }
-
-      if (e.Item.ItemID == "DeleteItem")
-      {
-        foreach (GroupTypePosition groupTypePosition in PositionsList.GetSelectedBusinessObjects ())
-        {
-          PositionsList.RemoveRow (groupTypePosition);
-          groupTypePosition.Delete ();
-        }
-      }
-
-      PositionsList.ClearSelectedRows ();
+      base.LoadControlState (controlState[0]);
+      _positionsListInlineEditingManager.LoadControlState (controlState[1]);
     }
 
-    private void EditGroupTypePosition (GroupTypePosition groupTypePosition, Position position, GroupType groupType)
+    protected override object SaveControlState ()
     {
-      EditGroupTypePositionFormFunction editGroupTypePositionFormFunction =
-        new EditGroupTypePositionFormFunction (WxeTransactionMode.None, (groupTypePosition != null) ? groupTypePosition.ID : null, position, groupType);
+      object[] controlState = new object[2];
+      controlState[0] = base.SaveControlState();
+      controlState[1] = _positionsListInlineEditingManager.SaveControlState();
 
-      Page.ExecuteFunction (editGroupTypePositionFormFunction, WxeCallArguments.Default);
+      return controlState;
     }
   }
 }
