@@ -159,8 +159,6 @@
     <Content Include="UI\OrganizationalStructure\GroupTypeListForm.aspx" />
     <Content Include="UI\OrganizationalStructure\PositionListControl.ascx" />
     <Content Include="UI\OrganizationalStructure\PositionListForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\SearchGroupControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\SearchGroupForm.aspx" />
     <Content Include="UI\OrganizationalStructure\UserListControl.ascx" />
     <Content Include="UI\OrganizationalStructure\UserListForm.aspx" />
     <Content Include="UI\SecurityManagerNavigationTabs.ascx" />
@@ -309,16 +307,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PositionListFormResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\UI\OrganizationalStructure\SearchGroupControlResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SearchGroupControlResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\UI\OrganizationalStructure\SearchGroupFormResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SearchGroupFormResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Globalization\UI\OrganizationalStructure\UserListControlResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -535,20 +523,6 @@
     <Compile Include="UI\OrganizationalStructure\PositionListForm.aspx.designer.cs">
       <DependentUpon>PositionListForm.aspx</DependentUpon>
     </Compile>
-    <Compile Include="UI\OrganizationalStructure\SearchGroupControl.ascx.cs">
-      <DependentUpon>SearchGroupControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UI\OrganizationalStructure\SearchGroupControl.ascx.designer.cs">
-      <DependentUpon>SearchGroupControl.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UI\OrganizationalStructure\SearchGroupForm.aspx.cs">
-      <DependentUpon>SearchGroupForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UI\OrganizationalStructure\SearchGroupForm.aspx.designer.cs">
-      <DependentUpon>SearchGroupForm.aspx</DependentUpon>
-    </Compile>
     <Compile Include="UI\OrganizationalStructure\UserListControl.ascx.cs">
       <DependentUpon>UserListControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -590,7 +564,6 @@
     <Compile Include="WxeFunctions\OrganizationalStructure\GroupListFormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\GroupTypeListFormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\PositionListFormFunction.cs" />
-    <Compile Include="WxeFunctions\OrganizationalStructure\SearchGroupFormFunction.cs" />
     <Compile Include="WxeFunctions\OrganizationalStructure\UserListFormFunction.cs" />
     <Compile Include="WxeFunctions\WxeTransactionMode.cs" />
   </ItemGroup>
@@ -724,14 +697,6 @@
       <LastGenOutput>UserListControlResources.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\SearchGroupFormResources.de.resx">
-      <LastGenOutput>SearchGroupFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\SearchGroupControlResources.de.resx">
-      <LastGenOutput>SearchGroupControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\PositionListFormResources.de.resx">
       <LastGenOutput>PositionListFormResources.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
@@ -862,16 +827,6 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PositionListFormResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\SearchGroupControlResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SearchGroupControlResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\SearchGroupFormResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SearchGroupFormResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\UserListControlResources.resx">
       <SubType>Designer</SubType>
