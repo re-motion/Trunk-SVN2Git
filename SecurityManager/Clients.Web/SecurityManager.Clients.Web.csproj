@@ -19,6 +19,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -361,6 +362,7 @@
     <Compile Include="Classes\OrganizationalStructure\BaseListControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Classes\OrganizationalStructure\BocListInlineEditingManager.cs" />
     <Compile Include="UI\SecurityManagerSearchWebService.asmx.cs">
       <DependentUpon>SecurityManagerSearchWebService.asmx</DependentUpon>
       <SubType>Component</SubType>

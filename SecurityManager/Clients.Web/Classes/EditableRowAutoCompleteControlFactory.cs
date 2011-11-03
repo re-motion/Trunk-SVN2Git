@@ -20,7 +20,6 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.SecurityManager.Clients.Web.UI;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 
@@ -68,11 +67,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     private bool IsAutoCompleteReferenceValueRequired (IBusinessObjectPropertyPath propertyPath)
     {
       bool isScalarReferenceProperty = !propertyPath.LastProperty.IsList && propertyPath.LastProperty is IBusinessObjectReferenceProperty;
-      if (!isScalarReferenceProperty)
-        return false;
-
-      Type propertyType = propertyPath.LastProperty.PropertyType;
-      if (typeof (User).IsAssignableFrom (propertyType) || typeof (Group).IsAssignableFrom (propertyType))
+      if (isScalarReferenceProperty)
         return true;
 
       return false;
