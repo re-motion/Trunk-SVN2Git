@@ -20,13 +20,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Remotion.Utilities;
 

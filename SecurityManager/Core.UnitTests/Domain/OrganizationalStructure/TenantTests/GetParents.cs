@@ -156,7 +156,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
     }
 
     [Test]
-    [ExpectedException (typeof (PermissionDeniedException))]
     public void Test_WithSecurity_PermissionDeniedOnRoot ()
     {
       Tenant root = TestHelper.CreateTenant ("Root", "UID: Root");
@@ -169,7 +168,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        root.GetParents();
+        Assert.That (root.GetParents(), Is.Empty);
       }
     }
   }

@@ -203,14 +203,19 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// Gets all the <see cref="Group"/> objects in the <see cref="Parent"/> hierarchy, 
     /// provided the user has read access for the respective parent-object.
     /// </summary>
-    /// <exception cref="PermissionDeniedException">
-    /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
+    /// <remarks>
+    ///   <para>If the user does not have read access for the respective <see cref="Group"/>, the parent hierarchy evaluation stops at this point.</para>
+    ///   <para>If the user does not have read access on the current object, an empty sequence is returned.</para>para>
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the parent hierarchy contains a circular reference.
     /// </exception>
     [DemandPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Group> GetParents ()
     {
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-      securityClient.CheckMethodAccess (this, "GetParents");
+      if (!securityClient.HasMethodAccess (this, "GetParents"))
+        return Enumerable.Empty<Group>();
 
       Func<Group, Group> parentResolver = g =>
       {
@@ -226,60 +231,43 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     }
 
     /// <summary>
-    /// Gets the <see cref="Group"/> objects that can be used as the parent for this <see cref="Group"/>, 
-    /// provided the user as read access for the respective object.
+    /// Gets the <see cref="Group"/> and all of its <see cref="Children"/>.
     /// </summary>
-    /// <returns>
-    /// Returns all <see cref="Group"/> objects in the system, except those in the child-hierarchy
-    /// and those for which the user does not have <see cref="GeneralAccessTypes.Read"/> access.
-    /// </returns>
-    /// <remarks>This sequence will be empty if <see cref="Group"/>'s <see cref="Tenant"/> property is <see langword="null" />.</remarks>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if the child-hierarchy of this <see cref="Group"/> contains a circular reference.
-    /// </exception>
-    public IEnumerable<Group> GetPossibleParentGroups ()
-    {
-      if (Tenant == null)
-        return new Group[0];
-
-      Group[] hierarchy;
-      using (new SecurityFreeSection())
-      {
-        hierarchy = GetHierachy().ToArray();
-      }
-
-      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-      return Group.FindByTenantID (Tenant.ID)
-          .AsEnumerable()
-          .Except (hierarchy)
-          .Where (t => securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
-    }
-
-    /// <summary>
-    /// Gets the <see cref="Group"/> and all of its <see cref="Children"/>, provided the user as read access for the respective child-object.
-    /// </summary>
-    /// <exception cref="PermissionDeniedException">
-    /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
-    /// </exception>
+    /// <remarks>
+    ///   <para>
+    ///     If the user does not have read access for the respective <see cref="Group"/>, the hierarchy evaluation stops at this point for the evaluated branch.
+    ///   </para>
+    ///   <para>If the user does not have read access on the current object, an empty sequence is returned.</para>para>
+    /// </remarks>
     /// <exception cref="InvalidOperationException">
     /// Thrown if the hierarchy contains a circular reference.
     /// </exception>
-    [DemandPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Group> GetHierachy ()
     {
-      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-      securityClient.CheckMethodAccess (this, "GetHierachy");
-
-      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchy (this)));
+      return GetHierarchyWithSecurityCheck (this);
     }
 
     /// <summary>
-    /// Resolves the hierarchy for the current group as long as the user has <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
+    /// Resolves the hierarchy for the current <see cref="Group"/> as long as the user has <see cref="GeneralAccessTypes.Read"/> permissions
+    /// on the current object.
+    /// </summary>
+    private IEnumerable<Group> GetHierarchyWithSecurityCheck (Group startPoint)
+    {
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
+        return Enumerable.Empty<Group>();
+
+      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchyWithCircularReferenceCheck (startPoint)));
+    }
+
+    /// <summary>
+    /// Resolves the hierarchy for the current <see cref="Group"/> as long as the current object is not equal to the <param name="startPoint"/>, 
+    /// which would indicate a circular reference.
     /// </summary>
     /// <exception cref="InvalidOperationException">
     /// Thrown if the current object equals the <paramref name="startPoint"/>.
     /// </exception>
-    private IEnumerable<Group> GetHierarchy (Group startPoint)
+    private IEnumerable<Group> GetHierarchyWithCircularReferenceCheck (Group startPoint)
     {
       if (this == startPoint)
       {
@@ -287,11 +275,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
             string.Format ("The hierarchy for group '{0}' cannot be resolved because a circular reference exists.", startPoint.ID));
       }
 
-      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-      if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
-        return new Group[0];
-
-      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchy (startPoint)));
+      return GetHierarchyWithSecurityCheck (startPoint);
     }
 
     protected override void OnCommitting (EventArgs args)

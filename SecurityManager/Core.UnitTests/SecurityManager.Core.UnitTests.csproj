@@ -172,6 +172,7 @@
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\Metadata\StatePropertyReferenceTest.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipalTest.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\GetHierarchy.cs" />
     <Compile Include="Domain\SearchInfrastructure\Metadata\AbstractRoleDefinitionPropertyTypeSearchServiceTests\SearchAbstractRoleDefinition.cs" />
     <Compile Include="Domain\SearchInfrastructure\Metadata\AbstractRoleDefinitionPropertyTypeSearchServiceTests\SearchOtherProperty.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupTypePropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
@@ -193,7 +194,6 @@
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GetParents.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\DeleteGroup.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\FindGroup.cs" />
-    <Compile Include="Domain\OrganizationalStructure\GroupTests\GetHierarchy.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GroupTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\OnCommitting.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\SecurableObjectImpelementation.cs" />
@@ -223,7 +223,6 @@
     <Compile Include="Domain\OrganizationalStructure\TenantTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\Common.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\GetParents.cs" />
-    <Compile Include="Domain\OrganizationalStructure\TenantTests\GetPossibleParentTenants.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\GetHierachy.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\FindTenant.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\SecurableObjectImpelementation.cs" />
@@ -255,7 +254,6 @@
     <Compile Include="Domain\Metadata\SecurableClassDefinitionWrapper.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTypePositionTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureFactoryTest.cs" />
-    <Compile Include="Domain\OrganizationalStructure\GroupTests\GetPossibleParentGroups.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTypeTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureTestHelper.cs" />
     <Compile Include="Domain\OrganizationalStructure\PositionTest.cs" />
