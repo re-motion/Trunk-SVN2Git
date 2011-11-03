@@ -86,7 +86,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     private void FillGroupTypeField ()
     {
-      GroupTypeField.SetBusinessObjectList (GroupType.FindAll ());
+      GroupTypeField.SetBusinessObjectList (GroupType.FindAll ().ToArray());
     }
 
     public override bool Validate ()

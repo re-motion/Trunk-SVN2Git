@@ -19,7 +19,6 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.Security;
@@ -47,13 +46,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return NewObject<GroupType> ();
     }
 
-    public static ObjectList<GroupType> FindAll ()
+    public static IQueryable<GroupType> FindAll ()
     {
-      var result = from g in QueryFactory.CreateLinqQuery<GroupType>()
-                   orderby g.Name
-                   select g;
-
-      return result.ToObjectList();
+      return from g in QueryFactory.CreateLinqQuery<GroupType>()
+             orderby g.Name
+             select g;
     }
 
     [DemandPermission (GeneralAccessTypes.Search)]

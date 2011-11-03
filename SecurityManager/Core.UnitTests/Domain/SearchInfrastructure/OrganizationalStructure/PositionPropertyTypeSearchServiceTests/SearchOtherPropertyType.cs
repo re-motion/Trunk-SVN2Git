@@ -53,9 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
         MatchType = MessageMatch.Contains)]
     public void Search_WithInvalidProperty ()
     {
-      Role role = TestHelper.CreateRole (null, null, null);
-
-      _searchService.Search (role, _tenantProperty, null);
+       _searchService.Search (null, _tenantProperty, null);
     }
   }
 }

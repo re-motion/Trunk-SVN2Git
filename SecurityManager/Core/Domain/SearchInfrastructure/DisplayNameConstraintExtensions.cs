@@ -64,6 +64,16 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       return positions;
     }
 
+    public static IQueryable<GroupType> Apply (this IQueryable<GroupType> groupTypes, DisplayNameConstraint constraint)
+    {
+      ArgumentUtility.CheckNotNull ("groupTypes", groupTypes);
+
+      if (HasConstraint (constraint))
+        return groupTypes.Where (t => t.Name.Contains (constraint.Value));
+
+      return groupTypes;
+    }
+
     private static bool HasConstraint (DisplayNameConstraint constraint)
     {
       return constraint != null && !String.IsNullOrEmpty (constraint.Value);

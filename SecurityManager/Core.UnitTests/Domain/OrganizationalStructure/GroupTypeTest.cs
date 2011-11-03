@@ -41,9 +41,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
       dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
 
-      DomainObjectCollection groupTypes = GroupType.FindAll ();
+      var groupTypes = GroupType.FindAll ();
 
-      Assert.AreEqual (2, groupTypes.Count);
+      Assert.AreEqual (2, groupTypes.Count());
     }
 
     [Test]

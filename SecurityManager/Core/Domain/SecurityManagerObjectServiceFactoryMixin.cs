@@ -76,6 +76,9 @@ namespace Remotion.SecurityManager.Domain
       if (serviceType == typeof (PositionPropertyTypeSearchService))
         return new PositionPropertyTypeSearchService();
 
+      if (serviceType == typeof (GroupTypePropertyTypeSearchService))
+        return new GroupTypePropertyTypeSearchService();
+
       return Next.CreateService (provider, serviceType);
     }
   }
