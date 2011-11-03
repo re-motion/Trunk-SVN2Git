@@ -56,12 +56,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       if (string.IsNullOrEmpty (_owningGroupField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (_owningGroupField);
 
-      var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+      var bocListInlineEditingConfigurator = ServiceLocator.GetInstance<BocListInlineEditingConfigurator>();
 
-      SubstitutedByList.EditModeControlFactory = EditableRowAutoCompleteControlFactory.Create();
+      SubstitutedByList.EditModeControlFactory = ServiceLocator.GetInstance<EditableRowAutoCompleteControlFactory>();
       bocListInlineEditingConfigurator.Configure (SubstitutedByList, Substitution.NewObject);
 
-      RolesList.EditModeControlFactory = UserRolesListEditableRowControlFactory.Create();
+      RolesList.EditModeControlFactory = ServiceLocator.GetInstance<UserRolesListEditableRowControlFactory>();
       bocListInlineEditingConfigurator.Configure (RolesList, Role.NewObject);
     }
 

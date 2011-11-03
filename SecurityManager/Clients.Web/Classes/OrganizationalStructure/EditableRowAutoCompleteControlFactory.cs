@@ -15,7 +15,8 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-using Remotion.Mixins;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Implementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
@@ -26,14 +27,19 @@ using Remotion.Web.UI;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
+  /// <summary>
+  /// <see cref="EditableRowAutoCompleteControlFactory"/> overrides <see cref="EditableRowControlFactory"/> and instantiates 
+  /// <see cref="BocAutoCompleteReferenceValue"/> controls instead of <see cref="BocReferenceValue"/> controls for property paths ending in.
+  /// <see cref="IBusinessObjectReferenceProperty"/>
+  /// </summary>
+   /// <remarks>
+  /// The <see cref="EditableRowAutoCompleteControlFactory"/> instance is retrieved form the <see cref="IServiceLocator"/> using the type
+  /// <see cref="EditableRowAutoCompleteControlFactory"/> as key.
+  /// </remarks>
+  [ConcreteImplementation(typeof (EditableRowAutoCompleteControlFactory), Lifetime = LifetimeKind.Singleton)]
   public class EditableRowAutoCompleteControlFactory : EditableRowControlFactory
   {
-    public static EditableRowAutoCompleteControlFactory Create ()
-    {
-      return ObjectFactory.Create<EditableRowAutoCompleteControlFactory>();
-    }
-
-    protected EditableRowAutoCompleteControlFactory ()
+    public EditableRowAutoCompleteControlFactory ()
     {
     }
 

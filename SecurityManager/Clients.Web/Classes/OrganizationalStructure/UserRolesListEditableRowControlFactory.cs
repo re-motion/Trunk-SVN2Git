@@ -17,25 +17,29 @@
 // 
 using System;
 using System.Linq;
-using JetBrains.Annotations;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.FunctionalProgramming;
-using Remotion.Mixins;
+using Remotion.Implementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
-  [UsedImplicitly]
+  /// <summary>
+  /// <see cref="UserRolesListEditableRowControlFactory"/> overrides <see cref="EditableRowAutoCompleteControlFactory"/> 
+  /// and provides special logic for editing the <b>Roles</b> <see cref="BocList"/> on the <see cref="EditUserControl"/>.
+  /// </summary>
+  /// <remarks>
+  /// The <see cref="UserRolesListEditableRowControlFactory"/> instance is retrieved form the <see cref="IServiceLocator"/> using the type
+  /// <see cref="UserRolesListEditableRowControlFactory"/> as key.
+  /// </remarks>
+  [ConcreteImplementation (typeof (UserRolesListEditableRowControlFactory), Lifetime = LifetimeKind.Singleton)]
   public class UserRolesListEditableRowControlFactory : EditableRowAutoCompleteControlFactory
   {
-    public static new UserRolesListEditableRowControlFactory Create ()
-    {
-      return ObjectFactory.Create<UserRolesListEditableRowControlFactory>();
-    }
-
-    protected UserRolesListEditableRowControlFactory ()
+    public UserRolesListEditableRowControlFactory ()
     {
     }
 

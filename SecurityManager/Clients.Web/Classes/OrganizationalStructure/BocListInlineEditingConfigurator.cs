@@ -17,7 +17,9 @@
 // 
 using System;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
+using Remotion.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI;
 using Remotion.SecurityManager.Domain;
@@ -28,6 +30,15 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
+  /// <summary>
+  /// <see cref="BocListInlineEditingConfigurator"/> is used to set up <see cref="BocList"/> instances for inline editing when used in the 
+  /// <see cref="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure"/> editors.
+  /// </summary>
+  /// <remarks>
+  /// The <see cref="BocListInlineEditingConfigurator"/> instance is retrieved form the <see cref="IServiceLocator"/> using the type
+  /// <see cref="BocListInlineEditingConfigurator"/> as key.
+  /// </remarks>
+  [ConcreteImplementation(typeof (BocListInlineEditingConfigurator), Lifetime = LifetimeKind.Singleton)]
   public class BocListInlineEditingConfigurator
   {
     private readonly IResourceUrlFactory _resourceUrlFactory;
@@ -39,7 +50,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
       _resourceUrlFactory = resourceUrlFactory;
     }
 
-    public void Configure<TBusinessObject> (BocList bocList, Func<TBusinessObject> newObjectFactory)
+    public virtual void Configure<TBusinessObject> (BocList bocList, Func<TBusinessObject> newObjectFactory)
         where TBusinessObject: BaseSecurityManagerObject
     {
       ArgumentUtility.CheckNotNull ("bocList", bocList);

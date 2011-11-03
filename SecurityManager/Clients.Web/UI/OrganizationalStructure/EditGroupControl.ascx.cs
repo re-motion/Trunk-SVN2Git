@@ -58,9 +58,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       _parentField = GetControl<BocAutoCompleteReferenceValue> ("ParentField", "Parent");
       _groupTypeField = GetControl<BocAutoCompleteReferenceValue> ("GroupTypeField", "GroupType");
 
-      var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+      var bocListInlineEditingConfigurator = ServiceLocator.GetInstance<BocListInlineEditingConfigurator>();
 
-      RolesList.EditModeControlFactory = EditableRowAutoCompleteControlFactory.Create();
+      RolesList.EditModeControlFactory = ServiceLocator.GetInstance<EditableRowAutoCompleteControlFactory>();
       bocListInlineEditingConfigurator.Configure (RolesList, Role.NewObject);
 
       if (string.IsNullOrEmpty (_parentField.SearchServicePath))
