@@ -16,12 +16,10 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Linq;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 
@@ -68,23 +66,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (CurrentFunction.Position != null)
         PositionField.ReadOnly = true;
-      else
-        FillPositionField ();
 
       if (CurrentFunction.GroupType != null)
         GroupTypeField.ReadOnly = true;
-      else
-        FillGroupTypeField ();
-    }
-
-    private void FillGroupTypeField ()
-    {
-      GroupTypeField.SetBusinessObjectList (GroupType.FindAll ().ToArray());
-    }
-
-    private void FillPositionField ()
-    {
-      PositionField.SetBusinessObjectList (Position.FindAll().ToArray());
     }
 
     public override bool Validate ()

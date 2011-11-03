@@ -172,7 +172,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificTenantField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue SpecificTenantField;
         
         /// <summary>
         /// TenantHierarchyConditionField control.
@@ -226,7 +226,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificGroupTypeField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue SpecificGroupTypeField;
         
         /// <summary>
         /// UserConditionLabel control.
@@ -262,7 +262,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificPositionField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue SpecificPositionField;
         
         /// <summary>
         /// SpecificAbstractRoleLabel control.

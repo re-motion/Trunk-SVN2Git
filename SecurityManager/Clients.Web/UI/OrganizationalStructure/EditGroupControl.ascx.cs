@@ -35,6 +35,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   public partial class EditGroupControl : BaseControl
   {
     private BocAutoCompleteReferenceValue _parentField;
+    private BocAutoCompleteReferenceValue _groupTypeField;
 
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -56,16 +57,18 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       base.OnInit (e);
 
       _parentField = GetControl<BocAutoCompleteReferenceValue> ("ParentField", "Parent");
+      _groupTypeField = GetControl<BocAutoCompleteReferenceValue> ("GroupTypeField", "GroupType");
 
       if (string.IsNullOrEmpty (_parentField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (_parentField);
+
+      if (string.IsNullOrEmpty (_groupTypeField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (_groupTypeField);
     }
 
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
-
-      FillGroupTypeField ();
 
       if (ChildrenList.IsReadOnly)
         ChildrenList.Selection = RowSelection.Disabled;
@@ -84,11 +87,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       _parentField.Args = CurrentFunction.TenantID.ToString();
     }
 
-    private void FillGroupTypeField ()
-    {
-      GroupTypeField.SetBusinessObjectList (GroupType.FindAll ().ToArray());
-    }
-
     public override bool Validate ()
     {
       bool isValid = base.Validate ();
@@ -104,11 +102,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         if (!Page.IsReturningPostBack)
         {
-          EditRole (null, null, CurrentFunction.Group, null);
+          EditRole (null, null, CurrentFunction.Group);
         }
         else
         {
-          EditRoleFormFunction returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
+          var returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
 
           RolesList.LoadValue (!returningFunction.HasUserCancelled);
           if (returningFunction.HasUserCancelled)
@@ -122,11 +120,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         if (!Page.IsReturningPostBack)
         {
-          EditRole ((Role) RolesList.GetSelectedBusinessObjects ()[0], null, CurrentFunction.Group, null);
+          EditRole ((Role) RolesList.GetSelectedBusinessObjects ()[0], null, CurrentFunction.Group);
         }
         else
         {
-          EditRoleFormFunction returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
+          var returningFunction = (EditRoleFormFunction) Page.ReturningFunction;
           if (!returningFunction.HasUserCancelled)
             RolesList.IsDirty = true;
         }
@@ -144,9 +142,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       RolesList.ClearSelectedRows ();
     }
 
-    private void EditRole (Role role, User user, Group group, Position position)
+    private void EditRole (Role role, User user, Group group)
     {
-      EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction (WxeTransactionMode.None, (role != null) ? role.ID : null, user, group);
+      var editRoleFormFunction = new EditRoleFormFunction (WxeTransactionMode.None, (role != null) ? role.ID : null, user, group);
       Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
     }
 

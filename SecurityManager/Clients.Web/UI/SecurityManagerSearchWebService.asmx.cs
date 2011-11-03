@@ -64,11 +64,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     {
       ArgumentUtility.CheckNotNullOrEmpty ("businessObjectClass", businessObjectClass);
       ArgumentUtility.CheckNotNullOrEmpty ("businessObjectProperty", businessObjectProperty);
-      ArgumentUtility.CheckNotNullOrEmpty ("args", args);
 
       var businessObjectClassWithIdentity = GetBusinessObjectClassWithIdentity (businessObjectClass);
       var referenceProperty = GetReferenceProperty (businessObjectProperty, businessObjectClassWithIdentity);
-      var securityManagerSearchArguments = GetSearchArguments(args, completionSetCount, prefixText);
+      var securityManagerSearchArguments = GetSearchArguments (args, completionSetCount, prefixText);
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {

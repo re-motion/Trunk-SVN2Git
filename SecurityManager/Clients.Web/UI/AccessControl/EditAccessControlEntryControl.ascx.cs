@@ -105,11 +105,20 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
           });
       AllPermisionsMenu.EventCommandClick += AllPermisionsMenu_EventCommandClick;
 
+      if (string.IsNullOrEmpty (SpecificTenantField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (SpecificTenantField);
+ 
       if (string.IsNullOrEmpty (SpecificGroupField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (SpecificGroupField);
 
       if (string.IsNullOrEmpty (SpecificUserField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (SpecificUserField);
+
+      if (string.IsNullOrEmpty (SpecificGroupTypeField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (SpecificGroupTypeField);
+
+      if (string.IsNullOrEmpty (SpecificPositionField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (SpecificPositionField);
     }
 
     protected override void OnPreRender (EventArgs e)

@@ -46,11 +46,11 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocReferenceValue ID="GroupTypeField" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="GroupType">
+      <remotion:BocAutoCompleteReferenceValue ID="GroupTypeField" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="GroupType">
       <PersistedCommand>
         <remotion:BocCommand />
       </PersistedCommand>
-    </remotion:BocReferenceValue>
+    </remotion:BocAutoCompleteReferenceValue>
     </td>
   </tr>
   <tr>

@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
-using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Remotion.Utilities;
 

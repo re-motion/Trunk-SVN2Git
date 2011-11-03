@@ -17,16 +17,25 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupTests
 {
   [TestFixture]
   public class BindableObjectImplementation : GroupTestBase
   {
+    public override void TearDown ()
+    {
+      base.TearDown();
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+    }
 
     [Test]
     public void Get_UniqueIdentifier ()
@@ -60,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void SetAndGet_UniqueIdentifier ()
     {
-      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = CreateGroup();
 
       group.UniqueIdentifier = "My Unique Identifier";
 
@@ -70,7 +79,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void SetAndGet_UniqueIdentifierFromBusinessObjectWithIdentity ()
     {
-      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = CreateGroup();
       IBusinessObjectWithIdentity businessObject = group;
 
       group.UniqueIdentifier = "My Unique Identifier";
@@ -81,7 +90,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void GetProperty_UniqueIdentifier ()
     {
-      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = CreateGroup();
       IBusinessObjectWithIdentity businessObject = group;
 
       group.UniqueIdentifier = "My Unique Identifier";
@@ -93,7 +102,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void SetProperty_UniqueIdentifier ()
     {
-      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = CreateGroup();
       IBusinessObjectWithIdentity businessObject = group;
 
       businessObject.SetProperty ("UniqueIdentifier", "My Unique Identifier");
@@ -104,7 +113,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void GetPropertyDefinition_UniqueIdentifier ()
     {
-      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = CreateGroup();
       IBusinessObjectWithIdentity businessObject = group;
       group.UniqueIdentifier = "My Unique Identifier";
 
@@ -117,7 +126,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void GetPropertyDefinitions_CheckForUniqueIdentifier ()
     {
-      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = CreateGroup();
       IBusinessObjectWithIdentity businessObject = group;
 
       IBusinessObjectProperty[] properties = businessObject.BusinessObjectClass.GetPropertyDefinitions();
@@ -133,6 +142,56 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       }
 
       Assert.IsTrue (isFound, "Property UnqiueIdentifier declared on Group was not found.");
+    }
+
+    [Test]
+    public void SearchParentGroups ()
+    {
+      var searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectsService>();
+      var args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments>();
+
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()
+          .AddService (typeof (GroupPropertyTypeSearchService), searchServiceStub);
+      var groupClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Group));
+      var groupTypeProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Parent");
+      Assert.That (groupTypeProperty, Is.Not.Null);
+
+      var group = CreateGroup();
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
+
+      searchServiceStub.Stub (stub => stub.SupportsProperty (groupTypeProperty)).Return (true);
+      searchServiceStub.Stub (stub => stub.Search (group, groupTypeProperty, args)).Return (expected);
+
+      Assert.That (groupTypeProperty.SupportsSearchAvailableObjects, Is.True);
+
+      IBusinessObject[] actual = groupTypeProperty.SearchAvailableObjects (group, args);
+      Assert.That (actual, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void SearchGroupTypes ()
+    {
+      var searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectsService>();
+      var args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments>();
+
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()
+          .AddService (typeof (GroupTypePropertyTypeSearchService), searchServiceStub);
+      var groupClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Group));
+      var groupTypeProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("GroupType");
+      Assert.That (groupTypeProperty, Is.Not.Null);
+
+      var group = CreateGroup();
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
+
+      searchServiceStub.Stub (stub => stub.SupportsProperty (groupTypeProperty)).Return (true);
+      searchServiceStub.Stub (stub => stub.Search (group, groupTypeProperty, args)).Return (expected);
+
+      Assert.That (groupTypeProperty.SupportsSearchAvailableObjects, Is.True);
+
+      IBusinessObject[] actual = groupTypeProperty.SearchAvailableObjects (group, args);
+      Assert.That (actual, Is.SameAs (expected));
     }
   }
 }

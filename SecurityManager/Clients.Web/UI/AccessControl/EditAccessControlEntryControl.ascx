@@ -66,9 +66,9 @@
                     <remotion:BocEnumValue ID="TenantConditionField" runat="server" PropertyIdentifier="TenantCondition" DataSourceControl="CurrentObject" OnSelectionChanged="TenantConditionField_SelectionChanged" Width="32%" >
                       <ListControlStyle AutoPostBack="True"/>
                     </remotion:BocEnumValue>
-                    <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" OnSelectionChanged="SpecificTenantField_SelectionChanged" Width="32%">
-                      <DropDownListStyle AutoPostBack="true" />
-                    </remotion:BocReferenceValue>
+                    <remotion:BocAutoCompleteReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" OnSelectionChanged="SpecificTenantField_SelectionChanged" Width="32%">
+                      <TextBoxStyle AutoPostBack="true" />
+                    </remotion:BocAutoCompleteReferenceValue>
                     <remotion:BocEnumValue ID="TenantHierarchyConditionField" runat="server" PropertyIdentifier="TenantHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
                   </td>
                 </tr>
@@ -80,7 +80,7 @@
                     </remotion:BocEnumValue>
                     <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
                     <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
-                    <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
+                    <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
                   </td>      
                 </tr>
                 <tr>
@@ -90,7 +90,7 @@
                       <ListControlStyle AutoPostBack="True"/>
                     </remotion:BocEnumValue>
                     <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
-                    <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
+                    <remotion:BocAutoCompleteReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Required="true" Width="32%"/>
                   </td>
                 </tr>
                 <tr>

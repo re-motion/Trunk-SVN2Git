@@ -18,6 +18,8 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.BindableObject;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -40,10 +42,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     [DBBidirectionalRelation ("Positions")]
     [Mandatory]
+    [SearchAvailableObjectsServiceType (typeof (GroupTypePropertyTypeSearchService))]
     public abstract GroupType GroupType { get; set; }
 
     [DBBidirectionalRelation ("GroupTypes")]
     [Mandatory]
+    [SearchAvailableObjectsServiceType (typeof (PositionPropertyTypeSearchService))]
     public abstract Position Position { get; set; }
 
     public override string DisplayName
