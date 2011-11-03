@@ -179,6 +179,7 @@
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupTypePropertyTypeSearchServiceTests\SearchGroupType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchServiceTests\SearchPosition.cs" />
+    <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\TenantPropertyTypeSearchServiceTests\SearchTenant.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\TenantPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\UserPropertyTypeSearchServiceTests\SearchUser.cs" />
@@ -211,9 +212,7 @@
     <Compile Include="Domain\SecurityManagerPrincipalTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionProxyTest.cs" />
-    <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutedRole.cs" />
-    <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SubstitutionPropertiesSearchServiceTestBase.cs" />
-    <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SetUpFixture.cs" />
+    <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutedRole.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserProxyTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\Common.cs" />

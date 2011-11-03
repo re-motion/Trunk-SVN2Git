@@ -15,17 +15,17 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionPropertiesSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.OrganizationalStructure.SubstitutionPropertiesSearchServiceTests
 {
   [TestFixture]
-  public class SearchSubstitutedRole : SubstitutionPropertiesSearchServiceTestBase
+  public class SearchSubstitutedRole : SearchServiceTestBase
   {
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _substitutedRoleProperty;
