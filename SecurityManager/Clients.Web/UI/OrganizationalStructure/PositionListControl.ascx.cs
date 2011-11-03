@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
@@ -75,7 +76,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected override IList GetValues ()
     {
-      return Position.FindAll();
+      return Position.FindAll().ToArray();
     }
 
     protected override FormFunction CreateEditFunction (ITransactionMode transactionMode, ObjectID objectID)

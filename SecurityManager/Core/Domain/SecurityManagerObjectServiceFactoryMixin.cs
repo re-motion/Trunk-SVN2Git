@@ -22,7 +22,6 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -46,7 +45,7 @@ namespace Remotion.SecurityManager.Domain
   /// </list>
   /// </remarks>
   [CLSCompliant (false)]
-  [Extends (typeof (BindableObjectServiceFactory), AdditionalDependencies = new [] {typeof (BindableDomainObjectServiceFactoryMixin)})]
+  [Extends (typeof (BindableObjectServiceFactory), AdditionalDependencies = new[] { typeof (BindableDomainObjectServiceFactoryMixin) })]
   public class SecurityManagerObjectServiceFactoryMixin
       : Mixin<BindableObjectServiceFactory, IBusinessObjectServiceFactory>, IBusinessObjectServiceFactory
   {
@@ -60,19 +59,22 @@ namespace Remotion.SecurityManager.Domain
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("serviceType", serviceType, typeof (IBusinessObjectService));
 
       if (serviceType == typeof (SubstitutionPropertiesSearchService))
-        return new SubstitutionPropertiesSearchService ();
+        return new SubstitutionPropertiesSearchService();
 
       if (serviceType == typeof (AccessControlEntryPropertiesSearchService))
-        return new AccessControlEntryPropertiesSearchService ();
+        return new AccessControlEntryPropertiesSearchService();
 
       if (serviceType == typeof (TenantPropertyTypeSearchService))
         return new TenantPropertyTypeSearchService();
 
       if (serviceType == typeof (GroupPropertyTypeSearchService))
         return new GroupPropertyTypeSearchService();
-      
+
       if (serviceType == typeof (UserPropertyTypeSearchService))
         return new UserPropertyTypeSearchService();
+
+      if (serviceType == typeof (PositionPropertyTypeSearchService))
+        return new PositionPropertyTypeSearchService();
 
       return Next.CreateService (provider, serviceType);
     }

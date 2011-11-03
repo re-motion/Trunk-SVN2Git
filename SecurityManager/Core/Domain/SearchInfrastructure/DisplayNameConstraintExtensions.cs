@@ -54,6 +54,16 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       return users;
     }
 
+    public static IQueryable<Position> Apply (this IQueryable<Position> positions, DisplayNameConstraint constraint)
+    {
+      ArgumentUtility.CheckNotNull ("positions", positions);
+
+      if (HasConstraint (constraint))
+        return positions.Where (t => t.Name.Contains (constraint.Value));
+
+      return positions;
+    }
+
     private static bool HasConstraint (DisplayNameConstraint constraint)
     {
       return constraint != null && !String.IsNullOrEmpty (constraint.Value);

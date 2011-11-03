@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
@@ -83,7 +84,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     private void FillPositionField ()
     {
-      PositionField.SetBusinessObjectList (Position.FindAll ());
+      PositionField.SetBusinessObjectList (Position.FindAll().ToArray());
     }
 
     public override bool Validate ()

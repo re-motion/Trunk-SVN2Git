@@ -49,13 +49,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return NewObject<Position> ();
     }
 
-    public static ObjectList<Position> FindAll ()
+    public static IQueryable<Position> FindAll ()
     {
-      var result = from p in QueryFactory.CreateLinqQuery<Position>()
-                   orderby p.Name
-                   select p;
-
-      return result.ToObjectList ();
+      return from p in QueryFactory.CreateLinqQuery<Position>()
+             orderby p.Name
+             select p;
     }
 
     [DemandPermission (SecurityManagerAccessTypes.AssignRole)]

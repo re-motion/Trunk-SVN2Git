@@ -38,9 +38,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        DomainObjectCollection positions = Position.FindAll ();
+        var positions = Position.FindAll();
 
-        Assert.AreEqual (3, positions.Count);
+        Assert.AreEqual (3, positions.Count());
       }
     }
 

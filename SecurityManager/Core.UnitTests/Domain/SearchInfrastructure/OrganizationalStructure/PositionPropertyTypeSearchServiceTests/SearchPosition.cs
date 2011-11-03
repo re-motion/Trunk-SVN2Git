@@ -23,10 +23,10 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.OrganizationalStructure.TenantPropertyTypeSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.OrganizationalStructure.PositionPropertyTypeSearchServiceTests
 {
   [TestFixture]
-  public class SearchTenant : SearchServiceTestBase
+  public class SearchPosition : SearchServiceTestBase
   {
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _property;
@@ -35,9 +35,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     {
       base.SetUp();
 
-      _searchService = new TenantPropertyTypeSearchService();
-      IBusinessObjectClass userClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (User));
-      _property = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("Tenant");
+      _searchService = new PositionPropertyTypeSearchService();
+      IBusinessObjectClass roleClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Role));
+      _property = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Position");
       Assert.That (_property, Is.Not.Null);
     }
 
@@ -50,10 +50,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     [Test]
     public void Search ()
     {
-      var expected = Tenant.FindAll().ToArray();
+      var expected = Position.FindAll().ToArray();
       Assert.That (expected, Is.Not.Empty);
 
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, null));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null));
 
       Assert.That (actual, Is.EqualTo (expected));
     }
@@ -61,37 +61,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     [Test]
     public void Search_WithDisplayNameConstraint_FindNameContainingPrefix ()
     {
-      var expected = Tenant.FindAll().Where (g => g.Name.Contains ("Test")).ToArray();
-      Assert.That (expected.Length, Is.EqualTo (1));
+      var expected = Position.FindAll().Where (g => g.Name.Contains ("al")).ToArray();
+      Assert.That (expected.Length, Is.GreaterThan (1));
 
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, "Test"));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("al"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
-    [Test]
-    public void Search_WithResultSizeConstraint ()
-    {
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (1, null));
-
-      Assert.That (actual.Length, Is.EqualTo (1));
-    }
-
-    [Test]
-    public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
-    {
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (1, "Tenant"));
-
-      Assert.That (actual.Length, Is.EqualTo (1));
-      Assert.That (((Tenant) actual[0]).Name, Is.StringContaining ("Tenant"));
-    }
-
-
-    private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (int? resultSize, string displayName)
+    private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (string displayName)
     {
       return new SecurityManagerSearchArguments (
           null,
-          resultSize.HasValue ? new ResultSizeConstraint (resultSize.Value) : null,
+          null,
           !string.IsNullOrEmpty (displayName) ? new DisplayNameConstraint (displayName) : null);
     }
   }

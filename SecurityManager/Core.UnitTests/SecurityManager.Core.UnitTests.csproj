@@ -123,7 +123,6 @@
     <Compile Include="Configuration\TestOrganizationalStructureFactory.cs" />
     <Compile Include="Configuration\TestSecurityManagerConfiguration.cs" />
     <Compile Include="DomainTest.cs" />
-    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchPosition.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchAbstractRoleDefinition.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchOtherProperty.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SetUpFixture.cs" />
@@ -177,6 +176,8 @@
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\Metadata\StatePropertyReferenceTest.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipalTest.cs" />
+    <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
+    <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchServiceTests\SearchPosition.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\TenantPropertyTypeSearchServiceTests\SearchTenant.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\TenantPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\UserPropertyTypeSearchServiceTests\SearchUser.cs" />

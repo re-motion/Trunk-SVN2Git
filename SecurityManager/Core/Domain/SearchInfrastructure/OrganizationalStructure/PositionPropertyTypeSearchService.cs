@@ -23,13 +23,13 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure
 {
   /// <summary>
-  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="Tenant"/> type.
+  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="Position"/> type.
   /// </summary>
   /// <remarks>
-  /// The service can be applied to any <see cref="Tenant"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
+  /// The service can be applied to any <see cref="Position"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
   /// via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public class TenantPropertyTypeSearchService : SecurityManagerPropertyTypeBasedSearchServiceBase<Tenant>
+  public class PositionPropertyTypeSearchService : SecurityManagerPropertyTypeBasedSearchServiceBase<Position>
   {
     protected override IQueryable<IBusinessObject> CreateQuery (
         BaseSecurityManagerObject referencingObject,
@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
         TenantConstraint tenantConstraint,
         DisplayNameConstraint displayNameConstraint)
     {
-      return Tenant.FindAll().Apply (displayNameConstraint).Cast<IBusinessObject>();
+      return Position.FindAll().Apply (displayNameConstraint).Cast<IBusinessObject>();
     }
   }
 }

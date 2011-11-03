@@ -36,7 +36,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   {
     public AccessControlEntryPropertiesSearchService ()
     {
-      RegisterQueryFactory ("SpecificPosition", delegate { return Position.FindAll().Cast<IBusinessObject>().AsQueryable(); });
       RegisterQueryFactory ("SpecificGroupType", delegate { return GroupType.FindAll().Cast<IBusinessObject>().AsQueryable(); });
       RegisterQueryFactory ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().Cast<IBusinessObject>().AsQueryable(); });
     }
