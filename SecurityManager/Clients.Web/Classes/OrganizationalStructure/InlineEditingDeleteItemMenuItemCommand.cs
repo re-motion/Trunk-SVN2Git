@@ -21,6 +21,10 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
+  /// <summary>
+  /// <see cref="BocMenuItemCommand"/> designed for deleting a <typeparamref cref="BaseSecurityManagerObject"/> when used with <see cref="BocList"/> 
+  /// inline editing on <see cref="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure"/> forms.
+  /// </summary>
   public class InlineEditingDeleteItemMenuItemCommand<TBusinessObject> : BocMenuItemCommand
       where TBusinessObject: BaseSecurityManagerObject
   {
