@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       var expected = Tenant.FindAll().ToArray();
       Assert.That (expected, Is.Not.Empty);
 
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, null));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null));
 
       Assert.That (actual, Is.EqualTo (expected));
     }
@@ -64,34 +64,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       var expected = Tenant.FindAll().Where (g => g.Name.Contains ("Test")).ToArray();
       Assert.That (expected.Length, Is.EqualTo (1));
 
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, "Test"));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("Test"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
-    [Test]
-    public void Search_WithResultSizeConstraint ()
-    {
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (1, null));
-
-      Assert.That (actual.Length, Is.EqualTo (1));
-    }
-
-    [Test]
-    public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
-    {
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (1, "Tenant"));
-
-      Assert.That (actual.Length, Is.EqualTo (1));
-      Assert.That (((Tenant) actual[0]).Name, Is.StringContaining ("Tenant"));
-    }
-
-
-    private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (int? resultSize, string displayName)
+    private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (string displayName)
     {
       return new SecurityManagerSearchArguments (
           null,
-          resultSize.HasValue ? new ResultSizeConstraint (resultSize.Value) : null,
+          null,
           !string.IsNullOrEmpty (displayName) ? new DisplayNameConstraint (displayName) : null);
     }
   }

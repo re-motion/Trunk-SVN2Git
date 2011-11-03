@@ -70,7 +70,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       var expected = Group.FindByTenantID (_tenantConstraint.Value).Where (g => g.Name.Contains ("Group1")).ToArray();
       Assert.That (expected.Length, Is.GreaterThan (1));
 
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, "Group1"));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("Group1"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
@@ -81,33 +81,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       var expected = Group.FindByTenantID (_tenantConstraint.Value).Where (g => g.ShortName.Contains ("G1")).ToArray();
       Assert.That (expected.Length, Is.GreaterThan (1));
 
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null, "G1"));
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("G1"));
 
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
-    [Test]
-    public void Search_WithResultSizeConstraint ()
-    {
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (3, null));
-
-      Assert.That (actual.Length, Is.EqualTo (3));
-    }
-
-    [Test]
-    public void Search_WithDisplayNameConstraint_AndResultSizeConstrant ()
-    {
-      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (1, "Group1"));
-
-      Assert.That (actual.Length, Is.EqualTo (1));
-      Assert.That (((Group) actual[0]).Name, Is.StringContaining ("group1"));
-    }
-
-    private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (int? resultSize, string displayName)
+    private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (string displayName)
     {
       return new SecurityManagerSearchArguments (
           _tenantConstraint,
-          resultSize.HasValue ? new ResultSizeConstraint (resultSize.Value) : null,
+          null,
           !string.IsNullOrEmpty (displayName) ? new DisplayNameConstraint (displayName) : null);
     }
   }

@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
     {
       ArgumentUtility.CheckNotNull ("tenantConstraint", tenantConstraint);
 
-      return User.FindByTenantID (tenantConstraint.Value).Apply (displayNameConstraint).Cast<IBusinessObject>().AsQueryable();
+      return User.FindByTenantID (tenantConstraint.Value).Apply (displayNameConstraint).Cast<IBusinessObject>();
     }
   }
 }

@@ -186,6 +186,7 @@
     <Compile Include="Domain\SearchInfrastructure\SearchServiceTestBase.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupPropertyTypeSearchServiceTests\SearchGroup.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
+    <Compile Include="Domain\SearchInfrastructure\SecurityManagerSearchServiceBaseTest.cs" />
     <Compile Include="Domain\SearchInfrastructure\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\Common.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Domain\OrganizationalStructure\RoleTests\BindableObjectImpelementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossiblePositions.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\DeleteRole.cs" />
+    <Compile Include="Domain\SearchInfrastructure\TestableSecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalFactoryTest.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\GetActiveSubstitutions.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTests\GetSecurityPrincipal.cs" />
