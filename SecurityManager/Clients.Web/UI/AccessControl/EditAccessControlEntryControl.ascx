@@ -96,9 +96,9 @@
                 <tr>
                   <td><remotion:SmartLabel ID="SpecificAbstractRoleLabel" runat="server" ForControl="SpecificAbstractRoleField"/></td>
                   <td>
-                    <remotion:BocReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" Width="32%">
-                      <DropDownListStyle AutoPostBack="True" />
-                    </remotion:BocReferenceValue>
+                    <remotion:BocAutoCompleteReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" Width="32%">
+                      <TextBoxStyle AutoPostBack="True" />
+                    </remotion:BocAutoCompleteReferenceValue>
                   </td>
                 </tr>
             </table>

@@ -119,6 +119,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (string.IsNullOrEmpty (SpecificPositionField.SearchServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (SpecificPositionField);
+      
+      if (string.IsNullOrEmpty (SpecificAbstractRoleField.SearchServicePath))
+        SecurityManagerSearchWebService.BindServiceToControl (SpecificAbstractRoleField);
     }
 
     protected override void OnPreRender (EventArgs e)

@@ -125,7 +125,6 @@
     <Compile Include="Domain\AccessControl\TenantHierarchyCondition.cs" />
     <Compile Include="Domain\AccessControl\GroupHierarchyCondition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcher.cs" />
-    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchService.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationResult.cs" />
     <Compile Include="Domain\AccessControl\AccessControlException.cs" />
     <Compile Include="Domain\AccessControl\AccessControlList.cs" />
@@ -144,6 +143,7 @@
     <Compile Include="Domain\ISecurityManagerPrincipalFactory.cs" />
     <Compile Include="Domain\LockingSecurityManagerPrincipalDecorator.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipal.cs" />
+    <Compile Include="Domain\SearchInfrastructure\Metadata\AbstractRoleDefinitionPropertyTypeSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupTypePropertyTypeSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupPropertyTypeSearchService.cs" />

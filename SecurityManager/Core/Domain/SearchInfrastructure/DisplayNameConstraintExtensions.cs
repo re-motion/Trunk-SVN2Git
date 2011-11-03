@@ -16,7 +16,9 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -72,6 +74,18 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
         return groupTypes.Where (t => t.Name.Contains (constraint.Value));
 
       return groupTypes;
+    }
+
+    public static IEnumerable<AbstractRoleDefinition> Apply (
+        this IEnumerable<AbstractRoleDefinition> abstractRoleDefinitions, 
+        DisplayNameConstraint constraint)
+    {
+      ArgumentUtility.CheckNotNull ("abstractRoleDefinitions", abstractRoleDefinitions);
+
+      if (HasConstraint (constraint))
+        return abstractRoleDefinitions.Where (t => t.DisplayName.Contains (constraint.Value));
+
+      return abstractRoleDefinitions;
     }
 
     private static bool HasConstraint (DisplayNameConstraint constraint)

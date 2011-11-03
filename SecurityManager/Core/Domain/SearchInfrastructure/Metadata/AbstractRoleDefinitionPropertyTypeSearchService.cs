@@ -20,22 +20,26 @@ using System.Linq;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.SearchInfrastructure;
+using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.Domain.AccessControl
+namespace Remotion.SecurityManager.Domain.SearchInfrastructure.Metadata
 {
   /// <summary>
-  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for the <see cref="AccessControlEntry"/> type.
+  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="AbstractRoleDefinition"/> type.
   /// </summary>
   /// <remarks>
-  /// The service is applied to the <see cref="AccessControlEntry.SpecificPosition"/>, <see cref="AccessControlEntry.SpecificGroupType"/>
-  /// and <see cref="AccessControlEntry.SpecificAbstractRole"/> properties via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
+  /// The service can be applied to any <see cref="AbstractRoleDefinition"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
+  /// via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public class AccessControlEntryPropertiesSearchService : SecurityManagerPropertyBasedSearchServiceBase<AccessControlEntry>
+  public class AbstractRoleDefinitionPropertyTypeSearchService : SecurityManagerPropertyTypeBasedSearchServiceBase<AbstractRoleDefinition>
   {
-    public AccessControlEntryPropertiesSearchService ()
+    protected override IQueryable<IBusinessObject> CreateQuery (
+        BaseSecurityManagerObject referencingObject,
+        IBusinessObjectReferenceProperty property,
+        TenantConstraint tenantConstraint,
+        DisplayNameConstraint displayNameConstraint)
     {
-      RegisterQueryFactory ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().Cast<IBusinessObject>().AsQueryable(); });
+      return AbstractRoleDefinition.FindAll().AsEnumerable().Apply (displayNameConstraint).Cast<IBusinessObject>().AsQueryable();
     }
   }
 }

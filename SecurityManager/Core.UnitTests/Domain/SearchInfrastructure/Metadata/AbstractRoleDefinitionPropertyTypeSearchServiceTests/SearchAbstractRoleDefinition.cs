@@ -16,18 +16,20 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.SearchInfrastructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryPropertiesSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Metadata.AbstractRoleDefinitionPropertyTypeSearchServiceTests
 {
   [TestFixture]
-  public class SearchAbstractRoleDefinition: DomainTest
+  public class SearchAbstractRoleDefinition : DomainTest
   {
     private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
@@ -35,12 +37,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _testHelper = new OrganizationalStructureTestHelper ();
-      _testHelper.Transaction.EnterNonDiscardingScope ();
+      _testHelper = new OrganizationalStructureTestHelper();
+      _testHelper.Transaction.EnterNonDiscardingScope();
 
-      _searchService = new AccessControlEntryPropertiesSearchService ();
+      _searchService = new AbstractRoleDefinitionPropertyTypeSearchService();
       IBusinessObjectClass aceClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (AccessControlEntry));
       _property = (IBusinessObjectReferenceProperty) aceClass.GetPropertyDefinition ("SpecificAbstractRole");
       Assert.That (_property, Is.Not.Null);
@@ -55,14 +57,31 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void Search ()
     {
-      AccessControlEntry ace = AccessControlEntry.NewObject();
-
-      ObjectList<AbstractRoleDefinition> expected = AbstractRoleDefinition.FindAll();
+      var expected = AbstractRoleDefinition.FindAll().ToArray();
       Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actual = _searchService.Search (ace, _property, null);
+      IBusinessObject[] actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments (null));
 
       Assert.That (actual, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Search_WithDisplayNameConstraint_FindDisplayNameContainingPrefix ()
+    {
+      var expected = AbstractRoleDefinition.FindAll().AsEnumerable().Where (r => r.DisplayName.Contains ("QualityManager")).ToArray();
+      Assert.That (expected.Length, Is.EqualTo (1));
+
+      var actual = _searchService.Search (null, _property, CreateSecurityManagerSearchArguments ("QualityManager"));
+
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    private SecurityManagerSearchArguments CreateSecurityManagerSearchArguments (string displayName)
+    {
+      return new SecurityManagerSearchArguments (
+          null,
+          null,
+          !string.IsNullOrEmpty (displayName) ? new DisplayNameConstraint (displayName) : null);
     }
   }
 }

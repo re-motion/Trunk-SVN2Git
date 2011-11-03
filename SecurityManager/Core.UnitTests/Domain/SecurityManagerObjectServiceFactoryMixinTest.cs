@@ -22,9 +22,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain;
-using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.SecurityManager.Domain.SearchInfrastructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.Metadata;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Rhino.Mocks;
 
@@ -34,7 +32,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain
   public class SecurityManagerObjectServiceFactoryMixinTest
   {
     private interface IStubService : IBusinessObjectService
-    {}
+    {
+    }
 
     private IBusinessObjectServiceFactory _serviceFactory;
     private SecurityManagerObjectServiceFactoryMixin _serviceMixin;
@@ -47,12 +46,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       _serviceFactory = BindableObjectServiceFactory.Create();
       _serviceMixin = Mixin.Get<SecurityManagerObjectServiceFactoryMixin> (_serviceFactory);
-      _mockRepository = new MockRepository ();
-      _bindableDomainObjectProvider = _mockRepository.Stub<IBusinessObjectProviderWithIdentity> ();
-      _bindableObjectProvider = _mockRepository.Stub<IBusinessObjectProviderWithIdentity> ();
-      SetupResult.For (_bindableDomainObjectProvider.ProviderAttribute).Return (new BindableDomainObjectProviderAttribute ());
-      SetupResult.For (_bindableObjectProvider.ProviderAttribute).Return (new BindableObjectProviderAttribute ());
-      _mockRepository.ReplayAll ();
+      _mockRepository = new MockRepository();
+      _bindableDomainObjectProvider = _mockRepository.Stub<IBusinessObjectProviderWithIdentity>();
+      _bindableObjectProvider = _mockRepository.Stub<IBusinessObjectProviderWithIdentity>();
+      SetupResult.For (_bindableDomainObjectProvider.ProviderAttribute).Return (new BindableDomainObjectProviderAttribute());
+      SetupResult.For (_bindableObjectProvider.ProviderAttribute).Return (new BindableObjectProviderAttribute());
+      _mockRepository.ReplayAll();
     }
 
     [Test]
@@ -61,14 +60,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       Assert.That (_serviceMixin, Is.Not.Null);
       Assert.That (_serviceMixin, Is.InstanceOf (typeof (IBusinessObjectServiceFactory)));
       Assert.That (Mixin.Get<BindableDomainObjectServiceFactoryMixin> (_serviceFactory), Is.Not.Null);
-    }
-
-    [Test]
-    public void GetService_FromAccessControlEntryPropertiesSearchService ()
-    {
-      Assert.That (
-          _serviceFactory.CreateService (_bindableObjectProvider, typeof (AccessControlEntryPropertiesSearchService)),
-          Is.InstanceOf (typeof (AccessControlEntryPropertiesSearchService)));
     }
 
     [Test]
@@ -117,6 +108,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       Assert.That (
           _serviceFactory.CreateService (_bindableObjectProvider, typeof (GroupTypePropertyTypeSearchService)),
           Is.InstanceOf (typeof (GroupTypePropertyTypeSearchService)));
+    }
+
+    [Test]
+    public void GetService_FromAbstractRoleDefinitionPropertyTypeSearchService ()
+    {
+      Assert.That (
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (AbstractRoleDefinitionPropertyTypeSearchService)),
+          Is.InstanceOf (typeof (AbstractRoleDefinitionPropertyTypeSearchService)));
     }
 
     [Test]

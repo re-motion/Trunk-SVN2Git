@@ -280,6 +280,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificAbstractRoleField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue SpecificAbstractRoleField;
     }
 }

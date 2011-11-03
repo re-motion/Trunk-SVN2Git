@@ -20,8 +20,7 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.Metadata;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -61,9 +60,6 @@ namespace Remotion.SecurityManager.Domain
       if (serviceType == typeof (SubstitutionPropertiesSearchService))
         return new SubstitutionPropertiesSearchService();
 
-      if (serviceType == typeof (AccessControlEntryPropertiesSearchService))
-        return new AccessControlEntryPropertiesSearchService();
-
       if (serviceType == typeof (TenantPropertyTypeSearchService))
         return new TenantPropertyTypeSearchService();
 
@@ -78,6 +74,9 @@ namespace Remotion.SecurityManager.Domain
 
       if (serviceType == typeof (GroupTypePropertyTypeSearchService))
         return new GroupTypePropertyTypeSearchService();
+
+      if (serviceType == typeof (AbstractRoleDefinitionPropertyTypeSearchService))
+        return new AbstractRoleDefinitionPropertyTypeSearchService();
 
       return Next.CreateService (provider, serviceType);
     }

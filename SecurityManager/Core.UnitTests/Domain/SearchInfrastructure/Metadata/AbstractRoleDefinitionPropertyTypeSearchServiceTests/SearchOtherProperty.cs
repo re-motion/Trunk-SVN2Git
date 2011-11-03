@@ -20,9 +20,10 @@ using NUnit.Framework;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryPropertiesSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Metadata.AbstractRoleDefinitionPropertyTypeSearchServiceTests
 {
   [TestFixture]
   public class SearchOtherProperty : DomainTest
@@ -38,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       _testHelper = new OrganizationalStructureTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
 
-      _searchService = new AccessControlEntryPropertiesSearchService ();
+      _searchService = new AbstractRoleDefinitionPropertyTypeSearchService();
       IBusinessObjectClass aceClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (AccessControlEntry));
       _property = (IBusinessObjectReferenceProperty) aceClass.GetPropertyDefinition ("AccessControlList");
       Assert.That (_property, Is.Not.Null);
@@ -51,14 +52,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage =
-            "The property 'AccessControlList' is not supported by the 'Remotion.SecurityManager.Domain.AccessControl.AccessControlEntryPropertiesSearchService' type.",
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The type of the property 'AccessControlList', declared on "
+        + "'Remotion.SecurityManager.Domain.AccessControl.AccessControlEntry, Remotion.SecurityManager', is not supported by the "
+        + "'Remotion.SecurityManager.Domain.SearchInfrastructure.Metadata.AbstractRoleDefinitionPropertyTypeSearchService' type.",
         MatchType = MessageMatch.Contains)]
     public void Search_WithInvalidProperty ()
     {
-      AccessControlEntry ace = AccessControlEntry.NewObject ();
-      _searchService.Search (ace, _property, null);
+      _searchService.Search (null, _property, null);
     }
   }
 }
