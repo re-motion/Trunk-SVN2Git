@@ -29,8 +29,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   [WebMultiLingualResources (typeof (EditGroupTypeControlResources))]
   public partial class EditGroupTypeControl : BaseControl
   {
-    private BocListInlineEditingManager<GroupTypePosition> _positionsListInlineEditingManager;
-
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -45,10 +43,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnInit (e);
 
-      Page.RegisterRequiresControlState (this);
-
-      _positionsListInlineEditingManager =
-          new BocListInlineEditingManager<GroupTypePosition> (PositionsList, GroupTypePosition.NewObject, ResourceUrlFactory);
+      var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+      bocListInlineEditingConfigurator.Configure (PositionsList, GroupTypePosition.NewObject);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -72,23 +68,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       isValid &= FormGridManager.Validate();
 
       return isValid;
-    }
-
-    protected override void LoadControlState (object savedState)
-    {
-      object[] controlState = (object[]) savedState;
-
-      base.LoadControlState (controlState[0]);
-      _positionsListInlineEditingManager.LoadControlState (controlState[1]);
-    }
-
-    protected override object SaveControlState ()
-    {
-      object[] controlState = new object[2];
-      controlState[0] = base.SaveControlState();
-      controlState[1] = _positionsListInlineEditingManager.SaveControlState();
-
-      return controlState;
     }
   }
 }

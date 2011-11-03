@@ -178,6 +178,8 @@
     </Compile>
     <Compile Include="Classes\AccessControl\PermissionBooleanValue.cs" />
     <Compile Include="Classes\OrganizationalStructure\EditableRowAutoCompleteControlFactory.cs" />
+    <Compile Include="Classes\OrganizationalStructure\InlineEditingDeleteItemMenuItemCommand.cs" />
+    <Compile Include="Classes\OrganizationalStructure\InlineEditingNewItemMenuItemCommand.cs" />
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />
     <Compile Include="Classes\BaseControl.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -350,7 +352,7 @@
     <Compile Include="Classes\OrganizationalStructure\BaseListControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Classes\OrganizationalStructure\BocListInlineEditingManager.cs" />
+    <Compile Include="Classes\OrganizationalStructure\BocListInlineEditingConfigurator.cs" />
     <Compile Include="UI\SecurityManagerSearchWebService.asmx.cs">
       <DependentUpon>SecurityManagerSearchWebService.asmx</DependentUpon>
       <SubType>Component</SubType>

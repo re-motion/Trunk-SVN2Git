@@ -33,7 +33,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   public partial class EditUserControl : BaseControl
   {
     private BocAutoCompleteReferenceValue _owningGroupField;
-    private BocListInlineEditingManager<Substitution> _substitutedByListInlineEditingManager;
 
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -54,10 +53,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnInit (e);
 
-      Page.RegisterRequiresControlState (this);
-
-      _substitutedByListInlineEditingManager = 
-          new BocListInlineEditingManager<Substitution> (SubstitutedByList, Substitution.NewObject, ResourceUrlFactory);
+      var bocListInlineEditingConfigurator = new BocListInlineEditingConfigurator (ResourceUrlFactory);
+      bocListInlineEditingConfigurator.Configure (SubstitutedByList, Substitution.NewObject);
 
       _owningGroupField = GetControl<BocAutoCompleteReferenceValue> ("OwningGroupField", "OwningGroup");
 
@@ -150,23 +147,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction (WxeTransactionMode.None, (role != null) ? role.ID : null, user, group);
       Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
-    }
-
-    protected override void LoadControlState (object savedState)
-    {
-      object[] controlState = (object[])savedState;
-
-      base.LoadControlState (controlState[0]);
-      _substitutedByListInlineEditingManager.LoadControlState (controlState[1]);
-    }
-
-    protected override object SaveControlState ()
-    {
-      object[] controlState = new object[2];
-      controlState[0] = base.SaveControlState();
-      controlState[1] = _substitutedByListInlineEditingManager.SaveControlState();
-
-      return controlState;
     }
   }
 }
