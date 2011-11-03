@@ -24,7 +24,6 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.SecurityManager.Domain.SearchInfrastructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -100,7 +99,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [SearchAvailableObjectsServiceType (typeof (GroupPropertyTypeSearchService))]
     public abstract Group SpecificGroup { get; set; }
 
-    [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
+    [SearchAvailableObjectsServiceType (typeof (GroupTypePropertyTypeSearchService))]
     public abstract GroupType SpecificGroupType { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (PositionPropertyTypeSearchService))]
