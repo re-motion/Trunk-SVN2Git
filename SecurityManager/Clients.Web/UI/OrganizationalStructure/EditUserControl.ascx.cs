@@ -17,7 +17,6 @@
 // 
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
@@ -28,7 +27,7 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (EditUserControlResources))]
-  public partial class EditUserControl : BaseControl
+  public partial class EditUserControl : BaseEditControl<EditUserControl>
   {
     private BocAutoCompleteReferenceValue _owningGroupField;
 
@@ -40,6 +39,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected new EditUserFormFunction CurrentFunction
     {
       get { return (EditUserFormFunction) base.CurrentFunction; }
+    }
+
+    protected override FormGridManager GetFormGridManager()
+    {
+      return FormGridManager;
     }
 
     public override IFocusableControl InitialFocusControl
@@ -88,15 +92,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
         throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
 
       _owningGroupField.Args = CurrentFunction.TenantID.ToString();
-    }
-
-    public override bool Validate ()
-    {
-      bool isValid = base.Validate ();
-
-      isValid &= FormGridManager.Validate ();
-
-      return isValid;
     }
   }
 }

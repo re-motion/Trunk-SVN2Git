@@ -44,7 +44,7 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocTextValue ID="FirstnameField" runat="server" DataSourceControl="CurrentObject"
+      <remotion:BocTextValue ID="FirstNameField" runat="server" DataSourceControl="CurrentObject"
         PropertyIdentifier="FirstName">
         <TextBoxStyle MaxLength="100" />
       </remotion:BocTextValue>

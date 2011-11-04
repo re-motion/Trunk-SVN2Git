@@ -67,13 +67,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocTextValue TitleField;
         
         /// <summary>
-        /// FirstnameField control.
+        /// FirstNameField control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocTextValue FirstnameField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocTextValue FirstNameField;
         
         /// <summary>
         /// LastNameField control.

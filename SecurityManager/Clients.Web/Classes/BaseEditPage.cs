@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     // static members and constants
 
     // member fields
-    private List<DataEditUserControl> _dataEditUserControls = new List<DataEditUserControl> ();
+    private List<DataEditUserControl> _dataEditUserControls = new List<DataEditUserControl>();
 
     // construction and disposing
 
@@ -44,12 +44,28 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
       base.OnLoad (e);
 
-      foreach (DataEditUserControl control in _dataEditUserControls)
-      {
+      foreach (var control in _dataEditUserControls)
         control.DataSource.BusinessObject = CurrentFunction.CurrentObject;
-        control.LoadValues (IsPostBack);
-      }
-      LoadValues (IsPostBack);
+
+      //Split to support IFormGridRowProvider
+      if (IsPostBack)
+        LoadValuesInternal (true);
+    }
+
+    protected override void OnLoadComplete (EventArgs e)
+    {
+      base.OnLoadComplete (e);
+
+      //Split to support IFormGridRowProvider
+      if (!IsPostBack)
+        LoadValuesInternal (false);
+    }
+
+    private void LoadValuesInternal (bool interim)
+    {
+      foreach (var control in _dataEditUserControls)
+        control.LoadValues (interim);
+      LoadValues (interim);
     }
 
     protected virtual void LoadValues (bool interim)
@@ -60,11 +76,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
       bool isValid = true;
 
-      PrepareValidation ();
+      PrepareValidation();
 
       foreach (DataEditUserControl dataEditUserControl in _dataEditUserControls)
-        isValid &= dataEditUserControl.Validate ();
-      isValid &= ValidatePage ();
+        isValid &= dataEditUserControl.Validate();
+      isValid &= ValidatePage();
 
       if (isValid)
       {
@@ -72,26 +88,22 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
           dataEditUserControl.SaveValues (false);
         SaveValues (false);
 
-        if (ValidatePagePostSaveValues ())
+        if (ValidatePagePostSaveValues())
         {
-          ClientTransaction.Current.Commit ();
-          ExecuteNextStep ();
+          ClientTransaction.Current.Commit();
+          ExecuteNextStep();
         }
         else
-        {
-          ShowErrors ();
-        }
+          ShowErrors();
       }
       else
-      {
-        ShowErrors ();
-      }
+        ShowErrors();
     }
 
     protected virtual void ShowErrors ()
     {
     }
-   
+
     protected virtual bool ValidatePage ()
     {
       return true;

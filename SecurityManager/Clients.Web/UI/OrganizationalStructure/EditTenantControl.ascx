@@ -54,7 +54,7 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocList ID="ChildrenList" runat="server" Height="8em" DataSourceControl="CurrentObject" PropertyIdentifier="Children" Selection="Disabled" ReadOnly="True" ShowEmptyListMessage="true" ShowEmptyListReadOnlyMode="true">
+      <remotion:BocList ID="ChildrenList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Children" Selection="Disabled" ReadOnly="True" ShowEmptyListMessage="true" ShowEmptyListReadOnlyMode="true">
         <FixedColumns>
           <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="DisplayName">
             <PersistedCommand>

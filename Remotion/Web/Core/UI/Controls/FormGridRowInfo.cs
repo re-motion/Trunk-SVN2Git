@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -68,13 +69,12 @@ public class FormGridRowInfo
   ///   Initiliazes a new instance of the <see cref="FormGridRowInfo"/> class with all 
   ///   required information.
   /// </summary>
-  /// <param name="control"> The control to the inserted into the row. </param>
+  /// <param name="control"> The control to the inserted into the row. Must not be <see langword="null" />.</param>
   /// <param name="newRowType">
   ///   The <see cref="RowType"/> for the new <see cref="FormGridManager.FormGridRow"/>.
   /// </param>
   /// <param name="relatedRowID">
-  ///   The row used as a point of reference for inserting the new 
-  ///   <see cref="FormGridManager.FormGridRow"/>.
+  ///   The row used as a point of reference for inserting the new <see cref="FormGridManager.FormGridRow"/>. Can be <see langword="null" />.
   /// </param>
   /// <param name="positionInFormGrid">
   ///   The <see cref="RowPosition"/> for inserting the new 
@@ -86,6 +86,8 @@ public class FormGridRowInfo
       string relatedRowID,
       RowPosition positionInFormGrid)
   {
+    ArgumentUtility.CheckNotNull ("control", control);
+
     _control = control;
     _newRowType = newRowType;
     _positionInFormGrid = positionInFormGrid;

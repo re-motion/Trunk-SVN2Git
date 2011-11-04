@@ -17,7 +17,6 @@
 // 
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -27,11 +26,16 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (EditPositionControlResources))]
-  public partial class EditPositionControl : BaseControl
+  public partial class EditPositionControl : BaseEditControl<EditPositionControl>
   {
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
+    }
+
+    protected override FormGridManager GetFormGridManager()
+    {
+      return FormGridManager;
     }
 
     public override IFocusableControl InitialFocusControl
@@ -61,15 +65,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (GroupTypesList.IsReadOnly)
         GroupTypesList.Selection = RowSelection.Disabled;
-    }
-
-    public override bool Validate ()
-    {
-      bool isValid = base.Validate();
-
-      isValid &= FormGridManager.Validate();
-
-      return isValid;
     }
   }
 }

@@ -20,7 +20,7 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using Remotion.FunctionalProgramming;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -30,7 +30,7 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (EditTenantControlResources))]
-  public partial class EditTenantControl : BaseControl
+  public partial class EditTenantControl : BaseEditControl<EditTenantControl>
   {
     private BocAutoCompleteReferenceValue _parentField;
 
@@ -42,6 +42,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected new EditTenantFormFunction CurrentFunction
     {
       get { return (EditTenantFormFunction) base.CurrentFunction; }
+    }
+
+    protected override FormGridManager GetFormGridManager()
+    {
+      return FormGridManager;
     }
 
     public override IFocusableControl InitialFocusControl
@@ -66,16 +71,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       if (ChildrenList.IsReadOnly)
         ChildrenList.Selection = RowSelection.Disabled;
     }
-
-    public override bool Validate ()
-    {
-      bool isValid = base.Validate ();
-
-      isValid &= FormGridManager.Validate ();
-
-      return isValid;
-    }
-    
 
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {

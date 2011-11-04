@@ -20,7 +20,6 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using Remotion.FunctionalProgramming;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
@@ -31,7 +30,7 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (EditGroupControlResources))]
-  public partial class EditGroupControl : BaseControl
+  public partial class EditGroupControl : BaseEditControl<EditGroupControl>
   {
     private BocAutoCompleteReferenceValue _parentField;
     private BocAutoCompleteReferenceValue _groupTypeField;
@@ -44,6 +43,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected new EditGroupFormFunction CurrentFunction
     {
       get { return (EditGroupFormFunction) base.CurrentFunction; }
+    }
+
+    protected override FormGridManager GetFormGridManager()
+    {
+      return FormGridManager;
     }
 
     public override IFocusableControl InitialFocusControl
@@ -96,15 +100,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
         throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
 
       _parentField.Args = CurrentFunction.TenantID.ToString();
-    }
-
-    public override bool Validate ()
-    {
-      bool isValid = base.Validate();
-
-      isValid &= FormGridManager.Validate();
-
-      return isValid;
     }
 
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)

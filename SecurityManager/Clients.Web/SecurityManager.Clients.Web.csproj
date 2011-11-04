@@ -176,6 +176,7 @@
     <Compile Include="Classes\OrganizationalStructure\EditableRowAutoCompleteControlFactory.cs" />
     <Compile Include="Classes\OrganizationalStructure\InlineEditingDeleteItemMenuItemCommand.cs" />
     <Compile Include="Classes\OrganizationalStructure\InlineEditingNewItemMenuItemCommand.cs" />
+    <Compile Include="Classes\OrganizationalStructure\IOrganizationalStructureEditControlFormGridRowProvider.cs" />
     <Compile Include="Classes\OrganizationalStructure\UserRolesListEditableRowControlFactory.cs" />
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />
     <Compile Include="Classes\BaseControl.cs">
@@ -330,6 +331,9 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Classes\OrganizationalStructure\BocListInlineEditingConfigurator.cs" />
+    <Compile Include="Classes\OrganizationalStructure\BaseEditControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UI\SecurityManagerSearchWebService.asmx.cs">
       <DependentUpon>SecurityManagerSearchWebService.asmx</DependentUpon>
       <SubType>Component</SubType>
