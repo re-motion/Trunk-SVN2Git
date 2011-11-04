@@ -17,32 +17,46 @@
 // 
 using System;
 using Remotion.ObjectBinding;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
+  /// <summary>
+  /// <see cref="ISearchAvailableObjectsArguments"/> implementation used for properties using auto-complete-style value selection.
+  /// </summary>
   public class SecurityManagerSearchArguments : ISearchAvailableObjectsArguments
   {
     private readonly DisplayNameConstraint _displayNameConstraint;
     private readonly TenantConstraint _tenantConstraint;
     private readonly ResultSizeConstraint _resultSizeConstraint;
 
-    public SecurityManagerSearchArguments (TenantConstraint tenantConstraint, ResultSizeConstraint resultSizeConstraint, DisplayNameConstraint displayNameConstraint)
+    public SecurityManagerSearchArguments (
+        TenantConstraint tenantConstraint, ResultSizeConstraint resultSizeConstraint, DisplayNameConstraint displayNameConstraint)
     {
       _tenantConstraint = tenantConstraint;
       _resultSizeConstraint = resultSizeConstraint;
       _displayNameConstraint = displayNameConstraint;
     }
 
+    /// <summary>
+    /// When set, gets the constraint used for filtering based on the object's <see cref="Tenant"/>.
+    /// </summary>
     public TenantConstraint TenantConstraint
     {
       get { return _tenantConstraint; }
     }
 
+    /// <summary>
+    /// When set, gets the constraint used for filtering based on the object's display name.
+    /// </summary>
     public DisplayNameConstraint DisplayNameConstraint
     {
       get { return _displayNameConstraint; }
     }
 
+    /// <summary>
+    /// When set, gets the constraint used for constraining the number of the returned objects.
+    /// </summary>
     public ResultSizeConstraint ResultSizeConstraint
     {
       get { return _resultSizeConstraint; }
