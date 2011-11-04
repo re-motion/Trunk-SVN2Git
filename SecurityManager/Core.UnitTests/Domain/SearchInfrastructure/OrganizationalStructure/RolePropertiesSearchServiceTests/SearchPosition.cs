@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration.Provider;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
@@ -38,7 +37,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     private ObjectID _expectedTenantID;
     private ObjectID _expectedRootGroupID;
     private ObjectID _expectedParentGroup0ID;
-    private ObjectID _expectedGroup0ID;
     private MockRepository _mocks;
     private ISecurityProvider _mockSecurityProvider;
     private IPrincipalProvider _mockPrincipalProvider;
@@ -63,8 +61,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
             _expectedRootGroupID = group.ID;
           else if (group.UniqueIdentifier == "UID: parentGroup0")
             _expectedParentGroup0ID = group.ID;
-          else if (group.UniqueIdentifier == "UID: group0")
-            _expectedGroup0ID = group.ID;
         }
       }
     }
@@ -96,44 +92,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       base.TearDown();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
-    }
-
-    [Test]
-    public void LinqTests ()
-    {
-      var group = Group.GetObject (_expectedParentGroup0ID);
-      var groupType = group.GroupType;
-
-      // Idea
-      //Select p.* from Position
-      //inner join GroupTypePosition gtp on gtp.PositionID = p.ID
-      //where gtp.GroupTypeID = 'guid'
-      //order by p.Name
-
-      //#1
-      var p1 = from p in Position.FindAll()
-             where p.GroupTypes.Any (gtp => gtp.GroupType == groupType)
-             select p;
-      p1.ToArray();
-
-      //SELECT [t0].[ID],[t0].[ClassID],[t0].[Timestamp],[t0].[Name],[t0].[UniqueIdentifier],[t0].[Delegation] 
-      //FROM [PositionView] AS [t0] 
-      //WHERE EXISTS((
-      //    SELECT [t1].[ID] FROM [GroupTypePositionView] AS [t1] 
-      //    WHERE (([t0].[ID] = [t1].[PositionID]) AND ([t1].[GroupTypeID] = 'guid'))
-      //)) 
-      //ORDER BY [t0].[Name] ASC
-
-      //#2
-      var p2 = Position.FindAll().SelectMany (p => p.GroupTypes).Where (gtp => gtp.GroupType == groupType).Select (gtp => gtp.Position);
-       p2.ToArray();
-
-      //SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[Name],[t2].[UniqueIdentifier],[t2].[Delegation] 
-      //FROM [PositionView] AS [t0] 
-      //CROSS JOIN [GroupTypePositionView] AS [t1] 
-      //LEFT OUTER JOIN [PositionView] AS [t2] ON [t1].[PositionID] = [t2].[ID] 
-      //WHERE (([t0].[ID] = [t1].[PositionID]) AND ([t1].[GroupTypeID] = 'guid')) 
-      //ORDER BY [t0].[Name] ASC
     }
 
     [Test]
