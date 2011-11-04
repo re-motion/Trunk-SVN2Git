@@ -52,6 +52,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract Group Group { get; set; }
 
     [Mandatory]
+    [SearchAvailableObjectsServiceType (typeof (RolePropertiesSearchService))]
     public abstract Position Position { get; set; }
 
     [DBBidirectionalRelation ("Roles")]

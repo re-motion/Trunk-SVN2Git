@@ -88,6 +88,31 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     }
 
     [Test]
+    public void SearchPositions ()
+    {
+      ISearchAvailableObjectsService searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectsService> ();
+      ISearchAvailableObjectsArguments args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments> ();
+
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>()
+          .AddService (typeof (RolePropertiesSearchService), searchServiceStub);
+      IBusinessObjectClass roleClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Role));
+      IBusinessObjectReferenceProperty positionProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Position");
+      Assert.That (positionProperty, Is.Not.Null);
+
+      Role role = Role.NewObject ();
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
+
+      searchServiceStub.Stub (stub => stub.SupportsProperty (positionProperty)).Return (true);
+      searchServiceStub.Stub (stub => stub.Search (role, positionProperty, args)).Return (expected);
+
+      Assert.That (positionProperty.SupportsSearchAvailableObjects, Is.True);
+
+      IBusinessObject[] actual = positionProperty.SearchAvailableObjects (role, args);
+      Assert.That (actual, Is.SameAs (expected));
+    }
+
+    [Test]
     public void GetDisplayName_WithGroupAndPosition ()
     {
       Group roleGroup = TestHelper.CreateGroup ("RoleGroup", Guid.NewGuid ().ToString (), null, null);

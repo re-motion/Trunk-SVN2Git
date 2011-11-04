@@ -26,8 +26,14 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
   /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="Position"/> type.
   /// </summary>
   /// <remarks>
+  /// <para>
   /// The service can be applied to any <see cref="Position"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
   /// via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
+  /// </para>
+  /// <para>
+  /// The service expected search arguments of type <see cref="SecurityManagerSearchArguments"/>,
+  /// <see cref="DefaultSearchArguments"/>, or <see langword="null" />.
+  /// </para>
   /// </remarks>
   public class PositionPropertyTypeSearchService : SecurityManagerPropertyTypeBasedSearchServiceBase<Position>
   {

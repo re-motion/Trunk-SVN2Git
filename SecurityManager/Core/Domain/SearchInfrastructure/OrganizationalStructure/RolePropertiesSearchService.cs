@@ -30,7 +30,12 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
   /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties of the <see cref="Role"/> type.
   /// </summary>
   /// <remarks>
+  /// <para>
   /// The service is applied to the <see cref="Role.Position"/> property via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
+  /// </para>
+  /// <para>
+  /// The service expected search arguments of type <see cref="RolePropertiesSearchArguments"/> or <see langword="null" />.
+  /// </para>
   /// </remarks>
   public class RolePropertiesSearchService : ISearchAvailableObjectsService
   {

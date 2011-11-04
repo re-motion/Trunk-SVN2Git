@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System.Linq;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -27,8 +28,15 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
   /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties referencing the <see cref="Group"/> type.
   /// </summary>
   /// <remarks>
+  /// <para>
   /// The service can be applied to any <see cref="Group"/>-typed property of a <see cref="BaseSecurityManagerObject"/> 
   /// via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
+  /// </para>
+  /// <para>
+  /// The service expected search arguments of type <see cref="SecurityManagerSearchArguments"/>,
+  /// <see cref="DefaultSearchArguments"/> with the <see cref="DefaultSearchArguments.SearchStatement"/> set to the serialized <see cref="ObjectID"/>
+  /// of the <see cref="Tenant"/>, or <see langword="null" />.
+  /// </para>
   /// </remarks>
   public class GroupPropertyTypeSearchService : SecurityManagerPropertyTypeBasedSearchServiceBase<Group>
   {
