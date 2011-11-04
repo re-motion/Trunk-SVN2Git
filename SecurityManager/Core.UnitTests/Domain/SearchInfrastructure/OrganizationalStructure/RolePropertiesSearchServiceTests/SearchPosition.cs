@@ -197,8 +197,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
     private ISearchAvailableObjectsArguments CreateSearchArguments (Group group)
     {
       if (group == null)
-        return null;
-      return new DefaultSearchArguments (group.ID.ToString());
+        return new RolePropertiesSearchArguments (null);
+      return new RolePropertiesSearchArguments (group.ID);
     }
   }
 }

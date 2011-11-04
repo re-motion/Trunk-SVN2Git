@@ -24,10 +24,10 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure
 {
   /// <summary>
-  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for the <see cref="Role"/> type.
+  /// Implementation of <see cref="ISearchAvailableObjectsService"/>for properties of the <see cref="Substitution"/> type.
   /// </summary>
   /// <remarks>
-  /// The service is applied to the <see cref="Role.Group"/> and the <see cref="Role.User"/> properties via the
+  /// The service is applied to the <see cref="Substitution.SubstitutedRole"/> property via the
   /// <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
   public sealed class SubstitutionPropertiesSearchService : SecurityManagerPropertyBasedSearchServiceBase<Substitution>

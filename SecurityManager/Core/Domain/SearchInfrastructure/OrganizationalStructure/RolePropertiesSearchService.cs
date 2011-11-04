@@ -18,9 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
@@ -29,6 +26,12 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure
 {
+  /// <summary>
+  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for properties of the <see cref="Role"/> type.
+  /// </summary>
+  /// <remarks>
+  /// The service is applied to the <see cref="Role.Position"/> property via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
+  /// </remarks>
   public class RolePropertiesSearchService : ISearchAvailableObjectsService
   {
     public bool SupportsProperty (IBusinessObjectReferenceProperty property)
@@ -44,7 +47,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
         ISearchAvailableObjectsArguments searchArguments)
     {
       ArgumentUtility.CheckNotNull ("property", property);
-      var defaultSearchArguments = ArgumentUtility.CheckType<DefaultSearchArguments> ("searchArguments", searchArguments);
+      var rolePropertiesSearchArguments = ArgumentUtility.CheckType<RolePropertiesSearchArguments> ("searchArguments", searchArguments);
 
       if (!SupportsProperty (property))
       {
@@ -52,22 +55,12 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
             string.Format ("The property '{0}' is not supported by the '{1}' type.", property.Identifier, GetType().FullName));
       }
 
-      var positions = GetPositions (defaultSearchArguments);
+      var positions = GetPositions (rolePropertiesSearchArguments);
       var filteredPositions = FilterByAccess (positions, SecurityManagerAccessTypes.AssignRole);
       return filteredPositions.ToArray();
     }
 
-    private GroupType GetGroupType (DefaultSearchArguments searchArguments)
-    {
-      if (searchArguments == null || string.IsNullOrEmpty (searchArguments.SearchStatement))
-        return null;
-
-      var groupID = ObjectID.Parse (searchArguments.SearchStatement);
-      var group = Group.GetObject (groupID);
-      return group.GroupType;
-    }
-
-    private IQueryable<Position> GetPositions (DefaultSearchArguments defaultSearchArguments)
+    private IQueryable<Position> GetPositions (RolePropertiesSearchArguments defaultSearchArguments)
     {
       var positions = Position.FindAll();
 
@@ -76,6 +69,15 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
         return positions;
 
       return positions.Where (p => p.GroupTypes.Any (gtp => gtp.GroupType == groupType));
+    }
+
+    private GroupType GetGroupType (RolePropertiesSearchArguments searchArguments)
+    {
+      if (searchArguments == null || searchArguments.GroupID == null)
+        return null;
+
+      var group = Group.GetObject (searchArguments.GroupID);
+      return group.GroupType;
     }
 
     private IEnumerable<T> FilterByAccess<T> (IEnumerable<T> securableObjects, params Enum[] requiredAccessTypeEnums) where T: ISecurableObject
