@@ -60,7 +60,8 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
       return constraint.ApplyTo (query);
     }
 
-    public static IEnumerable<AbstractRoleDefinition> Apply (this IEnumerable<AbstractRoleDefinition> query, DisplayNameConstraint constraint)
+    public static IEnumerable<T> Apply<T> (this IEnumerable<T> query, DisplayNameConstraint constraint)
+        where T: MetadataObject
     {
       if (constraint == null)
         return query;

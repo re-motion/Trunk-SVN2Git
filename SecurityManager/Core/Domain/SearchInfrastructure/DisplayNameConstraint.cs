@@ -46,7 +46,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     {
       ArgumentUtility.CheckNotNull ("tenants", tenants);
 
-      if (HasConstraint ())
+      if (HasConstraint())
         return tenants.Where (t => t.Name.Contains (Value));
 
       return tenants;
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     {
       ArgumentUtility.CheckNotNull ("groups", groups);
 
-      if (HasConstraint ())
+      if (HasConstraint())
         return groups.Where (g => g.Name.Contains (Value) || g.ShortName.Contains (Value));
 
       return groups;
@@ -66,7 +66,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     {
       ArgumentUtility.CheckNotNull ("users", users);
 
-      if (HasConstraint ())
+      if (HasConstraint())
         return users.Where (u => u.LastName.Contains (Value) || u.FirstName.Contains (Value));
 
       return users;
@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     {
       ArgumentUtility.CheckNotNull ("positions", positions);
 
-      if (HasConstraint ())
+      if (HasConstraint())
         return positions.Where (t => t.Name.Contains (Value));
 
       return positions;
@@ -86,20 +86,21 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     {
       ArgumentUtility.CheckNotNull ("groupTypes", groupTypes);
 
-      if (HasConstraint ())
+      if (HasConstraint())
         return groupTypes.Where (t => t.Name.Contains (Value));
 
       return groupTypes;
     }
 
-    public IEnumerable<AbstractRoleDefinition> ApplyTo (IEnumerable<AbstractRoleDefinition> abstractRoleDefinitions)
+    public IEnumerable<T> ApplyTo<T> (IEnumerable<T> metadataObject)
+        where T: MetadataObject
     {
-      ArgumentUtility.CheckNotNull ("abstractRoleDefinitions", abstractRoleDefinitions);
+      ArgumentUtility.CheckNotNull ("metadataObject", metadataObject);
 
-      if (HasConstraint ())
-        return abstractRoleDefinitions.Where (t => t.DisplayName.Contains (Value));
+      if (HasConstraint())
+        return metadataObject.Where (t => t.DisplayName.Contains (Value));
 
-      return abstractRoleDefinitions;
+      return metadataObject;
     }
 
     private bool HasConstraint ()
