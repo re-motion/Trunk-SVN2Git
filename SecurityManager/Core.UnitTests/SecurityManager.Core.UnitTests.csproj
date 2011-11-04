@@ -179,6 +179,8 @@
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\GroupTypePropertyTypeSearchServiceTests\SearchGroupType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\PositionPropertyTypeSearchServiceTests\SearchPosition.cs" />
+    <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\RolePropertiesSearchServiceTests\SearchOtherPropertyType.cs" />
+    <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\RolePropertiesSearchServiceTests\SearchPosition.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchOtherPropertyType.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\TenantPropertyTypeSearchServiceTests\SearchTenant.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\TenantPropertyTypeSearchServiceTests\SearchOtherPropertyType.cs" />

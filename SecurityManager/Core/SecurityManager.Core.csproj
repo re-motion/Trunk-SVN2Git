@@ -150,6 +150,7 @@
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureObjectProxy.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionProxy.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantProxy.cs" />
+    <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\RolePropertiesSearchService.cs" />
     <Compile Include="Domain\SearchInfrastructure\OrganizationalStructure\SubstitutionPropertiesSearchService.cs" />
     <Compile Include="Domain\OrganizationalStructure\Substitution.cs">
       <SubType>Code</SubType>
