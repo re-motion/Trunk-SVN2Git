@@ -16,7 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI.HtmlControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
@@ -27,23 +28,18 @@ namespace Remotion.SecurityManager.Clients.Web.Test.Classes
 {
   public class EditUserControlFormGridRowProvider : IOrganizationalStructureEditControlFormGridRowProvider<EditUserControl>
   {
-    public StringCollection GetHiddenRows (EditUserControl dataEditControl, HtmlTable formGrid, FormGridManager formGridManager)
+    public IEnumerable<String> GetHiddenRows (EditUserControl dataEditControl, HtmlTable formGrid, FormGridManager formGridManager)
     {
-      return new StringCollection();
+      return Enumerable.Empty<string>();
     }
 
-    public FormGridRowInfoCollection GetAdditionalRows (EditUserControl dataEditControl, HtmlTable formGrid, FormGridManager formGridManager)
+    public IEnumerable<FormGridRowInfo> GetAdditionalRows (EditUserControl dataEditControl, HtmlTable formGrid, FormGridManager formGridManager)
     {
-      return new FormGridRowInfoCollection (
-          new[]
-          {
-              new FormGridRowInfo (
-              new BocTextValue
-              { ID = "ReadOnlyUserNameField", ReadOnly = true, PropertyIdentifier = "UserName", DataSource = dataEditControl.DataSource },
-              FormGridRowInfo.RowType.ControlInRowWithLabel,
-              "UserNameField",
-              FormGridRowInfo.RowPosition.BeforeRowWithID)
-          });
+      yield return new FormGridRowInfo (
+          new BocTextValue { ID = "ReadOnlyUserNameField", ReadOnly = true, PropertyIdentifier = "UserName", DataSource = dataEditControl.DataSource },
+          FormGridRowInfo.RowType.ControlInRowWithLabel,
+          "UserNameField",
+          FormGridRowInfo.RowPosition.BeforeRowWithID);
     }
   }
 }

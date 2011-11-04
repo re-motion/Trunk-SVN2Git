@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Web.UI.HtmlControls;
@@ -42,36 +43,25 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("table", table);
 
-      var provider = GetFormGridRowProvider();
-      if (provider == null)
-        return new StringCollection();
+      var providers = GetFormGridRowProvider();
+      
+      var stringCollection = new StringCollection ();
+      stringCollection.AddRange (providers.SelectMany (p => p.GetHiddenRows ((TSelf) this, table, GetFormGridManager())).ToArray());
 
-      return provider.GetHiddenRows ((TSelf) this, table, GetFormGridManager());
+      return stringCollection;
     }
 
     FormGridRowInfoCollection IFormGridRowProvider.GetAdditionalRows (HtmlTable table)
     {
       ArgumentUtility.CheckNotNull ("table", table);
 
-      var provider = GetFormGridRowProvider();
-      if (provider == null)
-        return new FormGridRowInfoCollection();
-
-      return provider.GetAdditionalRows ((TSelf) this, table, GetFormGridManager());
+      var providers = GetFormGridRowProvider();
+      return new FormGridRowInfoCollection (providers.SelectMany (p => p.GetAdditionalRows ((TSelf) this, table, GetFormGridManager())).ToArray());
     }
 
-    private IOrganizationalStructureEditControlFormGridRowProvider<TSelf> GetFormGridRowProvider ()
+    private IEnumerable<IOrganizationalStructureEditControlFormGridRowProvider<TSelf>> GetFormGridRowProvider ()
     {
-      var providers = ServiceLocator.GetAllInstances<IOrganizationalStructureEditControlFormGridRowProvider<TSelf>>().ToArray();
-      if (providers.Length > 1)
-      {
-        throw new InvalidOperationException (
-            string.Format (
-                "Registering multiple implementations of '{0}' is not supported for providing FormGridRow-information.",
-                typeof (IOrganizationalStructureEditControlFormGridRowProvider<TSelf>).FullName));
-      }
-
-      return providers.SingleOrDefault();
+      return ServiceLocator.GetAllInstances<IOrganizationalStructureEditControlFormGridRowProvider<TSelf>>();
     }
   }
 }
