@@ -16,10 +16,17 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
+  /// <summary>
+  /// Constraints sequences of <see cref="BaseSecurityManagerObject"/> instances based on whether the <b>DisplayName</b> contains the <see cref="Value"/>.
+  /// </summary>
   public class DisplayNameConstraint
   {
     private readonly string _value;
@@ -33,6 +40,71 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     public string Value
     {
       get { return _value; }
+    }
+
+    public IQueryable<Tenant> ApplyTo (IQueryable<Tenant> tenants)
+    {
+      ArgumentUtility.CheckNotNull ("tenants", tenants);
+
+      if (HasConstraint ())
+        return tenants.Where (t => t.Name.Contains (Value));
+
+      return tenants;
+    }
+
+    public IQueryable<Group> ApplyTo (IQueryable<Group> groups)
+    {
+      ArgumentUtility.CheckNotNull ("groups", groups);
+
+      if (HasConstraint ())
+        return groups.Where (g => g.Name.Contains (Value) || g.ShortName.Contains (Value));
+
+      return groups;
+    }
+
+    public IQueryable<User> ApplyTo (IQueryable<User> users)
+    {
+      ArgumentUtility.CheckNotNull ("users", users);
+
+      if (HasConstraint ())
+        return users.Where (u => u.LastName.Contains (Value) || u.FirstName.Contains (Value));
+
+      return users;
+    }
+
+    public IQueryable<Position> ApplyTo (IQueryable<Position> positions)
+    {
+      ArgumentUtility.CheckNotNull ("positions", positions);
+
+      if (HasConstraint ())
+        return positions.Where (t => t.Name.Contains (Value));
+
+      return positions;
+    }
+
+    public IQueryable<GroupType> ApplyTo (IQueryable<GroupType> groupTypes)
+    {
+      ArgumentUtility.CheckNotNull ("groupTypes", groupTypes);
+
+      if (HasConstraint ())
+        return groupTypes.Where (t => t.Name.Contains (Value));
+
+      return groupTypes;
+    }
+
+    public IEnumerable<AbstractRoleDefinition> ApplyTo (IEnumerable<AbstractRoleDefinition> abstractRoleDefinitions)
+    {
+      ArgumentUtility.CheckNotNull ("abstractRoleDefinitions", abstractRoleDefinitions);
+
+      if (HasConstraint ())
+        return abstractRoleDefinitions.Where (t => t.DisplayName.Contains (Value));
+
+      return abstractRoleDefinitions;
+    }
+
+    private bool HasConstraint ()
+    {
+      return !String.IsNullOrEmpty (Value);
     }
   }
 }

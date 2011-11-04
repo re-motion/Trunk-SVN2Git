@@ -16,9 +16,14 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
+  /// <summary>
+  /// Constraints sequences of to a maxium of <see cref="Value"/> result items.
+  /// </summary>
   public class ResultSizeConstraint
   {
     private readonly int _value;
@@ -31,6 +36,13 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure
     public int Value
     {
       get { return _value; }
+    }
+
+    public IQueryable<T> ApplyTo<T> (IQueryable<T> query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      return query.Take (Value);
     }
   }
 }

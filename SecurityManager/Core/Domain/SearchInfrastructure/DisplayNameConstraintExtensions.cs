@@ -20,77 +20,51 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
   internal static class DisplayNameConstraintExtensions
   {
-    public static IQueryable<Tenant> Apply (this IQueryable<Tenant> tenants, DisplayNameConstraint constraint)
+    public static IQueryable<Tenant> Apply (this IQueryable<Tenant> query, DisplayNameConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("tenants", tenants);
-
-      if (HasConstraint (constraint))
-        return tenants.Where (t => t.Name.Contains (constraint.Value));
-
-      return tenants;
+      if (constraint == null)
+        return query;
+      return constraint.ApplyTo (query);
     }
 
-    public static IQueryable<Group> Apply (this IQueryable<Group> groups, DisplayNameConstraint constraint)
+    public static IQueryable<Group> Apply (this IQueryable<Group> query, DisplayNameConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("groups", groups);
-
-      if (HasConstraint (constraint))
-        return groups.Where (g => g.Name.Contains (constraint.Value) || g.ShortName.Contains (constraint.Value));
-
-      return groups;
+      if (constraint == null)
+        return query;
+      return constraint.ApplyTo (query);
     }
 
-    public static IQueryable<User> Apply (this IQueryable<User> users, DisplayNameConstraint constraint)
+    public static IQueryable<User> Apply (this IQueryable<User> query, DisplayNameConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("users", users);
-
-      if (HasConstraint (constraint))
-        return users.Where (u => u.LastName.Contains (constraint.Value) || u.FirstName.Contains (constraint.Value));
-
-      return users;
+      if (constraint == null)
+        return query;
+      return constraint.ApplyTo (query);
     }
 
-    public static IQueryable<Position> Apply (this IQueryable<Position> positions, DisplayNameConstraint constraint)
+    public static IQueryable<Position> Apply (this IQueryable<Position> query, DisplayNameConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("positions", positions);
-
-      if (HasConstraint (constraint))
-        return positions.Where (t => t.Name.Contains (constraint.Value));
-
-      return positions;
+      if (constraint == null)
+        return query;
+      return constraint.ApplyTo (query);
     }
 
-    public static IQueryable<GroupType> Apply (this IQueryable<GroupType> groupTypes, DisplayNameConstraint constraint)
+    public static IQueryable<GroupType> Apply (this IQueryable<GroupType> query, DisplayNameConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("groupTypes", groupTypes);
-
-      if (HasConstraint (constraint))
-        return groupTypes.Where (t => t.Name.Contains (constraint.Value));
-
-      return groupTypes;
+      if (constraint == null)
+        return query;
+      return constraint.ApplyTo (query);
     }
 
-    public static IEnumerable<AbstractRoleDefinition> Apply (
-        this IEnumerable<AbstractRoleDefinition> abstractRoleDefinitions, 
-        DisplayNameConstraint constraint)
+    public static IEnumerable<AbstractRoleDefinition> Apply (this IEnumerable<AbstractRoleDefinition> query, DisplayNameConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("abstractRoleDefinitions", abstractRoleDefinitions);
-
-      if (HasConstraint (constraint))
-        return abstractRoleDefinitions.Where (t => t.DisplayName.Contains (constraint.Value));
-
-      return abstractRoleDefinitions;
-    }
-
-    private static bool HasConstraint (DisplayNameConstraint constraint)
-    {
-      return constraint != null && !String.IsNullOrEmpty (constraint.Value);
+      if (constraint == null)
+        return query;
+      return constraint.ApplyTo (query);
     }
   }
 }

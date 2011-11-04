@@ -17,20 +17,16 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure
 {
-  public static class ResultSizeExtensions
+  internal static class ResultSizeExtensions
   {
     public static IQueryable<T> Apply<T> (this IQueryable<T> query, ResultSizeConstraint constraint)
     {
-      ArgumentUtility.CheckNotNull ("query", query);
-
       if (constraint == null)
         return query;
-
-      return query.Take (constraint.Value);
+      return constraint.ApplyTo (query);
     }
   }
 }
