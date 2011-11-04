@@ -30,15 +30,6 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
   {
     protected abstract FormGridManager GetFormGridManager ();
 
-    public override bool Validate ()
-    {
-      bool isValid = base.Validate();
-
-      isValid &= GetFormGridManager().Validate();
-
-      return isValid;
-    }
-
     StringCollection IFormGridRowProvider.GetHiddenRows (HtmlTable table)
     {
       ArgumentUtility.CheckNotNull ("table", table);
