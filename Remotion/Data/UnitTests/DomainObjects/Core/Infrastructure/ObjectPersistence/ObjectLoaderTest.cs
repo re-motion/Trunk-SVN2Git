@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -38,7 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     private IEagerFetcher _fetcherMock;
     private ILoadedObjectDataRegistrationAgent _loadedObjectDataRegistrationAgentMock;
     private ILoadedObjectDataProvider _loadedObjectDataProviderStub;
-    private IDataManager _dataManagerStub;
+    private ILoadedDataContainerProvider _loadedDataContainerProviderStub;
+    private IVirtualEndPointProvider _virtualEndPointProviderStub;
     private IDataContainerLifetimeManager _lifetimeManagerStub;
 
     private ObjectLoader _objectLoader;
@@ -60,7 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _fetcherMock = _mockRepository.StrictMock<IEagerFetcher> ();
       _loadedObjectDataRegistrationAgentMock = _mockRepository.StrictMock<ILoadedObjectDataRegistrationAgent>();
       _loadedObjectDataProviderStub = _mockRepository.Stub<ILoadedObjectDataProvider>();
-      _dataManagerStub = _mockRepository.Stub<IDataManager>();
+      _loadedDataContainerProviderStub = _mockRepository.Stub<ILoadedDataContainerProvider> ();
+      _virtualEndPointProviderStub = _mockRepository.Stub<IVirtualEndPointProvider> ();
       _lifetimeManagerStub = _mockRepository.StrictMock<IDataContainerLifetimeManager>();
       
       _objectLoader = new ObjectLoader (_persistenceStrategyMock, _fetcherMock, _loadedObjectDataRegistrationAgentMock);
@@ -259,7 +262,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (
+          _fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _loadedDataContainerProviderStub, _virtualEndPointProviderStub);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
@@ -280,7 +284,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (
+          _fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _loadedDataContainerProviderStub, _virtualEndPointProviderStub);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1, null }));
@@ -303,7 +308,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      _objectLoader.GetOrLoadCollectionQueryResult<Customer> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
+      _objectLoader.GetOrLoadCollectionQueryResult<Customer> (
+          _fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _loadedDataContainerProviderStub, _virtualEndPointProviderStub);
     }
 
     [Test]
@@ -324,14 +330,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
               Arg<DomainObject[]>.List.Equal(new[] { _domainObject1 }),
               Arg.Is (endPointDefinition),
               Arg.Is (fetchQueryStub),
-              Arg.Is (_objectLoader),
-              Arg.Is (_dataManagerStub), 
-              Arg.Is (_lifetimeManagerStub), 
-              Arg.Is (_loadedObjectDataProviderStub)));
+              Arg.Is (_objectLoader), 
+              Arg.Is (_lifetimeManagerStub),
+              Arg.Is (_loadedObjectDataProviderStub),
+              Arg.Is (_loadedDataContainerProviderStub),
+              Arg.Is (_virtualEndPointProviderStub)));
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
+      var result = _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _loadedDataContainerProviderStub, _virtualEndPointProviderStub);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _domainObject1 }));
@@ -353,16 +360,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      _objectLoader.GetOrLoadCollectionQueryResult<Order> (_fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _dataManagerStub);
+      _objectLoader.GetOrLoadCollectionQueryResult<Order> (
+          _fakeQuery, _lifetimeManagerStub, _loadedObjectDataProviderStub, _loadedDataContainerProviderStub, _virtualEndPointProviderStub);
 
       _fetcherMock.AssertWasNotCalled (mock => mock.PerformEagerFetching (
           Arg<DomainObject[]>.Is.Anything,
           Arg<IRelationEndPointDefinition>.Is.Anything,
           Arg<IQuery>.Is.Anything,
           Arg<IObjectLoader>.Is.Anything,
-          Arg<IDataManager>.Is.Anything, 
-          Arg<IDataContainerLifetimeManager>.Is.Anything, 
-          Arg<ILoadedObjectDataProvider>.Is.Anything));
+          Arg<IDataContainerLifetimeManager>.Is.Anything,
+          Arg<ILoadedObjectDataProvider>.Is.Anything,
+          Arg.Is (_loadedDataContainerProviderStub),
+          Arg.Is (_virtualEndPointProviderStub)));
     }
 
     private IQuery CreateFakeQuery ()

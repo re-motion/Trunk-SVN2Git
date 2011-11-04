@@ -95,8 +95,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           clientTransaction,
           eventSink,
           dataManager,
+          new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager),
           dataManager,
-          new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager));
+          dataManager);
     }
   }
 }

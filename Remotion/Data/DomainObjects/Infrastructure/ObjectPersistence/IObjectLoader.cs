@@ -28,8 +28,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   {
     DomainObject LoadObject (ObjectID id, IDataContainerLifetimeManager lifetimeManager);
     DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataContainerLifetimeManager lifetimeManager);
-    DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
-    DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
-    T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider, IDataManager dataManager) where T : DomainObject;
+
+    DomainObject GetOrLoadRelatedObject (
+        RelationEndPointID relationEndPointID,
+        IDataContainerLifetimeManager lifetimeManager,
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
+
+    DomainObject[] GetOrLoadRelatedObjects (
+        RelationEndPointID relationEndPointID,
+        IDataContainerLifetimeManager lifetimeManager,
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
+
+    T[] GetOrLoadCollectionQueryResult<T> (
+        IQuery query,
+        IDataContainerLifetimeManager lifetimeManager,
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider,
+        ILoadedDataContainerProvider loadedDataContainerProvider,
+        IVirtualEndPointProvider virtualEndPointProvider) where T: DomainObject;
   }
 }

@@ -57,9 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       return _decorated.GetOrLoadRelatedObjects (relationEndPointID, lifetimeManager, alreadyLoadedObjectDataProvider);
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider, IDataManager dataManager) where T: DomainObject
+    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider, ILoadedDataContainerProvider loadedDataContainerProvider, IVirtualEndPointProvider virtualEndPointProvider) where T: DomainObject
     {
-      return _decorated.GetOrLoadCollectionQueryResult<T> (query, lifetimeManager, alreadyLoadedObjectDataProvider, dataManager);
+      return _decorated.GetOrLoadCollectionQueryResult<T> (query, lifetimeManager, alreadyLoadedObjectDataProvider, loadedDataContainerProvider, virtualEndPointProvider);
     }
   }
 }

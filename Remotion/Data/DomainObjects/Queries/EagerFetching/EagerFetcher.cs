@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
@@ -50,17 +51,19 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IRelationEndPointDefinition relationEndPointDefinition,
         IQuery fetchQuery,
         IObjectLoader fetchQueryResultLoader,
-        IDataManager dataManager,
         IDataContainerLifetimeManager lifetimeManager,
-        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider,
+        ILoadedDataContainerProvider loadedDataContainerProvider,
+        IVirtualEndPointProvider virtualEndPointProvider)
     {
-      ArgumentUtility.CheckNotNull ("originalObjects", originalObjects);
+      ArgumentUtility.CheckNotNullOrEmpty ("originalObjects", originalObjects);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
       ArgumentUtility.CheckNotNull ("fetchQueryResultLoader", fetchQueryResultLoader);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
+      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
 
       s_log.DebugFormat (
           "Eager fetching objects for {0} via query {1} ('{2}').",
@@ -70,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
       // Executing the query will automatically register all loaded DomainObjects. End-points will be explicitly marked complete below.
       var fetchedObjects = fetchQueryResultLoader.GetOrLoadCollectionQueryResult<DomainObject> (
-          fetchQuery, lifetimeManager, alreadyLoadedObjectDataProvider, dataManager);
+          fetchQuery, lifetimeManager, alreadyLoadedObjectDataProvider, loadedDataContainerProvider, virtualEndPointProvider);
       s_log.DebugFormat (
           "The eager fetch query yielded {0} related objects for {1} original objects.",
           fetchedObjects.Length,
@@ -78,7 +81,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
       try
       {
-        _registrationAgent.GroupAndRegisterRelatedObjects (relationEndPointDefinition, originalObjects, fetchedObjects, dataManager, dataManager);
+        _registrationAgent.GroupAndRegisterRelatedObjects (
+            relationEndPointDefinition,
+            originalObjects,
+            fetchedObjects,
+            loadedDataContainerProvider,
+            virtualEndPointProvider);
       }
       catch (InvalidOperationException ex)
       {

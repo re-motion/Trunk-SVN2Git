@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -32,7 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
   {
     private IFetchedRelationDataRegistrationAgent _registrationAgentMock;
     private IObjectLoader _objectLoaderMock;
-    private IDataManager _dataManagerStub;
+    private ILoadedDataContainerProvider _loadedDataContainerProviderStub;
+    private IVirtualEndPointProvider _virtualEndPointProviderStub;
     private IDataContainerLifetimeManager _lifetimeManagerStub;
     private ILoadedObjectDataProvider _alreadyLoadedObjectDataProviderStub;
 
@@ -51,26 +53,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _registrationAgentMock = MockRepository.GenerateStrictMock<IFetchedRelationDataRegistrationAgent> ();
-      _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
-      _dataManagerStub = MockRepository.GenerateStub<IDataManager> ();
-      _lifetimeManagerStub = MockRepository.GenerateStub<IDataContainerLifetimeManager> ();
-      _alreadyLoadedObjectDataProviderStub = MockRepository.GenerateStub<ILoadedObjectDataProvider> ();
+      _registrationAgentMock = MockRepository.GenerateStrictMock<IFetchedRelationDataRegistrationAgent>();
+      _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader>();
+      _loadedDataContainerProviderStub = MockRepository.GenerateStub<ILoadedDataContainerProvider>();
+      _virtualEndPointProviderStub = MockRepository.GenerateStub<IVirtualEndPointProvider>();
+      _lifetimeManagerStub = MockRepository.GenerateStub<IDataContainerLifetimeManager>();
+      _alreadyLoadedObjectDataProviderStub = MockRepository.GenerateStub<ILoadedObjectDataProvider>();
 
       _eagerFetcher = new EagerFetcher (_registrationAgentMock);
 
-      _queryStub = MockRepository.GenerateStub<IQuery> ();
+      _queryStub = MockRepository.GenerateStub<IQuery>();
 
       _endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
 
-      _originatingOrder1 = DomainObjectMother.CreateFakeObject<Order> ();
-      _originatingOrder2 = DomainObjectMother.CreateFakeObject<Order> ();
+      _originatingOrder1 = DomainObjectMother.CreateFakeObject<Order>();
+      _originatingOrder2 = DomainObjectMother.CreateFakeObject<Order>();
 
-      _fetchedOrderItem1 = DomainObjectMother.CreateFakeObject<OrderItem> ();
-      _fetchedOrderItem2 = DomainObjectMother.CreateFakeObject<OrderItem> ();
-      _fetchedOrderItem3 = DomainObjectMother.CreateFakeObject<OrderItem> ();
+      _fetchedOrderItem1 = DomainObjectMother.CreateFakeObject<OrderItem>();
+      _fetchedOrderItem2 = DomainObjectMother.CreateFakeObject<OrderItem>();
+      _fetchedOrderItem3 = DomainObjectMother.CreateFakeObject<OrderItem>();
     }
 
     [Test]
@@ -80,16 +83,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjects = new[] { _fetchedOrderItem1, _fetchedOrderItem2, _fetchedOrderItem3 };
 
       _objectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_queryStub, _lifetimeManagerStub, _alreadyLoadedObjectDataProviderStub, _dataManagerStub))
+          .Expect (
+              mock =>
+              mock.GetOrLoadCollectionQueryResult<DomainObject> (
+                  _queryStub,
+                  _lifetimeManagerStub,
+                  _alreadyLoadedObjectDataProviderStub,
+                  _loadedDataContainerProviderStub,
+                  _virtualEndPointProviderStub))
           .Return (relatedObjects);
       _objectLoaderMock.Replay();
 
       _registrationAgentMock.Expect (
-          mock => mock.GroupAndRegisterRelatedObjects (_endPointDefinition, originatingObjects, relatedObjects, _dataManagerStub, _dataManagerStub));
+          mock =>
+          mock.GroupAndRegisterRelatedObjects (
+              _endPointDefinition, originatingObjects, relatedObjects, _loadedDataContainerProviderStub, _virtualEndPointProviderStub));
       _registrationAgentMock.Replay();
 
       _eagerFetcher.PerformEagerFetching (
-          originatingObjects, _endPointDefinition, _queryStub, _objectLoaderMock, _dataManagerStub, _lifetimeManagerStub, _alreadyLoadedObjectDataProviderStub);
+          originatingObjects,
+          _endPointDefinition,
+          _queryStub,
+          _objectLoaderMock,
+          _lifetimeManagerStub,
+          _alreadyLoadedObjectDataProviderStub,
+          _loadedDataContainerProviderStub,
+          _virtualEndPointProviderStub);
 
       _objectLoaderMock.VerifyAllExpectations();
       _registrationAgentMock.VerifyAllExpectations();
@@ -102,27 +121,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjects = new[] { _fetchedOrderItem1, _fetchedOrderItem2, _fetchedOrderItem3 };
 
       _objectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_queryStub, _lifetimeManagerStub, _alreadyLoadedObjectDataProviderStub, _dataManagerStub))
+          .Expect (
+              mock =>
+              mock.GetOrLoadCollectionQueryResult<DomainObject> (
+                  _queryStub,
+                  _lifetimeManagerStub,
+                  _alreadyLoadedObjectDataProviderStub,
+                  _loadedDataContainerProviderStub,
+                  _virtualEndPointProviderStub))
           .Return (relatedObjects);
-      _objectLoaderMock.Replay ();
+      _objectLoaderMock.Replay();
 
       var invalidOperationException = new InvalidOperationException ("There was a problem registering stuff.");
       _registrationAgentMock
-          .Expect (mock => mock.GroupAndRegisterRelatedObjects (_endPointDefinition, originatingObjects, relatedObjects, _dataManagerStub, _dataManagerStub))
+          .Expect (
+              mock =>
+              mock.GroupAndRegisterRelatedObjects (
+                  _endPointDefinition, originatingObjects, relatedObjects, _loadedDataContainerProviderStub, _virtualEndPointProviderStub))
           .Throw (invalidOperationException);
-      _registrationAgentMock.Replay ();
+      _registrationAgentMock.Replay();
 
       Assert.That (
           () =>
           _eagerFetcher.PerformEagerFetching (
-              originatingObjects, _endPointDefinition, _queryStub, _objectLoaderMock, _dataManagerStub, _lifetimeManagerStub, _alreadyLoadedObjectDataProviderStub),
-          Throws.Exception.TypeOf<UnexpectedQueryResultException> ()
-            .And.With.InnerException.SameAs (invalidOperationException)
-            .And.With.Message.EqualTo ("Eager fetching encountered an unexpected query result: There was a problem registering stuff."));
+              originatingObjects,
+              _endPointDefinition,
+              _queryStub,
+              _objectLoaderMock,
+              _lifetimeManagerStub,
+              _alreadyLoadedObjectDataProviderStub,
+              _loadedDataContainerProviderStub,
+              _virtualEndPointProviderStub),
+          Throws.Exception.TypeOf<UnexpectedQueryResultException>()
+              .And.With.InnerException.SameAs (invalidOperationException)
+              .And.With.Message.EqualTo ("Eager fetching encountered an unexpected query result: There was a problem registering stuff."));
 
-      _objectLoaderMock.VerifyAllExpectations ();
-      _registrationAgentMock.VerifyAllExpectations ();
+      _objectLoaderMock.VerifyAllExpectations();
+      _registrationAgentMock.VerifyAllExpectations();
     }
-
   }
 }

@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -43,7 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     private Order _fakeOrder1;
     private Order _fakeOrder2;
     private IDataContainerLifetimeManager _dataContainerLifetimeManager;
-    private IDataManager _dataManagerStub;
+    private ILoadedDataContainerProvider _loadedDataContainerProviderStub;
+    private IVirtualEndPointProvider _virtualEndPointProviderStub;
     private ILoadedObjectDataProvider _alreadyLoadedObjectDataProviderStub;
 
     public override void SetUp ()
@@ -56,7 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _transactionEventSinkMock = MockRepository.GenerateMock<IClientTransactionListener> ();
 
       _dataContainerLifetimeManager = MockRepository.GenerateStub<IDataContainerLifetimeManager>();
-      _dataManagerStub = MockRepository.GenerateStub<IDataManager> ();
+      _loadedDataContainerProviderStub = MockRepository.GenerateStub<ILoadedDataContainerProvider> ();
+      _virtualEndPointProviderStub = MockRepository.GenerateStub<IVirtualEndPointProvider> ();
       _alreadyLoadedObjectDataProviderStub = MockRepository.GenerateStub<ILoadedObjectDataProvider> ();
 
       _queryManager = new QueryManager (
@@ -65,8 +68,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           _clientTransaction,
           _transactionEventSinkMock,
           _dataContainerLifetimeManager,
-          _dataManagerStub,
-          _alreadyLoadedObjectDataProviderStub);
+          _alreadyLoadedObjectDataProviderStub,
+          _loadedDataContainerProviderStub,
+          _virtualEndPointProviderStub);
 
       _collectionQuery =  QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       _scalarQuery = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery");
@@ -101,7 +105,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           .Expect (
               mock =>
               mock.GetOrLoadCollectionQueryResult<Order> (
-                  _collectionQuery, _dataContainerLifetimeManager, _alreadyLoadedObjectDataProviderStub, _dataManagerStub))
+                  _collectionQuery,
+                  _dataContainerLifetimeManager,
+                  _alreadyLoadedObjectDataProviderStub,
+                  _loadedDataContainerProviderStub,
+                  _virtualEndPointProviderStub))
           .Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLoaderMock.Replay ();
 
@@ -120,7 +128,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           .Stub (
               mock =>
               mock.GetOrLoadCollectionQueryResult<Order> (
-                  _collectionQuery, _dataContainerLifetimeManager, _alreadyLoadedObjectDataProviderStub, _dataManagerStub))
+                  _collectionQuery,
+                  _dataContainerLifetimeManager,
+                  _alreadyLoadedObjectDataProviderStub,
+                  _loadedDataContainerProviderStub,
+                  _virtualEndPointProviderStub))
           .Return (originalResult);
       _objectLoaderMock.Replay ();
 
@@ -153,7 +165,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           .Expect (
               mock =>
               mock.GetOrLoadCollectionQueryResult<DomainObject> (
-                  _collectionQuery, _dataContainerLifetimeManager, _alreadyLoadedObjectDataProviderStub, _dataManagerStub))
+                  _collectionQuery,
+                  _dataContainerLifetimeManager,
+                  _alreadyLoadedObjectDataProviderStub,
+                  _loadedDataContainerProviderStub,
+                  _virtualEndPointProviderStub))
           .Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLoaderMock.Replay ();
 

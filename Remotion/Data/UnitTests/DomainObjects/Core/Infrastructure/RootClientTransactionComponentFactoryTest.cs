@@ -180,7 +180,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
       Assert.That (((QueryManager) result).ObjectLoader, Is.SameAs (objectLoader));
       Assert.That (((QueryManager) result).DataContainerLifetimeManager, Is.SameAs (dataManager));
-      Assert.That (((QueryManager) result).DataManager, Is.SameAs (dataManager));
+      Assert.That (((QueryManager) result).LoadedDataContainerProvider, Is.SameAs (dataManager));
+      Assert.That (((QueryManager) result).VirtualEndPointProvider, Is.SameAs (dataManager));
       Assert.That (((QueryManager) result).AlreadyLoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ()
           .With.Property ((LoadedObjectDataProvider provider) => provider.LoadedDataContainerProvider).SameAs (dataManager)
           .With.Property ((LoadedObjectDataProvider provider) => provider.InvalidDomainObjectManager).SameAs (invalidDomainObjectManager));

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -34,8 +35,9 @@ namespace Remotion.Data.DomainObjects.Queries
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly IDataContainerLifetimeManager _dataContainerLifetimeManager;
-    private readonly IDataManager _dataManager;
     private readonly ILoadedObjectDataProvider _alreadyLoadedObjectDataProvider;
+    private readonly ILoadedDataContainerProvider _loadedDataContainerProvider;
+    private readonly IVirtualEndPointProvider _virtualEndPointProvider;
 
     // construction and disposing
 
@@ -48,33 +50,37 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="clientTransaction">The client transaction to use for the notifications via <paramref name="transactionEventSink"/>.</param>
     /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
     /// <param name="dataContainerLifetimeManager">The <see cref="IDataContainerLifetimeManager"/> used to register data with the <see cref="ClientTransaction"/>.</param>
-    /// <param name="dataManager">The <see cref="IDataManager"/> managing the data inside the <see cref="ClientTransaction"/>.</param>
     /// <param name="alreadyLoadedObjectDataProvider">The <see cref="ILoadedObjectDataProvider"/> to use to determine objects already loaded into the 
     /// transaction.</param>
+    /// <param name="loadedDataContainerProvider">The <see cref="ILoadedDataContainerProvider"/> for the <paramref name="clientTransaction"/>.</param>
+    /// <param name="virtualEndPointProvider">The <see cref="IVirtualEndPointProvider"/> for the <paramref name="clientTransaction"/>.</param>
     public QueryManager (
         IPersistenceStrategy persistenceStrategy,
         IObjectLoader objectLoader,
         ClientTransaction clientTransaction,
         IClientTransactionListener transactionEventSink,
         IDataContainerLifetimeManager dataContainerLifetimeManager,
-        IDataManager dataManager,
-        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider,
+        ILoadedDataContainerProvider loadedDataContainerProvider,
+        IVirtualEndPointProvider virtualEndPointProvider)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
       ArgumentUtility.CheckNotNull ("dataContainerLifetimeManager", dataContainerLifetimeManager);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
-
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
+      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
+      
       _persistenceStrategy = persistenceStrategy;
       _objectLoader = objectLoader;
       _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
       _dataContainerLifetimeManager = dataContainerLifetimeManager;
-      _dataManager = dataManager;
       _alreadyLoadedObjectDataProvider = alreadyLoadedObjectDataProvider;
+      _loadedDataContainerProvider = loadedDataContainerProvider;
+      _virtualEndPointProvider = virtualEndPointProvider;
     }
 
     public IPersistenceStrategy PersistenceStrategy
@@ -102,14 +108,19 @@ namespace Remotion.Data.DomainObjects.Queries
       get { return _dataContainerLifetimeManager; }
     }
 
-    public IDataManager DataManager
-    {
-      get { return _dataManager; }
-    }
-
     public ILoadedObjectDataProvider AlreadyLoadedObjectDataProvider
     {
       get { return _alreadyLoadedObjectDataProvider; }
+    }
+
+    public ILoadedDataContainerProvider LoadedDataContainerProvider
+    {
+      get { return _loadedDataContainerProvider; }
+    }
+
+    public IVirtualEndPointProvider VirtualEndPointProvider
+    {
+      get { return _virtualEndPointProvider; }
     }
 
     /// <summary>
@@ -189,7 +200,12 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Scalar)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
-      var resultArray = _objectLoader.GetOrLoadCollectionQueryResult<T> (query, _dataContainerLifetimeManager, _alreadyLoadedObjectDataProvider, _dataManager);
+      var resultArray = _objectLoader.GetOrLoadCollectionQueryResult<T> (
+          query,
+          _dataContainerLifetimeManager,
+          _alreadyLoadedObjectDataProvider,
+          _loadedDataContainerProvider,
+          _virtualEndPointProvider);
       var queryResult = new QueryResult<T> (query, resultArray);
       return _transactionEventSink.FilterQueryResult (_clientTransaction, queryResult);
     }

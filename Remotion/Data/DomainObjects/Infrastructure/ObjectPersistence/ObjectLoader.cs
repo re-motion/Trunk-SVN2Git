@@ -135,15 +135,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("GetOrLoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var loadedObjects = _persistenceStrategy.ResolveCollectionRelationData (relationEndPointID, alreadyLoadedObjectDataProvider);
-      return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjects, lifetimeManager).Select (ConvertLoadedDomainObject<DomainObject>).ToArray();
+      return _loadedObjectDataRegistrationAgent
+          .RegisterIfRequired (loadedObjects, lifetimeManager)
+          .Select (ConvertLoadedDomainObject<DomainObject>)
+          .ToArray();
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider, IDataManager dataManager) where T: DomainObject
+    public T[] GetOrLoadCollectionQueryResult<T> (
+        IQuery query,
+        IDataContainerLifetimeManager lifetimeManager,
+        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider,
+        ILoadedDataContainerProvider loadedDataContainerProvider,
+        IVirtualEndPointProvider virtualEndPointProvider) where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("query", query);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
+      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
 
       var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, alreadyLoadedObjectDataProvider);
       var resultArray = _loadedObjectDataRegistrationAgent
@@ -154,8 +163,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       if (resultArray.Length > 0)
       {
         foreach (var fetchQuery in query.EagerFetchQueries)
+        {
           _eagerFetcher.PerformEagerFetching (
-              resultArray, fetchQuery.Key, fetchQuery.Value, this, dataManager, lifetimeManager, alreadyLoadedObjectDataProvider);
+              resultArray,
+              fetchQuery.Key,
+              fetchQuery.Value,
+              this,
+              lifetimeManager,
+              alreadyLoadedObjectDataProvider,
+              loadedDataContainerProvider,
+              virtualEndPointProvider);
+        }
       }
 
       return resultArray;
