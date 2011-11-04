@@ -81,8 +81,11 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
       if (searchArguments == null || searchArguments.GroupID == null)
         return null;
 
-      var group = Group.GetObject (searchArguments.GroupID);
-      return group.GroupType;
+      using (new SecurityFreeSection ())
+      {
+        var group = Group.GetObject (searchArguments.GroupID);
+        return group.GroupType;
+      }
     }
 
     private IEnumerable<T> FilterByAccess<T> (IEnumerable<T> securableObjects, params Enum[] requiredAccessTypeEnums) where T: ISecurableObject

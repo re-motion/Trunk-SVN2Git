@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Configuration.Provider;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.ObjectBinding;
 using Remotion.Security;
 using Remotion.Security.Configuration;
@@ -118,7 +119,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       foreach (string positionName in new[] { "Official", "Manager" })
       {
         Assert.IsTrue (
+// ReSharper disable AccessToModifiedClosure
             Array.Exists (positions, current => positionName == ((Position) current).Name),
+// ReSharper restore AccessToModifiedClosure
             "Position '{0}' was not found.",
             positionName);
       }
@@ -154,7 +157,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       foreach (string positionName in new[] { "Official", "Global" })
       {
         Assert.IsTrue (
+// ReSharper disable AccessToModifiedClosure
             Array.Exists (positions, current => positionName == ((Position) current).Name),
+// ReSharper restore AccessToModifiedClosure
             "Position '{0}' was not found.",
             positionName);
       }
@@ -175,7 +180,31 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
 
       _mocks.VerifyAll();
       Assert.AreEqual (1, positions.Length);
-      Assert.AreEqual ("Official", ((Position)positions[0]).Name);
+      Assert.AreEqual ("Official", ((Position) positions[0]).Name);
+    }
+
+    [Test]
+    public void Search_UsesSecurityFreeSectionToRetrieveGroupType ()
+    {
+      ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
+      Group parentGroup = Group.GetObject (_expectedParentGroup0ID);
+
+      var principalStub = _mocks.Stub<ISecurityPrincipal> ();
+      SetupResult.For (principalStub.User).Return ("group0/user1");
+      SetupResult.For (_mockPrincipalProvider.GetPrincipal()).Return (principalStub);
+      SetupResultSecurityProviderGetAccessForGroup (parentGroup, principalStub);
+      SetupResultSecurityProviderGetAccessForPosition (Delegation.Enabled, principalStub, SecurityManagerAccessTypes.AssignRole, GeneralAccessTypes.Find);
+      SetupResultSecurityProviderGetAccessForPosition (Delegation.Disabled, principalStub, GeneralAccessTypes.Find);
+      _mocks.ReplayAll();
+
+      var positions = _searchService.Search (null, _positionProperty, CreateSearchArguments (parentGroup));
+
+      _mocks.VerifyAll();
+
+      ClientTransaction.Current.Extensions.Remove (new SecurityClientTransactionExtension().Key);
+
+      Assert.AreEqual (1, positions.Length);
+      Assert.AreEqual ("Official", ((Position) positions[0]).Name);
     }
 
     private void SetupResultSecurityProviderGetAccessForPosition (Delegation delegation, ISecurityPrincipal principal, params Enum[] returnedAccessTypeEnums)
@@ -188,6 +217,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SearchInfrastructure.Organiz
       states.Add ("Delegation", delegation);
       List<Enum> abstractRoles = new List<Enum>();
       SecurityContext securityContext = SecurityContext.Create (classType, owner, owningGroup, owningTenant, states, abstractRoles);
+
+      AccessType[] returnedAccessTypes = Array.ConvertAll (returnedAccessTypeEnums, AccessType.Get);
+
+      SetupResult.For (_mockSecurityProvider.GetAccess (securityContext, principal)).Return (returnedAccessTypes);
+    }
+
+    private void SetupResultSecurityProviderGetAccessForGroup (Group group, ISecurityPrincipal principal, params Enum[] returnedAccessTypeEnums)
+    {
+      ISecurityContext securityContext = ((IDomainObjectSecurityContextFactory) group).CreateSecurityContext();
 
       AccessType[] returnedAccessTypes = Array.ConvertAll (returnedAccessTypeEnums, AccessType.Get);
 
