@@ -18,6 +18,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure
 {
@@ -30,6 +31,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
 
     public RolePropertiesSearchArguments (ObjectID groupID)
     {
+      ArgumentUtility.CheckNotNull ("groupID", groupID);
       _groupID = groupID;
     }
 

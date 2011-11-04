@@ -24,6 +24,7 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
@@ -89,6 +90,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 
       var control = CreateBocReferenceValue (propertyPath);
       control.PreRender += HandlePositionPreRender;
+      control.EnableSelectStatement = false;
       return control;
     }
 
@@ -98,15 +100,16 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 
       var groupReferenceValue = GetGroupReferenceValue (positionReferenceValue.DataSource);
 
-      if (groupReferenceValue.Value == null)
+      var group = (Group) groupReferenceValue.Value;
+      if (group == null)
       {
         positionReferenceValue.ClearBusinessObjectList();
         positionReferenceValue.Enabled = false;
       }
       else
       {
-        var role = (Role) positionReferenceValue.DataSource.BusinessObject;
-        positionReferenceValue.SetBusinessObjectList (role.GetPossiblePositions ((Group) groupReferenceValue.Value));
+        var positions = positionReferenceValue.Property.SearchAvailableObjects (null, new RolePropertiesSearchArguments (group.ID));
+        positionReferenceValue.SetBusinessObjectList (positions);
         positionReferenceValue.Enabled = true;
       }
     }
