@@ -52,7 +52,7 @@ StyleUtility.AddBrowserSwitch = function ()
   }
   else
   {
-    browser = 'unknown';
+    browser = 'browserUnknown';
   }
 
   StyleUtility.AddPlatformSwitch();
@@ -78,7 +78,7 @@ StyleUtility.AddPlatformSwitch = function ()
   }
   else
   {
-    platform = "unknown"; 
+    platform = "platformUnknown"; 
   }
 
   if (!$('body').hasClass(platform))
