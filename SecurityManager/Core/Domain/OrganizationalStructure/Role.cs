@@ -16,14 +16,10 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.Security;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -62,20 +58,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     [DBBidirectionalRelation ("SubstitutedRole")]
     public abstract ObjectList<Substitution> SubstitutedBy { get; }
-
-    public List<Position> GetPossiblePositions (Group group)
-    {
-      ArgumentUtility.CheckNotNull ("group", group);
-
-      IEnumerable<Position> positions;
-      if (group.GroupType == null)
-        positions = Position.FindAll();
-      else
-        positions = group.GroupType.Positions.Select (gtp => gtp.Position).Distinct();
-
-      return FilterByAccess (positions, SecurityManagerAccessTypes.AssignRole);
-    }
-
+    
     protected override void OnDeleting (EventArgs args)
     {
       base.OnDeleting (args);
@@ -88,14 +71,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       base.OnDeleted (args);
 
       _deleteHandler.Delete ();
-    }
-
-    private List<T> FilterByAccess<T> (IEnumerable<T> securableObjects, params Enum[] requiredAccessTypeEnums) where T: ISecurableObject
-    {
-      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-      AccessType[] requiredAccessTypes = Array.ConvertAll<Enum, AccessType> (requiredAccessTypeEnums, AccessType.Get);
-
-      return securableObjects.Where (o => securityClient.HasAccess (o, requiredAccessTypes)).ToList();
     }
 
     protected override string GetOwningTenant ()

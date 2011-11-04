@@ -200,7 +200,6 @@
     <Compile Include="Domain\OrganizationalStructure\GroupTests\OnCommitting.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\SecurableObjectImpelementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\BindableObjectImpelementation.cs" />
-    <Compile Include="Domain\OrganizationalStructure\RoleTests\GetPossiblePositions.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\DeleteRole.cs" />
     <Compile Include="Domain\SearchInfrastructure\TestableSecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalFactoryTest.cs" />
