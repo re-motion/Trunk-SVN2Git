@@ -21,6 +21,7 @@ using System.Linq;
 using System.Web.Script.Services;
 using System.Web.Services;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.Services;
@@ -71,6 +72,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
+        ClientTransaction.Current.Extensions.Add (new SecurityClientTransactionExtension());
         var referencingObject = businessObjectClassWithIdentity.GetObject (businessObject);
         var result = referenceProperty.SearchAvailableObjects (referencingObject, securityManagerSearchArguments);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();
