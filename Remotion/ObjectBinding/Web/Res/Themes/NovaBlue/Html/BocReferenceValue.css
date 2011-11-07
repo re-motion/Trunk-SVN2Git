@@ -150,6 +150,11 @@ span.bocReferenceValue.disabled span.content
   left: 0;
 }
 
+span.bocReferenceValue.readOnly span.content
+{
+  position: static;
+}
+
 span.bocReferenceValue span.content.hasIcon,
 span.bocReferenceValue.disabled span.content.hasIcon
 {
@@ -168,9 +173,4 @@ span.bocReferenceValue span.optionsMenu
 span.bocReferenceValue span.content.separateOptionsMenu
 {
   right: 6.25em; /* width of span.optionsMenu + desired space between */
-}
-
-span.bocReferenceValue.readOnly span.body a.command
-{
-  margin-right: 6.25em;
 }

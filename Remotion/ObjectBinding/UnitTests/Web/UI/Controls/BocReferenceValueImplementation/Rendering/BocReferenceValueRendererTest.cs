@@ -442,7 +442,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       commandLink.AssertAttributeValueEquals ("class", "command");
       commandLink.AssertChildElementCount (1);
 
-      var innerSpan = commandLink.GetAssertedChildElement ("span", 0);
+      var contentSpan = commandLink.GetAssertedChildElement ("span", 0);
+      contentSpan.AssertAttributeValueEquals ("class", "content withoutOptionsMenu");
+      contentSpan.AssertChildElementCount (1);
+
+      var innerSpan = contentSpan.GetAssertedChildElement ("span", 0);
       innerSpan.AssertAttributeValueEquals ("id", Control.LabelClientID);
       innerSpan.AssertChildElementCount (0);
       innerSpan.AssertTextNode ("MyText", 0);

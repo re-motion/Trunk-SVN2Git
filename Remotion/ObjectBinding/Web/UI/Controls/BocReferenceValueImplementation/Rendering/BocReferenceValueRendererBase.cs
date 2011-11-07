@@ -285,7 +285,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       if (icon.Visible)
         icon.RenderControl (renderingContext.Writer);
+
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext, icon.Visible));
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       label.RenderControl (renderingContext.Writer);
+      renderingContext.Writer.RenderEndTag();
 
       if (isCommandEnabled)
         renderingContext.Control.Command.RenderEnd (renderingContext.Writer);

@@ -197,6 +197,11 @@ span.bocAutoCompleteReferenceValue.disabled span.content
   white-space: nowrap; /* for Drop Down Button */
 }
 
+span.bocAutoCompleteReferenceValue.readOnly span.content
+{
+  position: static;
+}
+
 span.bocAutoCompleteReferenceValue span.content.hasIcon,
 span.bocAutoCompleteReferenceValue.disabled span.content.hasIcon
 {
@@ -215,11 +220,6 @@ span.bocAutoCompleteReferenceValue span.optionsMenu
 span.bocAutoCompleteReferenceValue span.content.separateOptionsMenu
 {
   right: 6.25em; /* width of span.optionsMenu + desired space between */
-}
-
-span.bocAutoCompleteReferenceValue.readOnly span.body a.command
-{
-  margin-right: 6.25em;
 }
 
 span.content.separateOptionsMenu span.bocAutoCompleteReferenceValueInput,
