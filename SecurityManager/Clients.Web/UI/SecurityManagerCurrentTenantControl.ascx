@@ -17,7 +17,7 @@
 --%>
 <%@ Control Language="C#" AutoEventWireup="true" Codebehind="SecurityManagerCurrentTenantControl.ascx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.CurrentTenantControl" %>
  <div>
-  <remotion:BocReferenceValue ID="CurrentUserField" runat="server" ReadOnly="True">
+  <remotion:BocReferenceValue ID="CurrentUserField" runat="server" ReadOnly="True" style="width:auto">
     <PersistedCommand>
       <remotion:BocCommand />
     </PersistedCommand>
