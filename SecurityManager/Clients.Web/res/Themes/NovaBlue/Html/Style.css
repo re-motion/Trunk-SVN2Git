@@ -37,11 +37,15 @@ div#ErrorContainer
   margin-right: 0.5em;
 }
 
-
 div.singleViewTopControls div.content div#CurrentTenantControl
 {
-  text-align: right;
   padding: 0.5em;
+}
+
+div.singleViewTopControls div.content div#CurrentTenantControl > div
+{
+  float: right;
+  clear: both;
 }
 
 div.singleViewTopControls div.content h1.pageTitle

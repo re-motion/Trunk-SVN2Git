@@ -6,9 +6,10 @@
   height: 1.1em;
 }
 
-td.singleViewTopControls div.content div#CurrentTenantControl
+div.singleViewTopControls div.content div#CurrentTenantControl
 {
-  text-align: right;
+  float: right;
+  clear: both;
 }
 
 h1.pageTitle
@@ -127,12 +128,12 @@ table.accessControlEntriesTable th.titleCellVertical div
 
 table.accessControlEntriesTable tr.odd
 {
-	background-color: White;
+  background-color: White;
 }
 
 table.accessControlEntriesTable tr.even
 {
-	background-color: #E1ECFC;
+  background-color: #E1ECFC;
 }
 
 table.accessControlEntriesTable td.conditionCell

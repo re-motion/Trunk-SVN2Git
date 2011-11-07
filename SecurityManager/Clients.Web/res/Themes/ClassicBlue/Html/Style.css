@@ -39,7 +39,12 @@ div#ErrorContainer
 
 div.singleViewTopControls div.content div#CurrentTenantControl
 {
-  text-align: right;
+}
+
+div.singleViewTopControls div.content div#CurrentTenantControl > div
+{
+  float: right;
+  clear: both;
 }
 
 div.singleViewTopControls div.content h1.pageTitle
@@ -186,12 +191,12 @@ table.accessControlEntriesTable tr.header
 
 table.accessControlEntriesTable tr.odd
 {
-	background-color: White;
+  background-color: White;
 }
 
 table.accessControlEntriesTable tr.even
 {
-	background-color: #E1ECFC;
+  background-color: #E1ECFC;
 }
 
 table.accessControlEntriesTable td.conditionCell
