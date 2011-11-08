@@ -107,23 +107,14 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
 
-  var tableBlock = $(bocList).children('div.bocListTableBlock').first();
-  var hasDimensions = false;
-
-  var bocListTable = tableBlock.children('div.bocListTableScrollContainer').first().children('table').first();
-  var isTableBlockBiggerThanBocList = $(bocList).height() < bocListTable.height();
-  if (isTableBlockBiggerThanBocList)
+  if (BocList_HasDimensions (bocList))
   {
     $(bocList).addClass('hasDimensions');
-    hasDimensions = true;
-  }
 
-  if (hasDimensions)
-  {
     if ($('body').is('.msie7')) //RM-4376 
       return;
 
-    BocList_FixUpScrolling(tableBlock);
+    BocList_FixUpScrolling(bocList);
   }
 }
 
@@ -328,8 +319,61 @@ function BocList_GetSelectionCount (bocListID)
   return selectedRows.Length;
 }
 
-function BocList_FixUpScrolling(tableBlock)
+function BocList_HasDimensions(bocList)
 {
+  var hasHeight = false;
+  var hasWidth = false;
+
+  var heightFromAttribute = $(bocList).attr('height');
+  if (TypeUtility.IsDefined(heightFromAttribute) && heightFromAttribute != '')
+    hasHeight = true;
+
+  var heightFromInlineStyle = bocList.style.height;
+  if (TypeUtility.IsDefined(heightFromInlineStyle) && heightFromInlineStyle != '')
+    hasHeight = true;
+
+  var widthFromAttribute = $(bocList).attr('width');
+  if (TypeUtility.IsDefined(widthFromAttribute) && widthFromAttribute != '')
+    hasWidth = true;
+
+  var widthFromInlineStyle = bocList.style.width;
+  if (TypeUtility.IsDefined(widthFromInlineStyle) && widthFromInlineStyle != '')
+    hasWidth = true;
+
+  if (!hasHeight || !hasWidth)
+  {
+    var tempList = $("<div/>").attr("class", $(bocList).prop("class")).css("display", "none");
+
+    // Catch styles applied to pseudo-selectors starting at the first element in the DOM collection
+    tempList.insertBefore ($(bocList));
+
+    if (tempList.height() > 0)
+      hasHeight = true;
+
+    if (tempList.width() > 0)
+      hasWidth = true;
+
+    tempList.remove();
+
+    // Catch styles applied to pseudo-selectors starting at the last element in the DOM collection
+    tempList.insertAfter($(bocList));
+
+    if (tempList.height() > 0)
+      hasHeight = true;
+
+    if (tempList.width() > 0)
+      hasWidth = true;
+
+    tempList.remove();
+  }
+
+  return hasWidth || hasHeight;
+}
+
+function BocList_FixUpScrolling(bocList)
+{
+  var tableBlock = $(bocList).children('div.bocListTableBlock').first();
+
   var scrollTimer = null;
   var scrollableContainer = tableBlock.children('div.bocListTableScrollContainer').first();
   var horizontalScroll = 0;
