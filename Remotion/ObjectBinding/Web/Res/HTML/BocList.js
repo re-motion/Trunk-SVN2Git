@@ -342,15 +342,23 @@ function BocList_HasDimensions(bocList)
 
   if (!hasHeight || !hasWidth)
   {
+    var referenceHeight = 0;
+    var referenceWidth = 0;
+    if ($('body').is('.msie7'))
+    {
+      // height reserved for scroll bar
+      referenceHeight = 25;
+    }
+
     var tempList = $("<div/>").attr("class", $(bocList).prop("class")).css("display", "none");
 
     // Catch styles applied to pseudo-selectors starting at the first element in the DOM collection
     tempList.insertBefore ($(bocList));
 
-    if (tempList.height() > 0)
+    if (tempList.height() > referenceHeight)
       hasHeight = true;
 
-    if (tempList.width() > 0)
+    if (tempList.width() > referenceWidth)
       hasWidth = true;
 
     tempList.remove();
@@ -358,10 +366,10 @@ function BocList_HasDimensions(bocList)
     // Catch styles applied to pseudo-selectors starting at the last element in the DOM collection
     tempList.insertAfter($(bocList));
 
-    if (tempList.height() > 0)
+    if (tempList.height() > referenceHeight)
       hasHeight = true;
 
-    if (tempList.width() > 0)
+    if (tempList.width() > referenceWidth)
       hasWidth = true;
 
     tempList.remove();
