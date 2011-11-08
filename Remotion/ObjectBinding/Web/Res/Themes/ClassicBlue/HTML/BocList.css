@@ -14,6 +14,12 @@ div.bocList
 {
 }
 
+div.bocList.hasDimensions div.bocListNavigator
+{
+  position: absolute;
+  bottom: 0;
+}
+
 /*  Style applied to the BocList's navigator. */
 div.bocListNavigator
 {
@@ -43,14 +49,37 @@ div.bocListTableBlock.hasMenuBlock
 {
 }
 
-/* Style applied to the div surrounding the BocList's table if there is a menu block. */
-div.bocListTableBlock.hasMenuBlock div.bocListTableScrollContainer
-{
-}
-
 /*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height.  */
-div.bocList.hasDimensions div.bocListTableBlock,
+div.bocList.hasDimensions div.bocListTableBlock
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+div.bocList.hasDimensions div.bocListTableBlock div.bocListTableScrollContainer
+{
+  overflow: auto;
+}
+
+div.bocList.hasDimensions div.bocListTableBlock.hasMenuBlock
+{
+  right: 10em; /* width of BocList menu block + some space */
+}
+
+/* Style applied to the div surrounding the BocList's table. */
+div.bocListTableScrollContainer
+{
+  display: block;
+  width: auto;
+  height: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 div.bocList.hasDimensions div.bocListTableBlock div.bocListTableScrollContainer
 {
   position: absolute;
@@ -61,29 +90,15 @@ div.bocList.hasDimensions div.bocListTableBlock div.bocListTableScrollContainer
   overflow: auto;
 }
 
-div.bocList.hasDimensions div.bocListTableBlock.hasMenuBlock
+/* Style applied to the div surrounding the BocList's table if there is a menu block. */
+div.bocListTableBlock.hasMenuBlock div.bocListTableScrollContainer
 {
-  right: 10em; /* width of BocList menu block + some space */
 }
 
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
 div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTableScrollContainer
 {
   bottom: 1.5em;
-}
-
-div.bocList.hasDimensions div.bocListNavigator
-{
-  position: absolute;
-  bottom: 0;
-}
-
-/* Style applied to the div surrounding the BocList's table. */
-div.bocListTableScrollContainer
-{
-  display: block;
-  width: auto;
-  height: auto;
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
@@ -172,17 +187,21 @@ td.bocListDataCellEven
   cursor: default;
 }
 
+body.msie7 td.bocListDataCellOdd,
+body.msie7 td.bocListDataCellEven
+{
+  position: relative;
+}
+
 /*  Style applied to the cells in the BocList's not-selected odd and even data rows. */
 tr.bocListDataRow td.bocListDataCellOdd
 {
   background-color: White;
-  position: relative;
 }
 
 tr.bocListDataRow td.bocListDataCellEven
 {
-  background-color: #e1ecfc;
-  position: relative;
+  background-color: #f4f4f4;
 }
 
 /*  Style applied to the cells in the BocList's selected odd and even data rows. */

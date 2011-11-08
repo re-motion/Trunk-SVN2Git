@@ -430,6 +430,7 @@ function BocList_CreateFakeTableHead(scrollableContainer)
   var fakeTableHead = table.children('thead').first().clone(true, true);
   fakeTable.append(fakeTableHead);
   var fakeTableHeadContainer = $('<div/>').attr({ 'class': 'bocListFakeTableHead' });
+  fakeTableHeadContainer.hide();
   fakeTableHeadContainer.append(fakeTable);
 
   table.children('thead').find('a, input').each(function () { $(this).removeAttr('id').attr({ tabIndex: -1 }).attr({ tabIndex: -1 }); });
@@ -446,13 +447,20 @@ function BocList_CreateFakeTableHead(scrollableContainer)
     $('input[name*=' + realCheckName + ']').prop('checked', checkStatus);
   });
 
-  BocList_FixHeaderSize(scrollableContainer);
+  if ($('body').is('.msie') || $('body').is('.msie8') || $('body').is('.msie7'))
+  {
+    setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 0);
+  }
+  else
+  {
+    setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 50);
+  }
 }
 
 function BocList_FixHeaderSize(scrollableContainer)
 {
-  var realTableCointainerChildren = scrollableContainer.children('table').first();
-  var realTableHead = realTableCointainerChildren.eq(0).find('thead');
+  var realTable = scrollableContainer.children('table').first();
+  var realTableHead = realTable.eq(0).find('thead');
   var realTableHeadRow = realTableHead.children().eq(0);
   var realTableHeadRowChildren = realTableHeadRow.children();
 
@@ -475,7 +483,8 @@ function BocList_FixHeaderSize(scrollableContainer)
     fakeTableHeadRowChildren.eq(index).width(item);
   });
 
-  fakeTableHeadContainer.width(realTableHeadRow.width());
+  fakeTableHeadContainer.width(realTable.width());
+  fakeTableHeadContainer.show();
 }
 
 function BocList_FixHeaderPosition(scrollableContainer)
@@ -483,9 +492,4 @@ function BocList_FixHeaderPosition(scrollableContainer)
   var fakeTableHeadContainer = scrollableContainer.children('div.bocListFakeTableHead').first();
   var scrollPosition = scrollableContainer.scrollTop();
   fakeTableHeadContainer.css({ 'top': scrollPosition, 'left': '0' });
-}
-
-function BocList_CheckScrollBarPresence(element)
-{
-  return ((element.prop('scrollHeight') > element.innerHeight()) || (element.prop('scrollWidth') > element.innerWidth()));
 }
