@@ -426,7 +426,7 @@
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectOnInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SubTransactionInitializeTest.cs" />
     <Compile Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithoutHierarchy.cs" />
-    <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
+    <Compile Include="DomainObjects\Core\TestComponentFactoryWithObjectLoaderDecorator.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\TestableObservableCollectionDataDecorator.cs" />

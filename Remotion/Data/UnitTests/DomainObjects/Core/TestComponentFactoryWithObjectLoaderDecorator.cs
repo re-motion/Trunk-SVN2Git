@@ -16,23 +16,33 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  internal class TestComponentFactoryWithSpecificObjectLoader : RootClientTransactionComponentFactory
+  public class TestComponentFactoryWithObjectLoaderDecorator : RootClientTransactionComponentFactory
   {
-    private readonly Func<ClientTransaction, IPersistenceStrategy, IClientTransactionListener, IObjectLoader> _factory;
+    public delegate IObjectLoader DecoratorFactory (IObjectLoader objectLoader);
 
-    public TestComponentFactoryWithSpecificObjectLoader (Func<ClientTransaction, IPersistenceStrategy, IClientTransactionListener, IObjectLoader> factory)
+    private readonly DecoratorFactory _factory;
+
+    public TestComponentFactoryWithObjectLoaderDecorator (DecoratorFactory factory)
     {
       _factory = factory;
     }
 
-    public override IObjectLoader CreateObjectLoader (ClientTransaction constructedTransaction, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
+    protected override IObjectLoader CreateObjectLoader (
+        ClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager)
     {
-      return _factory (constructedTransaction, persistenceStrategy, eventSink);
+      var objectLoader = base.CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
+      return _factory (objectLoader);
     }
   }
 }

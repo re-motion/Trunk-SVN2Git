@@ -52,7 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private ClientTransactionExtensionCollection _fakeExtensions;
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
     private CompoundClientTransactionListener _fakeListeners;
-    private IObjectLoader _objectLoaderMock;
     private IPersistenceStrategy _persistenceStrategyMock;
     private IQueryManager _queryManagerMock;
 
@@ -80,7 +79,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _fakeExtensions = new ClientTransactionExtensionCollection("test");
       _invalidDomainObjectManagerMock = _mockRepository.StrictMock<IInvalidDomainObjectManager> ();
       _fakeListeners = new CompoundClientTransactionListener();
-      _objectLoaderMock = _mockRepository.StrictMock<IObjectLoader> ();
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
       _queryManagerMock = _mockRepository.StrictMock<IQueryManager> ();
 
@@ -93,7 +91,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _fakeExtensions,
           _invalidDomainObjectManagerMock,
           new[] { _fakeListeners },
-          _objectLoaderMock,
           _persistenceStrategyMock,
           _queryManagerMock);
 
@@ -142,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                   Assert.That (constructedTransaction.ID, Is.Not.EqualTo (Guid.Empty));
                 });
         componentFactoryMock
-            .Expect (mock => mock.CreateApplicationData(Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Expect (mock => mock.CreateApplicationData (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_fakeApplicationData)
             .WhenCalled (mi => Assert.That (constructedTransaction.ParentTransaction == fakeParentTransaction));
         componentFactoryMock
@@ -174,32 +171,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         componentFactoryMock
             .Expect (
                 mock =>
-                mock.CreateObjectLoader (
-                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
-                    Arg.Is (_persistenceStrategyMock),
-                    Arg<IClientTransactionListener>.Matches (listener => listener == transactionEventSink)))
-            .Return (_objectLoaderMock)
-            .WhenCalled (mi => Assert.That (
-                ClientTransactionTestHelper.GetPersistenceStrategy (constructedTransaction), Is.SameAs (_persistenceStrategyMock)));
-        componentFactoryMock
-            .Expect (
-                mock =>
                 mock.CreateDataManager (
-                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
-                    Arg.Is (_invalidDomainObjectManagerMock),
-                    Arg.Is (_objectLoaderMock)))
+                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), 
+                    Arg<IClientTransactionListener>.Matches (listener => listener == transactionEventSink),
+                    Arg.Is (_invalidDomainObjectManagerMock), 
+                    Arg.Is (_persistenceStrategyMock)))
             .Return (_dataManagerMock)
-            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetObjectLoader (constructedTransaction), Is.SameAs (_objectLoaderMock)));
+            .WhenCalled (
+                mi => Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (constructedTransaction), Is.SameAs (_persistenceStrategyMock)));
         componentFactoryMock
             .Expect (
                 mock =>
                 mock.CreateQueryManager (
-                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
-                    Arg.Is (_persistenceStrategyMock),
-                    Arg.Is (_objectLoaderMock),
-                    Arg.Is (_dataManagerMock),
+                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), 
+                    Arg<IClientTransactionListener>.Matches (listener => listener == transactionEventSink), 
                     Arg.Is (_invalidDomainObjectManagerMock), 
-                    Arg<IClientTransactionListener>.Matches (listener => listener == transactionEventSink)))
+                    Arg.Is (_persistenceStrategyMock), 
+                    Arg.Is (_dataManagerMock)))
             .Return (_queryManagerMock)
             .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetIDataManager (constructedTransaction), Is.SameAs (_dataManagerMock)));
         componentFactoryMock
@@ -1350,7 +1338,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _fakeExtensions,
           _invalidDomainObjectManagerMock,
           new[] { _fakeListeners },
-          _objectLoaderMock,
           _persistenceStrategyMock,
           _queryManagerMock);
     }

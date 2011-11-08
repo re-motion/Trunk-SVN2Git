@@ -53,51 +53,49 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return extensionCollection;
     }
 
+    // TODO 4427: Change EagerFetcher: Inject providers into Fetched...RelationDataRegistrationAgents rather than EagerFetcher
+
     public static IObjectLoader CreateObjectLoader (
-        ClientTransaction clientTransaction, 
-        IPersistenceStrategy persistenceStrategy, 
-        IClientTransactionListener eventSink)
+        ClientTransaction clientTransaction,
+        IClientTransactionListener eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      
+      var loadedObjectDataProvider = new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager);
 
       IFetchedRelationDataRegistrationAgent registrationAgent =
           new DelegatingFetchedRelationDataRegistrationAgent (
               new FetchedRealObjectRelationDataRegistrationAgent(),
               new FetchedVirtualObjectRelationDataRegistrationAgent(),
               new FetchedCollectionRelationDataRegistrationAgent());
-      var eagerFetcher = new EagerFetcher (registrationAgent);
+      var eagerFetcher = new EagerFetcher (registrationAgent, dataManager, dataManager);
       return new ObjectLoader (
           persistenceStrategy,
           eagerFetcher,
-          new LoadedObjectDataRegistrationAgent (clientTransaction, eventSink));
+          new LoadedObjectDataRegistrationAgent (clientTransaction, eventSink),
+          dataManager,
+          loadedObjectDataProvider);
     }
 
     public static IQueryManager CreateQueryManager (
         ClientTransaction clientTransaction,
+        IClientTransactionListener eventSink,
         IPersistenceStrategy persistenceStrategy,
-        IObjectLoader objectLoader,
-        IDataManager dataManager,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IClientTransactionListener eventSink)
+        IObjectLoader objectLoader)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
-      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
 
-      return new QueryManager (
-          persistenceStrategy,
-          objectLoader,
-          clientTransaction,
-          eventSink,
-          dataManager,
-          new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager),
-          dataManager,
-          dataManager);
+      return new QueryManager (persistenceStrategy, objectLoader, clientTransaction, eventSink);
     }
   }
 }

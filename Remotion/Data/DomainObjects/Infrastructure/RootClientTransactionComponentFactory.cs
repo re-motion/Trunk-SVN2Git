@@ -83,56 +83,43 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ObjectFactory.Create<RootPersistenceStrategy> (true, ParamList.Create (constructedTransaction.ID));
     }
 
-    public virtual IObjectLoader CreateObjectLoader (
-        ClientTransaction constructedTransaction,
-        IPersistenceStrategy persistenceStrategy,
-        IClientTransactionListener eventSink)
-    {
-      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
-
-      return ClientTransactionComponentFactoryUtility.CreateObjectLoader (constructedTransaction, persistenceStrategy, eventSink);
-    }
-
     public virtual IDataManager CreateDataManager (
-        ClientTransaction constructedTransaction, 
-        IInvalidDomainObjectManager invalidDomainObjectManager, 
-        IObjectLoader objectLoader)
+        ClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IPersistenceStrategy persistenceStrategy)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
-      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
 
-      Func<DataManager, IRelationEndPointManager> endPointManagerFactory = dataManager => CreateRelationEndPointManager (
+      var delegatingDataManager = new DelegatingDataManager();
+      var objectLoader = CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, delegatingDataManager);
+
+      Func<DataManager, IRelationEndPointManager> endPointManagerFactory = dm => CreateRelationEndPointManager (
           constructedTransaction,
-          GetEndPointProvider (dataManager),
-          GetLazyLoader (dataManager));
-      return new DataManager (constructedTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
+          GetEndPointProvider (dm),
+          GetLazyLoader (dm));
+      
+      var dataManager = new DataManager (constructedTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
+      delegatingDataManager.InnerDataManager = dataManager;
+      return dataManager;
     }
 
     public IQueryManager CreateQueryManager (
         ClientTransaction constructedTransaction,
-        IPersistenceStrategy persistenceStrategy,
-        IObjectLoader objectLoader,
-        IDataManager dataManager,
+        IClientTransactionListener eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        IClientTransactionListener eventSink)
+        IPersistenceStrategy persistenceStrategy,
+        IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
-      return ClientTransactionComponentFactoryUtility.CreateQueryManager (
-          constructedTransaction, 
-          persistenceStrategy, 
-          objectLoader, 
-          dataManager, 
-          invalidDomainObjectManager,
-          eventSink);
+      var objectLoader = CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
+      return ClientTransactionComponentFactoryUtility.CreateQueryManager (constructedTransaction, eventSink, persistenceStrategy, objectLoader);
     }
 
     public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction)
@@ -183,6 +170,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           collectionEndPointDataKeeperFactory);
       var relationEndPointRegistrationAgent = new RootRelationEndPointRegistrationAgent (endPointProvider);
       return new RelationEndPointManager (constructedTransaction, lazyLoader, relationEndPointFactory, relationEndPointRegistrationAgent);
+    }
+
+    protected virtual IObjectLoader CreateObjectLoader (
+        ClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
+      return ClientTransactionComponentFactoryUtility.CreateObjectLoader (
+          constructedTransaction,
+          eventSink,
+          persistenceStrategy,
+          invalidDomainObjectManager,
+          dataManager);
     }
   }
 }

@@ -225,7 +225,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var objectIDsAsCollection = objectIDs.ConvertToCollection();
 
       var idsToBeLoaded = objectIDsAsCollection.Where (id => GetDataContainerWithoutLoading (id) == null);
-      _objectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound, this);
+      _objectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound);
       return objectIDsAsCollection.Select (GetDataContainerWithoutLoading);
     }
 
@@ -239,7 +239,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (collectionEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var domainObjects = _objectLoader.GetOrLoadRelatedObjects (collectionEndPoint.ID, this, new LoadedObjectDataProvider (this, _invalidDomainObjectManager));
+      var domainObjects = _objectLoader.GetOrLoadRelatedObjects (collectionEndPoint.ID);
       collectionEndPoint.MarkDataComplete (domainObjects);
     }
 
@@ -254,7 +254,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
       var alreadyLoadedObjectDataProvider = new LoadedObjectDataProvider (this, _invalidDomainObjectManager);
-      var domainObject = _objectLoader.GetOrLoadRelatedObject (virtualObjectEndPoint.ID, this, alreadyLoadedObjectDataProvider);
+      var domainObject = _objectLoader.GetOrLoadRelatedObject (virtualObjectEndPoint.ID);
 
       // Since RelationEndPointManager.RegisterEndPoint contains a query optimization for 1:1 relations, it is possible that
       // loading the related object has already marked the end-point complete. In that case, we won't call it again (to avoid an exception).
@@ -269,7 +269,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_dataContainerMap[objectID] != null)
         throw new InvalidOperationException ("The given DataContainer cannot be loaded, its data is already available.");
 
-      _objectLoader.LoadObject (objectID, this);
+      _objectLoader.LoadObject (objectID);
 
       var dataContainer = _dataContainerMap[objectID];
       Assertion.IsNotNull (dataContainer);

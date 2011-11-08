@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -42,13 +43,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
     IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction);
     IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
-    IObjectLoader CreateObjectLoader (
-        ClientTransaction constructedTransaction, 
-        IPersistenceStrategy persistenceStrategy, 
-        IClientTransactionListener eventSink);
+
     IDataManager CreateDataManager (
-        ClientTransaction constructedTransaction, IInvalidDomainObjectManager invalidDomainObjectManager, IObjectLoader objectLoader);
-    IQueryManager CreateQueryManager (ClientTransaction constructedTransaction, IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IDataManager dataManager, IInvalidDomainObjectManager invalidDomainObjectManager, IClientTransactionListener eventSink);
+        ClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IPersistenceStrategy persistenceStrategy);
+
+    IQueryManager CreateQueryManager (
+        ClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IPersistenceStrategy persistenceStrategy,
+        IDataManager dataManager);
+
     ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction);
     
     // This member is likely to be removed in the future

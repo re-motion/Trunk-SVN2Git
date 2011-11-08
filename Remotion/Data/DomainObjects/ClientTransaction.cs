@@ -151,7 +151,6 @@ public class ClientTransaction
   private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
-  private readonly IObjectLoader _objectLoader;
   private readonly IQueryManager _queryManager;
 
   private ClientTransaction _subTransaction;
@@ -178,9 +177,8 @@ public class ClientTransaction
     _enlistedObjectManager = componentFactory.CreateEnlistedObjectManager (this);
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
-    _objectLoader = componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
-    _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager, _objectLoader);
-    _queryManager = componentFactory.CreateQueryManager (this, _persistenceStrategy, _objectLoader, _dataManager, _invalidDomainObjectManager, _eventSink);
+    _dataManager = componentFactory.CreateDataManager (this, _eventSink, _invalidDomainObjectManager, _persistenceStrategy);
+    _queryManager = componentFactory.CreateQueryManager (this, _eventSink, _invalidDomainObjectManager, _persistenceStrategy, _dataManager);
 
     _extensions = componentFactory.CreateExtensionCollection (this);
     _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));

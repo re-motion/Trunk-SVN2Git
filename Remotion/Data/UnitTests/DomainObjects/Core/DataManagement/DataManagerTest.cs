@@ -798,7 +798,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = PrepareNonLoadedDataContainer ();
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadObject (dataContainer.ID, _dataManagerWithMocks))
+          .Expect (mock => mock.LoadObject (dataContainer.ID))
           .WhenCalled (mi => DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, dataContainer))
           .Return (dataContainer.DomainObject);
       _objectLoaderMock.Replay ();
@@ -829,8 +829,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _objectLoaderMock
           .Expect (mock => mock.LoadObjects (
               Arg<IEnumerable<ObjectID>>.List.Equal (new[] { nonLoadedDataContainer1.ID, nonLoadedDataContainer2.ID }), 
-              Arg.Is (true), 
-              Arg.Is (_dataManagerWithMocks)))
+              Arg.Is (true)))
           .WhenCalled (
               mi =>
               {
@@ -854,8 +853,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _objectLoaderMock
           .Expect (mock => mock.LoadObjects (
               Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 }),
-              Arg.Is (false),
-              Arg.Is (_dataManagerWithMocks)))
+              Arg.Is (false)))
           .Return (new DomainObject[] { null });
       _objectLoaderMock.Replay ();
 
@@ -871,7 +869,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (true);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadObjects (Arg<IEnumerable<ObjectID>>.Is.Anything, Arg.Is (true), Arg.Is (_dataManagerWithMocks)))
+          .Expect (mock => mock.LoadObjects (Arg<IEnumerable<ObjectID>>.Is.Anything, Arg.Is (true)))
           // evaluate args to trigger exception
           .WhenCalled (mi => ((IEnumerable<ObjectID>) mi.Arguments[0]).ToList())
           .Return (null);
@@ -901,11 +899,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _objectLoaderMock
           .Expect (mock => mock.GetOrLoadRelatedObjects (
-              Arg.Is (endPointID), 
-              Arg.Is (_dataManagerWithMocks),
-              Arg<ILoadedObjectDataProvider>.Matches (p => p is LoadedObjectDataProvider 
-                  && ((LoadedObjectDataProvider) p).LoadedDataContainerProvider == _dataManagerWithMocks
-                  && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
+              Arg.Is (endPointID)))
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 
@@ -956,11 +950,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _objectLoaderMock
           .Expect (mock => mock.GetOrLoadRelatedObject (
-              Arg.Is (endPointID), 
-              Arg.Is (_dataManagerWithMocks), 
-              Arg<ILoadedObjectDataProvider>.Matches (p => p is LoadedObjectDataProvider 
-                  && ((LoadedObjectDataProvider) p).LoadedDataContainerProvider == _dataManagerWithMocks
-                  && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
+              Arg.Is (endPointID)))
           .Return (loaderResult)
           .WhenCalled (mi => endPointMock.Stub (stub => stub.IsDataComplete).Return (true));
       _objectLoaderMock.Replay ();
@@ -991,12 +981,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _objectLoaderMock
           .Expect (mock => mock.GetOrLoadRelatedObject (
-              Arg.Is (endPointID),
-              Arg.Is (_dataManagerWithMocks),
-              Arg<ILoadedObjectDataProvider>.Matches (
-                  p => p is LoadedObjectDataProvider
-                       && ((LoadedObjectDataProvider) p).LoadedDataContainerProvider == _dataManagerWithMocks
-                       && ((LoadedObjectDataProvider) p).InvalidDomainObjectManager == _invalidDomainObjectManagerMock)))
+              Arg.Is (endPointID)))
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 
@@ -1036,7 +1021,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       fakeDataContainer.SetDomainObject (fakeObject);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadObject (DomainObjectIDs.Order1, _dataManagerWithMocks))
+          .Expect (mock => mock.LoadObject (DomainObjectIDs.Order1))
           .Return (fakeObject)
           .WhenCalled (mi => DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, fakeDataContainer));
       _objectLoaderMock.Replay();

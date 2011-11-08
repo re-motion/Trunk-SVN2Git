@@ -16,7 +16,6 @@
 // 
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -35,31 +34,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public int NumberOfCallsToLoadObject { get; set; }
     public int NumberOfCallsToLoadRelatedObject { get; set; }
 
-    public DomainObject LoadObject (ObjectID id, IDataContainerLifetimeManager lifetimeManager)
+    public DomainObject LoadObject (ObjectID id)
     {
       ++NumberOfCallsToLoadObject;
-      return _decorated.LoadObject (id, lifetimeManager);
+      return _decorated.LoadObject (id);
     }
 
-    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataContainerLifetimeManager lifetimeManager)
+    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
     {
-      return _decorated.LoadObjects (idsToBeLoaded, throwOnNotFound, lifetimeManager);
+      return _decorated.LoadObjects (idsToBeLoaded, throwOnNotFound);
     }
 
-    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
     {
       ++NumberOfCallsToLoadRelatedObject;
-      return _decorated.GetOrLoadRelatedObject (relationEndPointID, lifetimeManager, alreadyLoadedObjectDataProvider);
+      return _decorated.GetOrLoadRelatedObject (relationEndPointID);
     }
 
-    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
     {
-      return _decorated.GetOrLoadRelatedObjects (relationEndPointID, lifetimeManager, alreadyLoadedObjectDataProvider);
+      return _decorated.GetOrLoadRelatedObjects (relationEndPointID);
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query, IDataContainerLifetimeManager lifetimeManager, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider, ILoadedDataContainerProvider loadedDataContainerProvider, IVirtualEndPointProvider virtualEndPointProvider) where T: DomainObject
+    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query) where T: DomainObject
     {
-      return _decorated.GetOrLoadCollectionQueryResult<T> (query, lifetimeManager, alreadyLoadedObjectDataProvider, loadedDataContainerProvider, virtualEndPointProvider);
+      return _decorated.GetOrLoadCollectionQueryResult<T> (query);
     }
   }
 }

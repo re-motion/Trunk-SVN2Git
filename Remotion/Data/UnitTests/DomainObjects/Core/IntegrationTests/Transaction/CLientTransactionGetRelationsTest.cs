@@ -18,11 +18,8 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
@@ -134,16 +131,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
       CountingObjectLoaderDecorator decorator = null;
-      var clientTransactionMock = ClientTransactionObjectMother.CreateTransactionWithObjectLoader<ClientTransactionMock> (
-          (tx, ps, es) => decorator = new CountingObjectLoaderDecorator (
-              new ObjectLoader (ps, MockRepository.GenerateStub<IEagerFetcher>(), new LoadedObjectDataRegistrationAgent (tx, es))));
+      var clientTransaction =
+          ClientTransactionObjectMother.CreateTransactionWithObjectLoaderDecorator<ClientTransactionMock> (
+              loader => decorator ?? (decorator = new CountingObjectLoaderDecorator (loader)));
 
-      DomainObject classWithValidRelation = clientTransactionMock.GetObject (id, false);
+      DomainObject classWithValidRelation = clientTransaction.GetObject (id, false);
       Assert.That (decorator.NumberOfCallsToLoadObject, Is.EqualTo (1));
       Assert.That (decorator.NumberOfCallsToLoadRelatedObject, Is.EqualTo (0));
 
       Assert.That (
-          clientTransactionMock.GetRelatedObject (
+          clientTransaction.GetRelatedObject (
               RelationEndPointID.Create (
                   classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional")),
           Is.Null);
@@ -151,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (decorator.NumberOfCallsToLoadObject, Is.EqualTo (1));
       Assert.That (decorator.NumberOfCallsToLoadRelatedObject, Is.EqualTo (0));
 
-      clientTransactionMock.GetRelatedObject (
+      clientTransaction.GetRelatedObject (
           RelationEndPointID.Create (classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"));
 
       Assert.That (decorator.NumberOfCallsToLoadObject, Is.EqualTo (1));
@@ -164,9 +161,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
       CountingObjectLoaderDecorator decorator = null;
-      var clientTransactionMock = ClientTransactionObjectMother.CreateTransactionWithObjectLoader<ClientTransactionMock> (
-          (tx, ps, es) => decorator = new CountingObjectLoaderDecorator (
-              new ObjectLoader (ps, MockRepository.GenerateStub<IEagerFetcher> (), new LoadedObjectDataRegistrationAgent (tx, es))));
+      var clientTransactionMock = ClientTransactionObjectMother.CreateTransactionWithObjectLoaderDecorator<ClientTransactionMock> (
+        loader => decorator ?? (decorator = new CountingObjectLoaderDecorator (loader)));
 
       DomainObject classWithGuidKey = clientTransactionMock.GetObject (id, false);
       Assert.That (decorator.NumberOfCallsToLoadObject, Is.EqualTo (1));

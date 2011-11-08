@@ -47,10 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return Create<T> (componentFactory);
     }
 
-    public static T CreateTransactionWithObjectLoader<T> (
-        Func<ClientTransaction, IPersistenceStrategy, IClientTransactionListener, IObjectLoader> factory) where T : ClientTransaction
+    public static T CreateTransactionWithObjectLoaderDecorator<T> (TestComponentFactoryWithObjectLoaderDecorator.DecoratorFactory factory) 
+        where T : ClientTransaction
     {
-      var componentFactory = new TestComponentFactoryWithSpecificObjectLoader (factory);
+      var componentFactory = new TestComponentFactoryWithObjectLoaderDecorator (factory);
       return Create<T> (componentFactory);
     }
 
@@ -68,7 +68,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         CompoundClientTransactionListener[] listeners,
-        IObjectLoader objectLoader,
         IPersistenceStrategy persistenceStrategy,
         IQueryManager queryManager)
     {
@@ -81,7 +80,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           extensions,
           invalidDomainObjectManager,
           listeners,
-          objectLoader,
           persistenceStrategy,
           queryManager);
 
@@ -97,7 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         CompoundClientTransactionListener[] listeners,
-        IObjectLoader objectLoader,
         IPersistenceStrategy persistenceStrategy,
         IQueryManager queryManager)
     {
@@ -107,29 +104,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (cloneFactory);
       componentFactoryStub
           .Stub (stub => stub.CreateDataManager(
-              Arg<ClientTransaction>.Is.Anything, 
+              Arg<ClientTransaction>.Is.Anything,
+              Arg<IClientTransactionListener>.Is.Anything, 
               Arg<IInvalidDomainObjectManager>.Is.Anything, 
-              Arg<IObjectLoader>.Is.Anything))
+              Arg<IPersistenceStrategy>.Is.Anything))
           .Return (dataManager);
       componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (enlistedDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateExtensionCollection (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
       componentFactoryStub.Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (invalidDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateListeners (Arg<ClientTransaction>.Is.Anything)).Return (listeners);
-      componentFactoryStub
-          .Stub (stub => stub.CreateObjectLoader(
-              Arg<ClientTransaction>.Is.Anything, 
-              Arg<IPersistenceStrategy>.Is.Anything, 
-              Arg<IClientTransactionListener>.Is.Anything))
-          .Return (objectLoader);
       componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<ClientTransaction>.Is.Anything)).Return (persistenceStrategy);
       componentFactoryStub
           .Stub (stub => stub.CreateQueryManager (
               Arg<ClientTransaction>.Is.Anything,
-              Arg<IPersistenceStrategy>.Is.Anything,
-              Arg<IObjectLoader>.Is.Anything,
-              Arg<IDataManager>.Is.Anything, 
-              Arg<IInvalidDomainObjectManager>.Is.Anything,
-              Arg<ReadOnlyClientTransactionListener>.Is.Anything))
+              Arg<ReadOnlyClientTransactionListener>.Is.Anything, Arg<IInvalidDomainObjectManager>.Is.Anything, Arg<IPersistenceStrategy>.Is.Anything, Arg<IDataManager>.Is.Anything))
           .Return (queryManager);
       return componentFactoryStub;
     }

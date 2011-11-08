@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Queries;
 
@@ -26,24 +25,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// </summary>
   public interface IObjectLoader
   {
-    DomainObject LoadObject (ObjectID id, IDataContainerLifetimeManager lifetimeManager);
-    DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataContainerLifetimeManager lifetimeManager);
+    DomainObject LoadObject (ObjectID id);
+    DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound);
 
     DomainObject GetOrLoadRelatedObject (
-        RelationEndPointID relationEndPointID,
-        IDataContainerLifetimeManager lifetimeManager,
-        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
+        RelationEndPointID relationEndPointID);
 
     DomainObject[] GetOrLoadRelatedObjects (
-        RelationEndPointID relationEndPointID,
-        IDataContainerLifetimeManager lifetimeManager,
-        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
+        RelationEndPointID relationEndPointID);
 
     T[] GetOrLoadCollectionQueryResult<T> (
-        IQuery query,
-        IDataContainerLifetimeManager lifetimeManager,
-        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider,
-        ILoadedDataContainerProvider loadedDataContainerProvider,
-        IVirtualEndPointProvider virtualEndPointProvider) where T: DomainObject;
+        IQuery query) where T: DomainObject;
   }
 }
