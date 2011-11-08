@@ -190,6 +190,7 @@
     <Compile Include="DataManagement\IDataContainerLifetimeManager.cs" />
     <Compile Include="DataManagement\ILoadedDataContainerProvider.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IVirtualEndPointProvider.cs" />
+    <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FreshlyLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectData.cs" />
@@ -206,7 +207,6 @@
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionOperations.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
-    <Compile Include="Infrastructure\ClientTransactionComponentFactoryUtility.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\PersistableData.cs" />
     <Compile Include="DataManagement\RelationEndPoints\DataContainerEndPointsRegistrationAgentBase.cs" />
     <Compile Include="DataManagement\RelationEndPoints\DelegatingDataContainerEndPointsRegistrationAgent.cs" />

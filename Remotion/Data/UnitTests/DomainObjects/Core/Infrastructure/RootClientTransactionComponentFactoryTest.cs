@@ -233,8 +233,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       extensionFactoryMock.VerifyAllExpectations ();
 
       Assert.That (extensions.Count, Is.EqualTo (2));
-      Assert.That (extensions[1], Is.SameAs (extensionStub));
       Assert.That (extensions[0], Is.TypeOf<CommitValidationClientTransactionExtension> ());
+      Assert.That (extensions[1], Is.SameAs (extensionStub));
       
       var validationExtension = (CommitValidationClientTransactionExtension) extensions[0];
       var validator = validationExtension.ValidatorFactory (_fakeConstructedTransaction);
