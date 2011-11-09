@@ -98,6 +98,7 @@ div.bocListTableScrollContainer
   height: auto;
   overflow-x: auto;
   overflow-y: hidden;
+  margin: auto; /* IE9 bug fix, otherwise, the height would keep growing */
 }
 
 div.bocList.hasDimensions div.bocListTableScrollContainer
