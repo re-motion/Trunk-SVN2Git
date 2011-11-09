@@ -445,7 +445,11 @@ function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
     $('input[name*=' + realCheckName + ']').prop('checked', checkStatus);
   });
 
-  if ($('body').is('.msie') || $('body').is('.msie8') || $('body').is('.msie7'))
+  if ($('body').is('.msie'))
+  {
+    $(document).ready(function () { BocList_FixHeaderSize(scrollableContainer); });
+  }
+  else if ($('body').is('.msie8') || $('body').is('.msie7'))
   {
     BocList_FixHeaderSize(scrollableContainer);
     setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 0);
@@ -488,7 +492,7 @@ function BocList_FixHeaderSize(scrollableContainer)
   fakeTableHeadContainer.width(realTable.width());
   fakeTableHeadContainerHeight = fakeTableHeadContainer.height();
   scrollableContainer.css({ top: fakeTableHeadContainerHeight});
-  realTable.css({ 'margin-top': fakeTableHeadContainerHeight * -1, 'position': 'relative' });
+  realTable.css({ 'margin-top': fakeTableHeadContainerHeight * -1 });
 
   fakeTableHeadContainer.show();
 }
