@@ -209,6 +209,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\DelegatingDataManagerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableFetchedRelationDataRegistrationAgentFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedDataContainerProviderFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableObjectLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointProviderFake.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionComponentFactoryBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectDataTest.cs" />
@@ -1039,7 +1040,7 @@
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\DbCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DbCommandBuilders\TestableDbCommandBuilder.cs" />
-    <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetchingObjectLoaderDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetchQueryCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryResultTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryCacheTest.cs" />

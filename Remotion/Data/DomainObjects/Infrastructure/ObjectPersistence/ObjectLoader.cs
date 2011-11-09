@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Remotion.Collections;
@@ -39,26 +38,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   public class ObjectLoader : IObjectLoader
   {
     private readonly IPersistenceStrategy _persistenceStrategy;
-    private readonly IEagerFetcher _eagerFetcher;
     private readonly ILoadedObjectDataRegistrationAgent _loadedObjectDataRegistrationAgent;
     private readonly IDataContainerLifetimeManager _dataContainerLifetimeManager;
     private readonly ILoadedObjectDataProvider _loadedObjectDataProvider;
 
     public ObjectLoader (
         IPersistenceStrategy persistenceStrategy,
-        IEagerFetcher eagerFetcher, 
         ILoadedObjectDataRegistrationAgent loadedObjectDataRegistrationAgent,
         IDataContainerLifetimeManager dataContainerLifetimeManager,
         ILoadedObjectDataProvider loadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("eagerFetcher", eagerFetcher);
       ArgumentUtility.CheckNotNull ("loadedObjectDataRegistrationAgent", loadedObjectDataRegistrationAgent);
       ArgumentUtility.CheckNotNull ("dataContainerLifetimeManager", dataContainerLifetimeManager);
       ArgumentUtility.CheckNotNull ("loadedObjectDataProvider", loadedObjectDataProvider);
 
       _persistenceStrategy = persistenceStrategy;
-      _eagerFetcher = eagerFetcher;
       _loadedObjectDataRegistrationAgent = loadedObjectDataRegistrationAgent;
       _dataContainerLifetimeManager = dataContainerLifetimeManager;
       _loadedObjectDataProvider = loadedObjectDataProvider;
@@ -67,11 +62,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     public IPersistenceStrategy PersistenceStrategy
     {
       get { return _persistenceStrategy; }
-    }
-
-    public IEagerFetcher EagerFetcher
-    {
-      get { return _eagerFetcher; }
     }
 
     public ILoadedObjectDataRegistrationAgent LoadedObjectDataRegistrationAgent
@@ -151,24 +141,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("query", query);
 
       var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, _loadedObjectDataProvider);
-      var resultArray = _loadedObjectDataRegistrationAgent
+      return _loadedObjectDataRegistrationAgent
           .RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager)
           .Select (ConvertLoadedDomainObject<T>)
           .ToArray ();
-      
-      if (resultArray.Length > 0)
-      {
-        foreach (var fetchQuery in query.EagerFetchQueries)
-        {
-          _eagerFetcher.PerformEagerFetching (
-              resultArray,
-              fetchQuery.Key,
-              fetchQuery.Value,
-              this);
-        }
-      }
-
-      return resultArray;
     }
 
     private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject

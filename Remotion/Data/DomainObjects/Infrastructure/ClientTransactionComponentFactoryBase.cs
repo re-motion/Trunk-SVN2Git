@@ -131,17 +131,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       
-      var loadedObjectDataProvider = new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager);
+      var objectLoader = CreateBasicObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
 
       IFetchedRelationDataRegistrationAgent registrationAgent =
           new DelegatingFetchedRelationDataRegistrationAgent (
               new FetchedRealObjectRelationDataRegistrationAgent(),
               new FetchedVirtualObjectRelationDataRegistrationAgent (dataManager, dataManager),
               new FetchedCollectionRelationDataRegistrationAgent (dataManager, dataManager));
-      var eagerFetcher = new EagerFetcher (registrationAgent);
+      return new EagerFetchingObjectLoaderDecorator (objectLoader, registrationAgent);
+    }
+
+    protected virtual IObjectLoader CreateBasicObjectLoader (ClientTransaction constructedTransaction, IClientTransactionListener eventSink, IPersistenceStrategy persistenceStrategy, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager)
+    {
+      var loadedObjectDataProvider = new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager);
       return new ObjectLoader (
           persistenceStrategy,
-          eagerFetcher,
           new LoadedObjectDataRegistrationAgent (constructedTransaction, eventSink),
           dataManager,
           loadedObjectDataProvider);
