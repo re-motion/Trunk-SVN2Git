@@ -50,7 +50,7 @@ div.bocListTableBlock.hasMenuBlock
 }
 
 /*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
-/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height.  */
+/*  Style applied to the list-area (table and navigation block) of the BocList when the BocList has a defined width or height.  */
 div.bocList.hasDimensions div.bocListTableBlock
 {
   position: absolute;
@@ -60,17 +60,37 @@ div.bocList.hasDimensions div.bocListTableBlock
   right: 0;
 }
 
-div.bocList.hasDimensions div.bocListTableBlock div.bocListTableScrollContainer
-{
-  overflow: auto;
-}
-
+/* Style applied to the list-area (table and navigation block) of the BocList if there is a menu block. */
 div.bocList.hasDimensions div.bocListTableBlock.hasMenuBlock
 {
   right: 10em; /* width of BocList menu block + some space */
 }
 
 /* Style applied to the div surrounding the BocList's table. */
+div.bocListTableContainer
+{
+  display: block;
+  width: auto;
+  height: auto;
+}
+
+div.bocList.hasDimensions div.bocListTableBlock div.bocListTableContainer
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
+div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTableContainer
+{
+  bottom: 1.5em;
+}
+
+/* Style applied to the div allowing the BocList's table to scroll. */
 div.bocListTableScrollContainer
 {
   display: block;
@@ -80,25 +100,33 @@ div.bocListTableScrollContainer
   overflow-y: hidden;
 }
 
-div.bocList.hasDimensions div.bocListTableBlock div.bocListTableScrollContainer
+div.bocList.hasDimensions div.bocListTableScrollContainer
 {
   position: absolute;
-  top: 0;
+  top: 1.9em;
   left: 0;
   bottom: 0;
   right: 0;
   overflow: auto;
 }
 
-/* Style applied to the div surrounding the BocList's table if there is a menu block. */
-div.bocListTableBlock.hasMenuBlock div.bocListTableScrollContainer
+div.bocList.hasDimensions div.bocListTableScrollContainer table.bocListTable
 {
+  margin-top: -1.9em;
+  position: relative;
 }
 
-/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
-div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTableScrollContainer
+/* Style applied to the fake table head used for scrolling */
+div.bocListFakeTableHead
 {
-  bottom: 1.5em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding:0;
+  z-index: 1;
+  overflow: hidden;
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
@@ -362,22 +390,5 @@ span.bocListAvailableViewsListLabel
 div.bocListEditModeValidationMessage
 {
   color: Red;
-}
-
-/* Style applied to the fake table head used for scrolling */
-div.bocListFakeTableHead
-{
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-  padding:0;
-  z-index: 1;
-}
-
-body.msie7 div.bocListFakeTableHead
-{
-  margin: -0.5px;
 }
 

@@ -379,28 +379,30 @@ function BocList_FixUpScrolling(bocList)
   var tableBlock = $(bocList).children('div.bocListTableBlock').first();
 
   var scrollTimer = null;
-  var scrollableContainer = tableBlock.children('div.bocListTableScrollContainer').first();
+  var tableContainer = tableBlock.children('div.bocListTableContainer').first();
+  var scrollableContainer = tableContainer.children('div.bocListTableScrollContainer').first();
   var horizontalScroll = 0;
-  var verticalScroll = 0;
-
+ 
   scrollableContainer.bind('scroll', function (event)
   {
     var newHorizontalScroll = scrollableContainer.scrollLeft();
-    var newVerticalScroll = scrollableContainer.scrollTop();
-    var hasVerticalScrollUpdated = verticalScroll != newVerticalScroll;
-
+    var hasHorizontalScrollUpdated = horizontalScroll != newHorizontalScroll;
     horizontalScroll = newHorizontalScroll;
-    verticalScroll = newVerticalScroll;
 
-    if (hasVerticalScrollUpdated)
+    if (hasHorizontalScrollUpdated)
     {
+      // Contious refresh.
+      BocList_FixHeaderPosition(tableContainer, scrollableContainer);
+
+      // Final update after scrolling has finished to ensure propper layout.
       if (scrollTimer)
         clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(function () { BocList_FixHeaderPosition(scrollableContainer) }, 50);
+      scrollTimer = setTimeout(function () { BocList_FixHeaderPosition(tableContainer, scrollableContainer) }, 50);
     }
   });
 
-  //activateTableHeader on window resize
+
+  //Recalculate FakeTableHeader on window resize
   var resizeTimer = null;
   $(window).bind('resize', function ()
   {
@@ -408,10 +410,10 @@ function BocList_FixUpScrolling(bocList)
     resizeTimer = setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 50);
   });
 
-  BocList_CreateFakeTableHead(scrollableContainer);
+  BocList_CreateFakeTableHead(tableContainer, scrollableContainer);
 }
 
-function BocList_CreateFakeTableHead(scrollableContainer)
+function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
 {
   var table = scrollableContainer.children('table').first();
 
@@ -431,7 +433,7 @@ function BocList_CreateFakeTableHead(scrollableContainer)
 
   table.children('thead').find('a, input').each(function () { $(this).removeAttr('id').attr({ tabIndex: -1 }).attr({ tabIndex: -1 }); });
 
-  scrollableContainer.prepend(fakeTableHeadContainer);
+  scrollableContainer.before(fakeTableHeadContainer);
 
   // sync checkboxes
   var checkboxes = fakeTableHead.find("th input:checkbox");
@@ -445,6 +447,7 @@ function BocList_CreateFakeTableHead(scrollableContainer)
 
   if ($('body').is('.msie') || $('body').is('.msie8') || $('body').is('.msie7'))
   {
+    BocList_FixHeaderSize(scrollableContainer);
     setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 0);
   }
   else
@@ -460,36 +463,42 @@ function BocList_FixHeaderSize(scrollableContainer)
   var realTableHeadRow = realTableHead.children().eq(0);
   var realTableHeadRowChildren = realTableHeadRow.children();
 
-  var fakeTableHeadContainer = scrollableContainer.children('div.bocListFakeTableHead').first();
+  var fakeTableHeadContainer = scrollableContainer.parent().children('div.bocListFakeTableHead').first();
   var fakeTableHead = fakeTableHeadContainer.find('thead');
   var fakeTableHeadRow = fakeTableHead.children().eq(0);
   var fakeTableHeadRowChildren = fakeTableHeadRow.children();
 
   // store cell widths in array
   var realTableHeadCellWidths = new Array();
-  var isIE7 = $('body').is('.msie7');
-
   realTableHeadRowChildren.each(function (index)
   {
-    var width = $(this).width();
-    if (isIE7)
-      width = width - 1;
-    realTableHeadCellWidths[index] = width;
+    realTableHeadCellWidths[index] = $(this).width();
   });
 
   // apply widths to fake header
-  $.each(realTableHeadCellWidths, function (index, width)
+  var isIE7 = $('body').is('.msie7');
+  fakeTableHeadRowChildren.width(function (index, itemWidth)
   {
-    fakeTableHeadRowChildren.eq(index).width(width);
+    width = realTableHeadCellWidths[index];
+    if (isIE7)
+      width = width - 1;
+    return width;
   });
 
+  fakeTableHeadRowChildren.last().width('*');
+
   fakeTableHeadContainer.width(realTable.width());
+  fakeTableHeadContainerHeight = fakeTableHeadContainer.height();
+  scrollableContainer.css({ top: fakeTableHeadContainerHeight});
+  realTable.css({ 'margin-top': fakeTableHeadContainerHeight * -1, 'position': 'relative' });
+
   fakeTableHeadContainer.show();
 }
 
-function BocList_FixHeaderPosition(scrollableContainer)
+function BocList_FixHeaderPosition(tableContainer, scrollableContainer)
 {
-  var fakeTableHeadContainer = scrollableContainer.children('div.bocListFakeTableHead').first();
-  var scrollPosition = scrollableContainer.scrollTop();
-  fakeTableHeadContainer.css({ 'top': scrollPosition, 'left': '0' });
+  var fakeTableHeadContainer = tableContainer.children('div.bocListFakeTableHead').first();
+  var scrollTop = 0;
+  var scrollLeft = scrollableContainer.scrollLeft();
+  fakeTableHeadContainer.css({ 'top': scrollTop, 'left': scrollLeft * -1 });
 }

@@ -206,8 +206,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <summary> Renderes the opening tag of the table. </summary>
     private void RenderTableOpeningTag (BocListRenderingContext renderingContext)
     {
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableContainer);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableScrollContainer);
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "_Table");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "_TableScrollContainer");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
@@ -221,7 +224,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       renderingContext.Writer.RenderEndTag(); // table
 
-      renderingContext.Writer.RenderEndTag(); // div
+      renderingContext.Writer.RenderEndTag(); // div TableScrollContainer
+
+      renderingContext.Writer.RenderEndTag(); // div TableContainer
     }
 
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
