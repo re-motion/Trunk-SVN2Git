@@ -14,17 +14,18 @@ div.bocList
 {
 }
 
-div.bocList.hasDimensions div.bocListNavigator
-{
-  position: absolute;
-  bottom: 0;
-}
-
 /*  Style applied to the BocList's navigator. */
 div.bocListNavigator
 {
   white-space: nowrap;
   overflow: hidden;
+  margin-top: 0.25em;
+}
+
+div.bocList.hasDimensions div.bocListNavigator
+{
+  position: absolute;
+  bottom: 0;
 }
 
 /*  Style applied to the BocList's menu block. */
