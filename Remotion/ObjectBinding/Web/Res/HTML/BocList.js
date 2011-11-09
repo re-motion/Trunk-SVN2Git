@@ -97,7 +97,7 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
       if (hasClickSensitiveRows)
         BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu);
   
-      if (selectorControl.checked)      
+      if (selectorControl.checked)
       {
         var rowBlock = new BocList_RowBlock (row, selectorControl);
         selectedRows.Rows[selectorControl.id] = rowBlock;
