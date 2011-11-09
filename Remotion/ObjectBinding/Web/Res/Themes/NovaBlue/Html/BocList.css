@@ -129,6 +129,7 @@ div.bocListFakeTableHead
   padding:0;
   z-index: 1;
   overflow: hidden;
+  border-bottom: 1px solid Black;
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
@@ -161,9 +162,14 @@ th.bocListTitleCell
   border-top: none;
   border-right: none;
   border-left: none;
-  border-bottom: 1px solid #002e46;
+  border-bottom: 1px solid Black;
   background-color: white;
   white-space: nowrap;
+}
+
+div.bocList.hasDimensions th.bocListTitleCell
+{
+  border-bottom: none;
 }
 
 body.msie7 th.bocListTitleCell *
@@ -207,7 +213,7 @@ td.bocListDataCellEven
   border-top: none;
   border-right: none;
   border-left: none;
-  border-bottom: 1px solid #002e46;
+  border-bottom: 1px solid Black;
 
   cursor: default;
 }

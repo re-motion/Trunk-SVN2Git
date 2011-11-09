@@ -129,6 +129,7 @@ div.bocListFakeTableHead
   padding:0;
   z-index: 1;
   overflow: hidden;
+  border-bottom: 2px solid Black;
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
@@ -158,19 +159,15 @@ th.bocListTitleCell
   text-align: left;
 
   padding: 2px 2px 2px 2px;
-  border-style: solid;
-  border-top-width: 0px;
-  border-right-width: 0px;
-  border-bottom-width: 2px;
-  border-left-width: 0px;
-  border-color: Black;
+  border: none;
+  border-bottom: 2px solid Black;
   background-color: white;
   white-space: nowrap;
 }
 
 div.bocListFakeTableHead th.bocListTitleCell
 {
-  border-bottom-width: 1px;
+  border-bottom: none;
 }
 
 body.msie7 th.bocListTitleCell *
