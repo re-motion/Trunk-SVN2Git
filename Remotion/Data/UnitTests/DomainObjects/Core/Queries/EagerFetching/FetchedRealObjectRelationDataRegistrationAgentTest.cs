@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _agent.GroupAndRegisterRelatedObjects(
           _endPointDefinition,
           new[] { _originatingOrderTicket1, _originatingOrderTicket2 },
-          new[] { _fetchedOrder1, _fetchedOrder2, _fetchedOrder3 }, _loadedDataContainerProviderStub, _virtualEndPointProviderMock);
+          new[] { _fetchedOrder1, _fetchedOrder2, _fetchedOrder3 });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new DomainObject[] { null },
-          new DomainObject[0], _loadedDataContainerProviderStub, _virtualEndPointProviderMock);
+          new DomainObject[0]);
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _agent.GroupAndRegisterRelatedObjects (
         _endPointDefinition,
           new[] { _originatingOrderTicket1 },
-        new DomainObject[] { null }, _loadedDataContainerProviderStub, _virtualEndPointProviderMock);
+        new DomainObject[] { null });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new[] { invalidOriginalObject },
-          new DomainObject[0], _loadedDataContainerProviderStub, _virtualEndPointProviderMock);
+          new DomainObject[0]);
     }
 
     [Test]
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new[] { _originatingOrderTicket1, _originatingOrderTicket2 }, 
-          new[] { invalidFetchedObject }, _loadedDataContainerProviderStub, _virtualEndPointProviderMock);
+          new[] { invalidFetchedObject });
     }
 
     [Test]
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
 
       Assert.That (
-          () => _agent.GroupAndRegisterRelatedObjects (endPointDefinition, new[] { _originatingOrderTicket1 }, new[] { _fetchedOrder1 }, _loadedDataContainerProviderStub, _virtualEndPointProviderMock), 
+          () => _agent.GroupAndRegisterRelatedObjects (endPointDefinition, new[] { _originatingOrderTicket1 }, new[] { _fetchedOrder1 }), 
           Throws.ArgumentException.With.Message.EqualTo (
               "Only non-virtual object-valued relation end-points can be handled by this registration agent.\r\nParameter name: relationEndPointDefinition"));
     }

@@ -207,13 +207,17 @@
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DelegatingDataManagerTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableFetchedRelationDataRegistrationAgentFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedDataContainerProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointProviderFake.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionComponentFactoryBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\FreshlyLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\InvalidLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectDataTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\TestableClientTransactionComponentFactoryBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistableDataObjectMother.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\ObjectWithInvalidForeignKeyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionCommitValidationTest.cs" />

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -75,9 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           () => _agent.GroupAndRegisterRelatedObjects (
               endPointDefinition, 
               _originatingObjects, 
-              _relatedObjects, 
-              _loadedDataContainerProviderStub, 
-              _relationEndPointProviderStub),
+              _relatedObjects),
           Throws.InvalidOperationException.With.Message.EqualTo ("Anonymous relation end-points cannot have data registered."));
     }
 
@@ -91,18 +90,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
               mock => mock.GroupAndRegisterRelatedObjects (
                   endPointDefinition,
                   _originatingObjects,
-                  _relatedObjects,
-                  _loadedDataContainerProviderStub,
-                  _relationEndPointProviderStub));
+                  _relatedObjects));
 
       _mockRepository.ReplayAll ();
 
       _agent.GroupAndRegisterRelatedObjects (
           endPointDefinition,
           _originatingObjects,
-          _relatedObjects,
-          _loadedDataContainerProviderStub,
-          _relationEndPointProviderStub);
+          _relatedObjects);
 
       _mockRepository.VerifyAll();
     }
@@ -116,14 +111,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Expect (mock => mock.GroupAndRegisterRelatedObjects (
               endPointDefinition,
               _originatingObjects,
-              _relatedObjects,
-              _loadedDataContainerProviderStub,
-              _relationEndPointProviderStub));
+              _relatedObjects));
 
       _mockRepository.ReplayAll ();
 
       _agent.GroupAndRegisterRelatedObjects (
-          endPointDefinition, _originatingObjects, _relatedObjects, _loadedDataContainerProviderStub, _relationEndPointProviderStub);
+          endPointDefinition, _originatingObjects, _relatedObjects);
 
       _mockRepository.VerifyAll ();
     }
@@ -137,12 +130,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Expect (
               mock =>
               mock.GroupAndRegisterRelatedObjects (
-                  endPointDefinition, _originatingObjects, _relatedObjects, _loadedDataContainerProviderStub, _relationEndPointProviderStub));
+                  endPointDefinition, _originatingObjects, _relatedObjects));
 
       _mockRepository.ReplayAll ();
 
       _agent.GroupAndRegisterRelatedObjects (
-          endPointDefinition, _originatingObjects, _relatedObjects, _loadedDataContainerProviderStub, _relationEndPointProviderStub);
+          endPointDefinition, _originatingObjects, _relatedObjects);
 
       _mockRepository.VerifyAll ();
     }
@@ -157,12 +150,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Expect (
               mock =>
               mock.GroupAndRegisterRelatedObjects (
-                  endPointDefinition, _originatingObjects, relatedObjects, _loadedDataContainerProviderStub, _relationEndPointProviderStub));
+                  endPointDefinition, _originatingObjects, relatedObjects));
 
       _mockRepository.ReplayAll ();
 
       _agent.GroupAndRegisterRelatedObjects (
-          endPointDefinition, _originatingObjects, relatedObjects, _loadedDataContainerProviderStub, _relationEndPointProviderStub);
+          endPointDefinition, _originatingObjects, relatedObjects);
 
       _mockRepository.VerifyAll ();
     }
@@ -172,8 +165,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       var agent = new DelegatingFetchedRelationDataRegistrationAgent (
           new FetchedRealObjectRelationDataRegistrationAgent(),
-          new FetchedVirtualObjectRelationDataRegistrationAgent(),
-          new FetchedCollectionRelationDataRegistrationAgent());
+          new FetchedVirtualObjectRelationDataRegistrationAgent (
+              new SerializableLoadedDataContainerProviderFake(), new SerializableVirtualEndPointProviderFake()),
+          new FetchedCollectionRelationDataRegistrationAgent (
+              new SerializableLoadedDataContainerProviderFake(), new SerializableVirtualEndPointProviderFake()));
 
       var deserializedAgent = Serializer.SerializeAndDeserialize (agent);
 

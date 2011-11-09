@@ -14,16 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Queries.EagerFetching;
 
-namespace Remotion.Data.DomainObjects.Queries.EagerFetching
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Registers a set of related objects with a set of originating objects based on an <see cref="IRelationEndPointDefinition"/>. If one of the 
-  /// relation end-points already has data registered, the new related object data is ignored.
-  /// </summary>
-  public interface IFetchedRelationDataRegistrationAgent
+  [Serializable]
+  public class SerializableFetchedRelationDataRegistrationAgentFake : IFetchedRelationDataRegistrationAgent
   {
-    void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects);
+    public void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

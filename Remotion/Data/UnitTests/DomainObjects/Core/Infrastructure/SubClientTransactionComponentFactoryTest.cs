@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -28,14 +27,11 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Rhino.Mocks;
-using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -150,56 +146,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateDataManager ()
+    public void CreateRelationEndPointManager ()
     {
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
-      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      var lazyLoader = MockRepository.GenerateStub<ILazyLoader> ();
+      var endPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider> ();
 
-      var dataManager = (DataManager) _factory.CreateDataManager (_fakeConstructedTransaction, eventSink, invalidDomainObjectManager, persistenceStrategy);
-      Assert.That (dataManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (DataManagerTestHelper.GetInvalidDomainObjectManager (dataManager), Is.SameAs (invalidDomainObjectManager));
+      var relationEndPointManager =
+          (RelationEndPointManager) PrivateInvoke.InvokeNonPublicMethod (
+              _factory,
+              "CreateRelationEndPointManager",
+              _fakeConstructedTransaction,
+              endPointProvider,
+              lazyLoader);
 
-      Assert.That (DataManagerTestHelper.GetObjectLoader (dataManager), Is.TypeOf (typeof (ObjectLoader)));
-      var objectLoader = (ObjectLoader) DataManagerTestHelper.GetObjectLoader (dataManager);
-      Assert.That (objectLoader.PersistenceStrategy, Is.SameAs (persistenceStrategy));
-      Assert.That (objectLoader.EagerFetcher, Is.TypeOf<EagerFetcher> ());
-      Assert.That (
-          objectLoader.LoadedObjectDataRegistrationAgent,
-          Is.TypeOf<LoadedObjectDataRegistrationAgent> ()
-              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.ClientTransaction).SameAs (_fakeConstructedTransaction)
-              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.TransactionEventSink).SameAs (eventSink));
-
-      CheckDelegatingDataManager (objectLoader.DataContainerLifetimeManager, dataManager);
-
-      Assert.That (objectLoader.LoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ());
-      var loadedObjectDataProvider = (LoadedObjectDataProvider) objectLoader.LoadedObjectDataProvider;
-      CheckDelegatingDataManager (loadedObjectDataProvider.LoadedDataContainerProvider, dataManager);
-      Assert.That (loadedObjectDataProvider.InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
-      
-      var eagerFetcher = ((EagerFetcher) objectLoader.EagerFetcher);
-      CheckDelegatingDataManager (eagerFetcher.LoadedDataContainerProvider, dataManager);
-      CheckDelegatingDataManager (eagerFetcher.VirtualEndPointProvider, dataManager);
-      Assert.That (eagerFetcher.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).RealObjectDataRegistrationAgent,
-          Is.TypeOf<FetchedRealObjectRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).VirtualObjectDataRegistrationAgent,
-          Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).CollectionDataRegistrationAgent,
-          Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent> ());
-
-      var relationEndPointManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (dataManager);
       Assert.That (relationEndPointManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (relationEndPointManager.EndPointFactory, Is.TypeOf<RelationEndPointFactory> ());
       Assert.That (relationEndPointManager.RegistrationAgent, Is.TypeOf<RelationEndPointRegistrationAgent> ());
 
       var endPointFactory = ((RelationEndPointFactory) relationEndPointManager.EndPointFactory);
       Assert.That (endPointFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (endPointFactory.LazyLoader, Is.SameAs (dataManager));
-      Assert.That (endPointFactory.EndPointProvider, Is.SameAs (dataManager));
+      Assert.That (endPointFactory.LazyLoader, Is.SameAs (lazyLoader));
+      Assert.That (endPointFactory.EndPointProvider, Is.SameAs (endPointProvider));
       Assert.That (endPointFactory.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
 
       var collectionEndPointDataKeeperFactory = ((CollectionEndPointDataKeeperFactory) endPointFactory.CollectionEndPointDataKeeperFactory);
@@ -209,88 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
       Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-    }
 
-    [Test]
-    public void CreateQueryManager ()
-    {
-      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
-      var dataManager = MockRepository.GenerateStub<IDataManager> ();
-      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
-
-      var result = _factory.CreateQueryManager (_fakeConstructedTransaction, eventSink, invalidDomainObjectManager, persistenceStrategy, dataManager);
-
-      Assert.That (result, Is.TypeOf (typeof (QueryManager)));
-      Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
-      Assert.That (((QueryManager) result).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (((QueryManager) result).TransactionEventSink, Is.SameAs (eventSink));
-
-      Assert.That (((QueryManager) result).ObjectLoader, Is.TypeOf (typeof (ObjectLoader)));
-      var objectLoader = (ObjectLoader) ((QueryManager) result).ObjectLoader;
-      Assert.That (objectLoader.PersistenceStrategy, Is.SameAs (persistenceStrategy));
-      Assert.That (objectLoader.EagerFetcher, Is.TypeOf<EagerFetcher> ());
-      Assert.That (
-          objectLoader.LoadedObjectDataRegistrationAgent,
-          Is.TypeOf<LoadedObjectDataRegistrationAgent> ()
-              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.ClientTransaction).SameAs (_fakeConstructedTransaction)
-              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.TransactionEventSink).SameAs (eventSink));
-      Assert.That (objectLoader.DataContainerLifetimeManager, Is.SameAs (dataManager));
-
-      Assert.That (objectLoader.LoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ());
-      var loadedObjectDataProvider = (LoadedObjectDataProvider) objectLoader.LoadedObjectDataProvider;
-      Assert.That (loadedObjectDataProvider.LoadedDataContainerProvider, Is.SameAs (dataManager));
-      Assert.That (loadedObjectDataProvider.InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
-
-      var eagerFetcher = ((EagerFetcher) objectLoader.EagerFetcher);
-      Assert.That (eagerFetcher.LoadedDataContainerProvider, Is.SameAs (dataManager));
-      Assert.That (eagerFetcher.VirtualEndPointProvider, Is.SameAs (dataManager));
-      Assert.That (eagerFetcher.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).RealObjectDataRegistrationAgent,
-          Is.TypeOf<FetchedRealObjectRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).VirtualObjectDataRegistrationAgent,
-          Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).CollectionDataRegistrationAgent,
-          Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent> ());
-    }
-
-    [Test]
-    public void CreateExtensionCollection ()
-    {
-      var extensionFactoryMock = MockRepository.GenerateStrictMock<IClientTransactionExtensionFactory> ();
-      var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension> ();
-      extensionStub.Stub (stub => stub.Key).Return ("stub1");
-
-      extensionFactoryMock.Expect (mock => mock.CreateClientTransactionExtensions (_fakeConstructedTransaction)).Return (new[] { extensionStub });
-      extensionFactoryMock.Replay ();
-
-      var serviceLocatorMock = MockRepository.GenerateStrictMock<IServiceLocator> ();
-      serviceLocatorMock
-          .Expect (mock => mock.GetAllInstances<IClientTransactionExtensionFactory> ())
-          .Return (new[] { extensionFactoryMock });
-      serviceLocatorMock.Replay ();
-
-      ClientTransactionExtensionCollection extensions;
-      using (new ServiceLocatorScope (serviceLocatorMock))
-      {
-        extensions = _factory.CreateExtensionCollection (_fakeConstructedTransaction);
-      }
-
-      serviceLocatorMock.VerifyAllExpectations ();
-      extensionFactoryMock.VerifyAllExpectations ();
-
-      Assert.That (extensions.Count, Is.EqualTo (1));
-      Assert.That (extensions[0], Is.SameAs (extensionStub));
-    }
-
-    private void CheckDelegatingDataManager (object actual, DataManager expectedDataManager)
-    {
-      Assert.That (
-          actual,
-          Is.TypeOf<DelegatingDataManager> ().With.Property<DelegatingDataManager> (dm => dm.InnerDataManager).SameAs (expectedDataManager));
     }
   }
 }

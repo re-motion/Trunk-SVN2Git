@@ -17,13 +17,13 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
@@ -33,8 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
   {
     private IFetchedRelationDataRegistrationAgent _registrationAgentMock;
     private IObjectLoader _objectLoaderMock;
-    private ILoadedDataContainerProvider _loadedDataContainerProviderStub;
-    private IVirtualEndPointProvider _virtualEndPointProviderStub;
 
     private EagerFetcher _eagerFetcher;
 
@@ -55,10 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _registrationAgentMock = MockRepository.GenerateStrictMock<IFetchedRelationDataRegistrationAgent>();
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader>();
-      _loadedDataContainerProviderStub = MockRepository.GenerateStub<ILoadedDataContainerProvider>();
-      _virtualEndPointProviderStub = MockRepository.GenerateStub<IVirtualEndPointProvider>();
 
-      _eagerFetcher = new EagerFetcher (_registrationAgentMock, _loadedDataContainerProviderStub, _virtualEndPointProviderStub);
+      _eagerFetcher = new EagerFetcher (_registrationAgentMock);
 
       _queryStub = MockRepository.GenerateStub<IQuery>();
 
@@ -89,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _registrationAgentMock.Expect (
           mock =>
           mock.GroupAndRegisterRelatedObjects (
-              _endPointDefinition, originatingObjects, relatedObjects, _loadedDataContainerProviderStub, _virtualEndPointProviderStub));
+              _endPointDefinition, originatingObjects, relatedObjects));
       _registrationAgentMock.Replay();
 
       _eagerFetcher.PerformEagerFetching (
@@ -121,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Expect (
               mock =>
               mock.GroupAndRegisterRelatedObjects (
-                  _endPointDefinition, originatingObjects, relatedObjects, _loadedDataContainerProviderStub, _virtualEndPointProviderStub))
+                  _endPointDefinition, originatingObjects, relatedObjects))
           .Throw (invalidOperationException);
       _registrationAgentMock.Replay();
 
@@ -138,6 +134,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _objectLoaderMock.VerifyAllExpectations();
       _registrationAgentMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var instance = new EagerFetcher (new SerializableFetchedRelationDataRegistrationAgentFake());
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
+
+      Assert.That (deserializedInstance.RegistrationAgent, Is.Not.Null);
     }
   }
 }

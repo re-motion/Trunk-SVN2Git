@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
@@ -34,36 +32,17 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     private static readonly ILog s_log = LogManager.GetLogger (typeof (EagerFetcher));
 
     private readonly IFetchedRelationDataRegistrationAgent _registrationAgent;
-    private readonly ILoadedDataContainerProvider _loadedDataContainerProvider;
-    private readonly IVirtualEndPointProvider _virtualEndPointProvider;
 
-    public EagerFetcher (
-        IFetchedRelationDataRegistrationAgent registrationAgent, 
-        ILoadedDataContainerProvider loadedDataContainerProvider,
-        IVirtualEndPointProvider virtualEndPointProvider)
+    public EagerFetcher (IFetchedRelationDataRegistrationAgent registrationAgent)
     {
       ArgumentUtility.CheckNotNull ("registrationAgent", registrationAgent);
-      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
-      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
       
       _registrationAgent = registrationAgent;
-      _loadedDataContainerProvider = loadedDataContainerProvider;
-      _virtualEndPointProvider = virtualEndPointProvider;
     }
 
     public IFetchedRelationDataRegistrationAgent RegistrationAgent
     {
       get { return _registrationAgent; }
-    }
-
-    public ILoadedDataContainerProvider LoadedDataContainerProvider
-    {
-      get { return _loadedDataContainerProvider; }
-    }
-
-    public IVirtualEndPointProvider VirtualEndPointProvider
-    {
-      get { return _virtualEndPointProvider; }
     }
 
     public void PerformEagerFetching (
@@ -95,9 +74,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         _registrationAgent.GroupAndRegisterRelatedObjects (
             relationEndPointDefinition,
             originalObjects,
-            fetchedObjects,
-            _loadedDataContainerProvider,
-            _virtualEndPointProvider);
+            fetchedObjects);
       }
       catch (InvalidOperationException ex)
       {

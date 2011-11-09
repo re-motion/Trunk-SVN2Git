@@ -72,14 +72,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return base.CreateListeners (constructedTransaction).Concat (new[] { new SubClientTransactionListener (_parentInvalidDomainObjectManager) });
     }
 
-    public override IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      
-      var parentTransactionContext = new ParentTransactionContext (_parentTransaction, _parentInvalidDomainObjectManager);
-      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (parentTransactionContext));
-    }
-
     public override IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
@@ -101,6 +93,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         invalidDomainObjectManager.MarkInvalid (objectToBeMarkedInvalid);
 
       return invalidDomainObjectManager;
+    }
+
+    public override IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+
+      var parentTransactionContext = new ParentTransactionContext (_parentTransaction, _parentInvalidDomainObjectManager);
+      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (parentTransactionContext));
     }
 
     public override Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

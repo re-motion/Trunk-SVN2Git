@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -31,9 +30,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     public override void GroupAndRegisterRelatedObjects (
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects,
-        ILoadedDataContainerProvider loadedDataContainerProvider,
-        IVirtualEndPointProvider virtualEndPointProvider)
+        DomainObject[] relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);

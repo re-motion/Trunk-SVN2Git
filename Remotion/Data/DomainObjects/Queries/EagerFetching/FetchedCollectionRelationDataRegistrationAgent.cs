@@ -33,18 +33,38 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (FetchedCollectionRelationDataRegistrationAgent));
 
+    private readonly ILoadedDataContainerProvider _loadedDataContainerProvider;
+    private readonly IVirtualEndPointProvider _virtualEndPointProvider;
+
+    public FetchedCollectionRelationDataRegistrationAgent (
+        ILoadedDataContainerProvider loadedDataContainerProvider, 
+        IVirtualEndPointProvider virtualEndPointProvider)
+    {
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
+      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
+
+      _loadedDataContainerProvider = loadedDataContainerProvider;
+      _virtualEndPointProvider = virtualEndPointProvider;
+    }
+
+    public ILoadedDataContainerProvider LoadedDataContainerProvider
+    {
+      get { return _loadedDataContainerProvider; }
+    }
+
+    public IVirtualEndPointProvider VirtualEndPointProvider
+    {
+      get { return _virtualEndPointProvider; }
+    }
+
     public override void GroupAndRegisterRelatedObjects (
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects,
-        ILoadedDataContainerProvider loadedDataContainerProvider,
-        IVirtualEndPointProvider virtualEndPointProvider)
+        DomainObject[] relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
       ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
-      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
-      ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
 
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many || relationEndPointDefinition.IsAnonymous)
         throw new ArgumentException ("Only collection-valued relations can be handled by this registration agent.", "relationEndPointDefinition");
@@ -52,22 +72,20 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
       var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
-      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, loadedDataContainerProvider);
-      RegisterEndPointData (relationEndPointDefinition, virtualEndPointProvider, originatingObjects, groupedRelatedObjects);
+      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition);
+      RegisterEndPointData (relationEndPointDefinition, originatingObjects, groupedRelatedObjects);
     }
 
     private ILookup<ObjectID, DomainObject> CorrelateRelatedObjects (
-        IEnumerable<DomainObject> relatedObjects, 
-        VirtualRelationEndPointDefinition relationEndPointDefinition,
-        ILoadedDataContainerProvider loadedDataContainerProvider)
+        IEnumerable<DomainObject> relatedObjects, VirtualRelationEndPointDefinition relationEndPointDefinition)
     {
-      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, loadedDataContainerProvider);
+      var relatedObjectsWithForeignKey =
+          GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, _loadedDataContainerProvider);
       return relatedObjectsWithForeignKey.ToLookup (k => k.Item1, k => k.Item2);
     }
 
     private void RegisterEndPointData (
        IRelationEndPointDefinition relationEndPointDefinition,
-       IVirtualEndPointProvider virtualEndPointProvider,
        IEnumerable<DomainObject> originatingObjects,
        ILookup<ObjectID, DomainObject> groupedRelatedObjects)
     {
@@ -78,15 +96,15 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         {
           var relationEndPointID = RelationEndPointID.Create (originalObject.ID, relationEndPointDefinition);
           var relatedObjects = relatedObjectsByOriginalObject[originalObject.ID];
-          if (!TrySetCollectionEndPointData (virtualEndPointProvider, relationEndPointID, relatedObjects.ToArray ()))
+          if (!TrySetCollectionEndPointData (relationEndPointID, relatedObjects.ToArray ()))
             s_log.DebugFormat ("Relation data for relation end-point '{0}' is discarded; the end-point has already been loaded.", relationEndPointID);
         }
       }
     }
 
-    private bool TrySetCollectionEndPointData (IVirtualEndPointProvider virtualEndPointProvider, RelationEndPointID endPointID, DomainObject[] items)
+    private bool TrySetCollectionEndPointData (RelationEndPointID endPointID, DomainObject[] items)
     {
-      var endPoint = (ICollectionEndPoint) virtualEndPointProvider.GetOrCreateVirtualEndPoint (endPointID);
+      var endPoint = (ICollectionEndPoint) _virtualEndPointProvider.GetOrCreateVirtualEndPoint (endPointID);
       if (endPoint.IsDataComplete)
         return false;
 

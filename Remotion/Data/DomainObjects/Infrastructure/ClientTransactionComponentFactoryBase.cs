@@ -37,6 +37,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     public abstract ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction);
     public abstract Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
+    public abstract IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
     public abstract IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction);
     public abstract IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
     public abstract Func<ClientTransaction, ClientTransaction> CreateCloneFactory ();
@@ -50,12 +51,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       yield return new LoggingClientTransactionListener ();
-    }
-
-    public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new DictionaryBasedEnlistedDomainObjectManager ();
     }
 
     public virtual IDataManager CreateDataManager (
@@ -117,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return dataManager;
     }
 
-    protected virtual IRelationEndPointProvider GetEndPointProvider (DataManager dataManager)
+    protected virtual IRelationEndPointProvider GetEndPointProvider (IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       return dataManager;
@@ -141,9 +136,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       IFetchedRelationDataRegistrationAgent registrationAgent =
           new DelegatingFetchedRelationDataRegistrationAgent (
               new FetchedRealObjectRelationDataRegistrationAgent(),
-              new FetchedVirtualObjectRelationDataRegistrationAgent(),
-              new FetchedCollectionRelationDataRegistrationAgent());
-      var eagerFetcher = new EagerFetcher (registrationAgent, dataManager, dataManager);
+              new FetchedVirtualObjectRelationDataRegistrationAgent (dataManager, dataManager),
+              new FetchedCollectionRelationDataRegistrationAgent (dataManager, dataManager));
+      var eagerFetcher = new EagerFetcher (registrationAgent);
       return new ObjectLoader (
           persistenceStrategy,
           eagerFetcher,
