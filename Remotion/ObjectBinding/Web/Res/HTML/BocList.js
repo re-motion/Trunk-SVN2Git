@@ -110,10 +110,6 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   if (BocList_HasDimensions (bocList))
   {
     $(bocList).addClass('hasDimensions');
-
-    if ($('body').is('.msie7')) //RM-4376 
-      return;
-
     BocList_FixUpScrolling(bocList);
   }
 }
@@ -471,16 +467,20 @@ function BocList_FixHeaderSize(scrollableContainer)
 
   // store cell widths in array
   var realTableHeadCellWidths = new Array();
+  var isIE7 = $('body').is('.msie7');
 
   realTableHeadRowChildren.each(function (index)
   {
-    realTableHeadCellWidths[index] = $(this).width();
+    var width = $(this).width();
+    if (isIE7)
+      width = width - 1;
+    realTableHeadCellWidths[index] = width;
   });
 
   // apply widths to fake header
-  $.each(realTableHeadCellWidths, function (index, item)
+  $.each(realTableHeadCellWidths, function (index, width)
   {
-    fakeTableHeadRowChildren.eq(index).width(item);
+    fakeTableHeadRowChildren.eq(index).width(width);
   });
 
   fakeTableHeadContainer.width(realTable.width());
