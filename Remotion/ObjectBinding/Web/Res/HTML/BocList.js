@@ -485,8 +485,6 @@ function BocList_FixHeaderSize(scrollableContainer)
     return width;
   });
 
-  fakeTableHeadRowChildren.last().width('*');
-
   fakeTableHeadContainer.width(realTable.width());
   fakeTableHeadContainerHeight = fakeTableHeadContainer.height();
   scrollableContainer.css({ top: fakeTableHeadContainerHeight});
