@@ -219,12 +219,14 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TestableClientTransactionComponentFactoryBase.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetchingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistableDataObjectMother.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\ObjectWithInvalidForeignKeyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionCommitValidationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CLientTransactionGetRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitValidationTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionEagerFetchingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionNewObjectGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionPropertyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRelationTest.cs" />

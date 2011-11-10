@@ -92,45 +92,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void EagerFetching ()
-    {
-      var ordersQuery = QueryFactory.CreateCollectionQuery (
-          "test",
-          DomainObjectIDs.Order1.StorageProviderDefinition,
-          "SELECT * FROM [Order] WHERE OrderNo IN (1, 3)",
-          new QueryParameterCollection(),
-          typeof (DomainObjectCollection));
-
-      var relationEndPointDefinition =
-          DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
-
-      var orderItemsFetchQuery = QueryFactory.CreateCollectionQuery (
-          "test fetch",
-          DomainObjectIDs.OrderItem1.StorageProviderDefinition,
-          "SELECT oi.* FROM [Order] o LEFT OUTER JOIN OrderItem oi ON o.ID = oi.OrderID WHERE o.OrderNo IN (1, 3)",
-          new QueryParameterCollection(),
-          typeof (DomainObjectCollection));
-      ordersQuery.EagerFetchQueries.Add (relationEndPointDefinition, orderItemsFetchQuery);
-
-      var id1 = RelationEndPointID.Create(DomainObjectIDs.Order1, relationEndPointDefinition);
-      var id2 = RelationEndPointID.Create(DomainObjectIDs.Order2, relationEndPointDefinition);
-
-      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Null);
-      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Null);
-
-      var result = ClientTransactionMock.QueryManager.GetCollection (ordersQuery);
-      Assert.That (result.ToArray(), Is.EquivalentTo (new[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2)} ));
-
-      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Not.Null);
-
-      Assert.That (((ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id1)).Collection,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
-      Assert.That (((ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id2)).Collection,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem3) }));
-    }
-
-    [Test]
     public void QueryWithExtensibleEnums ()
     {
       IQueryManager queryManager = _queryManager;
