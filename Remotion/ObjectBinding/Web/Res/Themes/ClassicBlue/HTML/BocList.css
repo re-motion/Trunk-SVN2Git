@@ -258,12 +258,22 @@ label.bocListContent
   padding: 2px;
 }
 
+/*  Style applied to the anchor tags in BocList's data rows.  */
+tr.bocListDataRow td.bocListDataCellOdd a,
+tr.bocListDataRow td.bocListDataCellEven a,
+tr.bocListDataRowSelected td.bocListDataCellOdd a,
+tr.bocListDataRowSelected td.bocListDataCellEven a
+{
+  display: inline-block;
+  padding: 1px;
+  border: 1px solid transparent;
+}
+
 /*  Style applied to the anchor tags in BocList's unselected odd and even data rows.  */
 tr.bocListDataRow td.bocListDataCellOdd a,
 tr.bocListDataRow td.bocListDataCellEven a
 {
   color: Blue;
-  padding: 2px;
 }
 
 /*  Style applied to the anchor tags in BocList's selected odd and even data rows.  */
@@ -271,7 +281,6 @@ tr.bocListDataRowSelected td.bocListDataCellOdd a,
 tr.bocListDataRowSelected td.bocListDataCellEven a
 {
   color: White;
-  padding: 2px;
 }
 
 /*  Style applied to the anchor tags during hovering in BocList's selected odd and even data rows.  */
@@ -281,11 +290,8 @@ tr.bocListDataRowSelected td.bocListDataCellOdd a:hover,
 tr.bocListDataRowSelected td.bocListDataCellEven a:hover
 {
   color: Blue;
-  padding: 1px;
-  border-color: #005588;
-  border-width: 1px;
-  border-style: solid;
-  background-color: #fee197;	
+  border: 1px solid #005588;
+  background-color: #fee197;
 }
 
 /*  Style applied to the disabled anchor tags during hovering in BocList's selected odd and even data rows.  */
@@ -295,10 +301,7 @@ tr.bocListDataRowSelected td.bocListDataCellOdd a.disabled:hover,
 tr.bocListDataRowSelected td.bocListDataCellEven a.disabled:hover
 {
   color: Blue;
-  padding: 2px;
-  border-width: 0px;
-  border-style: none;
-  background-color: transparent;	
+  border: 1px solid transparent;
 }
 
 /* Style applied to SPAN elements in command-enabled column cells */

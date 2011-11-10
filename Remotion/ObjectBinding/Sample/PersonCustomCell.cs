@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.Sample
       writer.RenderBeginTag (HtmlTextWriterTag.A);
       writer.Write ("1");
       writer.RenderEndTag();
-      writer.Write ("<br />");
+      writer.Write (" ");
 
       writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       onClickEvent = GetPostBackClientEvent ("2");
