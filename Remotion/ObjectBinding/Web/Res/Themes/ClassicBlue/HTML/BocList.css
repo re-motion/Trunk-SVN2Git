@@ -110,6 +110,7 @@ div.bocList.hasDimensions div.bocListTableScrollContainer
   bottom: 0;
   right: 0;
   overflow: auto;
+  border-top: 2px solid Black;
 }
 
 div.bocList.hasDimensions div.bocListTableScrollContainer table.bocListTable
@@ -129,7 +130,6 @@ div.bocListFakeTableHead
   padding:0;
   z-index: 1;
   overflow: hidden;
-  border-bottom: 2px solid Black;
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
@@ -165,7 +165,7 @@ th.bocListTitleCell
   white-space: nowrap;
 }
 
-div.bocListFakeTableHead th.bocListTitleCell
+div.bocList.hasDimensions th.bocListTitleCell
 {
   border-bottom: none;
 }
