@@ -17,7 +17,7 @@
 //
 jQuery(document).ready(function()
 {
-  if (!jQuery.browser.msie) 
+  if (!$('body').is('.msie7') && !$('body').is('.msie8')) 
   {
     var maximumLength = 0;
     var headerRow = '';
