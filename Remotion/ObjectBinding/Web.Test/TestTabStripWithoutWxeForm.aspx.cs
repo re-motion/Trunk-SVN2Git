@@ -1,5 +1,5 @@
 // This file is part of the re-motion Core Framework (www.re-motion.org)
-// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
 // and/or modify it under the terms of the GNU Lesser General Public License 
@@ -49,8 +49,8 @@ public class TestTabStripWithoutWxeForm : Page, IWindowStateManager
   protected Remotion.Web.UI.Controls.TabbedMultiView MultiView;
   private bool _currentObjectSaved = false;
 
-	private void Page_Load(object sender, System.EventArgs e)
-	{
+  private void Page_Load(object sender, System.EventArgs e)
+  {
     // add tabs 
     AddTab ("1", "Test Tab 1", null);
     AddTab ("2", "Test Tab 2 foo bar", null);
@@ -129,12 +129,12 @@ public class TestTabStripWithoutWxeForm : Page, IWindowStateManager
     return null;
   }
 
-	override protected void OnInit(EventArgs e)
-	{
-		//
-		// CODEGEN: This call is required by the ASP.NET Web Form Designer.
-		//
-		InitializeComponent();
+  override protected void OnInit(EventArgs e)
+  {
+    //
+    // CODEGEN: This call is required by the ASP.NET Web Form Designer.
+    //
+    InitializeComponent();
 
     WebButton saveButton = new WebButton ();
     saveButton.ID = "SaveButton";
@@ -162,23 +162,23 @@ public class TestTabStripWithoutWxeForm : Page, IWindowStateManager
     validateButton.Style["margin-right"] = "10pt";
     validateButton.Click += new EventHandler(ValidateButton_Click);
     MultiView.BottomControls.Add (validateButton);
-		
+    
     base.OnInit(e);
-	}
-	#region Web Form Designer generated code
+  }
+  #region Web Form Designer generated code
 
-	
-	/// <summary>
-	/// Required method for Designer support - do not modify
-	/// the contents of this method with the code editor.
-	/// </summary>
-	private void InitializeComponent()
-	{    
+  
+  /// <summary>
+  /// Required method for Designer support - do not modify
+  /// the contents of this method with the code editor.
+  /// </summary>
+  private void InitializeComponent()
+  {    
     this.Unload += new System.EventHandler(this.Page_Unload);
     this.Load += new System.EventHandler(this.Page_Load);
 
   }
-	#endregion
+  #endregion
 
   protected override void OnPreRender(EventArgs e)
   {

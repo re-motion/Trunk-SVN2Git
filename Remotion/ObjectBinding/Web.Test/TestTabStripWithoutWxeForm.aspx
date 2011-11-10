@@ -1,5 +1,5 @@
 <%-- This file is part of the re-motion Core Framework (www.re-motion.org)
- % Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+ % Copyright (c) rubicon IT GmbH, www.rubicon.eu
  %
  % The re-motion Core Framework is free software; you can redistribute it 
  % and/or modify it under the terms of the GNU Lesser General Public License 
@@ -14,9 +14,6 @@
  % You should have received a copy of the GNU Lesser General Public License
  % along with re-motion; if not, see http://www.gnu.org/licenses.
 --%>
-<%@ Register TagPrefix="obr" Namespace="Remotion.ObjectBinding.Reflection" Assembly="Remotion.ObjectBinding.Reflection" %>
-<%@ Register TagPrefix="rwc" Namespace="Remotion.Web.UI.Controls" Assembly="Remotion.Web" %>
-<%@ Register TagPrefix="obc" Namespace="Remotion.ObjectBinding.Web.Controls" Assembly="Remotion.ObjectBinding.Web" %>
 <%@ Page language="c#" Codebehind="TestTabStripWithoutWxeForm.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.TestTabStripWithoutWxeForm"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
 <html>

@@ -1,5 +1,5 @@
 ﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
-// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
 // and/or modify it under the terms of the GNU Lesser General Public License 
@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
 
 //
@@ -22,16 +21,15 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+[assembly: AssemblyTitle("")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("")]
+[assembly: AssemblyCopyright("")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]		
 
-[assembly: AssemblyTitle ("Performance Tests for Remotion SecurityManager")]
-[assembly: AssemblyDescription ("Performance Tests for Remotion SecurityManager")]
-[assembly: AssemblyConfiguration (".NET Framework: net-3.5, build type: debug")]
-[assembly: AssemblyCompany ("rubicon informationstechnologie gmbh")]
-[assembly: AssemblyProduct ("Remotion")]
-[assembly: AssemblyCopyright ("(c) 2010 rubicon informationstechnologie gmbh, www.rubicon-it.com")]
-[assembly: AssemblyTrademark ("")]
-[assembly: AssemblyCulture ("")]
-[assembly: CLSCompliant (true)]
 //
 // Version information for an assembly consists of the following four values:
 //
@@ -43,5 +41,6 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion ("1.0.*")]
+[assembly: AssemblyVersion("1.0.*")]
+
 
