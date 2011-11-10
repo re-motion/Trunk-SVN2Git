@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -24,11 +21,9 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.Design;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls

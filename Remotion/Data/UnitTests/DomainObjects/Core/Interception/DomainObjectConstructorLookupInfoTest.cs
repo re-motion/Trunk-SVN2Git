@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
 using System.Reflection;
 using NUnit.Framework;
@@ -54,12 +51,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       var lookupInfo = new DomainObjectConstructorLookupInfo (typeof (Order), concreteDomainObjectType, BindingFlags.Public | BindingFlags.Instance);
       var del = lookupInfo.GetDelegate (typeof (Func<Order>));
       Assert.That (del, Is.InstanceOf (typeof (Func<Order>)));
-      Assert.That (((Func<Order>) del) (), Is.InstanceOf (concreteDomainObjectType));
+      Assert.That (((Func<Order>) del)(), Is.InstanceOf (concreteDomainObjectType));
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order does not " 
-        + "support the requested constructor with signature (System.Int32, System.Int32, System.Int32).")]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order does not "
+                                                                           +
+                                                                           "support the requested constructor with signature (System.Int32, System.Int32, System.Int32)."
+        )]
     public void GetDelegate_InvalidArgTypes ()
     {
       var concreteDomainObjectType = Factory.GetConcreteDomainObjectType (typeof (Order));
@@ -71,19 +70,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void Integration_GetTypesafeConstructorInvoker ()
     {
       var concreteDomainObjectType = Factory.GetConcreteDomainObjectType (typeof (Order));
-      var lookupInfo = new DomainObjectConstructorLookupInfo (typeof (Order), concreteDomainObjectType,
+      var lookupInfo = new DomainObjectConstructorLookupInfo (
+          typeof (Order),
+          concreteDomainObjectType,
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
       var order = (Order) ParamList.Empty.InvokeConstructor (lookupInfo);
       Assert.IsNotNull (order);
-      Assert.AreSame (concreteDomainObjectType, ((object) order).GetType ());
+      Assert.AreSame (concreteDomainObjectType, ((object) order).GetType());
     }
 
     [Test]
     public void Integration_WithConstructors ()
     {
       var concreteDomainObjectType = Factory.GetConcreteDomainObjectType (typeof (DOWithConstructors));
-      var lookupInfo = new DomainObjectConstructorLookupInfo (typeof (DOWithConstructors), concreteDomainObjectType, 
+      var lookupInfo = new DomainObjectConstructorLookupInfo (
+          typeof (DOWithConstructors),
+          concreteDomainObjectType,
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
       var instance = (DOWithConstructors) ParamList.Create ("17", "4").InvokeConstructor (lookupInfo);

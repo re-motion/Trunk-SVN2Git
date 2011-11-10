@@ -14,15 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
 using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
 using Remotion.Mixins;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;

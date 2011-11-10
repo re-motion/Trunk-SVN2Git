@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
 using System.Reflection;
 using NUnit.Framework;
@@ -25,9 +22,8 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
-using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -38,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _transaction = ClientTransaction.CreateRootTransaction ();
+      _transaction = ClientTransaction.CreateRootTransaction();
     }
 
     [Test]
@@ -58,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
       var factory = InterceptedDomainObjectCreator.Instance.Factory;
-      Assert.That (factory.WasCreatedByFactory ((((object) order).GetType ())), Is.True);
+      Assert.That (factory.WasCreatedByFactory ((((object) order).GetType())), Is.True);
     }
 
     [Test]
@@ -71,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectReference_PreparesMixins ()
     {
-      var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
+      var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid());
       var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, _transaction);
       Assert.That (Mixin.Get<MixinAddingPersistentProperties> (instance), Is.Not.Null);
     }
@@ -93,12 +89,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectReference_BindingTransaction ()
     {
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction();
 
       var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, bindingTransaction);
 
       Assert.That (instance.HasBindingTransaction, Is.True);
-      Assert.That (instance.GetBindingTransaction (), Is.SameAs (bindingTransaction));
+      Assert.That (instance.GetBindingTransaction(), Is.SameAs (bindingTransaction));
     }
 
     [Test]
@@ -112,9 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [ExpectedException (typeof (MappingException), ExpectedMessage = "mixin", MatchType = MessageMatch.Contains)]
     public void CreateObjectReference_ValidatesMixinConfiguration ()
     {
-      using (MixinConfiguration.BuildNew ().EnterScope ())
+      using (MixinConfiguration.BuildNew().EnterScope())
       {
-        var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
+        var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid());
         InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, _transaction);
       }
     }
@@ -159,9 +155,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [ExpectedException (typeof (MappingException), ExpectedMessage = "mixin", MatchType = MessageMatch.Contains)]
     public void GetConstructorLookupInfo_ValidatesMixinConfiguration ()
     {
-      using (MixinConfiguration.BuildNew ().EnterScope ())
+      using (MixinConfiguration.BuildNew().EnterScope())
       {
-        InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo(typeof (TargetClassForPersistentMixin));
+        InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (TargetClassForPersistentMixin));
       }
     }
   }

@@ -14,17 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
 using System.ComponentModel;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 

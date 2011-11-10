@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -30,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void SetValidEnumValue ()
     {
-      var instance = ClassWithAllDataTypes.NewObject ();
+      var instance = ClassWithAllDataTypes.NewObject();
       instance.EnumProperty = ClassWithAllDataTypes.EnumType.Value0;
       Assert.That (instance.EnumProperty, Is.EqualTo (ClassWithAllDataTypes.EnumType.Value0));
     }
@@ -39,16 +36,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [ExpectedException (typeof (InvalidEnumValueException))]
     public void SetInvalidEnumValue ()
     {
-      var instance = ClassWithAllDataTypes.NewObject ();
+      var instance = ClassWithAllDataTypes.NewObject();
       instance.EnumProperty = (ClassWithAllDataTypes.EnumType) (-1);
     }
-    
+
     [Test]
     public void EnumNotDefiningZero ()
     {
-      var instance = ClassWithEnumNotDefiningZero.NewObject ();
+      var instance = ClassWithEnumNotDefiningZero.NewObject();
       Assert.That (instance.EnumValue, Is.EqualTo (TestDomain.EnumNotDefiningZero.First));
     }
-
   }
 }

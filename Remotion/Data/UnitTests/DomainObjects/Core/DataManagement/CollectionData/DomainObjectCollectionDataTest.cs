@@ -14,13 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Linq;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -40,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     public override void SetUp ()
     {
-      base.SetUp ();
-      _data = new DomainObjectCollectionData ();
+      base.SetUp();
+      _data = new DomainObjectCollectionData();
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
       _order3 = Order.GetObject (DomainObjectIDs.Order3);
@@ -51,16 +48,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Initialization ()
     {
-      var data = new DomainObjectCollectionData ();
-      Assert.That (data.ToArray (), Is.Empty);
+      var data = new DomainObjectCollectionData();
+      Assert.That (data.ToArray(), Is.Empty);
       Assert.That (data.Count, Is.EqualTo (0));
     }
 
     [Test]
     public void Initialization_WithValues ()
     {
-      var data = new DomainObjectCollectionData (new[] {_order1, _order2, _order3});
-      Assert.That (data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      var data = new DomainObjectCollectionData (new[] { _order1, _order2, _order3 });
+      Assert.That (data.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
       Assert.That (data.Count, Is.EqualTo (3));
     }
 
@@ -80,14 +77,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void EnsureDataComplete ()
     {
       Assert.That (((IDomainObjectCollectionData) _data).IsDataComplete, Is.True);
-      ((IDomainObjectCollectionData) _data).EnsureDataComplete ();
+      ((IDomainObjectCollectionData) _data).EnsureDataComplete();
       Assert.That (((IDomainObjectCollectionData) _data).IsDataComplete, Is.True);
     }
 
     [Test]
     public void GetDataStore ()
     {
-      Assert.That (((IDomainObjectCollectionData) _data).GetDataStore (), Is.SameAs (_data));
+      Assert.That (((IDomainObjectCollectionData) _data).GetDataStore(), Is.SameAs (_data));
     }
 
     [Test]
@@ -111,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _data.Insert (2, _order4);
 
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order4, _order3 }));
+      Assert.That (_data.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order4, _order3 }));
     }
 
     [Test]
@@ -128,10 +125,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       Add (_order1);
 
-      try { _data.Insert (1, _order1); } catch (ArgumentException) { }
+      try
+      {
+        _data.Insert (1, _order1);
+      }
+      catch (ArgumentException)
+      {
+      }
 
       Assert.That (PrivateInvoke.GetNonPublicField (_data, "_orderedObjectIDs"), Is.EqualTo (new[] { _order1.ID }));
-      Assert.That (PrivateInvoke.GetNonPublicField (_data, "_objectsByID"), Is.EqualTo (new[] { new KeyValuePair<ObjectID, DomainObject>(_order1.ID, _order1) }));
+      Assert.That (
+          PrivateInvoke.GetNonPublicField (_data, "_objectsByID"),
+          Is.EqualTo (new[] { new KeyValuePair<ObjectID, DomainObject> (_order1.ID, _order1) }));
     }
 
     [Test]
@@ -148,7 +153,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       Add (_order1);
 
-      try { _data.Insert (17, _order2); } catch (ArgumentOutOfRangeException) { }
+      try
+      {
+        _data.Insert (17, _order2);
+      }
+      catch (ArgumentOutOfRangeException)
+      {
+      }
 
       CheckInternalState (_order1);
     }
@@ -229,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order1);
       Add (_order2);
 
-      _data.Clear ();
+      _data.Clear();
 
       Assert.That (_data.Count, Is.EqualTo (0));
       Assert.That (_data.ToArray(), Is.Empty);
@@ -241,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order1);
       Add (_order2);
 
-      _data.Clear ();
+      _data.Clear();
 
       Assert.That (_data.ContainsObjectID (_order1.ID), Is.False);
     }
@@ -284,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       bool result = _data.Remove (_order2);
 
-      Assert.That (_data.ToArray (), Is.Empty);
+      Assert.That (_data.ToArray(), Is.Empty);
       Assert.That (result, Is.False);
     }
 
@@ -304,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order3);
 
       var result = _data.Remove (_order2.ID);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order3 }));
+      Assert.That (_data.ToArray(), Is.EqualTo (new[] { _order1, _order3 }));
       Assert.That (result, Is.True);
     }
 
@@ -323,7 +334,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       bool result = _data.Remove (_order2.ID);
 
-      Assert.That (_data.ToArray (), Is.Empty);
+      Assert.That (_data.ToArray(), Is.Empty);
       Assert.That (result, Is.False);
     }
 
@@ -394,7 +405,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      try { _data.Replace (1, _order1); } catch (ArgumentException) { }
+      try
+      {
+        _data.Replace (1, _order1);
+      }
+      catch (ArgumentException)
+      {
+      }
 
       CheckInternalState (_order1, _order2, _order3);
     }
@@ -408,7 +425,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _data.Replace (1, _order2);
 
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (_data.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
     }
 
     [Test]
@@ -419,12 +436,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      var enumerator = _data.GetEnumerator ();
+      var enumerator = _data.GetEnumerator();
       enumerator.MoveNext();
 
       Add (_order4);
 
-      enumerator.MoveNext ();
+      enumerator.MoveNext();
     }
 
     [Test]
@@ -457,15 +474,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private void CheckVersionChanged (Action action)
     {
       long version = _data.Version;
-      action ();
+      action();
       Assert.That (_data.Version, Is.GreaterThan (version));
     }
 
     private void CheckInternalState (params DomainObject[] expectedData)
     {
-      Assert.That (PrivateInvoke.GetNonPublicField (_data, "_orderedObjectIDs"), Is.EqualTo (expectedData.Select (obj => obj.ID).ToArray ()));
+      Assert.That (PrivateInvoke.GetNonPublicField (_data, "_orderedObjectIDs"), Is.EqualTo (expectedData.Select (obj => obj.ID).ToArray()));
 
-      var keyValuePairs = expectedData.Select (obj => new KeyValuePair<ObjectID, DomainObject> (obj.ID, obj)).ToArray ();
+      var keyValuePairs = expectedData.Select (obj => new KeyValuePair<ObjectID, DomainObject> (obj.ID, obj)).ToArray();
       Assert.That (PrivateInvoke.GetNonPublicField (_data, "_objectsByID"), Is.EqualTo (keyValuePairs));
     }
   }

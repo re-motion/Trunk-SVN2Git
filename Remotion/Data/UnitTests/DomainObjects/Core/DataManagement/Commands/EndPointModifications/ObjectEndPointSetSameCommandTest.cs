@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -44,14 +41,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _domainObject = Computer.GetObject (DomainObjectIDs.Computer1);
       _relatedObject = Employee.GetObject (DomainObjectIDs.Employee3);
 
       _endPointID = RelationEndPointID.Create (_domainObject, c => c.Employee);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _relatedObject.ID);
-      
+
       _command = new ObjectEndPointSetSameCommand (_endPoint);
     }
 
@@ -68,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var eventReceiver = new DomainObjectEventReceiver (_domainObject);
 
-      _command.Begin ();
+      _command.Begin();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -79,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var eventReceiver = new DomainObjectEventReceiver (_domainObject);
 
-      _command.End ();
+      _command.End();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -89,38 +86,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Perform_TouchesEndPoint ()
     {
       Assert.That (_endPoint.HasBeenTouched, Is.False);
-      _command.Perform ();
+      _command.Perform();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
       ClientTransactionMock.AddListener (listenerMock);
 
-      _command.NotifyClientTransactionOfBegin ();
+      _command.NotifyClientTransactionOfBegin();
 
-      listenerMock.AssertWasNotCalled (mock => mock.RelationChanging (
-          Arg<ClientTransaction>.Is.Anything, 
-          Arg<DomainObject>.Is.Anything,
-          Arg<IRelationEndPointDefinition>.Is.Anything,
-          Arg<DomainObject>.Is.Anything,
-          Arg<DomainObject>.Is.Anything));
+      listenerMock.AssertWasNotCalled (
+          mock => mock.RelationChanging (
+              Arg<ClientTransaction>.Is.Anything,
+              Arg<DomainObject>.Is.Anything,
+              Arg<IRelationEndPointDefinition>.Is.Anything,
+              Arg<DomainObject>.Is.Anything,
+              Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
       ClientTransactionMock.AddListener (listenerMock);
 
-      _command.NotifyClientTransactionOfBegin ();
+      _command.NotifyClientTransactionOfBegin();
 
-      listenerMock.AssertWasNotCalled (mock => mock.RelationChanged (
-          Arg<ClientTransaction>.Is.Anything,
-          Arg<DomainObject>.Is.Anything,
-          Arg<IRelationEndPointDefinition>.Is.Anything));
+      listenerMock.AssertWasNotCalled (
+          mock => mock.RelationChanged (
+              Arg<ClientTransaction>.Is.Anything,
+              Arg<DomainObject>.Is.Anything,
+              Arg<IRelationEndPointDefinition>.Is.Anything));
     }
 
     [Test]
@@ -134,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint);
 
-      var bidirectionalModification = setSameModification.ExpandToAllRelatedObjects ();
+      var bidirectionalModification = setSameModification.ExpandToAllRelatedObjects();
       Assert.That (bidirectionalModification.GetNestedCommands(), Is.EqualTo (new[] { setSameModification }));
     }
 
@@ -144,9 +143,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var oppositeEndPointID = RelationEndPointID.Create (_relatedObject, e => e.Computer);
       var oppositeEndPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
 
-      var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
+      var bidirectionalModification = _command.ExpandToAllRelatedObjects();
 
-      var steps = bidirectionalModification.GetNestedCommands ();
+      var steps = bidirectionalModification.GetNestedCommands();
       Assert.That (steps.Count, Is.EqualTo (2));
 
       Assert.That (steps[0], Is.SameAs (_command));

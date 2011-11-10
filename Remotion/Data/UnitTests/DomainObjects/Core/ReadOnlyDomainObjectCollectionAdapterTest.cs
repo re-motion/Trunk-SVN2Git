@@ -14,18 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -43,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       _wrappedData = new DomainObjectCollection (typeof (Order));
       _readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (_wrappedData);
       _readOnlyAdapterAsIList = _readOnlyAdapter;
@@ -58,17 +55,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Enumeration ()
     {
       StubInnerData (_order1, _order2, _order3);
-      Assert.That (_readOnlyAdapter.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (_readOnlyAdapter.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
 
       var nonGenericEnumerableAdapter = (IEnumerable) _readOnlyAdapter;
-      var enumerator = nonGenericEnumerableAdapter.GetEnumerator ();
-      Assert.That (enumerator.MoveNext (), Is.True);
+      var enumerator = nonGenericEnumerableAdapter.GetEnumerator();
+      Assert.That (enumerator.MoveNext(), Is.True);
       Assert.That (enumerator.Current, Is.SameAs (_order1));
-      Assert.That (enumerator.MoveNext (), Is.True);
+      Assert.That (enumerator.MoveNext(), Is.True);
       Assert.That (enumerator.Current, Is.SameAs (_order2));
-      Assert.That (enumerator.MoveNext (), Is.True);
+      Assert.That (enumerator.MoveNext(), Is.True);
       Assert.That (enumerator.Current, Is.SameAs (_order3));
-      Assert.That (enumerator.MoveNext (), Is.False);
+      Assert.That (enumerator.MoveNext(), Is.False);
     }
 
     [Test]
@@ -82,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
-      
+
       Assert.That (readOnlyAdapter.AssociatedEndPointID, Is.EqualTo (associatedCollection.AssociatedEndPointID));
     }
 
@@ -93,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       UnloadService.UnloadVirtualEndPoint (
-          ClientTransactionMock, 
+          ClientTransactionMock,
           associatedCollection.AssociatedEndPointID);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
@@ -209,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This collection does not support modifications.")]
     public void IList_Clear ()
     {
-      _readOnlyAdapterAsIList.Clear ();
+      _readOnlyAdapterAsIList.Clear();
     }
 
     [Test]

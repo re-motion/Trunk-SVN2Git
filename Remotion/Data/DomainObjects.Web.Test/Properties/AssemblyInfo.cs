@@ -14,25 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using Remotion.Data.DomainObjects;
 
 //
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Remotion Persistence Adapter Test Project")]
-[assembly: AssemblyDescription("Test Project for the Remotion Persistence Adapter Library")]
-[assembly: AssemblyConfiguration(".NET Framework: net-1.1, build type: release")]
-[assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
-[assembly: AssemblyProduct("Remotion")]
-[assembly: AssemblyCopyright("(c) 2005 rubicon informationstechnologie gmbh, www.rubicon-it.com")]
+[assembly: AssemblyTitle("")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
 
 //
 // Version information for an assembly consists of the following four values:
@@ -47,6 +43,4 @@ using Remotion.Data.DomainObjects;
 
 [assembly: AssemblyVersion("1.0.*")]
 
-//
-// In order to sign your assembly you must specify a key to use. Refer to the 
-// Microsoft .NET Framework documentation for more information on assembly signing.
+

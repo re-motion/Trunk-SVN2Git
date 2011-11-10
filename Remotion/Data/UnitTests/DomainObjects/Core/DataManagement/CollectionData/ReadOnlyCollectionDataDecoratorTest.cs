@@ -14,19 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using System.Linq;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionData
@@ -44,8 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     public override void SetUp ()
     {
-      base.SetUp ();
-      _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+      base.SetUp();
+      _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
       _readOnlyDecorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub, true);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -58,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void Enumeration ()
     {
       StubInnerData (_order1, _order2, _order3);
-      Assert.That (_readOnlyDecorator.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (_readOnlyDecorator.ToArray(), Is.EqualTo (new[] { _order1, _order2, _order3 }));
     }
 
     [Test]
@@ -89,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _wrappedDataStub.Stub (stub => stub.IsDataComplete).Return (true);
       Assert.That (_readOnlyDecorator.IsDataComplete, Is.True);
 
-      _wrappedDataStub.BackToRecord ();
+      _wrappedDataStub.BackToRecord();
       _wrappedDataStub.Stub (stub => stub.IsDataComplete).Return (false);
       Assert.That (_readOnlyDecorator.IsDataComplete, Is.False);
     }
@@ -97,23 +93,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void EnsureDataComplete ()
     {
-      _readOnlyDecorator.EnsureDataComplete ();
-      _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataComplete ());
+      _readOnlyDecorator.EnsureDataComplete();
+      _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataComplete());
     }
-    
+
     [Test]
     public void GetDataStore_Allowed ()
     {
       var decorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub, true);
 
-      var fakeData = new DomainObjectCollectionData ();
-      _wrappedDataStub.Stub (stub => stub.GetDataStore ()).Return (fakeData);
+      var fakeData = new DomainObjectCollectionData();
+      _wrappedDataStub.Stub (stub => stub.GetDataStore()).Return (fakeData);
 
-      Assert.That (decorator.GetDataStore (), Is.SameAs (fakeData));
+      Assert.That (decorator.GetDataStore(), Is.SameAs (fakeData));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "This collection is read-only and does not support accessing its underlying data store.")]
     public void GetDataStore_Disallowed ()
     {
@@ -159,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot clear a read-only collection.")]
     public void Clear_Throws ()
     {
-      _readOnlyDecorator.Clear ();
+      _readOnlyDecorator.Clear();
     }
 
     [Test]
@@ -202,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private void StubInnerData (params DomainObject[] contents)
     {
       _wrappedDataStub.Stub (stub => stub.Count).Return (contents.Length);
-      _wrappedDataStub.Stub (stub => stub.GetEnumerator()).Return (((IEnumerable<DomainObject>)contents).GetEnumerator());
+      _wrappedDataStub.Stub (stub => stub.GetEnumerator()).Return (((IEnumerable<DomainObject>) contents).GetEnumerator());
 
       for (int i = 0; i < contents.Length; i++)
       {
