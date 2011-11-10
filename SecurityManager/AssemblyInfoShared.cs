@@ -24,7 +24,7 @@ using System.Reflection;
 // associated with an assembly.
 //
 [assembly: AssemblyConfiguration (".NET Framework: net-3.5, build type: Debug")]
-[assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
+[assembly: AssemblyCompany("rubicon IT GmbH")]
 [assembly: AssemblyProduct ("re-strict (www.re-motion.org)")]
 [assembly: AssemblyCopyright ("(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU AGPL 3.0")]
 [assembly: AssemblyTrademark ("")]
