@@ -1,4 +1,5 @@
 @echo off
+pushd %~dp0
 set msbuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
 if not exist remotion.snk goto nosnk
 
@@ -20,16 +21,17 @@ echo.
 echo Building re-motion has failed.
 start build\BuildOutput\log\build.log
 pause
-
+popd
 exit /b 1
 
 :build_succeeded
 echo.
 pause
+popd
 exit /b 0
 
 :nosnk
 echo remotion.snk does not exists. Please run Generate-Snk.cmd from a Visual Studio Command Prompt.
 pause
-
+popd
 exit /b 2
