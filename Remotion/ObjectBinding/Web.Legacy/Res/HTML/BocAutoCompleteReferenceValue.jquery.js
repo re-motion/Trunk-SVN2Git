@@ -506,9 +506,9 @@
         }
 
         // fills in the input box w/the first match (assumed to be the best match)
-        // q: the term entered
+        // query: the term entered
         // sValue: the first matching result
-        function autoFill(q, sValue) {
+        function autoFill(query, sValue) {
             // re-motion: rewritten
             if (!options.autoFill)
                 return;
@@ -517,20 +517,26 @@
             if (lastKeyPressCode == KEY.BACKSPACE || lastKeyPressCode == KEY.DEL)
                 return;
 
-            // autofill in the complete box w/the first match as long as the user hasn't entered in more data
-            if (lastWord($input.val()).toLowerCase() != q.toLowerCase())
-                return;
-            
-            if (lastWord(q).toLowerCase() == sValue.toLowerCase())
+            if (query == '')
                 return;
 
-            if (q == '')
+            // autofill in the complete box w/the first match as long as the user hasn't entered in more data
+            if (lastWord($input.val()).toLowerCase() != query.toLowerCase())
                 return;
+
+            var lastWordInQuery = lastWord(query);
+            //sValue completely matches the user's input, don't autofill needed
+            if (lastWordInQuery.toLowerCase() == sValue.toLowerCase())
+                return;
+
+            //sValue does not start with the user's input, don't autofill
+            if (sValue.length >= lastWordInQuery.length && sValue.substring(0, lastWordInQuery.length).toLowerCase() != lastWordInQuery.toLowerCase())
+              return;
 
             // fill in the value (keep the case the user has typed)
-            $input.val($input.val() + sValue.substring(lastWord(q).length));
+            $input.val($input.val() + sValue.substring(lastWordInQuery.length));
             // select the portion of the value not typed by the user (so the next character will erase)
-            $.Autocompleter.Selection(input, q.length, q.length + sValue.length);
+            $.Autocompleter.Selection(input, query.length, query.length + sValue.length);
         };
 
         function closeDropDownListAndSetValue(value){
@@ -571,7 +577,7 @@
             }
             if (wasVisible)
             // position cursor at end of input field
-                $.Autocompleter.Selection(input, input.value.length, input.value.length);
+                $.Autocompleter.Selection(input, $input.val().length, $input.val().length);
         };
             
         function resetState() {
@@ -587,6 +593,9 @@
                 if (data.length) {
                     autoFill(q, data[0].result);
                     select.show();
+                    if (options.selectFirst ($input.val(), q)) {
+                      select.selectItem (0, false);
+                    }
                 } else {
                     select.hide();
                 }
@@ -1122,13 +1131,13 @@
 
             var max = data.length;
             for (var i = startPosition; i < max; i++) {
-                if (data[i].result.toLowerCase().indexOf(term.toLowerCase()) == 0) {
+                if (data[i].result.toLowerCase().indexOf(term.toLowerCase()) != -1) {
                     return i;
                 }
             }
 
             for (var i = startPosition - 1; i >= 0; i--) {
-                if (data[i].result.toLowerCase().indexOf(term.toLowerCase()) == 0) {
+                if (data[i].result.toLowerCase().indexOf(term.toLowerCase()) != -1) {
                     return i;
                 }
             }
