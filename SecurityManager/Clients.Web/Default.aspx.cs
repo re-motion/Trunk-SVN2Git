@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Domain;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
 namespace Remotion.SecurityManager.Clients.Web
@@ -58,7 +57,7 @@ namespace Remotion.SecurityManager.Clients.Web
     {
       if (UsersField.BusinessObjectUniqueIdentifier == null)
       {
-        ApplicationInstance.SetCurrentPrincipal (null);
+        ApplicationInstance.SetCurrentPrincipal (SecurityManagerPrincipal.Null);
       }
       else
       {

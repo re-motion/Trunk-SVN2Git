@@ -88,7 +88,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
     protected void UsersField_SelectionChanged (object sender, EventArgs e)
     {
       if (UsersField.BusinessObjectUniqueIdentifier == null)
-        ApplicationInstance.SetCurrentPrincipal (null);
+        ApplicationInstance.SetCurrentPrincipal (SecurityManagerPrincipal.Null);
       else
       {
         var user = SecurityManagerUser.GetObject (ObjectID.Parse (UsersField.BusinessObjectUniqueIdentifier));
