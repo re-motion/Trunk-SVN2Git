@@ -87,6 +87,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _relationEndPointManager.RelationEndPoints; }
     }
 
+    // TODO 4499: Remove
     public DomainObjectStateCache DomainObjectStateCache
     {
       get { return _domainObjectStateCache; }
@@ -108,22 +109,25 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return matchingObjects;
     }
 
+    // TODO 4498: Remove
     public IEnumerable<PersistableData> GetNewChangedDeletedData ()
     {
       return GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New);
     }
 
+    // TODO 4411: Remove
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
       return from endPointID in dataContainer.AssociatedRelationEndPointIDs
-             let endPoint = _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID)
+             let endPoint = GetRelationEndPointWithLazyLoad (endPointID)
              let oppositeRelationEndPointIDs = endPoint.GetOppositeRelationEndPointIDs ()
              from oppositeEndPointID in oppositeRelationEndPointIDs
-             select _relationEndPointManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+             select GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
 
+    // TODO 4498: Remove
     public bool HasRelationChanged (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
