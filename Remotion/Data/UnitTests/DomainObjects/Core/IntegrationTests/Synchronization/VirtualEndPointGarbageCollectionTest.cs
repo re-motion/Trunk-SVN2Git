@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
     [Test]
     [Ignore ("TODO 4504")]
-    public void UnloadLastFK_LeavesCollectionInMemory_ButCanBePurged ()
+    public void UnloadLastFK_CausesCollectionEndPointToBeRemoved_ButKeepsDomainObjectCollectionInMemory ()
     {
       SetDatabaseModifyable();
 
@@ -60,9 +60,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       UnloadService.UnloadData (ClientTransactionMock, unsynchronizedCompany.ID);
 
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
+      
+      // But DomainObjectCollection stays valid
       Assert.That (industrialSector.Companies, Is.SameAs (companies));
-
-      // TODO 4502: Can now be purged; afterwards: Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
     }
 
     [Test]
@@ -142,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
     [Test]
     [Ignore ("TODO 4504")]
-    public void UnloadCollectionEndPoint_WithoutReferences_LeavesDomainObjectCollectionIntact ()
+    public void UnloadCollectionEndPoint_WithoutReferences_CausesEndPointToBeRemoved_ButKeepsDomainObjectCollectionInMemory ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var customerOrders = customer.Orders;
@@ -155,8 +156,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, virtualEndPointID);
 
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
+
+      // But DomainObjectCollection stays valid
       Assert.That (customerOrders, Is.SameAs (customer.Orders));
-      // TODO 4502: Can now be purged; afterwards: Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
     }
 
     [Test]
