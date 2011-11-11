@@ -39,6 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var domainObject = DomainObjectMother.CreateFakeObject<Order>();
       var persistableData = new PersistableData (domainObject, StateType.Unchanged, dataContainer, new IRelationEndPoint[0]);
       var dataManagementCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
+      var collectionEndPoint = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      var virtualObjectEndPoint = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
 
       CheckDelegation (dm => dm.GetOrCreateVirtualEndPoint (relationEndPointID), virtualEndPoint);
       CheckDelegation (dm => dm.GetRelationEndPointWithLazyLoad (relationEndPointID), virtualEndPoint);
@@ -60,6 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CheckDelegation (dm => dm.CreateDeleteCommand (domainObject), dataManagementCommand);
       CheckDelegation (dm => dm.CreateUnloadCommand (new[] { objectID }), dataManagementCommand);
       CheckDelegation (dm => dm.CreateUnloadVirtualEndPointsCommand (new[] { relationEndPointID }), dataManagementCommand);
+      CheckDelegation (dm => dm.LoadLazyCollectionEndPoint (collectionEndPoint));
+      CheckDelegation (dm => dm.LoadLazyVirtualObjectEndPoint (virtualObjectEndPoint));
+      CheckDelegation (dm => dm.LoadLazyDataContainer (objectID), dataContainer);
     }
 
     private void CheckDelegation<TR> (Func<IDataManager, TR> func, TR fakeResult)

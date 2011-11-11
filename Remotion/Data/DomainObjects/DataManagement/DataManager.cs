@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <see cref="ClientTransaction"/>.
   /// </summary>
   [Serializable]
-  public class DataManager : ISerializable, IDeserializationCallback, IDataManager, ILazyLoader
+  public class DataManager : ISerializable, IDeserializationCallback, IDataManager
   {
     private ClientTransaction _clientTransaction;
     private IClientTransactionListener _transactionEventSink;
@@ -53,12 +53,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
         ClientTransaction clientTransaction, 
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IObjectLoader objectLoader,
-        Func<DataManager, IRelationEndPointManager> endPointManagerFactory)
+        IRelationEndPointManager relationEndPointManager)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
-      ArgumentUtility.CheckNotNull ("endPointManagerFactory", endPointManagerFactory);
+      ArgumentUtility.CheckNotNull ("relationEndPointManager", relationEndPointManager);
 
       _clientTransaction = clientTransaction;
       _transactionEventSink = clientTransaction.TransactionEventSink;
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _objectLoader = objectLoader;
       _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
 
-      _relationEndPointManager = endPointManagerFactory (this);
+      _relationEndPointManager = relationEndPointManager;
     }
 
     public ClientTransaction ClientTransaction
@@ -257,7 +257,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (virtualObjectEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var alreadyLoadedObjectDataProvider = new LoadedObjectDataProvider (this, _invalidDomainObjectManager);
       var domainObject = _objectLoader.GetOrLoadRelatedObject (virtualObjectEndPoint.ID);
 
       // Since RelationEndPointManager.RegisterEndPoint contains a query optimization for 1:1 relations, it is possible that

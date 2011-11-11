@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           ClientTransactionMock,
           _invalidDomainObjectManagerMock,
           _objectLoaderMock,
-          dm => _endPointManagerMock);
+          _endPointManagerMock);
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
       var endPointManager = MockRepository.GenerateStub<IRelationEndPointManager>();
 
-      var dataManager = new DataManager (clientTransaction, invalidDomainObjectManager, objectLoader, dm => endPointManager);
+      var dataManager = new DataManager (clientTransaction, invalidDomainObjectManager, objectLoader, endPointManager);
 
       var manager = DataManagerTestHelper.GetRelationEndPointManager (dataManager);
       Assert.That (manager, Is.SameAs (endPointManager));

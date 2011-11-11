@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.UnitTesting;
@@ -65,19 +64,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var fakeRelationEndPointManager = MockRepository.GenerateStub<IRelationEndPointManager> ();
       var fakeObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
 
-      DataManager endPointProviderDataManager = null;
-      DataManager lazyLoaderDataManager = null;
+      DelegatingDataManager endPointProviderDataManager = null;
+      DelegatingDataManager lazyLoaderDataManager = null;
       DelegatingDataManager objectLoaderDataManager = null;
 
       var factoryPartialMock = MockRepository.GeneratePartialMock<TestableClientTransactionComponentFactoryBase>();
       factoryPartialMock
-          .Expect (mock => mock.CallGetEndPointProvider (Arg<DataManager>.Is.NotNull))
+          .Expect (mock => mock.CallGetEndPointProvider (Arg<DelegatingDataManager>.Is.TypeOf))
           .Return (fakeEndPointProvider)
-          .WhenCalled (mi => endPointProviderDataManager = (DataManager) mi.Arguments[0]);
+          .WhenCalled (mi => endPointProviderDataManager = (DelegatingDataManager) mi.Arguments[0]);
       factoryPartialMock
-          .Expect (mock => mock.CallGetLazyLoader (Arg<DataManager>.Is.NotNull))
+          .Expect (mock => mock.CallGetLazyLoader (Arg<DelegatingDataManager>.Is.TypeOf))
           .Return (fakeLazyLoader)
-          .WhenCalled (mi => lazyLoaderDataManager = (DataManager) mi.Arguments[0]);
+          .WhenCalled (mi => lazyLoaderDataManager = (DelegatingDataManager) mi.Arguments[0]);
       factoryPartialMock
           .Expect (
               mock => mock.CallCreateRelationEndPointManager (_fakeConstructedTransaction, fakeEndPointProvider, fakeLazyLoader))
@@ -94,11 +93,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           .WhenCalled (mi => objectLoaderDataManager = (DelegatingDataManager) mi.Arguments[4]);
       factoryPartialMock.Replay();
 
-      var dataManager = (DataManager) factoryPartialMock.CreateDataManager (_fakeConstructedTransaction, eventSink, invalidDomainObjectManager, persistenceStrategy);
+      var dataManager = (DataManager) factoryPartialMock.CreateDataManager (
+          _fakeConstructedTransaction, 
+          eventSink, 
+          invalidDomainObjectManager, 
+          persistenceStrategy);
 
       factoryPartialMock.VerifyAllExpectations();
-      Assert.That (endPointProviderDataManager, Is.SameAs (dataManager));
-      Assert.That (lazyLoaderDataManager, Is.SameAs (dataManager));
+      Assert.That (endPointProviderDataManager.InnerDataManager, Is.SameAs (dataManager));
+      Assert.That (lazyLoaderDataManager.InnerDataManager, Is.SameAs (dataManager));
       Assert.That (objectLoaderDataManager.InnerDataManager, Is.SameAs (dataManager));
 
       Assert.That (dataManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));

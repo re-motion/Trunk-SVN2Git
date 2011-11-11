@@ -71,12 +71,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var delegatingDataManager = new DelegatingDataManager ();
       var objectLoader = CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, delegatingDataManager);
 
-      Func<DataManager, IRelationEndPointManager> endPointManagerFactory = dm => CreateRelationEndPointManager (
+      var endPointManager = CreateRelationEndPointManager (
           constructedTransaction,
-          GetEndPointProvider (dm),
-          GetLazyLoader (dm));
+          GetEndPointProvider (delegatingDataManager),
+          GetLazyLoader (delegatingDataManager));
 
-      var dataManager = new DataManager (constructedTransaction, invalidDomainObjectManager, objectLoader, endPointManagerFactory);
+      var dataManager = new DataManager (constructedTransaction, invalidDomainObjectManager, objectLoader, endPointManager);
       delegatingDataManager.InnerDataManager = dataManager;
       return dataManager;
     }
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return extensionCollection;
     }
 
-    protected virtual ILazyLoader GetLazyLoader (DataManager dataManager)
+    protected virtual ILazyLoader GetLazyLoader (IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       return dataManager;

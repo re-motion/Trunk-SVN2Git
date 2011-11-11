@@ -137,6 +137,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return SafeInnerDataManager.CreateUnloadVirtualEndPointsCommand (endPointIDs);
     }
 
+    public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
+    {
+      SafeInnerDataManager.LoadLazyCollectionEndPoint (collectionEndPoint);
+    }
+
+    public void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint)
+    {
+      SafeInnerDataManager.LoadLazyVirtualObjectEndPoint (virtualObjectEndPoint);
+    }
+
+    public DataContainer LoadLazyDataContainer (ObjectID objectID)
+    {
+      return SafeInnerDataManager.LoadLazyDataContainer (objectID);
+    }
+
     private IDataManager SafeInnerDataManager
     {
       get

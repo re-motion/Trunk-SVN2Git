@@ -64,10 +64,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedManager.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedManager.ClientTransaction, Is.InstanceOf (typeof (ClientTransactionMock)));
       Assert.That (deserializedManager.ClientTransaction, Is.Not.SameAs (ClientTransactionMock));
-
-      var deserializedDataManager = ClientTransactionTestHelper.GetDataManager (deserializedManager.ClientTransaction);
-
-      Assert.That (deserializedManager.LazyLoader, Is.SameAs (deserializedDataManager));
+      Assert.That (deserializedManager.LazyLoader, Is.Not.Null);
+      Assert.That (deserializedManager.LazyLoader, Is.TypeOf (_relationEndPointManager.EndPointFactory.GetType()));
       Assert.That (deserializedManager.EndPointFactory, Is.Not.Null);
       Assert.That (deserializedManager.EndPointFactory, Is.TypeOf (_relationEndPointManager.EndPointFactory.GetType()));
       Assert.That (deserializedManager.RegistrationAgent, Is.TypeOf (_relationEndPointManager.RegistrationAgent.GetType ()));

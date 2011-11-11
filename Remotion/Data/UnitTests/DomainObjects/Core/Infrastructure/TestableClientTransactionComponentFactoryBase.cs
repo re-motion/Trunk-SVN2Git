@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       return GetEndPointProvider (dataManager);
     }
 
-    public ILazyLoader CallGetLazyLoader (DataManager dataManager)
+    public ILazyLoader CallGetLazyLoader (IDataManager dataManager)
     {
       return GetLazyLoader (dataManager);
     }
