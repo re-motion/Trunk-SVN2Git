@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// <summary>
   /// Visits the given <see cref="IRdbmsStorageEntityDefinition"/> and executes a handler based on the entity's type.
   /// </summary>
-  public class RdbmsStorageInlineEntityDefinitionVisitor
+  public class InlineRdbmsStorageEntityDefinitionVisitor
   {
     public static T Visit<T> (
         IRdbmsStorageEntityDefinition entityDefinition,

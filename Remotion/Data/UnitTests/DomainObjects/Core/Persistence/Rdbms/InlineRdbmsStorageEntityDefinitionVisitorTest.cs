@@ -24,7 +24,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class RdbmsStorageInlineEntityDefinitionVisitorTest : StandardMappingTest
+  public class InlineRdbmsStorageEntityDefinitionVisitorTest : StandardMappingTest
   {
     public interface IVisitorCallReceiver
     {
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _voidReceiverMock.Expect (mock => mock.HandleTableDefinition (Arg.Is (_tableDefinition), Arg<Action<IRdbmsStorageEntityDefinition>>.Is.Anything));
       _voidReceiverMock.Replay();
 
-      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+      InlineRdbmsStorageEntityDefinitionVisitor.Visit (
           _tableDefinition,
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _voidReceiverMock.Expect (mock => mock.HandleFilterViewDefinition (Arg.Is (_filterViewDefinition), Arg<Action<IRdbmsStorageEntityDefinition>>.Is.Anything));
       _voidReceiverMock.Replay ();
 
-      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+      InlineRdbmsStorageEntityDefinitionVisitor.Visit (
           _filterViewDefinition,
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _voidReceiverMock.Expect (mock => mock.HandleUnionViewDefinition (Arg.Is (_unionViewDefinition), Arg<Action<IRdbmsStorageEntityDefinition>>.Is.Anything));
       _voidReceiverMock.Replay ();
  
-      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+      InlineRdbmsStorageEntityDefinitionVisitor.Visit (
           _unionViewDefinition,
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _voidReceiverMock.Expect (mock => mock.HandleEmptyViewDefinition (Arg.Is (_emptyViewDefinition), Arg<Action<IRdbmsStorageEntityDefinition>>.Is.Anything));
       _voidReceiverMock.Replay ();
 
-      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+      InlineRdbmsStorageEntityDefinitionVisitor.Visit (
           _emptyViewDefinition,
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _voidReceiverMock.Replay ();
 
-      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+      InlineRdbmsStorageEntityDefinitionVisitor.Visit (
           _tableDefinition,
           _voidReceiverMock.HandleTableDefinition,
           _voidReceiverMock.HandleFilterViewDefinition,
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         .Return("test");
       _nonVoidReceiverMock.Replay ();
 
-      var result = RdbmsStorageInlineEntityDefinitionVisitor.Visit<string> (
+      var result = InlineRdbmsStorageEntityDefinitionVisitor.Visit<string> (
           _tableDefinition,
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         .Return ("test");
       _nonVoidReceiverMock.Replay();
 
-      var result = RdbmsStorageInlineEntityDefinitionVisitor.Visit<string> (
+      var result = InlineRdbmsStorageEntityDefinitionVisitor.Visit<string> (
           _filterViewDefinition,
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         .Return ("test");
       _nonVoidReceiverMock.Replay ();
 
-      var result = RdbmsStorageInlineEntityDefinitionVisitor.Visit<string> (
+      var result = InlineRdbmsStorageEntityDefinitionVisitor.Visit<string> (
           _unionViewDefinition,
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         .Return ("test");
       _nonVoidReceiverMock.Replay ();
 
-      var result = RdbmsStorageInlineEntityDefinitionVisitor.Visit<string> (
+      var result = InlineRdbmsStorageEntityDefinitionVisitor.Visit<string> (
           _emptyViewDefinition,
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,
@@ -311,7 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _nonVoidReceiverMock.Replay ();
 
-      var result = RdbmsStorageInlineEntityDefinitionVisitor.Visit<string> (
+      var result = InlineRdbmsStorageEntityDefinitionVisitor.Visit<string> (
           _tableDefinition,
           _nonVoidReceiverMock.HandleTableDefinition,
           _nonVoidReceiverMock.HandleFilterViewDefinition,

@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
     public TableDefinition GetTableDefinition (ObjectID objectID)
     {
-      return RdbmsStorageInlineEntityDefinitionVisitor.Visit<TableDefinition> (
+      return InlineRdbmsStorageEntityDefinitionVisitor.Visit<TableDefinition> (
           _rdbmsPersistenceModelProvider.GetEntityDefinition (objectID.ClassDefinition),
           (table, continuation) => table,
           (filterView, continuation) => continuation (filterView.BaseEntity),

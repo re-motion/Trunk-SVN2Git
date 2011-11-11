@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      RdbmsStorageInlineEntityDefinitionVisitor.Visit (
+      InlineRdbmsStorageEntityDefinitionVisitor.Visit (
           entityDefinition,
           (table, continuation) => AddTableDefinition (table),
           (filterView, continuation) => AddFilterViewDefinition (filterView),
