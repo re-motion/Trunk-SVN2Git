@@ -37,11 +37,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    public void UnloadLastFK_CausesCollectionEndPointToBeRemoved ()
+    [Ignore ("TODO 4504")]
+    public void UnloadLastFK_LeavesCollectionInMemory_ButCanBePurged ()
     {
       SetDatabaseModifyable();
 
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var companies = industrialSector.Companies;
       industrialSector.Companies.EnsureDataComplete();
 
       var unsynchronizedCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
@@ -57,7 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.False);
 
       UnloadService.UnloadData (ClientTransactionMock, unsynchronizedCompany.ID);
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
+
+      Assert.That (industrialSector.Companies, Is.SameAs (companies));
+
+      // TODO 4502: Can now be purged; afterwards: Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
     }
 
     [Test]
@@ -136,10 +141,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_WithoutReferences_CausesEndPointToBeRemoved ()
+    [Ignore ("TODO 4504")]
+    public void UnloadCollectionEndPoint_WithoutReferences_LeavesDomainObjectCollectionIntact ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
-      customer.Orders.EnsureDataComplete();
+      var customerOrders = customer.Orders;
+      customer.Orders.EnsureDataComplete ();
       Assert.That (customer.Orders, Is.Empty);
 
       var virtualEndPointID = RelationEndPointID.Create (customer, c => c.Orders);
@@ -148,14 +155,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, virtualEndPointID);
 
-      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
+      Assert.That (customerOrders, Is.SameAs (customer.Orders));
+      // TODO 4502: Can now be purged; afterwards: Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
     }
 
     [Test]
     public void UnloadCollectionEndPoint_WithReferences_LeavesIncompleteEndPoint ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      customer.Orders.EnsureDataComplete ();
+      var customerOrders = customer.Orders;
+      customerOrders.EnsureDataComplete ();
       Assert.That (customer.Orders, Is.Not.Empty);
 
       var virtualEndPointID = RelationEndPointID.Create (customer, c => c.Orders);
@@ -166,6 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.False);
+      Assert.That (customerOrders, Is.SameAs (customer.Orders));
     }
 
     [Test]
