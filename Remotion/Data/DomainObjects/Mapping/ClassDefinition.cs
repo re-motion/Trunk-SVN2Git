@@ -541,5 +541,17 @@ namespace Remotion.Data.DomainObjects.Mapping
         }
       }
     }
+
+    [Obsolete ("This method has been removed. Use the StorageEntityDefinition property instead. (1.13.118)")]
+    public string GetEntityName ()
+    {
+      throw new NotImplementedException();
+    }
+
+    [Obsolete ("This method has been removed. Use the StorageEntityDefinition property instead. (1.13.118)")]
+    public string[] GetAllConcreteEntityNames ()
+    {
+      throw new NotImplementedException ();
+    }
   }
 }
