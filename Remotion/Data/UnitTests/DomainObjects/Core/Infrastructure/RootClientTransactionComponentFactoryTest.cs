@@ -26,11 +26,13 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Rhino.Mocks;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -161,6 +163,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
       Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
+    }
+
+    [Test]
+    public void CreateObjectLoader ()
+    {
+      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      var dataManager = MockRepository.GenerateStub<IDataManager> ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+
+      var fakeBasicObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+
+      var factoryPartialMock = MockRepository.GeneratePartialMock<RootClientTransactionComponentFactory> ();
+      factoryPartialMock
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (
+              mock,
+              "CreateBasicObjectLoader",
+              _fakeConstructedTransaction,
+              eventSink,
+              persistenceStrategy,
+              invalidDomainObjectManager,
+              dataManager))
+          .Return (fakeBasicObjectLoader);
+      factoryPartialMock.Replay ();
+
+      var result = PrivateInvoke.InvokeNonPublicMethod (
+          factoryPartialMock, 
+          "CreateObjectLoader",
+          _fakeConstructedTransaction,
+          eventSink,
+          persistenceStrategy,
+          invalidDomainObjectManager,
+          dataManager);
+
+      Assert.That (result, Is.TypeOf (typeof (EagerFetchingObjectLoaderDecorator)));
+      var objectLoader = (EagerFetchingObjectLoaderDecorator) result;
+      Assert.That (objectLoader.DecoratedObjectLoader, Is.SameAs (fakeBasicObjectLoader));
+      Assert.That (objectLoader.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
+      Assert.That (
+          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).RealObjectDataRegistrationAgent,
+          Is.TypeOf<FetchedRealObjectRelationDataRegistrationAgent> ());
+      Assert.That (
+          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).VirtualObjectDataRegistrationAgent,
+          Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent> ()
+              .With.Property<FetchedVirtualObjectRelationDataRegistrationAgent> (a => a.LoadedDataContainerProvider).SameAs (dataManager)
+              .And.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
+      Assert.That (
+          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).CollectionDataRegistrationAgent,
+          Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent> ()
+              .With.Property<FetchedVirtualObjectRelationDataRegistrationAgent> (a => a.LoadedDataContainerProvider).SameAs (dataManager)
+              .And.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
     }
   }
 }

@@ -185,53 +185,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateObjectLoader ()
-    {
-      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
-      var dataManager = MockRepository.GenerateStub<IDataManager> ();
-      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
-
-      var fakeBasicObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
-
-      var factoryPartialMock = MockRepository.GeneratePartialMock<TestableClientTransactionComponentFactoryBase> ();
-      factoryPartialMock
-          .Expect (mock => mock.CallCreateBasicObjectLoader (
-              _fakeConstructedTransaction,
-              eventSink,
-              persistenceStrategy,
-              invalidDomainObjectManager,
-              dataManager))
-          .Return (fakeBasicObjectLoader);
-      factoryPartialMock.Replay ();
-
-      var result = factoryPartialMock.CallCreateObjectLoader (
-          _fakeConstructedTransaction,
-          eventSink,
-          persistenceStrategy,
-          invalidDomainObjectManager,
-          dataManager);
-
-      Assert.That (result, Is.TypeOf (typeof (EagerFetchingObjectLoaderDecorator)));
-      var objectLoader = (EagerFetchingObjectLoaderDecorator) result;
-      Assert.That (objectLoader.DecoratedObjectLoader, Is.SameAs (fakeBasicObjectLoader));
-      Assert.That (objectLoader.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).RealObjectDataRegistrationAgent,
-          Is.TypeOf<FetchedRealObjectRelationDataRegistrationAgent> ());
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).VirtualObjectDataRegistrationAgent,
-          Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent> ()
-              .With.Property<FetchedVirtualObjectRelationDataRegistrationAgent> (a => a.LoadedDataContainerProvider).SameAs (dataManager)
-              .And.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
-      Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).CollectionDataRegistrationAgent,
-          Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent> ()
-              .With.Property<FetchedVirtualObjectRelationDataRegistrationAgent> (a => a.LoadedDataContainerProvider).SameAs (dataManager)
-              .And.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
-    }
-
-    [Test]
     public void CreateBasicObjectLoader ()
     {
       var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();

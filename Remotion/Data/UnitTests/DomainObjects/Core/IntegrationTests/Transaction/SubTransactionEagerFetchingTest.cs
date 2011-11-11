@@ -60,13 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Assert.That (result.ToArray (), Is.EquivalentTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2) }));
 
         var subDataManager = ClientTransactionTestHelper.GetIDataManager (ClientTransaction.Current);
-        Assert.That (subDataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
-        Assert.That (subDataManager.GetRelationEndPointWithoutLoading (id2), Is.Not.Null);
-
-        Assert.That (((ICollectionEndPoint) subDataManager.GetRelationEndPointWithoutLoading (id1)).Collection,
-          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
-        Assert.That (((ICollectionEndPoint) subDataManager.GetRelationEndPointWithoutLoading (id2)).Collection,
-            Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem3) }));
+        Assert.That (subDataManager.GetRelationEndPointWithoutLoading (id1), Is.Null);
+        Assert.That (subDataManager.GetRelationEndPointWithoutLoading (id2), Is.Null);
       }
 
       Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
@@ -79,7 +74,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4496")]
     public void EagerFetching_OnlyExecutesQueryOnce ()
     {
       var outerQuery = QueryFactory.CreateCollectionQuery (
@@ -123,7 +117,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4497")]
     public void EagerFetching_UsesRelationDataFromParent_InsteadOfFetching ()
     {
       // Load - and change - relation data prior to executing the query

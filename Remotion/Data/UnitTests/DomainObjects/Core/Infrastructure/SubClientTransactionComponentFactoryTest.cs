@@ -176,7 +176,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
       Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
+    }
 
+    [Test]
+    public void CreateObjectLoader ()
+    {
+      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      var dataManager = MockRepository.GenerateStub<IDataManager> ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+
+      var fakeBasicObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+
+      var factoryPartialMock = MockRepository.GeneratePartialMock<SubClientTransactionComponentFactory> (
+          _parentTransaction, 
+          _parentInvalidDomainObjectManagerStub);
+      factoryPartialMock
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (
+              mock,
+              "CreateBasicObjectLoader",
+              _fakeConstructedTransaction,
+              eventSink,
+              persistenceStrategy,
+              invalidDomainObjectManager,
+              dataManager))
+          .Return (fakeBasicObjectLoader);
+      factoryPartialMock.Replay ();
+
+      var result = PrivateInvoke.InvokeNonPublicMethod (
+          factoryPartialMock,
+          "CreateObjectLoader",
+          _fakeConstructedTransaction,
+          eventSink,
+          persistenceStrategy,
+          invalidDomainObjectManager,
+          dataManager);
+
+      Assert.That (result, Is.SameAs (fakeBasicObjectLoader));
     }
   }
 }

@@ -130,5 +130,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (endPointProvider);
       return new RelationEndPointManager (clientTransaction, lazyLoader, relationEndPointFactory, relationEndPointRegistrationAgent);
     }
+
+    protected override IObjectLoader CreateObjectLoader (
+        ClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
+      return CreateBasicObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
+    }
   }
 }

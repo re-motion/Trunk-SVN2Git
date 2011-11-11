@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -46,6 +45,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ClientTransaction constructedTransaction,
         IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader);
+
+    protected abstract IObjectLoader CreateObjectLoader (
+        ClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager);
 
     public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
     {
@@ -118,30 +124,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return dataManager;
     }
 
-    protected virtual IObjectLoader CreateObjectLoader (
+    protected virtual IObjectLoader CreateBasicObjectLoader (
         ClientTransaction constructedTransaction,
         IClientTransactionListener eventSink,
         IPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager)
-    {
-      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
-      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
-      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      
-      var objectLoader = CreateBasicObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
-
-      IFetchedRelationDataRegistrationAgent registrationAgent =
-          new DelegatingFetchedRelationDataRegistrationAgent (
-              new FetchedRealObjectRelationDataRegistrationAgent(),
-              new FetchedVirtualObjectRelationDataRegistrationAgent (dataManager, dataManager),
-              new FetchedCollectionRelationDataRegistrationAgent (dataManager, dataManager));
-      return new EagerFetchingObjectLoaderDecorator (objectLoader, registrationAgent);
-    }
-
-    protected virtual IObjectLoader CreateBasicObjectLoader (ClientTransaction constructedTransaction, IClientTransactionListener eventSink, IPersistenceStrategy persistenceStrategy, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager)
     {
       var loadedObjectDataProvider = new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager);
       return new ObjectLoader (

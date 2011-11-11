@@ -64,6 +64,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       throw new NotImplementedException();
     }
 
+    protected override IObjectLoader CreateObjectLoader (ClientTransaction constructedTransaction, IClientTransactionListener eventSink, IPersistenceStrategy persistenceStrategy, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager)
+    {
+      throw new NotImplementedException();
+    }
+
     public IRelationEndPointManager CallCreateRelationEndPointManager (
         ClientTransaction constructedTransaction, IRelationEndPointProvider endPointProvider, ILazyLoader lazyLoader)
     {
