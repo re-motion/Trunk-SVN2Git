@@ -429,6 +429,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Sort ()
+    {
+      _data.Add (_order1);
+      _data.Add (_order2);
+      _data.Add (_order3);
+      _data.Add (_order4);
+
+      var weights = new Dictionary<DomainObject, int> { { _order1, 3 }, { _order2, 2 }, { _order3, 0 }, { _order4, 1 } };
+
+      _data.Sort ((obj1, obj2) => weights[obj1].CompareTo (weights[obj2]));
+
+      Assert.That (_data, Is.EqualTo (new[] { _order3, _order4, _order2, _order1 }));
+    }
+
+    [Test]
+    public void Sort_ChangesVersion ()
+    {
+      CheckVersionChanged (() => _data.Sort ((one, two) => 0));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Collection was modified during enumeration.")]
     public void Enumeration_ChokesOnVersionChanges ()
     {

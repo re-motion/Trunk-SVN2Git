@@ -179,6 +179,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       }
     }
 
+    public void Sort (Comparison<DomainObject> comparison)
+    {
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
+
+      _orderedObjectIDs.Sort ((one, two) => comparison (GetObject (one), GetObject (two)));
+      IncrementVersion ();
+    }
+
     public IEnumerator<DomainObject> GetEnumerator ()
     {
       var enumeratedVersion = Version;
