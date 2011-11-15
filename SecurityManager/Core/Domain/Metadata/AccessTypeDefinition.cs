@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     [DBBidirectionalRelation ("AccessType")]
-    public abstract ObjectList<AccessTypeReference> References { get; }
+    protected abstract ObjectList<AccessTypeReference> References { get; }
 
     [DBBidirectionalRelation ("AccessType")]
     [EditorBrowsable(EditorBrowsableState.Never)]
