@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     [DBBidirectionalRelation ("DefinedStates")]
     [Mandatory]
-    public abstract StatePropertyDefinition StateProperty { get; set; }
+    public abstract StatePropertyDefinition StateProperty { get; }
 
     public override sealed Guid MetadataItemID
     {
