@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       public readonly OperationKind Operation;
       // AffectedObject can be null for OperationKind.Sort
       public readonly DomainObject AffectedObject;
-      // AffectedObject can be invalid for OperationKind.Sort
+      // Index can be invalid for OperationKind.Sort
       public readonly int Index;
 
       public DataChangeEventArgs (OperationKind operation, DomainObject affectedObject, int index)
