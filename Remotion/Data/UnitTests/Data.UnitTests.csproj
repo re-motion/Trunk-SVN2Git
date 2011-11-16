@@ -988,7 +988,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\OppositeObject.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectCollectionDataTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectMother.cs" />
-    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionStandaloneInvalidTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollection.EventRaiserTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionWrapperTest.cs" />

@@ -14,15 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
   [TestFixture]
-  public class DomainObjectCollectionIntegrationTest : ClientTransactionBaseTest
+  public class DomainObjectCollectionStandaloneInvalidTest : ClientTransactionBaseTest
   {
     [Test]
     public void Remove_WithInvalidObject ()
