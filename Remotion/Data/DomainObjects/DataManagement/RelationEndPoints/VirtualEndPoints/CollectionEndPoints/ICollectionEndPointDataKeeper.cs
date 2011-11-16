@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
@@ -17,7 +17,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject);
 
-    void SortCurrentAndOriginalData (IComparer<DomainObject> comparer);
+    void SortCurrentAndOriginalData (Comparison<DomainObject> comparison);
     void SetDataFromSubTransaction (ICollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider);
   }
 }

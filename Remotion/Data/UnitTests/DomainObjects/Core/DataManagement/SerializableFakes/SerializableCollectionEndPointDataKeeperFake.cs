@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       return false;
     }
 
-    public void SortCurrentAndOriginalData (IComparer<DomainObject> comparer)
+    public void SortCurrentAndOriginalData (Comparison<DomainObject> comparison)
     {
       throw new NotImplementedException();
     }

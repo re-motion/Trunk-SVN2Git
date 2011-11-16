@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -25,7 +24,6 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
@@ -47,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private CollectionEndPointDataKeeper _dataKeeper;
 
-    private DelegateBasedComparer<DomainObject> _comparer123;
+    private Comparison<DomainObject> _comparison123;
     private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
 
     public override void SetUp ()
@@ -77,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener>();
       _dataKeeper = new CollectionEndPointDataKeeper (_endPointID, _changeDetectionStrategyMock, _stateUpdateListenerMock);
 
-      _comparer123 = new DelegateBasedComparer<DomainObject> (Compare123);
+      _comparison123 = Compare123;
     }
 
     [Test]
@@ -435,7 +433,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
       dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject2));
       
-      dataKeeper.SortCurrentAndOriginalData(_comparer123);
+      dataKeeper.SortCurrentAndOriginalData(_comparison123);
 
       Assert.That (dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
       Assert.That (dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));

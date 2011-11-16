@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Utilities;
 using System.Linq;
@@ -189,26 +188,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     /// <summary>
     /// Sorts the data in this <see cref="ChangeCachingCollectionDataDecorator"/> and the data in the <see cref="OriginalData"/> collection
-    /// using the given <paramref name="comparer"/>. This operation causes the change state to be invalidated if the original data is not the same
+    /// using the given <paramref name="comparison"/>. This operation causes the change state to be invalidated if the original data is not the same
     /// as the current data.
     /// </summary>
-    /// <param name="comparer">The comparer to use for sorting the data.</param>
-    public void SortOriginalAndCurrent (IComparer<DomainObject> comparer)
+    /// <param name="comparison"></param>
+    public void SortOriginalAndCurrent (Comparison<DomainObject> comparison)
     {
-      ArgumentUtility.CheckNotNull ("comparer", comparer);
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
 
-      Sort (WrappedData, comparer);
+      Sort (WrappedData, comparison);
 
       // If the original collection has been copied, we must sort it manually. This might cause the change state cache to be wrong, so it is 
       // invalidated.
       if (_originalData.IsContentsCopied)
       {
-        Sort (_originalData, comparer);
+        Sort (_originalData, comparison);
         OnChangeStateUnclear ();
       }
     }
 
-    private static void Sort (IDomainObjectCollectionData collectionData, IComparer<DomainObject> comparer)
+    private static void Sort (IDomainObjectCollectionData collectionData, Comparison<DomainObject> comparer)
     {
       ArgumentUtility.CheckNotNull ("collectionData", collectionData);
       ArgumentUtility.CheckNotNull ("comparer", comparer);

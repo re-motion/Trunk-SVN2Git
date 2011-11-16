@@ -202,11 +202,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return _changeCachingCollectionData.HasChanged (_changeDetectionStrategy);
     }
 
-    public void SortCurrentAndOriginalData (IComparer<DomainObject> comparer)
+    public void SortCurrentAndOriginalData (Comparison<DomainObject> comparison)
     {
-      ArgumentUtility.CheckNotNull ("comparer", comparer);
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
 
-      _changeCachingCollectionData.SortOriginalAndCurrent (comparer);
+      _changeCachingCollectionData.SortOriginalAndCurrent (comparison);
     }
 
     public void Commit ()

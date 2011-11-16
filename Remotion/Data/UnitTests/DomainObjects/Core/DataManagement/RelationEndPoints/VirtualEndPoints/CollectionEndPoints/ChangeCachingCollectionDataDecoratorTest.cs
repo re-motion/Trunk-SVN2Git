@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -61,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_decoratorWithRealData.OriginalData.IsReadOnly, Is.True);
       Assert.That (_decoratorWithRealData.OriginalData, Is.TypeOf (typeof (ReadOnlyCollectionDataDecorator)));
 
-      var originalData = (ReadOnlyCollectionDataDecorator) _decoratorWithRealData.OriginalData;
+      var originalData = _decoratorWithRealData.OriginalData;
       Assert.That (originalData.IsGetDataStoreAllowed, Is.False);
     }
 
@@ -541,7 +539,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
 
       var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
-          (ReadOnlyCollectionDataDecorator) _decoratorWithRealData.OriginalData);
+          _decoratorWithRealData.OriginalData);
 
       var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
       Assert.That (originalDataStore, Is.SameAs (_decoratorWithRealData));
@@ -611,7 +609,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var decorator = new ChangeCachingCollectionDataDecorator (
           new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }), _stateUpdateListenerMock);
 
-      decorator.SortOriginalAndCurrent (new TypeComparer());
+      decorator.SortOriginalAndCurrent (CompareTypeNames);
 
       Assert.That (decorator.ToArray (), Is.EqualTo (new DomainObject[] { domainObject3, domainObject1, domainObject2 }));
       Assert.That (decorator.OriginalData.ToArray (), Is.EqualTo (new DomainObject[] { domainObject3, domainObject1, domainObject2 }));
@@ -627,7 +625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var decorator = new ChangeCachingCollectionDataDecorator (
           new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }), _stateUpdateListenerMock);
 
-      decorator.SortOriginalAndCurrent (new TypeComparer ());
+      decorator.SortOriginalAndCurrent (CompareTypeNames);
 
       CheckOriginalDataNotCopied (decorator);
     }
@@ -644,7 +642,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       PrepareCheckChangeFlagRetained (decorator, false);
 
-      decorator.SortOriginalAndCurrent (new TypeComparer ());
+      decorator.SortOriginalAndCurrent (CompareTypeNames);
 
       CheckChangeFlagRetained (decorator);
     }
@@ -661,7 +659,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       decorator.Remove (domainObject2);
 
-      decorator.SortOriginalAndCurrent (new TypeComparer ());
+      decorator.SortOriginalAndCurrent (CompareTypeNames);
 
       Assert.That (decorator.ToArray (), Is.EqualTo (new DomainObject[] { domainObject3, domainObject1}));
       Assert.That (decorator.OriginalData.ToArray (), Is.EqualTo (new DomainObject[] { domainObject3, domainObject1, domainObject2 }));
@@ -681,7 +679,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       PrepareCheckChangeFlagInvalidated (decorator, true);
 
-      decorator.SortOriginalAndCurrent (new TypeComparer ());
+      decorator.SortOriginalAndCurrent (CompareTypeNames);
 
       CheckChangeFlagInvalidated (decorator);
     }
@@ -762,7 +760,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private void CheckOriginalDataNotCopied (ChangeCachingCollectionDataDecorator decorator)
     {
       var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
-          (ReadOnlyCollectionDataDecorator) decorator.OriginalData);
+          decorator.OriginalData);
 
       var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
       Assert.That (originalDataStore, Is.SameAs (decorator));
@@ -784,12 +782,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (decorator.IsCacheUpToDate, Is.False);
     }
 
-    class TypeComparer : IComparer<DomainObject>
+    private static int CompareTypeNames (DomainObject x, DomainObject y)
     {
-      public int Compare (DomainObject x, DomainObject y)
-      {
-        return x.GetPublicDomainObjectType ().FullName.CompareTo (y.GetPublicDomainObjectType ().FullName);
-      }
+      return x.GetPublicDomainObjectType ().FullName.CompareTo (y.GetPublicDomainObjectType ().FullName);
     }
   }
 }
