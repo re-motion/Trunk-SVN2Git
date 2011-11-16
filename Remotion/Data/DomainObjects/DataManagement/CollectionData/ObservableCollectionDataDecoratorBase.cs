@@ -31,7 +31,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
     public enum OperationKind
     {
       Insert,
-      Remove
+      Remove,
+      Sort
     };
 
     protected ObservableCollectionDataDecoratorBase (IDomainObjectCollectionData wrappedData)
@@ -119,6 +120,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
         WrappedData.Replace (index, value);
         OnDataChanged (OperationKind.Remove, oldDomainObject, index);
         OnDataChanged (OperationKind.Insert, value, index);
+      }
+    }
+
+    public override void Sort (Comparison<DomainObject> comparison)
+    {
+      OnDataChanging (OperationKind.Sort, null, -1);
+      try
+      {
+        base.Sort (comparison);
+      }
+      finally
+      {
+        OnDataChanged (OperationKind.Sort, null, -1);
       }
     }
   }

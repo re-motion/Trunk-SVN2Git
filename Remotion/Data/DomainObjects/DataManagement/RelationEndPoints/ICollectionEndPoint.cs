@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
@@ -36,6 +37,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
     IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject);
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
+
+    void SortCurrentData (Comparison<DomainObject> comparison);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
   }

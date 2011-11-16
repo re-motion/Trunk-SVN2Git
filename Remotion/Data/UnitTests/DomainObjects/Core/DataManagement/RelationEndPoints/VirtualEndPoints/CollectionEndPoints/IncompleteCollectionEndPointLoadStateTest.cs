@@ -204,6 +204,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void SortCurrentData ()
+    {
+      Comparison<DomainObject> comparison = (one, two) => 0;
+      CheckOperationDelegatesToCompleteState (
+          s => s.SortCurrentData (_collectionEndPointMock, comparison),
+          s => s.SortCurrentData (comparison));
+    }
+
+    [Test]
     public void CreateSetCollectionCommand ()
     {
       var domainObjectCollection = new DomainObjectCollection ();
@@ -296,6 +305,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _collectionEndPointMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (fakeResult));
+    }
+
+    private void CheckOperationDelegatesToCompleteState (
+        Action<ICollectionEndPointLoadState> operation,
+        Action<ICollectionEndPoint> operationOnEndPoint)
+    {
+      using (_collectionEndPointMock.GetMockRepository ().Ordered ())
+      {
+        _collectionEndPointMock.Expect (mock => mock.EnsureDataComplete ());
+        _collectionEndPointMock.Expect (operationOnEndPoint);
+      }
+      _collectionEndPointMock.Replay ();
+
+      operation (_loadState);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
     }
   }
 }

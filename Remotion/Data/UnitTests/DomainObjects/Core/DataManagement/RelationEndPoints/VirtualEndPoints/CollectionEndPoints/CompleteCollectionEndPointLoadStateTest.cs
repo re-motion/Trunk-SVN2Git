@@ -125,6 +125,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void SortCurrentData_RaisesEvent ()
+    {
+      var counter = new OrderedExpectationCounter ();
+
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
+
+      Comparison<DomainObject> comparison = (one, two) => 0;
+      _dataKeeperMock.Expect (mock => mock.SortCurrentData (comparison)).Ordered (counter);
+      _dataKeeperMock.Replay ();
+
+      _eventRaiserMock.Expect (mock => mock.WithinReplaceData ()).Ordered (counter);
+      _eventRaiserMock.Replay ();
+
+      _loadState.SortCurrentData (_collectionEndPointMock, comparison);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+      _eventRaiserMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void Rollback_RaisesEvent ()
     {
       var counter = new OrderedExpectationCounter ();

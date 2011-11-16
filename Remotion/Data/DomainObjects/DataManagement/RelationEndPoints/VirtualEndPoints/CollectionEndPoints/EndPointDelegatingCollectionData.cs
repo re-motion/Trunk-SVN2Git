@@ -226,6 +226,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       AssociatedEndPoint.Touch ();
     }
 
+    public void Sort (Comparison<DomainObject> comparison)
+    {
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
+
+      AssociatedEndPoint.SortCurrentData (comparison);
+    }
+
     private void CreateAndExecuteRemoveCommand (DomainObject domainObject)
     {
       var command = AssociatedEndPoint.CreateRemoveCommand (domainObject);

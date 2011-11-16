@@ -17,6 +17,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject);
 
+    void SortCurrentData (Comparison<DomainObject> comparison);
     void SortCurrentAndOriginalData (Comparison<DomainObject> comparison);
     void SetDataFromSubTransaction (ICollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider);
   }

@@ -195,6 +195,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return new NullEndPointModificationCommand (this);
     }
 
+    public void SortCurrentData (Comparison<DomainObject> comparison)
+    {
+      throw new InvalidOperationException ("SortCurrentData cannot be called on a NullCollectionEndPoint.");
+    }
+
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       throw new InvalidOperationException ("CreateDelegatingCollectionData cannot be called on a NullCollectionEndPoint.");

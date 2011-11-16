@@ -642,6 +642,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void SortCurrentData ()
+    {
+      Comparison<DomainObject> comparison = (one, two) => 0;
+      _loadStateMock.Expect (mock => mock.SortCurrentData (_endPoint, comparison));
+      _loadStateMock.Replay();
+
+      _endPoint.SortCurrentData (comparison);
+
+      _loadStateMock.VerifyAllExpectations();
+    }
+
+    [Test]
     public void CreateDelegatingCollectionData ()
     {
       var data = _endPoint.CreateDelegatingCollectionData ();

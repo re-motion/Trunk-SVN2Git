@@ -62,13 +62,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       RaiseReplaceDataEvent (collectionEndPoint);
     }
 
-    public new void MarkDataComplete (ICollectionEndPoint endPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
+    public new void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("items", items);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      base.MarkDataComplete (endPoint, items, stateSetter);
+      base.MarkDataComplete (collectionEndPoint, items, stateSetter);
+    }
+
+    public void SortCurrentData (ICollectionEndPoint collectionEndPoint, Comparison<DomainObject> comparison)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
+
+      DataKeeper.SortCurrentData (comparison);
+
+      RaiseReplaceDataEvent (collectionEndPoint);
     }
 
     public override void Synchronize (ICollectionEndPoint endPoint)

@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -254,6 +254,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _wrappedDataMock.Replay ();
 
       _decorator.Replace (10, _order2);
+
+      _wrappedDataMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Sort ()
+    {
+      Comparison<DomainObject> comparison = (one, two) => 0;
+      _wrappedDataMock.Expect (mock => mock.Sort (comparison));
+      _wrappedDataMock.Replay ();
+
+      _decorator.Sort (comparison);
 
       _wrappedDataMock.VerifyAllExpectations ();
     }

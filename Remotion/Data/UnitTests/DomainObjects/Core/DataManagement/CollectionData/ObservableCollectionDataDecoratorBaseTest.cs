@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
@@ -287,6 +289,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
               Arg<ObservableCollectionDataDecoratorBase.OperationKind>.Is.Anything,
               Arg<DomainObject>.Is.Anything,
               Arg<int>.Is.Anything));
+    }
+
+    [Test]
+    public void Sort ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _eventSinkMock
+            .Expect (
+                mock =>
+                mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Sort, null, -1))
+            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent, Is.EqualTo (new[] { _order1, _order2, _order3 })));
+        _eventSinkMock
+            .Expect (
+                mock =>
+                mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Sort, null, -1))
+            .WhenCalled (mi => Assert.That (_observableDecoratorWithRealContent, Is.EqualTo (new[] { _order3, _order2, _order1 })));
+      }
+
+      _eventSinkMock.Replay ();
+
+      var weights = new Dictionary<DomainObject, int> { { _order1, 3 }, { _order2, 2 }, { _order3, 1 } };
+      Comparison<DomainObject> comparison = (one, two) => weights[one].CompareTo (weights[two]);
+
+      _observableDecoratorWithRealContent.Sort (comparison);
+
+      _eventSinkMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Sort_WithException ()
+    {
+      _eventSinkMock.Expect (mock => mock.CollectionChanging (ObservableCollectionDataDecoratorBase.OperationKind.Sort, null, -1));
+      _eventSinkMock.Expect (mock => mock.CollectionChanged (ObservableCollectionDataDecoratorBase.OperationKind.Sort, null, -1));
+      _eventSinkMock.Replay ();
+
+      Comparison<DomainObject> comparison = (one, two) => { throw new Exception(); };
+
+      Assert.That (() => _observableDecoratorWithRealContent.Sort (comparison), Throws.Exception);
+
+      _eventSinkMock.VerifyAllExpectations ();
     }
 
     [Test]

@@ -412,6 +412,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void Sort ()
+    {
+      Comparison<DomainObject> comparison = (one, two) => 0;
+
+      _collectionEndPointMock.Expect (mock => mock.SortCurrentData (comparison));
+    }
+
+    [Test]
     public void Serializable ()
     {
       var data = new EndPointDelegatingCollectionData (_endPointID, new SerializableRelationEndPointProviderFake());

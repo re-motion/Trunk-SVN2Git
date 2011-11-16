@@ -44,16 +44,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       LazyLoader.LoadLazyCollectionEndPoint (endPoint);
     }
 
-    public new void MarkDataComplete (ICollectionEndPoint endPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
+    public new void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("items", items);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      base.MarkDataComplete (endPoint, items, stateSetter);
+      base.MarkDataComplete (collectionEndPoint, items, stateSetter);
 
-      var eventRaiser = endPoint.GetCollectionEventRaiser();
+      var eventRaiser = collectionEndPoint.GetCollectionEventRaiser();
       eventRaiser.WithinReplaceData();
+    }
+
+    public void SortCurrentData (ICollectionEndPoint collectionEndPoint, Comparison<DomainObject> comparison)
+    {
+      collectionEndPoint.EnsureDataComplete();
+      collectionEndPoint.SortCurrentData (comparison);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter)

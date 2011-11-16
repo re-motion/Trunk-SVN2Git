@@ -114,6 +114,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       _wrappedData.Replace (index, value);
     }
 
+    public virtual void Sort (Comparison<DomainObject> comparison)
+    {
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
+      _wrappedData.Sort (comparison);
+    }
+
     public virtual IEnumerator<DomainObject> GetEnumerator ()
     {
       return _wrappedData.GetEnumerator ();

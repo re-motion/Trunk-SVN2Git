@@ -229,6 +229,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
     }
 
+    public void SortCurrentData (Comparison<DomainObject> comparison)
+    {
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
+      _loadState.SortCurrentData (this, comparison);
+    }
+
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;

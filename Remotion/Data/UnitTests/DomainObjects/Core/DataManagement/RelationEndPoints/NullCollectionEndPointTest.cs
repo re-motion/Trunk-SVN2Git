@@ -213,6 +213,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
+    public void SortCurrentData ()
+    {
+      _nullEndPoint.SortCurrentData ((one, two) => 0);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
     public void CreateDelegatingCollectionData ()
     {
       _nullEndPoint.CreateDelegatingCollectionData();

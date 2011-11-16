@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -41,11 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       get { throw new NotImplementedException(); }
     }
 
-    public IObjectEndPoint[] OppositeEndPoints
-    {
-      get { throw new NotImplementedException(); }
-    }
-
     public IRealObjectEndPoint[] OriginalOppositeEndPoints
     {
       get { return new IRealObjectEndPoint[0]; }
@@ -61,11 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       get { throw new NotImplementedException(); }
     }
 
-    public IComparer<DomainObject> SortExpressionBasedComparer
-    {
-      get { throw new NotImplementedException(); }
-    }
-
     public RelationEndPointID EndPointID
     {
       get { throw new NotImplementedException(); }
@@ -76,22 +64,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      return false;
-    }
-
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
     public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public bool ContainsCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
@@ -126,6 +104,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       return false;
     }
 
+    public void SortCurrentData (Comparison<DomainObject> comparison)
+    {
+      throw new NotImplementedException ();
+    }
+
     public void SortCurrentAndOriginalData (Comparison<DomainObject> comparison)
     {
       throw new NotImplementedException();
@@ -142,21 +125,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     }
 
     public void Rollback ()
-    {
-      throw new NotImplementedException();
-    }
-
-    public void Insert (int index, IObjectEndPoint insertedEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void Remove (IObjectEndPoint removedEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void Clear ()
     {
       throw new NotImplementedException();
     }

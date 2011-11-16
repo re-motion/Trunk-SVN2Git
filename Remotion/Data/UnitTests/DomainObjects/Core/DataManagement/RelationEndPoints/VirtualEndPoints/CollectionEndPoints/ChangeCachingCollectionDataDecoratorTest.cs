@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
@@ -597,6 +598,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
 
       CheckChangeFlagInvalidated (_decoratorWithRealData);
+    }
+
+    [Test]
+    public void Sort_InvalidatesCache ()
+    {
+      var secondDomainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _wrappedData.Add (secondDomainObject);
+
+      WarmUpCache (_decoratorWithRealData, false);
+      Assert.That (_decoratorWithRealData, Is.EqualTo (new[] { _domainObject, secondDomainObject }));
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
+
+      var weights = new Dictionary<DomainObject, int> { { _domainObject, 2 }, { secondDomainObject, 1 } };
+      Comparison<DomainObject> comparison = (one, two) => weights[one].CompareTo (weights[two]);
+      _decoratorWithRealData.Sort (comparison);
+
+      Assert.That (_decoratorWithRealData, Is.EqualTo (new[] { secondDomainObject, _domainObject }));
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.False);
+    }
+
+    [Test]
+    public void Sort_OriginalValuesCopied ()
+    {
+      CheckOriginalValuesCopiedBeforeModification ((d, obj) => d.Sort ((one, two) => 0));
     }
 
     [Test]

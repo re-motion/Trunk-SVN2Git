@@ -194,6 +194,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
+    public void SortCurrentData (Comparison<DomainObject> comparison)
+    {
+      throw new NotImplementedException();
+    }
+
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       throw new NotImplementedException();

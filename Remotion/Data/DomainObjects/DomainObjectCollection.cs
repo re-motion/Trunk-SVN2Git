@@ -706,21 +706,17 @@ namespace Remotion.Data.DomainObjects
       if (Deleted != null)
         Deleted (this, EventArgs.Empty);
     }
-
-
+    
     /// <summary>
-    /// Called when the data of this collection changes due to a state change in the associated bidirectional relation, for example when the relation
-    /// is rolled back, reloaded, or synchronized with opposite end-points. Override this method to react to the contents of 
-    /// this collection changing due to such an operation.
+    /// Called when the data of this collection is changed due to an operation that is not covered by <see cref="OnAdded"/>, <see cref="OnRemoved"/>,
+    /// or <see cref="OnDeleted"/>. For example, such an operation could be that the a collection associated with a relation is rolled back, reloaded, 
+    /// or synchronized with its opposite end-points. Override this method to react to the contents of this collection changing due to such an operation.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// For stand-alone collections, this method is not invoked by the framework. 
-    /// </para>
-    /// <para>
     /// <note type="inotes">
-    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
-    /// (which is in the middle of a data management operation).
+    /// This method must not throw an exception, and its implementation must take care when accessing or modifying any data in the current 
+    /// <see cref="ClientTransaction"/> because the transaction might be in the middle of a data management operation.
     /// </note>
     /// </para>
     /// </remarks>
